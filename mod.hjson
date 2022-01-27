@@ -1,0 +1,10 @@
+displayName: "Cyber IO"
+name: "cyber-io"
+author: "[#8738ff[]]Liplum[[]]"
+main: "net.liplum.CioMod"
+description: "Provides lots of Cyber-tech!!!"
+version: 1.0
+minGameVersion: 126
+dependencies: []
+hidden: false
+java: true
