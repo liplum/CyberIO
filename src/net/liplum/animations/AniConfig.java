@@ -14,6 +14,10 @@ public class AniConfig<TBlock extends Block, TBuild extends Building> {
     private AniState<TBlock, TBuild> defaultState = null;
     private boolean built = false;
 
+    private static Object getKey(AniState<?, ?> from, AniState<?, ?> to) {
+        return from.hashCode() ^ (to.hashCode() * 2);
+    }
+
     public AniConfig<TBlock, TBuild> defaultState(AniState<TBlock, TBuild> state) {
         if (built) {
             throw new AlreadyBuiltException(this.toString());
@@ -62,10 +66,6 @@ public class AniConfig<TBlock extends Block, TBuild extends Building> {
 
     public AniState<TBlock, TBuild> getDefaultState() {
         return defaultState;
-    }
-
-    private static Object getKey(AniState<?, ?> from, AniState<?, ?> to) {
-        return from.hashCode() ^ (to.hashCode() * 2);
     }
 
     public static class NoDefaultStateException extends RuntimeException {

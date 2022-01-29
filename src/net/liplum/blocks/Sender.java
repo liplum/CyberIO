@@ -10,7 +10,6 @@ import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.Vars;
-import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
@@ -18,21 +17,24 @@ import mindustry.type.Item;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.meta.BlockGroup;
-import net.liplum.animations.*;
+import net.liplum.animations.AniConfig;
+import net.liplum.animations.AniState;
+import net.liplum.animations.AutoAnimation;
+import net.liplum.animations.IAnimated;
 import net.liplum.api.IDataReceiver;
 import net.liplum.api.IDataSender;
 import net.liplum.utils.AtlasUtil;
+import net.liplum.utils.GraphicUtl;
 
-public class Sender extends Block {
+public class Sender extends AniBlock<Sender, Sender.SenderBuild> {
+    private final int UploadAnimFrameNumber = 7;
     public TextureRegion coverTR;
     public TextureRegion upArrowTR;
     public TextureRegion crossTR;
     private AniState<Sender, SenderBuild> IdleAni;
     private AniState<Sender, SenderBuild> UploadAni;
     private AniState<Sender, SenderBuild> blockedAni;
-    private AniConfig<Sender, SenderBuild> aniConfig;
     private IAnimated UploadAnim;
-    private final int UploadAnimFrameNumber = 7;
 
     public Sender(String name) {
         super(name);
@@ -43,24 +45,22 @@ public class Sender extends Block {
         group = BlockGroup.transportation;
 
         config(Integer.class, SenderBuild::setReceiverPackedPos);
-        this.genAnimState();
-        this.genAniConfig();
     }
 
     public void genAnimState() {
-        IdleAni = new AniState<>("Idle", ((sender, build) -> {
+        IdleAni = addAniState(new AniState<>("Idle", ((sender, build) -> {
 
-        }));
-        UploadAni = new AniState<>("Upload", (sender, build) -> {
+        })));
+        UploadAni = addAniState(new AniState<>("Upload", (sender, build) -> {
             UploadAnim.draw(Color.green, build.x, build.y);
-        });
-        blockedAni = new AniState<>("Blocked", ((sender, build) -> {
+        }));
+        blockedAni = addAniState(new AniState<>("Blocked", ((sender, build) -> {
             Draw.color(Color.red);
             Draw.rect(sender.crossTR,
                     build.x, build.y
             );
             Draw.color();
-        }));
+        })));
     }
 
     public void genAniConfig() {
@@ -112,12 +112,11 @@ public class Sender extends Block {
     }
 
     public void loadAnimation() {
-        UploadAnim = new AutoAnimation(30f, AtlasUtil.subFrames(this, "up-arrow", 1, UploadAnimFrameNumber));
+        UploadAnim = new AutoAnimation(30f, AtlasUtil.animation(this, "up-arrow", true, UploadAnimFrameNumber));
     }
 
-    public class SenderBuild extends Building implements IDataSender {
+    public class SenderBuild extends AniBuild implements IDataSender {
         private int receiverPackedPos = -1;
-        private AniStateM<Sender, SenderBuild> aniStateM;
 
         public int getReceiverPackedPos() {
             return receiverPackedPos;
@@ -134,17 +133,8 @@ public class Sender extends Block {
         }
 
         @Override
-        public Building create(Block block, Team team) {
-            super.create(block, team);
-            Sender outer = Sender.this;
-            this.aniStateM = outer.aniConfig.gen(outer, this);
-            return this;
-        }
-
-        @Override
-        public void updateTile() {
+        public void fixedUpdateTile() {
             checkReceiverPos();
-            aniStateM.update();
         }
 
         @Override
@@ -153,19 +143,20 @@ public class Sender extends Block {
         }
 
         @Override
-        public void draw() {
-            super.draw();
-            aniStateM.drawBuilding();
-        }
-
-        @Override
         public void drawSelect() {
             float sin = Mathf.absin(Time.time, 6f, 1f);
-            IDataReceiver reb = this.getReceiverBuilding();
-            if (reb != null) {
-                Tile ret = reb.getTile();
-                Drawf.dashCircle(ret.drawx(), ret.drawy(),
-                        (ret.block().size / 2f + 1) * Vars.tilesize + sin - 2f, Pal.accent);
+            IDataReceiver dr = this.getReceiverBuilding();
+            if (dr != null) {
+                Tile ret = dr.getTile();
+                Building reb = dr.getBuilding();
+                Block reblock = dr.getBlock();
+                float retdrawx = ret.drawx();
+                float retdrawy = ret.drawy();
+                Drawf.dashCircle(retdrawx, retdrawy,
+                        (reblock.size / 2f + 1) * Vars.tilesize + sin - 2f,
+                        Pal.place);
+                GraphicUtl.drawDashLineBetweenTwoBlocks(this.block, this.tile.x, this.tile.y,
+                        reblock, ret.worldx(), ret.worldy());
             }
         }
 

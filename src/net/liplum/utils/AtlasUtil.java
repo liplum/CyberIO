@@ -21,4 +21,32 @@ public class AtlasUtil {
         }
         return fms;
     }
+
+    public static TextureRegion[] animation(Block block, String subName, int number) {
+        return animation(block, subName, true, number);
+    }
+
+    public static TextureRegion[] animation(Block block, String subName, boolean isHorizontal, int number) {
+        String identity = block.name + '-' + subName + "-anim";
+        TextureRegion tr = Core.atlas.find(identity);
+        return slice(tr, isHorizontal, number);
+    }
+
+    public static TextureRegion[] slice(TextureRegion original, boolean isHorizontal, int count) {
+        TextureRegion[] fms = new TextureRegion[count];
+        int width = original.width;
+        int height = original.height;
+        if (isHorizontal) {
+            TextureRegion[][] split = original.split(width / count, height);
+            for (int i = 0; i < count; i++) {
+                fms[i] = split[i][0];
+            }
+        } else {
+            TextureRegion[][] split = original.split(width, height / count);
+            for (int i = 0; i < count; i++) {
+                fms[i] = split[0][i];
+            }
+        }
+        return fms;
+    }
 }

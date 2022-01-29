@@ -11,7 +11,6 @@ import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.entities.units.BuildPlan;
-import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.type.Item;
 import mindustry.ui.Cicon;
@@ -19,24 +18,26 @@ import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.ItemSelection;
 import mindustry.world.meta.BlockGroup;
-import net.liplum.animations.*;
+import net.liplum.animations.AniConfig;
+import net.liplum.animations.AniState;
+import net.liplum.animations.AutoAnimation;
+import net.liplum.animations.IAnimated;
 import net.liplum.api.IDataReceiver;
 import net.liplum.api.IDataSender;
 import net.liplum.utils.AtlasUtil;
+import net.liplum.utils.GraphicUtl;
 
-import static mindustry.Vars.content;
-import static mindustry.Vars.tilesize;
+import static mindustry.Vars.*;
 
-public class Receiver extends Block {
+public class Receiver extends AniBlock<Receiver, Receiver.ReceiverBuild> {
+    private final int DownloadAnimFrameNumber = 7;
     public TextureRegion coverTR;
     public TextureRegion downArrowTR;
     public TextureRegion unconnectedTR;
-    private AniState<Receiver, Receiver.ReceiverBuild> downloadAni;
-    private AniState<Receiver, Receiver.ReceiverBuild> unconnectedAni;
-    private AniState<Receiver, Receiver.ReceiverBuild> blockedAni;
-    private AniConfig<Receiver, Receiver.ReceiverBuild> aniConfig;
+    private AniState<Receiver, ReceiverBuild> downloadAni;
+    private AniState<Receiver, ReceiverBuild> unconnectedAni;
+    private AniState<Receiver, ReceiverBuild> blockedAni;
     private IAnimated DownloadAnim;
-    private final int DownloadAnimFrameNumber = 7;
 
     public Receiver(String name) {
         super(name);
@@ -53,30 +54,42 @@ public class Receiver extends Block {
         config(Item.class, ReceiverBuild::setOutputItem);
         configClear((ReceiverBuild tile) -> tile.setOutputItem(null));
 
-        this.genAnimState();
-        this.genAniConfig();
+    }
+
+    @Override
+    public void drawPlace(int x, int y, int rotation, boolean valid) {
+        super.drawPlace(x, y, rotation, valid);
+        if (!control.input.frag.config.isShown()) return;
+        Building selected = control.input.frag.config.getSelectedTile();
+        if (selected == null ||
+                !(selected.block instanceof Sender)) {
+            return;
+        }
+        Tile selectedTile = selected.tile();
+        GraphicUtl.drawDashLineBetweenTwoBlocks(selected.block, selectedTile.x, selectedTile.y
+                , this, x, y);
     }
 
     public void genAnimState() {
-        downloadAni = new AniState<>("Download", (sender, build) -> {
+        downloadAni = addAniState(new AniState<>("Download", (sender, build) -> {
             if (build.getOutputItem() != null) {
                 DownloadAnim.draw(Color.green, build.x, build.y);
             }
-        });
-        unconnectedAni = new AniState<>("Unconnected", ((sender, build) -> {
+        }));
+        unconnectedAni = addAniState(new AniState<>("Unconnected", ((sender, build) -> {
             Draw.color(Color.white);
             Draw.rect(sender.unconnectedTR,
                     build.x, build.y
             );
             Draw.color();
-        }));
-        blockedAni = new AniState<>("Blocked", ((sender, build) -> {
+        })));
+        blockedAni = addAniState(new AniState<>("Blocked", ((sender, build) -> {
             Draw.color(Color.red);
             Draw.rect(sender.downArrowTR,
                     build.x, build.y
             );
             Draw.color();
-        }));
+        })));
     }
 
     public void genAniConfig() {
@@ -89,13 +102,13 @@ public class Receiver extends Block {
         aniConfig.enter(blockedAni, unconnectedAni, ((block, build) ->
                 build.getOutputItem() == null)
         ).enter(blockedAni, downloadAni, ((block, build) ->
-                build.isOutputting()
+                build.isOutputting() || build.lastFullDataDelta < 60
         ));
 
         aniConfig.enter(downloadAni, unconnectedAni, (block, build) ->
                 build.getOutputItem() == null
         ).enter(downloadAni, blockedAni, (block, build) ->
-                !build.isOutputting()
+                !build.isOutputting() && build.lastFullDataDelta > 60
         );
 
         aniConfig.build();
@@ -111,7 +124,7 @@ public class Receiver extends Block {
     }
 
     public void loadAnimation() {
-        DownloadAnim = new AutoAnimation(30f, AtlasUtil.subFrames(this, "down-arrow", 1, DownloadAnimFrameNumber));
+        DownloadAnim = new AutoAnimation(30f, AtlasUtil.animation(this, "down-arrow", true, DownloadAnimFrameNumber));
     }
 
     @Override
@@ -124,12 +137,11 @@ public class Receiver extends Block {
         return true;
     }
 
-    public class ReceiverBuild extends Building implements IDataReceiver {
+    public class ReceiverBuild extends AniBuild implements IDataReceiver {
         private Item outputItem;
         private boolean isOutputting = false;
         private float lastOutputDelta = 0;
-        private float lastFullData = 0;
-        private AniStateM<Receiver, ReceiverBuild> aniStateM;
+        private float lastFullDataDelta = 0;
 
         @Nullable
         public Item getOutputItem() {
@@ -147,42 +159,35 @@ public class Receiver extends Block {
 
         @Override
         public void drawSelect() {
-            if (getOutputItem() != null) {
+            Item outputItem = getOutputItem();
+            if (outputItem != null) {
                 float dx = x - size * tilesize / 2f, dy = y + size * tilesize / 2f;
                 Draw.mixcol(Color.darkGray, 1f);
-                Draw.rect(getOutputItem().icon(Cicon.small), dx, dy - 1);
+                Draw.rect(outputItem.icon(Cicon.small), dx, dy - 1);
                 Draw.reset();
+                Draw.rect(outputItem.icon(Cicon.small), dx, dy);
             }
         }
 
         @Override
-        public Building create(Block block, Team team) {
-            super.create(block, team);
-            Receiver outer = Receiver.this;
-            this.aniStateM = outer.aniConfig.gen(outer, this);
-            return this;
-        }
-
-        @Override
-        public void updateTile() {
+        public void fixedUpdateTile() {
             Item outputItem = getOutputItem();
+            float deltaT = Time.delta;
             if (outputItem != null) {
                 boolean isFullData = items.get(outputItem) < getMaximumAccepted(outputItem);
+                if (isFullData) {
+                    lastFullDataDelta = 0;
+                } else {
+                    lastFullDataDelta += deltaT;
+                }
             }
             if (!Mathf.zero(power.status) && outputItem != null) {
                 if (dump(outputItem)) {
                     lastOutputDelta = 0;
                 } else {
-                    lastOutputDelta += Time.delta;
+                    lastOutputDelta += deltaT;
                 }
             }
-            aniStateM.update();
-        }
-
-        @Override
-        public void draw() {
-            super.draw();
-            aniStateM.drawBuilding();
         }
 
         @Override

@@ -6,6 +6,8 @@ import mindustry.world.Tile;
 
 public interface IDataBuilding {
     Building getBuilding();
+
     Tile getTile();
+
     Block getBlock();
 }

@@ -19,12 +19,12 @@ public class AniStateM<TBlock extends Block, TBuild extends Building> {
         this.build = build;
     }
 
-    public void setSwitchAniStateListener(ISwitchAniStateListener<TBlock, TBuild> switchAniStateListener) {
-        this.switchAniStateListener = switchAniStateListener;
-    }
-
     public ISwitchAniStateListener<TBlock, TBuild> getSwitchAniStateListener() {
         return switchAniStateListener;
+    }
+
+    public void setSwitchAniStateListener(ISwitchAniStateListener<TBlock, TBuild> switchAniStateListener) {
+        this.switchAniStateListener = switchAniStateListener;
     }
 
     public AniState<TBlock, TBuild> getCurState() {

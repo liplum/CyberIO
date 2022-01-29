@@ -9,6 +9,8 @@ import mindustry.ui.dialogs.BaseDialog;
 import net.liplum.registries.ContentRegistry;
 
 public class CioMod extends Mod {
+    public static final boolean AniStateCanLoad = true;
+
     public CioMod() {
         Log.info("Cyber IO mod loaded.");
         //listen for game load event

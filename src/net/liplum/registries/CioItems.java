@@ -6,9 +6,10 @@ import mindustry.type.Item;
 
 public class CioItems implements ContentList {
     public static Item ic;
+
     @Override
     public void load() {
-        ic = new Item("ic", Color.valueOf("272727")){
+        ic = new Item("ic", Color.valueOf("272727")) {
 
         };
     }
