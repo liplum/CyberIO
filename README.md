@@ -8,11 +8,14 @@
 
 ## IC Machine
 
-![IC Machine](GFX/IC Machine.gif)
+![IC Machine](GFX/IC%20Machine.gif)
 
 ## Sender&Receiver
 
 Sender
+
 ![Sender](GFX/Sender.gif)
+
 Receiver
+
 ![Receiver](GFX/Receiver.gif)
