@@ -86,7 +86,7 @@ public class CioBlocks implements ContentList {
             @Override
             public void load() {
                 super.load();
-                workingAnimation = AnimUtil.autoAnimation(this, "indicator-light", 7, 60f);
+                workingAnimation = AnimUtil.auto(this, "indicator-light", 7, 60f);
                 idleTR = AtlasUtil.sub(this, "light-off");
             }
         };

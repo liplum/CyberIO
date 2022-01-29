@@ -1,10 +1,14 @@
 package net.liplum.utils;
 
-import mindustry.world.Block;
+import mindustry.ctype.MappableContent;
 import net.liplum.animations.AutoAnimation;
 
 public class AnimUtil {
-    public static AutoAnimation autoAnimation(Block block, String subName, int frame, float duration) {
-        return new AutoAnimation(duration, AtlasUtil.animation(block, subName, frame));
+    public static AutoAnimation auto(MappableContent content, String subName, int frame, float duration) {
+        return new AutoAnimation(duration, AtlasUtil.animation(content, subName, frame));
+    }
+
+    public static AutoAnimation autoCio(String name, int frame, float duration) {
+        return new AutoAnimation(duration, AtlasUtil.animationCio(name, frame));
     }
 }

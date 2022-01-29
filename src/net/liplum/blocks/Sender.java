@@ -19,21 +19,24 @@ import mindustry.world.Tile;
 import mindustry.world.meta.BlockGroup;
 import net.liplum.animations.AniConfig;
 import net.liplum.animations.AniState;
-import net.liplum.animations.AutoAnimation;
 import net.liplum.animations.IAnimated;
 import net.liplum.api.IDataReceiver;
 import net.liplum.api.IDataSender;
+import net.liplum.utils.AnimUtil;
 import net.liplum.utils.AtlasUtil;
 import net.liplum.utils.GraphicUtl;
 
 public class Sender extends AniBlock<Sender, Sender.SenderBuild> {
     private final int UploadAnimFrameNumber = 7;
-    public TextureRegion coverTR;
-    public TextureRegion upArrowTR;
-    public TextureRegion crossTR;
+    public TextureRegion CoverTR;
+    public TextureRegion UpArrowTR;
+    public TextureRegion CrossTR;
+    public TextureRegion NoPowerTR;
+    public TextureRegion UnconnectedTR;
     private AniState<Sender, SenderBuild> IdleAni;
     private AniState<Sender, SenderBuild> UploadAni;
-    private AniState<Sender, SenderBuild> blockedAni;
+    private AniState<Sender, SenderBuild> BlockedAni;
+    private AniState<Sender, SenderBuild> NoPowerAni;
     private IAnimated UploadAnim;
 
     public Sender(String name) {
@@ -54,65 +57,95 @@ public class Sender extends AniBlock<Sender, Sender.SenderBuild> {
         UploadAni = addAniState(new AniState<>("Upload", (sender, build) -> {
             UploadAnim.draw(Color.green, build.x, build.y);
         }));
-        blockedAni = addAniState(new AniState<>("Blocked", ((sender, build) -> {
+        BlockedAni = addAniState(new AniState<>("Blocked", ((sender, build) -> {
             Draw.color(Color.red);
-            Draw.rect(sender.crossTR,
+            Draw.rect(sender.UpArrowTR,
                     build.x, build.y
             );
             Draw.color();
+        })));
+        NoPowerAni = addAniState(new AniState<>("NoPower", ((sender, build) -> {
+            Draw.rect(sender.NoPowerTR,
+                    build.x, build.y);
         })));
     }
 
     public void genAniConfig() {
         aniConfig = new AniConfig<>();
         aniConfig.defaultState(IdleAni);
+        // Idle
         aniConfig.enter(IdleAni, UploadAni, (block, build) -> {
             IDataReceiver reb = build.getReceiverBuilding();
             if (reb != null) {
                 return reb.canAcceptAnyData(build);
             }
             return false;
-        }).enter(IdleAni, blockedAni, (block, build) -> {
+        }).enter(IdleAni, BlockedAni, (block, build) -> {
             IDataReceiver reb = build.getReceiverBuilding();
             if (reb != null) {
                 return !reb.isOutputting() && !reb.canAcceptAnyData(build);
             }
             return false;
-        });
+        }).enter(IdleAni, NoPowerAni, (block, build) ->
+                Mathf.zero(build.power.status)
+        );
 
+        // Upload
         aniConfig.enter(UploadAni, IdleAni, (block, build) ->
                 build.getReceiverPackedPos() == -1
-        ).enter(UploadAni, blockedAni, (block, build) -> {
+        ).enter(UploadAni, BlockedAni, (block, build) -> {
             IDataReceiver reb = build.getReceiverBuilding();
             if (reb != null) {
                 return !reb.isOutputting() && !reb.canAcceptAnyData(build);
             }
             return false;
-        });
+        }).enter(UploadAni, NoPowerAni, (block, build) ->
+                Mathf.zero(build.power.status)
+        );
 
-        aniConfig.enter(blockedAni, IdleAni, (block, build) ->
+        // Blocked
+        aniConfig.enter(BlockedAni, IdleAni, (block, build) ->
                 build.getReceiverPackedPos() == -1
-        ).enter(blockedAni, UploadAni, ((block, build) -> {
+        ).enter(BlockedAni, UploadAni, ((block, build) -> {
             IDataReceiver reb = build.getReceiverBuilding();
             if (reb != null) {
                 return reb.isOutputting() || reb.canAcceptAnyData(build);
             }
             return false;
-        }));
+        })).enter(BlockedAni, NoPowerAni, (block, build) ->
+                Mathf.zero(build.power.status)
+        );
+
+        // NoPower
+        aniConfig.enter(NoPowerAni, IdleAni, (block, build) ->
+                !Mathf.zero(build.power.status)
+        ).enter(NoPowerAni, UploadAni, (block, build) -> {
+            if (Mathf.zero(build.power.status)) {
+                return false;
+            }
+            IDataReceiver reb = build.getReceiverBuilding();
+            if (reb != null) {
+                return reb.canAcceptAnyData(build);
+            }
+            return false;
+        });
+
         aniConfig.build();
     }
 
     @Override
     public void load() {
         super.load();
-        coverTR = AtlasUtil.sub(this, "cover");
-        upArrowTR = AtlasUtil.sub(this, "up-arrow");
-        crossTR = AtlasUtil.sub(this, "cross");
+        CoverTR = AtlasUtil.cio("rs-cover");
+        UpArrowTR = AtlasUtil.cio("rs-up-arrow");
+        CrossTR = AtlasUtil.cio("rs-cross");
+        UnconnectedTR = AtlasUtil.cio("rs-unconnected");
+        NoPowerTR = AtlasUtil.cio("rs-no-power");
         loadAnimation();
     }
 
     public void loadAnimation() {
-        UploadAnim = new AutoAnimation(30f, AtlasUtil.animation(this, "up-arrow", true, UploadAnimFrameNumber));
+        UploadAnim = AnimUtil.autoCio("rs-up-arrow", 7, 30f);
     }
 
     public class SenderBuild extends AniBuild implements IDataSender {
@@ -138,6 +171,11 @@ public class Sender extends AniBlock<Sender, Sender.SenderBuild> {
         }
 
         @Override
+        public String toString() {
+            return super.toString() + "(receiverPackedPos:" + receiverPackedPos + ")";
+        }
+
+        @Override
         public void sendData(IDataReceiver receiver, Item item) {
             receiver.receiveData(this, item);
         }
@@ -156,14 +194,14 @@ public class Sender extends AniBlock<Sender, Sender.SenderBuild> {
                         (reblock.size / 2f + 1) * Vars.tilesize + sin - 2f,
                         Pal.place);
                 GraphicUtl.drawDashLineBetweenTwoBlocks(this.block, this.tile.x, this.tile.y,
-                        reblock, ret.worldx(), ret.worldy());
+                        reblock, ret.x, ret.y);
             }
         }
 
         @Override
         public void handleItem(Building source, Item item) {
             IDataReceiver reb = this.getReceiverBuilding();
-            if (reb != null) {
+            if (reb != null && !Mathf.zero(power.status)) {
                 this.sendData(reb, item);
             }
         }
@@ -189,7 +227,8 @@ public class Sender extends AniBlock<Sender, Sender.SenderBuild> {
             if (reb != null) {
                 Tile ret = reb.getTile();
                 Drawf.dashCircle(ret.drawx(), ret.drawy(),
-                        (ret.block().size / 2f + 1) * Vars.tilesize + sin - 2f, Pal.accent);
+                        (ret.block().size / 2f + 1) * Vars.tilesize + sin - 2f,
+                        Pal.place);
             }
         }
 
@@ -216,7 +255,7 @@ public class Sender extends AniBlock<Sender, Sender.SenderBuild> {
         }
 
         public void setReceiver(IDataReceiver receiver) {
-            setReceiverPackedPos(receiver.getBuilding().pos());
+            configure(receiver.getBuilding().pos());
         }
 
         @Override
@@ -241,6 +280,11 @@ public class Sender extends AniBlock<Sender, Sender.SenderBuild> {
         public void read(Reads read, byte revision) {
             super.read(read, revision);
             this.receiverPackedPos = read.i();
+        }
+
+        @Override
+        public Object config() {
+            return getReceiverPackedPos();
         }
 
         @Override

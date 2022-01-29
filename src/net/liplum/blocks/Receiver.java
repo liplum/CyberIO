@@ -20,10 +20,10 @@ import mindustry.world.blocks.ItemSelection;
 import mindustry.world.meta.BlockGroup;
 import net.liplum.animations.AniConfig;
 import net.liplum.animations.AniState;
-import net.liplum.animations.AutoAnimation;
 import net.liplum.animations.IAnimated;
 import net.liplum.api.IDataReceiver;
 import net.liplum.api.IDataSender;
+import net.liplum.utils.AnimUtil;
 import net.liplum.utils.AtlasUtil;
 import net.liplum.utils.GraphicUtl;
 
@@ -31,12 +31,14 @@ import static mindustry.Vars.*;
 
 public class Receiver extends AniBlock<Receiver, Receiver.ReceiverBuild> {
     private final int DownloadAnimFrameNumber = 7;
-    public TextureRegion coverTR;
-    public TextureRegion downArrowTR;
-    public TextureRegion unconnectedTR;
-    private AniState<Receiver, ReceiverBuild> downloadAni;
-    private AniState<Receiver, ReceiverBuild> unconnectedAni;
-    private AniState<Receiver, ReceiverBuild> blockedAni;
+    public TextureRegion CoverTR;
+    public TextureRegion DownArrowTR;
+    public TextureRegion UnconnectedTR;
+    public TextureRegion NoPowerTR;
+    private AniState<Receiver, ReceiverBuild> DownloadAni;
+    private AniState<Receiver, ReceiverBuild> UnconnectedAni;
+    private AniState<Receiver, ReceiverBuild> BlockedAni;
+    private AniState<Receiver, ReceiverBuild> NoPowerAni;
     private IAnimated DownloadAnim;
 
     public Receiver(String name) {
@@ -71,60 +73,79 @@ public class Receiver extends AniBlock<Receiver, Receiver.ReceiverBuild> {
     }
 
     public void genAnimState() {
-        downloadAni = addAniState(new AniState<>("Download", (sender, build) -> {
+        DownloadAni = addAniState(new AniState<>("Download", (sender, build) -> {
             if (build.getOutputItem() != null) {
                 DownloadAnim.draw(Color.green, build.x, build.y);
             }
         }));
-        unconnectedAni = addAniState(new AniState<>("Unconnected", ((sender, build) -> {
+        UnconnectedAni = addAniState(new AniState<>("Unconnected", ((sender, build) -> {
             Draw.color(Color.white);
-            Draw.rect(sender.unconnectedTR,
+            Draw.rect(sender.UnconnectedTR,
                     build.x, build.y
             );
             Draw.color();
         })));
-        blockedAni = addAniState(new AniState<>("Blocked", ((sender, build) -> {
+        BlockedAni = addAniState(new AniState<>("Blocked", ((sender, build) -> {
             Draw.color(Color.red);
-            Draw.rect(sender.downArrowTR,
+            Draw.rect(sender.DownArrowTR,
                     build.x, build.y
             );
             Draw.color();
         })));
+        NoPowerAni = addAniState(new AniState<>("NoPower", (sender, build) -> {
+            Draw.rect(sender.NoPowerTR,
+                    build.x, build.y);
+        }));
     }
 
     public void genAniConfig() {
         aniConfig = new AniConfig<>();
-        aniConfig.defaultState(unconnectedAni);
-        aniConfig.enter(unconnectedAni, downloadAni, (block, build) ->
+        aniConfig.defaultState(UnconnectedAni);
+        // UnconnectedAni
+        aniConfig.enter(UnconnectedAni, DownloadAni, (block, build) ->
                 build.getOutputItem() != null
+        ).enter(UnconnectedAni, NoPowerAni, (block, build) ->
+                Mathf.zero(build.power.status)
         );
 
-        aniConfig.enter(blockedAni, unconnectedAni, ((block, build) ->
+        // BlockedAni
+        aniConfig.enter(BlockedAni, UnconnectedAni, ((block, build) ->
                 build.getOutputItem() == null)
-        ).enter(blockedAni, downloadAni, ((block, build) ->
+        ).enter(BlockedAni, DownloadAni, ((block, build) ->
                 build.isOutputting() || build.lastFullDataDelta < 60
-        ));
-
-        aniConfig.enter(downloadAni, unconnectedAni, (block, build) ->
-                build.getOutputItem() == null
-        ).enter(downloadAni, blockedAni, (block, build) ->
-                !build.isOutputting() && build.lastFullDataDelta > 60
+        )).enter(BlockedAni, NoPowerAni, (block, build) ->
+                Mathf.zero(build.power.status)
         );
 
+        // DownloadAni
+        aniConfig.enter(DownloadAni, UnconnectedAni, (block, build) ->
+                build.getOutputItem() == null
+        ).enter(DownloadAni, BlockedAni, (block, build) ->
+                !build.isOutputting() && build.lastFullDataDelta > 60
+        ).enter(DownloadAni, NoPowerAni, (block, build) ->
+                Mathf.zero(build.power.status)
+        );
+        // NoPower
+        aniConfig.enter(NoPowerAni, UnconnectedAni, (block, build) ->
+                !Mathf.zero(build.power.status) &&  build.getOutputItem() == null
+        ).enter(NoPowerAni, DownloadAni, (block, build) ->
+                !Mathf.zero(build.power.status)  &&  build.getOutputItem() != null
+        );
         aniConfig.build();
     }
 
     @Override
     public void load() {
         super.load();
-        coverTR = AtlasUtil.sub(this, "cover");
-        downArrowTR = AtlasUtil.sub(this, "down-arrow");
-        unconnectedTR = AtlasUtil.sub(this, "unconnected");
+        CoverTR = AtlasUtil.cio("rs-cover");
+        DownArrowTR = AtlasUtil.cio("rs-down-arrow");
+        UnconnectedTR = AtlasUtil.cio("rs-unconnected");
+        NoPowerTR = AtlasUtil.cio("rs-no-power");
         loadAnimation();
     }
 
     public void loadAnimation() {
-        DownloadAnim = new AutoAnimation(30f, AtlasUtil.animation(this, "down-arrow", true, DownloadAnimFrameNumber));
+        DownloadAnim = AnimUtil.autoCio("rs-down-arrow", 7, 30f);
     }
 
     @Override
