@@ -2,8 +2,12 @@ package net.liplum.api;
 
 import mindustry.type.Item;
 
-public interface IDataReceiver {
+public interface IDataReceiver extends IDataBuilding{
     boolean acceptData(IDataSender sender, Item item);
 
     void receiveData(IDataSender sender, Item item);
+
+    boolean canAcceptAnyData(IDataSender sender);
+
+    boolean isOutputting();
 }

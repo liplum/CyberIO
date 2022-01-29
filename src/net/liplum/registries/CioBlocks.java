@@ -9,8 +9,6 @@ import mindustry.world.blocks.production.GenericCrafter;
 import net.liplum.blocks.Receiver;
 import net.liplum.blocks.Sender;
 
-import static mindustry.type.ItemStack.with;
-
 public class CioBlocks implements ContentList {
     public Block icMachine;
     public Block dataCenter;
@@ -42,11 +40,21 @@ public class CioBlocks implements ContentList {
         }};
 
         receiver = new Receiver("receiver") {{
-            requirements(Category.distribution, with());
+            requirements(Category.distribution, new ItemStack[]{
+                    new ItemStack(CioItems.ic, 1),
+                    new ItemStack(Items.copper, 10),
+                    new ItemStack(Items.silicon, 5),
+            });
+            consumes.power(0.5f);
         }};
 
         sender = new Sender("sender") {{
-            requirements(Category.distribution, with());
+            requirements(Category.distribution, new ItemStack[]{
+                    new ItemStack(CioItems.ic, 1),
+                    new ItemStack(Items.copper, 10),
+                    new ItemStack(Items.silicon, 5),
+            });
+            consumes.power(0.5f);
         }};
     }
 }
