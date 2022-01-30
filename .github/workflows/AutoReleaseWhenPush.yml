@@ -47,10 +47,12 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release delete dev --yes || true
-          git push origin :dev || true
-
+          gh release delete AUTOR --yes || true
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y%m%d')"
       - name: Upload development build
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release create dev --title "Development Build" --notes-file "$GITHUB_WORKSPACE/.github/workflows/EveryAutoCommitMessage.md" out/*.jar
+          TODAY: ${{ steps.date.outputs.date }}
+        run: gh release create AUTOR --title "Auto-release on $TODAY" --notes-file "$GITHUB_WORKSPACE/.github/workflows/EveryAutoCommitMessage.md" out/*.jar
