@@ -20,9 +20,8 @@ jobs:
       - name: Get short commit hash
         run: echo "SHORT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
-      - name: Build mind-util
+      - name: Build Cyber-IO
         run: |
-          sed -i "s/- Utility Mod/[${{ env.SHORT_SHA }}]/" mod.json
           chmod +x gradlew
           ./gradlew deploy
 
