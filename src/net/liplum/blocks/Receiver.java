@@ -127,9 +127,9 @@ public class Receiver extends AniBlock<Receiver, Receiver.ReceiverBuild> {
         );
         // NoPower
         aniConfig.enter(NoPowerAni, UnconnectedAni, (block, build) ->
-                !Mathf.zero(build.power.status) &&  build.getOutputItem() == null
+                !Mathf.zero(build.power.status) && build.getOutputItem() == null
         ).enter(NoPowerAni, DownloadAni, (block, build) ->
-                !Mathf.zero(build.power.status)  &&  build.getOutputItem() != null
+                !Mathf.zero(build.power.status) && build.getOutputItem() != null
         );
         aniConfig.build();
     }

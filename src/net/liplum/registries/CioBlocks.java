@@ -10,20 +10,24 @@ import mindustry.graphics.Drawf;
 import mindustry.type.Category;
 import mindustry.type.ItemStack;
 import mindustry.world.Block;
+import mindustry.world.blocks.environment.Floor;
+import mindustry.world.meta.BuildVisibility;
 import net.liplum.animations.AniConfig;
 import net.liplum.animations.AniState;
 import net.liplum.animations.IAnimated;
-import net.liplum.blocks.AniedCrafter;
-import net.liplum.blocks.Receiver;
-import net.liplum.blocks.Sender;
+import net.liplum.blocks.*;
+import net.liplum.blocks.floors.HoloFloor;
 import net.liplum.utils.AnimUtil;
 import net.liplum.utils.AtlasUtil;
 
 public class CioBlocks implements ContentList {
-    public Block icMachine;
-    public Block dataCenter;
-    public Block receiver;
-    public Block sender;
+    public static Block icMachine;
+    public static Block dataCenter;
+    public static Block receiver;
+    public static Block sender;
+    public static Block virus;
+    public static Block landProjector;
+    public static Floor holoFloor;
 
     @Override
     public void load() {
@@ -100,6 +104,7 @@ public class CioBlocks implements ContentList {
                     new ItemStack(Items.silicon, 10),
             });
             consumes.power(0.5f);
+            replaceable = false;
         }};
 
         sender = new Sender("sender") {{
@@ -111,6 +116,26 @@ public class CioBlocks implements ContentList {
                     new ItemStack(Items.silicon, 10),
             });
             consumes.power(0.5f);
+            replaceable = false;
         }};
+
+        virus = new Virus("virus") {{
+            requirements(Category.logic, BuildVisibility.sandboxOnly, ItemStack.with());
+            spreadingSpeed = 200;
+        }};
+
+        landProjector = new LandProjector("land-projector") {{
+            requirements(Category.logic, BuildVisibility.sandboxOnly,
+                    new ItemStack[]{
+                            new ItemStack(CioItems.ic, 2),
+                            new ItemStack(Items.graphite, 80),
+                            new ItemStack(Items.titanium, 40),
+                            new ItemStack(Items.silicon, 20)
+                    });
+        }};
+
+        holoFloor = new HoloFloor("holo-floor") {
+
+        };
     }
 }
