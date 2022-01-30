@@ -46,7 +46,7 @@ public abstract class AniBlock<TBlock extends Block, TBuild extends Building> ex
         aniConfig = config;
     }
 
-    protected AniState<TBlock, TBuild> addAniState(AniState<TBlock, TBuild> aniState) {
+    public AniState<TBlock, TBuild> addAniState(AniState<TBlock, TBuild> aniState) {
         allAniStates.put(aniState.getStateName(), aniState);
         return aniState;
     }

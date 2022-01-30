@@ -46,28 +46,29 @@ public class Sender extends AniBlock<Sender, Sender.SenderBuild> {
         acceptsItems = true;
         configurable = true;
         group = BlockGroup.transportation;
+        canOverdrive = false;
 
         config(Integer.class, SenderBuild::setReceiverPackedPos);
     }
 
     public void genAnimState() {
-        IdleAni = addAniState(new AniState<>("Idle", ((sender, build) -> {
+        IdleAni = addAniState("Idle", ((sender, build) -> {
 
-        })));
-        UploadAni = addAniState(new AniState<>("Upload", (sender, build) -> {
-            UploadAnim.draw(Color.green, build.x, build.y);
         }));
-        BlockedAni = addAniState(new AniState<>("Blocked", ((sender, build) -> {
+        UploadAni = addAniState("Upload", (sender, build) -> {
+            UploadAnim.draw(Color.green, build.x, build.y);
+        });
+        BlockedAni = addAniState("Blocked", ((sender, build) -> {
             Draw.color(Color.red);
             Draw.rect(sender.UpArrowTR,
                     build.x, build.y
             );
             Draw.color();
-        })));
-        NoPowerAni = addAniState(new AniState<>("NoPower", ((sender, build) -> {
+        }));
+        NoPowerAni = addAniState("NoPower", ((sender, build) -> {
             Draw.rect(sender.NoPowerTR,
                     build.x, build.y);
-        })));
+        }));
     }
 
     public void genAniConfig() {
@@ -145,7 +146,7 @@ public class Sender extends AniBlock<Sender, Sender.SenderBuild> {
     }
 
     public void loadAnimation() {
-        UploadAnim = AnimUtil.autoCio("rs-up-arrow", 7, 30f);
+        UploadAnim = AnimUtil.autoCio("rs-up-arrow", UploadAnimFrameNumber, 30f);
     }
 
     public class SenderBuild extends AniBuild implements IDataSender {

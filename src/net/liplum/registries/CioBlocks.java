@@ -4,6 +4,7 @@ import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
+import mindustry.content.Fx;
 import mindustry.content.Items;
 import mindustry.ctype.ContentList;
 import mindustry.graphics.Drawf;
@@ -48,6 +49,7 @@ public class CioBlocks implements ContentList {
                 craftTime = 1200f;
                 size = 3;
                 buildCostMultiplier = 10f;
+                craftEffect = Fx.smelt;
                 hasPower = true;
                 hasItems = true;
                 itemCapacity = 200;
@@ -62,16 +64,16 @@ public class CioBlocks implements ContentList {
 
             @Override
             public void genAnimState() {
-                idleState = addAniState(new AniState<>("Idle", ((block, build) -> {
+                idleState = addAniState("Idle", ((block, build) -> {
                     Draw.rect(idleTR, build.x, build.y);
-                })));
-                workingState = addAniState(new AniState<>("Working", ((block, build) -> {
-                    workingAnimation.draw(build.x, build.y);
+                }));
+                workingState = addAniState("Working", ((block, build) -> {
+                    workingAnimation.draw(build.x, build.y,build);
                     Drawf.light(build.team, build.x, build.y,
                             5f,
                             Color.white,
                             1f);
-                })));
+                }));
             }
 
             @Override
@@ -82,7 +84,7 @@ public class CioBlocks implements ContentList {
                         !Mathf.zero(build.progress))
                 );
                 aniConfig.enter(workingState, idleState, ((block, build) ->
-                        Mathf.zero(build.progress) || Mathf.zero(build.power.status))
+                        Mathf.zero(build.progress) && Mathf.zero(build.power.status))
                 );
                 aniConfig.build();
             }

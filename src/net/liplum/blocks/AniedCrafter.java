@@ -45,7 +45,7 @@ public abstract class AniedCrafter extends GenericCrafter implements IAniSMed<An
         return allAniStates.values();
     }
 
-    protected AniState<AniedCrafter, AniedCrafterBuild> addAniState(AniState<AniedCrafter, AniedCrafterBuild> aniState) {
+    public AniState<AniedCrafter, AniedCrafterBuild> addAniState(AniState<AniedCrafter, AniedCrafterBuild> aniState) {
         allAniStates.put(aniState.getStateName(), aniState);
         return aniState;
     }

@@ -52,6 +52,7 @@ public class Receiver extends AniBlock<Receiver, Receiver.ReceiverBuild> {
         saveConfig = true;
         noUpdateDisabled = true;
         acceptsItems = false;
+        canOverdrive = false;
 
         config(Item.class, ReceiverBuild::setOutputItem);
         configClear((ReceiverBuild tile) -> tile.setOutputItem(null));
@@ -73,29 +74,29 @@ public class Receiver extends AniBlock<Receiver, Receiver.ReceiverBuild> {
     }
 
     public void genAnimState() {
-        DownloadAni = addAniState(new AniState<>("Download", (sender, build) -> {
+        DownloadAni = addAniState("Download", (sender, build) -> {
             if (build.getOutputItem() != null) {
                 DownloadAnim.draw(Color.green, build.x, build.y);
             }
-        }));
-        UnconnectedAni = addAniState(new AniState<>("Unconnected", ((sender, build) -> {
+        });
+        UnconnectedAni = addAniState("Unconnected", ((sender, build) -> {
             Draw.color(Color.white);
             Draw.rect(sender.UnconnectedTR,
                     build.x, build.y
             );
             Draw.color();
-        })));
-        BlockedAni = addAniState(new AniState<>("Blocked", ((sender, build) -> {
+        }));
+        BlockedAni = addAniState("Blocked", ((sender, build) -> {
             Draw.color(Color.red);
             Draw.rect(sender.DownArrowTR,
                     build.x, build.y
             );
             Draw.color();
-        })));
-        NoPowerAni = addAniState(new AniState<>("NoPower", (sender, build) -> {
+        }));
+        NoPowerAni = addAniState("NoPower", (sender, build) -> {
             Draw.rect(sender.NoPowerTR,
                     build.x, build.y);
-        }));
+        });
     }
 
     public void genAniConfig() {

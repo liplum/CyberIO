@@ -3,6 +3,7 @@ package net.liplum.animations;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
+import mindustry.gen.Building;
 
 public class Animation implements IAnimated {
     private final Frame[] allFrames;
@@ -29,8 +30,18 @@ public class Animation implements IAnimated {
         return allFrames[curIndex].Image;
     }
 
+    @Override
+    public void draw(float x, float y, Building tileEntity) {
+
+    }
+
     public void draw(float x, float y) {
         Draw.rect(getCurTR(), x, y);
+    }
+
+    @Override
+    public void draw(Color color, float x, float y, Building tileEntity) {
+
     }
 
     @Override

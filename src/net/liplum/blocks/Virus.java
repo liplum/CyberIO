@@ -22,7 +22,11 @@ public class Virus extends Block {
     public class VirusBuild extends Building {
         @Override
         public void updateTile() {
-            int luckyNumber = Mathf.random(spreadingSpeed);
+            int speed = spreadingSpeed;
+            if (canOverdrive) {
+                speed = (int) (speed / timeScale);
+            }
+            int luckyNumber = Mathf.random(speed);
             if (luckyNumber == 0) {
                 int randomDX = Mathf.random(-1, 1);
                 int randomDY = Mathf.random(-1, 1);

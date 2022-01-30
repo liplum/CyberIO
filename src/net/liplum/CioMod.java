@@ -3,13 +3,14 @@ package net.liplum;
 import arc.Events;
 import arc.util.Log;
 import arc.util.Time;
+import mindustry.Vars;
 import mindustry.game.EventType;
 import mindustry.mod.Mod;
 import mindustry.ui.dialogs.BaseDialog;
 import net.liplum.registries.ContentRegistry;
 
 public class CioMod extends Mod {
-    public static final boolean AniStateCanLoad = true;
+    public static final boolean AniStateCanLoad = !Vars.headless;
 
     public CioMod() {
         Log.info("Cyber IO mod loaded.");

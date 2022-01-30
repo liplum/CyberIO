@@ -19,4 +19,10 @@ public interface IAniSMed<TBlock extends Block, TBuild extends Building> {
     AniConfig<TBlock, TBuild> getAniConfig();
 
     void setAniConfig(AniConfig<TBlock, TBuild> config);
+
+    AniState<TBlock, TBuild> addAniState(AniState<TBlock, TBuild> aniState);
+
+    default AniState<TBlock, TBuild> addAniState(String name, IRenderBehavior<TBlock, TBuild> rb) {
+        return addAniState(new AniState<>(name, rb));
+    }
 }

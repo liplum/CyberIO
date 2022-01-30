@@ -1,0 +1,57 @@
+name: Build Push Changes
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set Android SDK tools
+        run: echo "$ANDROID_HOME/build-tools/30.0.3" >> $GITHUB_PATH
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v2
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Get short commit hash
+        run: echo "SHORT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
+      - name: Build mind-util
+        run: |
+          sed -i "s/- Utility Mod/[${{ env.SHORT_SHA }}]/" mod.json
+          chmod +x gradlew
+          ./gradlew deploy
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Cyber-IO-byLiplum
+          path: build/libs/*.jar
+
+  upload:
+    needs: build
+    runs-on: ubuntu-latest
+    env:
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: Cyber-IO-byLiplum
+          path: out
+
+      - name: Delete and recreate tag
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release delete dev --yes || true
+          git push origin :dev || true
+
+      - name: Upload development build
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release create dev --title "Development Build" --notes-file "$GITHUB_WORKSPACE/.github/workflows/EveryAutoCommitMessage.md" out/*.jar
