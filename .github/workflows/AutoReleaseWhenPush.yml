@@ -50,7 +50,7 @@ jobs:
           gh release delete AUTOR --yes || true
       - name: Get current date
         id: date
-        run: echo "::set-output name=date::$(date +'%Y%m%d')"
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
       - name: Upload development build
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

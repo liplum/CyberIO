@@ -18,9 +18,9 @@ import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.ItemSelection;
 import mindustry.world.meta.BlockGroup;
-import net.liplum.animations.AniConfig;
-import net.liplum.animations.AniState;
-import net.liplum.animations.IAnimated;
+import net.liplum.animations.anis.AniConfig;
+import net.liplum.animations.anis.AniState;
+import net.liplum.animations.anims.IAnimated;
 import net.liplum.api.IDataReceiver;
 import net.liplum.api.IDataSender;
 import net.liplum.utils.AnimUtil;
@@ -29,7 +29,7 @@ import net.liplum.utils.GraphicUtl;
 
 import static mindustry.Vars.*;
 
-public class Receiver extends AniBlock<Receiver, Receiver.ReceiverBuild> {
+public class Receiver extends AniedBlock<Receiver, Receiver.ReceiverBuild> {
     private final int DownloadAnimFrameNumber = 7;
     public TextureRegion CoverTR;
     public TextureRegion DownArrowTR;
@@ -146,7 +146,7 @@ public class Receiver extends AniBlock<Receiver, Receiver.ReceiverBuild> {
     }
 
     public void loadAnimation() {
-        DownloadAnim = AnimUtil.autoCio("rs-down-arrow", 7, 30f);
+        DownloadAnim = AnimUtil.autoCio("rs-down-arrow", DownloadAnimFrameNumber, 30f);
     }
 
     @Override
@@ -159,7 +159,7 @@ public class Receiver extends AniBlock<Receiver, Receiver.ReceiverBuild> {
         return true;
     }
 
-    public class ReceiverBuild extends AniBuild implements IDataReceiver {
+    public class ReceiverBuild extends AniedBuild implements IDataReceiver {
         private Item outputItem;
         private boolean isOutputting = false;
         private float lastOutputDelta = 0;

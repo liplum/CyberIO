@@ -5,10 +5,10 @@ import mindustry.gen.Building;
 import mindustry.world.Block;
 import mindustry.world.blocks.production.GenericCrafter;
 import net.liplum.CioMod;
-import net.liplum.animations.AniConfig;
-import net.liplum.animations.AniState;
-import net.liplum.animations.AniStateM;
-import net.liplum.animations.IAniSMed;
+import net.liplum.animations.anis.AniConfig;
+import net.liplum.animations.anis.AniState;
+import net.liplum.animations.anis.AniStateM;
+import net.liplum.animations.anis.IAniSMed;
 
 import java.util.Collection;
 import java.util.HashMap;

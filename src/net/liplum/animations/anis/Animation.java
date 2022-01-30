@@ -1,9 +1,11 @@
-package net.liplum.animations;
+package net.liplum.animations.anis;
 
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import mindustry.gen.Building;
+import net.liplum.animations.anims.Frame;
+import net.liplum.animations.anims.IAnimated;
 
 public class Animation implements IAnimated {
     private final Frame[] allFrames;

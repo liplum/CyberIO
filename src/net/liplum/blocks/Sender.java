@@ -17,16 +17,16 @@ import mindustry.type.Item;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.meta.BlockGroup;
-import net.liplum.animations.AniConfig;
-import net.liplum.animations.AniState;
-import net.liplum.animations.IAnimated;
+import net.liplum.animations.anis.AniConfig;
+import net.liplum.animations.anis.AniState;
+import net.liplum.animations.anims.IAnimated;
 import net.liplum.api.IDataReceiver;
 import net.liplum.api.IDataSender;
 import net.liplum.utils.AnimUtil;
 import net.liplum.utils.AtlasUtil;
 import net.liplum.utils.GraphicUtl;
 
-public class Sender extends AniBlock<Sender, Sender.SenderBuild> {
+public class Sender extends AniedBlock<Sender, Sender.SenderBuild> {
     private final int UploadAnimFrameNumber = 7;
     public TextureRegion CoverTR;
     public TextureRegion UpArrowTR;
@@ -149,7 +149,7 @@ public class Sender extends AniBlock<Sender, Sender.SenderBuild> {
         UploadAnim = AnimUtil.autoCio("rs-up-arrow", UploadAnimFrameNumber, 30f);
     }
 
-    public class SenderBuild extends AniBuild implements IDataSender {
+    public class SenderBuild extends AniedBuild implements IDataSender {
         private int receiverPackedPos = -1;
 
         public int getReceiverPackedPos() {

@@ -5,19 +5,19 @@ import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.world.Block;
 import net.liplum.CioMod;
-import net.liplum.animations.AniConfig;
-import net.liplum.animations.AniState;
-import net.liplum.animations.AniStateM;
-import net.liplum.animations.IAniSMed;
+import net.liplum.animations.anis.AniConfig;
+import net.liplum.animations.anis.AniState;
+import net.liplum.animations.anis.AniStateM;
+import net.liplum.animations.anis.IAniSMed;
 
 import java.util.Collection;
 import java.util.HashMap;
 
-public abstract class AniBlock<TBlock extends Block, TBuild extends Building> extends Block implements IAniSMed<TBlock, TBuild> {
+public abstract class AniedBlock<TBlock extends Block, TBuild extends Building> extends Block implements IAniSMed<TBlock, TBuild> {
     protected final HashMap<String, AniState<TBlock, TBuild>> allAniStates = new HashMap<>();
     protected AniConfig<TBlock, TBuild> aniConfig;
 
-    public AniBlock(String name) {
+    public AniedBlock(String name) {
         super(name);
         if (CioMod.AniStateCanLoad) {
             this.genAnimState();
@@ -51,14 +51,14 @@ public abstract class AniBlock<TBlock extends Block, TBuild extends Building> ex
         return aniState;
     }
 
-    public abstract class AniBuild extends Building {
+    public abstract class AniedBuild extends Building {
         protected AniStateM<TBlock, TBuild> aniStateM;
 
         @Override
         public Building create(Block block, Team team) {
             super.create(block, team);
             if (CioMod.AniStateCanLoad) {
-                AniBlock<TBlock, TBuild> outer = AniBlock.this;
+                AniedBlock<TBlock, TBuild> outer = AniedBlock.this;
                 this.aniStateM = outer.getAniConfig().gen((TBlock) outer, (TBuild) this);
             }
             return this;

@@ -1,4 +1,4 @@
-package net.liplum.animations;
+package net.liplum.animations.anims;
 
 import arc.graphics.g2d.TextureRegion;
 

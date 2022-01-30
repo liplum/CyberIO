@@ -8,16 +8,28 @@ sourceCompatibility = JavaVersion.VERSION_16
 
 sourceSets.main.java.srcDirs = ["src"]
 
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    ext {
+        //the build number that this mod is made for
+        mindustryVersion = 'v126'
+        // jabelVersion = "0.7.0"
+        kotlinVersion = "1.6.10"
+        sdkRoot = System.getenv("ANDROID_HOME") ?: System.getenv("ANDROID_SDK_ROOT")
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+    }
+}
+apply plugin: "kotlin"
+
+sourceSets.main.kotlin.srcDirs = ["src"]
+
 repositories {
     mavenCentral()
     maven { url 'https://www.jitpack.io' }
-}
-
-ext {
-    //the build number that this mod is made for
-    mindustryVersion = 'v126'
-    // jabelVersion = "0.7.0"
-    sdkRoot = System.getenv("ANDROID_HOME") ?: System.getenv("ANDROID_SDK_ROOT")
 }
 
 //java 8 backwards compatibility flag
@@ -53,6 +65,7 @@ task jarAndroid {
 }
 
 jar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     archiveFileName = "${project.archivesBaseName}Desktop.jar"
 
     from {

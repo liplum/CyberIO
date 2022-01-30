@@ -1,4 +1,4 @@
-package net.liplum.animations;
+package net.liplum.animations.anis;
 
 import mindustry.gen.Building;
 import mindustry.world.Block;

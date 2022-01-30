@@ -1,4 +1,4 @@
-package net.liplum.animations;
+package net.liplum.animations.anis;
 
 import arc.util.Nullable;
 import mindustry.gen.Building;
