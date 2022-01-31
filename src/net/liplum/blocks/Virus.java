@@ -35,7 +35,7 @@ public class Virus extends Block {
                 Tile infected = Vars.world.tile(selfX + randomDX, selfY + randomDY);
                 if (infected != null) {
                     if (!(infected.build instanceof VirusBuild) && !(infected.block() instanceof CoreBlock)) {
-                        infected.setBlock(Virus.this);
+                        infected.setBlock(Virus.this, team);
                         infected.setFloor((Floor) Blocks.air);
                     }
                 }

@@ -12,6 +12,7 @@ import mindustry.type.Category
 import mindustry.type.ItemStack
 import mindustry.world.blocks.production.GenericCrafter
 import mindustry.world.meta.BuildVisibility
+import net.liplum.animations.animation
 import net.liplum.animations.anims.IAnimated
 import net.liplum.animations.anis.AniConfig
 import net.liplum.animations.anis.AniState
@@ -38,12 +39,14 @@ class CioBlocks : ContentList {
             lateinit var idleTR: TextureRegion
 
             init {
-                requirements(Category.crafting, arrayOf(
+                requirements(
+                    Category.crafting, arrayOf(
                         ItemStack(Items.copper, 1000),
                         ItemStack(Items.silicon, 200),
                         ItemStack(Items.graphite, 150),
                         ItemStack(Items.titanium, 250)
-                ))
+                    )
+                )
                 outputItem = ItemStack(CioItems.ic, 1)
                 craftTime = 1200f
                 size = 3
@@ -53,9 +56,9 @@ class CioBlocks : ContentList {
                 hasItems = true
                 itemCapacity = 200
                 consumes.items( //Total:200
-                        ItemStack(Items.silicon, 40),  //20%
-                        ItemStack(Items.copper, 100),  //50%
-                        ItemStack(Items.metaglass, 60) //30%
+                    ItemStack(Items.silicon, 40),  //20%
+                    ItemStack(Items.copper, 100),  //50%
+                    ItemStack(Items.metaglass, 60) //30%
                 )
                 consumes.power(10f)
             }
@@ -66,10 +69,12 @@ class CioBlocks : ContentList {
                 }
                 workingState = addAniState("Working") { _, build ->
                     workingAnimation.draw(build.x, build.y, build)
-                    Drawf.light(build.team, build.x, build.y,
-                            5f,
-                            Color.white,
-                            1f)
+                    Drawf.light(
+                        build.team, build.x, build.y,
+                        5f,
+                        Color.white,
+                        1f
+                    )
                 }
             }
 
@@ -94,12 +99,15 @@ class CioBlocks : ContentList {
 
         receiver = object : Receiver("receiver") {
             init {
-                requirements(Category.distribution, arrayOf(
+                requirements(
+                    Category.distribution, arrayOf(
                         ItemStack(CioItems.ic, 1),
                         ItemStack(Items.copper, 50),
                         ItemStack(Items.graphite, 20),
                         ItemStack(Items.metaglass, 20),
-                        ItemStack(Items.silicon, 10)))
+                        ItemStack(Items.silicon, 10)
+                    )
+                )
                 consumes.power(0.5f)
                 replaceable = false
             }
@@ -107,12 +115,15 @@ class CioBlocks : ContentList {
 
         sender = object : Sender("sender") {
             init {
-                requirements(Category.distribution, arrayOf(
+                requirements(
+                    Category.distribution, arrayOf(
                         ItemStack(CioItems.ic, 1),
                         ItemStack(Items.copper, 50),
                         ItemStack(Items.graphite, 20),
                         ItemStack(Items.metaglass, 20),
-                        ItemStack(Items.silicon, 10)))
+                        ItemStack(Items.silicon, 10)
+                    )
+                )
                 consumes.power(0.5f)
                 replaceable = false
             }
@@ -123,16 +134,17 @@ class CioBlocks : ContentList {
                 requirements(Category.logic, BuildVisibility.sandboxOnly, ItemStack.with())
                 spreadingSpeed = 200
             }
-        }
-
+        }//.animation(120f, 3)
         landProjector = object : LandProjector("land-projector") {
             init {
-                requirements(Category.logic, BuildVisibility.sandboxOnly, arrayOf(
+                requirements(
+                    Category.logic, BuildVisibility.sandboxOnly, arrayOf(
                         ItemStack(CioItems.ic, 2),
                         ItemStack(Items.graphite, 80),
                         ItemStack(Items.titanium, 40),
                         ItemStack(Items.silicon, 20)
-                ))
+                    )
+                )
             }
         }
 

@@ -7,6 +7,7 @@ import arc.math.Mathf;
 import arc.util.Nullable;
 import arc.util.Time;
 import mindustry.gen.Building;
+import mindustry.type.Item;
 
 public class AutoAnimation implements IAnimated {
     public final TextureRegion[] allFrames;

@@ -9,7 +9,6 @@ import net.liplum.animations.anims.IAnimated;
 
 public class Animation implements IAnimated {
     private final Frame[] allFrames;
-    private boolean loop = true;
     private int curIndex = 0;
 
     public Animation(Frame... allFrames) {
@@ -18,14 +17,6 @@ public class Animation implements IAnimated {
 
     public Frame[] getAllFrames() {
         return allFrames;
-    }
-
-    public boolean isLoop() {
-        return loop;
-    }
-
-    public void setLoop(boolean loop) {
-        this.loop = loop;
     }
 
     public TextureRegion getCurTR() {

@@ -2,6 +2,7 @@ package net.liplum.utils;
 
 import arc.Core;
 import arc.graphics.g2d.TextureRegion;
+import arc.util.Nullable;
 import mindustry.ctype.MappableContent;
 import net.liplum.Meta;
 
@@ -14,25 +15,36 @@ public class AtlasUtil {
         return Core.atlas.find(Meta.ModID + '-' + name);
     }
 
-    public static TextureRegion[] subFrames(MappableContent content, String subName, int number) {
+    public static TextureRegion[] subFrames(MappableContent content, @Nullable String subName, int number) {
         return subFrames(content, subName, 0, number);
     }
 
-    public static TextureRegion[] subFrames(MappableContent content, String subName, int start, int number) {
+    public static TextureRegion[] subFrames(MappableContent content, @Nullable String subName, int start, int number) {
         TextureRegion[] fms = new TextureRegion[number];
         int end = number + start;
+        String identity;
+        if (subName != null) {
+            identity = content.name + "-" + subName;
+        } else {
+            identity = content.name;
+        }
         for (int i = start; i < end; i++) {
-            fms[i - start] = Core.atlas.find(content.name + "-" + subName + "-" + i);
+            fms[i - start] = Core.atlas.find(identity + "-" + i);
         }
         return fms;
     }
 
-    public static TextureRegion[] animation(MappableContent content, String subName, int number) {
+    public static TextureRegion[] animation(MappableContent content, @Nullable String subName, int number) {
         return animation(content, subName, true, number);
     }
 
-    public static TextureRegion[] animation(MappableContent content, String subName, boolean isHorizontal, int number) {
-        String identity = content.name + '-' + subName + "-anim";
+    public static TextureRegion[] animation(MappableContent content, @Nullable String subName, boolean isHorizontal, int number) {
+        String identity;
+        if (subName != null) {
+            identity = content.name + '-' + subName + "-anim";
+        } else {
+            identity = content.name + "-anim";
+        }
         TextureRegion tr = Core.atlas.find(identity);
         return slice(tr, isHorizontal, number);
     }
