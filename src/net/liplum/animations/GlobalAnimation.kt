@@ -9,17 +9,20 @@ import mindustry.game.EventType
 
 class GlobalAnimation(
     val duration: Float,
-    val frames: Array<TextureRegion>,
     val setTR: Cons<TextureRegion>
 ) : IGlobalAnimation {
+    var frames: Array<TextureRegion>? = null
     override var needUpdate: Boolean = true
+        get() {
+            return field && frames != null
+        }
     var lastTR: TextureRegion? = null
     private var registered: Boolean = false
     private fun getCurTR(): TextureRegion {
         val progress = Time.time % duration / duration //percent
-        var index: Int = (progress * frames.size).toInt()
-        index = Mathf.clamp(index, 0, frames.size)
-        return frames[index]
+        var index: Int = (progress * frames!!.size).toInt()
+        index = Mathf.clamp(index, 0, frames!!.size)
+        return frames!![index]
     }
 
     override fun update() {
@@ -32,7 +35,7 @@ class GlobalAnimation(
         }
     }
 
-    fun register():GlobalAnimation {
+    fun register(): GlobalAnimation {
         if (!registered) {
             registered = true
             Events.run(EventType.Trigger.update, this::update)

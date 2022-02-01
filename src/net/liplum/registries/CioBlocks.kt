@@ -134,7 +134,8 @@ class CioBlocks : ContentList {
                 requirements(Category.logic, BuildVisibility.sandboxOnly, ItemStack.with())
                 spreadingSpeed = 200
             }
-        }//.animation(120f, 3)
+        }.animation(60f, 3)
+
         landProjector = object : LandProjector("land-projector") {
             init {
                 requirements(

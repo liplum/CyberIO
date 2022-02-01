@@ -1,11 +1,14 @@
 package net.liplum.animations
 
-import mindustry.world.Block
+import net.liplum.blocks.AnimedBlock
 import net.liplum.utils.AtlasUtil
 
-fun <T:Block> T.animation(duration: Float, frameCount: Int):T {
-    GlobalAnimation(duration, AtlasUtil.animation(this, null, frameCount)) {
+fun <T : AnimedBlock> T.animation(duration: Float, frameCount: Int): T {
+    val a = GlobalAnimation(duration) {
         this.region.set(it)
     }.register()
+    this.addLoadListener {
+        a.frames = AtlasUtil.animation(this, null, frameCount)
+    }
     return this
 }

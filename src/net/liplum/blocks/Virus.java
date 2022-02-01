@@ -2,14 +2,11 @@ package net.liplum.blocks;
 
 import arc.math.Mathf;
 import mindustry.Vars;
-import mindustry.content.Blocks;
 import mindustry.gen.Building;
-import mindustry.world.Block;
 import mindustry.world.Tile;
-import mindustry.world.blocks.environment.Floor;
 import mindustry.world.blocks.storage.CoreBlock;
 
-public class Virus extends Block {
+public class Virus extends AnimedBlock {
     public int spreadingSpeed;
 
     public Virus(String name) {
@@ -36,7 +33,6 @@ public class Virus extends Block {
                 if (infected != null) {
                     if (!(infected.build instanceof VirusBuild) && !(infected.block() instanceof CoreBlock)) {
                         infected.setBlock(Virus.this, team);
-                        infected.setFloor((Floor) Blocks.air);
                     }
                 }
             }
