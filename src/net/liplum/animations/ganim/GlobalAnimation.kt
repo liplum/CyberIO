@@ -1,4 +1,4 @@
-package net.liplum.animations
+package net.liplum.animations.ganim
 
 import arc.Events
 import arc.func.Cons

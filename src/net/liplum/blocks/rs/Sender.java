@@ -1,4 +1,4 @@
-package net.liplum.blocks;
+package net.liplum.blocks.rs;
 
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
@@ -17,11 +17,12 @@ import mindustry.type.Item;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.meta.BlockGroup;
+import net.liplum.animations.anims.IAnimated;
 import net.liplum.animations.anis.AniConfig;
 import net.liplum.animations.anis.AniState;
-import net.liplum.animations.anims.IAnimated;
-import net.liplum.api.IDataReceiver;
-import net.liplum.api.IDataSender;
+import net.liplum.api.data.IDataReceiver;
+import net.liplum.api.data.IDataSender;
+import net.liplum.blocks.AniedBlock;
 import net.liplum.utils.AnimUtil;
 import net.liplum.utils.AtlasUtil;
 import net.liplum.utils.GraphicUtl;
@@ -194,8 +195,7 @@ public class Sender extends AniedBlock<Sender, Sender.SenderBuild> {
                 Drawf.dashCircle(retdrawx, retdrawy,
                         (reblock.size / 2f + 1) * Vars.tilesize + sin - 2f,
                         Pal.place);
-                GraphicUtl.drawDashLineBetweenTwoBlocks(this.block, this.tile.x, this.tile.y,
-                        reblock, ret.x, ret.y);
+                GraphicUtl.drawDashLineBetweenTwoBlocks(this.tile, ret);
             }
         }
 
@@ -230,6 +230,7 @@ public class Sender extends AniedBlock<Sender, Sender.SenderBuild> {
                 Drawf.dashCircle(ret.drawx(), ret.drawy(),
                         (ret.block().size / 2f + 1) * Vars.tilesize + sin - 2f,
                         Pal.place);
+                GraphicUtl.drawDashLineBetweenTwoBlocks(this.tile, ret);
             }
         }
 

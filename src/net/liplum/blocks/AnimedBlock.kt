@@ -1,7 +1,7 @@
 package net.liplum.blocks
 
 import mindustry.world.Block
-import net.liplum.animations.ILoadableContent
+import net.liplum.api.ILoadableContent
 
 open class AnimedBlock(name: String) : Block(name), ILoadableContent {
     var loadListener: HashSet<() -> Unit> = HashSet()

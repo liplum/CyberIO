@@ -1,10 +1,12 @@
-package net.liplum.blocks;
+package net.liplum.blocks.virus;
 
+import arc.graphics.Color;
 import arc.math.Mathf;
 import mindustry.Vars;
 import mindustry.gen.Building;
 import mindustry.world.Tile;
-import mindustry.world.blocks.storage.CoreBlock;
+import net.liplum.blocks.AnimedBlock;
+import net.liplum.utils.VirusUtil;
 
 public class Virus extends AnimedBlock {
     public int spreadingSpeed;
@@ -14,6 +16,12 @@ public class Virus extends AnimedBlock {
         solid = true;
         update = true;
         spreadingSpeed = 1000;
+        canOverdrive = true;
+    }
+
+    @Override
+    public int minimapColor(Tile tile) {
+        return Color.purple.rgba();
     }
 
     public class VirusBuild extends Building {
@@ -30,10 +38,8 @@ public class Virus extends AnimedBlock {
                 int selfX = tile.x;
                 int selfY = tile.y;
                 Tile infected = Vars.world.tile(selfX + randomDX, selfY + randomDY);
-                if (infected != null) {
-                    if (!(infected.build instanceof VirusBuild) && !(infected.block() instanceof CoreBlock)) {
-                        infected.setBlock(Virus.this, team);
-                    }
+                if (VirusUtil.canInfect(infected)) {
+                    infected.setBlock(Virus.this, team);
                 }
             }
         }

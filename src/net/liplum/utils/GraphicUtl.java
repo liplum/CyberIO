@@ -7,10 +7,15 @@ import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.graphics.Pal;
 import mindustry.world.Block;
+import mindustry.world.Tile;
 
 import static mindustry.Vars.tilesize;
 
 public class GraphicUtl {
+    public static void drawDashLineBetweenTwoBlocks(Tile startTile, Tile endTile) {
+        drawDashLineBetweenTwoBlocks(startTile.block(), startTile.x, startTile.y, endTile.block(), endTile.x, endTile.y);
+    }
+
     public static void drawDashLineBetweenTwoBlocks(Block startBlock, float startBlockX, float startBlockY,
                                                     Block endBlock, float endBlockX, float endBlockY) {
         float startDrawX = WorldUtil.toDrawXY(startBlock, startBlockX);

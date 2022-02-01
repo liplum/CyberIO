@@ -1,4 +1,4 @@
-package net.liplum.blocks;
+package net.liplum.blocks.rs;
 
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
@@ -21,8 +21,9 @@ import mindustry.world.meta.BlockGroup;
 import net.liplum.animations.anis.AniConfig;
 import net.liplum.animations.anis.AniState;
 import net.liplum.animations.anims.IAnimated;
-import net.liplum.api.IDataReceiver;
-import net.liplum.api.IDataSender;
+import net.liplum.api.data.IDataReceiver;
+import net.liplum.api.data.IDataSender;
+import net.liplum.blocks.AniedBlock;
 import net.liplum.utils.AnimUtil;
 import net.liplum.utils.AtlasUtil;
 import net.liplum.utils.GraphicUtl;

@@ -1,4 +1,4 @@
-package net.liplum.animations
+package net.liplum.api
 
 interface ILoadableContent {
     fun addLoadListener(listener: () -> Unit)

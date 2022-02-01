@@ -4,20 +4,31 @@ import arc.graphics.Color
 import arc.graphics.g2d.Draw
 import arc.graphics.g2d.TextureRegion
 import arc.math.Mathf
+import mindustry.content.Blocks
 import mindustry.content.Fx
 import mindustry.content.Items
 import mindustry.ctype.ContentList
 import mindustry.graphics.Drawf
 import mindustry.type.Category
 import mindustry.type.ItemStack
+import mindustry.world.blocks.defense.OverdriveProjector
 import mindustry.world.blocks.production.GenericCrafter
 import mindustry.world.meta.BuildVisibility
-import net.liplum.animations.animation
+import net.liplum.R
 import net.liplum.animations.anims.IAnimated
 import net.liplum.animations.anis.AniConfig
 import net.liplum.animations.anis.AniState
-import net.liplum.blocks.*
+import net.liplum.animations.ganim.animation
+import net.liplum.api.virus.UninfectedBlocks
+import net.liplum.api.virus.setUninfectedFloor
+import net.liplum.blocks.AniedCrafter
+import net.liplum.blocks.LandProjector
+import net.liplum.blocks.UnderdriveProjector
 import net.liplum.blocks.floors.HoloFloor
+import net.liplum.blocks.rs.Receiver
+import net.liplum.blocks.rs.Sender
+import net.liplum.blocks.virus.AntiVirus
+import net.liplum.blocks.virus.Virus
 import net.liplum.utils.AnimUtil
 import net.liplum.utils.AtlasUtil
 
@@ -29,6 +40,8 @@ class CioBlocks : ContentList {
         @JvmStatic lateinit var virus: Virus
         @JvmStatic lateinit var landProjector: LandProjector
         @JvmStatic lateinit var holoFloor: HoloFloor
+        @JvmStatic lateinit var underdriveProjector: OverdriveProjector
+        @JvmStatic lateinit var antiVirus: AntiVirus
     }
 
     override fun load() {
@@ -131,24 +144,63 @@ class CioBlocks : ContentList {
 
         virus = object : Virus("virus") {
             init {
-                requirements(Category.logic, BuildVisibility.sandboxOnly, ItemStack.with())
+                requirements(
+                    Category.logic, BuildVisibility.sandboxOnly,
+                    arrayOf(
+                        ItemStack(Items.sporePod, 50),
+                        ItemStack(Items.pyratite, 20),
+                    )
+                )
                 spreadingSpeed = 200
             }
         }.animation(60f, 3)
+
+        UninfectedBlocks.registerFloor(Blocks.air.asFloor())
+        UninfectedBlocks.registerFloor(Blocks.space.asFloor())
+        UninfectedBlocks.registerFloor(Blocks.water.asFloor())
+        UninfectedBlocks.registerFloor(Blocks.deepwater.asFloor())
 
         landProjector = object : LandProjector("land-projector") {
             init {
                 requirements(
                     Category.logic, BuildVisibility.sandboxOnly, arrayOf(
-                        ItemStack(CioItems.ic, 2),
+                        ItemStack(CioItems.ic, 3),
                         ItemStack(Items.graphite, 80),
-                        ItemStack(Items.titanium, 40),
-                        ItemStack(Items.silicon, 20)
+                        ItemStack(Items.thorium, 100),
+                        ItemStack(Items.silicon, 50)
                     )
                 )
             }
         }
 
-        holoFloor = object : HoloFloor("holo-floor") {}
+        holoFloor = object : HoloFloor("holo-floor") {
+            init {
+                variants = 3
+            }
+        }.setUninfectedFloor()
+
+        underdriveProjector = object : UnderdriveProjector("underdrive-projector") {
+            init {
+                requirements(
+                    Category.effect, BuildVisibility.sandboxOnly, arrayOf()
+                )
+                baseColor = R.C.LightBlue
+                speedBoost = 0.1f
+            }
+        }
+
+        antiVirus = object : AntiVirus("anti-virus") {
+            init {
+                requirements(
+                    Category.logic, BuildVisibility.sandboxOnly, arrayOf(
+                        ItemStack(CioItems.ic, 2),
+                        ItemStack(Items.copper, 100),
+                        ItemStack(Items.graphite, 40),
+                        ItemStack(Items.silicon, 25)
+                    )
+                )
+                consumes.power(0.5f)
+            }
+        }
     }
 }

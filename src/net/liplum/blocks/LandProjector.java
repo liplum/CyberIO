@@ -16,9 +16,11 @@ public class LandProjector extends Block {
         super(name);
         solid = true;
         update = true;
+        size = 2;
     }
 
     public class LandProjectorBuild extends Building {
+
         @Override
         public void updateTile() {
             boolean transform = Time.time % 60f < 1;

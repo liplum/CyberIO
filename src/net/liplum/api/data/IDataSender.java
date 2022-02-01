@@ -1,4 +1,4 @@
-package net.liplum.api;
+package net.liplum.api.data;
 
 import mindustry.type.Item;
 
