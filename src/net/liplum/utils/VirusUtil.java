@@ -4,8 +4,7 @@ import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.environment.Floor;
 import mindustry.world.blocks.storage.CoreBlock;
-import net.liplum.api.virus.IAntiVirused;
-import net.liplum.api.virus.UninfectedBlocks;
+import net.liplum.api.virus.UninfectedBlocksRegistry;
 import net.liplum.blocks.virus.Virus;
 
 public class VirusUtil {
@@ -16,9 +15,9 @@ public class VirusUtil {
         Block block = tile.block();
         Floor floor = tile.floor();
         Floor overlay = tile.overlay();
-        if (UninfectedBlocks.canInfectFloor(floor) ||
-                UninfectedBlocks.canInfectOverlay(overlay) ||
-                UninfectedBlocks.canInfectBlock(block)
+        if (UninfectedBlocksRegistry.hasFloor(floor) ||
+                UninfectedBlocksRegistry.hasOverlay(overlay) ||
+                UninfectedBlocksRegistry.hasBlock(block)
         ) {
             return false;
         }
@@ -26,9 +25,6 @@ public class VirusUtil {
             return false;
         }
         if (block instanceof CoreBlock) {
-            return false;
-        }
-        if (block instanceof IAntiVirused) {
             return false;
         }
         return true;

@@ -6,6 +6,7 @@ import arc.graphics.g2d.TextureRegion
 import arc.math.Mathf
 import arc.util.Time
 import mindustry.game.EventType
+import net.liplum.GameHelper.Companion.ClientOnly
 
 class GlobalAnimation(
     val duration: Float,
@@ -36,9 +37,11 @@ class GlobalAnimation(
     }
 
     fun register(): GlobalAnimation {
-        if (!registered) {
-            registered = true
-            Events.run(EventType.Trigger.update, this::update)
+        ClientOnly {
+            if (!registered) {
+                registered = true
+                Events.run(EventType.Trigger.update, this::update)
+            }
         }
         return this
     }

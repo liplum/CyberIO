@@ -7,9 +7,9 @@ import mindustry.Vars
 import mindustry.gen.Building
 import mindustry.graphics.Drawf
 import mindustry.world.Block
-import net.liplum.api.virus.IAntiVirused
+import mindustry.world.Tile
 
-open class AntiVirus(name: String) : Block(name), IAntiVirused {
+open class AntiVirus(name: String) : Block(name) {
     var range: Float = 80f
     var uninfectedColor: Color = Color.green
     var infectedColor: Color = Color.red
@@ -20,10 +20,8 @@ open class AntiVirus(name: String) : Block(name), IAntiVirused {
         hasPower = true
     }
 
-    override fun canReplace(other: Block): Boolean {
-        return super.canReplace(other) || other is Virus
-    }
-
+    override fun canReplace(other: Block) = super.canReplace(other) || other is Virus
+    override fun minimapColor(tile: Tile) = Color.green.rgba()
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)
         Drawf.dashCircle(
@@ -43,11 +41,8 @@ open class AntiVirus(name: String) : Block(name), IAntiVirused {
     }
 
     private fun getOtherColor(other: Building): Color {
-        return if (other is Virus.VirusBuild) {
-            infectedColor
-        } else {
-            uninfectedColor
-        }
+        return if (other is Virus.VirusBuild) infectedColor
+        else uninfectedColor
     }
 
     private fun getOtherRenderColor(other: Building, temp: Color): Color {
@@ -61,7 +56,7 @@ open class AntiVirus(name: String) : Block(name), IAntiVirused {
         )
     }
 
-    inner class AntiVirusBuild : Building() {
+    open inner class AntiVirusBuild : Building() {
         val realRange: Float
             get() = range * power.status * timeScale
 

@@ -19,11 +19,11 @@ import net.liplum.animations.anims.IAnimated
 import net.liplum.animations.anis.AniConfig
 import net.liplum.animations.anis.AniState
 import net.liplum.animations.ganim.animation
-import net.liplum.api.virus.UninfectedBlocks
+import net.liplum.api.virus.setUninfectedBlock
 import net.liplum.api.virus.setUninfectedFloor
 import net.liplum.blocks.AniedCrafter
 import net.liplum.blocks.LandProjector
-import net.liplum.blocks.UnderdriveProjector
+import net.liplum.blocks.UnderdriveProjectorA
 import net.liplum.blocks.floors.HoloFloor
 import net.liplum.blocks.rs.Receiver
 import net.liplum.blocks.rs.Sender
@@ -151,14 +151,17 @@ class CioBlocks : ContentList {
                         ItemStack(Items.pyratite, 20),
                     )
                 )
+                buildCostMultiplier = 5f
                 spreadingSpeed = 200
+                maxReproductionScale = 20
+                inheritChildrenNumber = false
             }
         }.animation(60f, 3)
 
-        UninfectedBlocks.registerFloor(Blocks.air.asFloor())
-        UninfectedBlocks.registerFloor(Blocks.space.asFloor())
-        UninfectedBlocks.registerFloor(Blocks.water.asFloor())
-        UninfectedBlocks.registerFloor(Blocks.deepwater.asFloor())
+        Blocks.air.setUninfectedFloor()
+        Blocks.space.setUninfectedFloor()
+        Blocks.water.setUninfectedFloor()
+        Blocks.deepwater.setUninfectedFloor()
 
         landProjector = object : LandProjector("land-projector") {
             init {
@@ -179,13 +182,13 @@ class CioBlocks : ContentList {
             }
         }.setUninfectedFloor()
 
-        underdriveProjector = object : UnderdriveProjector("underdrive-projector") {
+        underdriveProjector = object : UnderdriveProjectorA("underdrive-projector") {
             init {
                 requirements(
                     Category.effect, BuildVisibility.sandboxOnly, arrayOf()
                 )
                 baseColor = R.C.LightBlue
-                speedBoost = 0.1f
+                slowDown = 0.1f
             }
         }
 
@@ -201,6 +204,6 @@ class CioBlocks : ContentList {
                 )
                 consumes.power(0.5f)
             }
-        }
+        }.setUninfectedBlock()
     }
 }

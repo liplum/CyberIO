@@ -11,7 +11,15 @@ public class R {
 
     }
 
+    public static class Bar {
+        public static String Gen(String content){
+            return "bar." + Meta.ModID + "." + content;
+        }
+        public static final String Generation = Gen("generation");
+    }
+
     public static class C {
         public static final Color LightBlue = Color.valueOf("#add8e6");
+        public static final Color VirusBK = Color.valueOf("#cd44ff");
     }
 }
