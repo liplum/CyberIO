@@ -5,6 +5,7 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.scene.ui.layout.Table;
+import arc.struct.OrderedSet;
 import arc.util.Eachable;
 import arc.util.Nullable;
 import arc.util.Time;
@@ -18,15 +19,17 @@ import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.ItemSelection;
 import mindustry.world.meta.BlockGroup;
+import net.liplum.R;
+import net.liplum.animations.anims.IAnimated;
 import net.liplum.animations.anis.AniConfig;
 import net.liplum.animations.anis.AniState;
-import net.liplum.animations.anims.IAnimated;
 import net.liplum.api.data.IDataReceiver;
 import net.liplum.api.data.IDataSender;
 import net.liplum.blocks.AniedBlock;
 import net.liplum.utils.AnimUtil;
 import net.liplum.utils.AtlasUtil;
-import net.liplum.utils.GraphicUtl;
+import net.liplum.utils.G;
+import net.liplum.utils.RWUtil;
 
 import static mindustry.Vars.*;
 
@@ -69,9 +72,17 @@ public class Receiver extends AniedBlock<Receiver, Receiver.ReceiverBuild> {
                 !(selected.block instanceof Sender)) {
             return;
         }
+        G.init();
         Tile selectedTile = selected.tile();
-        GraphicUtl.drawDashLineBetweenTwoBlocks(selected.block, selectedTile.x, selectedTile.y
-                , this, x, y);
+        G.drawDashLineBetweenTwoBlocks(
+                selected.block, selectedTile.x, selectedTile.y,
+                this, x, y,
+                R.C.Sender
+        );
+        G.drawArrowBetweenTwoBlocks(
+                selected.block, selectedTile.x, selectedTile.y, this, x, y,
+                R.C.Sender
+        );
     }
 
     public void genAnimState() {
@@ -165,6 +176,7 @@ public class Receiver extends AniedBlock<Receiver, Receiver.ReceiverBuild> {
         private boolean isOutputting = false;
         private float lastOutputDelta = 0;
         private float lastFullDataDelta = 0;
+        private OrderedSet<Integer> sendersPos = new OrderedSet<>();
 
         @Nullable
         public Item getOutputItem() {
@@ -181,8 +193,31 @@ public class Receiver extends AniedBlock<Receiver, Receiver.ReceiverBuild> {
         }
 
         @Override
+        public void connect(IDataSender sender) {
+            sendersPos.add(sender.getBuilding().pos());
+        }
+
+        @Override
+        public void disconnect(IDataSender sender) {
+            sendersPos.remove(sender.getBuilding().pos());
+        }
+
+        public void checkSenderPos() {
+            OrderedSet<Integer>.OrderedSetIterator it = sendersPos.iterator();
+            while (it.hasNext) {
+                Integer curSenderPos = it.next();
+                Building sBuild = world.build(curSenderPos);
+                if (!(sBuild instanceof IDataSender)) {
+                    it.remove();
+                }
+            }
+        }
+
+        @Override
         public void drawSelect() {
             Item outputItem = getOutputItem();
+            G.init();
+            G.drawSurroundingCircle(tile, R.C.Receiver);
             if (outputItem != null) {
                 float dx = x - size * tilesize / 2f, dy = y + size * tilesize / 2f;
                 Draw.mixcol(Color.darkGray, 1f);
@@ -190,10 +225,23 @@ public class Receiver extends AniedBlock<Receiver, Receiver.ReceiverBuild> {
                 Draw.reset();
                 Draw.rect(outputItem.icon(Cicon.small), dx, dy);
             }
+            for (int senderPos : sendersPos) {
+                Building sBuild = world.build(senderPos);
+                if ((sBuild instanceof IDataSender)) {
+                    Tile st = sBuild.tile();
+                    G.drawSurroundingCircle(st, R.C.Sender);
+                    G.drawDashLineBetweenTwoBlocks(this.tile, st, R.C.Receiver);
+                    G.drawArrowBetweenTwoBlocks(st, this.tile, R.C.Sender);
+                }
+            }
         }
 
         @Override
         public void fixedUpdateTile() {
+            // Check connection every second
+            if (Time.time % 60f < 1) {
+                checkSenderPos();
+            }
             Item outputItem = getOutputItem();
             float deltaT = Time.delta;
             if (outputItem != null) {
@@ -262,6 +310,7 @@ public class Receiver extends AniedBlock<Receiver, Receiver.ReceiverBuild> {
             super.write(write);
             write.s(outputItem == null ? -1 : outputItem.id);
             write.bool(isOutputting);
+            RWUtil.writeIntSet(write, sendersPos);
         }
 
         @Override
@@ -269,6 +318,7 @@ public class Receiver extends AniedBlock<Receiver, Receiver.ReceiverBuild> {
             super.read(read, revision);
             outputItem = content.item(read.s());
             isOutputting = read.bool();
+            sendersPos = RWUtil.readIntSet(read);
         }
 
         @Override

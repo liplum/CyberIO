@@ -1,6 +1,7 @@
 package net.liplum;
 
 import arc.graphics.Color;
+import mindustry.graphics.Pal;
 
 public class R {
     public static class I {
@@ -21,5 +22,7 @@ public class R {
     public static class C {
         public static final Color LightBlue = Color.valueOf("#add8e6");
         public static final Color VirusBK = Color.valueOf("#cd44ff");
+        public static final Color Sender = Color.red;
+        public static final Color Receiver = Pal.place;
     }
 }

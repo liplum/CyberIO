@@ -6,17 +6,15 @@ import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.util.Nullable;
-import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.Vars;
 import mindustry.gen.Building;
-import mindustry.graphics.Drawf;
-import mindustry.graphics.Pal;
 import mindustry.type.Item;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.meta.BlockGroup;
+import net.liplum.R;
 import net.liplum.animations.anims.IAnimated;
 import net.liplum.animations.anis.AniConfig;
 import net.liplum.animations.anis.AniState;
@@ -25,7 +23,7 @@ import net.liplum.api.data.IDataSender;
 import net.liplum.blocks.AniedBlock;
 import net.liplum.utils.AnimUtil;
 import net.liplum.utils.AtlasUtil;
-import net.liplum.utils.GraphicUtl;
+import net.liplum.utils.G;
 
 public class Sender extends AniedBlock<Sender, Sender.SenderBuild> {
     private final int UploadAnimFrameNumber = 7;
@@ -158,7 +156,15 @@ public class Sender extends AniedBlock<Sender, Sender.SenderBuild> {
         }
 
         public void setReceiverPackedPos(int receiverPackedPos) {
+            IDataReceiver curBuild = getReceiverBuilding();
+            if (curBuild != null) {
+                curBuild.disconnect(this);
+            }
             this.receiverPackedPos = receiverPackedPos;
+            curBuild = getReceiverBuilding();
+            if (curBuild != null) {
+                curBuild.connect(this);
+            }
         }
 
         private void checkReceiverPos() {
@@ -184,18 +190,17 @@ public class Sender extends AniedBlock<Sender, Sender.SenderBuild> {
 
         @Override
         public void drawSelect() {
-            float sin = Mathf.absin(Time.time, 6f, 1f);
+            G.init();
+            G.drawSurroundingCircle(tile, R.C.Sender);
+
             IDataReceiver dr = this.getReceiverBuilding();
             if (dr != null) {
                 Tile ret = dr.getTile();
-                Building reb = dr.getBuilding();
-                Block reblock = dr.getBlock();
-                float retdrawx = ret.drawx();
-                float retdrawy = ret.drawy();
-                Drawf.dashCircle(retdrawx, retdrawy,
-                        (reblock.size / 2f + 1) * Vars.tilesize + sin - 2f,
-                        Pal.place);
-                GraphicUtl.drawDashLineBetweenTwoBlocks(this.tile, ret);
+                G.drawSurroundingCircle(ret, R.C.Receiver);
+
+                G.drawDashLineBetweenTwoBlocks(this.tile, ret, R.C.Sender);
+
+                G.drawArrowBetweenTwoBlocks(this.tile, ret, R.C.Sender);
             }
         }
 
@@ -220,17 +225,18 @@ public class Sender extends AniedBlock<Sender, Sender.SenderBuild> {
 
         @Override
         public void drawConfigure() {
-            float sin = Mathf.absin(Time.time, 6f, 1f);
-            Draw.color(Pal.accent);
+            G.init();
             Lines.stroke(1f);
-            Drawf.circles(tile.drawx(), tile.drawy(), (tile.block().size / 2f + 1) * Vars.tilesize + sin - 2f, Pal.accent);
-            IDataReceiver reb = this.getReceiverBuilding();
-            if (reb != null) {
-                Tile ret = reb.getTile();
-                Drawf.dashCircle(ret.drawx(), ret.drawy(),
-                        (ret.block().size / 2f + 1) * Vars.tilesize + sin - 2f,
-                        Pal.place);
-                GraphicUtl.drawDashLineBetweenTwoBlocks(this.tile, ret);
+            G.drawSurroundingCircle(tile, R.C.Sender);
+
+            IDataReceiver dr = this.getReceiverBuilding();
+            if (dr != null) {
+                Tile ret = dr.getTile();
+                G.drawSurroundingCircle(ret, R.C.Receiver);
+
+                G.drawDashLineBetweenTwoBlocks(this.tile, ret, R.C.Sender);
+
+                G.drawArrowBetweenTwoBlocks(this.tile, ret, R.C.Sender);
             }
         }
 

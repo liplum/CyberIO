@@ -10,4 +10,8 @@ public interface IDataReceiver extends IDataBuilding {
     boolean canAcceptAnyData(IDataSender sender);
 
     boolean isOutputting();
+
+    void connect(IDataSender sender);
+
+    void disconnect(IDataSender sender);
 }

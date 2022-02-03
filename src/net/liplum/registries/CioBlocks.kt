@@ -154,7 +154,9 @@ class CioBlocks : ContentList {
                 buildCostMultiplier = 5f
                 spreadingSpeed = 200
                 maxReproductionScale = 20
+                maxGeneration = 100
                 inheritChildrenNumber = false
+                mutationRate = 10
             }
         }.animation(60f, 3)
 
