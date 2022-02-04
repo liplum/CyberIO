@@ -14,7 +14,6 @@ open class LandProjector(name: String?) : Block(name) {
         solid = true
         group = BlockGroup.projectors
         update = true
-        size = 2
     }
 
     open inner class LandProjectorBuild : Building() {

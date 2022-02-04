@@ -46,6 +46,7 @@ open class Virus(name: String) : AnimedBlock(name) {
         solid = true
         update = true
         canOverdrive = true
+        size = 1
     }
 
     override fun load() {
@@ -59,7 +60,7 @@ open class Virus(name: String) : AnimedBlock(name) {
     override fun setBars() {
         super.setBars()
         bars.add<VirusBuild>(R.Bar.GenerationName) {
-             Bar(
+            Bar(
                 { R.Bar.Generation.bundle(it.curGeneration) },
                 { R.C.VirusBK },
                 { it.curGeneration / maxGenerationOrDefault.toFloat() }

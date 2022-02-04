@@ -1,4 +1,4 @@
-package net.liplum.ui;
+package net.liplum.ui.bars;
 
 import arc.Core;
 import arc.func.Floatp;
@@ -10,38 +10,32 @@ import arc.math.geom.Rect;
 import arc.scene.style.Drawable;
 import arc.util.pooling.Pools;
 import mindustry.gen.Tex;
-import mindustry.ui.Bar;
 import mindustry.ui.Fonts;
 
-public class ReverseBar extends Bar {
+public class ScrollBar extends BarBase {
     public static Rect scissor = new Rect();
 
     public Floatp fraction;
     public String name = "";
-    public float value;
-    public float lastValue;
-    public float blink;
-    public Color blinkColor = new Color();
+    public float progress;
 
-    public ReverseBar(String name, Color color, Floatp fraction) {
+    public ScrollBar(String name, Color color, Floatp fraction) {
         this.fraction = fraction;
         this.name = Core.bundle.get(name, name);
-        this.blinkColor.set(color);
-        lastValue = value = fraction.get();
+        progress = fraction.get();
         setColor(color);
     }
 
-    public ReverseBar(Prov<String> name, Prov<Color> color, Floatp fraction) {
+    public ScrollBar(Prov<String> name, Prov<Color> color, Floatp fraction) {
         this.fraction = fraction;
         try {
-            lastValue = value = Mathf.clamp(fraction.get());
+            progress = Mathf.clamp(fraction.get());
         } catch (Exception e) { //getting the fraction may involve referring to invalid data
-            lastValue = value = 0f;
+            progress = 0f;
         }
         update(() -> {
             try {
                 this.name = name.get();
-                this.blinkColor.set(color.get());
                 setColor(color.get());
             } catch (Exception e) { //getting the fraction may involve referring to invalid data
                 this.name = "";
@@ -49,25 +43,18 @@ public class ReverseBar extends Bar {
         });
     }
 
-    public ReverseBar() {
+    public ScrollBar() {
 
     }
 
     public void reset(float value) {
-        this.value = lastValue = blink = value;
+        this.progress = value;
     }
 
     public void set(Prov<String> name, Floatp fraction, Color color) {
         this.fraction = fraction;
-        this.lastValue = fraction.get();
-        this.blinkColor.set(color);
         setColor(color);
         update(() -> this.name = name.get());
-    }
-
-    public Bar blink(Color color) {
-        blinkColor.set(color);
-        return this;
     }
 
     @Override
@@ -82,34 +69,25 @@ public class ReverseBar extends Bar {
             computed = 0f;
         }
 
-        if (lastValue > computed) {
-            blink = 1f;
-            lastValue = computed;
-        }
-
-        if (Float.isNaN(lastValue)) lastValue = 0;
-        if (Float.isInfinite(lastValue)) lastValue = 1f;
-        if (Float.isNaN(value)) value = 0;
-        if (Float.isInfinite(value)) value = 1f;
+        if (Float.isNaN(progress)) progress = 0;
+        if (Float.isInfinite(progress)) progress = 1f;
         if (Float.isNaN(computed)) computed = 0;
         if (Float.isInfinite(computed)) computed = 1f;
 
-        blink = Mathf.lerpDelta(blink, 0f, 0.2f);
-        value = Mathf.lerpDelta(value, computed, 0.15f);
+        progress = Mathf.lerpDelta(progress, computed, 0.15f);
 
         Drawable bar = Tex.bar;
 
         Draw.colorl(0.1f);
         bar.draw(x, y, width, height);
-        Draw.color(color, blinkColor, blink);
 
         Drawable top = Tex.barTop;
-        float topWidth = width * value;
+        float topWidth = width * progress;
 
         TextureRegion barTopTR = Core.atlas.find("bar-top");
         if (topWidth > barTopTR.width) {
             float leftMargin = width - topWidth;
-            top.draw(x+leftMargin, y, topWidth, height);
+            top.draw(x + leftMargin, y, topWidth, height);
         } else {
             if (ScissorStack.push(scissor.set(x, y, topWidth, height))) {
                 top.draw(x, y, barTopTR.width, height);

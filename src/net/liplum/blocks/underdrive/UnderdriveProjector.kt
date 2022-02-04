@@ -22,7 +22,7 @@ import mindustry.world.meta.BlockGroup
 import mindustry.world.meta.Stat
 import mindustry.world.meta.StatUnit
 import net.liplum.R
-import net.liplum.ui.ReverseBar
+import net.liplum.ui.bars.ReverseBar
 import net.liplum.utils.G
 import net.liplum.utils.WorldUtil
 import net.liplum.utils.bundle
@@ -38,7 +38,7 @@ open class UnderdriveProjector(name: String?) : PowerGenerator(name) {
     /**
      * The less value the slower speed.[0,1]
      */
-    var slowDownRate = 0.2f
+    var maxSlowDownRate = 0.2f
     var spiralRotateSpeed = 2f
     var color: Color = R.C.LightBlue
     var maxPowerEFFUnBlocksReq = 10
@@ -97,7 +97,7 @@ open class UnderdriveProjector(name: String?) : PowerGenerator(name) {
         super.setStats()
         stats.add(
             Stat.speedIncrease,
-            -100f * slowDownRate,
+            -100f * maxSlowDownRate,
             StatUnit.percent
         )
         stats.add(
@@ -149,9 +149,9 @@ open class UnderdriveProjector(name: String?) : PowerGenerator(name) {
         open val realSlowDown: Float
             get() {
                 if (maxGear == 1) {
-                    return slowDownRate
+                    return maxSlowDownRate
                 }
-                return slowDownRate * (curGear.toFloat() / maxGear)
+                return maxSlowDownRate * (curGear.toFloat() / maxGear)
             }
         open val realSpiralRotateSpeed: Float
             get() {

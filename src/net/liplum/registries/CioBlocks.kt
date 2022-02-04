@@ -21,6 +21,7 @@ import net.liplum.animations.ganim.animation
 import net.liplum.api.virus.setUninfectedBlock
 import net.liplum.api.virus.setUninfectedFloor
 import net.liplum.blocks.AniedCrafter
+import net.liplum.blocks.cloud.Cloud
 import net.liplum.blocks.holo.HoloFloor
 import net.liplum.blocks.holo.LandProjector
 import net.liplum.blocks.rs.Receiver
@@ -41,6 +42,7 @@ class CioBlocks : ContentList {
         @JvmStatic lateinit var holoFloor: HoloFloor
         @JvmStatic lateinit var underdriveProjector: UnderdriveProjector
         @JvmStatic lateinit var antiVirus: AntiVirus
+        @JvmStatic lateinit var cloud: Cloud
     }
 
     override fun load() {
@@ -174,6 +176,7 @@ class CioBlocks : ContentList {
                         ItemStack(Items.silicon, 50)
                     )
                 )
+                size = 2
             }
         }
 
@@ -186,13 +189,19 @@ class CioBlocks : ContentList {
         underdriveProjector = object : UnderdriveProjector("underdrive-projector") {
             init {
                 requirements(
-                    Category.effect, BuildVisibility.sandboxOnly, arrayOf()
+                    Category.effect, arrayOf(
+                        ItemStack(CioItems.ic, 1),
+                        ItemStack(Items.copper, 200),
+                        ItemStack(Items.scrap, 100),
+                        ItemStack(Items.coal, 75),
+                    )
                 )
                 color = R.C.LightBlue
-                slowDownRate = 0.9f
+                maxSlowDownRate = 0.9f
                 powerProduction = 4.5f
                 maxPowerEFFUnBlocksReq = 15
                 maxGear = 5
+                size = 1
             }
         }
 
@@ -207,7 +216,18 @@ class CioBlocks : ContentList {
                     )
                 )
                 consumes.power(0.5f)
+                size = 1
             }
         }.setUninfectedBlock()
+
+        cloud = object : Cloud("cloud") {
+            init {
+                requirements(
+                    Category.logic, BuildVisibility.sandboxOnly, arrayOf(
+                    )
+                )
+                size = 3
+            }
+        }
     }
 }
