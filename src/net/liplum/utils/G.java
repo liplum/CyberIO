@@ -3,10 +3,12 @@ package net.liplum.utils;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
+import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.Vars;
+import mindustry.gen.Building;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
 import mindustry.world.Block;
@@ -16,9 +18,27 @@ import static mindustry.Vars.tilesize;
 
 public class G {
     public static float sin = 0f;
+    public static float tan = 0f;
+
+    public static float Ax() {
+        return Draw.scl * Draw.xscl;
+    }
+
+    public static float Ay() {
+        return Draw.scl * Draw.yscl;
+    }
+
+    public static float Dx(TextureRegion tr) {
+        return ((float) tr.width) * Draw.scl * Draw.xscl;
+    }
+
+    public static float Dy(TextureRegion tr) {
+        return ((float) tr.height) * Draw.scl * Draw.yscl;
+    }
 
     public static void init() {
         sin = Mathf.absin(Time.time, 6f, 1f);
+        tan = Mathf.tan(Time.time, 6f, 1f);
     }
 
     public static void drawDashLineBetweenTwoBlocks(Tile startTile, Tile endTile) {
@@ -118,10 +138,28 @@ public class G {
 
     }
 
-    public static void drawSurroundingCircle(Tile t,Color circleColor){
+    public static void drawSurroundingCircle(Tile t, Color circleColor) {
         Drawf.circles(t.drawx(), t.drawy(),
                 (t.block().size / 2f + 1) * Vars.tilesize + sin - 2f,
                 circleColor
+        );
+    }
+
+    public static void drawDashCircle(Block b, int blockX, int BlockY,
+                                      float range, Color color) {
+        float drawX = WorldUtil.toDrawXY(b, blockX);
+        float drawY = WorldUtil.toDrawXY(b, BlockY);
+        Drawf.dashCircle(drawX, drawY, range, color);
+    }
+
+    public static void drawSelected(Building other, Color color) {
+        drawSelected(other, color, Tmp.c1);
+    }
+
+    public static void drawSelected(Building other, Color color, Color temp) {
+        Drawf.selected(
+                other,
+                temp.set(color).a(Mathf.absin(4f, 1f))
         );
     }
 }

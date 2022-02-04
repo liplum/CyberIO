@@ -2,9 +2,9 @@ package net.liplum.utils;
 
 import arc.Core;
 import arc.graphics.g2d.TextureRegion;
-import arc.util.Nullable;
 import mindustry.ctype.MappableContent;
 import net.liplum.Meta;
+import org.jetbrains.annotations.Nullable;
 
 public class AtlasUtil {
     public static TextureRegion sub(MappableContent content, String subName) {

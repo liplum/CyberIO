@@ -11,7 +11,6 @@ import mindustry.ctype.ContentList
 import mindustry.graphics.Drawf
 import mindustry.type.Category
 import mindustry.type.ItemStack
-import mindustry.world.blocks.defense.OverdriveProjector
 import mindustry.world.blocks.production.GenericCrafter
 import mindustry.world.meta.BuildVisibility
 import net.liplum.R
@@ -22,11 +21,11 @@ import net.liplum.animations.ganim.animation
 import net.liplum.api.virus.setUninfectedBlock
 import net.liplum.api.virus.setUninfectedFloor
 import net.liplum.blocks.AniedCrafter
-import net.liplum.blocks.LandProjector
-import net.liplum.blocks.UnderdriveProjectorA
-import net.liplum.blocks.floors.HoloFloor
+import net.liplum.blocks.holo.HoloFloor
+import net.liplum.blocks.holo.LandProjector
 import net.liplum.blocks.rs.Receiver
 import net.liplum.blocks.rs.Sender
+import net.liplum.blocks.underdrive.UnderdriveProjector
 import net.liplum.blocks.virus.AntiVirus
 import net.liplum.blocks.virus.Virus
 import net.liplum.utils.AnimUtil
@@ -40,7 +39,7 @@ class CioBlocks : ContentList {
         @JvmStatic lateinit var virus: Virus
         @JvmStatic lateinit var landProjector: LandProjector
         @JvmStatic lateinit var holoFloor: HoloFloor
-        @JvmStatic lateinit var underdriveProjector: OverdriveProjector
+        @JvmStatic lateinit var underdriveProjector: UnderdriveProjector
         @JvmStatic lateinit var antiVirus: AntiVirus
     }
 
@@ -184,13 +183,16 @@ class CioBlocks : ContentList {
             }
         }.setUninfectedFloor()
 
-        underdriveProjector = object : UnderdriveProjectorA("underdrive-projector") {
+        underdriveProjector = object : UnderdriveProjector("underdrive-projector") {
             init {
                 requirements(
                     Category.effect, BuildVisibility.sandboxOnly, arrayOf()
                 )
-                baseColor = R.C.LightBlue
-                slowDown = 0.1f
+                color = R.C.LightBlue
+                slowDownRate = 0.9f
+                powerProduction = 4.5f
+                maxPowerEFFUnBlocksReq = 15
+                maxGear = 5
             }
         }
 

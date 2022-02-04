@@ -13,10 +13,16 @@ public class R {
     }
 
     public static class Bar {
-        public static String Gen(String content){
+        public static String Gen(String content) {
             return "bar." + Meta.ModID + "." + content;
         }
-        public static final String Generation = Gen("generation");
+
+        public static final String GenerationName = "generation";
+        public static final String Generation = Gen(GenerationName);
+        public static final String SlowDownName = "slow-down";
+        public static final String SlowDown = Gen(SlowDownName);
+        public static final String EfficiencyAbsorptionName = "efficiency-absorption";
+        public static final String EfficiencyAbsorption = Gen(EfficiencyAbsorptionName);
     }
 
     public static class C {

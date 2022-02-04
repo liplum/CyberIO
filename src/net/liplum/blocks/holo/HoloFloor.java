@@ -1,4 +1,4 @@
-package net.liplum.blocks.floors;
+package net.liplum.blocks.holo;
 
 import mindustry.world.Tile;
 import mindustry.world.blocks.environment.Floor;

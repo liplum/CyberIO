@@ -1,13 +1,14 @@
 package net.liplum.blocks.virus
 
 import arc.graphics.Color
-import arc.math.Mathf
-import arc.util.Tmp
 import mindustry.Vars
 import mindustry.gen.Building
 import mindustry.graphics.Drawf
 import mindustry.world.Block
 import mindustry.world.Tile
+import mindustry.world.meta.BlockGroup
+import net.liplum.utils.G
+import net.liplum.utils.WorldUtil
 
 open class AntiVirus(name: String) : Block(name) {
     var range: Float = 80f
@@ -17,6 +18,7 @@ open class AntiVirus(name: String) : Block(name) {
     init {
         solid = true
         update = true
+        group = BlockGroup.projectors
         hasPower = true
     }
 
@@ -24,48 +26,34 @@ open class AntiVirus(name: String) : Block(name) {
     override fun minimapColor(tile: Tile) = Color.green.rgba()
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)
-        Drawf.dashCircle(
-            x * Vars.tilesize + offset,
-            y * Vars.tilesize + offset,
-            range, uninfectedColor
-        )
+        G.drawDashCircle(this, x, y, range, uninfectedColor)
         Vars.indexer.eachBlock(
             Vars.player.team(),
-            x * Vars.tilesize + offset,
-            y * Vars.tilesize + offset, range,
+            WorldUtil.toDrawXY(this, x),
+            WorldUtil.toDrawXY(this, y),
+            range,
             {
                 true
             }) {
-            drawOtherInRange(it)
+            G.drawSelected(it, getOtherColor(it))
         }
     }
 
-    private fun getOtherColor(other: Building): Color {
-        return if (other is Virus.VirusBuild) infectedColor
+    open fun getOtherColor(other: Building): Color {
+        return if (other is IVirusBuilding) infectedColor
         else uninfectedColor
-    }
-
-    private fun getOtherRenderColor(other: Building, temp: Color): Color {
-        return temp.set(getOtherColor(other)).a(Mathf.absin(4f, 1f))
-    }
-
-    private fun drawOtherInRange(other: Building) {
-        Drawf.selected(
-            other,
-            getOtherRenderColor(other, Tmp.c1)
-        )
     }
 
     open inner class AntiVirusBuild : Building() {
         val realRange: Float
-            get() = range * power.status * timeScale
+            get() = range * efficiency() * timeScale
 
         override fun updateTile() {
             Vars.indexer.eachBlock(this, realRange,
                 { b ->
-                    b is Virus.VirusBuild
+                    b is IVirusBuilding
                 }) {
-                it.tile.setAir()
+                (it as? IVirusBuilding)?.killVirus()
             }
         }
 
@@ -74,7 +62,7 @@ open class AntiVirus(name: String) : Block(name) {
                 {
                     true
                 }) {
-                drawOtherInRange(it)
+                G.drawSelected(it, getOtherColor(it))
             }
             Drawf.dashCircle(x, y, realRange, uninfectedColor)
         }

@@ -247,15 +247,18 @@ public class Sender extends AniedBlock<Sender, Sender.SenderBuild> {
         @Override
         public boolean onConfigureTileTapped(Building other) {
             if (this == other) {
+                deselect();
                 this.clearReceiver();
                 return false;
             }
 
             if (this.getReceiverPackedPos() == other.pos()) {
+                deselect();
                 this.clearReceiver();
                 return false;
             }
             if (other instanceof IDataReceiver) {
+                deselect();
                 this.setReceiver((IDataReceiver) other);
                 return false;
             }

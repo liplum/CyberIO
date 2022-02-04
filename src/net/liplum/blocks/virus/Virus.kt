@@ -13,9 +13,9 @@ import mindustry.world.Tile
 import net.liplum.R
 import net.liplum.api.virus.UninfectedBlocksRegistry
 import net.liplum.blocks.AnimedBlock
-import net.liplum.utils.AtlasUtil
 import net.liplum.utils.VirusUtil
 import net.liplum.utils.bundle
+import net.liplum.utils.subA
 
 typealias UBR = UninfectedBlocksRegistry
 
@@ -39,8 +39,8 @@ open class Virus(name: String) : AnimedBlock(name) {
      */
     var maxMutationNumber: Int = -1
     var canMutate: Boolean = false
-    var startMutationPercent : Float = 0.8f
-    lateinit var raceMask: TextureRegion;
+    var startMutationPercent: Float = 0.8f
+    lateinit var raceMaskTR: TextureRegion;
 
     init {
         solid = true
@@ -50,16 +50,16 @@ open class Virus(name: String) : AnimedBlock(name) {
 
     override fun load() {
         super.load()
-        raceMask = AtlasUtil.sub(this, "race-mask")
+        raceMaskTR = this.subA("race-mask")
     }
 
-    val maxGenerationOrDefault: Int
+    open val maxGenerationOrDefault: Int
         get() = if (maxGeneration == -1) 100 else maxGeneration
 
     override fun setBars() {
         super.setBars()
-        bars.add<VirusBuild>("generation") {
-            return@add Bar(
+        bars.add<VirusBuild>(R.Bar.GenerationName) {
+             Bar(
                 { R.Bar.Generation.bundle(it.curGeneration) },
                 { R.C.VirusBK },
                 { it.curGeneration / maxGenerationOrDefault.toFloat() }
@@ -68,7 +68,7 @@ open class Virus(name: String) : AnimedBlock(name) {
     }
 
     override fun minimapColor(tile: Tile) = R.C.VirusBK.rgba()
-    open inner class VirusBuild : Building() {
+    open inner class VirusBuild : Building(), IVirusBuilding {
         var curGeneration: Int = 0
         var curChildrenNumber: Int = 0
         var curVarianceNumber: Int = 0
@@ -100,13 +100,13 @@ open class Virus(name: String) : AnimedBlock(name) {
             Draw.rect(block.region, x, y)
             if (raceColor != null) {
                 Draw.color(raceColor)
-                Draw.rect(raceMask, x, y)
+                Draw.rect(raceMaskTR, x, y)
                 Draw.color()
             }
             drawTeamTop()
         }
 
-        val canReproduce: Boolean
+        open val canReproduce: Boolean
             get() {
                 val RS = if (maxReproductionScale == -1) true
                 else curChildrenNumber < maxReproductionScale
@@ -141,13 +141,13 @@ open class Virus(name: String) : AnimedBlock(name) {
             newGen?.raceColor = VirusColors.randomColor(this.raceColor)
         }
 
-        val curMutateRate: Int
+        open val curMutateRate: Int
             get() {
                 val smg = maxGenerationOrDefault * startMutationPercent//Start mutation generation
                 val factor = (1f / (smg * smg)) * curGeneration * curGeneration
                 return (mutationRate * factor).toInt()
             }
-        val newChildNeedMutate: Boolean
+        open val newChildNeedMutate: Boolean
             get() {
                 if (!canMutate) {
                     return false
@@ -157,7 +157,7 @@ open class Virus(name: String) : AnimedBlock(name) {
                 }
                 return Mathf.random(100) < curMutateRate
             }
-        val selfOnUninfectedFloorOrOverLay: Boolean
+        open val selfOnUninfectedFloorOrOverLay: Boolean
             get() = UBR.hasFloor(tile.floor()) ||
                     UBR.hasOverlay(tile.overlay())
 
@@ -182,6 +182,10 @@ open class Virus(name: String) : AnimedBlock(name) {
             curVarianceNumber = read.s().toInt()
             val raceColorNumber = read.i()
             raceColor = if (raceColorNumber == -1) null else Color(raceColorNumber)
+        }
+
+        override fun killVirus() {
+            setDead()
         }
     }
 }

@@ -8,7 +8,7 @@ import arc.util.Time
 import mindustry.game.EventType
 import net.liplum.GameHelper.Companion.ClientOnly
 
-class GlobalAnimation(
+open class GlobalAnimation(
     val duration: Float,
     val setTR: Cons<TextureRegion>
 ) : IGlobalAnimation {
@@ -18,8 +18,8 @@ class GlobalAnimation(
             return field && frames != null
         }
     var lastTR: TextureRegion? = null
-    private var registered: Boolean = false
-    private fun getCurTR(): TextureRegion {
+    protected var registered: Boolean = false
+    protected fun getCurTR(): TextureRegion {
         val progress = Time.time % duration / duration //percent
         var index: Int = (progress * frames!!.size).toInt()
         index = Mathf.clamp(index, 0, frames!!.size)

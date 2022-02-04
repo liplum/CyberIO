@@ -1,10 +1,10 @@
-package net.liplum.blocks
+package net.liplum.blocks.holo
 
 import arc.util.Time
 import mindustry.Vars
 import mindustry.gen.Building
 import mindustry.world.Block
-import net.liplum.blocks.floors.HoloFloor
+import mindustry.world.meta.BlockGroup
 import net.liplum.registries.CioBlocks
 
 open class LandProjector(name: String?) : Block(name) {
@@ -12,6 +12,7 @@ open class LandProjector(name: String?) : Block(name) {
 
     init {
         solid = true
+        group = BlockGroup.projectors
         update = true
         size = 2
     }

@@ -2,7 +2,7 @@ package net.liplum.animations.ganim
 
 import net.liplum.GameHelper.Companion.ClientOnly
 import net.liplum.blocks.AnimedBlock
-import net.liplum.utils.AtlasUtil
+import net.liplum.utils.animA
 
 fun <T : AnimedBlock> T.animation(duration: Float, frameCount: Int): T {
     ClientOnly {
@@ -10,7 +10,7 @@ fun <T : AnimedBlock> T.animation(duration: Float, frameCount: Int): T {
             this.region.set(it)
         }.register()
         this.addLoadListener {
-            a.frames = AtlasUtil.animation(this, null, frameCount)
+            a.frames = this.animA(null, frameCount)
         }
     }
     return this
