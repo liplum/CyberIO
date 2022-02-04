@@ -31,6 +31,8 @@ import net.liplum.blocks.virus.AntiVirus
 import net.liplum.blocks.virus.Virus
 import net.liplum.utils.AnimUtil
 import net.liplum.utils.AtlasUtil
+import net.liplum.utils.autoAnim
+import net.liplum.utils.subA
 
 class CioBlocks : ContentList {
     companion object {
@@ -61,6 +63,7 @@ class CioBlocks : ContentList {
                         ItemStack(Items.titanium, 250)
                     )
                 )
+                health = 2000
                 outputItem = ItemStack(CioItems.ic, 1)
                 craftTime = 1200f
                 size = 3
@@ -106,8 +109,8 @@ class CioBlocks : ContentList {
 
             override fun load() {
                 super.load()
-                workingAnimation = AnimUtil.auto(this, "indicator-light", 7, 60f)
-                idleTR = AtlasUtil.sub(this, "light-off")
+                workingAnimation = this.autoAnim( "indicator-light", 7, 60f)
+                idleTR = this.subA( "light-off")
             }
         }
 
@@ -122,6 +125,7 @@ class CioBlocks : ContentList {
                         ItemStack(Items.silicon, 10)
                     )
                 )
+                health = 100
                 consumes.power(0.5f)
                 replaceable = false
             }
@@ -138,6 +142,7 @@ class CioBlocks : ContentList {
                         ItemStack(Items.silicon, 10)
                     )
                 )
+                health = 100
                 consumes.power(0.5f)
                 replaceable = false
             }
@@ -176,6 +181,7 @@ class CioBlocks : ContentList {
                         ItemStack(Items.silicon, 50)
                     )
                 )
+                health = 100
                 size = 2
             }
         }
@@ -192,14 +198,15 @@ class CioBlocks : ContentList {
                     Category.effect, arrayOf(
                         ItemStack(CioItems.ic, 1),
                         ItemStack(Items.copper, 200),
-                        ItemStack(Items.scrap, 100),
-                        ItemStack(Items.coal, 75),
+                        ItemStack(Items.coal, 100),
+                        ItemStack(Items.metaglass, 75),
                     )
                 )
+                health = 100
                 color = R.C.LightBlue
                 maxSlowDownRate = 0.9f
                 powerProduction = 4.5f
-                maxPowerEFFUnBlocksReq = 15
+                maxPowerEFFUnBlocksReq = 22
                 maxGear = 5
                 size = 1
             }

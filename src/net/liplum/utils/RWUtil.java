@@ -5,12 +5,20 @@ import arc.struct.OrderedSet;
 import arc.struct.Seq;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
+import mindustry.gen.Building;
 
 public class RWUtil {
     public static void writeIntSeq(Writes writes, Seq<Integer> intSeq) {
         writes.i(intSeq.size);
         for (int i : intSeq) {
             writes.i(i);
+        }
+    }
+
+    public static <T extends Building> void writeBuildingSeq(Writes writes, Seq<T> buildingSeq) {
+        writes.i(buildingSeq.size);
+        for (Building b : buildingSeq) {
+            writes.i(b.pos());
         }
     }
 

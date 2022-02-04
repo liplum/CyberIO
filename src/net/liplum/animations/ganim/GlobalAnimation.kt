@@ -6,6 +6,7 @@ import arc.graphics.g2d.TextureRegion
 import arc.math.Mathf
 import arc.util.Time
 import mindustry.game.EventType
+import net.liplum.CioMod
 import net.liplum.GameHelper.Companion.ClientOnly
 
 open class GlobalAnimation(
@@ -13,9 +14,9 @@ open class GlobalAnimation(
     val setTR: Cons<TextureRegion>
 ) : IGlobalAnimation {
     var frames: Array<TextureRegion>? = null
-    override var needUpdate: Boolean = true
+    override val needUpdate: Boolean
         get() {
-            return field && frames != null
+            return CioMod.CanAnimationPlay && frames != null
         }
     var lastTR: TextureRegion? = null
     protected var registered: Boolean = false

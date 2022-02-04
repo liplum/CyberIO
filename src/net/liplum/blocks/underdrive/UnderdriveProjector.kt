@@ -186,9 +186,9 @@ open class UnderdriveProjector(name: String?) : PowerGenerator(name) {
                 }
                 this.underdrivedBlocks = underdrivedBlock
                 val absorption = (underdrivedBlock / maxPowerEFFUnBlocksReq.toFloat())
-                    .coerceAtMost(1f)
-                val magnification = 1f + (realSlowDown * 0.3f)
-                productionEfficiency = absorption * magnification
+                    .coerceAtMost(2f)
+                val magnification = realSlowDown * 0.3f
+                productionEfficiency = absorption + magnification
             }
         }
 

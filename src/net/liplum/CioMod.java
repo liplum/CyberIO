@@ -11,6 +11,7 @@ import net.liplum.registries.ContentRegistry;
 
 public class CioMod extends Mod {
     public static final boolean AniStateCanLoad = !Vars.headless;
+    public static boolean CanAnimationPlay = false;
 
     public CioMod() {
         Log.info("Cyber IO mod loaded.");
@@ -30,7 +31,7 @@ public class CioMod extends Mod {
 
     @Override
     public void init() {
-
+        CanAnimationPlay = true;
     }
 
     @Override
