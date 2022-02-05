@@ -1,5 +1,7 @@
 package net.liplum.blocks.cloud
 
+import arc.util.io.Reads
+import arc.util.io.Writes
 import mindustry.game.Team
 import mindustry.gen.Building
 import mindustry.world.Block
@@ -7,6 +9,7 @@ import mindustry.world.modules.ItemModule
 import net.liplum.animations.anims.IAnimated
 import net.liplum.ui.bars.removeIfExist
 import net.liplum.utils.autoAnim
+import kotlin.experimental.and
 
 open class Cloud(name: String) : Block(name) {
     lateinit var floatingCloudTR: IAnimated
@@ -30,12 +33,17 @@ open class Cloud(name: String) : Block(name) {
 
     override fun outputsItems() = false
     open inner class CloudBuild : Building(), IShared {
-        lateinit var couldRoom: SharedRoom
+        lateinit var cloudRoom: SharedRoom
         override fun create(block: Block, team: Team): Building {
             super.create(block, team)
-            couldRoom = LiplumCloud.getCloud(team)
+            cloudRoom = LiplumCloud.getCloud(team)
             items = items ?: ItemModule()
+            cloudRoom.online(this)
             return this
+        }
+
+        override fun writeBase(write: Writes?) {
+            super.writeBase(write)
         }
 
         override var sharedItems: ItemModule
