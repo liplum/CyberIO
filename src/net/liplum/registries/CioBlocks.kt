@@ -29,8 +29,6 @@ import net.liplum.blocks.rs.Sender
 import net.liplum.blocks.underdrive.UnderdriveProjector
 import net.liplum.blocks.virus.AntiVirus
 import net.liplum.blocks.virus.Virus
-import net.liplum.utils.AnimUtil
-import net.liplum.utils.AtlasUtil
 import net.liplum.utils.autoAnim
 import net.liplum.utils.subA
 
@@ -109,8 +107,8 @@ class CioBlocks : ContentList {
 
             override fun load() {
                 super.load()
-                workingAnimation = this.autoAnim( "indicator-light", 7, 60f)
-                idleTR = this.subA( "light-off")
+                workingAnimation = this.autoAnim("indicator-light", 7, 60f)
+                idleTR = this.subA("light-off")
             }
         }
 
@@ -230,7 +228,7 @@ class CioBlocks : ContentList {
         cloud = object : Cloud("cloud") {
             init {
                 requirements(
-                    Category.logic, BuildVisibility.sandboxOnly, arrayOf(
+                    Category.logic, BuildVisibility.hidden, arrayOf(
                     )
                 )
                 size = 3

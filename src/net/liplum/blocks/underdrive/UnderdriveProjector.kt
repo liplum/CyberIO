@@ -168,8 +168,8 @@ open class UnderdriveProjector(name: String?) : PowerGenerator(name) {
             )
         }
 
-        override fun onDestroyed() {
-            super.onDestroyed()
+        override fun remove() {
+            super.remove()
             forEachTargetInRange {
                 it.resetBoost()
             }

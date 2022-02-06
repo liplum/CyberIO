@@ -1,15 +1,13 @@
 package net.liplum.blocks.cloud
 
-import arc.util.io.Reads
-import arc.util.io.Writes
 import mindustry.game.Team
 import mindustry.gen.Building
+import mindustry.type.Item
 import mindustry.world.Block
 import mindustry.world.modules.ItemModule
 import net.liplum.animations.anims.IAnimated
 import net.liplum.ui.bars.removeIfExist
 import net.liplum.utils.autoAnim
-import kotlin.experimental.and
 
 open class Cloud(name: String) : Block(name) {
     lateinit var floatingCloudTR: IAnimated
@@ -18,7 +16,9 @@ open class Cloud(name: String) : Block(name) {
         solid = true
         update = true
         hasItems = true
+        saveConfig = true
         configurable = true
+        itemCapacity = 100
     }
 
     override fun setBars() {
@@ -30,26 +30,27 @@ open class Cloud(name: String) : Block(name) {
         super.load()
         floatingCloudTR = this.autoAnim("cloud", 7, 120f)
     }
-
-    override fun outputsItems() = false
+    //override fun outputsItems() = false
     open inner class CloudBuild : Building(), IShared {
         lateinit var cloudRoom: SharedRoom
         override fun create(block: Block, team: Team): Building {
             super.create(block, team)
             cloudRoom = LiplumCloud.getCloud(team)
-            items = items ?: ItemModule()
             cloudRoom.online(this)
             return this
         }
 
-        override fun writeBase(write: Writes?) {
-            super.writeBase(write)
+        override fun remove() {
+            super.remove()
+            cloudRoom.offline(this)
         }
 
-        override var sharedItems: ItemModule
-            get() = items
-            set(value) {
-                items = value
-            }
+        override fun acceptItem(source: Building, item: Item) = true
+        override fun getSharedItems(): ItemModule = items
+        override fun setSharedItems(itemModule: ItemModule) {
+            items = itemModule
+        }
+
+        override fun getBuilding() = this
     }
 }

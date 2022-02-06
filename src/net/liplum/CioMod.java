@@ -7,10 +7,7 @@ import mindustry.Vars;
 import mindustry.game.EventType;
 import mindustry.mod.Mod;
 import mindustry.ui.dialogs.BaseDialog;
-import net.liplum.blocks.cloud.LiplumCloud;
 import net.liplum.registries.ContentRegistry;
-
-import static mindustry.core.GameState.State;
 
 public class CioMod extends Mod {
     public static final boolean AniStateCanLoad = !Vars.headless;
@@ -35,17 +32,19 @@ public class CioMod extends Mod {
     @Override
     public void init() {
         CanAnimationPlay = true;
-        LiplumCloud.reset();
+        /*
+        Events.on(EventType.WorldLoadEvent.class, e -> {
+            LiplumCloud.read();
+        });
         Events.on(EventType.StateChangeEvent.class, e -> {
             State from = e.from;
             State to = e.to;
-            if (from == State.menu && to == State.playing) {
-                LiplumCloud.read();
-            }
-            if (to == State.menu) {
+
+            if (from != State.menu && to == State.menu) {
                 LiplumCloud.save();
             }
         });
+        */
     }
 
     @Override
