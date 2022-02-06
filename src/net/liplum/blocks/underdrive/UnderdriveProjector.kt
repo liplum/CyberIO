@@ -32,7 +32,11 @@ import kotlin.math.max
 const val MagicNSpiralRate = 0.1125f
 const val MagicNSpiralMin = 0.025f
 
-open class UnderdriveProjector(name: String?) : PowerGenerator(name) {
+enum class AttenuationType {
+    None, Exponential, Additive
+}
+
+open class UnderdriveProjector(name: String) : PowerGenerator(name) {
     var reload = 60f
     var range = 40f
     /**
@@ -40,7 +44,10 @@ open class UnderdriveProjector(name: String?) : PowerGenerator(name) {
      */
     var maxSlowDownRate = 0.2f
     var spiralRotateSpeed = 2f
+    var similarAttenuation = AttenuationType.Exponential
+    var attenuationRateStep = 0.5f
     var color: Color = R.C.LightBlue
+    var slowDownRateEFFReward = 0.3f
     var maxPowerEFFUnBlocksReq = 10
         set(value) {
             field = value.coerceAtLeast(1)
@@ -136,6 +143,7 @@ open class UnderdriveProjector(name: String?) : PowerGenerator(name) {
                 field = value.coerceAtLeast(1)
             }
         var underdrivedBlocks: Int = 0
+        var similarInRange: Int = 0
         override fun range() = realRange
         open val restEfficiency: Float
             get() = 1f - realSlowDown
@@ -157,13 +165,30 @@ open class UnderdriveProjector(name: String?) : PowerGenerator(name) {
             get() {
                 val percent = underdrivedBlocks / maxPowerEFFUnBlocksReq.toFloat()
                 val factor = Mathf.lerp(2f * percent + 0.5f, percent * percent, 0.5f)
-                return spiralRotateSpeed * factor
+                return spiralRotateSpeed * factor * similarAttenuationFactor
+            }
+        open val similarAttenuationFactor: Float
+            get() = when (similarAttenuation) {
+                AttenuationType.None ->
+                    1f
+                AttenuationType.Exponential ->
+                    Mathf.pow(attenuationRateStep, similarInRange.toFloat())
+                AttenuationType.Additive ->
+                    (1f - similarInRange * attenuationRateStep).coerceAtLeast(0f)
             }
 
         open fun forEachTargetInRange(cons: (Building) -> Unit) {
             Vars.indexer.eachBlock(
                 this, realRange,
                 { it.block.canOverdrive },
+                cons
+            )
+        }
+
+        open fun forEachBuildingInRange(cons: (Building) -> Unit) {
+            Vars.indexer.eachBlock(
+                this, realRange,
+                { true },
                 cons
             )
         }
@@ -179,16 +204,23 @@ open class UnderdriveProjector(name: String?) : PowerGenerator(name) {
             charge += Time.delta
             if (charge >= reload) {
                 var underdrivedBlock = 0
+                var similarInRange = 0
                 charge = 0f
-                forEachTargetInRange {
-                    underdrivedBlock++
-                    it.applyBoostOrSlow(restEfficiency, reload + 1f)
+                forEachBuildingInRange {
+                    if (it.block.canOverdrive) {
+                        underdrivedBlock++
+                        it.applyBoostOrSlow(restEfficiency, reload + 1f)
+                    } else if (it is UnderdriveBuild && it != this) {
+                        similarInRange++
+                    }
                 }
                 this.underdrivedBlocks = underdrivedBlock
+                this.similarInRange = similarInRange
                 val absorption = (underdrivedBlock / maxPowerEFFUnBlocksReq.toFloat())
                     .coerceAtMost(2f)
-                val magnification = realSlowDown * 0.3f
-                productionEfficiency = absorption + magnification
+                val reward = realSlowDown * slowDownRateEFFReward
+                productionEfficiency = absorption + reward
+                productionEfficiency *= similarAttenuationFactor
             }
         }
 
@@ -217,7 +249,7 @@ open class UnderdriveProjector(name: String?) : PowerGenerator(name) {
         override fun draw() {
             super.draw()
             // Draw spiral
-            if (underdrivedBlocks > 0) {
+            if (realSpiralRotateSpeed > 0.6f) {
                 G.init()
                 Draw.color(Color.black)
                 // Fade in&out
@@ -260,11 +292,15 @@ open class UnderdriveProjector(name: String?) : PowerGenerator(name) {
         override fun write(write: Writes) {
             super.write(write)
             write.s(curGear)
+            write.s(underdrivedBlocks)
+            write.s(similarInRange)
         }
 
         override fun read(read: Reads, revision: Byte) {
             super.read(read, revision)
             curGear = read.s().toInt()
+            underdrivedBlocks = read.s().toInt()
+            similarInRange = read.s().toInt()
         }
     }
 }

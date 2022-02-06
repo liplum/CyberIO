@@ -30,5 +30,7 @@ public class R {
         public static final Color VirusBK = Color.valueOf("#cd44ff");
         public static final Color Sender = Color.red;
         public static final Color Receiver = Pal.place;
+        public static final Color IcLight = Color.valueOf("#047b04");
+        public static final Color IcDark = Color.valueOf("#024202");
     }
 }

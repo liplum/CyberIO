@@ -85,12 +85,46 @@ jar {
     }
 }
 
+import org.apache.tools.ant.taskdefs.condition.Os
+
+task debugJar {
+    dependsOn jar
+    ext.copyJarFile = { jarFile, modsFolder ->
+        copy {
+            from jarFile
+            into modsFolder
+        }
+    }
+    doLast {
+        var shouldCopy = project.property("AutoCopyModIntoGamePath")
+        if (!shouldCopy)
+            return
+        var jarFile = new File("$buildDir/libs/${project.archivesBaseName}Desktop.jar")
+        if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+            var APPDATA = System.getenv("APPDATA")
+            var modsFolder = APPDATA + '/Mindustry/mods'
+            mkdir modsFolder
+            copyJarFile(jarFile, modsFolder)
+            var gamePath = project.property("GamePath")
+            if (gamePath) {
+                var runtime = Runtime.getRuntime()
+                runtime.exec("explorer.exe $gamePath")
+            }
+        }
+    }
+}
+
 task deploy(type: Jar) {
     dependsOn jarAndroid
     dependsOn jar
     archiveFileName = "${project.archivesBaseName}.jar"
 
-    from { [zipTree("$buildDir/libs/${project.archivesBaseName}Desktop.jar"), zipTree("$buildDir/libs/${project.archivesBaseName}Android.jar")] }
+    from {
+        [
+                zipTree("$buildDir/libs/${project.archivesBaseName}Desktop.jar"),
+                zipTree("$buildDir/libs/${project.archivesBaseName}Android.jar")
+        ]
+    }
 
     doLast {
         delete {

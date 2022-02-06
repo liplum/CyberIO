@@ -107,12 +107,12 @@ public class ReverseBar extends BarBase {
         float topWidth = width * value;
 
         TextureRegion barTopTR = Core.atlas.find("bar-top");
+        float leftMargin = width - topWidth;
         if (topWidth > barTopTR.width) {
-            float leftMargin = width - topWidth;
             top.draw(x + leftMargin, y, topWidth, height);
         } else {
             if (ScissorStack.push(scissor.set(x, y, topWidth, height))) {
-                top.draw(x, y, barTopTR.width, height);
+                top.draw(x + leftMargin, y, barTopTR.width, height);
                 ScissorStack.pop();
             }
         }
