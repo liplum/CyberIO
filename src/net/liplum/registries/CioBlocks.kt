@@ -228,7 +228,7 @@ class CioBlocks : ContentList {
         cloud = object : Cloud("cloud") {
             init {
                 requirements(
-                    Category.logic, BuildVisibility.hidden, arrayOf(
+                    Category.logic, BuildVisibility.sandboxOnly, arrayOf(
                     )
                 )
                 size = 3

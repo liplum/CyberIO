@@ -1,5 +1,7 @@
 package net.liplum.blocks.cloud
 
+import arc.graphics.g2d.Draw
+import arc.math.Mathf
 import mindustry.game.Team
 import mindustry.gen.Building
 import mindustry.type.Item
@@ -7,10 +9,12 @@ import mindustry.world.Block
 import mindustry.world.modules.ItemModule
 import net.liplum.animations.anims.IAnimated
 import net.liplum.ui.bars.removeIfExist
-import net.liplum.utils.autoAnim
+import net.liplum.utils.TR
+import net.liplum.utils.subA
 
 open class Cloud(name: String) : Block(name) {
     lateinit var floatingCloudTR: IAnimated
+    lateinit var cloud: TR
 
     init {
         solid = true
@@ -28,7 +32,7 @@ open class Cloud(name: String) : Block(name) {
 
     override fun load() {
         super.load()
-        floatingCloudTR = this.autoAnim("cloud", 7, 120f)
+        cloud = this.subA("cloud")
     }
     //override fun outputsItems() = false
     open inner class CloudBuild : Building(), IShared {
@@ -52,5 +56,14 @@ open class Cloud(name: String) : Block(name) {
         }
 
         override fun getBuilding() = this
+        override fun draw() {
+            super.draw()
+            val floatRange = 1f
+            Draw.rect(
+                cloud,
+                x + Mathf.random(-floatRange, floatRange),
+                y + Mathf.random(-floatRange, floatRange)
+            )
+        }
     }
 }

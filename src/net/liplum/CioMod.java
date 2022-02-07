@@ -5,13 +5,17 @@ import arc.util.Log;
 import arc.util.Time;
 import mindustry.Vars;
 import mindustry.game.EventType;
+import mindustry.io.JsonIO;
 import mindustry.mod.Mod;
 import mindustry.ui.dialogs.BaseDialog;
+import net.liplum.blocks.cloud.LiplumCloud;
+import net.liplum.blocks.cloud.SharedRoom;
 import net.liplum.registries.ContentRegistry;
 
 public class CioMod extends Mod {
     public static final boolean AniStateCanLoad = !Vars.headless;
     public static boolean CanAnimationPlay = false;
+    public static boolean DebugMode = false;
 
     public CioMod() {
         Log.info("Cyber IO mod loaded.");
@@ -32,19 +36,10 @@ public class CioMod extends Mod {
     @Override
     public void init() {
         CanAnimationPlay = true;
-        /*
+        JsonIO.json.addClassTag("net.liplum.blocks.cloud.SharedRoom", SharedRoom.class);
         Events.on(EventType.WorldLoadEvent.class, e -> {
             LiplumCloud.read();
         });
-        Events.on(EventType.StateChangeEvent.class, e -> {
-            State from = e.from;
-            State to = e.to;
-
-            if (from != State.menu && to == State.menu) {
-                LiplumCloud.save();
-            }
-        });
-        */
     }
 
     @Override

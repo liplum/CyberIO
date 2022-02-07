@@ -1,14 +1,16 @@
 package net.liplum.blocks.cloud;
 
+import arc.struct.ObjectMap;
 import arc.struct.OrderedMap;
 import arc.util.Log;
 import mindustry.Vars;
 import mindustry.game.Team;
 import mindustry.io.JsonIO;
+import net.liplum.CioMod;
 
 public class LiplumCloud {
     private static OrderedMap<Integer, SharedRoom> CurGameCloudRoom;
-    public static String CurGameCloudRoomDataBackup = "";
+
     public static void reset() {
         CurGameCloudRoom = new OrderedMap<>();
     }
@@ -34,16 +36,23 @@ public class LiplumCloud {
 
     public static void save() {
         String data = JsonIO.json.toJson(CurGameCloudRoom);
-        Log.info("Flowing is save:");
-        Log.info(data);
+        if (CioMod.DebugMode) {
+            Log.info("Flowing is save:");
+            Log.info(data);
+        }
         Vars.state.rules.tags.put("cyber-io-LiplumCloud", data);
-        CurGameCloudRoomDataBackup = data;
     }
 
     public static void read() {
         String data = Vars.state.rules.tags.get("cyber-io-LiplumCloud", "{}");
-        Log.info("Flowing is read:");
-        Log.info(data);
-        CurGameCloudRoom = JsonIO.json.fromJson(OrderedMap.class, data);
+        if (CioMod.DebugMode) {
+            Log.info("Flowing is read:");
+            Log.info(data);
+        }
+        OrderedMap<String, SharedRoom> strIdToRoom = JsonIO.json.fromJson(OrderedMap.class, data);
+        CurGameCloudRoom = new OrderedMap<>();
+        for (ObjectMap.Entry<String, SharedRoom> entry : strIdToRoom) {
+            CurGameCloudRoom.put(Integer.valueOf(entry.key), entry.value);
+        }
     }
 }
