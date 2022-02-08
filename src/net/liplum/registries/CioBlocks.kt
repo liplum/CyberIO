@@ -232,6 +232,7 @@ class CioBlocks : ContentList {
                     )
                 )
                 size = 3
+                consumes.power(1f)
             }
         }
     }

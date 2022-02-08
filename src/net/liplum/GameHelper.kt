@@ -5,14 +5,26 @@ import mindustry.Vars
 class GameHelper {
     companion object {
         @JvmStatic
-        fun ClientOnly(func: () -> Unit) {
+        inline fun ClientOnly(func: () -> Unit) {
             if (!Vars.headless) {
                 func()
             }
         }
         @JvmStatic
-        fun ServerOnly(func: () -> Unit) {
+        inline fun ServerOnly(func: () -> Unit) {
             if (Vars.headless) {
+                func()
+            }
+        }
+        @JvmStatic
+        inline fun CanGlobalAnimationPlay(func: () -> Unit) {
+            if (CioMod.CanGlobalAnimationPlay) {
+                func()
+            }
+        }
+        @JvmStatic
+        inline fun CanAniStateLoad(func: () -> Unit) {
+            if (CioMod.CanAniStateLoad) {
                 func()
             }
         }

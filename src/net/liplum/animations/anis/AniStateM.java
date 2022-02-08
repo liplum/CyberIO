@@ -39,6 +39,10 @@ public class AniStateM<TBlock extends Block, TBuild extends Building> {
         curState.drawBuilding(this.block, this.build);
     }
 
+    public boolean curOverwriteBlock() {
+        return curState != null && curState.overwriteBlock;
+    }
+
     public void update() {
         for (AniState<TBlock, TBuild> to : config.getAllEntrances(curState)) {
             ITrigger<TBlock, TBuild> canEnter = config.getCanEnter(curState, to);

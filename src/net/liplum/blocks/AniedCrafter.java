@@ -19,7 +19,7 @@ public abstract class AniedCrafter extends GenericCrafter implements IAniSMed<An
 
     public AniedCrafter(String name) {
         super(name);
-        if (CioMod.AniStateCanLoad) {
+        if (CioMod.CanAniStateLoad) {
             this.genAnimState();
             this.genAniConfig();
         }
@@ -57,7 +57,7 @@ public abstract class AniedCrafter extends GenericCrafter implements IAniSMed<An
         @Override
         public Building create(Block block, Team team) {
             super.create(block, team);
-            if (CioMod.AniStateCanLoad) {
+            if (CioMod.CanAniStateLoad) {
                 AniedCrafter out = AniedCrafter.this;
                 this.aniStateM = out.getAniConfig().gen(out, this);
             }
@@ -67,16 +67,20 @@ public abstract class AniedCrafter extends GenericCrafter implements IAniSMed<An
         @Override
         public void updateTile() {
             super.updateTile();
-            if (CioMod.AniStateCanLoad) {
+            if (CioMod.CanAniStateLoad) {
                 aniStateM.update();
             }
         }
 
         @Override
         public void draw() {
-            super.draw();
-            if (CioMod.AniStateCanLoad) {
+            if (CioMod.CanAniStateLoad) {
+                if (!aniStateM.curOverwriteBlock()) {
+                    super.draw();
+                }
                 aniStateM.drawBuilding();
+            } else {
+                super.draw();
             }
         }
     }

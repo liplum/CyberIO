@@ -184,8 +184,8 @@ public class Sender extends AniedBlock<Sender, Sender.SenderBuild> {
         }
 
         @Override
-        public void sendData(IDataReceiver receiver, Item item) {
-            receiver.receiveData(this, item);
+        public void sendData(IDataReceiver receiver, Item item, int amount) {
+            receiver.receiveData(this, item, amount);
         }
 
         @Override
@@ -208,7 +208,7 @@ public class Sender extends AniedBlock<Sender, Sender.SenderBuild> {
         public void handleItem(Building source, Item item) {
             IDataReceiver reb = this.getReceiverBuilding();
             if (reb != null && !Mathf.zero(power.status)) {
-                this.sendData(reb, item);
+                this.sendData(reb, item, 1);
             }
         }
 

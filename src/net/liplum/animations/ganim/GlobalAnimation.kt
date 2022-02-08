@@ -16,7 +16,7 @@ open class GlobalAnimation(
     var frames: Array<TextureRegion>? = null
     override val needUpdate: Boolean
         get() {
-            return CioMod.CanAnimationPlay && frames != null
+            return CioMod.CanGlobalAnimationPlay && frames != null
         }
     var lastTR: TextureRegion? = null
     protected var registered: Boolean = false

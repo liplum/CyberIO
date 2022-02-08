@@ -8,6 +8,7 @@ public class AniState<TBlock extends Block, TBuild extends Building> {
     private final String stateName;
     @Nullable
     private final IRenderBehavior<TBlock, TBuild> renderBehavior;
+    public boolean overwriteBlock = false;
 
     public AniState(String stateName) {
         this.stateName = stateName;

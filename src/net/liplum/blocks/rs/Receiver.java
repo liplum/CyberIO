@@ -176,7 +176,7 @@ public class Receiver extends AniedBlock<Receiver, Receiver.ReceiverBuild> {
         private boolean isOutputting = false;
         private float lastOutputDelta = 0;
         private float lastFullDataDelta = 0;
-        private OrderedSet<Integer> sendersPos = new OrderedSet<>();
+        OrderedSet<Integer> sendersPos = new OrderedSet<>();
 
         @Nullable
         public Item getOutputItem() {
@@ -296,7 +296,7 @@ public class Receiver extends AniedBlock<Receiver, Receiver.ReceiverBuild> {
         }
 
         @Override
-        public void receiveData(IDataSender sender, Item item) {
+        public void receiveData(IDataSender sender, Item item, int amount) {
             this.items.add(item, 1);
         }
 

@@ -13,8 +13,8 @@ import net.liplum.blocks.cloud.SharedRoom;
 import net.liplum.registries.ContentRegistry;
 
 public class CioMod extends Mod {
-    public static final boolean AniStateCanLoad = !Vars.headless;
-    public static boolean CanAnimationPlay = false;
+    public static final boolean CanAniStateLoad = !Vars.headless;
+    public static boolean CanGlobalAnimationPlay = false;
     public static boolean DebugMode = false;
 
     public CioMod() {
@@ -35,7 +35,7 @@ public class CioMod extends Mod {
 
     @Override
     public void init() {
-        CanAnimationPlay = true;
+        CanGlobalAnimationPlay = true;
         JsonIO.json.addClassTag("net.liplum.blocks.cloud.SharedRoom", SharedRoom.class);
         Events.on(EventType.WorldLoadEvent.class, e -> {
             LiplumCloud.read();

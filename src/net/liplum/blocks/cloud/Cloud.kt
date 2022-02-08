@@ -2,19 +2,42 @@ package net.liplum.blocks.cloud
 
 import arc.graphics.g2d.Draw
 import arc.math.Mathf
+import arc.struct.OrderedSet
+import arc.util.io.Reads
+import arc.util.io.Writes
 import mindustry.game.Team
 import mindustry.gen.Building
 import mindustry.type.Item
 import mindustry.world.Block
+import mindustry.world.Tile
+import mindustry.world.blocks.power.PowerBlock
+import mindustry.world.meta.BlockGroup
 import mindustry.world.modules.ItemModule
+import net.liplum.GameHelper.Companion.CanAniStateLoad
+import net.liplum.GameHelper.Companion.CanGlobalAnimationPlay
 import net.liplum.animations.anims.IAnimated
-import net.liplum.ui.bars.removeIfExist
+import net.liplum.animations.anis.AniConfig
+import net.liplum.animations.anis.AniState
+import net.liplum.animations.blocks.*
+import net.liplum.api.data.IDataReceiver
+import net.liplum.api.data.IDataSender
+import net.liplum.utils.RWUtil
 import net.liplum.utils.TR
+import net.liplum.utils.autoAnim
 import net.liplum.utils.subA
 
-open class Cloud(name: String) : Block(name) {
+open class Cloud(name: String) : PowerBlock(name) {
     lateinit var floatingCloudTR: IAnimated
     lateinit var cloud: TR
+    lateinit var dataTransfer: IAnimated
+    lateinit var blockGroup: BlockGroupType<Cloud, CloudBuild>
+    lateinit var CloudAniBlock: BlockType<Cloud, CloudBuild>
+    lateinit var DataAniBlock: BlockType<Cloud, CloudBuild>
+    lateinit var ShredderAniBlock: BlockType<Cloud, CloudBuild>
+    lateinit var CloudAniConfig: AniConfig<Cloud, CloudBuild>
+    lateinit var CloudIdleAni: AniState<Cloud, CloudBuild>
+    lateinit var CloudNoPowerAni: AniState<Cloud, CloudBuild>
+    var cloudFloatRange = 1f
 
     init {
         solid = true
@@ -22,25 +45,112 @@ open class Cloud(name: String) : Block(name) {
         hasItems = true
         saveConfig = true
         configurable = true
-        itemCapacity = 100
+        itemCapacity = 5000
+
+        group = BlockGroup.logic
+        CanAniStateLoad {
+            this.genAnimState()
+            this.genAniConfig()
+            this.genBlockTypes()
+        }
+    }
+
+    open fun genAnimState() {
+        CloudIdleAni = AniState("Idle") { block, build ->
+            Draw.rect(
+                cloud,
+                build.x + build.cloudXOffset,
+                build.y + build.cloudYOffset
+            )
+        }
+        CloudNoPowerAni = AniState("NoPower")
+    }
+
+    open fun genAniConfig() {
+        CloudAniConfig = AniConfig()
+        CloudAniConfig.defaultState(CloudNoPowerAni)
+        CloudAniConfig.enter(CloudNoPowerAni, CloudIdleAni) { _, build ->
+            !Mathf.zero(build.power.status)
+        }
+        CloudAniConfig.enter(CloudIdleAni, CloudNoPowerAni) { _, build ->
+            Mathf.zero(build.power.status)
+        }
+        CloudAniConfig.build()
+    }
+
+    open fun genBlockTypes() {
+        CloudAniBlock = object : BlockType<Cloud, CloudBuild>() {
+            override fun newObj(block: Cloud, build: CloudBuild): BlockObj<Cloud, CloudBuild> = object :
+                BlockObj<Cloud, CloudBuild>(block, build, this) {
+                var cloudAniSM = CloudAniConfig.gen(block, build)
+                override fun update() {
+                    cloudAniSM.update()
+                }
+
+                override fun drawBuilding() {
+                    build.cloudXOffset = Mathf.random(-cloudFloatRange, cloudFloatRange)
+                    xOffset = build.cloudXOffset
+                    build.cloudYOffset = Mathf.random(-cloudFloatRange, cloudFloatRange)
+                    yOffset = build.cloudYOffset
+                    cloudAniSM.drawBuilding()
+                }
+            }
+        }
+
+        DataAniBlock = object : BlockType<Cloud, CloudBuild>(ShareMode.KeepSelf) {
+            override fun newObj(block: Cloud, build: CloudBuild): BlockObj<Cloud, CloudBuild> = object :
+                BlockObj<Cloud, CloudBuild>(block, build, this) {
+                override fun drawBuilding() {
+                    if (build.isDataTransferring) {
+                        dataTransfer.draw(
+                            build.x + xOffset,
+                            build.y + yOffset,
+                            build
+                        )
+                    }
+                }
+            }
+        }
+
+        blockGroup = BlockGroupType(CloudAniBlock, DataAniBlock)
     }
 
     override fun setBars() {
         super.setBars()
-        bars.removeIfExist("items")
+        bars.remove("items")
     }
 
     override fun load() {
         super.load()
         cloud = this.subA("cloud")
+        dataTransfer = this.autoAnim("data-transfer", 15, 60f)
     }
-    //override fun outputsItems() = false
-    open inner class CloudBuild : Building(), IShared {
+
+    override fun outputsItems() = false
+    open inner class CloudBuild : Building(), IShared, IDataReceiver, IDataSender {
         lateinit var cloudRoom: SharedRoom
+        var sendersPos = OrderedSet<Int>()
+        lateinit var aniBlockGroupObj: BlockGroupObj<Cloud, CloudBuild>
+        var cloudXOffset = 0f
+        var cloudYOffset = 0f
+        var lastReceiveOrSendDataTime = 0f
+        val isDataTransferring: Boolean
+            get() = lastReceiveOrSendDataTime <= 60f
+
+        override fun updateTile() {
+            CanAniStateLoad {
+                aniBlockGroupObj.update()
+            }
+            lastReceiveOrSendDataTime += edelta()
+        }
+
         override fun create(block: Block, team: Team): Building {
             super.create(block, team)
             cloudRoom = LiplumCloud.getCloud(team)
             cloudRoom.online(this)
+            CanAniStateLoad {
+                aniBlockGroupObj = blockGroup.newObj(this@Cloud, this)
+            }
             return this
         }
 
@@ -49,21 +159,60 @@ open class Cloud(name: String) : Block(name) {
             cloudRoom.offline(this)
         }
 
-        override fun acceptItem(source: Building, item: Item) = true
+        override fun acceptItem(source: Building, item: Item) = false
         override fun getSharedItems(): ItemModule = items
         override fun setSharedItems(itemModule: ItemModule) {
             items = itemModule
         }
 
         override fun getBuilding() = this
+        override fun getTile(): Tile = tile
+        override fun getBlock(): Block = block
+        override fun sendData(receiver: IDataReceiver, item: Item, amount: Int) {
+            receiver.receiveData(this, item, amount)
+            lastReceiveOrSendDataTime = 0f
+        }
+
+        override fun acceptData(sender: IDataSender, item: Item): Boolean {
+            return true
+        }
+
+        override fun receiveData(sender: IDataSender, item: Item, amount: Int) {
+            items.add(item, 1)
+            lastReceiveOrSendDataTime = 0f
+        }
+
+        override fun canAcceptAnyData(sender: IDataSender): Boolean {
+            return true
+        }
+
+        override fun isOutputting(): Boolean {
+            return true
+        }
+
+        override fun connect(sender: IDataSender) {
+            sendersPos.add(sender.building.pos())
+        }
+
+        override fun disconnect(sender: IDataSender) {
+            sendersPos.remove(sender.building.pos())
+        }
+
         override fun draw() {
             super.draw()
-            val floatRange = 1f
-            Draw.rect(
-                cloud,
-                x + Mathf.random(-floatRange, floatRange),
-                y + Mathf.random(-floatRange, floatRange)
-            )
+            CanGlobalAnimationPlay {
+                aniBlockGroupObj.drawBuilding()
+            }
+        }
+
+        override fun write(write: Writes) {
+            super.write(write)
+            RWUtil.writeIntSet(write, sendersPos)
+        }
+
+        override fun read(read: Reads, revision: Byte) {
+            super.read(read, revision)
+            sendersPos = RWUtil.readIntSet(read)
         }
     }
 }

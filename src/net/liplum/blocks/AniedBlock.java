@@ -5,10 +5,7 @@ import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.world.Block;
 import net.liplum.CioMod;
-import net.liplum.animations.anis.AniConfig;
-import net.liplum.animations.anis.AniState;
-import net.liplum.animations.anis.AniStateM;
-import net.liplum.animations.anis.IAniSMed;
+import net.liplum.animations.anis.*;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -19,7 +16,7 @@ public abstract class AniedBlock<TBlock extends Block, TBuild extends Building> 
 
     public AniedBlock(String name) {
         super(name);
-        if (CioMod.AniStateCanLoad) {
+        if (CioMod.CanAniStateLoad) {
             this.genAnimState();
             this.genAniConfig();
         }
@@ -51,13 +48,17 @@ public abstract class AniedBlock<TBlock extends Block, TBuild extends Building> 
         return aniState;
     }
 
+    public AniConfig<TBlock, TBuild> enter(String from, String to, ITrigger<TBlock, TBuild> canEnter) {
+        return aniConfig.enter(getAniStateByName(from), getAniStateByName(to), canEnter);
+    }
+
     public abstract class AniedBuild extends Building {
         protected AniStateM<TBlock, TBuild> aniStateM;
 
         @Override
         public Building create(Block block, Team team) {
             super.create(block, team);
-            if (CioMod.AniStateCanLoad) {
+            if (CioMod.CanAniStateLoad) {
                 AniedBlock<TBlock, TBuild> outer = AniedBlock.this;
                 this.aniStateM = outer.getAniConfig().gen((TBlock) outer, (TBuild) this);
             }
@@ -76,17 +77,22 @@ public abstract class AniedBlock<TBlock extends Block, TBuild extends Building> 
         public void updateTile() {
             super.updateTile();
             fixedUpdateTile();
-            if (CioMod.AniStateCanLoad) {
+            if (CioMod.CanAniStateLoad) {
                 aniStateM.update();
             }
         }
 
         @Override
         public void draw() {
-            super.draw();
-            fixedDraw();
-            if (CioMod.AniStateCanLoad) {
+            if (CioMod.CanAniStateLoad) {
+                if (!aniStateM.curOverwriteBlock()) {
+                    super.draw();
+                }
+                fixedDraw();
                 aniStateM.drawBuilding();
+            } else {
+                super.draw();
+                fixedDraw();
             }
         }
     }

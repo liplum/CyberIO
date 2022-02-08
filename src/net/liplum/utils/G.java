@@ -132,7 +132,7 @@ public class G {
 
         Drawf.arrow(pointedDrawX, pointedDrawY,
                 startDrawX, startDrawY,
-                pointedBlock.size * tilesize + sin,
+                startBlock.size * tilesize + sin,
                 4f + sin,
                 arrowColor);
 
