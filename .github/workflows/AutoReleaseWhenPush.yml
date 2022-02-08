@@ -32,7 +32,7 @@ jobs:
 
   upload:
     needs: build
-    if: !startsWith("${{ github.event.head_commit.message }}$","[NR]")
+    if: !startsWith(github.event.head_commit.message,'[NR]')
     runs-on: ubuntu-latest
     env:
       GH_REPO: ${{ github.repository }}
