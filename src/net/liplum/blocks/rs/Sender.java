@@ -24,6 +24,7 @@ import net.liplum.blocks.AniedBlock;
 import net.liplum.utils.AnimUtil;
 import net.liplum.utils.AtlasUtil;
 import net.liplum.utils.G;
+import org.jetbrains.annotations.NotNull;
 
 public class Sender extends AniedBlock<Sender, Sender.SenderBuild> {
     private final int UploadAnimFrameNumber = 7;
@@ -184,8 +185,14 @@ public class Sender extends AniedBlock<Sender, Sender.SenderBuild> {
         }
 
         @Override
-        public void sendData(IDataReceiver receiver, Item item, int amount) {
+        public void sendData(@NotNull IDataReceiver receiver, @NotNull Item item, int amount) {
             receiver.receiveData(this, item, amount);
+        }
+
+        @Override
+        @Nullable
+        public Integer connectedReceiver() {
+            return receiverPackedPos == -1 ? null : receiverPackedPos;
         }
 
         @Override
@@ -257,9 +264,13 @@ public class Sender extends AniedBlock<Sender, Sender.SenderBuild> {
                 this.clearReceiver();
                 return false;
             }
+
             if (other instanceof IDataReceiver) {
                 deselect();
-                this.setReceiver((IDataReceiver) other);
+                IDataReceiver receiver = (IDataReceiver) other;
+                if (receiver.acceptConnection(this)) {
+                    this.setReceiver(receiver);
+                }
                 return false;
             }
             return true;
@@ -298,16 +309,19 @@ public class Sender extends AniedBlock<Sender, Sender.SenderBuild> {
             return getReceiverPackedPos();
         }
 
+        @NotNull
         @Override
         public Building getBuilding() {
             return this;
         }
 
+        @NotNull
         @Override
         public Tile getTile() {
             return tile();
         }
 
+        @NotNull
         @Override
         public Block getBlock() {
             return block();

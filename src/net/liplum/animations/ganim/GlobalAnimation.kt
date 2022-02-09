@@ -7,7 +7,7 @@ import arc.math.Mathf
 import arc.util.Time
 import mindustry.game.EventType
 import net.liplum.CioMod
-import net.liplum.GameHelper.Companion.ClientOnly
+import net.liplum.ClientOnly
 
 open class GlobalAnimation(
     val duration: Float,

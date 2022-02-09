@@ -5,6 +5,7 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.scene.ui.layout.Table;
+import arc.struct.ObjectSet;
 import arc.struct.OrderedSet;
 import arc.util.Eachable;
 import arc.util.Nullable;
@@ -26,10 +27,8 @@ import net.liplum.animations.anis.AniState;
 import net.liplum.api.data.IDataReceiver;
 import net.liplum.api.data.IDataSender;
 import net.liplum.blocks.AniedBlock;
-import net.liplum.utils.AnimUtil;
-import net.liplum.utils.AtlasUtil;
-import net.liplum.utils.G;
-import net.liplum.utils.RWUtil;
+import net.liplum.utils.*;
+import org.jetbrains.annotations.NotNull;
 
 import static mindustry.Vars.*;
 
@@ -44,6 +43,7 @@ public class Receiver extends AniedBlock<Receiver, Receiver.ReceiverBuild> {
     private AniState<Receiver, ReceiverBuild> BlockedAni;
     private AniState<Receiver, ReceiverBuild> NoPowerAni;
     private IAnimated DownloadAnim;
+    public int maxConnection = -1;
 
     public Receiver(String name) {
         super(name);
@@ -193,12 +193,12 @@ public class Receiver extends AniedBlock<Receiver, Receiver.ReceiverBuild> {
         }
 
         @Override
-        public void connect(IDataSender sender) {
+        public void connect(@NotNull IDataSender sender) {
             sendersPos.add(sender.getBuilding().pos());
         }
 
         @Override
-        public void disconnect(IDataSender sender) {
+        public void disconnect(@NotNull IDataSender sender) {
             sendersPos.remove(sender.getBuilding().pos());
         }
 
@@ -225,15 +225,7 @@ public class Receiver extends AniedBlock<Receiver, Receiver.ReceiverBuild> {
                 Draw.reset();
                 Draw.rect(outputItem.icon(Cicon.small), dx, dy);
             }
-            for (int senderPos : sendersPos) {
-                Building sBuild = world.build(senderPos);
-                if ((sBuild instanceof IDataSender)) {
-                    Tile st = sBuild.tile();
-                    G.drawSurroundingCircle(st, R.C.Sender);
-                    G.drawDashLineBetweenTwoBlocks(this.tile, st, R.C.Receiver);
-                    G.drawArrowBetweenTwoBlocks(st, this.tile, R.C.Sender);
-                }
-            }
+            CyberUtil.drawSenders(this, sendersPos);
         }
 
         @Override
@@ -281,13 +273,13 @@ public class Receiver extends AniedBlock<Receiver, Receiver.ReceiverBuild> {
             return false;
         }
 
-        public boolean acceptData(IDataSender source, Item item) {
+        public boolean acceptData(@NotNull IDataSender source, Item item) {
             return items.get(item) < getMaximumAccepted(item) &&
                     getOutputItem() == item;
         }
 
         @Override
-        public boolean canAcceptAnyData(IDataSender sender) {
+        public boolean canAcceptAnyData(@NotNull IDataSender sender) {
             Item outputItem = getOutputItem();
             if (outputItem == null) {
                 return false;
@@ -296,7 +288,7 @@ public class Receiver extends AniedBlock<Receiver, Receiver.ReceiverBuild> {
         }
 
         @Override
-        public void receiveData(IDataSender sender, Item item, int amount) {
+        public void receiveData(@NotNull IDataSender sender, Item item, int amount) {
             this.items.add(item, 1);
         }
 
@@ -322,15 +314,37 @@ public class Receiver extends AniedBlock<Receiver, Receiver.ReceiverBuild> {
         }
 
         @Override
+        public @NotNull ObjectSet<Integer> connectedSenders() {
+            return sendersPos;
+        }
+
+        @Override
+        public Integer connectedSender() {
+            return sendersPos.first();
+        }
+
+        @Override
+        public boolean acceptConnection(@NotNull IDataSender sender) {
+            if (maxConnection != -1) {
+                return true;
+            } else {
+                return sendersPos.size < maxConnection;
+            }
+        }
+
+        @NotNull
+        @Override
         public Building getBuilding() {
             return this;
         }
 
+        @NotNull
         @Override
         public Tile getTile() {
             return tile();
         }
 
+        @NotNull
         @Override
         public Block getBlock() {
             return block();

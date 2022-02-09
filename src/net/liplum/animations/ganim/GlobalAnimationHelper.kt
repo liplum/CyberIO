@@ -1,6 +1,6 @@
 package net.liplum.animations.ganim
 
-import net.liplum.GameHelper.Companion.ClientOnly
+import net.liplum.ClientOnly
 import net.liplum.blocks.AnimedBlock
 import net.liplum.utils.animA
 

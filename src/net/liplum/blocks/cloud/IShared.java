@@ -12,4 +12,9 @@ public interface IShared {
 
     @NotNull
     Building getBuilding();
+
+    @NotNull
+    CloudInfo getSharedInfo();
+
+    void setSharedInfo(@NotNull CloudInfo logic);
 }
