@@ -16,6 +16,7 @@ import mindustry.world.meta.BlockGroup
 import mindustry.world.modules.ItemModule
 import net.liplum.CanAniStateLoad
 import net.liplum.CanGlobalAnimationPlay
+import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.animations.anims.IAnimated
 import net.liplum.animations.anis.AniConfig
@@ -128,12 +129,15 @@ open class Cloud(name: String) : PowerBlock(name) {
     override fun setBars() {
         super.setBars()
         bars.remove("items")
+        DebugOnly {
+            bars.addTeamInfo()
+        }
     }
 
     override fun load() {
         super.load()
         cloud = this.subA("cloud")
-        dataTransferAnim = this.autoAnim("data-transfer", 18, 60f)
+        dataTransferAnim = this.autoAnim("data-transfer", 18, 50f)
         shredderAnim = this.autoAnim("shredder", 13, 60f)
     }
 
@@ -144,6 +148,7 @@ open class Cloud(name: String) : PowerBlock(name) {
         lateinit var info: CloudInfo
         var cloudXOffset = 0f
         var cloudYOffset = 0f
+        var teamID = 0
         val isWorking: Boolean
             get() = !Mathf.zero(power.status)
 

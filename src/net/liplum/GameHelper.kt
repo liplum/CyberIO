@@ -25,3 +25,9 @@ inline fun CanAniStateLoad(func: () -> Unit) {
         func()
     }
 }
+
+inline fun DebugOnly(func: () -> Unit) {
+    if (CioMod.DebugMode) {
+        func()
+    }
+}

@@ -23,6 +23,10 @@ public class R {
         public static final String SlowDown = Gen(SlowDownName);
         public static final String EfficiencyAbsorptionName = "efficiency-absorption";
         public static final String EfficiencyAbsorption = Gen(EfficiencyAbsorptionName);
+        public static final String TeamName = "team";
+        public static final String Team = Gen(TeamName);
+        public static final String SpiralRotationSpeedName = "spiral-rotate-speed";
+        public static final String SpiralRotationSpeed = Gen(SpiralRotationSpeedName);
     }
 
     public static class C {

@@ -325,7 +325,7 @@ public class Receiver extends AniedBlock<Receiver, Receiver.ReceiverBuild> {
 
         @Override
         public boolean acceptConnection(@NotNull IDataSender sender) {
-            if (maxConnection != -1) {
+            if (maxConnection == -1) {
                 return true;
             } else {
                 return sendersPos.size < maxConnection;

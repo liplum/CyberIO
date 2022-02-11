@@ -36,7 +36,7 @@ public class CioMod extends Mod {
     @Override
     public void init() {
         CanGlobalAnimationPlay = true;
-        JsonIO.json.addClassTag("net.liplum.blocks.cloud.SharedRoom", SharedRoom.class);
+        JsonIO.json.addClassTag(SharedRoom.class.getName(), SharedRoom.class);
         Events.on(EventType.WorldLoadEvent.class, e -> {
             LiplumCloud.read();
         });

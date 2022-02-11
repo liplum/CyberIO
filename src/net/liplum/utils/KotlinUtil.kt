@@ -1,7 +1,4 @@
 package net.liplum.utils
 
-import arc.struct.Seq
-
-fun <T> Seq<T>.removeT(element: T) {
-    this.remove(element)
-}
+fun Double.format(digits: Int) = "%.${digits}f".format(this)
+fun Float.format(digits: Int) = "%.${digits}f".format(this)

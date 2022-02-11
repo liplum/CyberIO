@@ -21,16 +21,16 @@ import mindustry.world.blocks.power.PowerGenerator
 import mindustry.world.meta.BlockGroup
 import mindustry.world.meta.Stat
 import mindustry.world.meta.StatUnit
+import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.ui.bars.ReverseBar
-import net.liplum.utils.G
-import net.liplum.utils.WorldUtil
-import net.liplum.utils.bundle
-import net.liplum.utils.subA
+import net.liplum.utils.*
 import kotlin.math.max
 
 const val MagicNSpiralRate = 0.1125f
 const val MagicNSpiralMin = 0.025f
+const val MinSpiralSpeed = 3.5f
+const val MaxSpiralSpeed = 20f
 
 enum class AttenuationType {
     None, Exponential, Additive
@@ -134,6 +134,17 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
                 { it.productionEfficiency / 1f }
             )
         }
+        DebugOnly {
+            bars.add<UnderdriveBuild>(
+                R.Bar.SpiralRotationSpeedName
+            ) {
+                Bar(
+                    { R.Bar.SpiralRotationSpeed.bundle(it.realSpiralRotateSpeed.format(2)) },
+                    { Pal.powerBar },
+                    { it.realSpiralRotateSpeed / 10f }
+                )
+            }
+        }
     }
 
     open inner class UnderdriveBuild : GeneratorBuild(), Ranged {
@@ -165,7 +176,11 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
             get() {
                 val percent = underdrivedBlocks / maxPowerEFFUnBlocksReq.toFloat()
                 val factor = Mathf.lerp(2f * percent + 0.5f, percent * percent, 0.5f)
-                return spiralRotateSpeed * factor * similarAttenuationFactor
+                return if (underdrivedBlocks > 0)
+                    (spiralRotateSpeed * factor * similarAttenuationFactor * (1f + realSlowDown / 2f))
+                        .coerceAtLeast(MinSpiralSpeed)
+                        .coerceAtMost(MaxSpiralSpeed)
+                else 0f
             }
         open val similarAttenuationFactor: Float
             get() = when (similarAttenuation) {
@@ -249,21 +264,20 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
         override fun draw() {
             super.draw()
             // Draw spiral
-            if (realSpiralRotateSpeed > 0.6f) {
-                G.init()
-                Draw.color(Color.black)
-                // Fade in&out
-                Draw.alpha(Mathf.absin(Time.time, 10f, 1f) / 2)
-                val scale = Mathf.lerp(1f, G.sin, 0.5f)
-                val sr = scale * MagicNSpiralRate * realRange
-                val srm = 1f * realRange * MagicNSpiralMin
-                Draw.rect(
-                    spiralTR, x, y,
-                    G.Dx(spiralTR) * sr + srm,
-                    G.Dy(spiralTR) * sr + srm,
-                    Time.time * realSpiralRotateSpeed
-                )
-            }
+            G.init()
+            Draw.color(Color.black)
+            // Fade in&out
+            val realRange = realRange
+            Draw.alpha(Mathf.absin(Time.time, 10f, 1f) / 2)
+            val scale = Mathf.lerp(1f, G.sin, 0.5f)
+            val sr = scale * MagicNSpiralRate * realRange
+            val srm = 1f * realRange * MagicNSpiralMin
+            Draw.rect(
+                spiralTR, x, y,
+                G.Dx(spiralTR) * sr + srm,
+                G.Dy(spiralTR) * sr + srm,
+                Time.time * realSpiralRotateSpeed
+            )
             // Draw waves
             val f = 1f - Time.time / 100f % 1f
             Draw.color(color)
