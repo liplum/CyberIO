@@ -27,6 +27,10 @@ public class R {
         public static final String Team = Gen(TeamName);
         public static final String SpiralRotationSpeedName = "spiral-rotate-speed";
         public static final String SpiralRotationSpeed = Gen(SpiralRotationSpeedName);
+        public static final String AlphaName = "alpha";
+        public static final String Alpha = Gen(AlphaName);
+        public static final String RangeName = "range";
+        public static final String Range = Gen(RangeName);
     }
 
     public static class C {

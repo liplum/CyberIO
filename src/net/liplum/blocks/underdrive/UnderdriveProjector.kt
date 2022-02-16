@@ -12,8 +12,10 @@ import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.Vars
+import mindustry.entities.Effect
 import mindustry.gen.Building
 import mindustry.graphics.Drawf
+import mindustry.graphics.Layer
 import mindustry.graphics.Pal
 import mindustry.logic.Ranged
 import mindustry.ui.Bar
@@ -30,15 +32,37 @@ import kotlin.math.max
 const val MagicNSpiralRate = 0.1125f
 const val MagicNSpiralMin = 0.025f
 const val MinSpiralSpeed = 3.5f
-const val MaxSpiralSpeed = 20f
+const val MaxSpiralSpeed = 16f
+const val MagicAlpha = 0.8f
 
 enum class AttenuationType {
     None, Exponential, Additive
 }
 
+val SpiralShrink: Effect = Effect(20f) {
+    val upb = it.data as UnderdriveProjector.UnderdriveBuild
+    val up = upb.block as UnderdriveProjector
+    Draw.color(it.color, it.fout())
+    val scale = Mathf.lerp(1f, G.sin, 0.5f)
+    val realRange = upb.realRange
+    val sr = scale * MagicNSpiralRate * realRange * it.fout()
+    val srm = realRange * MagicNSpiralMin
+    val s = up.spiralTR
+    Draw.rect(
+        s, it.x, it.y,
+        G.Dx(s) * sr + srm,
+        G.Dy(s) * sr + srm,
+        Time.time * upb.realSpiralRotateSpeed
+    )
+}.layer(Layer.shields)
+
+fun UnderdriveProjector.UnderdriveBuild.spiralShrinking() {
+    SpiralShrink.at(x, y, realRange, (block as UnderdriveProjector).color, this)
+}
+
 open class UnderdriveProjector(name: String) : PowerGenerator(name) {
     var reload = 60f
-    var range = 40f
+    var range = 200f
     /**
      * The less value the slower speed.[0,1]
      */
@@ -144,27 +168,38 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
                     { it.realSpiralRotateSpeed / 10f }
                 )
             }
+            bars.add<UnderdriveBuild>(
+                R.Bar.AlphaName
+            ) {
+                Bar(
+                    { R.Bar.Alpha.bundle(it.alpha.format(2)) },
+                    { Color.blue },
+                    { it.alpha / 1f }
+                )
+            }
+            bars.addRangeInfo<UnderdriveBuild>(100f)
         }
     }
 
     open inner class UnderdriveBuild : GeneratorBuild(), Ranged {
-        var charge = Mathf.random(reload)
+        var charge = reload
         var curGear = 1
             set(value) {
                 field = value.coerceAtLeast(1)
             }
+        var buildingProgress: Float = 0f
+            set(value) {
+                field = value.coerceIn(0f, 1f)
+            }
         var underdrivedBlocks: Int = 0
         var similarInRange: Int = 0
         override fun range() = realRange
+        open val alpha: Float
+            get() = MagicAlpha
         open val restEfficiency: Float
             get() = 1f - realSlowDown
         open val realRange: Float
-            get() {
-                /*val eff = efficiency()
-                val factor = Mathf.lerp(-eff + 0.5f, -eff * eff, 0.5f)
-                return range * factor*/
-                return range
-            }
+            get() = range
         open val realSlowDown: Float
             get() {
                 if (maxGear == 1) {
@@ -172,15 +207,21 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
                 }
                 return maxSlowDownRate * (curGear.toFloat() / maxGear)
             }
+        open val canShowSpiral: Boolean
+            get() = buildingProgress > 0f || underdrivedBlocks != 0
+        open var lastRealSpiralRotateSpeed: Float = 0f
         open val realSpiralRotateSpeed: Float
             get() {
                 val percent = underdrivedBlocks / maxPowerEFFUnBlocksReq.toFloat()
                 val factor = Mathf.lerp(2f * percent + 0.5f, percent * percent, 0.5f)
-                return if (underdrivedBlocks > 0)
+                val final = if (canShowSpiral)
                     (spiralRotateSpeed * factor * similarAttenuationFactor * (1f + realSlowDown / 2f))
-                        .coerceAtLeast(MinSpiralSpeed)
-                        .coerceAtMost(MaxSpiralSpeed)
+                        .coerceIn(MinSpiralSpeed, MaxSpiralSpeed)
                 else 0f
+                if (underdrivedBlocks != 0) {
+                    lastRealSpiralRotateSpeed = final
+                }
+                return final
             }
         open val similarAttenuationFactor: Float
             get() = when (similarAttenuation) {
@@ -208,15 +249,24 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
             )
         }
 
-        override fun remove() {
-            super.remove()
+        override fun onRemoved() {
+            super.onRemoved()
             forEachTargetInRange {
                 it.resetBoost()
+            }
+            if (canShowSpiral) {
+                this.spiralShrinking()
             }
         }
 
         override fun updateTile() {
             charge += Time.delta
+            val per = Time.delta / reload
+            if (productionEfficiency > 0f) {
+                buildingProgress += per
+            } else {
+                buildingProgress -= per
+            }
             if (charge >= reload) {
                 var underdrivedBlock = 0
                 var similarInRange = 0
@@ -231,11 +281,15 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
                 }
                 this.underdrivedBlocks = underdrivedBlock
                 this.similarInRange = similarInRange
-                val absorption = (underdrivedBlock / maxPowerEFFUnBlocksReq.toFloat())
-                    .coerceAtMost(2f)
-                val reward = realSlowDown * slowDownRateEFFReward
-                productionEfficiency = absorption + reward
-                productionEfficiency *= similarAttenuationFactor
+                if (underdrivedBlock > 0) {
+                    val absorption = (underdrivedBlock / maxPowerEFFUnBlocksReq.toFloat())
+                        .coerceAtMost(2f)
+                    val reward = realSlowDown * slowDownRateEFFReward
+                    productionEfficiency = absorption + reward
+                    productionEfficiency *= similarAttenuationFactor
+                } else {
+                    productionEfficiency = 0f
+                }
             }
         }
 
@@ -263,21 +317,7 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
 
         override fun draw() {
             super.draw()
-            // Draw spiral
             G.init()
-            Draw.color(Color.black)
-            // Fade in&out
-            val realRange = realRange
-            Draw.alpha(Mathf.absin(Time.time, 10f, 1f) / 2)
-            val scale = Mathf.lerp(1f, G.sin, 0.5f)
-            val sr = scale * MagicNSpiralRate * realRange
-            val srm = 1f * realRange * MagicNSpiralMin
-            Draw.rect(
-                spiralTR, x, y,
-                G.Dx(spiralTR) * sr + srm,
-                G.Dy(spiralTR) * sr + srm,
-                Time.time * realSpiralRotateSpeed
-            )
             // Draw waves
             val f = 1f - Time.time / 100f % 1f
             Draw.color(color)
@@ -300,6 +340,27 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
                 )
             }
             Lines.endLine(true)
+            // Draw spiral
+            if (canShowSpiral) {
+                val realSpiralRotateSpeed = if (underdrivedBlocks != 0)
+                    realSpiralRotateSpeed
+                else lastRealSpiralRotateSpeed
+                Draw.z(Layer.shields)
+                Draw.color(Color.black)
+                // (removed) Fade in&out
+                val realRange = buildingProgress * realRange
+                Draw.alpha(alpha)
+                val scale = Mathf.lerp(1f, G.sin, 0.5f)
+                val sr = scale * MagicNSpiralRate * realRange
+                val srm = realRange * MagicNSpiralMin
+                Draw.rect(
+                    spiralTR, x, y,
+                    G.Dx(spiralTR) * sr + srm,
+                    G.Dy(spiralTR) * sr + srm,
+                    Time.time * realSpiralRotateSpeed
+                )
+            }
+
             Draw.reset()
         }
 

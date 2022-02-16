@@ -2,6 +2,8 @@ package net.liplum.api.virus;
 
 import mindustry.world.Block;
 import mindustry.world.blocks.environment.Floor;
+import mindustry.world.meta.BlockFlag;
+import mindustry.world.meta.BlockGroup;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -10,6 +12,8 @@ public class UninfectedBlocksRegistry {
     private static final Set<Block> UninfectedBlocks = new HashSet<>();
     private static final Set<Floor> UninfectedOverlays = new HashSet<>();
     private static final Set<Floor> UninfectedFloors = new HashSet<>();
+    private static final Set<BlockFlag> UninfectedFlag = new HashSet<>();
+    private static final Set<BlockGroup> UninfectedGroup = new HashSet<>();
 
     public static boolean block(Block block) {
         return UninfectedBlocks.add(block);
@@ -29,6 +33,14 @@ public class UninfectedBlocksRegistry {
 
     public static boolean overlay(Block overlay) {
         return UninfectedOverlays.add(overlay.asFloor());
+    }
+
+    public static boolean flag(BlockFlag flag) {
+        return UninfectedFlag.add(flag);
+    }
+
+    public static boolean group(BlockGroup group) {
+        return UninfectedGroup.add(group);
     }
 
     public static boolean hasBlock(Block block) {
@@ -51,4 +63,11 @@ public class UninfectedBlocksRegistry {
         return UninfectedOverlays.contains(overlay.asFloor());
     }
 
+    public static boolean hasFlag(BlockFlag flag) {
+        return UninfectedFlag.contains(flag);
+    }
+
+    public static boolean hasGroup(BlockGroup group) {
+        return UninfectedGroup.contains(group);
+    }
 }

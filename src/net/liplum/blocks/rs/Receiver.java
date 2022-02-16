@@ -50,7 +50,7 @@ public class Receiver extends AniedBlock<Receiver, Receiver.ReceiverBuild> {
         hasItems = true;
         update = true;
         solid = true;
-        itemCapacity = 10;
+        itemCapacity = 20;
         group = BlockGroup.transportation;
         configurable = true;
         saveConfig = true;

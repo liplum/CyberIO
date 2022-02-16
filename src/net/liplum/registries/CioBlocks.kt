@@ -11,14 +11,16 @@ import mindustry.ctype.ContentList
 import mindustry.graphics.Drawf
 import mindustry.type.Category
 import mindustry.type.ItemStack
+import mindustry.world.blocks.defense.OverdriveProjector
 import mindustry.world.blocks.production.GenericCrafter
 import mindustry.world.meta.BuildVisibility
+import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.animations.anims.IAnimated
 import net.liplum.animations.anis.AniConfig
 import net.liplum.animations.anis.AniState
 import net.liplum.animations.ganim.animation
-import net.liplum.api.virus.setUninfectedBlock
+import net.liplum.api.virus.setUninfected
 import net.liplum.api.virus.setUninfectedFloor
 import net.liplum.blocks.AniedCrafter
 import net.liplum.blocks.cloud.Cloud
@@ -29,6 +31,7 @@ import net.liplum.blocks.rs.Sender
 import net.liplum.blocks.underdrive.UnderdriveProjector
 import net.liplum.blocks.virus.AntiVirus
 import net.liplum.blocks.virus.Virus
+import net.liplum.utils.CioDebugOnly
 import net.liplum.utils.autoAnim
 import net.liplum.utils.subA
 
@@ -43,6 +46,8 @@ class CioBlocks : ContentList {
         @JvmStatic lateinit var underdriveProjector: UnderdriveProjector
         @JvmStatic lateinit var antiVirus: AntiVirus
         @JvmStatic lateinit var cloud: Cloud
+        @CioDebugOnly
+        @JvmStatic var hyperOverdriveSphere: OverdriveProjector? = null
     }
 
     override fun load() {
@@ -168,6 +173,9 @@ class CioBlocks : ContentList {
         Blocks.space.setUninfectedFloor()
         Blocks.water.setUninfectedFloor()
         Blocks.deepwater.setUninfectedFloor()
+        Blocks.itemSource.setUninfected()
+        Blocks.liquidSource.setUninfected()
+        Blocks.powerSource.setUninfected()
 
         landProjector = object : LandProjector("land-projector") {
             init {
@@ -213,7 +221,7 @@ class CioBlocks : ContentList {
         antiVirus = object : AntiVirus("anti-virus") {
             init {
                 requirements(
-                    Category.logic, BuildVisibility.sandboxOnly, arrayOf(
+                    Category.logic, BuildVisibility.shown, arrayOf(
                         ItemStack(CioItems.ic, 2),
                         ItemStack(Items.copper, 100),
                         ItemStack(Items.graphite, 40),
@@ -223,7 +231,7 @@ class CioBlocks : ContentList {
                 consumes.power(0.5f)
                 size = 1
             }
-        }.setUninfectedBlock()
+        }.setUninfected()
 
         cloud = object : Cloud("cloud") {
             init {
@@ -233,6 +241,21 @@ class CioBlocks : ContentList {
                 )
                 size = 3
                 consumes.power(1f)
+            }
+        }
+        DebugOnly {
+            hyperOverdriveSphere = object : OverdriveProjector("hyper-overdrive-sphere") {
+                init {
+                    requirements(
+                        Category.effect, BuildVisibility.sandboxOnly, arrayOf(
+                        )
+                    )
+                    size = 3
+                    consumes.power(50f)
+                    speedBoost = 50f
+                    range = 1000f
+                    hasBoost = false
+                }
             }
         }
     }
