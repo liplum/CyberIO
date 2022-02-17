@@ -73,8 +73,12 @@ open class Virus(name: String) : AnimedBlock(name) {
         var curGeneration: Int = 0
         var curChildrenNumber: Int = 0
         var curVarianceNumber: Int = 0
+        var isAlive: Boolean = true
         var raceColor: Color? = null
         override fun updateTile() {
+            if (isDead) {
+                return
+            }
             if (selfOnUninfectedFloorOrOverLay) {
                 setDead()
             }
@@ -164,6 +168,7 @@ open class Virus(name: String) : AnimedBlock(name) {
 
         open fun setDead() {
             if (tile.block() == this@Virus) {
+                isAlive = false
                 tile.setAir()
             }
         }
@@ -174,6 +179,7 @@ open class Virus(name: String) : AnimedBlock(name) {
             write.s(curChildrenNumber)
             write.s(curVarianceNumber)
             write.i(raceColor?.rgba() ?: -1)
+            write.bool(isAlive)
         }
 
         override fun read(read: Reads, revision: Byte) {
@@ -183,10 +189,14 @@ open class Virus(name: String) : AnimedBlock(name) {
             curVarianceNumber = read.s().toInt()
             val raceColorNumber = read.i()
             raceColor = if (raceColorNumber == -1) null else Color(raceColorNumber)
+            isAlive = read.bool()
         }
 
         override fun killVirus() {
             setDead()
         }
+
+        override val isDead: Boolean
+            get() = !isAlive
     }
 }

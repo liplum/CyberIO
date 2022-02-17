@@ -22,21 +22,21 @@ import net.liplum.ClientOnly
 import net.liplum.DebugOnly
 import net.liplum.utils.*
 
-internal const val D2SD = 5f / 6f * Mathf.pi
+internal const val T2SD = 5f / 6f * Mathf.pi
 internal const val HalfPi = 1f / 2f * Mathf.pi
 internal const val Left = HalfPi - 0.5f
 internal const val Right = HalfPi + 0.5f
-internal const val VirusEliminatePct = Left / D2SD
+internal const val VirusEliminatePct = Left / T2SD
 internal var SinLeft = Mathf.sin(HalfPi + 0.5f)
-internal fun D2S(pct: Float): Float {
-    val x = pct * D2SD
+internal fun T2S(pct: Float): Float {
+    val x = pct * T2SD
     if (x in Left..Right) {
         return SinLeft
     }
     if (pct in 0f..1f) {
         return Mathf.sin(x)
     }
-    return Mathf.sin(D2SD)
+    return Mathf.sin(T2SD)
 }
 
 internal const val ShieldExpandEffectDuration = 70f
@@ -46,7 +46,7 @@ val ShieldExpand: Effect = Effect(ShieldExpandEffectDuration) {
     val avb = it.data as AntiVirus.AntiVirusBuild
     val av = avb.block as AntiVirus
     val s = av.shieldTR
-    val d2s = D2S(it.time / ShieldExpandingDuration)
+    val d2s = T2S(it.time / ShieldExpandingDuration)
     Draw.alpha(it.fout())
     val scale = avb.realRange / 15f
     Draw.rect(
@@ -68,14 +68,16 @@ open class AntiVirus(name: String) : Block(name) {
     var infectedColor: Color = Color.red
     lateinit var unenergizedTR: TR
     lateinit var shieldTR: TR
-    fun absorbBullet(bullet: Bullet, build: AntiVirusBuild) {
+    fun absorbBullet(bullet: Bullet, build: AntiVirusBuild): Boolean {
         if (bullet.team !== build.team &&
             bullet.type.absorbable &&
             bullet.dst(build) <= build.realRange
         ) {
             bullet.absorb()
             Fx.absorb.at(bullet)
+            return true
         }
+        return false
     }
 
     init {
@@ -135,11 +137,14 @@ open class AntiVirus(name: String) : Block(name) {
                 var eliminated = false
                 Vars.indexer.eachBlock(this, realRange,
                     { b ->
-                        b is IVirusBuilding
+                        b is IVirusBuilding && !b.isDead
                     }) {
-                    (it as? IVirusBuilding)?.killVirus()
-                    ClientOnly {
-                        Time.runTask(VirusEliminatePoint) {
+                    Time.runTask(
+                        (VirusEliminatePoint + Mathf.random(-10, 10))
+                            .coerceAtLeast(0f)
+                    ) {
+                        (it as? IVirusBuilding)?.killVirus()
+                        ClientOnly {
                             Fx.breakBlock.at(it)
                         }
                     }
@@ -152,8 +157,9 @@ open class AntiVirus(name: String) : Block(name) {
                     realRange2,
                     realRange2
                 ) {
-                    absorbBullet(it, this)
-                    eliminated = true
+                    if (absorbBullet(it, this)) {
+                        eliminated = true
+                    }
                 }
                 ClientOnly {
                     if (eliminated && shieldExpendCharge >= shieldExpendMinInterval) {

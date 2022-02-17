@@ -62,7 +62,7 @@ fun UnderdriveProjector.UnderdriveBuild.spiralShrinking() {
 
 open class UnderdriveProjector(name: String) : PowerGenerator(name) {
     var reload = 60f
-    var range = 200f
+    var range = 40f
     /**
      * The less value the slower speed.[0,1]
      */
