@@ -1,5 +1,6 @@
 package net.liplum.utils
 
+import mindustry.Vars
 import mindustry.gen.Building
 import mindustry.graphics.Pal
 import mindustry.logic.Ranged
@@ -26,7 +27,7 @@ fun <T> BlockBars.addRangeInfo(maxRange: Float) where T : Building, T : Ranged {
         R.Bar.RangeName
     ) {
         Bar(
-            { R.Bar.Range.bundle(it.range()) },
+            { R.Bar.Range.bundle((it.range() / Vars.tilesize).format(1)) },
             { Pal.range },
             { it.range() / maxRange }
         )

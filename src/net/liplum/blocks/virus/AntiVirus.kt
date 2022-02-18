@@ -20,6 +20,8 @@ import mindustry.world.Tile
 import mindustry.world.meta.BlockGroup
 import net.liplum.ClientOnly
 import net.liplum.DebugOnly
+import net.liplum.R
+import net.liplum.ui.bars.ReverseBar
 import net.liplum.utils.*
 
 internal const val T2SD = 5f / 6f * Mathf.pi
@@ -61,9 +63,12 @@ fun AntiVirus.AntiVirusBuild.shieldExpanding() {
 }
 
 open class AntiVirus(name: String) : Block(name) {
-    var range: Float = 80f
+    var range: Float = 60f
     var reload = 120f
-    var shieldExpendMinInterval = 30f
+    var maxCoolDown = 240f
+    var minPrepareTime = 30f
+    var heatRate = 0.1f
+    var shieldExpendMinInterval = ShieldExpandEffectDuration * 0.6f
     var uninfectedColor: Color = Color.green
     var infectedColor: Color = Color.red
     lateinit var unenergizedTR: TR
@@ -98,6 +103,17 @@ open class AntiVirus(name: String) : Block(name) {
         DebugOnly {
             bars.addRangeInfo<AntiVirusBuild>(100f)
         }
+        bars.add<AntiVirusBuild>(R.Bar.CoolDownName) {
+            ReverseBar(
+                { R.Bar.CoolDown.bundle((it.coolDown / 60f).format(1)) },
+                { R.C.CoolDown },
+                {
+                    if (it.coolDown > reload)
+                        it.coolDown / maxCoolDown
+                    else it.coolDown / reload
+                }
+            )
+        }
     }
 
     override fun canReplace(other: Block) = super.canReplace(other) || other is Virus
@@ -124,16 +140,28 @@ open class AntiVirus(name: String) : Block(name) {
 
     open inner class AntiVirusBuild : Building(), Ranged {
         open val realRange: Float
-            get() = range * efficiency() * timeScale
-        open var cleanCharge = 0f
+            get() = range * efficiency() * Mathf.log(3f, timeScale + 2f)
+        open var coolDown: Float = reload
+            set(value) {
+                field = value.coerceIn(0f, maxCoolDown)
+            }
+
+        open fun resetCoolDown() {
+            coolDown = reload
+        }
+
+        open fun heat() {
+            coolDown += reload * heatRate
+        }
+
         open var shieldExpendCharge = 0f
         override fun updateTile() {
-            cleanCharge += edelta()
+            coolDown -= edelta()
             ClientOnly {
                 shieldExpendCharge += Time.delta
             }
-            if (cleanCharge >= reload) {
-                cleanCharge = 0f
+            if (coolDown <= 0f) {
+                resetCoolDown()
                 var eliminated = false
                 Vars.indexer.eachBlock(this, realRange,
                     { b ->
@@ -147,6 +175,7 @@ open class AntiVirus(name: String) : Block(name) {
                         ClientOnly {
                             Fx.breakBlock.at(it)
                         }
+                        heat()
                     }
                     eliminated = true
                 }
@@ -159,6 +188,7 @@ open class AntiVirus(name: String) : Block(name) {
                 ) {
                     if (absorbBullet(it, this)) {
                         eliminated = true
+                        heat()
                     }
                 }
                 ClientOnly {
@@ -192,12 +222,12 @@ open class AntiVirus(name: String) : Block(name) {
         override fun range(): Float = realRange
         override fun read(read: Reads, revision: Byte) {
             super.read(read, revision)
-            cleanCharge = read.f()
+            coolDown = read.f()
         }
 
         override fun write(write: Writes) {
             super.write(write)
-            write.f(cleanCharge)
+            write.f(coolDown)
         }
     }
 }

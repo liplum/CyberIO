@@ -82,6 +82,9 @@ open class Virus(name: String) : AnimedBlock(name) {
             if (selfOnUninfectedFloorOrOverLay) {
                 setDead()
             }
+            if (isDead) {
+                return
+            }
             if (canReproduce) {
                 var speed = spreadingSpeed
                 if (canOverdrive) {

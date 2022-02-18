@@ -31,11 +31,14 @@ public class R {
         public static final String Alpha = Gen(AlphaName);
         public static final String RangeName = "range";
         public static final String Range = Gen(RangeName);
+        public static final String CoolDownName = "cool-down";
+        public static final String CoolDown = Gen(CoolDownName);
     }
 
     public static class C {
         public static final Color LightBlue = Color.valueOf("#add8e6");
         public static final Color VirusBK = Color.valueOf("#cd44ff");
+        public static final Color CoolDown = Color.gray;
         public static final Color Sender = Color.red;
         public static final Color Receiver = Pal.place;
         public static final Color Cloud = Color.white;
