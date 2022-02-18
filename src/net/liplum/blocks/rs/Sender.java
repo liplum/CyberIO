@@ -51,7 +51,7 @@ public class Sender extends AniedBlock<Sender, Sender.SenderBuild> {
         config(Integer.class, SenderBuild::setReceiverPackedPos);
     }
 
-    public void genAnimState() {
+    public void genAniState() {
         IdleAni = addAniState("Idle", ((sender, build) -> {
 
         }));

@@ -85,7 +85,7 @@ public class Receiver extends AniedBlock<Receiver, Receiver.ReceiverBuild> {
         );
     }
 
-    public void genAnimState() {
+    public void genAniState() {
         DownloadAni = addAniState("Download", (sender, build) -> {
             if (build.getOutputItem() != null) {
                 DownloadAnim.draw(Color.green, build.x, build.y);

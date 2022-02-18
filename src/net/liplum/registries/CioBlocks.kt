@@ -83,7 +83,7 @@ class CioBlocks : ContentList {
                 consumes.power(10f)
             }
 
-            override fun genAnimState() {
+            override fun genAniState() {
                 idleState = addAniState("Idle") { _, build ->
                     Draw.rect(idleTR, build.x, build.y)
                 }

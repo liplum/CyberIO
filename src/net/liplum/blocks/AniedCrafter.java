@@ -20,7 +20,7 @@ public abstract class AniedCrafter extends GenericCrafter implements IAniSMed<An
     public AniedCrafter(String name) {
         super(name);
         if (CioMod.CanAniStateLoad) {
-            this.genAnimState();
+            this.genAniState();
             this.genAniConfig();
         }
     }

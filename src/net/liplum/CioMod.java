@@ -16,6 +16,7 @@ public class CioMod extends Mod {
     public static final boolean CanAniStateLoad = !Vars.headless;
     public static boolean CanGlobalAnimationPlay = false;
     public static boolean DebugMode = false;
+    public static float UpdateFrequency = 5f;
 
     public CioMod() {
         Log.info("Cyber IO mod loaded.");

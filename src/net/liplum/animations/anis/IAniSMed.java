@@ -12,7 +12,7 @@ public interface IAniSMed<TBlock extends Block, TBuild extends Building> {
 
     Collection<AniState<TBlock, TBuild>> getAllAniStates();
 
-    void genAnimState();
+    void genAniState();
 
     void genAniConfig();
 

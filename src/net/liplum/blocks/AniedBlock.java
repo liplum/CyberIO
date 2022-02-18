@@ -6,6 +6,7 @@ import mindustry.gen.Building;
 import mindustry.world.Block;
 import net.liplum.CioMod;
 import net.liplum.animations.anis.*;
+import net.liplum.utils.AniUtil;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -17,7 +18,7 @@ public abstract class AniedBlock<TBlock extends Block, TBuild extends Building> 
     public AniedBlock(String name) {
         super(name);
         if (CioMod.CanAniStateLoad) {
-            this.genAnimState();
+            this.genAniState();
             this.genAniConfig();
         }
     }
@@ -77,7 +78,7 @@ public abstract class AniedBlock<TBlock extends Block, TBuild extends Building> 
         public void updateTile() {
             super.updateTile();
             fixedUpdateTile();
-            if (CioMod.CanAniStateLoad) {
+            if (CioMod.CanAniStateLoad && AniUtil.needUpdateAniStateM()) {
                 aniStateM.update();
             }
         }
