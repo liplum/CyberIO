@@ -7,6 +7,7 @@ import arc.math.Mathf
 import mindustry.content.Blocks
 import mindustry.content.Fx
 import mindustry.content.Items
+import mindustry.content.Liquids
 import mindustry.ctype.ContentList
 import mindustry.graphics.Drawf
 import mindustry.type.Category
@@ -26,6 +27,7 @@ import net.liplum.blocks.AniedCrafter
 import net.liplum.blocks.cloud.Cloud
 import net.liplum.blocks.holo.HoloFloor
 import net.liplum.blocks.holo.LandProjector
+import net.liplum.blocks.prism.Prism
 import net.liplum.blocks.rs.Receiver
 import net.liplum.blocks.rs.Sender
 import net.liplum.blocks.underdrive.UnderdriveProjector
@@ -46,6 +48,8 @@ class CioBlocks : ContentList {
         @JvmStatic lateinit var underdriveProjector: UnderdriveProjector
         @JvmStatic lateinit var antiVirus: AntiVirus
         @JvmStatic lateinit var cloud: Cloud
+        @JvmStatic lateinit var prism: Prism
+
         @CioDebugOnly
         @JvmStatic var hyperOverdriveSphere: OverdriveProjector? = null
     }
@@ -256,6 +260,15 @@ class CioBlocks : ContentList {
                     range = 1000f
                     hasBoost = false
                 }
+            }
+        }
+        prism = object :Prism("prism"){
+            init {
+                requirements(
+                    Category.turret,BuildVisibility.sandboxOnly, arrayOf()
+                )
+                size = 3
+                consumes.liquid(Liquids.water,1f)
             }
         }
     }
