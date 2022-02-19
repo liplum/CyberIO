@@ -6,6 +6,11 @@ import mindustry.world.Block;
 
 import java.util.Collection;
 
+/**
+ * The interface of a block which has animation state machine
+ * @param <TBlock> the block type
+ * @param <TBuild> its corresponding building type
+ */
 public interface IAniSMed<TBlock extends Block, TBuild extends Building> {
     @Nullable
     AniState<TBlock, TBuild> getAniStateByName(String name);

@@ -49,7 +49,6 @@ class CioBlocks : ContentList {
         @JvmStatic lateinit var antiVirus: AntiVirus
         @JvmStatic lateinit var cloud: Cloud
         @JvmStatic lateinit var prism: Prism
-
         @CioDebugOnly
         @JvmStatic var hyperOverdriveSphere: OverdriveProjector? = null
     }
@@ -105,10 +104,10 @@ class CioBlocks : ContentList {
             override fun genAniConfig() {
                 aniConfig = AniConfig()
                 aniConfig.defaultState(idleState)
-                aniConfig.enter(idleState, workingState) { _, build ->
+                aniConfig.entry(idleState, workingState) { _, build ->
                     !Mathf.zero(build.progress)
                 }
-                aniConfig.enter(workingState, idleState) { _, build ->
+                aniConfig.entry(workingState, idleState) { _, build ->
                     Mathf.zero(build.progress) && Mathf.zero(build.power.status)
                 }
                 aniConfig.build()
@@ -262,13 +261,15 @@ class CioBlocks : ContentList {
                 }
             }
         }
-        prism = object :Prism("prism"){
-            init {
-                requirements(
-                    Category.turret,BuildVisibility.sandboxOnly, arrayOf()
-                )
-                size = 3
-                consumes.liquid(Liquids.water,1f)
+        DebugOnly {
+            prism = object : Prism("prism") {
+                init {
+                    requirements(
+                        Category.turret, BuildVisibility.sandboxOnly, arrayOf()
+                    )
+                    size = 3
+                    consumes.liquid(Liquids.water, 1f)
+                }
             }
         }
     }

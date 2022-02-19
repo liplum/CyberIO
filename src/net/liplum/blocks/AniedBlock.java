@@ -6,6 +6,7 @@ import mindustry.gen.Building;
 import mindustry.world.Block;
 import net.liplum.CioMod;
 import net.liplum.animations.anis.*;
+import net.liplum.api.ITrigger;
 import net.liplum.utils.AniUtil;
 
 import java.util.Collection;
@@ -50,7 +51,7 @@ public abstract class AniedBlock<TBlock extends Block, TBuild extends Building> 
     }
 
     public AniConfig<TBlock, TBuild> enter(String from, String to, ITrigger<TBlock, TBuild> canEnter) {
-        return aniConfig.enter(getAniStateByName(from), getAniStateByName(to), canEnter);
+        return aniConfig.entry(getAniStateByName(from), getAniStateByName(to), canEnter);
     }
 
     public abstract class AniedBuild extends Building {
