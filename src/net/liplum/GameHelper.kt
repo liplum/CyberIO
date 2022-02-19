@@ -2,6 +2,10 @@ package net.liplum
 
 import mindustry.Vars
 
+annotation class ClientOnly
+annotation class V6
+annotation class V7
+
 inline fun ClientOnly(func: () -> Unit) {
     if (!Vars.headless) {
         func()

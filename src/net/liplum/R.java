@@ -33,16 +33,27 @@ public class R {
         public static final String Range = Gen(RangeName);
         public static final String CoolDownName = "cool-down";
         public static final String CoolDown = Gen(CoolDownName);
+        public static final String IsAliveName = "is-alive";
+        public static final String IsAlive = Gen(IsAliveName);
     }
 
     public static class C {
         public static final Color LightBlue = Color.valueOf("#add8e6");
         public static final Color VirusBK = Color.valueOf("#cd44ff");
+        public static final Color IsAive = Color.green;
         public static final Color CoolDown = Color.gray;
         public static final Color Sender = Color.red;
         public static final Color Receiver = Pal.place;
         public static final Color Cloud = Color.white;
         public static final Color IcLight = Color.valueOf("#047b04");
         public static final Color IcDark = Color.valueOf("#024202");
+    }
+
+    public static class S {
+        public static String Gen(String name) {
+            return "shaders/" + name + ".frag";
+        }
+
+        public static final String Test = Gen("test");
     }
 }

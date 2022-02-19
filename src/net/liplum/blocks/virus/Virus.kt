@@ -8,11 +8,14 @@ import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.Vars
 import mindustry.gen.Building
+import mindustry.graphics.Layer
 import mindustry.ui.Bar
 import mindustry.world.Tile
+import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.api.virus.UninfectedBlocksRegistry
 import net.liplum.blocks.AnimedBlock
+import net.liplum.registries.ShaderRegistry
 import net.liplum.utils.VirusUtil
 import net.liplum.utils.bundle
 import net.liplum.utils.subA
@@ -66,6 +69,15 @@ open class Virus(name: String) : AnimedBlock(name) {
                 { it.curGeneration / maxGenerationOrDefault.toFloat() }
             )
         }
+        DebugOnly {
+            bars.add<VirusBuild>(R.Bar.IsAliveName) {
+                Bar(
+                    { R.Bar.IsAlive.bundle(it.isAlive) },
+                    { R.C.IsAive },
+                    { if (it.isAlive) 1f else 0f }
+                )
+            }
+        }
     }
 
     override fun minimapColor(tile: Tile) = R.C.VirusBK.rgba()
@@ -105,11 +117,18 @@ open class Virus(name: String) : AnimedBlock(name) {
         }
 
         override fun draw() {
-            Draw.rect(block.region, x, y)
-            if (raceColor != null) {
-                Draw.color(raceColor)
-                Draw.rect(raceMaskTR, x, y)
-                Draw.color()
+            if (ShaderRegistry.test != null) {
+                Draw.draw(Layer.block) {
+                    Draw.shader(ShaderRegistry.test)
+                    Draw.rect(block.region, x, y)
+                    if (raceColor != null) {
+                        Draw.color(raceColor)
+                        Draw.rect(raceMaskTR, x, y)
+                        Draw.color()
+                    }
+                    Draw.shader()
+                    Draw.reset()
+                }
             }
             drawTeamTop()
         }

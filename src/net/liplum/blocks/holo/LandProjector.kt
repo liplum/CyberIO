@@ -5,9 +5,11 @@ import mindustry.Vars
 import mindustry.gen.Building
 import mindustry.world.Block
 import mindustry.world.meta.BlockGroup
+import net.liplum.V7
 import net.liplum.registries.CioBlocks
 
-open class LandProjector(name: String?) : Block(name) {
+@V7
+open class LandProjector(name: String) : Block(name) {
     private val projectRadius = 10
 
     init {
@@ -22,6 +24,7 @@ open class LandProjector(name: String?) : Block(name) {
             if (transform) {
                 val selfBlockX = tile().x.toInt()
                 val selfBlockY = tile().y.toInt()
+                val projectRadius = projectRadius + size % 2
                 val xm = selfBlockX - projectRadius //x minus
                 val xp = selfBlockX + projectRadius //x plus
                 val ym = selfBlockY - projectRadius //y minus

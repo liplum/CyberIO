@@ -1,27 +1,31 @@
 package net.liplum;
 
+import arc.Core;
 import arc.Events;
 import arc.util.Log;
 import arc.util.Time;
 import mindustry.Vars;
-import mindustry.game.EventType;
 import mindustry.io.JsonIO;
 import mindustry.mod.Mod;
 import mindustry.ui.dialogs.BaseDialog;
 import net.liplum.blocks.cloud.LiplumCloud;
 import net.liplum.blocks.cloud.SharedRoom;
 import net.liplum.registries.ContentRegistry;
+import net.liplum.registries.ShaderRegistry;
+
+import static mindustry.game.EventType.*;
 
 public class CioMod extends Mod {
-    public static final boolean CanAniStateLoad = !Vars.headless;
+    public static final boolean IsClient = !Vars.headless;
+    public static final boolean CanAniStateLoad = IsClient;
     public static boolean CanGlobalAnimationPlay = false;
-    public static final boolean DebugMode = false;
+    public static final boolean DebugMode = true;
     public static float UpdateFrequency = 5f;
 
     public CioMod() {
         Log.info("Cyber IO mod loaded.");
         //listen for game load event
-        Events.on(EventType.ClientLoadEvent.class, e -> {
+        Events.on(ClientLoadEvent.class, e -> {
             //show dialog upon startup
             Time.runTask(10f, () -> {
                 BaseDialog dialog = new BaseDialog("Welcome");
@@ -32,13 +36,20 @@ public class CioMod extends Mod {
                 dialog.show();
             });
         });
+        Events.on(FileTreeInitEvent.class,
+                e -> Core.app.post(ShaderRegistry::load)
+        );
+
+        Events.on(DisposeEvent.class,
+                e -> ShaderRegistry.dispose()
+        );
     }
 
     @Override
     public void init() {
         CanGlobalAnimationPlay = true;
         JsonIO.json.addClassTag(SharedRoom.class.getName(), SharedRoom.class);
-        Events.on(EventType.WorldLoadEvent.class, e -> {
+        Events.on(WorldLoadEvent.class, e -> {
             LiplumCloud.read();
         });
     }

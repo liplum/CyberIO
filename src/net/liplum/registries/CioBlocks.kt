@@ -9,6 +9,7 @@ import mindustry.content.Fx
 import mindustry.content.Items
 import mindustry.content.Liquids
 import mindustry.ctype.ContentList
+import mindustry.graphics.CacheLayer
 import mindustry.graphics.Drawf
 import mindustry.type.Category
 import mindustry.type.ItemStack
