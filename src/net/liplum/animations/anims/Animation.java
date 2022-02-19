@@ -1,4 +1,4 @@
-package net.liplum.animations.anis;
+package net.liplum.animations.anims;
 
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;

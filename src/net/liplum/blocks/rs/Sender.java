@@ -75,52 +75,52 @@ public class Sender extends AniedBlock<Sender, Sender.SenderBuild> {
         aniConfig = new AniConfig<>();
         aniConfig.defaultState(IdleAni);
         // Idle
-        aniConfig.enter(IdleAni, UploadAni, (block, build) -> {
+        aniConfig.entry(IdleAni, UploadAni, (block, build) -> {
             IDataReceiver reb = build.getReceiverBuilding();
             if (reb != null) {
                 return reb.canAcceptAnyData(build);
             }
             return false;
-        }).enter(IdleAni, BlockedAni, (block, build) -> {
+        }).entry(IdleAni, BlockedAni, (block, build) -> {
             IDataReceiver reb = build.getReceiverBuilding();
             if (reb != null) {
                 return !reb.isOutputting() && !reb.canAcceptAnyData(build);
             }
             return false;
-        }).enter(IdleAni, NoPowerAni, (block, build) ->
+        }).entry(IdleAni, NoPowerAni, (block, build) ->
                 Mathf.zero(build.power.status)
         );
 
         // Upload
-        aniConfig.enter(UploadAni, IdleAni, (block, build) ->
+        aniConfig.entry(UploadAni, IdleAni, (block, build) ->
                 build.getReceiverPackedPos() == -1
-        ).enter(UploadAni, BlockedAni, (block, build) -> {
+        ).entry(UploadAni, BlockedAni, (block, build) -> {
             IDataReceiver reb = build.getReceiverBuilding();
             if (reb != null) {
                 return !reb.isOutputting() && !reb.canAcceptAnyData(build);
             }
             return false;
-        }).enter(UploadAni, NoPowerAni, (block, build) ->
+        }).entry(UploadAni, NoPowerAni, (block, build) ->
                 Mathf.zero(build.power.status)
         );
 
         // Blocked
-        aniConfig.enter(BlockedAni, IdleAni, (block, build) ->
+        aniConfig.entry(BlockedAni, IdleAni, (block, build) ->
                 build.getReceiverPackedPos() == -1
-        ).enter(BlockedAni, UploadAni, ((block, build) -> {
+        ).entry(BlockedAni, UploadAni, ((block, build) -> {
             IDataReceiver reb = build.getReceiverBuilding();
             if (reb != null) {
                 return reb.isOutputting() || reb.canAcceptAnyData(build);
             }
             return false;
-        })).enter(BlockedAni, NoPowerAni, (block, build) ->
+        })).entry(BlockedAni, NoPowerAni, (block, build) ->
                 Mathf.zero(build.power.status)
         );
 
         // NoPower
-        aniConfig.enter(NoPowerAni, IdleAni, (block, build) ->
+        aniConfig.entry(NoPowerAni, IdleAni, (block, build) ->
                 !Mathf.zero(build.power.status)
-        ).enter(NoPowerAni, UploadAni, (block, build) -> {
+        ).entry(NoPowerAni, UploadAni, (block, build) -> {
             if (Mathf.zero(build.power.status)) {
                 return false;
             }

@@ -3,6 +3,7 @@ package net.liplum.animations.anis;
 import arc.util.Nullable;
 import mindustry.gen.Building;
 import mindustry.world.Block;
+import net.liplum.api.ITrigger;
 
 public class AniStateM<TBlock extends Block, TBuild extends Building> {
     private final TBlock block;
@@ -40,7 +41,7 @@ public class AniStateM<TBlock extends Block, TBuild extends Building> {
     }
 
     public boolean curOverwriteBlock() {
-        return curState != null && curState.overwriteBlock;
+        return curState != null && curState.isOverwriteBlock();
     }
 
     public void update() {
@@ -48,7 +49,7 @@ public class AniStateM<TBlock extends Block, TBuild extends Building> {
             ITrigger<TBlock, TBuild> canEnter = config.getCanEnter(curState, to);
             if (canEnter != null && canEnter.canTrigger(this.block, this.build)) {
                 if (switchAniStateListener != null) {
-                    switchAniStateListener.OnSwitch(this.block, this.build, curState, to);
+                    switchAniStateListener.onSwitch(this.block, this.build, curState, to);
                 }
                 setCurState(to);
                 return;

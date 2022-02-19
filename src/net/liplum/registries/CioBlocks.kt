@@ -105,10 +105,10 @@ class CioBlocks : ContentList {
             override fun genAniConfig() {
                 aniConfig = AniConfig()
                 aniConfig.defaultState(idleState)
-                aniConfig.enter(idleState, workingState) { _, build ->
+                aniConfig.entry(idleState, workingState) { _, build ->
                     !Mathf.zero(build.progress)
                 }
-                aniConfig.enter(workingState, idleState) { _, build ->
+                aniConfig.entry(workingState, idleState) { _, build ->
                     Mathf.zero(build.progress) && Mathf.zero(build.power.status)
                 }
                 aniConfig.build()

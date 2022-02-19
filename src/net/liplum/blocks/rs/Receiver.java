@@ -115,33 +115,33 @@ public class Receiver extends AniedBlock<Receiver, Receiver.ReceiverBuild> {
         aniConfig = new AniConfig<>();
         aniConfig.defaultState(UnconnectedAni);
         // UnconnectedAni
-        aniConfig.enter(UnconnectedAni, DownloadAni, (block, build) ->
+        aniConfig.entry(UnconnectedAni, DownloadAni, (block, build) ->
                 build.getOutputItem() != null
-        ).enter(UnconnectedAni, NoPowerAni, (block, build) ->
+        ).entry(UnconnectedAni, NoPowerAni, (block, build) ->
                 Mathf.zero(build.power.status)
         );
 
         // BlockedAni
-        aniConfig.enter(BlockedAni, UnconnectedAni, ((block, build) ->
+        aniConfig.entry(BlockedAni, UnconnectedAni, ((block, build) ->
                 build.getOutputItem() == null)
-        ).enter(BlockedAni, DownloadAni, ((block, build) ->
+        ).entry(BlockedAni, DownloadAni, ((block, build) ->
                 build.isOutputting() || build.lastFullDataDelta < 60
-        )).enter(BlockedAni, NoPowerAni, (block, build) ->
+        )).entry(BlockedAni, NoPowerAni, (block, build) ->
                 Mathf.zero(build.power.status)
         );
 
         // DownloadAni
-        aniConfig.enter(DownloadAni, UnconnectedAni, (block, build) ->
+        aniConfig.entry(DownloadAni, UnconnectedAni, (block, build) ->
                 build.getOutputItem() == null
-        ).enter(DownloadAni, BlockedAni, (block, build) ->
+        ).entry(DownloadAni, BlockedAni, (block, build) ->
                 !build.isOutputting() && build.lastFullDataDelta > 60
-        ).enter(DownloadAni, NoPowerAni, (block, build) ->
+        ).entry(DownloadAni, NoPowerAni, (block, build) ->
                 Mathf.zero(build.power.status)
         );
         // NoPower
-        aniConfig.enter(NoPowerAni, UnconnectedAni, (block, build) ->
+        aniConfig.entry(NoPowerAni, UnconnectedAni, (block, build) ->
                 !Mathf.zero(build.power.status) && build.getOutputItem() == null
-        ).enter(NoPowerAni, DownloadAni, (block, build) ->
+        ).entry(NoPowerAni, DownloadAni, (block, build) ->
                 !Mathf.zero(build.power.status) && build.getOutputItem() != null
         );
         aniConfig.build();

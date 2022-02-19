@@ -70,8 +70,8 @@ open class Cloud(name: String) : PowerBlock(name) {
     open fun genAniConfig() {
         CloudAniConfig = AniConfig()
         CloudAniConfig.defaultState(CloudNoPowerAni)
-        CloudAniConfig.enter(CloudNoPowerAni, CloudIdleAni) { _, build -> build.isWorking }
-        CloudAniConfig.enter(CloudIdleAni, CloudNoPowerAni) { _, build -> !build.isWorking }
+        CloudAniConfig.entry(CloudNoPowerAni, CloudIdleAni) { _, build -> build.isWorking }
+        CloudAniConfig.entry(CloudIdleAni, CloudNoPowerAni) { _, build -> !build.isWorking }
         CloudAniConfig.build()
     }
 
