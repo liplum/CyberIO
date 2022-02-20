@@ -20,6 +20,7 @@ import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.ItemSelection;
 import mindustry.world.meta.BlockGroup;
+import net.liplum.CioMod;
 import net.liplum.R;
 import net.liplum.animations.anims.IAnimated;
 import net.liplum.animations.anis.AniConfig;
@@ -31,6 +32,7 @@ import net.liplum.utils.*;
 import org.jetbrains.annotations.NotNull;
 
 import static mindustry.Vars.*;
+import static net.liplum.CioMod.DebugMode;
 
 public class Receiver extends AniedBlock<Receiver, Receiver.ReceiverBuild> {
     private final int DownloadAnimFrameNumber = 7;
@@ -115,33 +117,38 @@ public class Receiver extends AniedBlock<Receiver, Receiver.ReceiverBuild> {
         aniConfig = new AniConfig<>();
         aniConfig.defaultState(UnconnectedAni);
         // UnconnectedAni
-        aniConfig.entry(UnconnectedAni, DownloadAni, (block, build) ->
+        aniConfig.from(UnconnectedAni
+        ).to(DownloadAni).when((block, build) ->
                 build.getOutputItem() != null
-        ).entry(UnconnectedAni, NoPowerAni, (block, build) ->
+        ).to(NoPowerAni).when((block, build) ->
                 Mathf.zero(build.power.status)
         );
 
         // BlockedAni
-        aniConfig.entry(BlockedAni, UnconnectedAni, ((block, build) ->
-                build.getOutputItem() == null)
-        ).entry(BlockedAni, DownloadAni, ((block, build) ->
+        aniConfig.from(BlockedAni
+        ).to(UnconnectedAni).when((block, build) ->
+                build.getOutputItem() == null
+        ).to(DownloadAni).when((block, build) ->
                 build.isOutputting() || build.lastFullDataDelta < 60
-        )).entry(BlockedAni, NoPowerAni, (block, build) ->
+        ).to(NoPowerAni).when((block, build) ->
                 Mathf.zero(build.power.status)
         );
 
         // DownloadAni
-        aniConfig.entry(DownloadAni, UnconnectedAni, (block, build) ->
+        aniConfig.from(DownloadAni
+        ).to(UnconnectedAni).when((block, build) ->
                 build.getOutputItem() == null
-        ).entry(DownloadAni, BlockedAni, (block, build) ->
+        ).to(BlockedAni).when((block, build) ->
                 !build.isOutputting() && build.lastFullDataDelta > 60
-        ).entry(DownloadAni, NoPowerAni, (block, build) ->
+        ).to(NoPowerAni).when((block, build) ->
                 Mathf.zero(build.power.status)
         );
+
         // NoPower
-        aniConfig.entry(NoPowerAni, UnconnectedAni, (block, build) ->
+        aniConfig.from(NoPowerAni
+        ).to(UnconnectedAni).when((block, build) ->
                 !Mathf.zero(build.power.status) && build.getOutputItem() == null
-        ).entry(NoPowerAni, DownloadAni, (block, build) ->
+        ).to(DownloadAni).when((block, build) ->
                 !Mathf.zero(build.power.status) && build.getOutputItem() != null
         );
         aniConfig.build();
@@ -159,6 +166,14 @@ public class Receiver extends AniedBlock<Receiver, Receiver.ReceiverBuild> {
 
     public void loadAnimation() {
         DownloadAnim = AnimUtil.autoCio("rs-down-arrow", DownloadAnimFrameNumber, 30f);
+    }
+
+    @Override
+    public void setBars() {
+        super.setBars();
+        if (DebugMode) {
+            DebugUtilKt.addAniStateInfo(bars);
+        }
     }
 
     @Override
@@ -314,7 +329,8 @@ public class Receiver extends AniedBlock<Receiver, Receiver.ReceiverBuild> {
         }
 
         @Override
-        public @NotNull ObjectSet<Integer> connectedSenders() {
+        public @NotNull
+        ObjectSet<Integer> connectedSenders() {
             return sendersPos;
         }
 

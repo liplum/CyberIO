@@ -8,7 +8,7 @@ varying vec2 v_texCoords;
 
 void main(){
     // Gets current pixel position
-    vec4 color=tFexture2D(u_texture,v_texCoords.xy);
+    vec4 color=texture2D(u_texture,v_texCoords.xy);
     
     vec2 pos=gl_FragCoord.xy+.8*u_offset;
     

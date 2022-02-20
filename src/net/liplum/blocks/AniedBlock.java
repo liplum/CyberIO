@@ -11,6 +11,7 @@ import net.liplum.animations.anis.AniStateM;
 import net.liplum.animations.anis.IAniSMed;
 import net.liplum.api.ITrigger;
 import net.liplum.utils.AniUtil;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -76,6 +77,11 @@ public abstract class AniedBlock<TBlock extends Block, TBuild extends Building> 
      */
     public abstract class AniedBuild extends Building {
         protected AniStateM<TBlock, TBuild> aniStateM;
+
+        @NotNull
+        public AniStateM<TBlock, TBuild> getAniStateM() {
+            return aniStateM;
+        }
 
         @Override
         public Building create(Block block, Team team) {

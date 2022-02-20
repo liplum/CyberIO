@@ -23,8 +23,11 @@ import net.liplum.api.data.IDataSender;
 import net.liplum.blocks.AniedBlock;
 import net.liplum.utils.AnimUtil;
 import net.liplum.utils.AtlasUtil;
+import net.liplum.utils.DebugUtilKt;
 import net.liplum.utils.G;
 import org.jetbrains.annotations.NotNull;
+
+import static net.liplum.CioMod.DebugMode;
 
 public class Sender extends AniedBlock<Sender, Sender.SenderBuild> {
     private final int UploadAnimFrameNumber = 7;
@@ -75,52 +78,44 @@ public class Sender extends AniedBlock<Sender, Sender.SenderBuild> {
         aniConfig = new AniConfig<>();
         aniConfig.defaultState(IdleAni);
         // Idle
-        aniConfig.entry(IdleAni, UploadAni, (block, build) -> {
+        aniConfig.from(IdleAni
+        ).to(UploadAni).when((block, build) -> {
             IDataReceiver reb = build.getReceiverBuilding();
-            if (reb != null) {
-                return reb.canAcceptAnyData(build);
-            }
-            return false;
-        }).entry(IdleAni, BlockedAni, (block, build) -> {
+            return reb != null && (reb.canAcceptAnyData(build));
+        }).to(BlockedAni).when((block, build) -> {
             IDataReceiver reb = build.getReceiverBuilding();
-            if (reb != null) {
-                return !reb.isOutputting() && !reb.canAcceptAnyData(build);
-            }
-            return false;
-        }).entry(IdleAni, NoPowerAni, (block, build) ->
+            return reb != null && (!reb.isOutputting() && !reb.canAcceptAnyData(build));
+        }).to(NoPowerAni).when((block, build) ->
                 Mathf.zero(build.power.status)
         );
 
         // Upload
-        aniConfig.entry(UploadAni, IdleAni, (block, build) ->
+        aniConfig.from(UploadAni
+        ).to(IdleAni).when((block, build) ->
                 build.getReceiverPackedPos() == -1
-        ).entry(UploadAni, BlockedAni, (block, build) -> {
+        ).to(BlockedAni).when((block, build) -> {
             IDataReceiver reb = build.getReceiverBuilding();
-            if (reb != null) {
-                return !reb.isOutputting() && !reb.canAcceptAnyData(build);
-            }
-            return false;
-        }).entry(UploadAni, NoPowerAni, (block, build) ->
+            return reb != null && (!reb.isOutputting() && !reb.canAcceptAnyData(build));
+        }).to(NoPowerAni).when((block, build) ->
                 Mathf.zero(build.power.status)
         );
 
         // Blocked
-        aniConfig.entry(BlockedAni, IdleAni, (block, build) ->
+        aniConfig.from(BlockedAni
+        ).to(IdleAni).when((block, build) ->
                 build.getReceiverPackedPos() == -1
-        ).entry(BlockedAni, UploadAni, ((block, build) -> {
+        ).to(UploadAni).when((block, build) -> {
             IDataReceiver reb = build.getReceiverBuilding();
-            if (reb != null) {
-                return reb.isOutputting() || reb.canAcceptAnyData(build);
-            }
-            return false;
-        })).entry(BlockedAni, NoPowerAni, (block, build) ->
+            return reb != null && (reb.isOutputting() || reb.canAcceptAnyData(build));
+        }).to(NoPowerAni).when((block, build) ->
                 Mathf.zero(build.power.status)
         );
 
         // NoPower
-        aniConfig.entry(NoPowerAni, IdleAni, (block, build) ->
+        aniConfig.from(NoPowerAni
+        ).to(IdleAni).when((block, build) ->
                 !Mathf.zero(build.power.status)
-        ).entry(NoPowerAni, UploadAni, (block, build) -> {
+        ).to(UploadAni).when((block, build) -> {
             if (Mathf.zero(build.power.status)) {
                 return false;
             }
@@ -147,6 +142,14 @@ public class Sender extends AniedBlock<Sender, Sender.SenderBuild> {
 
     public void loadAnimation() {
         UploadAnim = AnimUtil.autoCio("rs-up-arrow", UploadAnimFrameNumber, 30f);
+    }
+
+    @Override
+    public void setBars() {
+        super.setBars();
+        if (DebugMode) {
+            DebugUtilKt.addAniStateInfo(bars);
+        }
     }
 
     public class SenderBuild extends AniedBuild implements IDataSender {

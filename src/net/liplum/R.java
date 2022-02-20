@@ -35,6 +35,8 @@ public class R {
         public static final String CoolDown = Gen(CoolDownName);
         public static final String IsAliveName = "is-alive";
         public static final String IsAlive = Gen(IsAliveName);
+        public static final String AniStateName = "ani-state";
+        public static final String AniState = Gen(AniStateName);
     }
 
     public static class C {
