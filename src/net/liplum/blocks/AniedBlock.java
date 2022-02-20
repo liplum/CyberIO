@@ -5,13 +5,22 @@ import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.world.Block;
 import net.liplum.CioMod;
-import net.liplum.animations.anis.*;
+import net.liplum.animations.anis.AniConfig;
+import net.liplum.animations.anis.AniState;
+import net.liplum.animations.anis.AniStateM;
+import net.liplum.animations.anis.IAniSMed;
 import net.liplum.api.ITrigger;
 import net.liplum.utils.AniUtil;
 
 import java.util.Collection;
 import java.util.HashMap;
 
+/**
+ * A block which has animation state machine
+ *
+ * @param <TBlock> the block type
+ * @param <TBuild> its corresponding building type
+ */
 public abstract class AniedBlock<TBlock extends Block, TBuild extends Building> extends Block implements IAniSMed<TBlock, TBuild> {
     protected final HashMap<String, AniState<TBlock, TBuild>> allAniStates = new HashMap<>();
     protected AniConfig<TBlock, TBuild> aniConfig;
@@ -50,10 +59,21 @@ public abstract class AniedBlock<TBlock extends Block, TBuild extends Building> 
         return aniState;
     }
 
-    public AniConfig<TBlock, TBuild> enter(String from, String to, ITrigger<TBlock, TBuild> canEnter) {
+    /**
+     * Add an entry of configuration.
+     *
+     * @param from     the current State
+     * @param to       the next State
+     * @param canEnter When the current State can enter next
+     * @return the configuration self
+     */
+    public AniConfig<TBlock, TBuild> entry(String from, String to, ITrigger<TBlock, TBuild> canEnter) {
         return aniConfig.entry(getAniStateByName(from), getAniStateByName(to), canEnter);
     }
 
+    /**
+     * You have to make the {@link Building} of your subclass extend this
+     */
     public abstract class AniedBuild extends Building {
         protected AniStateM<TBlock, TBuild> aniStateM;
 
@@ -67,14 +87,23 @@ public abstract class AniedBlock<TBlock extends Block, TBuild extends Building> 
             return this;
         }
 
+        /**
+         * Overwrite this please
+         */
         public void fixedUpdateTile() {
 
         }
 
+        /**
+         * Overwrite this please
+         */
         public void fixedDraw() {
 
         }
 
+        /**
+         * Don't overwrite it unless you want a custom function
+         */
         @Override
         public void updateTile() {
             super.updateTile();
@@ -84,6 +113,9 @@ public abstract class AniedBlock<TBlock extends Block, TBuild extends Building> 
             }
         }
 
+        /**
+         * Don't overwrite it unless you want a custom function
+         */
         @Override
         public void draw() {
             if (CioMod.CanAniStateLoad) {
