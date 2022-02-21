@@ -8,11 +8,13 @@ import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.Vars
 import mindustry.gen.Building
+import mindustry.gen.Call
 import mindustry.graphics.Layer
 import mindustry.ui.Bar
 import mindustry.world.Tile
 import net.liplum.DebugOnly
 import net.liplum.R
+import net.liplum.ServerOnly
 import net.liplum.api.virus.UninfectedBlocksRegistry
 import net.liplum.blocks.AnimedBlock
 import net.liplum.registries.ShaderRegistry
@@ -21,6 +23,17 @@ import net.liplum.utils.bundle
 import net.liplum.utils.subA
 
 typealias UBR = UninfectedBlocksRegistry
+
+private val Number2X = arrayOf(
+    -1, -1, -1,
+    0, 0,
+    1, 1, 1
+)
+private val Number2Y = arrayOf(
+    -1, 0, 1,
+    -1, 1,
+    -1, 0, 1
+)
 
 open class Virus(name: String) : AnimedBlock(name) {
     /**
@@ -88,29 +101,38 @@ open class Virus(name: String) : AnimedBlock(name) {
         var isAlive: Boolean = true
         var raceColor: Color? = null
         override fun updateTile() {
-            if (isDead) {
-                return
-            }
-            if (selfOnUninfectedFloorOrOverLay) {
-                setDead()
-            }
-            if (isDead) {
-                return
-            }
-            if (canReproduce) {
-                var speed = spreadingSpeed
-                if (canOverdrive) {
-                    speed = (speed / timeScale).toInt()
+            ServerOnly {
+                if (isDead) {
+                    return
                 }
-                val luckyNumber = Mathf.random(speed)
-                if (luckyNumber == 0) {
-                    val randomDX = Mathf.random(-1, 1)
-                    val randomDY = Mathf.random(-1, 1)
-                    val selfX = tile.x.toInt()
-                    val selfY = tile.y.toInt()
-                    val infected = Vars.world.tile(selfX + randomDX, selfY + randomDY)
-                    if (VirusUtil.canInfect(infected)) {
-                        this.reproduce(infected)
+                if (selfOnUninfectedFloorOrOverLay) {
+                    setDead()
+                }
+                if (isDead) {
+                    return
+                }
+                if (canReproduce) {
+                    var speed = spreadingSpeed
+                    if (canOverdrive) {
+                        speed = (speed / timeScale).toInt()
+                    }
+                    val luckyNumber = Mathf.random(speed)
+                    if (luckyNumber == 0) {
+                        /*
+                        5   6   7   ( 1,-1)  ( 1, 0)  ( 1, 1)
+                        3   *   4   ( 0,-1)  ( 0, 0)  ( 0, 1)
+                        0   1   2   (-1,-1)  (-1, 0)  (-1, 1)
+                        */
+                        val r = Mathf.random(0, 7)
+                        val selfX = tile.x.toInt()
+                        val selfY = tile.y.toInt()
+                        val infected = Vars.world.tile(
+                            selfX + Number2X[r],
+                            selfY + Number2Y[r]
+                        )
+                        if (VirusUtil.canInfect(infected)) {
+                            this.reproduce(infected)
+                        }
                     }
                 }
             }
@@ -151,7 +173,7 @@ open class Virus(name: String) : AnimedBlock(name) {
         }
 
         open fun reproduceNormal(infected: Tile) {
-            infected.setBlock(this@Virus, team)
+            Call.setTile(infected, this@Virus, team, 0)
             val newGen = infected.build as? VirusBuild
             newGen?.curGeneration = this.curGeneration + 1
             curChildrenNumber++
@@ -162,7 +184,7 @@ open class Virus(name: String) : AnimedBlock(name) {
         }
 
         open fun reproduceVariant(infected: Tile) {
-            infected.setBlock(this@Virus, team)
+            Call.setTile(infected, this@Virus, team, 0)
             val newGen = infected.build as? VirusBuild
             curChildrenNumber++
             newGen?.raceColor = VirusColors.randomColor(this.raceColor)

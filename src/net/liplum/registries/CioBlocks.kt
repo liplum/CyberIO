@@ -248,18 +248,16 @@ class CioBlocks : ContentList {
             }
         }
         DebugOnly {
-            hyperOverdriveSphere = object : OverdriveProjector("hyper-overdrive-sphere") {
-                init {
-                    requirements(
-                        Category.effect, BuildVisibility.sandboxOnly, arrayOf(
-                        )
+            hyperOverdriveSphere = OverdriveProjector("hyper-overdrive-sphere").apply {
+                requirements(
+                    Category.effect, BuildVisibility.sandboxOnly, arrayOf(
                     )
-                    size = 3
-                    consumes.power(50f)
-                    speedBoost = 50f
-                    range = 1000f
-                    hasBoost = false
-                }
+                )
+                size = 3
+                consumes.power(50f)
+                speedBoost = 50f
+                range = 1000f
+                hasBoost = false
             }
         }
         DebugOnly {

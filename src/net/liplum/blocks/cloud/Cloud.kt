@@ -14,8 +14,8 @@ import mindustry.world.Tile
 import mindustry.world.blocks.power.PowerBlock
 import mindustry.world.meta.BlockGroup
 import mindustry.world.modules.ItemModule
-import net.liplum.CanAniStateLoad
-import net.liplum.CanGlobalAnimationPlay
+import net.liplum.WhenCanAniStateLoad
+import net.liplum.WhenCanGlobalAnimationPlay
 import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.animations.anims.IAnimated
@@ -49,7 +49,7 @@ open class Cloud(name: String) : PowerBlock(name) {
         itemCapacity = 10
 
         group = BlockGroup.logic
-        CanAniStateLoad {
+        WhenCanAniStateLoad {
             this.genAnimState()
             this.genAniConfig()
             this.genBlockTypes()
@@ -155,7 +155,7 @@ open class Cloud(name: String) : PowerBlock(name) {
         override fun updateTile() {
             info.lastReceiveOrSendDataTime += edelta()
             info.lastShredTime += edelta()
-            CanAniStateLoad {
+            WhenCanAniStateLoad {
                 aniBlockGroupObj.update()
             }
         }
@@ -164,7 +164,7 @@ open class Cloud(name: String) : PowerBlock(name) {
             super.create(block, team)
             cloudRoom = LiplumCloud.getCloud(team)
             cloudRoom.online(this)
-            CanAniStateLoad {
+            WhenCanAniStateLoad {
                 aniBlockGroupObj = blockGroup.newObj(this@Cloud, this)
             }
             return this
@@ -213,7 +213,7 @@ open class Cloud(name: String) : PowerBlock(name) {
 
         override fun draw() {
             super.draw()
-            CanGlobalAnimationPlay {
+            WhenCanGlobalAnimationPlay {
                 aniBlockGroupObj.drawBuilding()
             }
         }
