@@ -71,4 +71,12 @@ public interface IAniSMed<TBlock extends Block, TBuild extends Building> {
     default AniState<TBlock, TBuild> addAniState(String name, IRenderBehavior<TBlock, TBuild> rb) {
         return addAniState(new AniState<>(name, rb));
     }
+
+    /**
+     * @param name name
+     * @return {@code aniState} self
+     */
+    default AniState<TBlock, TBuild> addAniState(String name) {
+        return addAniState(new AniState<>(name));
+    }
 }
