@@ -56,7 +56,7 @@ open class Virus(name: String) : AnimedBlock(name) {
     var maxMutationNumber: Int = -1
     var canMutate: Boolean = false
     var startMutationPercent: Float = 0.8f
-    lateinit var raceMaskTR: TextureRegion;
+    lateinit var raceMaskTR: TextureRegion
 
     init {
         solid = true
@@ -95,11 +95,13 @@ open class Virus(name: String) : AnimedBlock(name) {
 
     override fun minimapColor(tile: Tile) = R.C.VirusBK.rgba()
     open inner class VirusBuild : Building(), IVirusBuilding {
+        var neighborState : Int = 0
         var curGeneration: Int = 0
         var curChildrenNumber: Int = 0
         var curVarianceNumber: Int = 0
         var isAlive: Boolean = true
         var raceColor: Color? = null
+
         override fun updateTile() {
             ServerOnly {
                 if (isDead) {

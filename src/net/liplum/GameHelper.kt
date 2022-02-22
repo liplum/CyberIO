@@ -1,6 +1,7 @@
 package net.liplum
 
 import mindustry.Vars
+import net.liplum.utils.AniUtil
 
 annotation class ClientOnly
 annotation class V6
@@ -30,7 +31,7 @@ inline fun WhenCanGlobalAnimationPlay(func: () -> Unit) {
 }
 
 inline fun WhenCanAniStateLoad(func: () -> Unit) {
-    if (CioMod.CanAniStateLoad) {
+    if (CioMod.CanAniStateLoad && AniUtil.needUpdateAniStateM()) {
         func()
     }
 }

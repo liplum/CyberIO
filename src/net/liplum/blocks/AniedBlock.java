@@ -114,9 +114,6 @@ public abstract class AniedBlock<TBlock extends Block, TBuild extends Building> 
         public void updateTile() {
             super.updateTile();
             fixedUpdateTile();
-            if (CioMod.CanAniStateLoad && AniUtil.needUpdateAniStateM()) {
-                aniStateM.update();
-            }
         }
 
         /**
@@ -125,6 +122,9 @@ public abstract class AniedBlock<TBlock extends Block, TBuild extends Building> 
         @Override
         public void draw() {
             if (CioMod.CanAniStateLoad) {
+                if (AniUtil.needUpdateAniStateM()) {
+                    aniStateM.update();
+                }
                 if (!aniStateM.curOverwriteBlock()) {
                     super.draw();
                 }

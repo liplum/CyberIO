@@ -205,7 +205,7 @@ class AniConfig<TBlock : Block, TBuild : Building> {
      * @return if the key of `form`->`to` exists, return the condition. Otherwise, return null.
      */
     @Nullable
-    fun getCanEnter(from: AniState<TBlock, TBuild>, to: AniState<TBlock, TBuild>): ITrigger<TBlock, TBuild> {
+    fun getCanEnter(from: AniState<TBlock, TBuild>, to: AniState<TBlock, TBuild>): ITrigger<TBlock, TBuild>? {
         return canEnters[getKey(from, to)]!!
     }
     /**
