@@ -44,6 +44,7 @@ class CioBlocks : ContentList {
         @CioDebugOnly
         @JvmStatic var hyperOverdriveSphere: OverdriveProjector? = null
         @JvmStatic lateinit var holoWall: HoloWall
+        @JvmStatic lateinit var holoWallLarge: HoloWall
     }
 
     override fun load() {
@@ -212,10 +213,27 @@ class CioBlocks : ContentList {
         }
         holoWall = HoloWall("holo-wall").apply {
             requirements(
-                Category.defense, BuildVisibility.sandboxOnly, arrayOf()
+                Category.defense, BuildVisibility.sandboxOnly, arrayOf(
+                    ItemStack(CioItems.ic, 1),
+                    ItemStack(Items.titanium, 20),
+                )
             )
             size = 1
-            health = 500 * size
+            restoreReload = 10 * 60f
+            health = 300
+        }
+
+        holoWallLarge = HoloWall("holo-wall-large").apply {
+            requirements(
+                Category.defense, BuildVisibility.sandboxOnly, arrayOf(
+                    ItemStack(CioItems.ic, 3),
+                    ItemStack(Items.titanium, 30 * 4),
+                    ItemStack(Items.silicon, 10),
+                )
+            )
+            size = 3
+            restoreReload = 15 * 60f
+            health = 300 * 5
         }
     }
 }

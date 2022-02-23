@@ -8,13 +8,16 @@ import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.Vars
+import mindustry.game.Team
+import mindustry.gen.Building
 import mindustry.gen.Bullet
+import mindustry.gen.Call
 import mindustry.graphics.Pal
 import mindustry.ui.Bar
+import mindustry.world.Block
 import mindustry.world.blocks.defense.Wall
 import net.liplum.DebugOnly
 import net.liplum.R
-import net.liplum.utils.G
 import net.liplum.utils.TR
 import net.liplum.utils.bundle
 import net.liplum.utils.subA
@@ -72,9 +75,38 @@ open class HoloWall(name: String) : Wall(name) {
             get() = health > maxHealth * 0.05f
         open val healthPct: Float
             get() = (health / maxHealth).coerceIn(0f, 1f)
-        var restRestore = 0f
+        open var restRestore = 0f
+        open var lastDamagedTime = 0f
         override fun collide(other: Bullet): Boolean {
             return isProjecting
+        }
+
+        open val canRestructure: Boolean
+            get() = lastDamagedTime < restoreReload || !isProjecting
+
+        override fun create(block: Block, team: Team): Building {
+            super.create(block, team)
+            this.team = Team.derelict
+            return this
+        }
+
+        override fun damage(damage: Float) {
+            if (!this.dead()) {
+                val dm = Vars.state.rules.blockHealth(team)
+                var d = damage
+                if (Mathf.zero(dm)) {
+                    d = this.health + 1.0f
+                } else {
+                    d /= dm
+                }
+
+                Call.tileDamage(this, this.health - handleDamage(d))
+                if (this.health <= 0.0f) {
+                    //Call.tileDestroyed(this)
+                } else {
+                    lastDamagedTime = 0f
+                }
+            }
         }
 
         override fun draw() {
@@ -106,7 +138,7 @@ open class HoloWall(name: String) : Wall(name) {
         }
 
         override fun updateTile() {
-            if (!isProjecting) {
+            if (canRestructure) {
                 restoreCharge += delta()
             }
             if (restRestore > 0.01f) {
@@ -115,7 +147,7 @@ open class HoloWall(name: String) : Wall(name) {
                 restRestore -= restored
             }
 
-            if (!isProjecting && restoreCharge >= restoreReload) {
+            if (restoreCharge >= restoreReload) {
                 restoreCharge = 0f
                 if (health != maxHealth) {
                     dead = false
