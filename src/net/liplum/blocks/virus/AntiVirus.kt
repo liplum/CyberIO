@@ -53,8 +53,8 @@ val ShieldExpand: Effect = Effect(ShieldExpandEffectDuration) {
     val scale = avb.realRange / 15f
     Draw.rect(
         s, it.x, it.y,
-        G.Dx(s) * d2s * scale,
-        G.Dy(s) * d2s * scale
+        G.Dw(s) * d2s * scale,
+        G.Dh(s) * d2s * scale
     )
 }.layer(Layer.power)
 

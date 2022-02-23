@@ -4,8 +4,7 @@ import mindustry.Vars
 import net.liplum.utils.AniUtil
 
 annotation class ClientOnly
-annotation class V6
-annotation class V7
+
 /**
  * Runs codes only on Physical Client
  */

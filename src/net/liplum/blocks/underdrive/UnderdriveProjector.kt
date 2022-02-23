@@ -50,8 +50,8 @@ val SpiralShrink: Effect = Effect(20f) {
     val s = up.spiralTR
     Draw.rect(
         s, it.x, it.y,
-        G.Dx(s) * sr + srm,
-        G.Dy(s) * sr + srm,
+        G.Dw(s) * sr + srm,
+        G.Dh(s) * sr + srm,
         Time.time * upb.realSpiralRotateSpeed
     )
 }.layer(Layer.shields)
@@ -355,8 +355,8 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
                 val srm = realRange * MagicNSpiralMin
                 Draw.rect(
                     spiralTR, x, y,
-                    G.Dx(spiralTR) * sr + srm,
-                    G.Dy(spiralTR) * sr + srm,
+                    G.Dw(spiralTR) * sr + srm,
+                    G.Dh(spiralTR) * sr + srm,
                     Time.time * realSpiralRotateSpeed
                 )
             }

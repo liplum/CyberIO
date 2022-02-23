@@ -18,6 +18,7 @@ import net.liplum.api.virus.setUninfected
 import net.liplum.api.virus.setUninfectedFloor
 import net.liplum.blocks.cloud.Cloud
 import net.liplum.blocks.holo.HoloFloor
+import net.liplum.blocks.holo.HoloWall
 import net.liplum.blocks.holo.LandProjector
 import net.liplum.blocks.icmachine.ICMachine
 import net.liplum.blocks.prism.Prism
@@ -42,6 +43,7 @@ class CioBlocks : ContentList {
         @JvmStatic lateinit var prism: Prism
         @CioDebugOnly
         @JvmStatic var hyperOverdriveSphere: OverdriveProjector? = null
+        @JvmStatic lateinit var holoWall: HoloWall
     }
 
     override fun load() {
@@ -179,6 +181,7 @@ class CioBlocks : ContentList {
             size = 3
             consumes.power(1f)
         }
+
         DebugOnly {
             hyperOverdriveSphere = OverdriveProjector("hyper-overdrive-sphere").apply {
                 requirements(
@@ -202,15 +205,17 @@ class CioBlocks : ContentList {
                     range = 330f
                     health = 1500
                     consumes.liquid(Liquids.water, 1f)
-                    shootType = object: LaserBulletType(100f){
-
-
+                    shootType = object : LaserBulletType(100f) {
                     }
-
-
-
                 }
             }
+        }
+        holoWall = HoloWall("holo-wall").apply {
+            requirements(
+                Category.defense, BuildVisibility.sandboxOnly, arrayOf()
+            )
+            size = 1
+            health = 500 * size
         }
     }
 }

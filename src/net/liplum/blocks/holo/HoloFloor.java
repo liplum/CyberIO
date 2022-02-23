@@ -2,9 +2,7 @@ package net.liplum.blocks.holo;
 
 import mindustry.world.Tile;
 import mindustry.world.blocks.environment.Floor;
-import net.liplum.V7;
 
-@V7
 public class HoloFloor extends Floor {
     public HoloFloor(String name) {
         super(name);

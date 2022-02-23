@@ -28,12 +28,16 @@ public class G {
         return Draw.scl * Draw.yscl;
     }
 
-    public static float Dx(TextureRegion tr) {
-        return ((float) tr.width) * Draw.scl * Draw.xscl;
+    public static float Dw(TextureRegion tr) {
+        return D(tr.width);
     }
 
-    public static float Dy(TextureRegion tr) {
-        return ((float) tr.height) * Draw.scl * Draw.yscl;
+    public static float Dh(TextureRegion tr) {
+        return D(tr.height);
+    }
+
+    public static float D(float a) {
+        return a * Draw.scl * Draw.xscl;
     }
 
     public static void init() {

@@ -37,10 +37,17 @@ public class R {
         public static final String IsAlive = Gen(IsAliveName);
         public static final String AniStateName = "ani-state";
         public static final String AniState = Gen(AniStateName);
+        public static final String IsProjectingName = "is-projecting";
+        public static final String IsProjecting = Gen(IsProjectingName);
+        public static final String RestRestoreName = "rest-restore";
+        public static final String RestRestore = Gen(RestRestoreName);
+        public static final String ChargeName = "charge";
+        public static final String Charge = Gen(ChargeName);
     }
 
     public static class C {
         public static final Color LightBlue = Color.valueOf("#add8e6");
+        public static final Color Holo = Color.valueOf("#42a5f5");
         public static final Color VirusBK = Color.valueOf("#cd44ff");
         public static final Color IsAive = Color.green;
         public static final Color CoolDown = Color.gray;
@@ -49,6 +56,9 @@ public class R {
         public static final Color Cloud = Color.white;
         public static final Color IcLight = Color.valueOf("#047b04");
         public static final Color IcDark = Color.valueOf("#024202");
+        public static final Color shadowColor = new Color(0, 0, 0, 0.71f);
+        public static final Color blendShadowColor = Color.white.cpy().lerp(Color.black, shadowColor.a);
+
     }
 
     public static class S {
