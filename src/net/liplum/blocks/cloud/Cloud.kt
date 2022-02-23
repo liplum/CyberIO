@@ -54,7 +54,7 @@ open class Cloud(name: String) : PowerBlock(name) {
     }
 
     open fun genAnimState() {
-        CloudIdleAni = AniState("Idle") { block, build ->
+        CloudIdleAni = AniState("Idle") { _, build ->
             Draw.rect(
                 cloud,
                 build.x + build.cloudXOffset,

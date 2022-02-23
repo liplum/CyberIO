@@ -7,6 +7,8 @@ import arc.math.Mathf
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.Vars
+import mindustry.content.Blocks
+import mindustry.game.Team
 import mindustry.gen.Building
 import mindustry.gen.Call
 import mindustry.graphics.Layer
@@ -95,13 +97,12 @@ open class Virus(name: String) : AnimedBlock(name) {
 
     override fun minimapColor(tile: Tile) = R.C.VirusBK.rgba()
     open inner class VirusBuild : Building(), IVirusBuilding {
-        var neighborState : Int = 0
+        var neighborState: Int = 0
         var curGeneration: Int = 0
         var curChildrenNumber: Int = 0
         var curVarianceNumber: Int = 0
         var isAlive: Boolean = true
         var raceColor: Color? = null
-
         override fun updateTile() {
             ServerOnly {
                 if (isDead) {
@@ -185,6 +186,9 @@ open class Virus(name: String) : AnimedBlock(name) {
             newGen?.raceColor = this.raceColor
         }
 
+        open fun infectThat() {
+        }
+
         open fun reproduceVariant(infected: Tile) {
             Call.setTile(infected, this@Virus, team, 0)
             val newGen = infected.build as? VirusBuild
@@ -215,7 +219,7 @@ open class Virus(name: String) : AnimedBlock(name) {
         open fun setDead() {
             if (tile.block() == this@Virus) {
                 isAlive = false
-                tile.setAir()
+                Call.setTile(tile, Blocks.air, Team.derelict, 0)
             }
         }
 

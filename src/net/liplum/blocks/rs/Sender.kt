@@ -3,7 +3,6 @@ package net.liplum.blocks.rs
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
 import arc.graphics.g2d.Lines
-import arc.graphics.g2d.TextureRegion
 import arc.math.Mathf
 import arc.util.Nullable
 import arc.util.io.Reads
@@ -23,25 +22,23 @@ import net.liplum.api.data.IDataReceiver
 import net.liplum.api.data.IDataSender
 import net.liplum.blocks.AniedBlock
 import net.liplum.blocks.rs.Sender.SenderBuild
-import net.liplum.utils.AnimUtil
-import net.liplum.utils.AtlasUtil
-import net.liplum.utils.G
-import net.liplum.utils.addAniStateInfo
+import net.liplum.utils.*
 
-private const val UploadAnimFrameNumber = 7
 private typealias AniStateS = AniState<Sender, SenderBuild>
 
 open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
-    lateinit var CoverTR: TextureRegion
-    lateinit var UpArrowTR: TextureRegion
-    lateinit var CrossTR: TextureRegion
-    lateinit var NoPowerTR: TextureRegion
-    lateinit var UnconnectedTR: TextureRegion
-    protected lateinit var IdleAni: AniStateS
-    protected lateinit var UploadAni: AniStateS
-    protected lateinit var BlockedAni: AniStateS
-    protected lateinit var NoPowerAni: AniStateS
-    protected lateinit var UploadAnim: IAnimated
+    lateinit var CoverTR: TR
+    lateinit var UpArrowTR: TR
+    lateinit var CrossTR: TR
+    lateinit var NoPowerTR: TR
+    lateinit var UnconnectedTR: TR
+    lateinit var IdleAni: AniStateS
+    lateinit var UploadAni: AniStateS
+    lateinit var BlockedAni: AniStateS
+    lateinit var NoPowerAni: AniStateS
+    lateinit var UploadAnim: IAnimated
+    var UploadAnimFrameNumber = 7
+    var UploadAnimDuration = 30f
 
     init {
         solid = true
@@ -95,9 +92,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
             val reb = build.receiverBuilding
             reb != null && !reb.isOutputting && !reb.canAcceptAnyData(build)
         } To NoPowerAni When { _, build ->
-            Mathf.zero(
-                build.power.status
-            )
+            Mathf.zero(build.power.status)
         }
         // Upload
         aniConfig From UploadAni
@@ -107,9 +102,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
             val reb = build.receiverBuilding
             reb != null && !reb.isOutputting && !reb.canAcceptAnyData(build)
         } To NoPowerAni When { _, build ->
-            Mathf.zero(
-                build.power.status
-            )
+            Mathf.zero(build.power.status)
         }
         // Blocked
         aniConfig From BlockedAni
@@ -146,7 +139,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
     }
 
     fun loadAnimation() {
-        UploadAnim = AnimUtil.autoCio("rs-up-arrow", UploadAnimFrameNumber, 30f)
+        UploadAnim = AnimUtil.autoCio("rs-up-arrow", UploadAnimFrameNumber, UploadAnimDuration)
     }
 
     override fun setBars() {

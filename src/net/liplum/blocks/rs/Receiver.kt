@@ -2,7 +2,6 @@ package net.liplum.blocks.rs
 
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
-import arc.graphics.g2d.TextureRegion
 import arc.math.Mathf
 import arc.scene.ui.layout.Table
 import arc.struct.ObjectSet
@@ -16,7 +15,6 @@ import mindustry.Vars
 import mindustry.entities.units.BuildPlan
 import mindustry.gen.Building
 import mindustry.type.Item
-import mindustry.ui.Cicon
 import mindustry.world.Block
 import mindustry.world.Tile
 import mindustry.world.blocks.ItemSelection
@@ -32,19 +30,21 @@ import net.liplum.blocks.AniedBlock
 import net.liplum.blocks.rs.Receiver.ReceiverBuild
 import net.liplum.utils.*
 
-private const val DownloadAnimFrameNumber = 7
+private typealias AniStateR = AniState<Receiver, ReceiverBuild>
 
 open class Receiver(name: String?) : AniedBlock<Receiver, ReceiverBuild>(name) {
-    lateinit var CoverTR: TextureRegion
-    lateinit var DownArrowTR: TextureRegion
-    lateinit var UnconnectedTR: TextureRegion
-    lateinit var NoPowerTR: TextureRegion
-    protected lateinit var DownloadAni: AniState<Receiver, ReceiverBuild>
-    protected lateinit var UnconnectedAni: AniState<Receiver, ReceiverBuild>
-    protected lateinit var BlockedAni: AniState<Receiver, ReceiverBuild>
-    protected lateinit var NoPowerAni: AniState<Receiver, ReceiverBuild>
-    protected lateinit var DownloadAnim: IAnimated
+    lateinit var CoverTR: TR
+    lateinit var DownArrowTR: TR
+    lateinit var UnconnectedTR: TR
+    lateinit var NoPowerTR: TR
+    lateinit var DownloadAni: AniStateR
+    lateinit var UnconnectedAni: AniStateR
+    lateinit var BlockedAni: AniStateR
+    lateinit var NoPowerAni: AniStateR
+    lateinit var DownloadAnim: IAnimated
     var maxConnection = -1
+    var DownloadAnimFrameNumber = 7
+    var DownloadAnimDuration = 30f
 
     init {
         hasItems = true
@@ -118,7 +118,7 @@ open class Receiver(name: String?) : AniedBlock<Receiver, ReceiverBuild>(name) {
     }
 
     override fun genAniConfig() {
-        aniConfig = (AniConfig<Receiver, ReceiverBuild>())
+        aniConfig = AniConfig<Receiver, ReceiverBuild>()
         aniConfig.defaultState(UnconnectedAni)
         // UnconnectedAni
         aniConfig From UnconnectedAni
@@ -175,7 +175,7 @@ open class Receiver(name: String?) : AniedBlock<Receiver, ReceiverBuild>(name) {
     }
 
     fun loadAnimation() {
-        DownloadAnim = AnimUtil.autoCio("rs-down-arrow", DownloadAnimFrameNumber, 30f)
+        DownloadAnim = AnimUtil.autoCio("rs-down-arrow", DownloadAnimFrameNumber, DownloadAnimDuration)
     }
 
     override fun setBars() {
@@ -231,9 +231,9 @@ open class Receiver(name: String?) : AniedBlock<Receiver, ReceiverBuild>(name) {
                 val dx = x - size * Vars.tilesize / 2f
                 val dy = y + size * Vars.tilesize / 2f
                 Draw.mixcol(Color.darkGray, 1f)
-                Draw.rect(outputItem.icon(Cicon.small), dx, dy - 1)
+                Draw.rect(outputItem.uiIcon, dx, dy - 1)
                 Draw.reset()
-                Draw.rect(outputItem.icon(Cicon.small), dx, dy)
+                Draw.rect(outputItem.uiIcon, dx, dy)
             }
             CyberUtil.drawSenders(this, sendersPos)
         }
