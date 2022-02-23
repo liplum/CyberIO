@@ -5,6 +5,7 @@ import mindustry.content.Fx
 import mindustry.content.Items
 import mindustry.content.Liquids
 import mindustry.ctype.ContentList
+import mindustry.entities.bullet.LaserBulletType
 import mindustry.type.Category
 import mindustry.type.ItemStack
 import mindustry.world.blocks.defense.OverdriveProjector
@@ -18,6 +19,7 @@ import net.liplum.api.virus.setUninfectedFloor
 import net.liplum.blocks.cloud.Cloud
 import net.liplum.blocks.holo.HoloFloor
 import net.liplum.blocks.holo.LandProjector
+import net.liplum.blocks.icmachine.ICMachine
 import net.liplum.blocks.prism.Prism
 import net.liplum.blocks.rs.Receiver
 import net.liplum.blocks.rs.Sender
@@ -200,7 +202,7 @@ class CioBlocks : ContentList {
                     range = 330f
                     health = 1500
                     consumes.liquid(Liquids.water, 1f)
-                    shootType = object:LaserBulletType(100f){
+                    shootType = object: LaserBulletType(100f){
 
 
                     }
