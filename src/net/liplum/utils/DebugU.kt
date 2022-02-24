@@ -13,7 +13,7 @@ annotation class CioDebugOnly
 
 fun BlockBars.addTeamInfo() {
     this.add<Building>(
-        R.Bar.TeamName
+        R.Bar.TeamN
     ) {
         Bar(
             { R.Bar.Team.bundle(it.team) },
@@ -25,7 +25,7 @@ fun BlockBars.addTeamInfo() {
 
 fun <T> BlockBars.addRangeInfo(maxRange: Float) where T : Building, T : Ranged {
     this.add<T>(
-        R.Bar.RangeName
+        R.Bar.RangeN
     ) {
         Bar(
             { R.Bar.Range.bundle((it.range() / Vars.tilesize).format(1)) },
@@ -37,7 +37,7 @@ fun <T> BlockBars.addRangeInfo(maxRange: Float) where T : Building, T : Ranged {
 
 fun <T> BlockBars.addAniStateInfo() where T : AniedBlock<*, *>.AniedBuild {
     this.add<T>(
-        R.Bar.AniStateName
+        R.Bar.AniStateN
     ) {
         Bar(
             { it.aniStateM.curState.stateName },

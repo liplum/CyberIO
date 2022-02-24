@@ -103,7 +103,7 @@ open class AntiVirus(name: String) : Block(name) {
         DebugOnly {
             bars.addRangeInfo<AntiVirusBuild>(100f)
         }
-        bars.add<AntiVirusBuild>(R.Bar.CoolDownName) {
+        bars.add<AntiVirusBuild>(R.Bar.CoolDownN) {
             ReverseBar(
                 { R.Bar.CoolDown.bundle((it.coolDown / 60f).format(1)) },
                 { R.C.CoolDown },

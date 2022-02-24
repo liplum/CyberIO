@@ -77,7 +77,7 @@ open class Virus(name: String) : AnimedBlock(name) {
 
     override fun setBars() {
         super.setBars()
-        bars.add<VirusBuild>(R.Bar.GenerationName) {
+        bars.add<VirusBuild>(R.Bar.Generation) {
             Bar(
                 { R.Bar.Generation.bundle(it.curGeneration) },
                 { R.C.VirusBK },
@@ -85,21 +85,21 @@ open class Virus(name: String) : AnimedBlock(name) {
             )
         }
         DebugOnly {
-            bars.add<VirusBuild>(R.Bar.IsAliveName) {
+            bars.add<VirusBuild>(R.Bar.IsAliveN) {
                 Bar(
                     { R.Bar.IsAlive.bundle(it.isAlive) },
                     { R.C.IsAive },
                     { if (it.isAlive) 1f else 0f }
                 )
             }
-            bars.add<VirusBuild>(R.Bar.NeighborStateName) {
+            bars.add<VirusBuild>(R.Bar.NeighborStateN) {
                 Bar(
                     { "${it.neighborState.countOneBits()}" },
                     { Pal.bar },
                     { it.neighborState.countOneBits() / 8f }
                 )
             }
-            bars.add<VirusBuild>(R.Bar.IsAsleepName) {
+            bars.add<VirusBuild>(R.Bar.IsAsleepN) {
                 Bar(
                     { R.Bar.IsAsleep.bundle(it.sleeping) },
                     { Pal.power },
