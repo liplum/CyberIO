@@ -113,8 +113,8 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
         G.drawDashCircle(this, x, y, range, color)
         Vars.indexer.eachBlock(
             Vars.player.team(),
-            WorldUtil.toDrawXY(this, x),
-            WorldUtil.toDrawXY(this, y),
+            WorldU.toDrawXY(this, x),
+            WorldU.toDrawXY(this, y),
             range,
             {
                 it.block.canOverdrive
@@ -141,7 +141,7 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
     override fun setBars() {
         super.setBars()
         bars.add<UnderdriveBuild>(
-            R.Bar.SlowDownName
+            R.Bar.SlowDownN
         ) {
             ReverseBar(
                 { R.Bar.SlowDown.bundle((it.realSlowDown * 100).toInt()) },
@@ -150,7 +150,7 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
             )
         }
         bars.add<UnderdriveBuild>(
-            R.Bar.EfficiencyAbsorptionName
+            R.Bar.EfficiencyAbsorptionN
         ) {
             Bar(
                 { R.Bar.EfficiencyAbsorption.bundle((it.productionEfficiency * 100).toInt()) },
@@ -160,7 +160,7 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
         }
         DebugOnly {
             bars.add<UnderdriveBuild>(
-                R.Bar.SpiralRotationSpeedName
+                R.Bar.SpiralRotationSpeedN
             ) {
                 Bar(
                     { R.Bar.SpiralRotationSpeed.bundle(it.realSpiralRotateSpeed.format(2)) },
@@ -169,7 +169,7 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
                 )
             }
             bars.add<UnderdriveBuild>(
-                R.Bar.AlphaName
+                R.Bar.AlphaN
             ) {
                 Bar(
                     { R.Bar.Alpha.bundle(it.alpha.format(2)) },

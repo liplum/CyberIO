@@ -45,21 +45,21 @@ open class HoloWall(name: String) : Wall(name) {
     override fun setBars() {
         super.setBars()
         DebugOnly {
-            bars.add<HoloBuild>(R.Bar.IsProjectingName) {
+            bars.add<HoloBuild>(R.Bar.IsProjectingN) {
                 Bar(
                     { R.Bar.IsProjecting.bundle(it.isProjecting) },
                     { Pal.bar },
                     { if (it.isProjecting) 1f else 0f }
                 )
             }
-            bars.add<HoloBuild>(R.Bar.RestRestoreName) {
+            bars.add<HoloBuild>(R.Bar.RestRestoreN) {
                 Bar(
                     { R.Bar.RestRestore.bundle(it.restRestore.toInt()) },
                     { Pal.bar },
                     { it.restRestore / it.maxHealth }
                 )
             }
-            bars.add<HoloBuild>(R.Bar.ChargeName) {
+            bars.add<HoloBuild>(R.Bar.ChargeN) {
                 Bar(
                     { R.Bar.Charge.bundle(it.restoreCharge.toInt()) },
                     { Pal.power },

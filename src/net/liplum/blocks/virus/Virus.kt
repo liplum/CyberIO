@@ -12,6 +12,7 @@ import mindustry.game.Team
 import mindustry.gen.Building
 import mindustry.gen.Call
 import mindustry.graphics.Layer
+import mindustry.graphics.Pal
 import mindustry.ui.Bar
 import mindustry.world.Tile
 import net.liplum.DebugOnly
@@ -20,9 +21,7 @@ import net.liplum.ServerOnly
 import net.liplum.api.virus.UninfectedBlocksRegistry
 import net.liplum.blocks.AnimedBlock
 import net.liplum.registries.ShaderRegistry
-import net.liplum.utils.VirusUtil
-import net.liplum.utils.bundle
-import net.liplum.utils.subA
+import net.liplum.utils.*
 
 typealias UBR = UninfectedBlocksRegistry
 
@@ -36,6 +35,7 @@ private val Number2Y = arrayOf(
     -1, 1,
     -1, 0, 1
 )
+private const val OmniInfected = 0b11111111
 
 open class Virus(name: String) : AnimedBlock(name) {
     /**
@@ -77,7 +77,7 @@ open class Virus(name: String) : AnimedBlock(name) {
 
     override fun setBars() {
         super.setBars()
-        bars.add<VirusBuild>(R.Bar.GenerationName) {
+        bars.add<VirusBuild>(R.Bar.Generation) {
             Bar(
                 { R.Bar.Generation.bundle(it.curGeneration) },
                 { R.C.VirusBK },
@@ -85,11 +85,25 @@ open class Virus(name: String) : AnimedBlock(name) {
             )
         }
         DebugOnly {
-            bars.add<VirusBuild>(R.Bar.IsAliveName) {
+            bars.add<VirusBuild>(R.Bar.IsAliveN) {
                 Bar(
                     { R.Bar.IsAlive.bundle(it.isAlive) },
                     { R.C.IsAive },
                     { if (it.isAlive) 1f else 0f }
+                )
+            }
+            bars.add<VirusBuild>(R.Bar.NeighborStateN) {
+                Bar(
+                    { "${it.neighborState.countOneBits()}" },
+                    { Pal.bar },
+                    { it.neighborState.countOneBits() / 8f }
+                )
+            }
+            bars.add<VirusBuild>(R.Bar.IsAsleepN) {
+                Bar(
+                    { R.Bar.IsAsleep.bundle(it.sleeping) },
+                    { Pal.power },
+                    { if (it.sleeping) 1f else 0f }
                 )
             }
         }
@@ -103,6 +117,27 @@ open class Virus(name: String) : AnimedBlock(name) {
         var curVarianceNumber: Int = 0
         var isAlive: Boolean = true
         var raceColor: Color? = null
+        override fun onProximityUpdate() {
+            refreshNeighborState()
+            if (neighborState != OmniInfected) {
+                noSleep()
+            }
+        }
+
+        open fun refreshNeighborState() {
+            val selfX = tile.x.toInt()
+            val selfY = tile.y.toInt()
+            for (r in 0..7) {
+                val tested = Vars.world.tile(
+                    selfX + Number2X[r],
+                    selfY + Number2Y[r]
+                )
+                if (VirusU.canInfect(tested)) {
+                    neighborState = neighborState off r
+                }
+            }
+        }
+
         override fun updateTile() {
             ServerOnly {
                 if (isDead) {
@@ -112,6 +147,10 @@ open class Virus(name: String) : AnimedBlock(name) {
                     setDead()
                 }
                 if (isDead) {
+                    return
+                }
+                if (neighborState == OmniInfected) {
+                    sleep()
                     return
                 }
                 if (canReproduce) {
@@ -133,10 +172,13 @@ open class Virus(name: String) : AnimedBlock(name) {
                             selfX + Number2X[r],
                             selfY + Number2Y[r]
                         )
-                        if (VirusUtil.canInfect(infected)) {
+                        if (VirusU.canInfect(infected)) {
                             this.reproduce(infected)
                         }
+                        neighborState = neighborState on r
                     }
+                } else {
+                    sleep()
                 }
             }
         }
@@ -230,6 +272,7 @@ open class Virus(name: String) : AnimedBlock(name) {
             write.s(curVarianceNumber)
             write.i(raceColor?.rgba() ?: -1)
             write.bool(isAlive)
+            write.s(neighborState)
         }
 
         override fun read(read: Reads, revision: Byte) {
@@ -240,6 +283,7 @@ open class Virus(name: String) : AnimedBlock(name) {
             val raceColorNumber = read.i()
             raceColor = if (raceColorNumber == -1) null else Color(raceColorNumber)
             isAlive = read.bool()
+            neighborState = read.s().toInt()
         }
 
         override fun killVirus() {

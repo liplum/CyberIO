@@ -103,7 +103,7 @@ open class AntiVirus(name: String) : Block(name) {
         DebugOnly {
             bars.addRangeInfo<AntiVirusBuild>(100f)
         }
-        bars.add<AntiVirusBuild>(R.Bar.CoolDownName) {
+        bars.add<AntiVirusBuild>(R.Bar.CoolDownN) {
             ReverseBar(
                 { R.Bar.CoolDown.bundle((it.coolDown / 60f).format(1)) },
                 { R.C.CoolDown },
@@ -123,8 +123,8 @@ open class AntiVirus(name: String) : Block(name) {
         G.drawDashCircle(this, x, y, range, uninfectedColor)
         Vars.indexer.eachBlock(
             Vars.player.team(),
-            WorldUtil.toDrawXY(this, x),
-            WorldUtil.toDrawXY(this, y),
+            WorldU.toDrawXY(this, x),
+            WorldU.toDrawXY(this, y),
             range,
             {
                 true

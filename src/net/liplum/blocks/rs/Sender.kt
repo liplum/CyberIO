@@ -130,16 +130,16 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
 
     override fun load() {
         super.load()
-        CoverTR = AtlasUtil.cio("rs-cover")
-        UpArrowTR = AtlasUtil.cio("rs-up-arrow")
-        CrossTR = AtlasUtil.cio("rs-cross")
-        UnconnectedTR = AtlasUtil.cio("rs-unconnected")
-        NoPowerTR = AtlasUtil.cio("rs-no-power")
+        CoverTR = AtlasU.cio("rs-cover")
+        UpArrowTR = AtlasU.cio("rs-up-arrow")
+        CrossTR = AtlasU.cio("rs-cross")
+        UnconnectedTR = AtlasU.cio("rs-unconnected")
+        NoPowerTR = AtlasU.cio("rs-no-power")
         loadAnimation()
     }
 
     fun loadAnimation() {
-        UploadAnim = AnimUtil.autoCio("rs-up-arrow", UploadAnimFrameNumber, UploadAnimDuration)
+        UploadAnim = AnimU.autoCio("rs-up-arrow", UploadAnimFrameNumber, UploadAnimDuration)
     }
 
     override fun setBars() {

@@ -7,7 +7,7 @@ import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.gen.Building;
 
-public class RWUtil {
+public class RWU {
     public static void writeIntSeq(Writes writes, Seq<Integer> intSeq) {
         writes.i(intSeq.size);
         for (int i : intSeq) {

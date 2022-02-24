@@ -6,7 +6,7 @@ import mindustry.ctype.MappableContent;
 import net.liplum.Meta;
 import org.jetbrains.annotations.Nullable;
 
-public class AtlasUtil {
+public class AtlasU {
     public static TextureRegion sub(MappableContent content, String subName) {
         return Core.atlas.find(content.name + '-' + subName);
     }
