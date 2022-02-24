@@ -36,6 +36,11 @@ open class HoloWall(name: String) : Wall(name) {
         hasShadow = false
     }
 
+    override fun loadIcon() {
+        fullIcon = this.subA("image")
+        uiIcon = fullIcon
+    }
+
     override fun load() {
         BaseTR = this.subA("base")
         ImageTR = this.subA("image")
@@ -118,7 +123,11 @@ open class HoloWall(name: String) : Wall(name) {
             if (isProjecting) {
                 Draw.color(R.C.Holo)
                 Draw.alpha(healthPct / 4f * 3f)
-                Draw.rect(ImageTR, x, y)
+                Draw.rect(
+                    ImageTR,
+                    x /*+ Mathf.random(-0.5f, 0.5f)*/,
+                    y /*+ Mathf.random(-0.5f, 0.5f)*/
+                )
             }
             //Draw.blend()
             Draw.reset()
@@ -137,8 +146,11 @@ open class HoloWall(name: String) : Wall(name) {
             }
         }
 
+        open val canRestore: Boolean
+            get() = !isProjecting || health < maxHealth
+
         override fun updateTile() {
-            if (canRestructure) {
+            if (restoreCharge < restoreReload && canRestructure) {
                 restoreCharge += delta()
             }
             if (restRestore > 0.01f) {
@@ -147,7 +159,7 @@ open class HoloWall(name: String) : Wall(name) {
                 restRestore -= restored
             }
 
-            if (restoreCharge >= restoreReload) {
+            if (canRestore && restoreCharge >= restoreReload) {
                 restoreCharge = 0f
                 if (health != maxHealth) {
                     dead = false

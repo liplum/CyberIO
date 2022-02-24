@@ -231,7 +231,7 @@ class CioBlocks : ContentList {
                     ItemStack(Items.silicon, 10),
                 )
             )
-            size = 3
+            size = 2
             restoreReload = 15 * 60f
             health = 300 * 5
         }

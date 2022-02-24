@@ -35,7 +35,7 @@ private val Number2Y = arrayOf(
     -1, 1,
     -1, 0, 1
 )
-private const val OmniInfected = 0b11111111
+private const val OmniInfected = 0b1111_1111
 
 open class Virus(name: String) : AnimedBlock(name) {
     /**
@@ -77,7 +77,7 @@ open class Virus(name: String) : AnimedBlock(name) {
 
     override fun setBars() {
         super.setBars()
-        bars.add<VirusBuild>(R.Bar.Generation) {
+        bars.add<VirusBuild>(R.Bar.GenerationN) {
             Bar(
                 { R.Bar.Generation.bundle(it.curGeneration) },
                 { R.C.VirusBK },
