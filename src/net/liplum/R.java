@@ -46,11 +46,14 @@ public class R {
         public static final String ChargeN = "charge";
         public static final String Charge = Gen(ChargeN);
         public static final String NeighborStateN = "neighbor-state";
+        public static final String LastDamageN = "last-damage";
+        public static final String LastDamage = Gen(LastDamageN);
     }
 
     public static class C {
         public static final Color LightBlue = Color.valueOf("#add8e6");
         public static final Color Holo = Color.valueOf("#42a5f5");
+        public static final Color HoloDark = Color.valueOf("#1e88e5");
         public static final Color VirusBK = Color.valueOf("#cd44ff");
         public static final Color IsAive = Color.green;
         public static final Color CoolDown = Color.gray;

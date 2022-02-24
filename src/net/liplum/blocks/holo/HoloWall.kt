@@ -19,6 +19,7 @@ import mindustry.world.blocks.defense.Wall
 import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.utils.TR
+import net.liplum.utils.addSleepInfo
 import net.liplum.utils.bundle
 import net.liplum.utils.subA
 
@@ -26,6 +27,8 @@ open class HoloWall(name: String) : Wall(name) {
     var restoreReload = 10 * 60f
     lateinit var BaseTR: TR
     lateinit var ImageTR: TR
+    var minHealthProportion = 0.05f
+    var maxSleepyTime = 30 * 60f
 
     init {
         solid = false
@@ -34,6 +37,8 @@ open class HoloWall(name: String) : Wall(name) {
         update = true
         buildCostMultiplier = 3f
         hasShadow = false
+        absorbLasers = true
+        flashHit = true
     }
 
     override fun loadIcon() {
@@ -71,23 +76,34 @@ open class HoloWall(name: String) : Wall(name) {
                     { it.restoreCharge / restoreReload }
                 )
             }
+            bars.add<HoloBuild>(R.Bar.LastDamageN) {
+                Bar(
+                    { R.Bar.LastDamage.bundle(it.lastDamagedTime.toInt()) },
+                    { Pal.power },
+                    { it.lastDamagedTime / restoreReload }
+                )
+            }
+            bars.addSleepInfo()
         }
     }
 
     open inner class HoloBuild : WallBuild() {
         var restoreCharge = 0f
         open val isProjecting: Boolean
-            get() = health > maxHealth * 0.05f
+            get() = health > maxHealth * minHealthProportion
         open val healthPct: Float
             get() = (health / maxHealth).coerceIn(0f, 1f)
         open var restRestore = 0f
+            set(value) {
+                field = value.coerceAtLeast(0f)
+            }
         open var lastDamagedTime = 0f
         override fun collide(other: Bullet): Boolean {
             return isProjecting
         }
 
         open val canRestructure: Boolean
-            get() = lastDamagedTime < restoreReload || !isProjecting
+            get() = lastDamagedTime > restoreReload || !isProjecting
 
         override fun create(block: Block, team: Team): Building {
             super.create(block, team)
@@ -108,9 +124,9 @@ open class HoloWall(name: String) : Wall(name) {
                 Call.tileDamage(this, this.health - handleDamage(d))
                 if (this.health <= 0.0f) {
                     //Call.tileDestroyed(this)
-                } else {
-                    lastDamagedTime = 0f
                 }
+                lastDamagedTime = 0f
+                noSleep()
             }
         }
 
@@ -135,7 +151,7 @@ open class HoloWall(name: String) : Wall(name) {
             if (flashHit) {
                 if (hit < 0.0001f) return
                 Draw.color(flashColor)
-                Draw.alpha(hit * 0.5f)
+                Draw.alpha(hit * 0.5f * healthPct)
                 Draw.blend(Blending.additive)
                 Fill.rect(x, y, (Vars.tilesize * size).toFloat(), (Vars.tilesize * size).toFloat())
                 Draw.blend()
@@ -148,13 +164,20 @@ open class HoloWall(name: String) : Wall(name) {
 
         open val canRestore: Boolean
             get() = !isProjecting || health < maxHealth
+        open val isRecovering: Boolean
+            get() = restRestore > 0.5f
 
         override fun updateTile() {
-            if (restoreCharge < restoreReload && canRestructure) {
+            lastDamagedTime += delta()
+            if (restoreCharge < restoreReload && !isRecovering && canRestructure) {
                 restoreCharge += delta()
             }
-            if (restRestore > 0.01f) {
-                val restored = restRestore * delta() * 0.03f
+            if (isRecovering) {
+                val restored = if (restRestore <= maxHealth * minHealthProportion)
+                    restRestore
+                else
+                    restRestore * delta() * 0.01f
+                health = health.coerceAtLeast(0f)
                 heal(restored)
                 restRestore -= restored
             }
@@ -165,6 +188,13 @@ open class HoloWall(name: String) : Wall(name) {
                     dead = false
                     restRestore = maxHealth
                 }
+            }
+            if (!isRecovering &&
+                !canRestore &&
+                restoreCharge >= restoreReload &&
+                lastDamagedTime >= maxSleepyTime
+            ) {
+                sleep()
             }
         }
 
@@ -179,12 +209,14 @@ open class HoloWall(name: String) : Wall(name) {
             super.write(write)
             write.f(restoreCharge)
             write.f(restRestore)
+            write.f(lastDamagedTime)
         }
 
         override fun read(read: Reads, revision: Byte) {
             super.read(read, revision)
             restoreCharge = read.f()
             restRestore = read.f()
+            lastDamagedTime = read.f()
         }
     }
 }

@@ -6,6 +6,7 @@ import mindustry.content.Items
 import mindustry.content.Liquids
 import mindustry.ctype.ContentList
 import mindustry.entities.bullet.LaserBulletType
+import mindustry.gen.Sounds
 import mindustry.type.Category
 import mindustry.type.ItemStack
 import mindustry.world.blocks.defense.OverdriveProjector
@@ -17,6 +18,7 @@ import net.liplum.animations.ganim.animation
 import net.liplum.api.virus.setUninfected
 import net.liplum.api.virus.setUninfectedFloor
 import net.liplum.blocks.cloud.Cloud
+import net.liplum.blocks.deleter.Deleter
 import net.liplum.blocks.holo.HoloFloor
 import net.liplum.blocks.holo.HoloWall
 import net.liplum.blocks.holo.LandProjector
@@ -41,6 +43,7 @@ class CioBlocks : ContentList {
         @JvmStatic lateinit var antiVirus: AntiVirus
         @JvmStatic lateinit var cloud: Cloud
         @JvmStatic lateinit var prism: Prism
+        @JvmStatic lateinit var deleter: Deleter
         @CioDebugOnly
         @JvmStatic var hyperOverdriveSphere: OverdriveProjector? = null
         @JvmStatic lateinit var holoWall: HoloWall
@@ -209,6 +212,17 @@ class CioBlocks : ContentList {
                     shootType = object : LaserBulletType(100f) {
                     }
                 }
+            }
+            deleter = Deleter("deleter").apply {
+                requirements(Category.turret, BuildVisibility.sandboxOnly, arrayOf())
+                range = 180f
+                cooldown = 0.01f
+                recoilAmount = 5f
+                reloadTime = 10f
+                powerUse = 6f
+                size = 2
+                health = 280 * size * size
+                shootSound = Sounds.lasershoot
             }
         }
         holoWall = HoloWall("holo-wall").apply {

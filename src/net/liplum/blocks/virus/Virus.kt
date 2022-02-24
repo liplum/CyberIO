@@ -99,13 +99,7 @@ open class Virus(name: String) : AnimedBlock(name) {
                     { it.neighborState.countOneBits() / 8f }
                 )
             }
-            bars.add<VirusBuild>(R.Bar.IsAsleepN) {
-                Bar(
-                    { R.Bar.IsAsleep.bundle(it.sleeping) },
-                    { Pal.power },
-                    { if (it.sleeping) 1f else 0f }
-                )
-            }
+            bars.addSleepInfo()
         }
     }
 

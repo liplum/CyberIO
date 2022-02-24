@@ -46,3 +46,16 @@ fun <T> BlockBars.addAniStateInfo() where T : AniedBlock<*, *>.AniedBuild {
         )
     }
 }
+
+
+fun BlockBars.addSleepInfo() {
+    this.add<Building>(
+        R.Bar.IsAsleep
+    ) {
+        Bar(
+            { R.Bar.IsAsleep.bundle(it.sleeping) },
+            { Pal.power },
+            { if (it.sleeping) 1f else 0f }
+        )
+    }
+}
