@@ -123,8 +123,8 @@ open class AntiVirus(name: String) : Block(name) {
         G.drawDashCircle(this, x, y, range, uninfectedColor)
         Vars.indexer.eachBlock(
             Vars.player.team(),
-            WorldUtil.toDrawXY(this, x),
-            WorldUtil.toDrawXY(this, y),
+            WorldU.toDrawXY(this, x),
+            WorldU.toDrawXY(this, y),
             range,
             {
                 true

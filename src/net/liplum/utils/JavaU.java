@@ -1,6 +1,6 @@
 package net.liplum.utils;
 
-public class JavaUtil {
+public class JavaU {
     public static boolean equals(Object a, Object b) {
         if (a == b) {
             return true;

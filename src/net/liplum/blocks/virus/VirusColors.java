@@ -2,7 +2,7 @@ package net.liplum.blocks.virus;
 
 import arc.graphics.Color;
 import arc.math.Mathf;
-import net.liplum.utils.JavaUtil;
+import net.liplum.utils.JavaU;
 import org.jetbrains.annotations.Nullable;
 
 public class VirusColors {
@@ -35,7 +35,7 @@ public class VirusColors {
         Color color;
         do {
             color = Colors[Mathf.random(max)];
-        } while (JavaUtil.equals(color,notThis));
+        } while (JavaU.equals(color,notThis));
         return color;
     }
 }

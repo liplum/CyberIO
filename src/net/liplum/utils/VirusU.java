@@ -8,7 +8,7 @@ import mindustry.world.meta.BlockFlag;
 import net.liplum.api.virus.UninfectedBlocksRegistry;
 import net.liplum.blocks.virus.Virus;
 
-public class VirusUtil {
+public class VirusU {
     public static boolean canInfect(Tile tile) {
         if (tile == null) {
             return false;

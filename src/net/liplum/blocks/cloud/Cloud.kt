@@ -82,9 +82,9 @@ open class Cloud(name: String) : PowerBlock(name) {
                 }
 
                 override fun drawBuilding() {
-                    xOffset = MathUtil.randomNP(cloudFloatRange)
+                    xOffset = MathU.randomNP(cloudFloatRange)
                     build.cloudXOffset = xOffset
-                    yOffset = MathUtil.randomNP(cloudFloatRange)
+                    yOffset = MathU.randomNP(cloudFloatRange)
                     build.cloudYOffset = yOffset
                     cloudAniSM.drawBuilding()
                 }
@@ -219,7 +219,7 @@ open class Cloud(name: String) : PowerBlock(name) {
             G.init()
             G.drawSurroundingCircle(tile, R.C.Cloud)
 
-            CyberUtil.drawSenders(this, info.sendersPos)
+            CyberU.drawSenders(this, info.sendersPos)
         }
 
         override fun connectedReceiver(): Int? {
@@ -234,12 +234,12 @@ open class Cloud(name: String) : PowerBlock(name) {
 
         override fun write(write: Writes) {
             super.write(write)
-            RWUtil.writeIntSet(write, info.sendersPos)
+            RWU.writeIntSet(write, info.sendersPos)
         }
 
         override fun read(read: Reads, revision: Byte) {
             super.read(read, revision)
-            info.sendersPos = RWUtil.readIntSet(read)
+            info.sendersPos = RWU.readIntSet(read)
         }
 
         override fun getSharedItems(): ItemModule = items

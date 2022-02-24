@@ -10,7 +10,7 @@ import net.liplum.animations.anis.AniState;
 import net.liplum.animations.anis.AniStateM;
 import net.liplum.animations.anis.IAniSMed;
 import net.liplum.api.ITrigger;
-import net.liplum.utils.AniUtil;
+import net.liplum.utils.AniU;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -122,7 +122,7 @@ public abstract class AniedBlock<TBlock extends Block, TBuild extends Building> 
         @Override
         public void draw() {
             if (CioMod.CanAniStateLoad) {
-                if (AniUtil.needUpdateAniStateM()) {
+                if (AniU.needUpdateAniStateM()) {
                     aniStateM.update();
                 }
                 if (!aniStateM.curOverwriteBlock()) {

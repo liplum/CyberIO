@@ -82,10 +82,10 @@ public class G {
     public static void drawDashLineBetweenTwoBlocks(Block startBlock, int startBlockX, int startBlockY,
                                                     Block endBlock, int endBlockX, int endBlockY,
                                                     Color lineColor, Color outlineColor) {
-        float startDrawX = WorldUtil.toDrawXY(startBlock, startBlockX);
-        float startDrawY = WorldUtil.toDrawXY(startBlock, startBlockY);
-        float endDrawX = WorldUtil.toDrawXY(endBlock, endBlockX);
-        float endDrawY = WorldUtil.toDrawXY(endBlock, endBlockY);
+        float startDrawX = WorldU.toDrawXY(startBlock, startBlockX);
+        float startDrawY = WorldU.toDrawXY(startBlock, startBlockY);
+        float endDrawX = WorldU.toDrawXY(endBlock, endBlockX);
+        float endDrawY = WorldU.toDrawXY(endBlock, endBlockY);
 
 
         float segsf = Util2D.distance(startDrawX, startDrawY, endBlockX * tilesize, endBlockY * tilesize) / tilesize;
@@ -129,10 +129,10 @@ public class G {
     public static void drawArrowBetweenTwoBlocks(Block startBlock, int startBlockX, int startBlockY,
                                                  Block pointedBlock, int pointedBlockX, int pointedBlockY,
                                                  Color arrowColor) {
-        float startDrawX = WorldUtil.toDrawXY(pointedBlock, pointedBlockX);
-        float startDrawY = WorldUtil.toDrawXY(pointedBlock, pointedBlockY);
-        float pointedDrawX = WorldUtil.toDrawXY(startBlock, startBlockX);
-        float pointedDrawY = WorldUtil.toDrawXY(startBlock, startBlockY);
+        float startDrawX = WorldU.toDrawXY(pointedBlock, pointedBlockX);
+        float startDrawY = WorldU.toDrawXY(pointedBlock, pointedBlockY);
+        float pointedDrawX = WorldU.toDrawXY(startBlock, startBlockX);
+        float pointedDrawY = WorldU.toDrawXY(startBlock, startBlockY);
 
         Drawf.arrow(pointedDrawX, pointedDrawY,
                 startDrawX, startDrawY,
@@ -151,8 +151,8 @@ public class G {
 
     public static void drawDashCircle(Block b, int blockX, int BlockY,
                                       float range, Color color) {
-        float drawX = WorldUtil.toDrawXY(b, blockX);
-        float drawY = WorldUtil.toDrawXY(b, BlockY);
+        float drawX = WorldU.toDrawXY(b, blockX);
+        float drawY = WorldU.toDrawXY(b, BlockY);
         Drawf.dashCircle(drawX, drawY, range, color);
     }
 

@@ -7,7 +7,7 @@ import net.liplum.R;
 import net.liplum.api.data.IDataReceiver;
 import net.liplum.api.data.IDataSender;
 
-public class CyberUtil {
+public class CyberU {
     public static void drawSenders(IDataReceiver receiver, Iterable<Integer> sendersPos) {
         Tile rt = receiver.getTile();
         for (Integer senderPos : sendersPos) {

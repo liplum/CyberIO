@@ -10,7 +10,7 @@ typealias TR = TextureRegion
  * @param subName the following name after a hyphen
  */
 fun MappableContent.subA(subName: String): TR {
-    return AtlasUtil.sub(this, subName)
+    return AtlasU.sub(this, subName)
 }
 /**
  * Gets an array of Texture Region of "sprites/{this}-{subName}" or "sprites/{this}" if subName is null.
@@ -18,7 +18,7 @@ fun MappableContent.subA(subName: String): TR {
  * @param number the amount of frames in that image. Splits it by row.
  */
 fun MappableContent.animA(subName: String?, number: Int): Array<TR> {
-    return AtlasUtil.animation(this, subName, number)
+    return AtlasU.animation(this, subName, number)
 }
 /**
  * Gets an array of Texture Region of "sprites/{this}-{subName}" or "sprites/{this}" if subName is null.
@@ -31,5 +31,5 @@ fun MappableContent.animA(
     isHorizontal: Boolean,
     number: Int
 ): Array<TR> {
-    return AtlasUtil.animation(this, subName, isHorizontal, number)
+    return AtlasU.animation(this, subName, isHorizontal, number)
 }

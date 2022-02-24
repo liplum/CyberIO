@@ -167,15 +167,15 @@ open class Receiver(name: String?) : AniedBlock<Receiver, ReceiverBuild>(name) {
 
     override fun load() {
         super.load()
-        CoverTR = AtlasUtil.cio("rs-cover")
-        DownArrowTR = AtlasUtil.cio("rs-down-arrow")
-        UnconnectedTR = AtlasUtil.cio("rs-unconnected")
-        NoPowerTR = AtlasUtil.cio("rs-no-power")
+        CoverTR = AtlasU.cio("rs-cover")
+        DownArrowTR = AtlasU.cio("rs-down-arrow")
+        UnconnectedTR = AtlasU.cio("rs-unconnected")
+        NoPowerTR = AtlasU.cio("rs-no-power")
         loadAnimation()
     }
 
     fun loadAnimation() {
-        DownloadAnim = AnimUtil.autoCio("rs-down-arrow", DownloadAnimFrameNumber, DownloadAnimDuration)
+        DownloadAnim = AnimU.autoCio("rs-down-arrow", DownloadAnimFrameNumber, DownloadAnimDuration)
     }
 
     override fun setBars() {
@@ -235,7 +235,7 @@ open class Receiver(name: String?) : AniedBlock<Receiver, ReceiverBuild>(name) {
                 Draw.reset()
                 Draw.rect(outputItem.uiIcon, dx, dy)
             }
-            CyberUtil.drawSenders(this, sendersPos)
+            CyberU.drawSenders(this, sendersPos)
         }
 
         override fun fixedUpdateTile() {
@@ -303,14 +303,14 @@ open class Receiver(name: String?) : AniedBlock<Receiver, ReceiverBuild>(name) {
             super.write(write)
             write.s(if (outputItem == null) -1 else outputItem!!.id.toInt())
             write.bool(isOutputting)
-            RWUtil.writeIntSet(write, sendersPos)
+            RWU.writeIntSet(write, sendersPos)
         }
 
         override fun read(read: Reads, revision: Byte) {
             super.read(read, revision)
             outputItem = Vars.content.item(read.s().toInt())
             isOutputting = read.bool()
-            sendersPos = RWUtil.readIntSet(read)
+            sendersPos = RWU.readIntSet(read)
         }
 
         override fun connectedSenders(): ObjectSet<Int> {

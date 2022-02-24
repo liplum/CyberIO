@@ -35,6 +35,8 @@ public class R {
         public static final String CoolDown = Gen(CoolDownName);
         public static final String IsAliveName = "is-alive";
         public static final String IsAlive = Gen(IsAliveName);
+        public static final String IsAsleepName = "is-asleep";
+        public static final String IsAsleep = Gen(IsAsleepName);
         public static final String AniStateName = "ani-state";
         public static final String AniState = Gen(AniStateName);
         public static final String IsProjectingName = "is-projecting";
@@ -43,6 +45,7 @@ public class R {
         public static final String RestRestore = Gen(RestRestoreName);
         public static final String ChargeName = "charge";
         public static final String Charge = Gen(ChargeName);
+        public static final String NeighborStateName = "neighbor-state";
     }
 
     public static class C {
