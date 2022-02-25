@@ -227,7 +227,7 @@ class CioBlocks : ContentList {
             cooldown = 0.01f
             recoilAmount = 5f
             reloadTime = 10f
-            powerUse = 6f
+            powerUse = 0.5f
             size = 2
             buildCostMultiplier = 1.5f
             health = 280 * size * size
@@ -242,22 +242,22 @@ class CioBlocks : ContentList {
             )
             size = 1
             restoreReload = 10 * 60f
-            health = 300
-            buildCostMultiplier = 4.5f
+            health = 500
+            buildCostMultiplier = 3.5f
         }
 
         holoWallLarge = HoloWall("holo-wall-large").apply {
             requirements(
                 Category.defense, BuildVisibility.shown, arrayOf(
-                    ItemStack(CioItems.ic, 3),
+                    ItemStack(CioItems.ic, 2),
                     ItemStack(Items.titanium, 30 * 4),
                     ItemStack(Items.silicon, 10),
                 )
             )
             size = 2
             restoreReload = 15 * 60f
-            health = 300 * 5
-            buildCostMultiplier = 3.5f
+            health = 400 * 5
+            buildCostMultiplier = 4.5f
         }
     }
 }

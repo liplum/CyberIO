@@ -10,6 +10,7 @@ import mindustry.gen.Healthc
 import mindustry.gen.Hitboxc
 import mindustry.world.blocks.defense.turrets.PowerTurret
 import net.liplum.R
+import net.liplum.utils.lostHp
 
 open class Deleter(name: String) : PowerTurret(name) {
     var executeProportion = 0.2f
@@ -29,7 +30,11 @@ open class Deleter(name: String) : PowerTurret(name) {
             frontColor = R.C.Holo
             backColor = R.C.HoloDark
             pierce = true
-            absorbable = true
+            pierceCap = 10
+            instantDisappear = true
+            lightRadius = 1f
+            absorbable = false
+            reflectable = false
             collidesAir = true
             collidesGround = true
             shrinkX = -5f
@@ -38,9 +43,8 @@ open class Deleter(name: String) : PowerTurret(name) {
             height = 5f
 
             speed = 1.5f
-            hitSize = 4f
             lifetime = 128f
-            hitSize = 16f
+            hitSize = 10f
             ammoMultiplier = 1f
 
             damage = 2f
@@ -57,7 +61,7 @@ open class Deleter(name: String) : PowerTurret(name) {
                 if (h < mh * executeProportion) {
                     e.damage(mh)
                 } else {
-                    e.damage(b.damage)
+                    e.damage(b.damage + e.lostHp * 0.01f)
                 }
             }
         }
