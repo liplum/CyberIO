@@ -216,7 +216,7 @@ class CioBlocks : ContentList {
         }
         deleter = Deleter("deleter").apply {
             requirements(
-                Category.turret, BuildVisibility.sandboxOnly, arrayOf(
+                Category.turret, BuildVisibility.shown, arrayOf(
                     ItemStack(CioItems.ic, 4),
                     ItemStack(Items.graphite, 100),
                     ItemStack(Items.silicon, 50),
@@ -235,7 +235,7 @@ class CioBlocks : ContentList {
         }
         holoWall = HoloWall("holo-wall").apply {
             requirements(
-                Category.defense, BuildVisibility.sandboxOnly, arrayOf(
+                Category.defense, BuildVisibility.shown, arrayOf(
                     ItemStack(CioItems.ic, 1),
                     ItemStack(Items.titanium, 20),
                 )
@@ -248,7 +248,7 @@ class CioBlocks : ContentList {
 
         holoWallLarge = HoloWall("holo-wall-large").apply {
             requirements(
-                Category.defense, BuildVisibility.sandboxOnly, arrayOf(
+                Category.defense, BuildVisibility.shown, arrayOf(
                     ItemStack(CioItems.ic, 3),
                     ItemStack(Items.titanium, 30 * 4),
                     ItemStack(Items.silicon, 10),
