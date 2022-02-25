@@ -245,6 +245,7 @@ class CioBlocks : ContentList {
             health = 500
             buildCostMultiplier = 3.5f
         }
+        HoloWall.registerInitHealthHandler()
 
         holoWallLarge = HoloWall("holo-wall-large").apply {
             requirements(

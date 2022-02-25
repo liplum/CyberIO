@@ -18,6 +18,7 @@ import mindustry.world.Tile
 import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.ServerOnly
+import net.liplum.UseRandom
 import net.liplum.api.virus.UninfectedBlocksRegistry
 import net.liplum.blocks.AnimedBlock
 import net.liplum.registries.ShaderRegistry
@@ -132,6 +133,8 @@ open class Virus(name: String) : AnimedBlock(name) {
             }
         }
 
+        @ServerOnly
+        @UseRandom
         override fun updateTile() {
             ServerOnly {
                 if (isDead) {

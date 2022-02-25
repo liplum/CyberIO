@@ -11,9 +11,13 @@ import mindustry.gen.Hitboxc
 import mindustry.world.blocks.defense.turrets.PowerTurret
 import net.liplum.R
 import net.liplum.utils.lostHp
+import net.liplum.utils.quadratic
+
+private val P2Alpha = quadratic(0.95f, 0.35f)
 
 open class Deleter(name: String) : PowerTurret(name) {
     var executeProportion = 0.2f
+    var extraLostHpBounce = 0.01f
 
     init {
         shots = 18
@@ -60,7 +64,7 @@ open class Deleter(name: String) : PowerTurret(name) {
                 if (h < mh * executeProportion) {
                     e.damage(mh)
                 } else {
-                    e.damage(b.damage + e.lostHp * 0.01f)
+                    e.damage(b.damage + e.lostHp * extraLostHpBounce)
                 }
             }
         }
@@ -73,7 +77,7 @@ open class Deleter(name: String) : PowerTurret(name) {
             val mix = Tmp.c1.set(mixColorFrom).lerp(mixColorTo, b.fin())
 
             Draw.mixcol(mix, mix.a)
-            val a = (b.fout() * 8f / 10f).coerceIn(0.5f, 0.9f)
+            val a = (P2Alpha(b.fout()))
             Draw.color(backColor)
             Draw.alpha(a)
             Draw.rect(backRegion, b.x, b.y, width, height, b.rotation() + offset)

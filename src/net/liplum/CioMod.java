@@ -12,6 +12,7 @@ import net.liplum.blocks.cloud.LiplumCloud;
 import net.liplum.blocks.cloud.SharedRoom;
 import net.liplum.registries.ContentRegistry;
 import net.liplum.registries.ShaderRegistry;
+import net.liplum.utils.AtlasU;
 
 import static mindustry.game.EventType.*;
 
@@ -31,7 +32,7 @@ public class CioMod extends Mod {
                 BaseDialog dialog = new BaseDialog("Welcome");
                 dialog.cont.add("Welcome to play Cyber IO mod").row();
                 // mod sprites are prefixed with the mod name (this mod is called 'example-java-mod' in its config)
-                // dialog.cont.image(Core.atlas.find("cyber-io-frog")).pad(20f).row();
+                dialog.cont.image(AtlasU.cio("icon")).maxSize(200f).pad(20f).row();
                 dialog.cont.button("Thanks", dialog::hide).size(100f, 50f);
                 dialog.show();
             });
@@ -49,9 +50,10 @@ public class CioMod extends Mod {
     public void init() {
         CanGlobalAnimationPlay = true;
         JsonIO.json.addClassTag(SharedRoom.class.getName(), SharedRoom.class);
-        Events.on(WorldLoadEvent.class, e -> {
-            LiplumCloud.read();
-        });
+        Events.on(WorldLoadEvent.class, e -> LiplumCloud.read());
+        if (DebugMode) {
+            Vars.enableConsole = true;
+        }
     }
 
     @Override

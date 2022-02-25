@@ -1,5 +1,6 @@
 package net.liplum.blocks.holo
 
+import arc.Events
 import arc.graphics.Blending
 import arc.graphics.g2d.Draw
 import arc.graphics.g2d.Fill
@@ -8,14 +9,15 @@ import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.Vars
-import mindustry.game.Team
-import mindustry.gen.Building
+import mindustry.game.EventType
 import mindustry.gen.Bullet
 import mindustry.gen.Call
+import mindustry.graphics.Drawf
+import mindustry.graphics.Layer
 import mindustry.graphics.Pal
 import mindustry.ui.Bar
-import mindustry.world.Block
 import mindustry.world.blocks.defense.Wall
+import net.liplum.ClientOnly
 import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.toSecond
@@ -87,7 +89,7 @@ open class HoloWall(name: String) : Wall(name) {
     }
 
     open inner class HoloBuild : WallBuild() {
-        var restoreCharge = 0f
+        var restoreCharge = restoreReload
         open val isProjecting: Boolean
             get() = health > maxHealth * minHealthProportion
         open val healthPct: Float
@@ -96,16 +98,20 @@ open class HoloWall(name: String) : Wall(name) {
             set(value) {
                 field = value.coerceAtLeast(0f)
             }
-        open var lastDamagedTime = 0f
-        var xOffset = Mathf.random(-FloatingRange, FloatingRange)
+        open var lastDamagedTime = restoreReload
+        @ClientOnly
+        var xOffset = MathU.randomNP(FloatingRange)
             set(value) {
-                field = value.coerceIn(-FloatingRange, FloatingRange)
+                field = value coIn FloatingRange
             }
+        @ClientOnly
         var xAdding = false
-        var yOffset = Mathf.random(-FloatingRange, FloatingRange)
+        @ClientOnly
+        var yOffset = MathU.randomNP(FloatingRange)
             set(value) {
-                field = value.coerceIn(-FloatingRange, FloatingRange)
+                field = value coIn FloatingRange
             }
+        @ClientOnly
         var yAdding = false
         override fun collide(other: Bullet): Boolean {
             return isProjecting
@@ -113,12 +119,6 @@ open class HoloWall(name: String) : Wall(name) {
 
         open val canRestructure: Boolean
             get() = lastDamagedTime > restoreReload || !isProjecting
-
-        override fun create(block: Block, team: Team): Building {
-            super.create(block, team)
-            this.team = Team.derelict
-            return this
-        }
 
         override fun damage(damage: Float) {
             if (!this.dead()) {
@@ -129,51 +129,46 @@ open class HoloWall(name: String) : Wall(name) {
                 } else {
                     d /= dm
                 }
-
-                Call.tileDamage(this, this.health - handleDamage(d))
-                if (this.health <= 0.0f) {
-                    //Call.tileDestroyed(this)
-                }
+                d = handleDamage(d)
+                val restHealth = (health - d).coerceAtLeast(maxHealth * minHealthProportion)
+                Call.tileDamage(this, restHealth)
                 lastDamagedTime = 0f
                 noSleep()
             }
         }
 
         override fun draw() {
-            //Draw.color(R.C.blendShadowColor)
-            //Fill.rect(x, y, G.D(16f),  G.D(16f))
-            //Draw.color()
+            Drawf.shadow(x, y, 10f)
             Draw.rect(BaseTR, x, y)
-            //Draw.blend(Blending.additive)
             updateFloating()
             if (isProjecting) {
                 Draw.color(R.C.Holo)
                 Draw.alpha(healthPct / 4f * 3f)
+                Draw.z(Layer.power)
                 Draw.rect(
                     ImageTR,
                     x + xOffset,
                     y + yOffset
                 )
-            }
-            //Draw.blend()
-            Draw.reset()
-            //draw flashing white overlay if enabled
-            if (flashHit) {
-                if (hit < 0.0001f) return
-                Draw.color(flashColor)
-                Draw.alpha(hit * 0.5f * healthPct)
-                Draw.blend(Blending.additive)
-                Fill.rect(x, y, (Vars.tilesize * size).toFloat(), (Vars.tilesize * size).toFloat())
-                Draw.blend()
                 Draw.reset()
-                if (!Vars.state.isPaused) {
-                    hit = Mathf.clamp(hit - Time.delta / 10f)
+                if (flashHit) {
+                    if (hit < 0.0001f) return
+                    Draw.color(flashColor)
+                    Draw.alpha(hit * 0.5f * healthPct)
+                    Draw.blend(Blending.additive)
+                    Fill.rect(x, y, (Vars.tilesize * size).toFloat(), (Vars.tilesize * size).toFloat())
+                    Draw.blend()
+                    Draw.reset()
+                    if (!Vars.state.isPaused) {
+                        hit = Mathf.clamp(hit - Time.delta / 10f)
+                    }
                 }
             }
+            Draw.reset()
         }
 
         open fun updateFloating() {
-            val d = G.D(0.1f * FloatingRange * delta())
+            val d = G.D(0.1f * FloatingRange * delta() * healthPct)
             if (xAdding) {
                 xOffset += d
             } else {
@@ -248,6 +243,21 @@ open class HoloWall(name: String) : Wall(name) {
             restoreCharge = read.f()
             restRestore = read.f()
             lastDamagedTime = read.f()
+        }
+
+        val blockType: HoloWall
+            get() = this@HoloWall
+    }
+
+    companion object {
+        @JvmStatic
+        fun registerInitHealthHandler() {
+            Events.on(EventType.BlockBuildEndEvent::class.java) {
+                val hb = it.tile.build as? HoloBuild
+                if (hb != null) {
+                    hb.health = hb.maxHealth * hb.blockType.minHealthProportion * 0.9f
+                }
+            }
         }
     }
 }
