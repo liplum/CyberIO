@@ -31,7 +31,6 @@ open class Deleter(name: String) : PowerTurret(name) {
             backColor = R.C.HoloDark
             pierce = true
             pierceCap = 10
-            instantDisappear = true
             lightRadius = 1f
             absorbable = false
             reflectable = false
@@ -44,7 +43,7 @@ open class Deleter(name: String) : PowerTurret(name) {
 
             speed = 1.5f
             lifetime = 128f
-            hitSize = 10f
+            hitSize = 8f
             ammoMultiplier = 1f
 
             damage = 2f
