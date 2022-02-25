@@ -46,8 +46,8 @@ public class R {
         public static final String ChargeN = "charge";
         public static final String Charge = Gen(ChargeN);
         public static final String NeighborStateN = "neighbor-state";
-        public static final String LastDamageN = "last-damage";
-        public static final String LastDamage = Gen(LastDamageN);
+        public static final String LastDamagedN = "last-damaged";
+        public static final String LastDamaged = Gen(LastDamagedN);
     }
 
     public static class C {

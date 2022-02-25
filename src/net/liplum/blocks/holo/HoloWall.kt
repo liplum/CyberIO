@@ -18,10 +18,10 @@ import mindustry.world.Block
 import mindustry.world.blocks.defense.Wall
 import net.liplum.DebugOnly
 import net.liplum.R
-import net.liplum.utils.TR
-import net.liplum.utils.addSleepInfo
-import net.liplum.utils.bundle
-import net.liplum.utils.subA
+import net.liplum.toSecond
+import net.liplum.utils.*
+
+private const val FloatingRange = 0.6f
 
 open class HoloWall(name: String) : Wall(name) {
     var restoreReload = 10 * 60f
@@ -35,14 +35,13 @@ open class HoloWall(name: String) : Wall(name) {
         solidifes = true
         canOverdrive = true
         update = true
-        buildCostMultiplier = 3f
         hasShadow = false
         absorbLasers = true
         flashHit = true
     }
 
     override fun loadIcon() {
-        fullIcon = this.subA("image")
+        fullIcon = this.subA("ui")
         uiIcon = fullIcon
     }
 
@@ -71,14 +70,14 @@ open class HoloWall(name: String) : Wall(name) {
             }
             bars.add<HoloBuild>(R.Bar.ChargeN) {
                 Bar(
-                    { R.Bar.Charge.bundle(it.restoreCharge.toInt()) },
+                    { R.Bar.Charge.bundle(it.restoreCharge.toSecond()) },
                     { Pal.power },
                     { it.restoreCharge / restoreReload }
                 )
             }
-            bars.add<HoloBuild>(R.Bar.LastDamageN) {
+            bars.add<HoloBuild>(R.Bar.LastDamagedN) {
                 Bar(
-                    { R.Bar.LastDamage.bundle(it.lastDamagedTime.toInt()) },
+                    { R.Bar.LastDamaged.bundle(it.lastDamagedTime.toSecond()) },
                     { Pal.power },
                     { it.lastDamagedTime / restoreReload }
                 )
@@ -98,6 +97,16 @@ open class HoloWall(name: String) : Wall(name) {
                 field = value.coerceAtLeast(0f)
             }
         open var lastDamagedTime = 0f
+        var xOffset = Mathf.random(-FloatingRange, FloatingRange)
+            set(value) {
+                field = value.coerceIn(-FloatingRange, FloatingRange)
+            }
+        var xAdding = false
+        var yOffset = Mathf.random(-FloatingRange, FloatingRange)
+            set(value) {
+                field = value.coerceIn(-FloatingRange, FloatingRange)
+            }
+        var yAdding = false
         override fun collide(other: Bullet): Boolean {
             return isProjecting
         }
@@ -136,13 +145,14 @@ open class HoloWall(name: String) : Wall(name) {
             //Draw.color()
             Draw.rect(BaseTR, x, y)
             //Draw.blend(Blending.additive)
+            updateFloating()
             if (isProjecting) {
                 Draw.color(R.C.Holo)
                 Draw.alpha(healthPct / 4f * 3f)
                 Draw.rect(
                     ImageTR,
-                    x /*+ Mathf.random(-0.5f, 0.5f)*/,
-                    y /*+ Mathf.random(-0.5f, 0.5f)*/
+                    x + xOffset,
+                    y + yOffset
                 )
             }
             //Draw.blend()
@@ -159,6 +169,27 @@ open class HoloWall(name: String) : Wall(name) {
                 if (!Vars.state.isPaused) {
                     hit = Mathf.clamp(hit - Time.delta / 10f)
                 }
+            }
+        }
+
+        open fun updateFloating() {
+            val d = G.D(0.1f * FloatingRange * delta())
+            if (xAdding) {
+                xOffset += d
+            } else {
+                xOffset -= d
+            }
+            if (xOffset == -FloatingRange || xOffset == FloatingRange) {
+                xAdding = !xAdding
+            }
+
+            if (yAdding) {
+                yOffset += d
+            } else {
+                yOffset -= d
+            }
+            if (yOffset == -FloatingRange || yOffset == FloatingRange) {
+                yAdding = !yAdding
             }
         }
 

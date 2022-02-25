@@ -213,17 +213,25 @@ class CioBlocks : ContentList {
                     }
                 }
             }
-            deleter = Deleter("deleter").apply {
-                requirements(Category.turret, BuildVisibility.sandboxOnly, arrayOf())
-                range = 180f
-                cooldown = 0.01f
-                recoilAmount = 5f
-                reloadTime = 10f
-                powerUse = 6f
-                size = 2
-                health = 280 * size * size
-                shootSound = Sounds.lasershoot
-            }
+        }
+        deleter = Deleter("deleter").apply {
+            requirements(
+                Category.turret, BuildVisibility.sandboxOnly, arrayOf(
+                    ItemStack(CioItems.ic, 4),
+                    ItemStack(Items.graphite, 100),
+                    ItemStack(Items.silicon, 50),
+                    ItemStack(Items.thorium, 200),
+                )
+            )
+            range = 180f
+            cooldown = 0.01f
+            recoilAmount = 5f
+            reloadTime = 10f
+            powerUse = 6f
+            size = 2
+            buildCostMultiplier = 1.5f
+            health = 280 * size * size
+            shootSound = Sounds.lasershoot
         }
         holoWall = HoloWall("holo-wall").apply {
             requirements(
@@ -235,6 +243,7 @@ class CioBlocks : ContentList {
             size = 1
             restoreReload = 10 * 60f
             health = 300
+            buildCostMultiplier = 4.5f
         }
 
         holoWallLarge = HoloWall("holo-wall-large").apply {
@@ -248,6 +257,7 @@ class CioBlocks : ContentList {
             size = 2
             restoreReload = 15 * 60f
             health = 300 * 5
+            buildCostMultiplier = 3.5f
         }
     }
 }

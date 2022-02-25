@@ -1,10 +1,11 @@
 package net.liplum
 
+import arc.util.Time
 import mindustry.Vars
 import net.liplum.utils.AniU
+import net.liplum.utils.format
 
 annotation class ClientOnly
-
 /**
  * Runs codes only on Physical Client
  */
@@ -40,3 +41,6 @@ inline fun DebugOnly(func: () -> Unit) {
         func()
     }
 }
+
+fun Float.toSecond(): Int = (this / Time.toSeconds).toInt()
+fun Float.toSeconds(digits:Int): String = (this / Time.toSeconds).format(digits)
