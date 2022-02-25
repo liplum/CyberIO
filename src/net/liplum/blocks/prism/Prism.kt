@@ -26,6 +26,15 @@ open class Prism(name: String) : PowerTurret(name) {
         absorbLasers = true
 
     }
+    open inner class PrismLaser: LaserBulletType(){
+        init {
+            hitEffect
+
+
+
+        }
+
+    }
 
     open inner class PrismBuild : PowerTurretBuild() {
         override fun updateTile() {
