@@ -1,5 +1,6 @@
 package net.liplum.utils
 
+import arc.Core
 import arc.graphics.g2d.TextureRegion
 import mindustry.ctype.MappableContent
 
@@ -11,6 +12,20 @@ typealias TR = TextureRegion
  */
 fun MappableContent.subA(subName: String): TR {
     return AtlasU.sub(this, subName)
+}
+
+fun TR.orSubA(obj: MappableContent, subName: String): TR {
+    return if (Core.atlas.isFound(this))
+        this
+    else
+        obj.subA(subName)
+}
+
+infix fun TR.or(texture: TR): TR {
+    return if (Core.atlas.isFound(this))
+        this
+    else
+        texture
 }
 /**
  * Gets an array of Texture Region of "sprites/{this}-{subName}" or "sprites/{this}" if subName is null.

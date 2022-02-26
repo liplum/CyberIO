@@ -11,6 +11,8 @@ import mindustry.type.Category
 import mindustry.type.ItemStack
 import mindustry.world.blocks.defense.OverdriveProjector
 import mindustry.world.blocks.production.GenericCrafter
+import mindustry.world.blocks.sandbox.ItemSource
+import mindustry.world.blocks.sandbox.LiquidSource
 import mindustry.world.meta.BuildVisibility
 import net.liplum.DebugOnly
 import net.liplum.R
@@ -46,6 +48,10 @@ class CioBlocks : ContentList {
         @JvmStatic lateinit var deleter: Deleter
         @CioDebugOnly
         @JvmStatic var hyperOverdriveSphere: OverdriveProjector? = null
+        @CioDebugOnly
+        @JvmStatic var itemSource: ItemSource? = null
+        @CioDebugOnly
+        @JvmStatic var liquidSource: LiquidSource? = null
         @JvmStatic lateinit var holoWall: HoloWall
         @JvmStatic lateinit var holoWallLarge: HoloWall
     }
@@ -216,7 +222,7 @@ class CioBlocks : ContentList {
         }
         deleter = Deleter("deleter").apply {
             requirements(
-                Category.turret, BuildVisibility.sandboxOnly, arrayOf(
+                Category.turret, BuildVisibility.shown, arrayOf(
                     ItemStack(CioItems.ic, 4),
                     ItemStack(Items.graphite, 100),
                     ItemStack(Items.silicon, 50),
@@ -227,7 +233,7 @@ class CioBlocks : ContentList {
             cooldown = 0.01f
             recoilAmount = 5f
             reloadTime = 10f
-            powerUse = 6f
+            powerUse = 0.5f
             size = 2
             buildCostMultiplier = 1.5f
             health = 280 * size * size
@@ -235,29 +241,38 @@ class CioBlocks : ContentList {
         }
         holoWall = HoloWall("holo-wall").apply {
             requirements(
-                Category.defense, BuildVisibility.sandboxOnly, arrayOf(
+                Category.defense, BuildVisibility.shown, arrayOf(
                     ItemStack(CioItems.ic, 1),
                     ItemStack(Items.titanium, 20),
                 )
             )
             size = 1
             restoreReload = 10 * 60f
-            health = 300
-            buildCostMultiplier = 4.5f
+            health = 500
+            buildCostMultiplier = 3.5f
         }
+        HoloWall.registerInitHealthHandler()
 
         holoWallLarge = HoloWall("holo-wall-large").apply {
             requirements(
-                Category.defense, BuildVisibility.sandboxOnly, arrayOf(
-                    ItemStack(CioItems.ic, 3),
+                Category.defense, BuildVisibility.shown, arrayOf(
+                    ItemStack(CioItems.ic, 2),
                     ItemStack(Items.titanium, 30 * 4),
                     ItemStack(Items.silicon, 10),
                 )
             )
             size = 2
             restoreReload = 15 * 60f
-            health = 300 * 5
-            buildCostMultiplier = 3.5f
+            health = 400 * 5
+            buildCostMultiplier = 4.5f
+        }
+        DebugOnly {
+            itemSource = ItemSource("item-source").apply {
+                requirements(Category.distribution, BuildVisibility.shown, arrayOf())
+            }
+            liquidSource = LiquidSource("liquid-source").apply {
+                requirements(Category.distribution, BuildVisibility.shown, arrayOf())
+            }
         }
     }
 }
