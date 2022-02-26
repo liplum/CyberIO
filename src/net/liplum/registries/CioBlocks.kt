@@ -11,6 +11,8 @@ import mindustry.type.Category
 import mindustry.type.ItemStack
 import mindustry.world.blocks.defense.OverdriveProjector
 import mindustry.world.blocks.production.GenericCrafter
+import mindustry.world.blocks.sandbox.ItemSource
+import mindustry.world.blocks.sandbox.LiquidSource
 import mindustry.world.meta.BuildVisibility
 import net.liplum.DebugOnly
 import net.liplum.R
@@ -46,6 +48,10 @@ class CioBlocks : ContentList {
         @JvmStatic lateinit var deleter: Deleter
         @CioDebugOnly
         @JvmStatic var hyperOverdriveSphere: OverdriveProjector? = null
+        @CioDebugOnly
+        @JvmStatic var itemSource: ItemSource? = null
+        @CioDebugOnly
+        @JvmStatic var liquidSource: LiquidSource? = null
         @JvmStatic lateinit var holoWall: HoloWall
         @JvmStatic lateinit var holoWallLarge: HoloWall
     }
@@ -259,6 +265,14 @@ class CioBlocks : ContentList {
             restoreReload = 15 * 60f
             health = 400 * 5
             buildCostMultiplier = 4.5f
+        }
+        DebugOnly {
+            itemSource = ItemSource("item-source").apply {
+                requirements(Category.distribution, BuildVisibility.shown, arrayOf())
+            }
+            liquidSource = LiquidSource("liquid-source").apply {
+                requirements(Category.distribution, BuildVisibility.shown, arrayOf())
+            }
         }
     }
 }

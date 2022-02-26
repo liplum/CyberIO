@@ -4,6 +4,7 @@ import arc.Events
 import arc.graphics.Blending
 import arc.graphics.g2d.Draw
 import arc.graphics.g2d.Fill
+import arc.graphics.g2d.TextureRegion
 import arc.math.Mathf
 import arc.util.Time
 import arc.util.io.Reads
@@ -29,6 +30,7 @@ open class HoloWall(name: String) : Wall(name) {
     var restoreReload = 10 * 60f
     lateinit var BaseTR: TR
     lateinit var ImageTR: TR
+    lateinit var DyedImageTR: TR
     var minHealthProportion = 0.05f
     var maxSleepyTime = 30 * 60f
 
@@ -42,15 +44,15 @@ open class HoloWall(name: String) : Wall(name) {
         flashHit = true
     }
 
-    override fun loadIcon() {
-        fullIcon = this.subA("ui")
-        uiIcon = fullIcon
-    }
-
     override fun load() {
+        super.load()
         BaseTR = this.subA("base")
         ImageTR = this.subA("image")
-        region = BaseTR
+        DyedImageTR = this.subA("dyed-image") or ImageTR
+    }
+
+    override fun icons(): Array<TextureRegion> {
+        return arrayOf(BaseTR, DyedImageTR)
     }
 
     override fun setBars() {
