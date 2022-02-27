@@ -15,7 +15,7 @@ import mindustry.world.blocks.power.PowerBlock
 import mindustry.world.meta.BlockGroup
 import mindustry.world.modules.ItemModule
 import net.liplum.*
-import net.liplum.animations.anims.IAnimated
+import net.liplum.animations.anims.IAnimatedBlock
 import net.liplum.animations.anis.AniConfig
 import net.liplum.animations.anis.AniState
 import net.liplum.animations.blocks.*
@@ -25,9 +25,9 @@ import net.liplum.utils.*
 
 open class Cloud(name: String) : PowerBlock(name) {
     lateinit var cloud: TR
-    lateinit var floatingCloudAnim: IAnimated
-    lateinit var dataTransferAnim: IAnimated
-    lateinit var shredderAnim: IAnimated
+    lateinit var floatingCloudAnim: IAnimatedBlock
+    lateinit var dataTransferAnim: IAnimatedBlock
+    lateinit var shredderAnim: IAnimatedBlock
     lateinit var blockGroup: BlockGroupType<Cloud, CloudBuild>
     lateinit var CloudAniBlock: BlockType<Cloud, CloudBuild>
     lateinit var DataAniBlock: BlockType<Cloud, CloudBuild>

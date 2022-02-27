@@ -70,7 +70,7 @@ class CioBlocks : ContentList {
             outputItem = ItemStack(CioItems.ic, 1)
             craftTime = 1200f
             size = 3
-            buildCostMultiplier = 10f
+            buildCostMultiplier = 6f
             craftEffect = Fx.smelt
             itemCapacity = 200
             consumes.items( //Total:200

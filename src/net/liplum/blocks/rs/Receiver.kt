@@ -21,7 +21,7 @@ import mindustry.world.blocks.ItemSelection
 import mindustry.world.meta.BlockGroup
 import net.liplum.CioMod
 import net.liplum.R
-import net.liplum.animations.anims.IAnimated
+import net.liplum.animations.anims.IAnimatedBlock
 import net.liplum.animations.anis.AniConfig
 import net.liplum.animations.anis.AniState
 import net.liplum.api.data.IDataReceiver
@@ -41,7 +41,7 @@ open class Receiver(name: String?) : AniedBlock<Receiver, ReceiverBuild>(name) {
     lateinit var UnconnectedAni: AniStateR
     lateinit var BlockedAni: AniStateR
     lateinit var NoPowerAni: AniStateR
-    lateinit var DownloadAnim: IAnimated
+    lateinit var DownloadAnim: IAnimatedBlock
     var maxConnection = -1
     var DownloadAnimFrameNumber = 7
     var DownloadAnimDuration = 30f

@@ -17,4 +17,8 @@ public class UncraftableItem extends Item {
         return false;
     }
 
+    @Override
+    public boolean unlockedNowHost() {
+        return false;
+    }
 }
