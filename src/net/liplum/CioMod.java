@@ -51,6 +51,7 @@ public class CioMod extends Mod {
         CanGlobalAnimationPlay = true;
         JsonIO.json.addClassTag(SharedRoom.class.getName(), SharedRoom.class);
         Events.on(WorldLoadEvent.class, e -> LiplumCloud.read());
+        Events.on(SaveWriteEvent.class, e -> LiplumCloud.save());
         if (DebugMode) {
             Vars.enableConsole = true;
         }

@@ -3,12 +3,17 @@ package net.liplum.animations.anims.blocks;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
+import arc.math.Mathf;
+import arc.util.Time;
 import mindustry.gen.Building;
-import net.liplum.animations.anims.IAnimatedBlockT;
+import net.liplum.animations.anims.IAnimatedT;
+import net.liplum.animations.anims.IFrameIndexerT;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class AutoAnimationT extends AutoAnimation implements IAnimatedBlockT<AutoAnimationT.Obj> {
+public class AutoAnimationT<T extends Building> extends AutoAnimation implements IAnimatedT<AutoAnimationT<T>.Obj> {
+    protected IFrameIndexerT<Obj> indexerT;
+    public final float totalDuration;
 
     /**
      * @param totalDuration how long can this animation be played
@@ -16,22 +21,40 @@ public class AutoAnimationT extends AutoAnimation implements IAnimatedBlockT<Aut
      */
     public AutoAnimationT(float totalDuration, TextureRegion... allFrames) {
         super(totalDuration, allFrames);
+        this.totalDuration = Math.max(1, totalDuration);
+        this.indexerT = (length, tObj) -> {
+            if (length == 0 || tObj.tileEntity == null) {
+                return -1;
+            }
+            float fixedTotalDuration = getFixedTotalDuration(tObj.tileEntity);
+            float progress = Time.time % fixedTotalDuration / fixedTotalDuration;//percent
+            int index = (int) (progress * length);
+            index = Mathf.clamp(index, 0, length);
+            return index;
+        };
     }
 
-    @Override
-    public Obj gen() {
-        return new Obj(this);
+    /**
+     * Gets the real duration of this
+     *
+     * @param tileEntity if isn't a null, the result will base on {@link Building#timeScale()}
+     * @return total duration how long this animation can be played
+     */
+    public float getFixedTotalDuration(@NotNull Building tileEntity) {
+        return totalDuration / tileEntity.timeScale();
     }
 
     @Nullable
-    public TextureRegion getCurTR(@Nullable Building tileEntity, @NotNull Obj obj) {
+    public TextureRegion getCurTR(@NotNull Obj obj) {
         int length = allFrames.length;
         if (length == 0) {
             return null;
         }
         int index = 0;
-        if (indexer != null) {
-            index = indexer.getCurIndex(length, tileEntity);
+        if (indexerT != null) {
+            index = indexerT.getCurIndex(length, obj);
+        } else if (indexer != null) {
+            index = getCurIndex(length);
         }
         if (index < 0) {
             return null;
@@ -43,16 +66,16 @@ public class AutoAnimationT extends AutoAnimation implements IAnimatedBlockT<Aut
     }
 
     @Override
-    public void draw(@NotNull Obj obj, float x, float y, Building tileEntity) {
-        TextureRegion curTR = getCurTR(tileEntity, obj);
+    public void draw(@NotNull Obj obj, float x, float y) {
+        TextureRegion curTR = getCurTR(obj);
         if (curTR != null) {
             Draw.rect(curTR, x, y);
         }
     }
 
     @Override
-    public void draw(@NotNull Obj obj, Color color, float x, float y, Building tileEntity) {
-        TextureRegion curTR = getCurTR(tileEntity, obj);
+    public void draw(@NotNull Obj obj, Color color, float x, float y) {
+        TextureRegion curTR = getCurTR(obj);
         if (curTR != null) {
             Draw.color(color);
             Draw.rect(curTR, x, y);
@@ -60,12 +83,13 @@ public class AutoAnimationT extends AutoAnimation implements IAnimatedBlockT<Aut
         }
     }
 
-    public static class Obj {
-        public AutoAnimationT prototype;
-        public boolean reversed;
+    @Override
+    public AutoAnimationT<T>.Obj gen() {
+        return new Obj();
+    }
 
-        public Obj(AutoAnimationT prototype) {
-            this.prototype = prototype;
-        }
+    public class Obj {
+        public T tileEntity;
+        public boolean reversed;
     }
 }

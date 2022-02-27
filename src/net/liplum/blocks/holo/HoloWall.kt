@@ -60,7 +60,7 @@ open class HoloWall(name: String) : Wall(name) {
         DebugOnly {
             bars.add<HoloBuild>(R.Bar.IsProjectingN) {
                 Bar(
-                    { R.Bar.IsProjecting.bundle(it.isProjecting) },
+                    { R.Bar.IsProjecting.bundle(it.isProjecting.yesNo()) },
                     { Pal.bar },
                     { if (it.isProjecting) 1f else 0f }
                 )

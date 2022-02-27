@@ -88,7 +88,7 @@ open class Virus(name: String) : AnimedBlock(name) {
         DebugOnly {
             bars.add<VirusBuild>(R.Bar.IsAliveN) {
                 Bar(
-                    { R.Bar.IsAlive.bundle(it.isAlive) },
+                    { R.Bar.IsAlive.bundle(it.isAlive.yesNo()) },
                     { R.C.IsAive },
                     { if (it.isAlive) 1f else 0f }
                 )

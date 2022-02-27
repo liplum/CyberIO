@@ -53,7 +53,7 @@ fun BlockBars.addSleepInfo() {
         R.Bar.IsAsleep
     ) {
         Bar(
-            { R.Bar.IsAsleep.bundle(it.sleeping) },
+            { R.Bar.IsAsleep.bundle(it.sleeping.yesNo()) },
             { Pal.power },
             { if (it.sleeping) 1f else 0f }
         )

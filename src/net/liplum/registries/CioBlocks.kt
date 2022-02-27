@@ -11,8 +11,6 @@ import mindustry.type.Category
 import mindustry.type.ItemStack
 import mindustry.world.blocks.defense.OverdriveProjector
 import mindustry.world.blocks.production.GenericCrafter
-import mindustry.world.blocks.sandbox.ItemSource
-import mindustry.world.blocks.sandbox.LiquidSource
 import mindustry.world.meta.BuildVisibility
 import net.liplum.DebugOnly
 import net.liplum.R
@@ -48,10 +46,6 @@ class CioBlocks : ContentList {
         @JvmStatic lateinit var deleter: Deleter
         @CioDebugOnly
         @JvmStatic var hyperOverdriveSphere: OverdriveProjector? = null
-        @CioDebugOnly
-        @JvmStatic var itemSource: ItemSource? = null
-        @CioDebugOnly
-        @JvmStatic var liquidSource: LiquidSource? = null
         @JvmStatic lateinit var holoWall: HoloWall
         @JvmStatic lateinit var holoWallLarge: HoloWall
     }
@@ -70,7 +64,7 @@ class CioBlocks : ContentList {
             outputItem = ItemStack(CioItems.ic, 1)
             craftTime = 1200f
             size = 3
-            buildCostMultiplier = 6f
+            buildCostMultiplier = 3f
             craftEffect = Fx.smelt
             itemCapacity = 200
             consumes.items( //Total:200
@@ -233,12 +227,13 @@ class CioBlocks : ContentList {
             cooldown = 0.01f
             recoilAmount = 5f
             reloadTime = 10f
-            powerUse = 0.5f
+            powerUse = 1f
             size = 2
             buildCostMultiplier = 1.5f
             health = 280 * size * size
             shootSound = Sounds.lasershoot
         }
+
         holoWall = HoloWall("holo-wall").apply {
             requirements(
                 Category.defense, BuildVisibility.shown, arrayOf(
@@ -267,12 +262,9 @@ class CioBlocks : ContentList {
             buildCostMultiplier = 4.5f
         }
         DebugOnly {
-            itemSource = ItemSource("item-source").apply {
-                requirements(Category.distribution, BuildVisibility.shown, arrayOf())
-            }
-            liquidSource = LiquidSource("liquid-source").apply {
-                requirements(Category.distribution, BuildVisibility.shown, arrayOf())
-            }
+            Blocks.powerSource.buildVisibility = BuildVisibility.shown
+            Blocks.itemSource.buildVisibility = BuildVisibility.shown
+            Blocks.liquidSource.buildVisibility = BuildVisibility.shown
         }
     }
 }

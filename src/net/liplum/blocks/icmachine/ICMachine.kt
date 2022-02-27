@@ -4,7 +4,7 @@ import arc.graphics.Color
 import arc.graphics.g2d.Draw
 import arc.math.Mathf
 import mindustry.graphics.Drawf
-import net.liplum.animations.anims.IAnimatedBlock
+import net.liplum.animations.anims.blocks.AutoAnimation
 import net.liplum.animations.anis.AniConfig
 import net.liplum.animations.anis.AniState
 import net.liplum.blocks.AniedCrafter
@@ -17,7 +17,7 @@ private typealias AniStateM = AniState<AniedCrafter, AniedCrafter.AniedCrafterBu
 open class ICMachine(name: String) : AniedCrafter(name) {
     lateinit var idleState: AniStateM
     lateinit var WorkingState: AniStateM
-    lateinit var WorkingAnimation: IAnimatedBlock
+    lateinit var WorkingAnimation: AutoAnimation
     lateinit var idleTR: TR
     var WorkingAnimFrameNumber = 7
     var WorkingAnimDuration = 60f
@@ -31,7 +31,7 @@ open class ICMachine(name: String) : AniedCrafter(name) {
             Draw.rect(idleTR, build.x, build.y)
         }
         WorkingState = addAniState("Working") { _, build ->
-            WorkingAnimation.draw(build.x, build.y, build)
+            WorkingAnimation.draw(build.x, build.y)
             Drawf.light(
                 build.team, build.x, build.y,
                 5f,

@@ -6,11 +6,11 @@ import arc.graphics.g2d.TextureRegion;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class Animation<T> implements IAnimated<T> {
+public class Animation implements IAnimated {
     @NotNull
     protected final TextureRegion[] allFrames;
     @Nullable
-    protected IFrameIndexer<T> indexer;
+    protected IFrameIndexer indexer;
 
     public boolean reversed = false;
 
@@ -24,27 +24,31 @@ public class Animation<T> implements IAnimated<T> {
     }
 
     @NotNull
-    public Animation<T> indexer(@Nullable IFrameIndexer<T> indexer) {
+    public Animation indexer(@Nullable IFrameIndexer indexer) {
         this.indexer = indexer;
         return this;
     }
 
     @Nullable
-    public IFrameIndexer<T> getIndexer() {
+    public IFrameIndexer getIndexer() {
         return indexer;
     }
 
+    public int getCurIndex(int length) {
+        if (indexer != null) {
+            return indexer.getCurIndex(length);
+        }
+        return -1;
+    }
+
     @Nullable
-    public TextureRegion getCurTR(@Nullable T data) {
+    public TextureRegion getCurTR() {
         int length = allFrames.length;
         if (length == 0) {
             return null;
         }
-        int index = 0;
-        if (indexer != null) {
-            index = indexer.getCurIndex(length, data);
-        }
-        if(index < 0){
+        int index = getCurIndex(length);
+        if (index < 0) {
             return null;
         }
         if (reversed) {
@@ -54,16 +58,16 @@ public class Animation<T> implements IAnimated<T> {
     }
 
     @Override
-    public void draw(float x, float y, T data) {
-        TextureRegion curTR = getCurTR(data);
+    public void draw(float x, float y) {
+        TextureRegion curTR = getCurTR();
         if (curTR != null) {
             Draw.rect(curTR, x, y);
         }
     }
 
     @Override
-    public void draw(Color color, float x, float y, T data) {
-        TextureRegion curTR = getCurTR(data);
+    public void draw(Color color, float x, float y) {
+        TextureRegion curTR = getCurTR();
         if (curTR != null) {
             Draw.color(color);
             Draw.rect(curTR, x, y);

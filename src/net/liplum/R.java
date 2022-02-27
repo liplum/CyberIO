@@ -4,53 +4,65 @@ import arc.graphics.Color;
 import mindustry.graphics.Pal;
 
 public class R {
-    public static class I {
+    public static final class I {
         public static final String IC = "ic";
     }
 
-    public static class B {
+    public static final class B {
 
     }
 
-    public static class Bar {
+    public static final class Bar {
         public static String Gen(String content) {
             return "bar." + Meta.ModID + "." + content;
         }
 
-        public static final String GenerationN = "generation";
-        public static final String Generation = Gen(GenerationN);
-        public static final String SlowDownN = "slow-down";
-        public static final String SlowDown = Gen(SlowDownN);
-        public static final String EfficiencyAbsorptionN = "efficiency-absorption";
-        public static final String EfficiencyAbsorption = Gen(EfficiencyAbsorptionN);
-        public static final String TeamN = "team";
-        public static final String Team = Gen(TeamN);
-        public static final String SpiralRotationSpeedN = "spiral-rotate-speed";
-        public static final String SpiralRotationSpeed = Gen(SpiralRotationSpeedN);
-        public static final String AlphaN = "alpha";
-        public static final String Alpha = Gen(AlphaN);
-        public static final String RangeN = "range";
-        public static final String Range = Gen(RangeN);
-        public static final String CoolDownN = "cool-down";
-        public static final String CoolDown = Gen(CoolDownN);
-        public static final String IsAliveN = "is-alive";
-        public static final String IsAlive = Gen(IsAliveN);
-        public static final String IsAsleepN = "is-asleep";
-        public static final String IsAsleep = Gen(IsAsleepN);
-        public static final String AniStateN = "ani-state";
-        public static final String AniState = Gen(AniStateN);
-        public static final String IsProjectingN = "is-projecting";
-        public static final String IsProjecting = Gen(IsProjectingN);
-        public static final String RestRestoreN = "rest-restore";
-        public static final String RestRestore = Gen(RestRestoreN);
-        public static final String ChargeN = "charge";
-        public static final String Charge = Gen(ChargeN);
+        public static final String GenerationN = "generation",
+                Generation = Gen(GenerationN);
+        public static final String SlowDownN = "slow-down",
+                SlowDown = Gen(SlowDownN);
+        public static final String EfficiencyAbsorptionN = "efficiency-absorption",
+                EfficiencyAbsorption = Gen(EfficiencyAbsorptionN);
+        public static final String TeamN = "team",
+                Team = Gen(TeamN);
+        public static final String SpiralRotationSpeedN = "spiral-rotate-speed",
+                SpiralRotationSpeed = Gen(SpiralRotationSpeedN);
+        public static final String AlphaN = "alpha",
+                Alpha = Gen(AlphaN);
+        public static final String RangeN = "range",
+                Range = Gen(RangeN);
+        public static final String CoolDownN = "cool-down",
+                CoolDown = Gen(CoolDownN);
+        public static final String IsAliveN = "is-alive",
+                IsAlive = Gen(IsAliveN);
+        public static final String IsAsleepN = "is-asleep",
+                IsAsleep = Gen(IsAsleepN);
+        public static final String AniStateN = "ani-state",
+                AniState = Gen(AniStateN);
+        public static final String IsProjectingN = "is-projecting",
+                IsProjecting = Gen(IsProjectingN);
+        public static final String RestRestoreN = "rest-restore",
+                RestRestore = Gen(RestRestoreN);
+        public static final String ChargeN = "charge",
+                Charge = Gen(ChargeN);
         public static final String NeighborStateN = "neighbor-state";
-        public static final String LastDamagedN = "last-damaged";
-        public static final String LastDamaged = Gen(LastDamagedN);
+        public static final String LastDamagedN = "last-damaged",
+                LastDamaged = Gen(LastDamagedN);
+
+
+    }
+    public static final class Ctrl {
+        public static String Gen(String content) {
+            return "control." + Meta.ModID + "." + content;
+        }
+
+        public static final String
+                Yes = Gen("yes"),
+                No = Gen("no"),
+                OK = Gen("ok");
     }
 
-    public static class C {
+    public static final class C {
         public static final Color LightBlue = Color.valueOf("#add8e6");
         public static final Color Holo = Color.valueOf("#42a5f5");
         public static final Color HoloDark = Color.valueOf("#1e88e5");
@@ -67,7 +79,7 @@ public class R {
 
     }
 
-    public static class S {
+    public static final class S {
         public static String Gen(String name) {
             return "shaders/" + name + ".frag";
         }

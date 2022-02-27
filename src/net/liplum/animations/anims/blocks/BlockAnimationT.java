@@ -4,24 +4,39 @@ import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import mindustry.gen.Building;
-import net.liplum.animations.anims.IAnimatedBlockT;
+import net.liplum.animations.anims.Animation;
+import net.liplum.animations.anims.IAnimatedT;
+import net.liplum.animations.anims.IFrameIndexerT;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class BlockAnimationT extends BlockAnimation implements IAnimatedBlockT<BlockAnimationT.Obj> {
-    public BlockAnimationT(@NotNull TextureRegion... allFrames) {
+public class BlockAnimationT<T extends Building> extends Animation implements IAnimatedT<BlockAnimationT<T>.Obj> {
+    protected IFrameIndexerT<Obj> indexerT;
+
+    /**
+     * @param allFrames every frame which has the same duration
+     */
+    public BlockAnimationT(TextureRegion... allFrames) {
         super(allFrames);
     }
 
+    @NotNull
+    public BlockAnimationT<T> indexerT(@Nullable IFrameIndexerT<Obj> indexerT) {
+        this.indexerT = indexerT;
+        return this;
+    }
+
     @Nullable
-    public TextureRegion getCurTR(@Nullable Building tileEntity, @NotNull Obj obj) {
+    public TextureRegion getCurTR(@NotNull Obj obj) {
         int length = allFrames.length;
         if (length == 0) {
             return null;
         }
         int index = 0;
-        if (indexer != null) {
-            index = indexer.getCurIndex(length, tileEntity);
+        if (indexerT != null) {
+            index = indexerT.getCurIndex(length, obj);
+        } else if (indexer != null) {
+            index = getCurIndex(length);
         }
         if (index < 0) {
             return null;
@@ -33,16 +48,16 @@ public class BlockAnimationT extends BlockAnimation implements IAnimatedBlockT<B
     }
 
     @Override
-    public void draw(@NotNull Obj obj, float x, float y, Building tileEntity) {
-        TextureRegion curTR = getCurTR(tileEntity, obj);
+    public void draw(@NotNull Obj obj, float x, float y) {
+        TextureRegion curTR = getCurTR(obj);
         if (curTR != null) {
             Draw.rect(curTR, x, y);
         }
     }
 
     @Override
-    public void draw(@NotNull Obj obj, Color color, float x, float y, Building tileEntity) {
-        TextureRegion curTR = getCurTR(tileEntity, obj);
+    public void draw(@NotNull Obj obj, Color color, float x, float y) {
+        TextureRegion curTR = getCurTR(obj);
         if (curTR != null) {
             Draw.color(color);
             Draw.rect(curTR, x, y);
@@ -52,15 +67,11 @@ public class BlockAnimationT extends BlockAnimation implements IAnimatedBlockT<B
 
     @Override
     public Obj gen() {
-        return new Obj(this);
+        return new Obj();
     }
 
-    public static class Obj {
-        public BlockAnimationT prototype;
+    public class Obj {
+        public T tileEntity;
         public boolean reversed;
-
-        public Obj(BlockAnimationT prototype) {
-            this.prototype = prototype;
-        }
     }
 }
