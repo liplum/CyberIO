@@ -28,10 +28,6 @@ open class Prism(name: String) : PowerTurret(name) {
     }
     open inner class PrismLaser: LaserBulletType(){
         init {
-            hitEffect
-
-
-
         }
 
     }
@@ -44,7 +40,10 @@ open class Prism(name: String) : PowerTurret(name) {
                 realrange,
                 realrange
             ) {
-                it.absorb()
+                if (it.type is LaserBulletType) {
+
+                    it.absorb()
+                }
             }
 
         }
