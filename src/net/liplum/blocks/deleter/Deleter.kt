@@ -5,11 +5,13 @@ import arc.math.Mathf
 import arc.util.Tmp
 import mindustry.content.Fx
 import mindustry.entities.bullet.BasicBulletType
+import mindustry.gen.Building
 import mindustry.gen.Bullet
 import mindustry.gen.Healthc
 import mindustry.gen.Hitboxc
 import mindustry.world.blocks.defense.turrets.PowerTurret
 import net.liplum.R
+import net.liplum.api.holo.IRegenerate
 import net.liplum.utils.lostHp
 import net.liplum.utils.quadratic
 
@@ -56,16 +58,32 @@ open class Deleter(name: String) : PowerTurret(name) {
         override fun despawned(b: Bullet) {
         }
 
+        open val Healthc.executeLine: Float
+            get() = this.maxHealth() * executeProportion
+
+        open fun onHitTarget(b: Bullet, entity: Healthc) {
+            val h = entity.health()
+            val mh = entity.maxHealth()
+            if (h < entity.executeLine) {
+                entity.damagePierce(mh)
+            } else {
+                entity.damage(b.damage)
+                entity.damagePierce(entity.lostHp * extraLostHpBounce)
+            }
+        }
+
+        override fun hitTile(b: Bullet, build: Building, initialHealth: Float, direct: Boolean) {
+            onHitTarget(b, build)
+            if (build is IRegenerate) {
+                if (build.health() < build.executeLine) {
+                    build.killThoroughly()
+                }
+            }
+        }
+
         override fun hitEntity(b: Bullet, entity: Hitboxc, health: Float) {
             if (entity is Healthc) {
-                val e = entity as Healthc
-                val h = e.health()
-                val mh = e.maxHealth()
-                if (h < mh * executeProportion) {
-                    e.damage(mh)
-                } else {
-                    e.damage(b.damage + e.lostHp * extraLostHpBounce)
-                }
+                onHitTarget(b, entity)
             }
         }
 

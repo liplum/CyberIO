@@ -4,7 +4,6 @@ import mindustry.content.Blocks
 import mindustry.content.Fx
 import mindustry.content.Items
 import mindustry.content.Liquids
-import mindustry.ctype.ContentList
 import mindustry.entities.bullet.LaserBulletType
 import mindustry.gen.Sounds
 import mindustry.type.Category
@@ -31,7 +30,7 @@ import net.liplum.blocks.virus.AntiVirus
 import net.liplum.blocks.virus.Virus
 import net.liplum.utils.CioDebugOnly
 
-class CioBlocks : ContentList {
+class CioBlocks : ContentTable {
     companion object {
         @JvmStatic lateinit var icMachine: GenericCrafter
         @JvmStatic lateinit var receiver: Receiver
@@ -44,10 +43,12 @@ class CioBlocks : ContentList {
         @JvmStatic lateinit var cloud: Cloud
         @JvmStatic lateinit var prism: Prism
         @JvmStatic lateinit var deleter: Deleter
-        @CioDebugOnly
-        @JvmStatic var hyperOverdriveSphere: OverdriveProjector? = null
+        @CioDebugOnly @JvmStatic var hyperOverdriveSphere: OverdriveProjector? = null
         @JvmStatic lateinit var holoWall: HoloWall
         @JvmStatic lateinit var holoWallLarge: HoloWall
+    }
+
+    override fun firstLoad() {
     }
 
     override fun load() {
@@ -261,10 +262,14 @@ class CioBlocks : ContentList {
             health = 400 * 5
             buildCostMultiplier = 4.5f
         }
+    }
+
+    override fun lastLoad() {
         DebugOnly {
             Blocks.powerSource.buildVisibility = BuildVisibility.shown
             Blocks.itemSource.buildVisibility = BuildVisibility.shown
             Blocks.liquidSource.buildVisibility = BuildVisibility.shown
+            deleter.shootType.status = CioStatusEffects.infected
         }
     }
 }

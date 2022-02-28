@@ -4,7 +4,6 @@ import arc.graphics.gl.Shader;
 import arc.util.Nullable;
 import net.liplum.ClientOnly;
 import net.liplum.shaders.BlockShader;
-import net.liplum.shaders.SurfaceShader;
 
 import java.util.LinkedList;
 

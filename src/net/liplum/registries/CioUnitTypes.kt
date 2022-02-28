@@ -1,14 +1,18 @@
 package net.liplum.registries
 
-import mindustry.ctype.ContentList
 import mindustry.type.UnitType
 
-class CioUnitTypes : ContentList {
+class CioUnitTypes : ContentTable {
     companion object {
-        @JvmStatic
-        lateinit var holoUnit: UnitType
+        @JvmStatic lateinit var holoUnit: UnitType
     }
+    override fun firstLoad() {
 
+    }
     override fun load() {
+
+    }
+    override fun lastLoad() {
+
     }
 }

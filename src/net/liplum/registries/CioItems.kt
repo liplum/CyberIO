@@ -1,16 +1,20 @@
 package net.liplum.registries
 
-import mindustry.ctype.ContentList
 import mindustry.type.Item
 import net.liplum.R
 
-class CioItems : ContentList {
+class CioItems : ContentTable {
     companion object {
-        @JvmStatic
-        lateinit var ic: Item
+        @JvmStatic lateinit var ic: Item
     }
 
     override fun load() {
+    }
+
+    override fun firstLoad() {
         ic = Item(R.I.IC, R.C.IcDark)
+    }
+
+    override fun lastLoad() {
     }
 }

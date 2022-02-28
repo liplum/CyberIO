@@ -65,7 +65,7 @@ public class CioMod extends Mod {
 
     @Override
     public void loadContent() {
-        ContentRegistry.loadContent();
+        ContentRegistry.INSTANCE.loadContent();
         Log.info("Cyber IO mod's contents loaded.");
     }
 }

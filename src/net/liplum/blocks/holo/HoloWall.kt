@@ -21,6 +21,7 @@ import mindustry.world.blocks.defense.Wall
 import net.liplum.ClientOnly
 import net.liplum.DebugOnly
 import net.liplum.R
+import net.liplum.api.holo.IRegenerate
 import net.liplum.toSecond
 import net.liplum.utils.*
 
@@ -90,7 +91,7 @@ open class HoloWall(name: String) : Wall(name) {
         }
     }
 
-    open inner class HoloBuild : WallBuild() {
+    open inner class HoloBuild : WallBuild(), IRegenerate {
         var restoreCharge = restoreReload
         open val isProjecting: Boolean
             get() = health > maxHealth * minHealthProportion
@@ -121,6 +122,10 @@ open class HoloWall(name: String) : Wall(name) {
 
         open val canRestructure: Boolean
             get() = lastDamagedTime > restoreReload || !isProjecting
+
+        override fun killThoroughly() {
+            Call.tileDestroyed(this)
+        }
 
         override fun damage(damage: Float) {
             if (!this.dead()) {
