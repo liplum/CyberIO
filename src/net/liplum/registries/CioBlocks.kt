@@ -1,10 +1,12 @@
 package net.liplum.registries
 
+import arc.Events
 import mindustry.content.Blocks
 import mindustry.content.Fx
 import mindustry.content.Items
 import mindustry.content.Liquids
 import mindustry.entities.bullet.LaserBulletType
+import mindustry.game.EventType
 import mindustry.gen.Sounds
 import mindustry.type.Category
 import mindustry.type.ItemStack
@@ -25,6 +27,7 @@ import net.liplum.blocks.icmachine.ICMachine
 import net.liplum.blocks.prism.Prism
 import net.liplum.blocks.rs.Receiver
 import net.liplum.blocks.rs.Sender
+import net.liplum.blocks.tmtrainer.TMTRAINER
 import net.liplum.blocks.underdrive.UnderdriveProjector
 import net.liplum.blocks.virus.AntiVirus
 import net.liplum.blocks.virus.Virus
@@ -46,6 +49,7 @@ class CioBlocks : ContentTable {
         @CioDebugOnly @JvmStatic var hyperOverdriveSphere: OverdriveProjector? = null
         @JvmStatic lateinit var holoWall: HoloWall
         @JvmStatic lateinit var holoWallLarge: HoloWall
+        @JvmStatic lateinit var TMTRAINER: TMTRAINER
     }
 
     override fun firstLoad() {
@@ -261,6 +265,21 @@ class CioBlocks : ContentTable {
             restoreReload = 15 * 60f
             health = 400 * 5
             buildCostMultiplier = 4.5f
+        }
+
+        DebugOnly {
+            TMTRAINER = TMTRAINER("TMTRAINER").apply {
+                requirements(Category.turret, BuildVisibility.sandboxOnly, arrayOf())
+                ammo(
+                    Items.sporePod, CioBulletTypes.virus
+                )
+                size = 4
+            }
+        }
+        var id = 1
+        Events.run(EventType.Trigger.update) {
+            id++
+            TMTRAINER.localizedName = id.toString()
         }
     }
 
