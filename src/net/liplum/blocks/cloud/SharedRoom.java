@@ -19,10 +19,6 @@ public class SharedRoom implements Json.JsonSerializable {
     public transient CloudInfo sharedInfo = new CloudInfo();
     public transient Runnable whenOfflineLastOne = null;
 
-    private void update() {
-        onlyOnCloud = users.size == 0;
-    }
-
     public void online(IShared sharedBuild) {
         if (sharedItemModule == null) {
             sharedItemModule = sharedBuild.getSharedItems();
@@ -31,14 +27,16 @@ public class SharedRoom implements Json.JsonSerializable {
         }
         sharedBuild.setSharedInfo(sharedInfo);
         users.add(sharedBuild.getBuilding());
-        update();
     }
 
     public void offline(IShared sharedBuild) {
-        users.remove(sharedBuild.getBuilding());
-        update();
-        if (users.isEmpty() && whenOfflineLastOne != null) {
-            whenOfflineLastOne.run();
+        Building b = sharedBuild.getBuilding();
+        if (users.contains(b)) {
+            if (users.size == 1 && whenOfflineLastOne != null) {
+                onlyOnCloud = true;
+                whenOfflineLastOne.run();
+            }
+            users.remove(b);
         }
     }
 
@@ -55,18 +53,21 @@ public class SharedRoom implements Json.JsonSerializable {
     @Override
     public void read(Json json, JsonValue jsonValue) {
         JsonValue onlyOnCloudJV = jsonValue.get("OnlyOnCloud");
-        if (onlyOnCloudJV != null && onlyOnCloudJV.asBoolean()) {
-            sharedItemModule = new ItemModule();
-            JsonValue itemsJV = jsonValue.get("Items");
-            int[] items = new int[Vars.content.items().size];
-            if (itemsJV != null) {
-                int[] formerItems = itemsJV.asIntArray();
-                System.arraycopy(formerItems, 0, items, 0, formerItems.length);
-                Reflect.set(sharedItemModule, "items", items);
-            }
-            JsonValue totalJV = jsonValue.get("Total");
-            if (totalJV != null) {
-                Reflect.set(sharedItemModule, "total", totalJV.asInt());
+        if (onlyOnCloudJV != null) {
+            onlyOnCloud = onlyOnCloudJV.asBoolean();
+            if (onlyOnCloud) {
+                sharedItemModule = new ItemModule();
+                JsonValue itemsJV = jsonValue.get("Items");
+                int[] items = new int[Vars.content.items().size];
+                if (itemsJV != null) {
+                    int[] formerItems = itemsJV.asIntArray();
+                    System.arraycopy(formerItems, 0, items, 0, formerItems.length);
+                    Reflect.set(sharedItemModule, "items", items);
+                }
+                JsonValue totalJV = jsonValue.get("Total");
+                if (totalJV != null) {
+                    Reflect.set(sharedItemModule, "total", totalJV.asInt());
+                }
             }
         }
     }

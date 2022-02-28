@@ -5,7 +5,6 @@ import arc.math.Mathf
 import arc.struct.ObjectSet
 import arc.util.io.Reads
 import arc.util.io.Writes
-import mindustry.game.Team
 import mindustry.gen.Building
 import mindustry.gen.Teamc
 import mindustry.type.Item
@@ -163,8 +162,7 @@ open class Cloud(name: String) : PowerBlock(name) {
             info.lastShredTime += edelta()
         }
 
-        override fun create(block: Block, team: Team): Building {
-            super.create(block, team)
+        override fun created() {
             cloudRoom = LiplumCloud.getCloud(team)
             cloudRoom.online(this)
             if (CioMod.CanAniStateLoad) {
@@ -173,11 +171,9 @@ open class Cloud(name: String) : PowerBlock(name) {
                 shredderAnim = this@Cloud.shredderAnim.gen()
                 aniBlockGroupObj = blockGroup.newObj(this@Cloud, this)
             }
-            return this
         }
 
-        override fun remove() {
-            super.remove()
+        override fun onRemoved() {
             cloudRoom.offline(this)
         }
 
@@ -246,12 +242,12 @@ open class Cloud(name: String) : PowerBlock(name) {
 
         override fun write(write: Writes) {
             super.write(write)
-            RWU.writeIntSet(write, info.sendersPos)
+            write.intSet(info.sendersPos)
         }
 
         override fun read(read: Reads, revision: Byte) {
             super.read(read, revision)
-            info.sendersPos = RWU.readIntSet(read)
+            info.sendersPos = read.intSet()
         }
 
         override fun getSharedItems(): ItemModule = items

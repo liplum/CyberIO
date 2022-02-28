@@ -10,10 +10,8 @@ import net.liplum.CioMod;
 
 public class LiplumCloud {
     private static OrderedMap<Integer, SharedRoom> CurGameCloudRoom;
-
-    public static void reset() {
-        CurGameCloudRoom = new OrderedMap<>();
-    }
+    private static boolean Saved = false;
+    private static boolean Read = false;
 
     public static SharedRoom getCloud(Team team) {
         return getCloud(team.id);
@@ -21,7 +19,7 @@ public class LiplumCloud {
 
     public static SharedRoom getCloud(int teamID) {
         if (CurGameCloudRoom == null) {
-            reset();
+            CurGameCloudRoom = new OrderedMap<>();
         }
         SharedRoom r;
         if (CurGameCloudRoom.containsKey(teamID)) {
@@ -44,6 +42,9 @@ public class LiplumCloud {
     }
 
     public static void read() {
+        if (Read) {
+            return;
+        }
         String data = Vars.state.rules.tags.get("cyber-io-LiplumCloud", "{}");
         if (CioMod.DebugMode) {
             Log.info("Flowing is read:");
@@ -52,7 +53,15 @@ public class LiplumCloud {
         OrderedMap<String, SharedRoom> strIdToRoom = JsonIO.json.fromJson(OrderedMap.class, data);
         CurGameCloudRoom = new OrderedMap<>();
         for (ObjectMap.Entry<String, SharedRoom> entry : strIdToRoom) {
-            CurGameCloudRoom.put(Integer.valueOf(entry.key), entry.value);
+            SharedRoom shardRoom = entry.value;
+            shardRoom.whenOfflineLastOne = LiplumCloud::save;
+            CurGameCloudRoom.put(Integer.valueOf(entry.key), shardRoom);
         }
+        Read = true;
+    }
+
+    public static void reset() {
+        Saved = false;
+        Read = false;
     }
 }

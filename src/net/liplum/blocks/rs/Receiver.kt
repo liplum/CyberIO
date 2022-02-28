@@ -7,7 +7,6 @@ import arc.scene.ui.layout.Table
 import arc.struct.ObjectSet
 import arc.struct.OrderedSet
 import arc.util.Eachable
-import arc.util.Nullable
 import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
@@ -194,7 +193,6 @@ open class Receiver(name: String?) : AniedBlock<Receiver, ReceiverBuild>(name) {
     }
 
     inner class ReceiverBuild : AniedBuild(), IDataReceiver {
-        @get:Nullable
         var outputItem: Item? = null
         private var isOutputting = false
         private var lastOutputDelta = 0f
@@ -303,14 +301,14 @@ open class Receiver(name: String?) : AniedBlock<Receiver, ReceiverBuild>(name) {
             super.write(write)
             write.s(if (outputItem == null) -1 else outputItem!!.id.toInt())
             write.bool(isOutputting)
-            RWU.writeIntSet(write, sendersPos)
+            write.intSet(sendersPos)
         }
 
         override fun read(read: Reads, revision: Byte) {
             super.read(read, revision)
             outputItem = Vars.content.item(read.s().toInt())
             isOutputting = read.bool()
-            sendersPos = RWU.readIntSet(read)
+            sendersPos = read.intSet()
         }
 
         override fun connectedSenders(): ObjectSet<Int> {

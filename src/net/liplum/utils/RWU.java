@@ -6,6 +6,8 @@ import arc.struct.Seq;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.gen.Building;
+import net.liplum.math.PolarPos;
+import org.jetbrains.annotations.NotNull;
 
 public class RWU {
     public static void writeIntSeq(Writes writes, Seq<Integer> intSeq) {
@@ -29,6 +31,7 @@ public class RWU {
         }
     }
 
+    @NotNull
     public static Seq<Integer> readIntSeq(Reads reads) {
         int length = reads.i();
         Seq<Integer> intSeq = new Seq<>(length);
@@ -38,6 +41,7 @@ public class RWU {
         return intSeq;
     }
 
+    @NotNull
     public static Seq<Short> readShortSeq(Reads reads) {
         int length = reads.i();
         Seq<Short> byteSeq = new Seq<>(length);
@@ -61,6 +65,7 @@ public class RWU {
         }
     }
 
+    @NotNull
     public static OrderedSet<Integer> readIntSet(Reads reads) {
         int length = reads.i();
         OrderedSet<Integer> intObjectSet = new OrderedSet<>(length);
@@ -70,6 +75,7 @@ public class RWU {
         return intObjectSet;
     }
 
+    @NotNull
     public static OrderedSet<Short> readShortSet(Reads reads) {
         int length = reads.i();
         OrderedSet<Short> byteObjectSet = new OrderedSet<>(length);
@@ -77,5 +83,14 @@ public class RWU {
             byteObjectSet.add(reads.s());
         }
         return byteObjectSet;
+    }
+
+    public static void writePolarPos(Writes writes, PolarPos pos) {
+        writes.f(pos.r);
+        writes.f(pos.a);
+    }
+
+    public static PolarPos readPolarPos(Reads reads) {
+        return new PolarPos(reads.f(), reads.f());
     }
 }
