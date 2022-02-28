@@ -13,8 +13,16 @@ public class PolarPos {
 
     public PolarPos fromXY(float x, float y) {
         r = Mathf.sqrt(x * x + y * y);
-        a = (float) Math.asin(y / r);
+        a = (float) Math.atan2(y, x);
         return this;
+    }
+
+    public static float toR(float x, float y) {
+        return Mathf.sqrt(x * x + y * y);
+    }
+
+    public static float toA(float x, float y) {
+        return (float) Math.atan2(y, x);
     }
 
     public PolarPos() {
@@ -29,10 +37,6 @@ public class PolarPos {
     }
 
     public static PolarPos byXY(float x, float y) {
-        float r = Mathf.sqrt(x * x + y * y);
-        return new PolarPos(
-                r,
-                (float) Math.asin(y / r)
-        );
+        return new PolarPos().fromXY(x, y);
     }
 }

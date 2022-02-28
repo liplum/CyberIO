@@ -1,6 +1,7 @@
 package net.liplum.blocks.prism
 
 import arc.graphics.g2d.Draw
+import arc.math.Angles
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.entities.bullet.BasicBulletType
@@ -10,9 +11,7 @@ import mindustry.graphics.Drawf
 import mindustry.graphics.Layer
 import mindustry.world.blocks.defense.turrets.PowerTurret
 import net.liplum.math.PolarPos
-import net.liplum.utils.Util2D
-import net.liplum.utils.copy
-import net.liplum.utils.polarPos
+import net.liplum.utils.*
 
 enum class PrismData {
     Duplicate
@@ -31,6 +30,7 @@ open class Prism(name: String) : PowerTurret(name) {
         solid = true
         update = true
         absorbLasers = true
+        rotateSpeed = prismASpeed * 300
     }
 
     open inner class PrismLaser : LaserBulletType() {
@@ -39,14 +39,23 @@ open class Prism(name: String) : PowerTurret(name) {
     }
 
     open inner class PrismBuild : PowerTurretBuild() {
-        var selfPos: PolarPos = PolarPos(20f, 0f)
+        var selfPolarPos: PolarPos = PolarPos(20f, 0f)
         open val prismX: Float
-            get() = x + selfPos.toX()
+            get() = x + selfPolarPos.toX()
         open val prismY: Float
-            get() = y + selfPos.toY()
+            get() = y + selfPolarPos.toY()
 
         override fun updateTile() {
-            selfPos.a += prismASpeed * delta()
+            if (isControlled) {
+                val ta = PolarPos.toA(unit.aimX() - x, unit.aimY() - y)
+                selfPolarPos.a =
+                    Angles.moveToward(
+                        selfPolarPos.a.degree, ta.degree,
+                        rotateSpeed * delta()
+                    ).radian
+            } else {
+                selfPolarPos.a += prismASpeed * delta()
+            }
             //selfPos.r += 0.05f
             Groups.bullet.intersect(
                 x - realRange / 2f,
@@ -92,14 +101,18 @@ open class Prism(name: String) : PowerTurret(name) {
             Drawf.circles(prismX, prismY, prismRange)
         }
 
+        override fun drawSelect() {
+            Drawf.dashCircle(x, y, realRange, team.color)
+        }
+
         override fun read(read: Reads, revision: Byte) {
             super.read(read, revision)
-            selfPos = read.polarPos()
+            selfPolarPos = read.polarPos()
         }
 
         override fun write(write: Writes) {
             super.write(write)
-            write.polarPos(selfPos)
+            write.polarPos(selfPolarPos)
         }
     }
 }
