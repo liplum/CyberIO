@@ -1,6 +1,9 @@
 package net.liplum.animations.blocks
 
-open class BlockObj<TBlock : BLOCK, TBuild : BUILD>(
+import mindustry.gen.Building
+import mindustry.world.Block
+
+open class BlockObj<TBlock : Block, TBuild : Building>(
     val block: TBlock,
     val build: TBuild,
     val prototype: BlockType<TBlock, TBuild>
@@ -16,6 +19,7 @@ open class BlockObj<TBlock : BLOCK, TBuild : BUILD>(
     open fun update() {
     }
 
-    open fun drawBuilding() {
+    open fun drawBuild() {
+        prototype.render?.invoke(this, block, build)
     }
 }

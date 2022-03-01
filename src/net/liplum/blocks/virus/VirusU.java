@@ -1,4 +1,4 @@
-package net.liplum.utils;
+package net.liplum.blocks.virus;
 
 import mindustry.world.Block;
 import mindustry.world.Tile;

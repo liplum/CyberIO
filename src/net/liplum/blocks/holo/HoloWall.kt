@@ -145,7 +145,9 @@ open class HoloWall(name: String) : Wall(name) {
         }
 
         override fun draw() {
+            Draw.z(Layer.blockUnder)
             Drawf.shadow(x, y, 10f)
+            Draw.z(Layer.block)
             Draw.rect(BaseTR, x, y)
             updateFloating()
             if (isProjecting) {

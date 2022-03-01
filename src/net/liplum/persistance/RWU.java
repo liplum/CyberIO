@@ -1,4 +1,4 @@
-package net.liplum.utils;
+package net.liplum.persistance;
 
 import arc.struct.ObjectSet;
 import arc.struct.OrderedSet;

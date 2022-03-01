@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class Animation implements IAnimated {
     @NotNull
-    protected final TextureRegion[] allFrames;
+    public final TextureRegion[] allFrames;
     @Nullable
     protected IFrameIndexer indexer;
 
@@ -16,11 +16,6 @@ public class Animation implements IAnimated {
 
     public Animation(@NotNull TextureRegion... allFrames) {
         this.allFrames = allFrames;
-    }
-
-    @NotNull
-    public TextureRegion[] getAllFrames() {
-        return allFrames;
     }
 
     @NotNull
@@ -42,12 +37,17 @@ public class Animation implements IAnimated {
     }
 
     @Nullable
-    public TextureRegion getCurTR() {
+    public TextureRegion getCurTR(@Nullable IFrameIndexer indexer) {
         int length = allFrames.length;
         if (length == 0) {
             return null;
         }
-        int index = getCurIndex(length);
+        int index;
+        if (indexer != null) {
+            index = indexer.getCurIndex(length);
+        } else {
+            index = this.getCurIndex(length);
+        }
         if (index < 0) {
             return null;
         }
@@ -55,6 +55,11 @@ public class Animation implements IAnimated {
             index = length - 1 - index;
         }
         return allFrames[index];
+    }
+
+    @Nullable
+    public TextureRegion getCurTR() {
+        return getCurTR(null);
     }
 
     @Override
@@ -66,12 +71,27 @@ public class Animation implements IAnimated {
     }
 
     @Override
-    public void draw(Color color, float x, float y) {
+    public void draw(@NotNull Color color, float x, float y) {
         TextureRegion curTR = getCurTR();
         if (curTR != null) {
             Draw.color(color);
             Draw.rect(curTR, x, y);
             Draw.color();
+        }
+    }
+
+    @Override
+    public void draw(@NotNull IHowToRender howToRender) {
+        TextureRegion curTR = getCurTR();
+        if (curTR != null) {
+            howToRender.render(curTR);
+        }
+    }
+
+    public void draw(@NotNull IFrameIndexer indexer, @NotNull IHowToRender howToRender) {
+        TextureRegion curTR = getCurTR(indexer);
+        if (curTR != null) {
+            howToRender.render(curTR);
         }
     }
 }

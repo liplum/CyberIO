@@ -14,16 +14,18 @@ import mindustry.world.blocks.power.PowerBlock
 import mindustry.world.meta.BlockGroup
 import mindustry.world.modules.ItemModule
 import net.liplum.*
-import net.liplum.animations.anims.blocks.AutoAnimationT
+import net.liplum.animations.anims.IFrameIndexer
+import net.liplum.animations.anims.blocks.AutoAnimation
+import net.liplum.animations.anims.blocks.indexByTimeScale
 import net.liplum.animations.anis.AniConfig
 import net.liplum.animations.anis.AniState
 import net.liplum.animations.blocks.*
 import net.liplum.api.data.IDataReceiver
 import net.liplum.api.data.IDataSender
+import net.liplum.persistance.intSet
 import net.liplum.utils.*
 
-private typealias Anim = AutoAnimationT<Cloud.CloudBuild>
-private typealias AnimObj = AutoAnimationT<Cloud.CloudBuild>.Obj
+private typealias Anim = AutoAnimation
 private typealias BGType = BlockGroupType<Cloud, Cloud.CloudBuild>
 private typealias BType = BlockType<Cloud, Cloud.CloudBuild>
 private typealias Ani = AniState<Cloud, Cloud.CloudBuild>
@@ -78,54 +80,48 @@ open class Cloud(name: String) : PowerBlock(name) {
     }
 
     open fun genBlockTypes() {
-        CloudAniBlock = object : BlockType<Cloud, CloudBuild>() {
-            override fun newObj(block: Cloud, build: CloudBuild): BlockObj<Cloud, CloudBuild> = object :
-                BlockObj<Cloud, CloudBuild>(block, build, this) {
-                var cloudAniSM = CloudAniConfig.gen(block, build)
-                override fun update() {
-                    cloudAniSM.update()
-                }
+        blockGroup = BlockGroupType {
+            CloudAniBlock = addType(BlockType.byObj(ShareMode.UseMain) { block, build ->
+                object : BlockObj<Cloud, CloudBuild>(block, build, CloudAniBlock) {
+                    var cloudAniSM = CloudAniConfig.gen(block, build)
+                    override fun update() {
+                        cloudAniSM.update()
+                    }
 
-                override fun drawBuilding() {
-                    xOffset = MathU.randomNP(cloudFloatRange)
-                    build.cloudXOffset = xOffset
-                    yOffset = MathU.randomNP(cloudFloatRange)
-                    build.cloudYOffset = yOffset
-                    cloudAniSM.drawBuilding()
+                    override fun drawBuild() {
+                        xOffset = MathU.randomNP(cloudFloatRange)
+                        build.cloudXOffset = xOffset
+                        yOffset = MathU.randomNP(cloudFloatRange)
+                        build.cloudYOffset = yOffset
+                        cloudAniSM.drawBuilding()
+                    }
                 }
-            }
-        }
+            })
 
-        DataAniBlock = object : BlockType<Cloud, CloudBuild>(ShareMode.KeepSelf) {
-            override fun newObj(block: Cloud, build: CloudBuild): BlockObj<Cloud, CloudBuild> = object :
-                BlockObj<Cloud, CloudBuild>(block, build, this) {
-                override fun drawBuilding() {
-                    if (build.isWorking && build.info.isDataTransferring) {
-                        dataTransferAnim.draw(
-                            build.dataTransferAnim,
+            DataAniBlock = addType(BlockType.render { _, build ->
+                if (build.isWorking && build.info.isDataTransferring) {
+                    dataTransferAnim.draw(build.dataTransferIx) {
+                        Draw.rect(
+                            it,
                             build.x + xOffset,
                             build.y + yOffset
                         )
                     }
                 }
-            }
-        }
+            })
 
-        ShredderAniBlock = object : BlockType<Cloud, CloudBuild>(ShareMode.KeepSelf) {
-            override fun newObj(block: Cloud, build: CloudBuild): BlockObj<Cloud, CloudBuild> = object :
-                BlockObj<Cloud, CloudBuild>(block, build, this) {
-                override fun drawBuilding() {
-                    if (build.isWorking && build.info.isShredding) {
-                        shredderAnim.draw(
-                            build.shredderAnim,
+            ShredderAniBlock = addType(BlockType.render { _, build ->
+                if (build.isWorking && build.info.isShredding) {
+                    shredderAnim.draw(build.shredderIx) {
+                        Draw.rect(
+                            it,
                             build.x + xOffset,
                             build.y + yOffset,
                         )
                     }
                 }
-            }
+            })
         }
-        blockGroup = BlockGroupType(CloudAniBlock, DataAniBlock, ShredderAniBlock)
     }
 
     override fun setBars() {
@@ -139,18 +135,18 @@ open class Cloud(name: String) : PowerBlock(name) {
     override fun load() {
         super.load()
         cloud = this.subA("cloud")
-        dataTransferAnim = this.autoAnimT("data-transfer", 18, 50f)
-        shredderAnim = this.autoAnimT("shredder", 13, 60f)
+        dataTransferAnim = this.autoAnim("data-transfer", 18, 50f)
+        shredderAnim = this.autoAnim("shredder", 13, 60f)
     }
 
     override fun outputsItems() = false
     open inner class CloudBuild : Building(), IShared, IDataReceiver, IDataSender {
         lateinit var cloudRoom: SharedRoom
-        lateinit var floatingCloudAnim: AnimObj
-        lateinit var dataTransferAnim: AnimObj
-        lateinit var shredderAnim: AnimObj
         lateinit var aniBlockGroupObj: BlockGroupObj<Cloud, CloudBuild>
         lateinit var info: CloudInfo
+        lateinit var floatingCloudIx: IFrameIndexer
+        lateinit var dataTransferIx: IFrameIndexer
+        lateinit var shredderIx: IFrameIndexer
         var cloudXOffset = 0f
         var cloudYOffset = 0f
         var teamID = 0
@@ -166,9 +162,9 @@ open class Cloud(name: String) : PowerBlock(name) {
             cloudRoom = LiplumCloud.getCloud(team)
             cloudRoom.online(this)
             if (CioMod.CanAniStateLoad) {
-                //floatingCloudAnim = this@Cloud.floatingCloudAnim.gen()
-                dataTransferAnim = this@Cloud.dataTransferAnim.gen()
-                shredderAnim = this@Cloud.shredderAnim.gen()
+                //floatingCloudIx = floatingCloudAnim.indexByTimeScale(this)
+                dataTransferIx = dataTransferAnim.indexByTimeScale(this)
+                shredderIx = shredderAnim.indexByTimeScale(this)
                 aniBlockGroupObj = blockGroup.newObj(this@Cloud, this)
             }
         }

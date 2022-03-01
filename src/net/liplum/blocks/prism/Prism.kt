@@ -9,15 +9,17 @@ import mindustry.entities.bullet.LaserBulletType
 import mindustry.gen.Groups
 import mindustry.graphics.Drawf
 import mindustry.graphics.Layer
-import mindustry.world.blocks.defense.turrets.PowerTurret
+import mindustry.world.blocks.ControlBlock
+import mindustry.world.blocks.defense.turrets.Turret
 import net.liplum.math.PolarPos
+import net.liplum.persistance.polarPos
 import net.liplum.utils.*
 
 enum class PrismData {
     Duplicate
 }
 
-open class Prism(name: String) : PowerTurret(name) {
+open class Prism(name: String) : Turret(name) {
     //open class Prism(name: String) : Block(name) {
     //copy your lasers
     //
@@ -38,8 +40,8 @@ open class Prism(name: String) : PowerTurret(name) {
         }
     }
 
-    open inner class PrismBuild : PowerTurretBuild() {
-        var selfPolarPos: PolarPos = PolarPos(20f, 0f)
+    open inner class PrismBuild : TurretBuild(), ControlBlock {
+        var selfPolarPos: PolarPos = PolarPos(realRange - prismRange, 0f)
         open val prismX: Float
             get() = x + selfPolarPos.toX()
         open val prismY: Float
@@ -83,21 +85,22 @@ open class Prism(name: String) : PowerTurret(name) {
         override fun draw() {
             Draw.rect(baseRegion, x, y)
             Draw.color()
-
-            Draw.z(Layer.turret)
-            tr2.trns(rotation, -recoil)
             val prismX = prismX
             val prismY = prismY
+            Draw.z(Layer.blockOver)
             Drawf.shadow(
                 region,
-                prismX + tr2.x - elevation,
-                prismY + tr2.y - elevation
+                prismX + tr2.x - elevation * 7f,
+                prismY + tr2.y - elevation * 7f
             )
+            Draw.z(Layer.turret)
+            tr2.trns(rotation, -recoil)
             Draw.rect(
                 region,
                 prismX + tr2.x,
                 prismY + tr2.y
             )
+            Draw.z(Layer.overlayUI)
             Drawf.circles(prismX, prismY, prismRange)
         }
 

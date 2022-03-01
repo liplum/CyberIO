@@ -27,6 +27,7 @@ import net.liplum.api.data.IDataReceiver
 import net.liplum.api.data.IDataSender
 import net.liplum.blocks.AniedBlock
 import net.liplum.blocks.rs.Receiver.ReceiverBuild
+import net.liplum.persistance.intSet
 import net.liplum.utils.*
 
 private typealias AniStateR = AniState<Receiver, ReceiverBuild>

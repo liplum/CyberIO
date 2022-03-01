@@ -5,7 +5,6 @@ import mindustry.content.Blocks
 import mindustry.content.Fx
 import mindustry.content.Items
 import mindustry.content.Liquids
-import mindustry.entities.bullet.LaserBulletType
 import mindustry.game.EventType
 import mindustry.gen.Sounds
 import mindustry.type.Category
@@ -215,8 +214,6 @@ class CioBlocks : ContentTable {
                     range = 330f
                     health = 1500
                     consumes.liquid(Liquids.water, 1f)
-                    shootType = object : LaserBulletType(100f) {
-                    }
                 }
             }
         }

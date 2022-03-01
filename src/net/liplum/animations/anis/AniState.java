@@ -49,7 +49,7 @@ public class AniState<TBlock extends Block, TBuild extends Building> {
      */
     public void drawBuilding(TBlock block, TBuild build) {
         if (this.renderBehavior != null) {
-            this.renderBehavior.drawBuilding(block, build);
+            this.renderBehavior.drawBuild(block, build);
         }
     }
 

@@ -24,35 +24,50 @@ annotation class UseRandom
 /**
  * Runs codes only on Physical Client
  */
-inline fun ClientOnly(func: () -> Unit) {
+inline fun ClientOnly(func: () -> Unit): Boolean {
     if (!Vars.headless) {
         func()
+        return true
     }
+    return false
 }
 /**
  * Runs codes only on Logical Server
  */
-inline fun ServerOnly(func: () -> Unit) {
+inline fun ServerOnly(func: () -> Unit): Boolean {
     val net = Vars.net
     if (net.server() || !net.active()) {
         func()
     }
+    return false
 }
 
-inline fun WhenCanGlobalAnimationPlay(func: () -> Unit) {
+inline fun WhenCanGlobalAnimationPlay(func: () -> Unit): Boolean {
     if (CioMod.CanGlobalAnimationPlay) {
         func()
+        return true
     }
+    return false
 }
 
-inline fun WhenCanAniStateLoad(func: () -> Unit) {
+inline fun WhenCanAniStateLoad(func: () -> Unit): Boolean {
     if (CioMod.CanAniStateLoad && AniU.needUpdateAniStateM()) {
         func()
+        return true
     }
+    return false
 }
 
-inline fun DebugOnly(func: () -> Unit) {
+inline fun DebugOnly(func: () -> Unit): Boolean {
     if (CioMod.DebugMode) {
+        func()
+        return true
+    }
+    return false
+}
+
+inline infix fun Boolean.Else(func: () -> Unit) {
+    if (!this) {
         func()
     }
 }

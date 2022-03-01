@@ -6,9 +6,14 @@ import arc.graphics.g2d.Lines
 import arc.graphics.g2d.TextureRegion
 import arc.math.Mathf
 import arc.math.geom.Geometry
+import arc.math.geom.Intersector
+import arc.math.geom.Point2
 import arc.scene.ui.Slider
 import arc.scene.ui.layout.Table
+import arc.struct.Seq
+import arc.util.Nullable
 import arc.util.Time
+import arc.util.Tmp
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.Vars
@@ -17,8 +22,10 @@ import mindustry.gen.Building
 import mindustry.graphics.Drawf
 import mindustry.graphics.Layer
 import mindustry.graphics.Pal
+import mindustry.input.Placement
 import mindustry.logic.Ranged
 import mindustry.ui.Bar
+import mindustry.world.Tile
 import mindustry.world.blocks.power.PowerGenerator
 import mindustry.world.meta.BlockGroup
 import mindustry.world.meta.Stat
@@ -106,6 +113,28 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
     override fun load() {
         super.load()
         spiralTR = this.subA("spiral")
+    }
+
+    override fun changePlacementPath(points: Seq<Point2>, rotation: Int) {
+        Placement.calculateNodes(
+            points, this, rotation
+        ) { point: Point2, other: Point2 ->
+            overlaps(
+                Vars.world.tile(point.x, point.y),
+                Vars.world.tile(other.x, other.y)
+            )
+        }
+    }
+
+    open fun overlaps(@Nullable src: Tile?, @Nullable other: Tile?): Boolean {
+        return if (src == null || other == null) true else Intersector.overlaps(
+            Tmp.cr1.set(
+                src.worldx() + offset,
+                src.worldy() + offset,
+                range * 2
+            ),
+            Tmp.r1.setSize((size * Vars.tilesize).toFloat()).setCenter(other.worldx() + offset, other.worldy() + offset)
+        )
     }
 
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
@@ -318,10 +347,14 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
         override fun draw() {
             super.draw()
             G.init()
+            //Draw shadows
+            val realRange = buildingProgress * realRange
+            Draw.z(Layer.blockUnder)
+            Drawf.shadow(x, y, realRange * 2f)
             // Draw waves
+            Draw.z(Layer.block)
             val f = 1f - Time.time / 100f % 1f
             Draw.color(color)
-            Draw.alpha(1f)
             Lines.stroke(2f * f + 0.1f)
             val r = max(
                 0f,
@@ -340,6 +373,7 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
                 )
             }
             Lines.endLine(true)
+            Draw.reset()
             // Draw spiral
             if (canShowSpiral) {
                 val realSpiralRotateSpeed = if (underdrivedBlocks != 0)
@@ -348,7 +382,6 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
                 Draw.z(Layer.shields)
                 Draw.color(Color.black)
                 // (removed) Fade in&out
-                val realRange = buildingProgress * realRange
                 Draw.alpha(alpha)
                 val scale = Mathf.lerp(1f, G.sin, 0.5f)
                 val sr = scale * MagicNSpiralRate * realRange

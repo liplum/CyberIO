@@ -1,6 +1,9 @@
 package net.liplum.animations.blocks
 
-open class BlockGroupObj<TBlock : BLOCK, TBuild : BUILD>(
+import mindustry.gen.Building
+import mindustry.world.Block
+
+open class BlockGroupObj<TBlock : Block, TBuild : Building>(
     val block: TBlock,
     val build: TBuild,
     val prototype: BlockGroupType<TBlock, TBuild>
@@ -18,7 +21,7 @@ open class BlockGroupObj<TBlock : BLOCK, TBuild : BUILD>(
     open fun drawBuilding() {
         blockObjs.forEach {
             if (it.isMain) {
-                it.drawBuilding()
+                it.drawBuild()
                 lastMainXOffset = it.xOffset
                 lastMainYOffset = it.yOffset
             } else {
@@ -26,7 +29,7 @@ open class BlockGroupObj<TBlock : BLOCK, TBuild : BUILD>(
                     it.xOffset = lastMainXOffset
                     it.yOffset = lastMainYOffset
                 }
-                it.drawBuilding()
+                it.drawBuild()
             }
         }
     }

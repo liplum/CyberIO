@@ -19,8 +19,7 @@ open class Infected(name: String) : StatusEffect(name) {
     var range = 50f
     var infectedInitTime = 10 * 60f
     var damageProportion = 1f / 10f / 60f
-    var damageMode = DamageMode.MaxHP
-    var aliveTime = 10 * 60f
+    var damageMode = DamageMode.CurHP
 
     init {
         color = R.C.VirusBK

@@ -4,10 +4,12 @@ import arc.graphics.Color
 import arc.graphics.g2d.Draw
 import arc.graphics.g2d.TextureRegion
 import arc.math.Mathf
+import arc.struct.Seq
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.Vars
 import mindustry.content.Blocks
+import mindustry.entities.units.BuildPlan
 import mindustry.game.Team
 import mindustry.gen.Building
 import mindustry.gen.Call
@@ -15,10 +17,7 @@ import mindustry.graphics.Layer
 import mindustry.graphics.Pal
 import mindustry.ui.Bar
 import mindustry.world.Tile
-import net.liplum.DebugOnly
-import net.liplum.R
-import net.liplum.ServerOnly
-import net.liplum.UseRandom
+import net.liplum.*
 import net.liplum.api.virus.UninfectedBlocksRegistry
 import net.liplum.blocks.AnimedBlock
 import net.liplum.registries.ShaderRegistry
@@ -75,6 +74,14 @@ open class Virus(name: String) : AnimedBlock(name) {
 
     open val maxGenerationOrDefault: Int
         get() = if (maxGeneration == -1) 100 else maxGeneration
+    /**
+     * This can be only placed individually.
+     */
+    override fun handlePlacementLine(plans: Seq<BuildPlan>) {
+        val first = plans.first()
+        plans.clear()
+        plans.add(first)
+    }
 
     override fun setBars() {
         super.setBars()
@@ -132,7 +139,6 @@ open class Virus(name: String) : AnimedBlock(name) {
                 }
             }
         }
-
         @ServerOnly
         @UseRandom
         override fun updateTile() {
@@ -181,20 +187,29 @@ open class Virus(name: String) : AnimedBlock(name) {
         }
 
         override fun draw() {
-            if (ShaderRegistry.test != null) {
-                Draw.draw(Layer.block) {
-                    Draw.shader(ShaderRegistry.test)
-                    Draw.rect(block.region, x, y)
-                    if (raceColor != null) {
-                        Draw.color(raceColor)
-                        Draw.rect(raceMaskTR, x, y)
-                        Draw.color()
+            DebugOnly {
+                if (ShaderRegistry.test != null) {
+                    Draw.draw(Layer.block) {
+                        Draw.shader(ShaderRegistry.test)
+                        Draw.rect(block.region, x, y)
+                        if (raceColor != null) {
+                            Draw.color(raceColor)
+                            Draw.rect(raceMaskTR, x, y)
+                            Draw.color()
+                        }
+                        Draw.shader()
+                        Draw.reset()
                     }
-                    Draw.shader()
-                    Draw.reset()
                 }
+            } Else {
+                Draw.rect(block.region, x, y)
+                if (raceColor != null) {
+                    Draw.color(raceColor)
+                    Draw.rect(raceMaskTR, x, y)
+                    Draw.color()
+                }
+                Draw.reset()
             }
-            drawTeamTop()
         }
 
         open val canReproduce: Boolean

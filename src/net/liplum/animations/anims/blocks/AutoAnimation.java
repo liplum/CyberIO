@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * A simple animation whose frames have the same duration.
  */
-public class AutoAnimation extends Animation {
+public class AutoAnimation extends BlockAnimation {
     public final float totalDuration;
 
     /**
