@@ -27,6 +27,7 @@ import net.liplum.blocks.icmachine.ICMachine
 import net.liplum.blocks.prism.Prism
 import net.liplum.blocks.rs.Receiver
 import net.liplum.blocks.rs.Sender
+import net.liplum.blocks.tmtrainer.RandomName
 import net.liplum.blocks.tmtrainer.TMTRAINER
 import net.liplum.blocks.underdrive.UnderdriveProjector
 import net.liplum.blocks.virus.AntiVirus
@@ -276,10 +277,9 @@ class CioBlocks : ContentTable {
                 size = 4
             }
         }
-        var id = 1
         Events.run(EventType.Trigger.update) {
-            id++
-            TMTRAINER.localizedName = id.toString()
+            TMTRAINER.localizedName = RandomName.one(8)
+            TMTRAINER.description = RandomName.one(20)
         }
     }
 
