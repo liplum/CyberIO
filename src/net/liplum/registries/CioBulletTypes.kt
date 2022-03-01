@@ -18,7 +18,7 @@ class CioBulletTypes : ContentTable {
             width = 10f
             height = 12f
             shrinkY = 0.1f
-            lifetime = 70f
+            lifetime = 100f
             backColor = Pal.spore
             frontColor = Pal.spore
             despawnEffect = Fx.sporeSlowed

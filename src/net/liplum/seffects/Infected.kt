@@ -24,8 +24,6 @@ open class Infected(name: String) : StatusEffect(name) {
     init {
         color = R.C.VirusBK
         effect = Fx.sporeSlowed
-        init {
-        }
     }
 
     override fun update(unit: Unit, time: Float) {

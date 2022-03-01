@@ -147,6 +147,7 @@ class CioBlocks : ContentTable {
             )
             health = 100
             size = 2
+            buildCostMultiplier = 3f
         }
 
         holoFloor = HoloFloor("holo-floor").apply {
@@ -155,14 +156,14 @@ class CioBlocks : ContentTable {
 
         underdriveProjector = UnderdriveProjector("underdrive-projector").apply {
             requirements(
-                Category.effect, arrayOf(
+                Category.effect, BuildVisibility.shown, arrayOf(
                     ItemStack(CioItems.ic, 1),
                     ItemStack(Items.copper, 200),
                     ItemStack(Items.coal, 100),
                     ItemStack(Items.metaglass, 75),
                 )
             )
-            health = 100
+            health = 300
             color = R.C.LightBlue
             maxSlowDownRate = 0.9f
             powerProduction = 4.5f
@@ -180,6 +181,7 @@ class CioBlocks : ContentTable {
                     ItemStack(Items.silicon, 25)
                 )
             )
+            health = 500
             consumes.power(0.5f)
             size = 1
         }.setUninfected()
@@ -188,9 +190,13 @@ class CioBlocks : ContentTable {
             requirements(
                 Category.logic, BuildVisibility.sandboxOnly, arrayOf(
                     ItemStack(CioItems.ic, 10),
+                    ItemStack(Items.titanium, 1000),
+                    ItemStack(Items.thorium, 1000),
                 )
             )
             size = 3
+            buildCostMultiplier = 2f
+            health = 500 * size * size
             consumes.power(1f)
         }
 
@@ -208,18 +214,17 @@ class CioBlocks : ContentTable {
             }
         }
         DebugOnly {
-            prism = object : Prism("prism") {
-                init {
-                    requirements(
-                        Category.turret, BuildVisibility.sandboxOnly, arrayOf()
-                    )
-                    size = 3
-                    range = 330f
-                    health = 1500
-                    consumes.liquid(Liquids.water, 1f)
-                }
+            prism = Prism("prism").apply {
+                requirements(
+                    Category.turret, BuildVisibility.shown, arrayOf()
+                )
+                size = 3
+                range = 330f
+                health = 1500
+                consumes.liquid(Liquids.water, 1f)
             }
         }
+
         deleter = Deleter("deleter").apply {
             requirements(
                 Category.turret, BuildVisibility.shown, arrayOf(
@@ -236,7 +241,7 @@ class CioBlocks : ContentTable {
             powerUse = 1f
             size = 2
             buildCostMultiplier = 1.5f
-            health = 280 * size * size
+            health = 300 * size * size
             shootSound = Sounds.lasershoot
         }
 
@@ -259,19 +264,19 @@ class CioBlocks : ContentTable {
                 Category.defense, BuildVisibility.shown, arrayOf(
                     ItemStack(CioItems.ic, 2),
                     ItemStack(Items.titanium, 30 * 4),
-                    ItemStack(Items.silicon, 10),
+                    ItemStack(Items.silicon, 20),
                 )
             )
             size = 2
             restoreReload = 15 * 60f
-            health = 400 * 5
+            health = 450 * 5
             buildCostMultiplier = 4.5f
         }
 
         DebugOnly {
             TMTRAINER = TMTRAINER("TMTRAINER").apply {
                 requirements(
-                    Category.turret, BuildVisibility.sandboxOnly, arrayOf(
+                    Category.turret, BuildVisibility.shown, arrayOf(
                         ItemStack(CioItems.ic, 5),
                         ItemStack(Items.sporePod, 100),
                         ItemStack(Items.thorium, 200),
@@ -286,11 +291,12 @@ class CioBlocks : ContentTable {
                 spread = 4f
                 reloadTime = 5f
                 restitution = 0.03f
-                range = 110f
+                range = 240f
                 shootCone = 15f
                 shots = 2
                 size = 4
                 health = 250 * size * size
+                limitRange(20f)
             }
             ClientOnly {
                 Events.run(EventType.Trigger.draw) {
