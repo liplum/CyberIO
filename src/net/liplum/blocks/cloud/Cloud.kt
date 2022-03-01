@@ -34,17 +34,17 @@ private typealias BType = BlockType<Cloud, Cloud.CloudBuild>
 private typealias Ani = AniState<Cloud, Cloud.CloudBuild>
 
 open class Cloud(name: String) : PowerBlock(name) {
-    lateinit var cloud: TR
-    lateinit var FloatingCloudAnim: Anim
-    lateinit var DataTransferAnim: Anim
-    lateinit var ShredderAnim: Anim
-    lateinit var BlockG: BGType
-    lateinit var CloudAniBlock: BType
-    lateinit var DataAniBlock: BType
-    lateinit var ShredderAniBlock: BType
-    lateinit var CloudAniConfig: AniConfig<Cloud, CloudBuild>
-    lateinit var CloudIdleAni: Ani
-    lateinit var CloudNoPowerAni: Ani
+    @ClientOnly lateinit var cloud: TR
+    @ClientOnly lateinit var FloatingCloudAnim: Anim
+    @ClientOnly lateinit var DataTransferAnim: Anim
+    @ClientOnly lateinit var ShredderAnim: Anim
+    @ClientOnly lateinit var BlockG: BGType
+    @ClientOnly lateinit var CloudAniBlock: BType
+    @ClientOnly lateinit var DataAniBlock: BType
+    @ClientOnly lateinit var ShredderAniBlock: BType
+    @ClientOnly lateinit var CloudAniConfig: AniConfig<Cloud, CloudBuild>
+    @ClientOnly lateinit var CloudIdleAni: Ani
+    @ClientOnly lateinit var CloudNoPowerAni: Ani
     var cloudFloatRange = 1f
 
     init {

@@ -14,6 +14,7 @@ import mindustry.world.Block
 import mindustry.world.Tile
 import mindustry.world.meta.BlockGroup
 import net.liplum.CioMod
+import net.liplum.ClientOnly
 import net.liplum.R
 import net.liplum.animations.anims.blocks.AutoAnimation
 import net.liplum.animations.anis.AniConfig
@@ -27,16 +28,16 @@ import net.liplum.utils.*
 private typealias AniStateS = AniState<Sender, SenderBuild>
 
 open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
-    lateinit var CoverTR: TR
-    lateinit var UpArrowTR: TR
-    lateinit var CrossTR: TR
-    lateinit var NoPowerTR: TR
-    lateinit var UnconnectedTR: TR
-    lateinit var IdleAni: AniStateS
-    lateinit var UploadAni: AniStateS
-    lateinit var BlockedAni: AniStateS
-    lateinit var NoPowerAni: AniStateS
-    lateinit var UploadAnim: AutoAnimation
+    @ClientOnly lateinit var CoverTR: TR
+    @ClientOnly lateinit var UpArrowTR: TR
+    @ClientOnly lateinit var CrossTR: TR
+    @ClientOnly lateinit var NoPowerTR: TR
+    @ClientOnly lateinit var UnconnectedTR: TR
+    @ClientOnly lateinit var IdleAni: AniStateS
+    @ClientOnly lateinit var UploadAni: AniStateS
+    @ClientOnly lateinit var BlockedAni: AniStateS
+    @ClientOnly lateinit var NoPowerAni: AniStateS
+    @ClientOnly lateinit var UploadAnim: AutoAnimation
     var UploadAnimFrameNumber = 7
     var UploadAnimDuration = 30f
 

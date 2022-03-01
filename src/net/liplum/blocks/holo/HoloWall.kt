@@ -29,9 +29,9 @@ private const val FloatingRange = 0.6f
 
 open class HoloWall(name: String) : Wall(name) {
     var restoreReload = 10 * 60f
-    lateinit var BaseTR: TR
-    lateinit var ImageTR: TR
-    lateinit var DyedImageTR: TR
+    @ClientOnly lateinit var BaseTR: TR
+    @ClientOnly lateinit var ImageTR: TR
+    @ClientOnly lateinit var DyedImageTR: TR
     var minHealthProportion = 0.05f
     var maxSleepyTime = 30 * 60f
 
@@ -175,7 +175,7 @@ open class HoloWall(name: String) : Wall(name) {
             }
             Draw.reset()
         }
-
+        @ClientOnly
         open fun updateFloating() {
             val d = G.D(0.1f * FloatingRange * delta() * healthPct)
             if (xAdding) {

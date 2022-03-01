@@ -47,6 +47,11 @@ public class CioMod extends Mod {
 
     @Override
     public void init() {
+        if (Vars.mobile || Vars.testMobile) {
+            UpdateFrequency = 10f;
+        } else {
+            UpdateFrequency = 5f;
+        }
         CanGlobalAnimationPlay = true;
         JsonIO.json.addClassTag(SharedRoom.class.getName(), SharedRoom.class);
         Events.on(WorldLoadEvent.class, e -> {

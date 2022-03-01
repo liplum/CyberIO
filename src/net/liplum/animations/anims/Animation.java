@@ -71,6 +71,41 @@ public class Animation implements IAnimated {
     }
 
     /**
+     * Gets current texture.<br/>
+     * Indexer using order:
+     * 1.internal {@link Animation#indexer} ->
+     * 2.parameter {@code indexer} ->
+     * 3.subclass {@link Animation#getCurIndex(int)}
+     *
+     * @param <T>     the data type of indexer
+     * @param data    the data to be provided
+     * @param indexer if it's null, use internal indexer. Otherwise, use this.
+     * @return texture to be rendered
+     */
+    @Nullable
+    public <T> TextureRegion getCurTR(T data, @Nullable IFrameIndexerT<T> indexer) {
+        int length = allFrames.length;
+        if (length == 0) {
+            return null;
+        }
+        int index;
+        if (indexer != null) {
+            index = indexer.getCurIndex(data, length);
+        } else if (this.indexer != null) {
+            index = this.indexer.getCurIndex(length);
+        } else {
+            index = this.getCurIndex(length);
+        }
+        if (index < 0) {
+            return null;
+        }
+        if (reversed) {
+            index = length - 1 - index;
+        }
+        return allFrames[index];
+    }
+
+    /**
      * Gets current texture by internal indexer.
      *
      * @return texture to be rendered
@@ -110,6 +145,15 @@ public class Animation implements IAnimated {
     @Override
     public void draw(@NotNull IFrameIndexer indexer, @NotNull IHowToRender howToRender) {
         TextureRegion curTR = getCurTR(indexer);
+        if (curTR != null) {
+            howToRender.render(curTR);
+            Draw.reset();
+        }
+    }
+
+    @Override
+    public <T> void draw(@NotNull IFrameIndexerT<T> indexer, T data, @NotNull IHowToRender howToRender) {
+        TextureRegion curTR = getCurTR(data, indexer);
         if (curTR != null) {
             howToRender.render(curTR);
             Draw.reset();

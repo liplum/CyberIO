@@ -30,6 +30,7 @@ import mindustry.world.blocks.power.PowerGenerator
 import mindustry.world.meta.BlockGroup
 import mindustry.world.meta.Stat
 import mindustry.world.meta.StatUnit
+import net.liplum.ClientOnly
 import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.ui.bars.ReverseBar
@@ -216,6 +217,7 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
             set(value) {
                 field = value.coerceAtLeast(1)
             }
+        @ClientOnly
         var buildingProgress: Float = 0f
             set(value) {
                 field = value.coerceIn(0f, 1f)
@@ -236,9 +238,12 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
                 }
                 return maxSlowDownRate * (curGear.toFloat() / maxGear)
             }
+        @ClientOnly
         open val canShowSpiral: Boolean
             get() = buildingProgress > 0f || underdrivedBlocks != 0
+        @ClientOnly
         open var lastRealSpiralRotateSpeed: Float = 0f
+        @ClientOnly
         open val realSpiralRotateSpeed: Float
             get() {
                 val percent = underdrivedBlocks / maxPowerEFFUnBlocksReq.toFloat()
@@ -283,8 +288,10 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
             forEachTargetInRange {
                 it.resetBoost()
             }
-            if (canShowSpiral) {
-                this.spiralShrinking()
+            ClientOnly {
+                if (canShowSpiral) {
+                    this.spiralShrinking()
+                }
             }
         }
 
