@@ -5,12 +5,12 @@ import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.world.Block;
 import net.liplum.CioMod;
+import net.liplum.GameH;
 import net.liplum.animations.anis.AniConfig;
 import net.liplum.animations.anis.AniState;
 import net.liplum.animations.anis.AniStateM;
 import net.liplum.animations.anis.IAniSMed;
 import net.liplum.api.ITrigger;
-import net.liplum.utils.AniU;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -28,7 +28,7 @@ public abstract class AniedBlock<TBlock extends Block, TBuild extends Building> 
 
     public AniedBlock(String name) {
         super(name);
-        if (CioMod.CanAniStateLoad) {
+        if (CioMod.IsClient) {
             this.genAniState();
             this.genAniConfig();
         }
@@ -86,7 +86,7 @@ public abstract class AniedBlock<TBlock extends Block, TBuild extends Building> 
         @Override
         public Building create(Block block, Team team) {
             super.create(block, team);
-            if (CioMod.CanAniStateLoad) {
+            if (CioMod.IsClient) {
                 AniedBlock<TBlock, TBuild> outer = AniedBlock.this;
                 this.aniStateM = outer.getAniConfig().gen((TBlock) outer, (TBuild) this);
             }
@@ -121,19 +121,14 @@ public abstract class AniedBlock<TBlock extends Block, TBuild extends Building> 
          */
         @Override
         public void draw() {
-            if (CioMod.CanAniStateLoad) {
-                if (AniU.needUpdateAniStateM()) {
-                    aniStateM.update();
-                }
-                if (!aniStateM.curOverwriteBlock()) {
-                    super.draw();
-                }
-                fixedDraw();
-                aniStateM.drawBuilding();
-            } else {
-                super.draw();
-                fixedDraw();
+            if (GameH.CanRefresh()) {
+                aniStateM.update();
             }
+            if (!aniStateM.curOverwriteBlock()) {
+                super.draw();
+            }
+            fixedDraw();
+            aniStateM.drawBuilding();
         }
     }
 }

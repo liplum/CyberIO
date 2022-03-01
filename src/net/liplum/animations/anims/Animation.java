@@ -10,7 +10,7 @@ public class Animation implements IAnimated {
     @NotNull
     public final TextureRegion[] allFrames;
     @Nullable
-    protected IFrameIndexer indexer;
+    public IFrameIndexer indexer;
 
     public boolean reversed = false;
 
@@ -24,18 +24,29 @@ public class Animation implements IAnimated {
         return this;
     }
 
-    @Nullable
-    public IFrameIndexer getIndexer() {
-        return indexer;
-    }
-
+    /**
+     * Gets the index which represents current frame.It will use internal indexer as default.
+     *
+     * @param length of all frames
+     * @return index. If it shouldn't display any image, return -1.
+     */
     public int getCurIndex(int length) {
-        if (indexer != null) {
-            return indexer.getCurIndex(length);
+        if (this.indexer != null) {
+            return this.indexer.getCurIndex(length);
         }
         return -1;
     }
 
+    /**
+     * Gets current texture.<br/>
+     * Indexer using order:
+     * 1.internal {@link Animation#indexer} ->
+     * 2.parameter {@code indexer} ->
+     * 3.subclass {@link Animation#getCurIndex(int)}
+     *
+     * @param indexer if it's null, use internal indexer. Otherwise, use this.
+     * @return texture to be rendered
+     */
     @Nullable
     public TextureRegion getCurTR(@Nullable IFrameIndexer indexer) {
         int length = allFrames.length;
@@ -45,6 +56,8 @@ public class Animation implements IAnimated {
         int index;
         if (indexer != null) {
             index = indexer.getCurIndex(length);
+        } else if (this.indexer != null) {
+            index = this.indexer.getCurIndex(length);
         } else {
             index = this.getCurIndex(length);
         }
@@ -57,25 +70,30 @@ public class Animation implements IAnimated {
         return allFrames[index];
     }
 
+    /**
+     * Gets current texture by internal indexer.
+     *
+     * @return texture to be rendered
+     */
     @Nullable
     public TextureRegion getCurTR() {
         return getCurTR(null);
     }
 
     @Override
-    public void draw(float x, float y) {
+    public void draw(float x, float y, float rotation) {
         TextureRegion curTR = getCurTR();
         if (curTR != null) {
-            Draw.rect(curTR, x, y);
+            Draw.rect(curTR, x, y, rotation);
         }
     }
 
     @Override
-    public void draw(@NotNull Color color, float x, float y) {
+    public void draw(@NotNull Color color, float x, float y, float rotation) {
         TextureRegion curTR = getCurTR();
         if (curTR != null) {
             Draw.color(color);
-            Draw.rect(curTR, x, y);
+            Draw.rect(curTR, x, y, rotation);
             Draw.color();
         }
     }
@@ -85,13 +103,16 @@ public class Animation implements IAnimated {
         TextureRegion curTR = getCurTR();
         if (curTR != null) {
             howToRender.render(curTR);
+            Draw.reset();
         }
     }
 
+    @Override
     public void draw(@NotNull IFrameIndexer indexer, @NotNull IHowToRender howToRender) {
         TextureRegion curTR = getCurTR(indexer);
         if (curTR != null) {
             howToRender.render(curTR);
+            Draw.reset();
         }
     }
 }

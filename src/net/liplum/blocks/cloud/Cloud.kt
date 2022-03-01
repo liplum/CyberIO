@@ -13,10 +13,13 @@ import mindustry.world.Tile
 import mindustry.world.blocks.power.PowerBlock
 import mindustry.world.meta.BlockGroup
 import mindustry.world.modules.ItemModule
-import net.liplum.*
+import net.liplum.ClientOnly
+import net.liplum.DebugOnly
+import net.liplum.R
+import net.liplum.WhenRefresh
 import net.liplum.animations.anims.IFrameIndexer
 import net.liplum.animations.anims.blocks.AutoAnimation
-import net.liplum.animations.anims.blocks.indexByTimeScale
+import net.liplum.animations.anims.blocks.ixByTimeScale
 import net.liplum.animations.anis.AniConfig
 import net.liplum.animations.anis.AniState
 import net.liplum.animations.blocks.*
@@ -32,10 +35,10 @@ private typealias Ani = AniState<Cloud, Cloud.CloudBuild>
 
 open class Cloud(name: String) : PowerBlock(name) {
     lateinit var cloud: TR
-    lateinit var floatingCloudAnim: Anim
-    lateinit var dataTransferAnim: Anim
-    lateinit var shredderAnim: Anim
-    lateinit var blockGroup: BGType
+    lateinit var FloatingCloudAnim: Anim
+    lateinit var DataTransferAnim: Anim
+    lateinit var ShredderAnim: Anim
+    lateinit var BlockG: BGType
     lateinit var CloudAniBlock: BType
     lateinit var DataAniBlock: BType
     lateinit var ShredderAniBlock: BType
@@ -53,7 +56,7 @@ open class Cloud(name: String) : PowerBlock(name) {
         itemCapacity = 10
 
         group = BlockGroup.logic
-        WhenCanAniStateLoad {
+        ClientOnly {
             this.genAnimState()
             this.genAniConfig()
             this.genBlockTypes()
@@ -80,7 +83,7 @@ open class Cloud(name: String) : PowerBlock(name) {
     }
 
     open fun genBlockTypes() {
-        blockGroup = BlockGroupType {
+        BlockG = BlockGroupType {
             CloudAniBlock = addType(BlockType.byObj(ShareMode.UseMain) { block, build ->
                 object : BlockObj<Cloud, CloudBuild>(block, build, CloudAniBlock) {
                     var cloudAniSM = CloudAniConfig.gen(block, build)
@@ -100,7 +103,7 @@ open class Cloud(name: String) : PowerBlock(name) {
 
             DataAniBlock = addType(BlockType.render { _, build ->
                 if (build.isWorking && build.info.isDataTransferring) {
-                    dataTransferAnim.draw(build.dataTransferIx) {
+                    DataTransferAnim.draw(build.dataTransferIx) {
                         Draw.rect(
                             it,
                             build.x + xOffset,
@@ -112,7 +115,7 @@ open class Cloud(name: String) : PowerBlock(name) {
 
             ShredderAniBlock = addType(BlockType.render { _, build ->
                 if (build.isWorking && build.info.isShredding) {
-                    shredderAnim.draw(build.shredderIx) {
+                    ShredderAnim.draw(build.shredderIx) {
                         Draw.rect(
                             it,
                             build.x + xOffset,
@@ -135,8 +138,8 @@ open class Cloud(name: String) : PowerBlock(name) {
     override fun load() {
         super.load()
         cloud = this.subA("cloud")
-        dataTransferAnim = this.autoAnim("data-transfer", 18, 50f)
-        shredderAnim = this.autoAnim("shredder", 13, 60f)
+        DataTransferAnim = this.autoAnim("data-transfer", 18, 50f)
+        ShredderAnim = this.autoAnim("shredder", 13, 60f)
     }
 
     override fun outputsItems() = false
@@ -161,11 +164,11 @@ open class Cloud(name: String) : PowerBlock(name) {
         override fun created() {
             cloudRoom = LiplumCloud.getCloud(team)
             cloudRoom.online(this)
-            if (CioMod.CanAniStateLoad) {
+            ClientOnly {
                 //floatingCloudIx = floatingCloudAnim.indexByTimeScale(this)
-                dataTransferIx = dataTransferAnim.indexByTimeScale(this)
-                shredderIx = shredderAnim.indexByTimeScale(this)
-                aniBlockGroupObj = blockGroup.newObj(this@Cloud, this)
+                dataTransferIx = DataTransferAnim.ixByTimeScale(this)
+                shredderIx = ShredderAnim.ixByTimeScale(this)
+                aniBlockGroupObj = BlockG.newObj(this@Cloud, this)
             }
         }
 
@@ -210,13 +213,11 @@ open class Cloud(name: String) : PowerBlock(name) {
         }
 
         override fun draw() {
-            WhenCanAniStateLoad {
+            WhenRefresh {
                 aniBlockGroupObj.update()
             }
             super.draw()
-            WhenCanGlobalAnimationPlay {
-                aniBlockGroupObj.drawBuilding()
-            }
+            aniBlockGroupObj.drawBuilding()
         }
 
         override fun drawSelect() {

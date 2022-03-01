@@ -12,8 +12,10 @@ import mindustry.type.ItemStack
 import mindustry.world.blocks.defense.OverdriveProjector
 import mindustry.world.blocks.production.GenericCrafter
 import mindustry.world.meta.BuildVisibility
+import net.liplum.ClientOnly
 import net.liplum.DebugOnly
 import net.liplum.R
+import net.liplum.WhenRefresh
 import net.liplum.animations.ganim.animation
 import net.liplum.api.virus.setUninfected
 import net.liplum.api.virus.setUninfectedFloor
@@ -102,7 +104,7 @@ class CioBlocks : ContentTable {
                     ItemStack(Items.copper, 50),
                     ItemStack(Items.graphite, 20),
                     ItemStack(Items.metaglass, 20),
-                    ItemStack(Items.silicon, 10)
+                    ItemStack(Items.phaseFabric, 10),
                 )
             )
             health = 100
@@ -137,7 +139,7 @@ class CioBlocks : ContentTable {
         landProjector = LandProjector("land-projector").apply {
             requirements(
                 Category.logic, BuildVisibility.sandboxOnly, arrayOf(
-                    ItemStack(CioItems.ic, 3),
+                    ItemStack(CioItems.ic, 5),
                     ItemStack(Items.graphite, 80),
                     ItemStack(Items.thorium, 100),
                     ItemStack(Items.silicon, 50)
@@ -185,6 +187,7 @@ class CioBlocks : ContentTable {
         cloud = Cloud("cloud").apply {
             requirements(
                 Category.logic, BuildVisibility.sandboxOnly, arrayOf(
+                    ItemStack(CioItems.ic, 10),
                 )
             )
             size = 3
@@ -267,16 +270,36 @@ class CioBlocks : ContentTable {
 
         DebugOnly {
             TMTRAINER = TMTRAINER("TMTRAINER").apply {
-                requirements(Category.turret, BuildVisibility.sandboxOnly, arrayOf())
+                requirements(
+                    Category.turret, BuildVisibility.sandboxOnly, arrayOf(
+                        ItemStack(CioItems.ic, 5),
+                        ItemStack(Items.sporePod, 100),
+                        ItemStack(Items.thorium, 200),
+                        ItemStack(Items.titanium, 100),
+                        ItemStack(Items.graphite, 100),
+                        ItemStack(Items.silicon, 50),
+                    )
+                )
                 ammo(
                     Items.sporePod, CioBulletTypes.virus
                 )
+                spread = 4f
+                reloadTime = 5f
+                restitution = 0.03f
+                range = 110f
+                shootCone = 15f
+                shots = 2
                 size = 4
+                health = 250 * size * size
             }
-        }
-        Events.run(EventType.Trigger.update) {
-            TMTRAINER.localizedName = RandomName.one(8)
-            TMTRAINER.description = RandomName.one(20)
+            ClientOnly {
+                Events.run(EventType.Trigger.draw) {
+                    WhenRefresh {
+                        TMTRAINER.localizedName = RandomName.one(8)
+                        TMTRAINER.description = RandomName.one(25)
+                    }
+                }
+            }
         }
     }
 

@@ -1,8 +1,9 @@
+@file:JvmName("GameH")
+
 package net.liplum
 
 import arc.util.Time
 import mindustry.Vars
-import net.liplum.utils.AniU
 import net.liplum.utils.format
 
 /**
@@ -50,14 +51,6 @@ inline fun WhenCanGlobalAnimationPlay(func: () -> Unit): Boolean {
     return false
 }
 
-inline fun WhenCanAniStateLoad(func: () -> Unit): Boolean {
-    if (CioMod.CanAniStateLoad && AniU.needUpdateAniStateM()) {
-        func()
-        return true
-    }
-    return false
-}
-
 inline fun DebugOnly(func: () -> Unit): Boolean {
     if (CioMod.DebugMode) {
         func()
@@ -70,6 +63,15 @@ inline infix fun Boolean.Else(func: () -> Unit) {
     if (!this) {
         func()
     }
+}
+
+fun CanRefresh() = Time.time % CioMod.UpdateFrequency < 1f
+inline fun WhenRefresh(func: () -> Unit): Boolean {
+    if (Time.time % CioMod.UpdateFrequency < 1f) {
+        func()
+        return true
+    }
+    return false
 }
 
 fun Float.toSecond(): Int = (this / Time.toSeconds).toInt()

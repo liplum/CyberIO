@@ -1,10 +1,8 @@
 package net.liplum.blocks;
 
-import mindustry.game.Team;
-import mindustry.gen.Building;
-import mindustry.world.Block;
 import mindustry.world.blocks.production.GenericCrafter;
 import net.liplum.CioMod;
+import net.liplum.GameH;
 import net.liplum.animations.anis.AniConfig;
 import net.liplum.animations.anis.AniState;
 import net.liplum.animations.anis.AniStateM;
@@ -19,7 +17,7 @@ public abstract class AniedCrafter extends GenericCrafter implements IAniSMed<An
 
     public AniedCrafter(String name) {
         super(name);
-        if (CioMod.CanAniStateLoad) {
+        if (CioMod.IsClient) {
             this.genAniState();
             this.genAniConfig();
         }
@@ -55,33 +53,22 @@ public abstract class AniedCrafter extends GenericCrafter implements IAniSMed<An
         private AniStateM<AniedCrafter, AniedCrafterBuild> aniStateM;
 
         @Override
-        public Building create(Block block, Team team) {
-            super.create(block, team);
-            if (CioMod.CanAniStateLoad) {
+        public void created() {
+            if (CioMod.IsClient) {
                 AniedCrafter out = AniedCrafter.this;
                 this.aniStateM = out.getAniConfig().gen(out, this);
-            }
-            return this;
-        }
-
-        @Override
-        public void updateTile() {
-            super.updateTile();
-            if (CioMod.CanAniStateLoad) {
-                aniStateM.update();
             }
         }
 
         @Override
         public void draw() {
-            if (CioMod.CanAniStateLoad) {
-                if (!aniStateM.curOverwriteBlock()) {
-                    super.draw();
-                }
-                aniStateM.drawBuilding();
-            } else {
+            if (GameH.CanRefresh()) {
+                aniStateM.update();
+            }
+            if (!aniStateM.curOverwriteBlock()) {
                 super.draw();
             }
+            aniStateM.drawBuilding();
         }
     }
 }

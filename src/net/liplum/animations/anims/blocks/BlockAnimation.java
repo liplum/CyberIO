@@ -18,6 +18,7 @@ public class BlockAnimation extends Animation {
     @NotNull
     @Override
     public BlockAnimation indexer(@Nullable IFrameIndexer indexer) {
+        this.indexer = indexer;
         return this;
     }
 }

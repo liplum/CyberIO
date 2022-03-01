@@ -21,7 +21,10 @@ class CioBulletTypes : ContentTable {
             lifetime = 70f
             backColor = Pal.spore
             frontColor = Pal.spore
-            despawnEffect = Fx.none
+            despawnEffect = Fx.sporeSlowed
+            hitEffect = Fx.sporeSlowed
+            shootEffect = Fx.sporeSlowed
+            smokeEffect = Fx.sporeSlowed
             status = CioStatusEffects.infected
             statusDuration = CioStatusEffects.infected.infectedInitTime
         }

@@ -3,7 +3,6 @@ package net.liplum.animations.anims.blocks;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.util.Time;
-import net.liplum.animations.anims.Animation;
 import net.liplum.animations.anims.IFrameIndexer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -25,9 +24,6 @@ public class AutoAnimation extends BlockAnimation {
 
     @Override
     public int getCurIndex(int length) {
-        if (length == 0) {
-            return -1;
-        }
         float progress = Time.time % totalDuration / totalDuration;//percent
         int index = (int) (progress * length);
         index = Mathf.clamp(index, 0, length);
@@ -37,6 +33,7 @@ public class AutoAnimation extends BlockAnimation {
     @NotNull
     @Override
     public AutoAnimation indexer(@Nullable IFrameIndexer indexer) {
+        this.indexer = indexer;
         return this;
     }
 }

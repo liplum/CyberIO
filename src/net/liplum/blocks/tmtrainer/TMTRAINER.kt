@@ -4,22 +4,17 @@ import arc.graphics.g2d.Draw
 import mindustry.content.Fx
 import mindustry.world.blocks.defense.turrets.ItemTurret
 import net.liplum.ClientOnly
+import net.liplum.animations.anims.IFrameIndexer
 import net.liplum.animations.anims.blocks.AutoAnimation
+import net.liplum.animations.anims.blocks.ixByShooting
 import net.liplum.utils.autoAnim
 
 open class TMTRAINER(name: String) : ItemTurret(name) {
     lateinit var CoreAnim: AutoAnimation
 
     init {
-        spread = 4f
-        shots = 2
         alternate = true
-        reloadTime = 5f
-        restitution = 0.03f
-        range = 110f
-        shootCone = 15f
-        ammoUseEffect = Fx.sporeSlowed
-        health = 250
+        shootEffect = Fx.sporeSlowed
         inaccuracy = 1f
         rotateSpeed = 10f
 
@@ -32,12 +27,17 @@ open class TMTRAINER(name: String) : ItemTurret(name) {
     }
 
     open inner class TMTRAINERBUILD : ItemTurretBuild() {
+        lateinit var coreIx: IFrameIndexer
+        override fun created() {
+            ClientOnly {
+                coreIx = CoreAnim.ixByShooting(this)
+            }
+        }
+
         override fun draw() {
             super.draw()
-            ClientOnly {
-                CoreAnim.draw {
-                    Draw.rect(it, x, y, rotation - 90)
-                }
+            CoreAnim.draw(coreIx) {
+                Draw.rect(it, x, y, rotation - 90)
             }
         }
     }

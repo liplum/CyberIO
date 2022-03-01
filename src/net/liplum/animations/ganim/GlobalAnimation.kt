@@ -6,6 +6,7 @@ import arc.graphics.g2d.TextureRegion
 import arc.math.Mathf
 import arc.util.Time
 import mindustry.game.EventType
+import net.liplum.CanRefresh
 import net.liplum.CioMod
 import net.liplum.ClientOnly
 
@@ -16,7 +17,7 @@ open class GlobalAnimation(
     var frames: Array<TextureRegion>? = null
     override val needUpdate: Boolean
         get() {
-            return CioMod.CanGlobalAnimationPlay && frames != null
+            return CioMod.CanGlobalAnimationPlay && CanRefresh() && frames != null
         }
     var lastTR: TextureRegion? = null
     protected var registered: Boolean = false
@@ -41,7 +42,7 @@ open class GlobalAnimation(
         ClientOnly {
             if (!registered) {
                 registered = true
-                Events.run(EventType.Trigger.update, this::update)
+                Events.run(EventType.Trigger.draw, this::update)
             }
         }
         return this

@@ -18,7 +18,6 @@ import static mindustry.game.EventType.*;
 
 public class CioMod extends Mod {
     public static final boolean IsClient = !Vars.headless;
-    public static final boolean CanAniStateLoad = IsClient;
     public static boolean CanGlobalAnimationPlay = false;
     public static final boolean DebugMode = true;
     public static float UpdateFrequency = 5f;
@@ -61,6 +60,7 @@ public class CioMod extends Mod {
         if (DebugMode) {
             Vars.enableConsole = true;
         }
+        //Core.settings.put("",1);
     }
 
     @Override
