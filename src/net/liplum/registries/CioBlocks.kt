@@ -20,6 +20,7 @@ import net.liplum.animations.ganim.animation
 import net.liplum.api.virus.setUninfected
 import net.liplum.api.virus.setUninfectedFloor
 import net.liplum.blocks.cloud.Cloud
+import net.liplum.blocks.debugonly.AdjustableOverdrive
 import net.liplum.blocks.deleter.Deleter
 import net.liplum.blocks.holo.HoloFloor
 import net.liplum.blocks.holo.HoloWall
@@ -188,7 +189,7 @@ class CioBlocks : ContentTable {
 
         cloud = Cloud("cloud").apply {
             requirements(
-                Category.logic, BuildVisibility.sandboxOnly, arrayOf(
+                Category.logic, BuildVisibility.shown, arrayOf(
                     ItemStack(CioItems.ic, 10),
                     ItemStack(Items.titanium, 1000),
                     ItemStack(Items.thorium, 1000),
@@ -201,16 +202,17 @@ class CioBlocks : ContentTable {
         }
 
         DebugOnly {
-            hyperOverdriveSphere = OverdriveProjector("hyper-overdrive-sphere").apply {
+            hyperOverdriveSphere = AdjustableOverdrive("hyper-overdrive-sphere").apply {
                 requirements(
                     Category.effect, BuildVisibility.sandboxOnly, arrayOf(
                     )
                 )
                 size = 3
+                maxBoost = 50f
+                minBoost = 0.5f
                 consumes.power(50f)
                 speedBoost = 50f
                 range = 1000f
-                hasBoost = false
             }
         }
         DebugOnly {
@@ -228,21 +230,25 @@ class CioBlocks : ContentTable {
         deleter = Deleter("deleter").apply {
             requirements(
                 Category.turret, BuildVisibility.shown, arrayOf(
-                    ItemStack(CioItems.ic, 4),
+                    ItemStack(CioItems.ic, 10),
                     ItemStack(Items.graphite, 100),
                     ItemStack(Items.silicon, 50),
                     ItemStack(Items.thorium, 200),
                 )
             )
             range = 180f
-            cooldown = 0.01f
+            cooldown = 0.1f
             recoilAmount = 5f
-            reloadTime = 10f
-            powerUse = 1f
-            size = 2
+            reloadTime = 15f
+            powerUse = 2.5f
+            size = 3
             buildCostMultiplier = 1.5f
+            extraLostHpBounce = 0.005f
             health = 300 * size * size
             shootSound = Sounds.lasershoot
+            configBullet {
+                damage = 0.5f
+            }
         }
 
         holoWall = HoloWall("holo-wall").apply {

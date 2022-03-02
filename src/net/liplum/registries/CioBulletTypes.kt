@@ -14,7 +14,7 @@ class CioBulletTypes : ContentTable {
     }
 
     override fun load() {
-        virus = BasicBulletType(2.5f, 5f, "bullet").apply {
+        virus = BasicBulletType(2.5f, 40f, "bullet").apply {
             width = 10f
             height = 12f
             shrinkY = 0.1f

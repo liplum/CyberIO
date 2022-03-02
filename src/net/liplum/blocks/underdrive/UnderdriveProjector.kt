@@ -101,7 +101,7 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
         saveConfig = true
 
         config(
-            Integer::class.java
+            java.lang.Byte::class.java
         ) { b: UnderdriveBuild, i ->
             b.curGear = i.toInt()
         }
@@ -174,7 +174,7 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
             R.Bar.SlowDownN
         ) {
             ReverseBar(
-                { R.Bar.SlowDown.bundle((it.realSlowDown * 100).toInt()) },
+                { R.Bar.SlowDown.bundle(it.realSlowDown.percentI) },
                 { color },
                 { it.restEfficiency / 1f }
             )
@@ -183,7 +183,7 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
             R.Bar.EfficiencyAbsorptionN
         ) {
             Bar(
-                { R.Bar.EfficiencyAbsorption.bundle((it.productionEfficiency * 100).toInt()) },
+                { R.Bar.EfficiencyAbsorption.bundle(it.productionEfficiency.percentI) },
                 { Pal.powerBar },
                 { it.productionEfficiency / 1f }
             )
@@ -331,15 +331,13 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
 
         override fun buildConfiguration(table: Table) {
             if (maxGear > 1) {
-                val gearController = Slider(
+                table.add(Slider(
                     0f, maxGear - 1f, 1f,
                     false
-                )
-                gearController.value = curGear.toFloat() - 1
-                gearController.moved {
-                    configure(Mathf.round(it + 1))
-                }
-                table.add(gearController)
+                ).apply {
+                    value = curGear.toFloat() - 1
+                    moved { configure(Mathf.round(it + 1).toByte()) }
+                })
             }
         }
 
@@ -406,14 +404,14 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
 
         override fun write(write: Writes) {
             super.write(write)
-            write.s(curGear)
+            write.b(curGear)
             write.s(underdrivedBlocks)
             write.s(similarInRange)
         }
 
         override fun read(read: Reads, revision: Byte) {
             super.read(read, revision)
-            curGear = read.s().toInt()
+            curGear = read.b().toInt()
             underdrivedBlocks = read.s().toInt()
             similarInRange = read.s().toInt()
         }

@@ -20,17 +20,22 @@ private val P2Alpha = quadratic(0.95f, 0.35f)
 open class Deleter(name: String) : PowerTurret(name), IExecutioner {
     override var executeProportion: Float = 0.2f
     var extraLostHpBounce = 0.01f
+    var waveType: DeleterWave
 
     init {
         shots = 18
         spread = 3f
         targetAir = true
         targetGround = true
-        shootType = DeleterWave().apply {
-        }
+        waveType = DeleterWave()
+        shootType = waveType
     }
 
-    open inner class DeleterWave : BasicBulletType() {
+    open fun configBullet(config: DeleterWave.() -> Unit) {
+        config(waveType)
+    }
+
+    open inner class DeleterWave : BasicBulletType(), IExecutioner by this@Deleter {
         init {
             hitEffect = Fx.hitLancer
             frontColor = R.C.Holo
@@ -52,7 +57,7 @@ open class Deleter(name: String) : PowerTurret(name), IExecutioner {
             hitSize = 8f
             ammoMultiplier = 1f
 
-            damage = 2f
+            damage = 1f
         }
 
         override fun despawned(b: Bullet) {

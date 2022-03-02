@@ -124,7 +124,7 @@ open class HoloWall(name: String) : Wall(name) {
             get() = lastDamagedTime > restoreReload || !isProjecting
 
         override fun killThoroughly() {
-            Call.tileDestroyed(this)
+            kill()
         }
 
         override fun damage(damage: Float) {
