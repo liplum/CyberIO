@@ -10,7 +10,7 @@ fun <T : AnimedBlock> T.animation(duration: Float, frameCount: Int): T {
             this.region.set(it)
         }.register()
         this.addLoadListener {
-            a.frames = this.animA(null, frameCount)
+            a.frames = this.animA(number = frameCount)
         }
     }
     return this

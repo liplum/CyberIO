@@ -19,6 +19,8 @@ import arc.util.io.Writes
 import mindustry.Vars
 import mindustry.entities.Effect
 import mindustry.gen.Building
+import mindustry.gen.Bullet
+import mindustry.gen.Groups
 import mindustry.graphics.Drawf
 import mindustry.graphics.Layer
 import mindustry.graphics.Pal
@@ -46,6 +48,7 @@ const val MagicAlpha = 0.8f
 enum class AttenuationType {
     None, Exponential, Additive
 }
+private typealias UnitC = mindustry.gen.Unit
 
 val SpiralShrink: Effect = Effect(20f) {
     val upb = it.data as UnderdriveProjector.UnderdriveBuild
@@ -283,6 +286,22 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
             )
         }
 
+        inline fun forEachBulletInRange(crossinline cons: (Bullet) -> Unit) {
+            Groups.bullet.intersect(x - realRange / 2, y - realRange / 2, realRange, realRange) {
+                if (it.dst(this) <= realRange) {
+                    cons(it)
+                }
+            }
+        }
+
+        inline fun forEachUnitInRange(crossinline cons: (UnitC) -> Unit) {
+            Groups.unit.intersect(x - realRange / 2, y - realRange / 2, realRange, realRange) {
+                if (it.dst(this) <= realRange) {
+                    cons(it)
+                }
+            }
+        }
+
         override fun onRemoved() {
             super.onRemoved()
             forEachTargetInRange {
@@ -314,6 +333,14 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
                     } else if (it is UnderdriveBuild && it != this) {
                         similarInRange++
                     }
+                }
+                forEachBulletInRange {
+                    it.vel.x /= 2
+                    it.vel.y /= 2
+                }
+                forEachUnitInRange {
+                    it.vel.x /= 2
+                    it.vel.y /= 2
                 }
                 this.underdrivedBlocks = underdrivedBlock
                 this.similarInRange = similarInRange

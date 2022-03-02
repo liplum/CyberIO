@@ -21,7 +21,7 @@ import mindustry.world.meta.BlockGroup
 import net.liplum.ClientOnly
 import net.liplum.DebugOnly
 import net.liplum.R
-import net.liplum.toSecond
+import net.liplum.seconds
 import net.liplum.ui.bars.ReverseBar
 import net.liplum.utils.*
 
@@ -106,7 +106,7 @@ open class AntiVirus(name: String) : Block(name) {
         }
         bars.add<AntiVirusBuild>(R.Bar.CoolDownN) {
             ReverseBar(
-                { R.Bar.CoolDown.bundle(it.coolDown.toSecond()) },
+                { R.Bar.CoolDown.bundle(it.coolDown.seconds) },
                 { R.C.CoolDown },
                 {
                     if (it.coolDown > reload)

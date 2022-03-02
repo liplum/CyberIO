@@ -3,14 +3,15 @@ package net.liplum.animations.anims.blocks;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.util.Time;
+import net.liplum.animations.anims.Animation;
 import net.liplum.animations.anims.IFrameIndexer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * A simple animation whose frames have the same duration.
+ * A simple animation whose frames have the same duration and. Animation is played based on {@link Time#time}
  */
-public class AutoAnimation extends BlockAnimation {
+public class AutoAnimation extends Animation {
     public final float totalDuration;
 
     /**
@@ -18,7 +19,7 @@ public class AutoAnimation extends BlockAnimation {
      * @param allFrames     every frame which has the same duration
      */
     public AutoAnimation(float totalDuration, TextureRegion... allFrames) {
-        super(allFrames);
+        super(totalDuration, allFrames);
         this.totalDuration = Math.max(1, totalDuration);
     }
 

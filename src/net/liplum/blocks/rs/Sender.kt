@@ -16,7 +16,7 @@ import mindustry.world.meta.BlockGroup
 import net.liplum.CioMod
 import net.liplum.ClientOnly
 import net.liplum.R
-import net.liplum.animations.anims.blocks.AutoAnimation
+import net.liplum.animations.anims.Animation
 import net.liplum.animations.anis.AniConfig
 import net.liplum.animations.anis.AniState
 import net.liplum.api.data.IDataReceiver
@@ -37,7 +37,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
     @ClientOnly lateinit var UploadAni: AniStateS
     @ClientOnly lateinit var BlockedAni: AniStateS
     @ClientOnly lateinit var NoPowerAni: AniStateS
-    @ClientOnly lateinit var UploadAnim: AutoAnimation
+    @ClientOnly lateinit var UploadAnim: Animation
     var UploadAnimFrameNumber = 7
     var UploadAnimDuration = 30f
 

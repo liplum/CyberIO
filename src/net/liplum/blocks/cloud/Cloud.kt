@@ -17,8 +17,8 @@ import net.liplum.ClientOnly
 import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.WhenRefresh
+import net.liplum.animations.anims.Animation
 import net.liplum.animations.anims.IFrameIndexer
-import net.liplum.animations.anims.blocks.AutoAnimation
 import net.liplum.animations.anims.blocks.ixByTimeScale
 import net.liplum.animations.anis.AniConfig
 import net.liplum.animations.anis.AniState
@@ -28,7 +28,7 @@ import net.liplum.api.data.IDataSender
 import net.liplum.persistance.intSet
 import net.liplum.utils.*
 
-private typealias Anim = AutoAnimation
+private typealias Anim = Animation
 private typealias BGType = BlockGroupType<Cloud, Cloud.CloudBuild>
 private typealias BType = BlockType<Cloud, Cloud.CloudBuild>
 private typealias Ani = AniState<Cloud, Cloud.CloudBuild>

@@ -7,7 +7,6 @@ import org.jetbrains.annotations.NotNull;
  * The interface of an individual drawable animation unit
  */
 public interface IAnimated {
-
     /**
      * Draws current frame of this animation
      *

@@ -8,14 +8,26 @@ import org.jetbrains.annotations.Nullable;
 
 public class Animation implements IAnimated {
     @NotNull
-    public final TextureRegion[] allFrames;
+    public TextureRegion[] allFrames;
     @Nullable
     public IFrameIndexer indexer;
 
     public boolean reversed = false;
 
-    public Animation(@NotNull TextureRegion... allFrames) {
+    public float duration;
+
+    /**
+     * @param duration  how long can this animation be played
+     * @param allFrames every frame which has the same duration
+     */
+    public Animation(float duration, @NotNull TextureRegion... allFrames) {
+        this.duration = duration;
         this.allFrames = allFrames;
+    }
+
+    @NotNull
+    public TextureRegion get(int index) {
+        return allFrames[index];
     }
 
     @NotNull
@@ -23,6 +35,7 @@ public class Animation implements IAnimated {
         this.indexer = indexer;
         return this;
     }
+
 
     /**
      * Gets the index which represents current frame.It will use internal indexer as default.
@@ -114,6 +127,7 @@ public class Animation implements IAnimated {
     public TextureRegion getCurTR() {
         return getCurTR(null);
     }
+
 
     @Override
     public void draw(float x, float y, float rotation) {
