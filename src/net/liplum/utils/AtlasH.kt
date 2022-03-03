@@ -32,7 +32,7 @@ infix fun TR.or(texture: TR): TR {
  * @param subName the following name after a hyphen. If it's null, use the {this} name
  * @param number the amount of frames in that image. Splits it by row.
  */
-fun MappableContent.animA(subName: String?, number: Int): Array<TR> {
+fun MappableContent.animA(subName: String? = null, number: Int): Array<TR> {
     return AtlasU.animation(this, subName, number)
 }
 /**
@@ -42,7 +42,7 @@ fun MappableContent.animA(subName: String?, number: Int): Array<TR> {
  * @param number the amount of frames in that image.
  */
 fun MappableContent.animA(
-    subName: String?,
+    subName: String? = null,
     isHorizontal: Boolean,
     number: Int
 ): Array<TR> {

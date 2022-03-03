@@ -7,7 +7,6 @@ import org.jetbrains.annotations.NotNull;
  * The interface of an individual drawable animation unit
  */
 public interface IAnimated {
-
     /**
      * Draws current frame of this animation
      *
@@ -61,15 +60,4 @@ public interface IAnimated {
      * @param howToRender customize your render behavior
      */
     void draw(@NotNull IFrameIndexer indexer, @NotNull IHowToRender howToRender);
-
-    /**
-     * Draws current frame of this animation using a custom indexer.
-     *
-     * @param <T>         the data type of indexer
-     * @param data        the data to be provided
-     * @param indexer     custom indexer
-     * @param howToRender customize your render behavior
-     */
-    <T> void draw(@NotNull IFrameIndexerT<T> indexer, T data, @NotNull IHowToRender howToRender);
-
 }

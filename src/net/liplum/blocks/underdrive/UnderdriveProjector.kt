@@ -19,6 +19,8 @@ import arc.util.io.Writes
 import mindustry.Vars
 import mindustry.entities.Effect
 import mindustry.gen.Building
+import mindustry.gen.Bullet
+import mindustry.gen.Groups
 import mindustry.graphics.Drawf
 import mindustry.graphics.Layer
 import mindustry.graphics.Pal
@@ -46,6 +48,7 @@ const val MagicAlpha = 0.8f
 enum class AttenuationType {
     None, Exponential, Additive
 }
+private typealias UnitC = mindustry.gen.Unit
 
 val SpiralShrink: Effect = Effect(20f) {
     val upb = it.data as UnderdriveProjector.UnderdriveBuild
@@ -69,25 +72,19 @@ fun UnderdriveProjector.UnderdriveBuild.spiralShrinking() {
 }
 
 open class UnderdriveProjector(name: String) : PowerGenerator(name) {
-    var reload = 60f
-    var range = 40f
+    @JvmField var reload = 60f
+    @JvmField var range = 40f
     /**
      * The less value the slower speed.[0,1]
      */
-    var maxSlowDownRate = 0.2f
-    var spiralRotateSpeed = 2f
-    var similarAttenuation = AttenuationType.Exponential
-    var attenuationRateStep = 0.5f
-    var color: Color = R.C.LightBlue
-    var slowDownRateEFFReward = 0.3f
-    var maxPowerEFFUnBlocksReq = 10
-        set(value) {
-            field = value.coerceAtLeast(1)
-        }
-    var maxGear = 1
-        set(value) {
-            field = value.coerceAtLeast(1)
-        }
+    @JvmField var maxSlowDownRate = 0.2f
+    @JvmField var spiralRotateSpeed = 2f
+    @JvmField var similarAttenuation = AttenuationType.Exponential
+    @JvmField var attenuationRateStep = 0.5f
+    @JvmField var color: Color = R.C.LightBlue
+    @JvmField var slowDownRateEFFReward = 0.3f
+    @JvmField var maxPowerEFFUnBlocksReq = 10
+    @JvmField var maxGear = 1
     lateinit var spiralTR: TextureRegion
 
     init {
@@ -109,6 +106,12 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
         configClear<UnderdriveBuild> {
             it.curGear = 1
         }
+    }
+
+    override fun init() {
+        super.init()
+        maxGear = maxGear.coerceAtLeast(1)
+        maxPowerEFFUnBlocksReq = maxPowerEFFUnBlocksReq.coerceAtLeast(1)
     }
 
     override fun load() {
@@ -283,6 +286,22 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
             )
         }
 
+        inline fun forEachBulletInRange(crossinline cons: (Bullet) -> Unit) {
+            Groups.bullet.intersect(x - realRange / 2, y - realRange / 2, realRange, realRange) {
+                if (it.dst(this) <= realRange) {
+                    cons(it)
+                }
+            }
+        }
+
+        inline fun forEachUnitInRange(crossinline cons: (UnitC) -> Unit) {
+            Groups.unit.intersect(x - realRange / 2, y - realRange / 2, realRange, realRange) {
+                if (it.dst(this) <= realRange) {
+                    cons(it)
+                }
+            }
+        }
+
         override fun onRemoved() {
             super.onRemoved()
             forEachTargetInRange {
@@ -314,6 +333,14 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
                     } else if (it is UnderdriveBuild && it != this) {
                         similarInRange++
                     }
+                }
+                forEachBulletInRange {
+                    it.vel.x /= 2
+                    it.vel.y /= 2
+                }
+                forEachUnitInRange {
+                    it.vel.x /= 2
+                    it.vel.y /= 2
                 }
                 this.underdrivedBlocks = underdrivedBlock
                 this.similarInRange = similarInRange

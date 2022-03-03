@@ -74,5 +74,9 @@ inline fun WhenRefresh(func: () -> Unit): Boolean {
     return false
 }
 
-fun Float.toSecond(): Int = (this / Time.toSeconds).toInt()
+val Float.seconds: Int
+    get() = (this / Time.toSeconds).toInt()
+
 fun Float.toSeconds(digits: Int): String = (this / Time.toSeconds).format(digits)
+val Float.draw: Float
+    get() = this - 90

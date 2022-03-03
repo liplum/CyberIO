@@ -7,8 +7,8 @@ import arc.scene.ui.Slider
 import arc.scene.ui.layout.Table
 import arc.util.io.Reads
 import arc.util.io.Writes
+import mindustry.ui.Bar
 import mindustry.world.blocks.defense.OverdriveProjector
-import net.liplum.ui.bars.ReverseBar
 import net.liplum.utils.ExpLogGen
 import net.liplum.utils.FUNC
 import net.liplum.utils.percentI
@@ -16,11 +16,11 @@ import net.liplum.utils.shrink
 import kotlin.math.abs
 
 open class AdjustableOverdrive(name: String) : OverdriveProjector(name) {
-    var maxBoost = 10f
-    var minBoost = 0.1f
+    @JvmField var maxBoost = 10f
+    @JvmField var minBoost = 0.1f
     lateinit var adjustDomainFunc: FUNC
-    var adjustBase = 2f
-    var maxGear = 10
+    @JvmField var adjustBase = 2f
+    @JvmField var maxGear = 10
 
     init {
         hasBoost = false
@@ -39,7 +39,7 @@ open class AdjustableOverdrive(name: String) : OverdriveProjector(name) {
         bars.add<AOBuild>(
             "boost"
         ) {
-            ReverseBar(
+            Bar(
                 { Core.bundle.format("bar.boost", it.realBoost().percentI) },
                 { baseColor },
                 { it.realBoost() / maxBoost / 2f }

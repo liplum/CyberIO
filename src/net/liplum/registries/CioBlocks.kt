@@ -260,7 +260,7 @@ class CioBlocks : ContentTable {
             )
             size = 1
             restoreReload = 10 * 60f
-            health = 500
+            health = 600
             buildCostMultiplier = 3.5f
         }
         HoloWall.registerInitHealthHandler()
@@ -275,7 +275,7 @@ class CioBlocks : ContentTable {
             )
             size = 2
             restoreReload = 15 * 60f
-            health = 450 * 5
+            health = 550 * 5
             buildCostMultiplier = 4.5f
         }
 
@@ -284,8 +284,6 @@ class CioBlocks : ContentTable {
                 requirements(
                     Category.turret, BuildVisibility.shown, arrayOf(
                         ItemStack(CioItems.ic, 5),
-                        ItemStack(Items.sporePod, 100),
-                        ItemStack(Items.thorium, 200),
                         ItemStack(Items.titanium, 100),
                         ItemStack(Items.graphite, 100),
                         ItemStack(Items.silicon, 50),
@@ -294,6 +292,7 @@ class CioBlocks : ContentTable {
                 ammo(
                     Items.sporePod, CioBulletTypes.virus
                 )
+                maxAmmo = 60
                 spread = 4f
                 reloadTime = 5f
                 restitution = 0.03f

@@ -41,23 +41,23 @@ open class Virus(name: String) : AnimedBlock(name) {
     /**
      * The lager the number the slower the spreading speed. Belongs to [0,+inf)
      */
-    var spreadingSpeed: Int = 1000
+    @JvmField var spreadingSpeed: Int = 1000
     /**
      * The maximum number of a virus can produce. -1 means unlimited.
      */
-    var maxReproductionScale: Int = -1
-    var inheritChildrenNumber: Boolean = false
+    @JvmField var maxReproductionScale: Int = -1
+    @JvmField var inheritChildrenNumber: Boolean = false
     /**
      * The maximum number of the generation of the ZERO virus can produce. -1 means unlimited.
      */
-    var maxGeneration: Int = -1
-    var mutationRate: Int = 1
+    @JvmField var maxGeneration: Int = -1
+    @JvmField var mutationRate: Int = 1
     /**
      * The maximum number of the mutation of the ZERO virus can produce. -1 means unlimited.
      */
-    var maxMutationNumber: Int = -1
-    var canMutate: Boolean = false
-    var startMutationPercent: Float = 0.8f
+    @JvmField var maxMutationNumber: Int = -1
+    @JvmField var canMutate: Boolean = false
+    @JvmField var startMutationPercent: Float = 0.8f
     lateinit var raceMaskTR: TextureRegion
 
     init {

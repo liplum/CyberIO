@@ -21,7 +21,7 @@ import mindustry.world.meta.BlockGroup
 import net.liplum.ClientOnly
 import net.liplum.DebugOnly
 import net.liplum.R
-import net.liplum.toSecond
+import net.liplum.seconds
 import net.liplum.ui.bars.ReverseBar
 import net.liplum.utils.*
 
@@ -64,27 +64,16 @@ fun AntiVirus.AntiVirusBuild.shieldExpanding() {
 }
 
 open class AntiVirus(name: String) : Block(name) {
-    var range: Float = 60f
-    var reload = 120f
-    var maxCoolDown = 240f
-    var minPrepareTime = 30f
-    var heatRate = 0.1f
-    var shieldExpendMinInterval = ShieldExpandEffectDuration * 0.6f
-    var uninfectedColor: Color = Color.green
-    var infectedColor: Color = Color.red
+    @JvmField var range: Float = 60f
+    @JvmField var reload = 120f
+    @JvmField var maxCoolDown = 240f
+    @JvmField var minPrepareTime = 30f
+    @JvmField var heatRate = 0.1f
+    @JvmField var shieldExpendMinInterval = ShieldExpandEffectDuration * 0.6f
+    @JvmField var uninfectedColor: Color = Color.green
+    @JvmField var infectedColor: Color = Color.red
     lateinit var unenergizedTR: TR
     lateinit var shieldTR: TR
-    fun absorbBullet(bullet: Bullet, build: AntiVirusBuild): Boolean {
-        if (bullet.team !== build.team &&
-            bullet.type.absorbable &&
-            bullet.dst(build) <= build.realRange
-        ) {
-            bullet.absorb()
-            Fx.absorb.at(bullet)
-            return true
-        }
-        return false
-    }
 
     init {
         solid = true
@@ -106,7 +95,7 @@ open class AntiVirus(name: String) : Block(name) {
         }
         bars.add<AntiVirusBuild>(R.Bar.CoolDownN) {
             ReverseBar(
-                { R.Bar.CoolDown.bundle(it.coolDown.toSecond()) },
+                { R.Bar.CoolDown.bundle(it.coolDown.seconds) },
                 { R.C.CoolDown },
                 {
                     if (it.coolDown > reload)
@@ -229,6 +218,21 @@ open class AntiVirus(name: String) : Block(name) {
         override fun write(write: Writes) {
             super.write(write)
             write.f(coolDown)
+        }
+    }
+
+    companion object {
+        @JvmStatic
+        fun absorbBullet(bullet: Bullet, build: AntiVirusBuild): Boolean {
+            if (bullet.team !== build.team &&
+                bullet.type.absorbable &&
+                bullet.dst(build) <= build.realRange
+            ) {
+                bullet.absorb()
+                Fx.absorb.at(bullet)
+                return true
+            }
+            return false
         }
     }
 }

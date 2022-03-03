@@ -2,25 +2,33 @@ package net.liplum.blocks.deleter
 
 import arc.graphics.g2d.Draw
 import arc.math.Mathf
+import arc.util.Eachable
 import arc.util.Tmp
+import mindustry.Vars
 import mindustry.content.Fx
 import mindustry.entities.bullet.BasicBulletType
+import mindustry.entities.units.BuildPlan
 import mindustry.gen.Building
 import mindustry.gen.Bullet
 import mindustry.gen.Healthc
 import mindustry.gen.Hitboxc
 import mindustry.world.blocks.defense.turrets.PowerTurret
+import net.liplum.ClientOnly
 import net.liplum.R
 import net.liplum.api.IExecutioner
+import net.liplum.draw
+import net.liplum.utils.TR
 import net.liplum.utils.lostHp
 import net.liplum.utils.quadratic
+import net.liplum.utils.subA
 
 private val P2Alpha = quadratic(0.95f, 0.35f)
 
 open class Deleter(name: String) : PowerTurret(name), IExecutioner {
+    @ClientOnly lateinit var HaloTR: TR
     override var executeProportion: Float = 0.2f
-    var extraLostHpBounce = 0.01f
-    var waveType: DeleterWave
+    @JvmField var extraLostHpBounce = 0.01f
+    @JvmField var waveType: DeleterWave
 
     init {
         shots = 18
@@ -31,8 +39,39 @@ open class Deleter(name: String) : PowerTurret(name), IExecutioner {
         shootType = waveType
     }
 
+    override fun load() {
+        super.load()
+        HaloTR = this.subA("halo")
+    }
+
     open fun configBullet(config: DeleterWave.() -> Unit) {
         config(waveType)
+    }
+
+    override fun drawRequestRegion(req: BuildPlan, list: Eachable<BuildPlan>) {
+        super.drawRequestRegion(req, list)
+        val team = Vars.player.team()
+        Draw.color(team.color)
+        Draw.rect(
+            HaloTR,
+            req.drawx(),
+            req.drawy()
+        )
+        Draw.reset()
+    }
+
+    open inner class DeleterBuild : PowerTurretBuild() {
+        override fun draw() {
+            super.draw()
+            Draw.color(team.color)
+            Draw.rect(
+                HaloTR,
+                x + tr2.x,
+                y + tr2.y,
+                rotation.draw
+            )
+            Draw.reset()
+        }
     }
 
     open inner class DeleterWave : BasicBulletType(), IExecutioner by this@Deleter {

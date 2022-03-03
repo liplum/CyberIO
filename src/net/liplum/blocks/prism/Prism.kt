@@ -4,13 +4,17 @@ import arc.graphics.g2d.Draw
 import arc.math.Angles
 import arc.util.io.Reads
 import arc.util.io.Writes
-import mindustry.entities.bullet.BasicBulletType
+import mindustry.entities.bullet.ContinuousLaserBulletType
 import mindustry.entities.bullet.LaserBulletType
 import mindustry.gen.Groups
 import mindustry.graphics.Drawf
 import mindustry.graphics.Layer
 import mindustry.world.blocks.ControlBlock
 import mindustry.world.blocks.defense.turrets.Turret
+import net.liplum.ClientOnly
+import net.liplum.DebugOnly
+import net.liplum.animations.anims.Animation
+import net.liplum.draw
 import net.liplum.math.PolarPos
 import net.liplum.persistance.polarPos
 import net.liplum.utils.*
@@ -20,19 +24,23 @@ enum class PrismData {
 }
 
 open class Prism(name: String) : Turret(name) {
-    //open class Prism(name: String) : Block(name) {
-    //copy your lasers
-    //
-    var realRange = 30f
-    var deflectionAngle = 15f
-    var prismRange = 10f
-    var prismASpeed = 0.05f
+    lateinit var PrismAnim: Animation
+    @JvmField var realRange = 30f
+    @JvmField var deflectionAngle = 15f
+    @JvmField var prismRange = 10f
+    @JvmField var prismRevolutionSpeed = 0.05f
+    @JvmField @ClientOnly var prismRotationSpeed = 0.05f
 
     init {
         solid = true
         update = true
         absorbLasers = true
-        rotateSpeed = prismASpeed * 300
+        rotateSpeed = prismRevolutionSpeed * 200
+    }
+
+    override fun load() {
+        super.load()
+        PrismAnim = this.autoAnim(frame = 7, totalDuration = 60f)
     }
 
     open inner class PrismLaser : LaserBulletType() {
@@ -41,24 +49,25 @@ open class Prism(name: String) : Turret(name) {
     }
 
     open inner class PrismBuild : TurretBuild(), ControlBlock {
-        var selfPolarPos: PolarPos = PolarPos(realRange - prismRange, 0f)
+        var prismRevolution: PolarPos = PolarPos(realRange - prismRange, 0f)
+        var prismRotation: PolarPos = PolarPos(prismRange, 0f)
         open val prismX: Float
-            get() = x + selfPolarPos.toX()
+            get() = x + prismRevolution.toX()
         open val prismY: Float
-            get() = y + selfPolarPos.toY()
+            get() = y + prismRevolution.toY()
 
         override fun updateTile() {
             if (isControlled) {
                 val ta = PolarPos.toA(unit.aimX() - x, unit.aimY() - y)
-                selfPolarPos.a =
+                prismRevolution.a =
                     Angles.moveToward(
-                        selfPolarPos.a.degree, ta.degree,
+                        prismRevolution.a.degree, ta.degree,
                         rotateSpeed * delta()
                     ).radian
             } else {
-                selfPolarPos.a += prismASpeed * delta()
+                prismRevolution.a += prismRevolutionSpeed * delta()
             }
-            //selfPos.r += 0.05f
+            prismRotation.a -= prismRotationSpeed * delta()
             Groups.bullet.intersect(
                 x - realRange / 2f,
                 y - realRange / 2f,
@@ -66,16 +75,19 @@ open class Prism(name: String) : Turret(name) {
                 realRange
             ) {
                 val btype = it.type
-                if (btype is LaserBulletType) {
-                    it.absorb()
-                } else if (btype is BasicBulletType) {
+                if (btype !is ContinuousLaserBulletType) {
                     if (Util2D.distance(it.x, it.y, prismX, prismY) < prismRange) {
                         if (it.data != PrismData.Duplicate) {
-                            val angle = it.rotation()
                             it.data = PrismData.Duplicate
+                            val angle = it.rotation()
                             val copy = it.copy()
+                            val degree = prismRotation.a.degree
                             it.rotation(angle - deflectionAngle)
                             copy.rotation(angle + deflectionAngle)
+                            /*it.rotation(degree - deflectionAngle)
+                            copy.rotation(degree + deflectionAngle)*/
+                            /*it.rotation(angle - degree)
+                            copy.rotation(angle - degree)*/
                         }
                     }
                 }
@@ -87,21 +99,40 @@ open class Prism(name: String) : Turret(name) {
             Draw.color()
             val prismX = prismX
             val prismY = prismY
+            tr2.trns(rotation, -recoil)
             Draw.z(Layer.blockOver)
             Drawf.shadow(
-                region,
+                PrismAnim[0],
                 prismX + tr2.x - elevation * 7f,
-                prismY + tr2.y - elevation * 7f
+                prismY + tr2.y - elevation * 7f,
+                prismRotation.a.degree.draw
             )
             Draw.z(Layer.turret)
-            tr2.trns(rotation, -recoil)
             Draw.rect(
-                region,
+                PrismAnim[0],
                 prismX + tr2.x,
-                prismY + tr2.y
+                prismY + tr2.y,
+                prismRotation.a.degree.draw
             )
-            Draw.z(Layer.overlayUI)
-            Drawf.circles(prismX, prismY, prismRange)
+            /*
+                PrismAnim.draw {
+                Draw.z(Layer.blockOver)
+                Drawf.shadow(
+                    it,
+                    prismX + tr2.x - elevation * 7f,
+                    prismY + tr2.y - elevation * 7f
+                )
+                Draw.z(Layer.turret)
+                Draw.rect(
+                    it,
+                    prismX + tr2.x,
+                    prismY + tr2.y
+                )
+            }*/
+            DebugOnly {
+                Draw.z(Layer.overlayUI)
+                Drawf.circles(prismX, prismY, prismRange)
+            }
         }
 
         override fun drawSelect() {
@@ -110,12 +141,14 @@ open class Prism(name: String) : Turret(name) {
 
         override fun read(read: Reads, revision: Byte) {
             super.read(read, revision)
-            selfPolarPos = read.polarPos()
+            prismRevolution = read.polarPos()
+            prismRotation = read.polarPos()
         }
 
         override fun write(write: Writes) {
             super.write(write)
-            write.polarPos(selfPolarPos)
+            write.polarPos(prismRevolution)
+            write.polarPos(prismRotation)
         }
     }
 }

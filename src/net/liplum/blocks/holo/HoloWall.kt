@@ -22,18 +22,18 @@ import net.liplum.ClientOnly
 import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.api.holo.IRegenerate
-import net.liplum.toSecond
+import net.liplum.seconds
 import net.liplum.utils.*
 
 private const val FloatingRange = 0.6f
 
 open class HoloWall(name: String) : Wall(name) {
-    var restoreReload = 10 * 60f
+    @JvmField var restoreReload = 10 * 60f
     @ClientOnly lateinit var BaseTR: TR
     @ClientOnly lateinit var ImageTR: TR
     @ClientOnly lateinit var DyedImageTR: TR
-    var minHealthProportion = 0.05f
-    var maxSleepyTime = 30 * 60f
+    @JvmField var minHealthProportion = 0.05f
+    @JvmField var maxSleepyTime = 30 * 60f
 
     init {
         solid = false
@@ -75,14 +75,14 @@ open class HoloWall(name: String) : Wall(name) {
             }
             bars.add<HoloBuild>(R.Bar.ChargeN) {
                 Bar(
-                    { R.Bar.Charge.bundle(it.restoreCharge.toSecond()) },
+                    { R.Bar.Charge.bundle(it.restoreCharge.seconds) },
                     { Pal.power },
                     { it.restoreCharge / restoreReload }
                 )
             }
             bars.add<HoloBuild>(R.Bar.LastDamagedN) {
                 Bar(
-                    { R.Bar.LastDamaged.bundle(it.lastDamagedTime.toSecond()) },
+                    { R.Bar.LastDamaged.bundle(it.lastDamagedTime.seconds) },
                     { Pal.power },
                     { it.lastDamagedTime / restoreReload }
                 )
