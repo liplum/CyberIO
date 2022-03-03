@@ -292,6 +292,7 @@ class CioBlocks : ContentTable {
                 ammo(
                     Items.sporePod, CioBulletTypes.virus
                 )
+                maxAmmo = 60
                 spread = 4f
                 reloadTime = 5f
                 restitution = 0.03f

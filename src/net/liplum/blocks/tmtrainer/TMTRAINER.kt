@@ -10,6 +10,7 @@ import mindustry.world.blocks.defense.turrets.ItemTurret
 import net.liplum.ClientOnly
 import net.liplum.animations.anims.Animation
 import net.liplum.animations.anims.AnimationObj
+import net.liplum.animations.anims.ITimeModifier
 import net.liplum.draw
 import net.liplum.math.PolarPos
 import net.liplum.utils.TR
@@ -19,8 +20,8 @@ import net.liplum.utils.subA
 
 open class TMTRAINER(name: String) : ItemTurret(name) {
     @ClientOnly lateinit var CoreAnim: Animation
+    @ClientOnly lateinit var EmptyCoreAnim: Animation
     @ClientOnly lateinit var HeadTR: TR
-    @ClientOnly lateinit var EmptyCoreTR: TR
     @JvmField @ClientOnly var headMax = 0.6f
     @JvmField @ClientOnly var headMin = -3f
     @JvmField var CoreAnimFrames = 8
@@ -35,9 +36,9 @@ open class TMTRAINER(name: String) : ItemTurret(name) {
 
     override fun load() {
         super.load()
-        EmptyCoreTR = this.subA("core-empty")
         CoreAnim = this.autoAnim("core", CoreAnimFrames, 60f)
         HeadTR = this.subA("head")
+        EmptyCoreAnim = this.autoAnim("core-empty", CoreAnimFrames, 60f)
     }
 
     override fun icons() = arrayOf(
@@ -46,6 +47,7 @@ open class TMTRAINER(name: String) : ItemTurret(name) {
 
     open inner class TMTRAINERBUILD : ItemTurretBuild() {
         @ClientOnly lateinit var coreAnimObj: AnimationObj
+        @ClientOnly lateinit var emptyCoreAnimObj: AnimationObj
         @ClientOnly var targetPol: PolarPos = PolarPos(headMax, 0f)
         open var virusCharge = 0f
             set(value) {
@@ -60,14 +62,19 @@ open class TMTRAINER(name: String) : ItemTurret(name) {
 
         override fun created() {
             ClientOnly {
-                coreAnimObj = CoreAnim.gen().tmod {
-                    it / this.timeScale * (1f + virusCharge / 10f)
+                val boost = ITimeModifier {
+                    if (unit.ammo() > 0)
+                        it / this.timeScale * (1f + virusCharge / 10f) * unit.ammof()
+                    else 0f
                 }
+                coreAnimObj = CoreAnim.gen().tmod(boost)
+                emptyCoreAnimObj = EmptyCoreAnim.gen().tmod(boost)
             }
         }
 
         override fun draw() {
             coreAnimObj.spend(Time.delta)
+            emptyCoreAnimObj.spend(Time.delta)
             Draw.rect(baseRegion, x, y)
             Draw.color()
 
@@ -91,14 +98,22 @@ open class TMTRAINER(name: String) : ItemTurret(name) {
                 drawRotation
             )
 
-
             Drawf.shadow(region, drawX - elevation, drawY - elevation, drawRotation)
             drawer[this]
-            coreAnimObj.draw(
+            emptyCoreAnimObj.draw(
                 drawX,
                 drawY,
                 drawRotation
             )
+            if (unit.ammo() > 0) {
+                Draw.alpha(unit.ammof())
+                coreAnimObj.draw(
+                    drawX,
+                    drawY,
+                    drawRotation
+                )
+                Draw.color()
+            }
 
             if (Core.atlas.isFound(heatRegion)) {
                 heatDrawer[this]
