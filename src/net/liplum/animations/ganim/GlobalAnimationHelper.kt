@@ -8,6 +8,7 @@ fun <T : AnimedBlock> T.animation(duration: Float, frameCount: Int): T {
     ClientOnly {
         val a = GlobalAnimation(duration) {
             this.region.set(it)
+            this.fullIcon.set(it)
         }.register()
         this.addLoadListener {
             a.frames = this.animA(number = frameCount)

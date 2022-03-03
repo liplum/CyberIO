@@ -51,6 +51,7 @@ public class R {
 
 
     }
+
     public static final class Ctrl {
         public static String Gen(String content) {
             return "control." + Meta.ModID + "." + content;
@@ -76,6 +77,10 @@ public class R {
         public static final Color IcDark = Color.valueOf("#024202");
         public static final Color shadowColor = new Color(0, 0, 0, 0.71f);
         public static final Color blendShadowColor = Color.white.cpy().lerp(Color.black, shadowColor.a);
+        public static final Color
+                PrismRedFG = Color.valueOf("#EF5350"), PrismRedBK = Color.valueOf("#E53935"),
+                PrismGreenFG = Color.valueOf("#76FF03"), PrismGreenBK = Color.valueOf("#00C853"),
+                PrismBlueFG = Color.valueOf("#039BE5"), PrismBlueBK = Color.valueOf("#1565C0");
 
     }
 

@@ -4,8 +4,8 @@ import arc.graphics.g2d.Draw
 import arc.math.Angles
 import arc.util.io.Reads
 import arc.util.io.Writes
-import mindustry.entities.bullet.ContinuousLaserBulletType
-import mindustry.entities.bullet.LaserBulletType
+import mindustry.entities.bullet.*
+import mindustry.gen.Bullet
 import mindustry.gen.Groups
 import mindustry.graphics.Drawf
 import mindustry.graphics.Layer
@@ -14,6 +14,9 @@ import mindustry.world.blocks.defense.turrets.Turret
 import net.liplum.ClientOnly
 import net.liplum.DebugOnly
 import net.liplum.animations.anims.Animation
+import net.liplum.blocks.prism.TintedBullets.Companion.tintBlue
+import net.liplum.blocks.prism.TintedBullets.Companion.tintGreen
+import net.liplum.blocks.prism.TintedBullets.Companion.tintRed
 import net.liplum.draw
 import net.liplum.math.PolarPos
 import net.liplum.persistance.polarPos
@@ -26,14 +29,12 @@ enum class PrismData {
 open class Prism(name: String) : Turret(name) {
     lateinit var PrismAnim: Animation
     @JvmField var realRange = 30f
-    @JvmField var deflectionAngle = 15f
+    @JvmField var deflectionAngle = 25f
     @JvmField var prismRange = 10f
     @JvmField var prismRevolutionSpeed = 0.05f
     @JvmField @ClientOnly var prismRotationSpeed = 0.05f
 
     init {
-        solid = true
-        update = true
         absorbLasers = true
         rotateSpeed = prismRevolutionSpeed * 200
     }
@@ -43,9 +44,10 @@ open class Prism(name: String) : Turret(name) {
         PrismAnim = this.autoAnim(frame = 7, totalDuration = 60f)
     }
 
-    open inner class PrismLaser : LaserBulletType() {
-        init {
-        }
+    var perDeflectionAngle = 0f
+    override fun init() {
+        super.init()
+        perDeflectionAngle = deflectionAngle * 2 / 3
     }
 
     open inner class PrismBuild : TurretBuild(), ControlBlock {
@@ -74,23 +76,51 @@ open class Prism(name: String) : Turret(name) {
                 realRange,
                 realRange
             ) {
-                val btype = it.type
-                if (btype !is ContinuousLaserBulletType) {
-                    if (Util2D.distance(it.x, it.y, prismX, prismY) < prismRange) {
-                        if (it.data != PrismData.Duplicate) {
-                            it.data = PrismData.Duplicate
-                            val angle = it.rotation()
-                            val copy = it.copy()
-                            val degree = prismRotation.a.degree
-                            it.rotation(angle - deflectionAngle)
-                            copy.rotation(angle + deflectionAngle)
-                            /*it.rotation(degree - deflectionAngle)
-                            copy.rotation(degree + deflectionAngle)*/
-                            /*it.rotation(angle - degree)
-                            copy.rotation(angle - degree)*/
-                        }
+                if (Util2D.distance(it.x, it.y, prismX, prismY) < prismRange) {
+                    if (it.data != PrismData.Duplicate) {
+                        it.data = PrismData.Duplicate
+                        val angle = it.rotation()
+                        val copyGreen = it.copy()
+                        val copyBlue = it.copy()
+                        val start = angle - deflectionAngle
+                        it.rotation(start)
+                        copyGreen.rotation(start + perDeflectionAngle)
+                        copyBlue.rotation(start + perDeflectionAngle * 2)
+                        tintBullet(it, copyGreen, copyBlue)
                     }
                 }
+            }
+        }
+
+        open fun tintBullet(red: Bullet, green: Bullet, blue: Bullet) {
+            val redType = red.type
+            val greenType = green.type
+            val blueType = blue.type
+            if (redType is BasicBulletType && greenType is BasicBulletType && blueType is BasicBulletType) {
+                red.type(redType.tintRed)
+                blue.type(blueType.tintBlue)
+                green.type(greenType.tintGreen)
+                return
+            } else if (redType is ShrapnelBulletType && greenType is ShrapnelBulletType && blueType is ShrapnelBulletType) {
+                red.type(redType.tintRed)
+                blue.type(blueType.tintBlue)
+                green.type(greenType.tintGreen)
+                return
+            } else if (redType is LaserBulletType && greenType is LaserBulletType && blueType is LaserBulletType) {
+                red.type(redType.tintRed)
+                blue.type(blueType.tintBlue)
+                green.type(greenType.tintGreen)
+                return
+            } else if (redType is ContinuousLaserBulletType && greenType is ContinuousLaserBulletType && blueType is ContinuousLaserBulletType) {
+                red.type(redType.tintRed)
+                blue.type(blueType.tintBlue)
+                green.type(greenType.tintGreen)
+                return
+            } else if (redType is FireBulletType && greenType is FireBulletType && blueType is FireBulletType) {
+                red.type(redType.tintRed)
+                blue.type(blueType.tintBlue)
+                green.type(greenType.tintGreen)
+                return
             }
         }
 

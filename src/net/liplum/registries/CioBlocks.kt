@@ -319,7 +319,6 @@ class CioBlocks : ContentTable {
             Blocks.powerSource.buildVisibility = BuildVisibility.shown
             Blocks.itemSource.buildVisibility = BuildVisibility.shown
             Blocks.liquidSource.buildVisibility = BuildVisibility.shown
-            deleter.shootType.status = CioStatusEffects.infected
         }
     }
 }

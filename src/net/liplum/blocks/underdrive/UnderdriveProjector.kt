@@ -334,14 +334,7 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
                         similarInRange++
                     }
                 }
-                forEachBulletInRange {
-                    it.vel.x /= 2
-                    it.vel.y /= 2
-                }
-                forEachUnitInRange {
-                    it.vel.x /= 2
-                    it.vel.y /= 2
-                }
+
                 this.underdrivedBlocks = underdrivedBlock
                 this.similarInRange = similarInRange
                 if (underdrivedBlock > 0) {
@@ -354,6 +347,17 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
                     productionEfficiency = 0f
                 }
             }
+            /*
+            val velFactor = 1 - realSlowDown
+             forEachBulletInRange {
+                 it.vel.x *= velFactor
+                 it.vel.y *= velFactor
+             }
+             forEachUnitInRange {
+                 it.vel.x *= velFactor
+                 it.vel.y *= velFactor
+             }
+             */
         }
 
         override fun buildConfiguration(table: Table) {
