@@ -28,12 +28,12 @@ import net.liplum.utils.*
 private const val FloatingRange = 0.6f
 
 open class HoloWall(name: String) : Wall(name) {
-    var restoreReload = 10 * 60f
+    @JvmField var restoreReload = 10 * 60f
     @ClientOnly lateinit var BaseTR: TR
     @ClientOnly lateinit var ImageTR: TR
     @ClientOnly lateinit var DyedImageTR: TR
-    var minHealthProportion = 0.05f
-    var maxSleepyTime = 30 * 60f
+    @JvmField var minHealthProportion = 0.05f
+    @JvmField var maxSleepyTime = 30 * 60f
 
     init {
         solid = false

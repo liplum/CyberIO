@@ -27,8 +27,8 @@ private val P2Alpha = quadratic(0.95f, 0.35f)
 open class Deleter(name: String) : PowerTurret(name), IExecutioner {
     @ClientOnly lateinit var HaloTR: TR
     override var executeProportion: Float = 0.2f
-    var extraLostHpBounce = 0.01f
-    var waveType: DeleterWave
+    @JvmField var extraLostHpBounce = 0.01f
+    @JvmField var waveType: DeleterWave
 
     init {
         shots = 18

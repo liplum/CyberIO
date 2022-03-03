@@ -25,11 +25,11 @@ enum class PrismData {
 
 open class Prism(name: String) : Turret(name) {
     lateinit var PrismAnim: Animation
-    var realRange = 30f
-    var deflectionAngle = 15f
-    var prismRange = 10f
-    var prismRevolutionSpeed = 0.05f
-    @ClientOnly var prismRotationSpeed = 0.05f
+    @JvmField var realRange = 30f
+    @JvmField var deflectionAngle = 15f
+    @JvmField var prismRange = 10f
+    @JvmField var prismRevolutionSpeed = 0.05f
+    @JvmField @ClientOnly var prismRotationSpeed = 0.05f
 
     init {
         solid = true

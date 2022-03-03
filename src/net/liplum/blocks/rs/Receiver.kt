@@ -43,9 +43,9 @@ open class Receiver(name: String?) : AniedBlock<Receiver, ReceiverBuild>(name) {
     @ClientOnly lateinit var BlockedAni: AniStateR
     @ClientOnly lateinit var NoPowerAni: AniStateR
     @ClientOnly lateinit var DownloadAnim: Animation
-    var maxConnection = -1
-    var DownloadAnimFrameNumber = 7
-    var DownloadAnimDuration = 30f
+    @JvmField var maxConnection = -1
+    @JvmField var DownloadAnimFrameNumber = 7
+    @JvmField var DownloadAnimDuration = 30f
 
     init {
         hasItems = true

@@ -38,8 +38,8 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
     @ClientOnly lateinit var BlockedAni: AniStateS
     @ClientOnly lateinit var NoPowerAni: AniStateS
     @ClientOnly lateinit var UploadAnim: Animation
-    var UploadAnimFrameNumber = 7
-    var UploadAnimDuration = 30f
+    @JvmField var UploadAnimFrameNumber = 7
+    @JvmField var UploadAnimDuration = 30f
 
     init {
         solid = true

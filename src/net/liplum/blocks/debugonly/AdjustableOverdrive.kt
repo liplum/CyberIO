@@ -16,11 +16,11 @@ import net.liplum.utils.shrink
 import kotlin.math.abs
 
 open class AdjustableOverdrive(name: String) : OverdriveProjector(name) {
-    var maxBoost = 10f
-    var minBoost = 0.1f
+    @JvmField var maxBoost = 10f
+    @JvmField var minBoost = 0.1f
     lateinit var adjustDomainFunc: FUNC
-    var adjustBase = 2f
-    var maxGear = 10
+    @JvmField var adjustBase = 2f
+    @JvmField var maxGear = 10
 
     init {
         hasBoost = false

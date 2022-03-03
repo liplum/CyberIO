@@ -2,14 +2,14 @@ package net.liplum.blocks.tmtrainer
 
 import arc.Core
 import arc.graphics.g2d.Draw
+import arc.util.Time
 import mindustry.content.Fx
 import mindustry.graphics.Drawf
 import mindustry.graphics.Layer
 import mindustry.world.blocks.defense.turrets.ItemTurret
 import net.liplum.ClientOnly
 import net.liplum.animations.anims.Animation
-import net.liplum.animations.anims.IFrameIndexer
-import net.liplum.animations.anims.blocks.ixSpeed
+import net.liplum.animations.anims.AnimationObj
 import net.liplum.draw
 import net.liplum.math.PolarPos
 import net.liplum.utils.TR
@@ -21,11 +21,10 @@ open class TMTRAINER(name: String) : ItemTurret(name) {
     @ClientOnly lateinit var CoreAnim: Animation
     @ClientOnly lateinit var HeadTR: TR
     @ClientOnly lateinit var EmptyCoreTR: TR
-    @ClientOnly var headMax = 0.6f
-    @ClientOnly var headMin = -3f
-    var CoreAnimFrames = 8
-    var maxVirusChargeTime = 5 * 60f
-    var maxVirusChargeSpeedUp = 2.5f
+    @JvmField @ClientOnly var headMax = 0.6f
+    @JvmField @ClientOnly var headMin = -3f
+    @JvmField var CoreAnimFrames = 8
+    @JvmField var maxVirusChargeSpeedUp = 2.5f
 
     init {
         alternate = true
@@ -46,55 +45,60 @@ open class TMTRAINER(name: String) : ItemTurret(name) {
     )
 
     open inner class TMTRAINERBUILD : ItemTurretBuild() {
-        @ClientOnly lateinit var coreIx: IFrameIndexer
+        @ClientOnly lateinit var coreAnimObj: AnimationObj
         @ClientOnly var targetPol: PolarPos = PolarPos(headMax, 0f)
         open var virusCharge = 0f
             set(value) {
-                field = value.coerceIn(0f, maxVirusChargeTime)
+                field = value.coerceIn(0f, 60f)
             }
 
         override fun update() {
             super.update()
-            virusCharge = if (wasShooting) delta() else -delta()
+            val delta = if (wasShooting) delta() else -delta()
+            virusCharge += delta / 2.5f
         }
 
         override fun created() {
             ClientOnly {
-                coreIx = CoreAnim.ixSpeed(this) {
-                    (virusCharge / maxVirusChargeTime * maxVirusChargeTime)
-                        .coerceAtLeast(1f)
+                coreAnimObj = CoreAnim.gen().tmod {
+                    it / this.timeScale * (1f + virusCharge / 10f)
                 }
             }
         }
 
         override fun draw() {
+            coreAnimObj.spend(Time.delta)
             Draw.rect(baseRegion, x, y)
             Draw.color()
 
             Draw.z(Layer.turret)
 
             targetPol.a = rotation.radian
-            var tr = targetPol.r
-            val delta = reload * 0.1f
-            tr = if (wasShooting) tr - delta else tr + delta
-            tr = tr.coerceIn(headMin, headMax)
-            targetPol.r = tr
+            var tpr = targetPol.r
+            val delta = virusCharge * 0.001f
+            tpr = if (wasShooting) tpr - delta else tpr + delta
+            tpr = tpr.coerceIn(headMin, headMax)
+            targetPol.r = tpr
 
             tr2.trns(rotation, -recoil)
             val drawRotation = rotation.draw
+            val drawX = x + tr2.x
+            val drawY = y + tr2.y
             Draw.rect(
                 HeadTR,
-                x + targetPol.toX() + tr2.x,
-                y + targetPol.toY() + tr2.y,
+                drawX + targetPol.toX(),
+                drawY + targetPol.toY(),
                 drawRotation
             )
 
 
-            Drawf.shadow(region, x + tr2.x - elevation, y + tr2.y - elevation, drawRotation)
+            Drawf.shadow(region, drawX - elevation, drawY - elevation, drawRotation)
             drawer[this]
-            CoreAnim.draw(coreIx) {
-                Draw.rect(it, x, y, drawRotation)
-            }
+            coreAnimObj.draw(
+                drawX,
+                drawY,
+                drawRotation
+            )
 
             if (Core.atlas.isFound(heatRegion)) {
                 heatDrawer[this]
