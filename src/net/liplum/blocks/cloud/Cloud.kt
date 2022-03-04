@@ -92,9 +92,9 @@ open class Cloud(name: String) : PowerBlock(name) {
                     }
 
                     override fun drawBuild() {
-                        xOffset = MathU.randomNP(cloudFloatRange)
+                        xOffset =Mathf.range(cloudFloatRange)
                         build.cloudXOffset = xOffset
-                        yOffset = MathU.randomNP(cloudFloatRange)
+                        yOffset = Mathf.range(cloudFloatRange)
                         build.cloudYOffset = yOffset
                         cloudAniSM.drawBuilding()
                     }

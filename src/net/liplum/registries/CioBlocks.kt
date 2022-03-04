@@ -221,7 +221,6 @@ class CioBlocks : ContentTable {
                     Category.turret, BuildVisibility.shown, arrayOf()
                 )
                 size = 3
-                range = 330f
                 health = 1500
                 consumes.liquid(Liquids.water, 1f)
             }

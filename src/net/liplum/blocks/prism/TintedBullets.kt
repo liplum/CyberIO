@@ -2,10 +2,42 @@ package net.liplum.blocks.prism
 
 import arc.graphics.Color
 import mindustry.entities.bullet.*
+import mindustry.gen.Bullet
 import net.liplum.R
 
 class TintedBullets {
     companion object {
+        fun tintBulletRGB(red: Bullet, green: Bullet, blue: Bullet) {
+            val redType = red.type
+            val greenType = green.type
+            val blueType = blue.type
+            if (redType is BasicBulletType && greenType is BasicBulletType && blueType is BasicBulletType) {
+                red.type(redType.tintRed)
+                blue.type(blueType.tintBlue)
+                green.type(greenType.tintGreen)
+                return
+            } else if (redType is ShrapnelBulletType && greenType is ShrapnelBulletType && blueType is ShrapnelBulletType) {
+                red.type(redType.tintRed)
+                blue.type(blueType.tintBlue)
+                green.type(greenType.tintGreen)
+                return
+            } else if (redType is LaserBulletType && greenType is LaserBulletType && blueType is LaserBulletType) {
+                red.type(redType.tintRed)
+                blue.type(blueType.tintBlue)
+                green.type(greenType.tintGreen)
+                return
+            } else if (redType is ContinuousLaserBulletType && greenType is ContinuousLaserBulletType && blueType is ContinuousLaserBulletType) {
+                red.type(redType.tintRed)
+                blue.type(blueType.tintBlue)
+                green.type(greenType.tintGreen)
+                return
+            } else if (redType is FireBulletType && greenType is FireBulletType && blueType is FireBulletType) {
+                red.type(redType.tintRed)
+                blue.type(blueType.tintBlue)
+                green.type(greenType.tintGreen)
+                return
+            }
+        }
         @JvmStatic
         val RedBasicBullets: HashMap<BasicBulletType, BasicBulletType> = HashMap()
         @JvmStatic

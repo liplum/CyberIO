@@ -62,16 +62,16 @@ public class G {
                 lineColor, outlineColor);
     }
 
-    public static void drawDashLineBetweenTwoBlocks(Block startBlock, int startBlockX, int startBlockY,
-                                                    Block endBlock, int endBlockX, int endBlockY) {
+    public static void drawDashLineBetweenTwoBlocks(Block startBlock, short startBlockX, short startBlockY,
+                                                    Block endBlock, short endBlockX, short endBlockY) {
         drawDashLineBetweenTwoBlocks(
                 startBlock, startBlockX, startBlockY,
                 endBlock, endBlockX, endBlockY,
                 Pal.placing);
     }
 
-    public static void drawDashLineBetweenTwoBlocks(Block startBlock, int startBlockX, int startBlockY,
-                                                    Block endBlock, int endBlockX, int endBlockY,
+    public static void drawDashLineBetweenTwoBlocks(Block startBlock, short startBlockX, short startBlockY,
+                                                    Block endBlock, short endBlockX, short endBlockY,
                                                     Color lineColor) {
         drawDashLineBetweenTwoBlocks(
                 startBlock, startBlockX, startBlockY,
@@ -79,8 +79,8 @@ public class G {
                 lineColor, Pal.gray);
     }
 
-    public static void drawDashLineBetweenTwoBlocks(Block startBlock, int startBlockX, int startBlockY,
-                                                    Block endBlock, int endBlockX, int endBlockY,
+    public static void drawDashLineBetweenTwoBlocks(Block startBlock, short startBlockX, short startBlockY,
+                                                    Block endBlock, short endBlockX, short endBlockY,
                                                     Color lineColor, Color outlineColor) {
         float startDrawX = WorldU.toDrawXY(startBlock, startBlockX);
         float startDrawY = WorldU.toDrawXY(startBlock, startBlockY);
@@ -119,15 +119,15 @@ public class G {
         );
     }
 
-    public static void drawArrowBetweenTwoBlocks(Block startBlock, int startBlockX, int startBlockY,
-                                                 Block pointedBlock, int pointedBlockX, int pointedBlockY) {
+    public static void drawArrowBetweenTwoBlocks(Block startBlock, short startBlockX, short startBlockY,
+                                                 Block pointedBlock, short pointedBlockX, short pointedBlockY) {
         drawArrowBetweenTwoBlocks(
                 startBlock, startBlockX, startBlockY, pointedBlock, pointedBlockX, pointedBlockY,
                 Pal.accent);
     }
 
-    public static void drawArrowBetweenTwoBlocks(Block startBlock, int startBlockX, int startBlockY,
-                                                 Block pointedBlock, int pointedBlockX, int pointedBlockY,
+    public static void drawArrowBetweenTwoBlocks(Block startBlock, short startBlockX, short startBlockY,
+                                                 Block pointedBlock, short pointedBlockX, short pointedBlockY,
                                                  Color arrowColor) {
         float startDrawX = WorldU.toDrawXY(pointedBlock, pointedBlockX);
         float startDrawY = WorldU.toDrawXY(pointedBlock, pointedBlockY);
@@ -149,11 +149,19 @@ public class G {
         );
     }
 
-    public static void drawDashCircle(Block b, int blockX, int BlockY,
+    public static void drawDashCircle(Building building,
+                                      float range, Color color) {
+        Drawf.dashCircle(building.x, building.y, range + sin - 2, color);
+    }
+    public static void drawDashCircle(float x, float y,
+                                      float range, Color color) {
+        Drawf.dashCircle(x, y, range + sin - 2, color);
+    }
+    public static void drawDashCircle(Block b, short blockX, short BlockY,
                                       float range, Color color) {
         float drawX = WorldU.toDrawXY(b, blockX);
         float drawY = WorldU.toDrawXY(b, BlockY);
-        Drawf.dashCircle(drawX, drawY, range, color);
+        Drawf.dashCircle(drawX, drawY, range + sin - 2, color);
     }
 
     public static void drawSelected(Building other, Color color) {

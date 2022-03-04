@@ -33,7 +33,7 @@ import net.liplum.utils.*
 
 private typealias AniStateR = AniState<Receiver, ReceiverBuild>
 
-open class Receiver(name: String?) : AniedBlock<Receiver, ReceiverBuild>(name) {
+open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
     @ClientOnly lateinit var CoverTR: TR
     @ClientOnly lateinit var DownArrowTR: TR
     @ClientOnly lateinit var UnconnectedTR: TR
@@ -78,12 +78,12 @@ open class Receiver(name: String?) : AniedBlock<Receiver, ReceiverBuild>(name) {
         G.init()
         val selectedTile = selected.tile()
         G.drawDashLineBetweenTwoBlocks(
-            selected.block, selectedTile.x.toInt(), selectedTile.y.toInt(),
-            this, x, y,
+            selected.block, selectedTile.x, selectedTile.y,
+            this, x.toShort(), y.toShort(),
             R.C.Sender
         )
         G.drawArrowBetweenTwoBlocks(
-            selected.block, selectedTile.x.toInt(), selectedTile.y.toInt(), this, x, y,
+            selected.block, selectedTile.x, selectedTile.y, this, x.toShort(), y.toShort(),
             R.C.Sender
         )
     }

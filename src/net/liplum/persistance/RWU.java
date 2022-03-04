@@ -93,4 +93,20 @@ public class RWU {
     public static PolarPos readPolarPos(Reads reads) {
         return new PolarPos(reads.f(), reads.f());
     }
+
+    public static <T> void writeSeq(Writes writes, Seq<T> seq, IHowToWrite<T> howToWrite) {
+        writes.i(seq.size);
+        for (T data : seq) {
+            howToWrite.write(writes, data);
+        }
+    }
+
+    public static <T> Seq<T> readSeq(Reads reads, IHowToRead<T> howToRead) {
+        int length = reads.i();
+        Seq<T> seq = new Seq<>(length);
+        for (int i = 0; i < length; i++) {
+            seq.add(howToRead.read(reads));
+        }
+        return seq;
+    }
 }

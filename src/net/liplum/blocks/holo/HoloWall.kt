@@ -103,14 +103,14 @@ open class HoloWall(name: String) : Wall(name) {
             }
         open var lastDamagedTime = restoreReload
         @ClientOnly
-        var xOffset = MathU.randomNP(FloatingRange)
+        var xOffset = Mathf.range(FloatingRange)
             set(value) {
                 field = value coIn FloatingRange
             }
         @ClientOnly
         var xAdding = false
         @ClientOnly
-        var yOffset = MathU.randomNP(FloatingRange)
+        var yOffset = Mathf.range(FloatingRange)
             set(value) {
                 field = value coIn FloatingRange
             }
