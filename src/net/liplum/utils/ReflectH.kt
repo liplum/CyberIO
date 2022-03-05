@@ -8,3 +8,7 @@ fun Any?.set(name: String, value: Any?) {
 
 fun <T> Any.get(name: String): T =
     ReflectU.get(this, name)
+
+fun <T> T.copyFrom(from: T) {
+    ReflectU.copyFields(from, this)
+}

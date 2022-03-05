@@ -4,6 +4,8 @@ import arc.graphics.Color
 import mindustry.entities.bullet.*
 import mindustry.gen.Bullet
 import net.liplum.R
+import net.liplum.blocks.prism.TintedBullets.Companion.tintRed
+import net.liplum.utils.copyFrom
 
 class TintedBullets {
     companion object {
@@ -36,6 +38,11 @@ class TintedBullets {
                 blue.type(blueType.tintBlue)
                 green.type(greenType.tintGreen)
                 return
+            } else if (redType is LiquidBulletType && greenType is LiquidBulletType && blueType is LiquidBulletType) {
+                red.type(redType.tintRed)
+                blue.type(blueType.tintBlue)
+                green.type(greenType.tintGreen)
+                return
             }
         }
         @JvmStatic
@@ -45,27 +52,41 @@ class TintedBullets {
         @JvmStatic
         val BlueBasicBullets: HashMap<BasicBulletType, BasicBulletType> = HashMap()
         @JvmStatic
+        val BasicTintLerp = 0.4f
+        @JvmStatic
         val BasicBulletType.tintRed: BasicBulletType
             get() = RedBasicBullets.getOrPut(this) {
                 (this.copy() as BasicBulletType).apply {
-                    frontColor = R.C.PrismRedFG
-                    backColor = R.C.PrismRedBK
+                    frontColor = R.C.PrismRedFG.lerp(
+                        this@tintRed.frontColor, BasicTintLerp
+                    )
+                    backColor = R.C.PrismRedBK.lerp(
+                        this@tintRed.backColor, BasicTintLerp
+                    )
                 }
             }
         @JvmStatic
         val BasicBulletType.tintGreen: BasicBulletType
             get() = GreenBasicBullets.getOrPut(this) {
                 (this.copy() as BasicBulletType).apply {
-                    frontColor = R.C.PrismGreenFG
-                    backColor = R.C.PrismGreenBK
+                    frontColor = R.C.PrismGreenFG.lerp(
+                        this@tintGreen.frontColor, BasicTintLerp
+                    )
+                    backColor = R.C.PrismGreenBK.lerp(
+                        this@tintGreen.backColor, BasicTintLerp
+                    )
                 }
             }
         @JvmStatic
         val BasicBulletType.tintBlue: BasicBulletType
             get() = BlueBasicBullets.getOrPut(this) {
                 (this.copy() as BasicBulletType).apply {
-                    frontColor = R.C.PrismBlueFG
-                    backColor = R.C.PrismBlueBK
+                    frontColor = R.C.PrismBlueFG.lerp(
+                        this@tintBlue.frontColor, BasicTintLerp
+                    )
+                    backColor = R.C.PrismBlueBK.lerp(
+                        this@tintBlue.backColor, BasicTintLerp
+                    )
                 }
             }
         @JvmStatic
@@ -249,6 +270,47 @@ class TintedBullets {
             get() = BlueContinuousLaserBullets.getOrPut(this) {
                 (this.copy() as ContinuousLaserBulletType).apply {
                     colors = BlueContinuousLaserColors
+                }
+            }
+        @JvmStatic
+        val RedLiquidBullets: HashMap<LiquidBulletType, LiquidBulletType> = HashMap()
+        @JvmStatic
+        val GreenLiquidBullets: HashMap<LiquidBulletType, LiquidBulletType> = HashMap()
+        @JvmStatic
+        val BlueLiquidBullets: HashMap<LiquidBulletType, LiquidBulletType> = HashMap()
+        @JvmStatic
+        val LiquidTintLerp = 0.4f
+        @JvmStatic
+        val LiquidBulletType.tintRed: LiquidBulletType
+            get() = RedLiquidBullets.getOrPut(this) {
+                val b = TintLiquidBulletT(this.liquid)
+                b.copyFrom(this)
+                b.apply {
+                    tintColor = R.C.PrismRedFG.cpy().lerp(
+                        this@tintRed.liquid.color, LiquidTintLerp
+                    )
+                }
+            }
+        @JvmStatic
+        val LiquidBulletType.tintGreen: LiquidBulletType
+            get() = GreenLiquidBullets.getOrPut(this) {
+                val b = TintLiquidBulletT(this.liquid)
+                b.copyFrom(this)
+                b.apply {
+                    tintColor = R.C.PrismGreenFG.cpy().lerp(
+                        this@tintGreen.liquid.color, LiquidTintLerp
+                    )
+                }
+            }
+        @JvmStatic
+        val LiquidBulletType.tintBlue: LiquidBulletType
+            get() = BlueLiquidBullets.getOrPut(this) {
+                val b = TintLiquidBulletT(this.liquid)
+                b.copyFrom(this)
+                b.apply {
+                    tintColor = R.C.PrismBlueFG.cpy().lerp(
+                        this@tintBlue.liquid.color, LiquidTintLerp
+                    )
                 }
             }
     }

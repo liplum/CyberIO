@@ -50,7 +50,14 @@ public class R {
                 LastDamaged = Gen(LastDamagedN);
         public static final String ProgressN = "progress",
                 Progress = Gen(ProgressN);
-
+        public static final String
+                PrismN = "prism",
+                Prism = Gen(PrismN),
+                PrismPl = Gen(PrismN + ".pl");
+        public static final String
+                LinkedN = "linked",
+                Linked = Gen(LinkedN),
+                NoLink = Gen(LinkedN + ".no");
     }
 
     public static final class Ctrl {
@@ -82,6 +89,12 @@ public class R {
                 PrismRedFG = Color.valueOf("#EF5350"), PrismRedBK = Color.valueOf("#E53935"),
                 PrismGreenFG = Color.valueOf("#76FF03"), PrismGreenBK = Color.valueOf("#00C853"),
                 PrismBlueFG = Color.valueOf("#039BE5"), PrismBlueBK = Color.valueOf("#1565C0");
+        public static final Color[] PrismRgbFG = new Color[]{
+                PrismRedFG, PrismGreenFG, PrismBlueFG
+        };
+        public static final Color[] PrismRgbBK = new Color[]{
+                PrismRedBK, PrismGreenBK, PrismBlueBK
+        };
         public static final Color
                 prismClockwise = Pal.power,
                 prismAntiClockwise = Pal.lancerLaser;

@@ -1,3 +1,5 @@
+@file:JvmName("ByteU")
+
 package net.liplum.utils
 
 infix fun Int.isOn(pos: Int): Boolean {

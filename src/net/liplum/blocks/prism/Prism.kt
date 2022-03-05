@@ -9,34 +9,39 @@ import arc.struct.Seq
 import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
+import mindustry.Vars
 import mindustry.content.UnitTypes
 import mindustry.entities.TargetPriority
-import mindustry.game.Team
 import mindustry.gen.BlockUnitc
 import mindustry.gen.Building
 import mindustry.gen.Groups
 import mindustry.gen.Unit
 import mindustry.graphics.Drawf
 import mindustry.graphics.Layer
+import mindustry.ui.Bar
 import mindustry.world.Block
-import mindustry.world.Tile
 import mindustry.world.blocks.ControlBlock
 import mindustry.world.meta.BlockFlag
 import mindustry.world.meta.BlockGroup
-import net.liplum.*
+import net.liplum.ClientOnly
+import net.liplum.DebugOnly
+import net.liplum.R
 import net.liplum.animations.anims.Animation
 import net.liplum.blocks.prism.TintedBullets.Companion.tintBulletRGB
+import net.liplum.draw
 import net.liplum.math.PolarPos
 import net.liplum.persistance.readSeq
 import net.liplum.persistance.writeSeq
 import net.liplum.utils.*
+import kotlin.math.abs
 
 enum class PrismData {
     Duplicate
 }
+private typealias Obelisk = PrismObelisk.ObeliskBuild
 
 open class Prism(name: String) : Block(name) {
-    lateinit var PrismAnim: Animation
+    var PS: FUNC = quadratic(1.2f, 0.2f)
     /**
      * Above ground level.
      */
@@ -44,24 +49,25 @@ open class Prism(name: String) : Block(name) {
     @JvmField var deflectionAngle = 25f
     @JvmField var prismRange = 10f
     @JvmField var prismRevolutionSpeed = 0.05f
-    @JvmField @ClientOnly var prismRotationSpeed = 0.05f
     @JvmField var playerControllable = true
     @JvmField var rotateSpeed = 0f
-    lateinit var BaseTR: TR
-    lateinit var BaseHaloTR: TR
-    lateinit var BaseCoreTR: TR
-    lateinit var PriselTR: TR
-    @JvmField var elevation = -1f
     @JvmField var maxPrisel = 3
-    @JvmField var clockwiseColor: Color = R.C.prismClockwise
-    @JvmField var antiClockwiseColor: Color = R.C.prismAntiClockwise
-    @JvmField var PrismAnimFrame = 7
-    @JvmField var PrismAnimDuration = 60f
+    @ClientOnly @JvmField var prismRotationSpeed = 0.05f
+    @ClientOnly @JvmField var elevation = -1f
+    @ClientOnly lateinit var PrismAnim: Animation
+    @ClientOnly lateinit var BaseTR: TR
+    @ClientOnly lateinit var BaseHaloTR: TR
+    @ClientOnly lateinit var BaseCoreTR: TR
+    @ClientOnly lateinit var PriselTR: TR
+    @ClientOnly @JvmField var clockwiseColor: Color = R.C.prismClockwise
+    @ClientOnly @JvmField var antiClockwiseColor: Color = R.C.prismAntiClockwise
+    @ClientOnly @JvmField var PrismAnimFrame = 7
+    @ClientOnly @JvmField var PrismAnimDuration = 60f
+    @JvmField var tintBullet = true
 
     init {
         absorbLasers = true
         update = true
-        hasShadow = true
         solid = true
         outlineIcon = true
         priority = TargetPriority.turret
@@ -74,6 +80,10 @@ open class Prism(name: String) : Block(name) {
             clockwiseColor
         else
             antiClockwiseColor
+
+    fun PSA(speed: Float, cur: Float, target: Float, totalLength: Float): Float {
+        return speed * PS(abs(target - cur) / totalLength)
+    }
 
     override fun load() {
         super.load()
@@ -93,26 +103,35 @@ open class Prism(name: String) : Block(name) {
         }
     }
 
-    override fun canPlaceOn(tile: Tile, team: Team, rotation: Int): Boolean {
-        return super.canPlaceOn(tile, team, rotation) ||
-                (tile.block() is Prism && tile.team() == team)
-    }
-
-    override fun canReplace(other: Block): Boolean {
-        //return super.canReplace(other) || (IsServer() && other is Prism)
-        return super.canReplace(other) || other is Prism
+    override fun setBars() {
+        super.setBars()
+        bars.add<PrismBuild>(R.Bar.PrismN) {
+            Bar(
+                {
+                    if (it.actualPriselCount > 1)
+                        "${it.actualPriselCount} ${R.Bar.PrismPl.bundle()}"
+                    else
+                        "${it.actualPriselCount} ${R.Bar.Prism.bundle()}"
+                },
+                {
+                    val rgb = R.C.PrismRgbFG
+                    val len = rgb.size
+                    val total = len * 60f
+                    rgb[((Time.time % total / total) * len).toInt().coerceIn(0, len - 1)]
+                },
+                { it.actualPriselCount.toFloat() / maxPrisel }
+            )
+        }
     }
 
     open inner class PrismBuild : Building(), ControlBlock {
         var prisels: Seq<Prisel> = Seq(maxPrisel)
         var unit = UnitTypes.block.create(team) as BlockUnitc
+        var obelisks: Seq<Int> = Seq()
+        var actualPriselCount = 0
 
         init {
-            addNewPrisel()
-        }
-
-        override fun created() {
-            //tile.set("block", CioBlocks.prismFake)
+            addNewPriselToOutermost()
         }
 
         override fun unit(): Unit {
@@ -122,16 +141,71 @@ open class Prism(name: String) : Block(name) {
         }
 
         override fun canControl() = playerControllable
-        fun addNewPrisel() {
+        fun addNewPriselToOutermost() {
             val count = prisels.size
             if (count < maxPrisel) {
-                Prisel().apply {
-                    //revolution = PolarPos(Agl + (prismRange * 2 * count), 0f)
+                val newOne = Prisel().apply {
                     revolution = PolarPos(0f, 0f)
                     rotation = PolarPos(prismRange, 0f)
                     isClockwise = count % 2 != 0
-                    prisels.add(this)
                 }
+                prisels.addPrisel(newOne)
+            }
+        }
+
+        fun removeOutermostPrisel() {
+            if (prisels.size > 0) {
+                var last: Prisel
+                for (i in prisels.size - 1 downTo 0) {
+                    last = prisels[i]
+                    if (!last.isRemoved) {
+                        last.isRemoved = true
+                        actualPriselCount--
+                        break
+                    }
+                }
+            }
+        }
+
+        fun Seq<Prisel>.addPrisel(prisel: Prisel) {
+            this.add(prisel)
+            actualPriselCount++
+        }
+
+        override fun onProximityUpdate() {
+            super.onProximityUpdate()
+            var myObeliskNumber = 0
+            for (b in proximity) {
+                if (b is Obelisk && b.prismType == this@Prism) {
+                    if (b.linked == null) {
+                        if (obelisks.size < maxPrisel) {
+                            link(b)
+                            myObeliskNumber++
+                        }
+                    } else if (b.linked == this) {
+                        myObeliskNumber++
+                    }
+                }
+            }
+            obelisks.remove {
+                val b = Vars.world.tile(it).build
+                !(b is Obelisk && b.prismType == this@Prism && b.linked == this)
+            }
+            if (actualPriselCount > 1) {
+                // If any obelisk was removed, then remove any prisel until their numbers are equal.
+                var needRemoved = actualPriselCount - myObeliskNumber - 1
+                while (needRemoved > 0) {
+                    removeOutermostPrisel()
+                    needRemoved--
+                }
+            }
+        }
+
+        fun link(obelisk: Obelisk) {
+            if (obelisks.size < maxPrisel) {
+                obelisk.linked = this
+                obelisks.add(obelisk.pos())
+                addNewPriselToOutermost()
             }
         }
 
@@ -155,15 +229,24 @@ open class Prism(name: String) : Block(name) {
                 } else {
                     prisel.revolution.a += if (prisel.isClockwise) -curPerRelv else curPerRelv
                 }
-                var prevlr = prisel.revolution.r
-                prevlr += 0.1f * Mathf.log2((ip1 * ip1).toFloat() + 1f)
-                prevlr = prevlr.coerceAtMost(Agl + (prismRange * 2 * i))
-                prisel.revolution.r = prevlr
+                var revlR = prisel.revolution.r
+                var perRevlR = 0.1f * Mathf.log2((ip1 * ip1).toFloat() + 1f)
+                val totalLen = Agl + (prismRange * 2 * i)
+                if (prisel.isRemoved) {
+                    perRevlR = PSA(perRevlR, revlR, 0f, totalLen)
+                    revlR -= perRevlR
+                } else {
+                    perRevlR = PSA(perRevlR, revlR, totalLen, totalLen)
+                    revlR += perRevlR
+                }
+                revlR = revlR.coerceAtMost(totalLen)
+                prisel.revolution.r = revlR
                 prisel.rotation.a += if (prisel.isClockwise) -curPerRota else curPerRota
             }
+            prisels.remove { it.isRemoved && it.revolution.r <= 0f }
             var priselX: Float
             var priselY: Float
-            val realRange = Agl + (prismRange * 2 * (prisels.size - 1))
+            val realRange = Agl + (prismRange * 2 * prisels.size)
             val realRangeHalf = realRange / 2
             Groups.bullet.intersect(
                 x - realRangeHalf,
@@ -184,7 +267,9 @@ open class Prism(name: String) : Block(name) {
                             it.rotation(start)
                             copyGreen.rotation(start + perDeflectionAngle)
                             copyBlue.rotation(start + perDeflectionAngle * 2)
-                            tintBulletRGB(it, copyGreen, copyBlue)
+                            if (tintBullet) {
+                                tintBulletRGB(it, copyGreen, copyBlue)
+                            }
                         }
                     }
                 }
@@ -239,26 +324,18 @@ open class Prism(name: String) : Block(name) {
             }
         }
 
-        override fun overwrote(previous: Seq<Building>) {
-            for (build in previous) {
-                if (build is PrismBuild) {
-                    prisels.clear()
-                    for (prisel in build.prisels) {
-                        prisels.add(prisel)
-                    }
-                    addNewPrisel()
-                }
-            }
-        }
-
         override fun read(read: Reads, revision: Byte) {
             super.read(read, revision)
             prisels = read.readSeq(Prisel::read)
+            obelisks = read.readSeq(Reads::i)
+            actualPriselCount = read.b().toInt()
         }
 
         override fun write(write: Writes) {
             super.write(write)
             write.writeSeq(prisels, Prisel::write)
+            write.writeSeq(obelisks, Writes::i)
+            write.b(actualPriselCount)
         }
     }
 }

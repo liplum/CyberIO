@@ -1,14 +1,10 @@
 package net.liplum.registries
 
 import arc.Events
-import mindustry.Vars
 import mindustry.content.Blocks
 import mindustry.content.Fx
 import mindustry.content.Items
-import mindustry.content.Liquids
 import mindustry.game.EventType
-import mindustry.game.EventType.SaveWriteEvent
-import mindustry.gen.Groups
 import mindustry.gen.Sounds
 import mindustry.type.Category
 import mindustry.type.ItemStack
@@ -30,6 +26,7 @@ import net.liplum.blocks.holo.HoloWall
 import net.liplum.blocks.holo.LandProjector
 import net.liplum.blocks.icmachine.ICMachine
 import net.liplum.blocks.prism.Prism
+import net.liplum.blocks.prism.PrismObelisk
 import net.liplum.blocks.rs.Receiver
 import net.liplum.blocks.rs.Sender
 import net.liplum.blocks.tmtrainer.RandomName
@@ -38,7 +35,6 @@ import net.liplum.blocks.underdrive.UnderdriveProjector
 import net.liplum.blocks.virus.AntiVirus
 import net.liplum.blocks.virus.Virus
 import net.liplum.utils.CioDebugOnly
-import net.liplum.utils.set
 
 class CioBlocks : ContentTable {
     companion object {
@@ -52,7 +48,7 @@ class CioBlocks : ContentTable {
         @JvmStatic lateinit var antiVirus: AntiVirus
         @JvmStatic lateinit var cloud: Cloud
         @JvmStatic lateinit var prism: Prism
-        @JvmStatic lateinit var prismFake: Prism
+        @JvmStatic lateinit var prismObelisk: PrismObelisk
         @JvmStatic lateinit var deleter: Deleter
         @CioDebugOnly @JvmStatic var hyperOverdriveSphere: OverdriveProjector? = null
         @JvmStatic lateinit var holoWall: HoloWall
@@ -67,9 +63,9 @@ class CioBlocks : ContentTable {
         icMachine = ICMachine("ic-machine").apply {
             requirements(
                 Category.crafting, arrayOf(
-                    ItemStack(Items.copper, 1000),
-                    ItemStack(Items.silicon, 200),
-                    ItemStack(Items.graphite, 150),
+                    ItemStack(Items.copper, 500),
+                    ItemStack(Items.silicon, 100),
+                    ItemStack(Items.graphite, 100),
                     ItemStack(Items.titanium, 250)
                 )
             )
@@ -221,32 +217,30 @@ class CioBlocks : ContentTable {
             }
         }
 
-        prismFake = Prism("prism-fake").apply {
-            id = prism.id
-        }
-
         prism = Prism("prism").apply {
             requirements(
-                Category.turret, BuildVisibility.shown, arrayOf()
+                Category.turret, BuildVisibility.shown, arrayOf(
+                    ItemStack(CioItems.ic, 3),
+                    ItemStack(Items.metaglass, 100),
+                    ItemStack(Items.titanium, 50),
+                )
             )
+            buildCostMultiplier = 2f
             size = 3
             health = 1500
-            consumes.liquid(Liquids.water, 1f)
         }
 
-
-        Events.on(EventType.TileChangeEvent::class.java) {
-            val tile = it.tile
-            val block = tile.block()
-            if (block is Prism && prism != prismFake) {
-                tile.set("block", prismFake)
-            }
-        }
-
-        Events.on(SaveWriteEvent::class.java) {
-            Groups.build.each({ it is Prism.PrismBuild }) {
-                it.tile.set("block", it.block)
-            }
+        prismObelisk = PrismObelisk("prism-obelisk").apply {
+            requirements(
+                Category.turret, BuildVisibility.shown, arrayOf(
+                    ItemStack(CioItems.ic, 5),
+                    ItemStack(Items.metaglass, 200),
+                    ItemStack(Items.titanium, 200),
+                )
+            )
+            size = 4
+            health = 4000
+            prismType = prism
         }
 
         deleter = Deleter("deleter").apply {
