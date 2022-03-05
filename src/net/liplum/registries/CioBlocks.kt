@@ -71,7 +71,7 @@ class CioBlocks : ContentTable {
             )
             health = 2000
             outputItem = ItemStack(CioItems.ic, 1)
-            craftTime = 1200f
+            craftTime = 800f
             size = 3
             buildCostMultiplier = 3f
             craftEffect = Fx.smelt

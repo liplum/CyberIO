@@ -17,7 +17,7 @@ open class ICMachine(name: String) : AniedCrafter<ICMachine, ICMachine.ICMachine
     lateinit var WorkingState: AniStateM
     lateinit var WorkingAnim: Animation
     @JvmField var WorkingAnimFrameNumber = 4
-    @JvmField var WorkingAnimDuration = 60f
+    @JvmField var WorkingAnimDuration = 120f
 
     init {
         hasPower = true
@@ -54,7 +54,11 @@ open class ICMachine(name: String) : AniedCrafter<ICMachine, ICMachine.ICMachine
             super.created()
             ClientOnly {
                 workingAnimObj = WorkingAnim.gen()
-                workingAnimObj.tmod { it * (0.1f + progress * 3) }
+                workingAnimObj.tmod {
+                    it * (0.1f + Mathf.lerp(
+                        progress, progress * 8, 0.5f
+                    ))
+                }
             }
         }
 
