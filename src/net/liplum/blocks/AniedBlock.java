@@ -6,10 +6,7 @@ import mindustry.gen.Building;
 import mindustry.world.Block;
 import net.liplum.CioMod;
 import net.liplum.GameH;
-import net.liplum.animations.anis.AniConfig;
-import net.liplum.animations.anis.AniState;
-import net.liplum.animations.anis.AniStateM;
-import net.liplum.animations.anis.IAniSMed;
+import net.liplum.animations.anis.*;
 import net.liplum.api.ITrigger;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,7 +19,8 @@ import java.util.HashMap;
  * @param <TBlock> the block type
  * @param <TBuild> its corresponding building type
  */
-public abstract class AniedBlock<TBlock extends Block, TBuild extends Building> extends Block implements IAniSMed<TBlock, TBuild> {
+@SuppressWarnings("unchecked")
+public abstract class AniedBlock<TBlock extends AniedBlock<?,?>, TBuild extends AniedBlock<?,?>.AniedBuild> extends Block implements IAniSMed<TBlock, TBuild> {
     protected final HashMap<String, AniState<TBlock, TBuild>> allAniStates = new HashMap<>();
     protected AniConfig<TBlock, TBuild> aniConfig;
 
@@ -60,6 +58,12 @@ public abstract class AniedBlock<TBlock extends Block, TBuild extends Building> 
         return aniState;
     }
 
+    @NotNull
+    @Override
+    public AniStateM<TBlock, TBuild> getAniStateM(TBuild build) {
+        return (AniStateM<TBlock, TBuild>) build.getAniStateM();
+    }
+
     /**
      * Add an entry of configuration.
      *
@@ -75,10 +79,11 @@ public abstract class AniedBlock<TBlock extends Block, TBuild extends Building> 
     /**
      * You have to make the {@link Building} of your subclass extend this
      */
-    public abstract class AniedBuild extends Building {
+    public abstract class AniedBuild extends Building implements IAniSMedBuild<TBlock,TBuild> {
         protected AniStateM<TBlock, TBuild> aniStateM;
 
         @NotNull
+        @Override
         public AniStateM<TBlock, TBuild> getAniStateM() {
             return aniStateM;
         }

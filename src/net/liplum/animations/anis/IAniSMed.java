@@ -3,6 +3,7 @@ package net.liplum.animations.anis;
 import arc.util.Nullable;
 import mindustry.gen.Building;
 import mindustry.world.Block;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 
@@ -21,6 +22,14 @@ public interface IAniSMed<TBlock extends Block, TBuild extends Building> {
      */
     @Nullable
     AniState<TBlock, TBuild> getAniStateByName(String name);
+
+    /**
+     * Gets building's Animation State Machine
+     * @param build building
+     * @return Animation State Machine
+     */
+    @NotNull
+    AniStateM<TBlock, TBuild> getAniStateM(TBuild build);
 
     /**
      * Gets all Animation States.

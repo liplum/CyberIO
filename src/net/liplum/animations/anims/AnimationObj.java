@@ -36,6 +36,8 @@ public class AnimationObj implements IAnimated {
         curTime += getRealSpent(time);
         if (curTime > meta.duration) {
             curTime %= meta.duration;
+        } else if (curTime < 0f) {
+            curTime = meta.duration - Math.abs(curTime);
         }
     }
 

@@ -1,11 +1,14 @@
 package net.liplum.registries
 
 import arc.Events
+import mindustry.Vars
 import mindustry.content.Blocks
 import mindustry.content.Fx
 import mindustry.content.Items
 import mindustry.content.Liquids
 import mindustry.game.EventType
+import mindustry.game.EventType.SaveWriteEvent
+import mindustry.gen.Groups
 import mindustry.gen.Sounds
 import mindustry.type.Category
 import mindustry.type.ItemStack
@@ -35,6 +38,7 @@ import net.liplum.blocks.underdrive.UnderdriveProjector
 import net.liplum.blocks.virus.AntiVirus
 import net.liplum.blocks.virus.Virus
 import net.liplum.utils.CioDebugOnly
+import net.liplum.utils.set
 
 class CioBlocks : ContentTable {
     companion object {
@@ -48,6 +52,7 @@ class CioBlocks : ContentTable {
         @JvmStatic lateinit var antiVirus: AntiVirus
         @JvmStatic lateinit var cloud: Cloud
         @JvmStatic lateinit var prism: Prism
+        @JvmStatic lateinit var prismFake: Prism
         @JvmStatic lateinit var deleter: Deleter
         @CioDebugOnly @JvmStatic var hyperOverdriveSphere: OverdriveProjector? = null
         @JvmStatic lateinit var holoWall: HoloWall
@@ -215,14 +220,32 @@ class CioBlocks : ContentTable {
                 range = 1000f
             }
         }
-        DebugOnly {
-            prism = Prism("prism").apply {
-                requirements(
-                    Category.turret, BuildVisibility.shown, arrayOf()
-                )
-                size = 3
-                health = 1500
-                consumes.liquid(Liquids.water, 1f)
+
+        prismFake = Prism("prism-fake").apply {
+            id = prism.id
+        }
+
+        prism = Prism("prism").apply {
+            requirements(
+                Category.turret, BuildVisibility.shown, arrayOf()
+            )
+            size = 3
+            health = 1500
+            consumes.liquid(Liquids.water, 1f)
+        }
+
+
+        Events.on(EventType.TileChangeEvent::class.java) {
+            val tile = it.tile
+            val block = tile.block()
+            if (block is Prism && prism != prismFake) {
+                tile.set("block", prismFake)
+            }
+        }
+
+        Events.on(SaveWriteEvent::class.java) {
+            Groups.build.each({ it is Prism.PrismBuild }) {
+                it.tile.set("block", it.block)
             }
         }
 
@@ -278,30 +301,28 @@ class CioBlocks : ContentTable {
             buildCostMultiplier = 4.5f
         }
 
-        DebugOnly {
-            TMTRAINER = TMTRAINER("TMTRAINER").apply {
-                requirements(
-                    Category.turret, BuildVisibility.shown, arrayOf(
-                        ItemStack(CioItems.ic, 5),
-                        ItemStack(Items.titanium, 100),
-                        ItemStack(Items.graphite, 100),
-                        ItemStack(Items.silicon, 50),
-                    )
+        TMTRAINER = TMTRAINER("TMTRAINER").apply {
+            requirements(
+                Category.turret, BuildVisibility.shown, arrayOf(
+                    ItemStack(CioItems.ic, 5),
+                    ItemStack(Items.titanium, 100),
+                    ItemStack(Items.graphite, 100),
+                    ItemStack(Items.silicon, 50),
                 )
-                ammo(
-                    Items.sporePod, CioBulletTypes.virus
-                )
-                maxAmmo = 60
-                spread = 4f
-                reloadTime = 5f
-                restitution = 0.03f
-                range = 240f
-                shootCone = 15f
-                shots = 2
-                size = 4
-                health = 250 * size * size
-                limitRange(20f)
-            }
+            )
+            ammo(
+                Items.sporePod, CioBulletTypes.virus
+            )
+            maxAmmo = 60
+            spread = 4f
+            reloadTime = 5f
+            restitution = 0.03f
+            range = 240f
+            shootCone = 15f
+            shots = 2
+            size = 4
+            health = 250 * size * size
+            limitRange(20f)
             ClientOnly {
                 Events.run(EventType.Trigger.draw) {
                     WhenRefresh {

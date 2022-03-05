@@ -43,6 +43,11 @@ inline fun ServerOnly(func: () -> Unit): Boolean {
     return false
 }
 
+fun IsServer(): Boolean {
+    val net = Vars.net
+    return net.server() || !net.active()
+}
+
 inline fun WhenCanGlobalAnimationPlay(func: () -> Unit): Boolean {
     if (CioMod.CanGlobalAnimationPlay) {
         func()

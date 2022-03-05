@@ -48,7 +48,8 @@ public class R {
         public static final String NeighborStateN = "neighbor-state";
         public static final String LastDamagedN = "last-damaged",
                 LastDamaged = Gen(LastDamagedN);
-
+        public static final String ProgressN = "progress",
+                Progress = Gen(ProgressN);
 
     }
 
@@ -75,13 +76,15 @@ public class R {
         public static final Color Cloud = Color.white;
         public static final Color IcLight = Color.valueOf("#047b04");
         public static final Color IcDark = Color.valueOf("#024202");
-        public static final Color shadowColor = new Color(0, 0, 0, 0.71f);
-        public static final Color blendShadowColor = Color.white.cpy().lerp(Color.black, shadowColor.a);
+        public static final Color shadow = new Color(0, 0, 0, 0.71f);
+        public static final Color blendShadow = Color.white.cpy().lerp(Color.black, shadow.a);
         public static final Color
                 PrismRedFG = Color.valueOf("#EF5350"), PrismRedBK = Color.valueOf("#E53935"),
                 PrismGreenFG = Color.valueOf("#76FF03"), PrismGreenBK = Color.valueOf("#00C853"),
                 PrismBlueFG = Color.valueOf("#039BE5"), PrismBlueBK = Color.valueOf("#1565C0");
-
+        public static final Color
+                prismClockwise = Pal.power,
+                prismAntiClockwise = Pal.lancerLaser;
     }
 
     public static final class S {
