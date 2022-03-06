@@ -1,5 +1,6 @@
 package net.liplum.blocks.icmachine
 
+import arc.graphics.g2d.Draw
 import arc.math.Mathf
 import arc.util.Time
 import net.liplum.ClientOnly
@@ -8,9 +9,12 @@ import net.liplum.animations.anims.AnimationObj
 import net.liplum.animations.anis.AniConfig
 import net.liplum.animations.anis.AniState
 import net.liplum.blocks.AniedCrafter
+import net.liplum.utils.FUNC
 import net.liplum.utils.autoAnim
 
 private typealias AniStateM = AniState<ICMachine, ICMachine.ICMachineBuild>
+
+private const val workingAnimAlphaA = 0.1f / (0.03f * 0.03f)
 
 open class ICMachine(name: String) : AniedCrafter<ICMachine, ICMachine.ICMachineBuild>(name) {
     lateinit var idleState: AniStateM
@@ -18,6 +22,7 @@ open class ICMachine(name: String) : AniedCrafter<ICMachine, ICMachine.ICMachine
     lateinit var WorkingAnim: Animation
     @JvmField var WorkingAnimFrameNumber = 4
     @JvmField var WorkingAnimDuration = 120f
+    var workingAnimAlpha: FUNC = { workingAnimAlphaA * it * it }
 
     init {
         hasPower = true
@@ -26,6 +31,7 @@ open class ICMachine(name: String) : AniedCrafter<ICMachine, ICMachine.ICMachine
     override fun genAniState() {
         idleState = addAniState("Idle")
         WorkingState = addAniState("Working") { _, build ->
+            Draw.alpha(workingAnimAlpha(build.progress))
             build.workingAnimObj.draw(build.x, build.y)
         }
     }

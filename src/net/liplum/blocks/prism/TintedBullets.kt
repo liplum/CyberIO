@@ -1,14 +1,40 @@
 package net.liplum.blocks.prism
 
 import arc.graphics.Color
+import arc.graphics.g2d.Draw
+import arc.graphics.g2d.Fill
+import arc.math.Angles
+import mindustry.entities.Effect
 import mindustry.entities.bullet.*
 import mindustry.gen.Bullet
 import net.liplum.R
-import net.liplum.blocks.prism.TintedBullets.Companion.tintRed
 import net.liplum.utils.copyFrom
 
 class TintedBullets {
     companion object {
+        @JvmStatic
+        fun shootSmallRGBGen(lifetime: Float, clipSize: Float, fg: Color, bk: Color): Effect =
+            Effect(lifetime, clipSize) {
+                Draw.color(fg, bk, Color.gray, it.fin())
+
+                Angles.randLenVectors(
+                    it.id.toLong(), 8, it.finpow() * 60f, it.rotation, 10f
+                ) { x: Float, y: Float ->
+                    Fill.circle(it.x + x, it.y + y, 0.65f + it.fout() * 1.5f)
+                }
+            }
+        @JvmStatic
+        fun shootRGBGen(lifetime: Float, clipSize: Float, fg: Color, bk: Color): Effect =
+            Effect(lifetime, clipSize) {
+                Draw.color(fg, bk, Color.gray, it.fin())
+
+                Angles.randLenVectors(
+                    it.id.toLong(), 10, it.finpow() * 70f, it.rotation, 10f
+                ) { x: Float, y: Float ->
+                    Fill.circle(it.x + x, it.y + y, 0.65f + it.fout() * 1.6f)
+                }
+            }
+        @JvmStatic
         fun tintBulletRGB(red: Bullet, green: Bullet, blue: Bullet) {
             val redType = red.type
             val greenType = green.type
@@ -39,6 +65,11 @@ class TintedBullets {
                 green.type(greenType.tintGreen)
                 return
             } else if (redType is LiquidBulletType && greenType is LiquidBulletType && blueType is LiquidBulletType) {
+                red.type(redType.tintRed)
+                blue.type(blueType.tintBlue)
+                green.type(greenType.tintGreen)
+                return
+            } else if (redType is BulletType && greenType is BulletType && blueType is BulletType) {
                 red.type(redType.tintRed)
                 blue.type(blueType.tintBlue)
                 green.type(greenType.tintGreen)
@@ -283,34 +314,88 @@ class TintedBullets {
         @JvmStatic
         val LiquidBulletType.tintRed: LiquidBulletType
             get() = RedLiquidBullets.getOrPut(this) {
-                val b = TintLiquidBulletT(this.liquid)
-                b.copyFrom(this)
-                b.apply {
-                    tintColor = R.C.PrismRedFG.cpy().lerp(
-                        this@tintRed.liquid.color, LiquidTintLerp
-                    )
+                try {
+                    val b = TintLiquidBulletT(this.liquid)
+                    b.copyFrom(this)
+                    b.apply {
+                        tintColor = R.C.PrismRedFG.cpy().lerp(
+                            this@tintRed.liquid.color, LiquidTintLerp
+                        )
+                    }
+                } catch (e: Exception) {
+                    this
                 }
             }
         @JvmStatic
         val LiquidBulletType.tintGreen: LiquidBulletType
             get() = GreenLiquidBullets.getOrPut(this) {
-                val b = TintLiquidBulletT(this.liquid)
-                b.copyFrom(this)
-                b.apply {
-                    tintColor = R.C.PrismGreenFG.cpy().lerp(
-                        this@tintGreen.liquid.color, LiquidTintLerp
-                    )
+                try {
+                    val b = TintLiquidBulletT(this.liquid)
+                    b.copyFrom(this)
+                    b.apply {
+                        tintColor = R.C.PrismGreenFG.cpy().lerp(
+                            this@tintGreen.liquid.color, LiquidTintLerp
+                        )
+                    }
+                } catch (e: Exception) {
+                    this
                 }
             }
         @JvmStatic
         val LiquidBulletType.tintBlue: LiquidBulletType
             get() = BlueLiquidBullets.getOrPut(this) {
-                val b = TintLiquidBulletT(this.liquid)
-                b.copyFrom(this)
-                b.apply {
-                    tintColor = R.C.PrismBlueFG.cpy().lerp(
-                        this@tintBlue.liquid.color, LiquidTintLerp
-                    )
+                try {
+                    val b = TintLiquidBulletT(this.liquid)
+                    b.copyFrom(this)
+                    b.apply {
+                        tintColor = R.C.PrismBlueFG.cpy().lerp(
+                            this@tintBlue.liquid.color, LiquidTintLerp
+                        )
+                    }
+                } catch (e: Exception) {
+                    this
+                }
+            }
+        @JvmStatic
+        val RedBullets: HashMap<BulletType, BulletType> = HashMap()
+        @JvmStatic
+        val GreenBullets: HashMap<BulletType, BulletType> = HashMap()
+        @JvmStatic
+        val BlueBullets: HashMap<BulletType, BulletType> = HashMap()
+        @JvmStatic
+        val RgbSmallEffects = arrayOf(
+            shootSmallRGBGen(3.35f, 17f, R.C.PrismRedFG, R.C.PrismRedBK),
+            shootSmallRGBGen(3.35f, 17f, R.C.PrismGreenFG, R.C.PrismGreenBK),
+            shootSmallRGBGen(3.35f, 17f, R.C.PrismBlueFG, R.C.PrismBlueBK),
+        )
+        @JvmStatic
+        val RgbEffects = arrayOf(
+            shootRGBGen(4f, 60f, R.C.PrismRedFG, R.C.PrismRedBK),
+            shootRGBGen(4f, 60f, R.C.PrismGreenFG, R.C.PrismGreenBK),
+            shootRGBGen(4f, 60f, R.C.PrismBlueFG, R.C.PrismBlueBK),
+        )
+        @JvmStatic
+        val BulletType.tintRed: BulletType
+            get() = RedBullets.getOrPut(this) {
+                (this.copy() as BulletType).apply {
+                    shootEffect = RgbEffects[0]
+                    hitEffect = RgbSmallEffects[0]
+                }
+            }
+        @JvmStatic
+        val BulletType.tintGreen: BulletType
+            get() = GreenBullets.getOrPut(this) {
+                (this.copy() as BulletType).apply {
+                    shootEffect = RgbEffects[1]
+                    hitEffect = RgbSmallEffects[1]
+                }
+            }
+        @JvmStatic
+        val BulletType.tintBlue: BulletType
+            get() = BlueBullets.getOrPut(this) {
+                (this.copy() as BulletType).apply {
+                    shootEffect = RgbEffects[2]
+                    hitEffect = RgbSmallEffects[2]
                 }
             }
     }
