@@ -12,6 +12,8 @@ public class AniStateM<TBlock extends Block, TBuild extends Building> {
     private AniState<TBlock, TBuild> curState;
     @Nullable
     private ISwitchAniStateListener<TBlock, TBuild> switchAniStateListener;
+    @Nullable
+    private Runnable onUpdate;
 
     public AniStateM(AniConfig<TBlock, TBuild> config, TBlock block, TBuild build) {
         this.config = config;
@@ -26,6 +28,15 @@ public class AniStateM<TBlock extends Block, TBuild extends Building> {
 
     public void setSwitchAniStateListener(ISwitchAniStateListener<TBlock, TBuild> switchAniStateListener) {
         this.switchAniStateListener = switchAniStateListener;
+    }
+
+    public Runnable getOnUpdate() {
+        return onUpdate;
+    }
+
+    public AniStateM<TBlock, TBuild> onUpdate(Runnable onUpdate) {
+        this.onUpdate = onUpdate;
+        return this;
     }
 
     public AniState<TBlock, TBuild> getCurState() {
@@ -45,6 +56,9 @@ public class AniStateM<TBlock extends Block, TBuild extends Building> {
     }
 
     public void update() {
+        if (onUpdate != null) {
+            onUpdate.run();
+        }
         for (AniState<TBlock, TBuild> to : config.getAllEntrances(curState)) {
             ITrigger<TBlock, TBuild> canEnter = config.getCanEnter(curState, to);
             if (canEnter != null && canEnter.canTrigger(this.block, this.build)) {

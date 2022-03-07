@@ -20,7 +20,7 @@ import java.util.HashMap;
  * @param <TBuild> its corresponding building type
  */
 @SuppressWarnings("unchecked")
-public abstract class AniedBlock<TBlock extends AniedBlock<?,?>, TBuild extends AniedBlock<?,?>.AniedBuild> extends Block implements IAniSMed<TBlock, TBuild> {
+public abstract class AniedBlock<TBlock extends AniedBlock<?, ?>, TBuild extends AniedBlock<?, ?>.AniedBuild> extends Block implements IAniSMed<TBlock, TBuild> {
     protected final HashMap<String, AniState<TBlock, TBuild>> allAniStates = new HashMap<>();
     protected AniConfig<TBlock, TBuild> aniConfig;
 
@@ -58,6 +58,12 @@ public abstract class AniedBlock<TBlock extends AniedBlock<?,?>, TBuild extends 
         return aniState;
     }
 
+    @Override
+    public AniConfig<TBlock, TBuild> createAniConfig() {
+        aniConfig = new AniConfig<>();
+        return aniConfig;
+    }
+
     @NotNull
     @Override
     public AniStateM<TBlock, TBuild> getAniStateM(TBuild build) {
@@ -79,7 +85,7 @@ public abstract class AniedBlock<TBlock extends AniedBlock<?,?>, TBuild extends 
     /**
      * You have to make the {@link Building} of your subclass extend this
      */
-    public abstract class AniedBuild extends Building implements IAniSMedBuild<TBlock,TBuild> {
+    public abstract class AniedBuild extends Building implements IAniSMedBuild<TBlock, TBuild> {
         protected AniStateM<TBlock, TBuild> aniStateM;
 
         @NotNull

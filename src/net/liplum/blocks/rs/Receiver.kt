@@ -119,51 +119,48 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
     }
 
     override fun genAniConfig() {
-        aniConfig = AniConfig<Receiver, ReceiverBuild>()
-        aniConfig.defaultState(UnconnectedAni)
-        // UnconnectedAni
-        aniConfig From UnconnectedAni
-        aniConfig To DownloadAni When { _, build ->
-            build.outputItem != null
-        } To NoPowerAni When { _, build ->
-            Mathf.zero(
-                build.power.status
-            )
+        aniConfig = AniConfig<Receiver, ReceiverBuild>().apply {
+            defaultState(UnconnectedAni)
+            // UnconnectedAni
+            From(UnconnectedAni) To DownloadAni When { _, build ->
+                build.outputItem != null
+            } To NoPowerAni When { _, build ->
+                Mathf.zero(
+                    build.power.status
+                )
+            }
+            // BlockedAni
+            From(BlockedAni) To UnconnectedAni When { _, build ->
+                build.outputItem == null
+            } To DownloadAni When { _, build ->
+                build.isOutputting || build.lastFullDataDelta < 60
+            } To NoPowerAni When { _, build ->
+                Mathf.zero(
+                    build.power.status
+                )
+            }
+            // DownloadAni
+            From(DownloadAni) To UnconnectedAni When { _, build ->
+                build.outputItem == null
+            } To BlockedAni When { _, build ->
+                !build.isOutputting && build.lastFullDataDelta > 60
+            } To NoPowerAni When { _, build ->
+                Mathf.zero(
+                    build.power.status
+                )
+            }
+            // NoPower
+            From(NoPowerAni) To UnconnectedAni When { _, build ->
+                !Mathf.zero(
+                    build.power.status
+                ) && build.outputItem == null
+            } To DownloadAni When { _, build ->
+                !Mathf.zero(
+                    build.power.status
+                ) && build.outputItem != null
+            }
+            build()
         }
-        // BlockedAni
-        aniConfig From BlockedAni
-        aniConfig To UnconnectedAni When { _, build ->
-            build.outputItem == null
-        } To DownloadAni When { _, build ->
-            build.isOutputting || build.lastFullDataDelta < 60
-        } To NoPowerAni When { _, build ->
-            Mathf.zero(
-                build.power.status
-            )
-        }
-        // DownloadAni
-        aniConfig From DownloadAni
-        aniConfig To UnconnectedAni When { _, build ->
-            build.outputItem == null
-        } To BlockedAni When { _, build ->
-            !build.isOutputting && build.lastFullDataDelta > 60
-        } To NoPowerAni When { _, build ->
-            Mathf.zero(
-                build.power.status
-            )
-        }
-        // NoPower
-        aniConfig From NoPowerAni
-        aniConfig To UnconnectedAni When { _, build ->
-            !Mathf.zero(
-                build.power.status
-            ) && build.outputItem == null
-        } To DownloadAni When { _, build ->
-            !Mathf.zero(
-                build.power.status
-            ) && build.outputItem != null
-        }
-        aniConfig.build()
     }
 
     override fun load() {

@@ -2,6 +2,7 @@ package net.liplum;
 
 import arc.graphics.Color;
 import mindustry.graphics.Pal;
+import org.jetbrains.annotations.NotNull;
 
 public class R {
     public static final class I {
@@ -89,9 +90,11 @@ public class R {
                 PrismRedFG = Color.valueOf("#EF5350"), PrismRedBK = Color.valueOf("#E53935"),
                 PrismGreenFG = Color.valueOf("#76FF03"), PrismGreenBK = Color.valueOf("#00C853"),
                 PrismBlueFG = Color.valueOf("#039BE5"), PrismBlueBK = Color.valueOf("#1565C0");
+        @NotNull
         public static final Color[] PrismRgbFG = new Color[]{
                 PrismRedFG, PrismGreenFG, PrismBlueFG
         };
+        @NotNull
         public static final Color[] PrismRgbBK = new Color[]{
                 PrismRedBK, PrismGreenBK, PrismBlueBK
         };

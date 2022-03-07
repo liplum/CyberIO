@@ -25,6 +25,7 @@ import net.liplum.blocks.holo.HoloFloor
 import net.liplum.blocks.holo.HoloWall
 import net.liplum.blocks.holo.LandProjector
 import net.liplum.blocks.icmachine.ICMachine
+import net.liplum.blocks.icmachine.ICMachineS
 import net.liplum.blocks.prism.Prism
 import net.liplum.blocks.prism.PrismObelisk
 import net.liplum.blocks.rs.Receiver
@@ -39,6 +40,7 @@ import net.liplum.utils.CioDebugOnly
 class CioBlocks : ContentTable {
     companion object {
         @JvmStatic lateinit var icMachine: GenericCrafter
+        @JvmStatic lateinit var icMachineSmall: GenericCrafter
         @JvmStatic lateinit var receiver: Receiver
         @JvmStatic lateinit var sender: Sender
         @JvmStatic lateinit var virus: Virus
@@ -71,7 +73,7 @@ class CioBlocks : ContentTable {
             )
             health = 2000
             outputItem = ItemStack(CioItems.ic, 1)
-            craftTime = 800f
+            craftTime = 600f
             size = 3
             buildCostMultiplier = 3f
             craftEffect = Fx.smelt
@@ -82,6 +84,34 @@ class CioBlocks : ContentTable {
                 ItemStack(Items.metaglass, 60) //30%
             )
             consumes.power(10f)
+        }
+
+        icMachineSmall = ICMachineS("ic-machine-s").apply {
+            requirements(
+                Category.crafting, arrayOf(
+                    ItemStack(Items.copper, 100),
+                    ItemStack(Items.silicon, 10),
+                    ItemStack(Items.graphite, 20),
+                )
+            )
+            health = 100
+            outputItem = ItemStack(CioItems.ic, 1)
+            craftTime = 1200f
+            size = 2
+            craftEffect = Fx.smelt
+            itemCapacity = 40
+            consumes.items(
+                ItemStack(Items.copper, 30),
+                ItemStack(Items.sand, 40),
+                ItemStack(Items.lead, 10),
+            )
+            consumes.power(1f)
+
+            processIcons = arrayOf(
+                Items.metaglass,
+                Items.silicon,
+                CioItems.ic
+            )
         }
 
         receiver = Receiver("receiver").apply {

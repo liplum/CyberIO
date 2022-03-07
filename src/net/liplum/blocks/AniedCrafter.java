@@ -2,6 +2,7 @@ package net.liplum.blocks;
 
 import mindustry.world.blocks.production.GenericCrafter;
 import net.liplum.CioMod;
+import net.liplum.ClientOnly;
 import net.liplum.GameH;
 import net.liplum.animations.anis.*;
 import net.liplum.utils.DebugH;
@@ -11,7 +12,9 @@ import java.util.Collection;
 import java.util.HashMap;
 
 @SuppressWarnings("unchecked")
-public abstract class AniedCrafter<TBlock extends AniedCrafter<?, ?>, TBuild extends AniedCrafter<?, ?>.AniedCrafterBuild> extends GenericCrafter implements IAniSMed<TBlock, TBuild> {
+public abstract class AniedCrafter<TBlock extends AniedCrafter<?, ?>, TBuild extends AniedCrafter<?, ?>.AniedCrafterBuild>
+        extends GenericCrafter
+        implements IAniSMed<TBlock, TBuild> {
     public AniConfig<TBlock, TBuild> aniConfig;
     public HashMap<String, AniState<TBlock, TBuild>> allAniStates = new HashMap<>();
 
@@ -34,6 +37,12 @@ public abstract class AniedCrafter<TBlock extends AniedCrafter<?, ?>, TBuild ext
 
     @Override
     public AniConfig<TBlock, TBuild> getAniConfig() {
+        return aniConfig;
+    }
+
+    @Override
+    public AniConfig<TBlock, TBuild> createAniConfig() {
+        aniConfig = new AniConfig<>();
         return aniConfig;
     }
 
@@ -77,7 +86,13 @@ public abstract class AniedCrafter<TBlock extends AniedCrafter<?, ?>, TBuild ext
             if (CioMod.IsClient) {
                 AniedCrafter<TBlock, TBuild> out = AniedCrafter.this;
                 this.aniStateM = out.getAniConfig().gen((TBlock) out, (TBuild) this);
+                this.aniStateM.onUpdate(this::onAniStateMUpdate);
             }
+        }
+
+        @ClientOnly
+        public void onAniStateMUpdate() {
+
         }
 
         @Override

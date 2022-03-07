@@ -25,6 +25,7 @@ public interface IAniSMed<TBlock extends Block, TBuild extends Building> {
 
     /**
      * Gets building's Animation State Machine
+     *
      * @param build building
      * @return Animation State Machine
      */
@@ -71,6 +72,13 @@ public interface IAniSMed<TBlock extends Block, TBuild extends Building> {
      * @return {@code aniState} self
      */
     AniState<TBlock, TBuild> addAniState(AniState<TBlock, TBuild> aniState);
+
+    /**
+     * Creates a new Animation Config, and it will be returned.
+     *
+     * @return the Animation Config of this
+     */
+    AniConfig<TBlock, TBuild> createAniConfig();
 
     /**
      * @param name name

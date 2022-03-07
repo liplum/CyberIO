@@ -27,7 +27,8 @@ import net.liplum.ClientOnly
 import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.animations.anims.Animation
-import net.liplum.blocks.prism.TintedBullets.Companion.tintBulletRGB
+import net.liplum.blocks.prism.TintedBullets.Companion.isTintIgnored
+import net.liplum.blocks.prism.TintedBullets.Companion.tintedRGB
 import net.liplum.draw
 import net.liplum.math.PolarPos
 import net.liplum.persistance.readSeq
@@ -261,14 +262,19 @@ open class Prism(name: String) : Block(name) {
                         if (it.data != PrismData.Duplicate) {
                             it.data = PrismData.Duplicate
                             val angle = it.rotation()
-                            val copyGreen = it.copy()
+                            val copyRed = it.copy()
                             val copyBlue = it.copy()
                             val start = angle - deflectionAngle
-                            it.rotation(start)
-                            copyGreen.rotation(start + perDeflectionAngle)
+                            copyRed.rotation(start)
+                            it.rotation(start + perDeflectionAngle)
                             copyBlue.rotation(start + perDeflectionAngle * 2)
                             if (tintBullet) {
-                                tintBulletRGB(it, copyGreen, copyBlue)
+                                if (!it.type.isTintIgnored) {
+                                    val rgbs = tintedRGB(it.type)
+                                    copyRed.type = rgbs[0]
+                                    it.type = rgbs[1]
+                                    copyBlue.type = rgbs[2]
+                                }
                             }
                         }
                     }

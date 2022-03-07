@@ -6,8 +6,8 @@ import arc.util.Time
 import net.liplum.ClientOnly
 import net.liplum.animations.anims.Animation
 import net.liplum.animations.anims.AnimationObj
-import net.liplum.animations.anis.AniConfig
 import net.liplum.animations.anis.AniState
+import net.liplum.animations.anis.config
 import net.liplum.blocks.AniedCrafter
 import net.liplum.utils.FUNC
 import net.liplum.utils.autoAnim
@@ -17,11 +17,11 @@ private typealias AniStateM = AniState<ICMachine, ICMachine.ICMachineBuild>
 private const val workingAnimAlphaA = 0.1f / (0.03f * 0.03f)
 
 open class ICMachine(name: String) : AniedCrafter<ICMachine, ICMachine.ICMachineBuild>(name) {
-    lateinit var idleState: AniStateM
-    lateinit var WorkingState: AniStateM
-    lateinit var WorkingAnim: Animation
-    @JvmField var WorkingAnimFrameNumber = 4
-    @JvmField var WorkingAnimDuration = 120f
+    @ClientOnly lateinit var IdleState: AniStateM
+    @ClientOnly lateinit var WorkingState: AniStateM
+    @ClientOnly lateinit var WorkingAnim: Animation
+    @ClientOnly @JvmField var WorkingAnimFrameNumber = 4
+    @ClientOnly @JvmField var WorkingAnimDuration = 120f
     var workingAnimAlpha: FUNC = { workingAnimAlphaA * it * it }
 
     init {
@@ -29,7 +29,7 @@ open class ICMachine(name: String) : AniedCrafter<ICMachine, ICMachine.ICMachine
     }
 
     override fun genAniState() {
-        idleState = addAniState("Idle")
+        IdleState = addAniState("Idle")
         WorkingState = addAniState("Working") { _, build ->
             Draw.alpha(workingAnimAlpha(build.progress))
             build.workingAnimObj.draw(build.x, build.y)
@@ -37,12 +37,12 @@ open class ICMachine(name: String) : AniedCrafter<ICMachine, ICMachine.ICMachine
     }
 
     override fun genAniConfig() {
-        aniConfig = AniConfig<ICMachine, ICMachineBuild>().apply {
-            defaultState(idleState)
-            From(idleState) To WorkingState When { _, build ->
+        config {
+            defaultState(IdleState)
+            From(IdleState) To WorkingState When { _, build ->
                 !Mathf.zero(build.progress) && !Mathf.zero(build.power.status)
             }
-            From(WorkingState) To idleState When { _, build ->
+            From(WorkingState) To IdleState When { _, build ->
                 Mathf.zero(build.progress) || Mathf.zero(build.power.status)
             }
             build()

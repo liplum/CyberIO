@@ -8,3 +8,10 @@ val Double.percentI: Int
     get() = (this * 100).toInt()
 val Float.percentI: Int
     get() = (this * 100).toInt()
+
+fun <T> ArrayList(len: Int, gen: (Int) -> T) =
+    ArrayList<T>(len).apply {
+        for (i in 0 until len) {
+            add(gen(i))
+        }
+    }

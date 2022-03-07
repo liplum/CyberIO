@@ -6,12 +6,181 @@ import arc.graphics.g2d.Fill
 import arc.math.Angles
 import mindustry.entities.Effect
 import mindustry.entities.bullet.*
-import mindustry.gen.Bullet
 import net.liplum.R
+import net.liplum.utils.ArrayList
 import net.liplum.utils.copyFrom
 
 class TintedBullets {
     companion object {
+        @JvmStatic
+        val BulletType.isTintIgnored: Boolean
+            get() = this in IgnoredBullets || this::class.java in IgnoredClass
+        @JvmStatic
+        fun tintedRGB(b: BulletType): List<BulletType> {
+            val t = getRegistered(b)
+            if (t != null) {
+                return t
+            }
+            return when (b) {
+                is BasicBulletType -> b.tinted
+                is ShrapnelBulletType -> b.tinted
+                is LaserBulletType -> b.tinted
+                is ContinuousLaserBulletType -> b.tinted
+                is FireBulletType -> b.tinted
+                is LiquidBulletType -> b.tinted
+                else -> b.tintRedGeneral
+            }
+        }
+        @JvmStatic
+        val BasicBullets: HashMap<BasicBulletType, ArrayList<BasicBulletType>> = HashMap()
+        @JvmStatic
+        val BasicTintLerp = 0.4f
+        @JvmStatic
+        val BasicBulletType.tinted: ArrayList<BasicBulletType>
+            get() = BasicBullets.getOrPut(this) {
+                ArrayList(3) {
+                    (this.copy() as BasicBulletType).apply {
+                        frontColor = R.C.PrismRgbFG[it].lerp(
+                            this.frontColor, BasicTintLerp
+                        )
+                        backColor = R.C.PrismRgbBK[it].lerp(
+                            this.backColor, BasicTintLerp
+                        )
+                    }
+                }
+            }
+        @JvmStatic
+        val ShrapnelBullets: HashMap<ShrapnelBulletType, ArrayList<ShrapnelBulletType>> = HashMap()
+        @JvmStatic
+        val ShrapnelBulletType.tinted: ArrayList<ShrapnelBulletType>
+            get() = ShrapnelBullets.getOrPut(this) {
+                ArrayList(3) {
+                    (this.copy() as ShrapnelBulletType).apply {
+                        fromColor = R.C.PrismRgbFG[it]
+                        toColor = R.C.PrismRgbBK[it]
+                    }
+                }
+            }
+        @JvmStatic
+        val LightningBullets: HashMap<LightningBulletType, ArrayList<LightningBulletType>> = HashMap()
+        @JvmStatic
+        val LightningBulletType.tinted: ArrayList<LightningBulletType>
+            get() = LightningBullets.getOrPut(this) {
+                ArrayList(3) {
+                    (this.copy() as LightningBulletType).apply {
+                        lightningColor = R.C.PrismRgbBK[it]
+                    }
+                }
+            }
+        @JvmStatic
+        val RedSapBullets: HashMap<SapBulletType, ArrayList<SapBulletType>> = HashMap()
+        @JvmStatic
+        val SapBulletType.tinted: ArrayList<SapBulletType>
+            get() = RedSapBullets.getOrPut(this) {
+                ArrayList(3) {
+                    (this.copy() as SapBulletType).apply {
+                        color = R.C.PrismRgbBK[it]
+                    }
+                }
+            }
+        @JvmStatic
+        val FireBullets: HashMap<FireBulletType, ArrayList<FireBulletType>> = HashMap()
+        @JvmStatic
+        val FireBulletType.tinted: ArrayList<FireBulletType>
+            get() = FireBullets.getOrPut(this) {
+                ArrayList(3) {
+                    (this.copy() as FireBulletType).apply {
+                        colorFrom = R.C.PrismRgbFG[it]
+                        colorMid = R.C.PrismRgbFG[it]
+                        colorTo = R.C.PrismRgbBK[it]
+                    }
+                }
+            }
+        @JvmStatic
+        val LaserBullets: HashMap<LaserBulletType, ArrayList<LaserBulletType>> = HashMap()
+        @JvmStatic
+        val LaserColorRgb = arrayOf(
+            arrayOf(R.C.PrismRedFG, R.C.PrismRedBK, Color.white),
+            arrayOf(R.C.PrismGreenFG, R.C.PrismGreenBK, Color.white),
+            arrayOf(R.C.PrismBlueFG, R.C.PrismBlueBK, Color.white)
+        )
+        @JvmStatic
+        val LaserBulletType.tinted: ArrayList<LaserBulletType>
+            get() = LaserBullets.getOrPut(this) {
+                ArrayList(3) {
+                    (this.copy() as LaserBulletType).apply {
+                        colors = LaserColorRgb[it]
+                    }
+                }
+            }
+        @JvmStatic
+        val ContinuousLaserBullets: HashMap<ContinuousLaserBulletType, ArrayList<ContinuousLaserBulletType>> = HashMap()
+        @JvmStatic
+        val ContinuousLaserColorRgb = arrayOf(
+            arrayOf(R.C.PrismRedFG, R.C.PrismRedFG, R.C.PrismRedBK, Color.white),
+            arrayOf(R.C.PrismGreenFG, R.C.PrismGreenFG, R.C.PrismGreenBK, Color.white),
+            arrayOf(R.C.PrismBlueFG, R.C.PrismBlueFG, R.C.PrismBlueBK, Color.white)
+        )
+        @JvmStatic
+        val ContinuousLaserBulletType.tinted: ArrayList<ContinuousLaserBulletType>
+            get() = ContinuousLaserBullets.getOrPut(this) {
+                ArrayList(3) {
+                    (this.copy() as ContinuousLaserBulletType).apply {
+                        colors = ContinuousLaserColorRgb[it]
+                    }
+                }
+            }
+        @JvmStatic
+        val LiquidBullets: HashMap<LiquidBulletType, ArrayList<LiquidBulletType>> = HashMap()
+        @JvmStatic
+        val LiquidTintLerp = 0.4f
+        @JvmStatic
+        val LiquidBulletType.tinted: ArrayList<LiquidBulletType>
+            get() = LiquidBullets.getOrPut(this) {
+                ArrayList(3) {
+                    try {
+                        val b = TintLiquidBulletT(this.liquid)
+                        b.copyFrom(this)
+                        b.apply {
+                            tintColor = R.C.PrismRgbBK[it].cpy().lerp(
+                                this@tinted.liquid.color, LiquidTintLerp
+                            )
+                        }
+                    } catch (e: Exception) {
+                        this
+                    }
+                }
+            }
+        @JvmStatic
+        val Registry: HashMap<BulletType, ArrayList<BulletType>> = HashMap()
+        @JvmStatic
+        fun BulletType.registerRGB(register: BulletType.() -> Triple<BulletType, BulletType, BulletType>) {
+            val (r, g, b) = register()
+            Registry[this] = arrayListOf(r, g, b)
+        }
+        @JvmStatic
+        fun BulletType.registerRGBArrayList(register: BulletType.() -> ArrayList<BulletType>) {
+            Registry[this] = register()
+        }
+        /**
+         * @param registerGen a generator which accepts 0(red), 1(green) and 2(blue) and returns the corresponding [BulletType] object.
+         */
+        @JvmStatic
+        fun BulletType.registerRGBGen(registerGen: BulletType.() -> ((Int) -> BulletType)) {
+            val gen = registerGen()
+            Registry[this] = ArrayList(3, gen)
+        }
+        @JvmStatic
+        fun getRegistered(b: BulletType): ArrayList<BulletType>? =
+            Registry[b]
+        @JvmStatic
+        val RgbSmallEffects = ArrayList(3) {
+            shootSmallRGBGen(3.35f, 17f, R.C.PrismRgbFG[it], R.C.PrismRgbBK[it])
+        }
+        @JvmStatic
+        val RgbEffects = ArrayList(3) {
+            shootSmallRGBGen(4f, 60f, R.C.PrismRgbFG[it], R.C.PrismRgbBK[it])
+        }
         @JvmStatic
         fun shootSmallRGBGen(lifetime: Float, clipSize: Float, fg: Color, bk: Color): Effect =
             Effect(lifetime, clipSize) {
@@ -35,368 +204,27 @@ class TintedBullets {
                 }
             }
         @JvmStatic
-        fun tintBulletRGB(red: Bullet, green: Bullet, blue: Bullet) {
-            val redType = red.type
-            val greenType = green.type
-            val blueType = blue.type
-            if (redType is BasicBulletType && greenType is BasicBulletType && blueType is BasicBulletType) {
-                red.type(redType.tintRed)
-                blue.type(blueType.tintBlue)
-                green.type(greenType.tintGreen)
-                return
-            } else if (redType is ShrapnelBulletType && greenType is ShrapnelBulletType && blueType is ShrapnelBulletType) {
-                red.type(redType.tintRed)
-                blue.type(blueType.tintBlue)
-                green.type(greenType.tintGreen)
-                return
-            } else if (redType is LaserBulletType && greenType is LaserBulletType && blueType is LaserBulletType) {
-                red.type(redType.tintRed)
-                blue.type(blueType.tintBlue)
-                green.type(greenType.tintGreen)
-                return
-            } else if (redType is ContinuousLaserBulletType && greenType is ContinuousLaserBulletType && blueType is ContinuousLaserBulletType) {
-                red.type(redType.tintRed)
-                blue.type(blueType.tintBlue)
-                green.type(greenType.tintGreen)
-                return
-            } else if (redType is FireBulletType && greenType is FireBulletType && blueType is FireBulletType) {
-                red.type(redType.tintRed)
-                blue.type(blueType.tintBlue)
-                green.type(greenType.tintGreen)
-                return
-            } else if (redType is LiquidBulletType && greenType is LiquidBulletType && blueType is LiquidBulletType) {
-                red.type(redType.tintRed)
-                blue.type(blueType.tintBlue)
-                green.type(greenType.tintGreen)
-                return
-            } else if (redType is BulletType && greenType is BulletType && blueType is BulletType) {
-                red.type(redType.tintRed)
-                blue.type(blueType.tintBlue)
-                green.type(greenType.tintGreen)
-                return
-            }
-        }
+        val GeneralBullets: HashMap<BulletType, ArrayList<BulletType>> = HashMap()
         @JvmStatic
-        val RedBasicBullets: HashMap<BasicBulletType, BasicBulletType> = HashMap()
-        @JvmStatic
-        val GreenBasicBullets: HashMap<BasicBulletType, BasicBulletType> = HashMap()
-        @JvmStatic
-        val BlueBasicBullets: HashMap<BasicBulletType, BasicBulletType> = HashMap()
-        @JvmStatic
-        val BasicTintLerp = 0.4f
-        @JvmStatic
-        val BasicBulletType.tintRed: BasicBulletType
-            get() = RedBasicBullets.getOrPut(this) {
-                (this.copy() as BasicBulletType).apply {
-                    frontColor = R.C.PrismRedFG.lerp(
-                        this@tintRed.frontColor, BasicTintLerp
-                    )
-                    backColor = R.C.PrismRedBK.lerp(
-                        this@tintRed.backColor, BasicTintLerp
-                    )
-                }
-            }
-        @JvmStatic
-        val BasicBulletType.tintGreen: BasicBulletType
-            get() = GreenBasicBullets.getOrPut(this) {
-                (this.copy() as BasicBulletType).apply {
-                    frontColor = R.C.PrismGreenFG.lerp(
-                        this@tintGreen.frontColor, BasicTintLerp
-                    )
-                    backColor = R.C.PrismGreenBK.lerp(
-                        this@tintGreen.backColor, BasicTintLerp
-                    )
-                }
-            }
-        @JvmStatic
-        val BasicBulletType.tintBlue: BasicBulletType
-            get() = BlueBasicBullets.getOrPut(this) {
-                (this.copy() as BasicBulletType).apply {
-                    frontColor = R.C.PrismBlueFG.lerp(
-                        this@tintBlue.frontColor, BasicTintLerp
-                    )
-                    backColor = R.C.PrismBlueBK.lerp(
-                        this@tintBlue.backColor, BasicTintLerp
-                    )
-                }
-            }
-        @JvmStatic
-        val RedShrapnelBullets: HashMap<ShrapnelBulletType, ShrapnelBulletType> = HashMap()
-        @JvmStatic
-        val GreenShrapnelBullets: HashMap<ShrapnelBulletType, ShrapnelBulletType> = HashMap()
-        @JvmStatic
-        val BlueShrapnelBullets: HashMap<ShrapnelBulletType, ShrapnelBulletType> = HashMap()
-        @JvmStatic
-        val ShrapnelBulletType.tintRed: ShrapnelBulletType
-            get() = RedShrapnelBullets.getOrPut(this) {
-                (this.copy() as ShrapnelBulletType).apply {
-                    fromColor = R.C.PrismRedFG
-                    toColor = R.C.PrismRedBK
-                }
-            }
-        @JvmStatic
-        val ShrapnelBulletType.tintGreen: ShrapnelBulletType
-            get() = GreenShrapnelBullets.getOrPut(this) {
-                (this.copy() as ShrapnelBulletType).apply {
-                    fromColor = R.C.PrismGreenFG
-                    toColor = R.C.PrismGreenBK
-                }
-            }
-        @JvmStatic
-        val ShrapnelBulletType.tintBlue: ShrapnelBulletType
-            get() = BlueShrapnelBullets.getOrPut(this) {
-                (this.copy() as ShrapnelBulletType).apply {
-                    fromColor = R.C.PrismBlueFG
-                    toColor = R.C.PrismBlueBK
-                }
-            }
-        @JvmStatic
-        val RedLightningBullets: HashMap<LightningBulletType, LightningBulletType> = HashMap()
-        @JvmStatic
-        val GreenLightningBullets: HashMap<LightningBulletType, LightningBulletType> = HashMap()
-        @JvmStatic
-        val BlueLightningBullets: HashMap<LightningBulletType, LightningBulletType> = HashMap()
-        @JvmStatic
-        val LightningBulletType.tintRed: LightningBulletType
-            get() = RedLightningBullets.getOrPut(this) {
-                (this.copy() as LightningBulletType).apply {
-                    lightningColor = R.C.PrismRedFG
-                }
-            }
-        @JvmStatic
-        val LightningBulletType.tintGreen: LightningBulletType
-            get() = GreenLightningBullets.getOrPut(this) {
-                (this.copy() as LightningBulletType).apply {
-                    lightningColor = R.C.PrismGreenFG
-                }
-            }
-        @JvmStatic
-        val LightningBulletType.tintBlue: LightningBulletType
-            get() = BlueLightningBullets.getOrPut(this) {
-                (this.copy() as LightningBulletType).apply {
-                    lightningColor = R.C.PrismBlueFG
-                }
-            }
-        @JvmStatic
-        val RedSapBullets: HashMap<SapBulletType, SapBulletType> = HashMap()
-        @JvmStatic
-        val GreenSapBullets: HashMap<SapBulletType, SapBulletType> = HashMap()
-        @JvmStatic
-        val BlueSapBullets: HashMap<SapBulletType, SapBulletType> = HashMap()
-        @JvmStatic
-        val SapBulletType.tintRed: SapBulletType
-            get() = RedSapBullets.getOrPut(this) {
-                (this.copy() as SapBulletType).apply {
-                    color = R.C.PrismRedFG
-                }
-            }
-        @JvmStatic
-        val SapBulletType.tintGreen: SapBulletType
-            get() = GreenSapBullets.getOrPut(this) {
-                (this.copy() as SapBulletType).apply {
-                    color = R.C.PrismGreenFG
-                }
-            }
-        @JvmStatic
-        val SapBulletType.tintBlue: SapBulletType
-            get() = BlueSapBullets.getOrPut(this) {
-                (this.copy() as SapBulletType).apply {
-                    color = R.C.PrismBlueFG
-                }
-            }
-        @JvmStatic
-        val RedFireBullets: HashMap<FireBulletType, FireBulletType> = HashMap()
-        @JvmStatic
-        val GreenFireBullets: HashMap<FireBulletType, FireBulletType> = HashMap()
-        @JvmStatic
-        val BlueFireBullets: HashMap<FireBulletType, FireBulletType> = HashMap()
-        @JvmStatic
-        val FireBulletType.tintRed: FireBulletType
-            get() = RedFireBullets.getOrPut(this) {
-                (this.copy() as FireBulletType).apply {
-                    colorFrom = R.C.PrismRedFG
-                    colorMid = R.C.PrismRedFG
-                    colorTo = R.C.PrismRedBK
-                }
-            }
-        @JvmStatic
-        val FireBulletType.tintGreen: FireBulletType
-            get() = GreenFireBullets.getOrPut(this) {
-                (this.copy() as FireBulletType).apply {
-                    colorFrom = R.C.PrismGreenFG
-                    colorMid = R.C.PrismGreenFG
-                    colorTo = R.C.PrismGreenBK
-                }
-            }
-        @JvmStatic
-        val FireBulletType.tintBlue: FireBulletType
-            get() = BlueFireBullets.getOrPut(this) {
-                (this.copy() as FireBulletType).apply {
-                    colorFrom = R.C.PrismBlueFG
-                    colorMid = R.C.PrismBlueFG
-                    colorTo = R.C.PrismBlueBK
-                }
-            }
-        @JvmStatic
-        val RedLaserBullets: HashMap<LaserBulletType, LaserBulletType> = HashMap()
-        @JvmStatic
-        val GreenLaserBullets: HashMap<LaserBulletType, LaserBulletType> = HashMap()
-        @JvmStatic
-        val BlueLaserBullets: HashMap<LaserBulletType, LaserBulletType> = HashMap()
-        @JvmStatic
-        val RedLaserColors = arrayOf(R.C.PrismRedFG, R.C.PrismRedBK, Color.white)
-        @JvmStatic
-        val GreenLaserColors = arrayOf(R.C.PrismGreenFG, R.C.PrismGreenBK, Color.white)
-        @JvmStatic
-        val BlueLaserColors = arrayOf(R.C.PrismBlueFG, R.C.PrismBlueBK, Color.white)
-        @JvmStatic
-        val LaserBulletType.tintRed: LaserBulletType
-            get() = RedLaserBullets.getOrPut(this) {
-                (this.copy() as LaserBulletType).apply {
-                    colors = RedLaserColors
-                }
-            }
-        @JvmStatic
-        val LaserBulletType.tintGreen: LaserBulletType
-            get() = GreenLaserBullets.getOrPut(this) {
-                (this.copy() as LaserBulletType).apply {
-                    colors = GreenLaserColors
-                }
-            }
-        @JvmStatic
-        val LaserBulletType.tintBlue: LaserBulletType
-            get() = BlueLaserBullets.getOrPut(this) {
-                (this.copy() as LaserBulletType).apply {
-                    colors = BlueLaserColors
-                }
-            }
-        @JvmStatic
-        val RedContinuousLaserBullets: HashMap<ContinuousLaserBulletType, ContinuousLaserBulletType> = HashMap()
-        @JvmStatic
-        val GreenContinuousLaserBullets: HashMap<ContinuousLaserBulletType, ContinuousLaserBulletType> = HashMap()
-        @JvmStatic
-        val BlueContinuousLaserBullets: HashMap<ContinuousLaserBulletType, ContinuousLaserBulletType> = HashMap()
-        @JvmStatic
-        val RedContinuousLaserColors = arrayOf(R.C.PrismRedFG, R.C.PrismRedFG, R.C.PrismRedBK, Color.white)
-        @JvmStatic
-        val GreenContinuousLaserColors = arrayOf(R.C.PrismGreenFG, R.C.PrismGreenFG, R.C.PrismGreenBK, Color.white)
-        @JvmStatic
-        val BlueContinuousLaserColors = arrayOf(R.C.PrismBlueFG, R.C.PrismBlueFG, R.C.PrismBlueBK, Color.white)
-        @JvmStatic
-        val ContinuousLaserBulletType.tintRed: ContinuousLaserBulletType
-            get() = RedContinuousLaserBullets.getOrPut(this) {
-                (this.copy() as ContinuousLaserBulletType).apply {
-                    colors = RedContinuousLaserColors
-                }
-            }
-        @JvmStatic
-        val ContinuousLaserBulletType.tintGreen: ContinuousLaserBulletType
-            get() = GreenContinuousLaserBullets.getOrPut(this) {
-                (this.copy() as ContinuousLaserBulletType).apply {
-                    colors = GreenContinuousLaserColors
-                }
-            }
-        @JvmStatic
-        val ContinuousLaserBulletType.tintBlue: ContinuousLaserBulletType
-            get() = BlueContinuousLaserBullets.getOrPut(this) {
-                (this.copy() as ContinuousLaserBulletType).apply {
-                    colors = BlueContinuousLaserColors
-                }
-            }
-        @JvmStatic
-        val RedLiquidBullets: HashMap<LiquidBulletType, LiquidBulletType> = HashMap()
-        @JvmStatic
-        val GreenLiquidBullets: HashMap<LiquidBulletType, LiquidBulletType> = HashMap()
-        @JvmStatic
-        val BlueLiquidBullets: HashMap<LiquidBulletType, LiquidBulletType> = HashMap()
-        @JvmStatic
-        val LiquidTintLerp = 0.4f
-        @JvmStatic
-        val LiquidBulletType.tintRed: LiquidBulletType
-            get() = RedLiquidBullets.getOrPut(this) {
-                try {
-                    val b = TintLiquidBulletT(this.liquid)
-                    b.copyFrom(this)
-                    b.apply {
-                        tintColor = R.C.PrismRedFG.cpy().lerp(
-                            this@tintRed.liquid.color, LiquidTintLerp
-                        )
+        val BulletType.tintRedGeneral: ArrayList<BulletType>
+            get() = GeneralBullets.getOrPut(this) {
+                ArrayList(3) {
+                    (this.copy() as BulletType).apply {
+                        shootEffect = RgbEffects[it]
+                        hitEffect = RgbSmallEffects[0]
                     }
-                } catch (e: Exception) {
-                    this
                 }
             }
         @JvmStatic
-        val LiquidBulletType.tintGreen: LiquidBulletType
-            get() = GreenLiquidBullets.getOrPut(this) {
-                try {
-                    val b = TintLiquidBulletT(this.liquid)
-                    b.copyFrom(this)
-                    b.apply {
-                        tintColor = R.C.PrismGreenFG.cpy().lerp(
-                            this@tintGreen.liquid.color, LiquidTintLerp
-                        )
-                    }
-                } catch (e: Exception) {
-                    this
-                }
-            }
+        val IgnoredBullets: HashSet<BulletType> = HashSet()
         @JvmStatic
-        val LiquidBulletType.tintBlue: LiquidBulletType
-            get() = BlueLiquidBullets.getOrPut(this) {
-                try {
-                    val b = TintLiquidBulletT(this.liquid)
-                    b.copyFrom(this)
-                    b.apply {
-                        tintColor = R.C.PrismBlueFG.cpy().lerp(
-                            this@tintBlue.liquid.color, LiquidTintLerp
-                        )
-                    }
-                } catch (e: Exception) {
-                    this
-                }
-            }
+        val IgnoredClass: HashSet<Class<out BulletType>> = HashSet()
         @JvmStatic
-        val RedBullets: HashMap<BulletType, BulletType> = HashMap()
-        @JvmStatic
-        val GreenBullets: HashMap<BulletType, BulletType> = HashMap()
-        @JvmStatic
-        val BlueBullets: HashMap<BulletType, BulletType> = HashMap()
-        @JvmStatic
-        val RgbSmallEffects = arrayOf(
-            shootSmallRGBGen(3.35f, 17f, R.C.PrismRedFG, R.C.PrismRedBK),
-            shootSmallRGBGen(3.35f, 17f, R.C.PrismGreenFG, R.C.PrismGreenBK),
-            shootSmallRGBGen(3.35f, 17f, R.C.PrismBlueFG, R.C.PrismBlueBK),
-        )
-        @JvmStatic
-        val RgbEffects = arrayOf(
-            shootRGBGen(4f, 60f, R.C.PrismRedFG, R.C.PrismRedBK),
-            shootRGBGen(4f, 60f, R.C.PrismGreenFG, R.C.PrismGreenBK),
-            shootRGBGen(4f, 60f, R.C.PrismBlueFG, R.C.PrismBlueBK),
-        )
-        @JvmStatic
-        val BulletType.tintRed: BulletType
-            get() = RedBullets.getOrPut(this) {
-                (this.copy() as BulletType).apply {
-                    shootEffect = RgbEffects[0]
-                    hitEffect = RgbSmallEffects[0]
-                }
-            }
-        @JvmStatic
-        val BulletType.tintGreen: BulletType
-            get() = GreenBullets.getOrPut(this) {
-                (this.copy() as BulletType).apply {
-                    shootEffect = RgbEffects[1]
-                    hitEffect = RgbSmallEffects[1]
-                }
-            }
-        @JvmStatic
-        val BulletType.tintBlue: BulletType
-            get() = BlueBullets.getOrPut(this) {
-                (this.copy() as BulletType).apply {
-                    shootEffect = RgbEffects[2]
-                    hitEffect = RgbSmallEffects[2]
-                }
-            }
+        fun BulletType.ignoreRGB() =
+            IgnoredBullets.add(this)
+
+        fun Class<out BulletType>.ignoreRGB() =
+            IgnoredClass.add(this)
     }
 }
+
