@@ -69,7 +69,7 @@ open class Virus(name: String) : AnimedBlock(name) {
 
     override fun load() {
         super.load()
-        raceMaskTR = this.subA("race-mask")
+        raceMaskTR = this.sub("race-mask")
     }
 
     open val maxGenerationOrDefault: Int

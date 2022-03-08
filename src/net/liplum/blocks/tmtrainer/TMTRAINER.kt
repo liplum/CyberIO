@@ -16,7 +16,7 @@ import net.liplum.math.PolarPos
 import net.liplum.utils.TR
 import net.liplum.utils.autoAnim
 import net.liplum.utils.radian
-import net.liplum.utils.subA
+import net.liplum.utils.sub
 
 open class TMTRAINER(name: String) : ItemTurret(name) {
     @ClientOnly lateinit var CoreAnim: Animation
@@ -37,7 +37,7 @@ open class TMTRAINER(name: String) : ItemTurret(name) {
     override fun load() {
         super.load()
         CoreAnim = this.autoAnim("core", CoreAnimFrames, 60f)
-        HeadTR = this.subA("head")
+        HeadTR = this.sub("head")
         EmptyCoreAnim = this.autoAnim("core-empty", CoreAnimFrames, 60f)
     }
 

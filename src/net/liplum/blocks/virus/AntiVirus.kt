@@ -84,8 +84,8 @@ open class AntiVirus(name: String) : Block(name) {
 
     override fun load() {
         super.load()
-        unenergizedTR = this.subA("unenergized")
-        shieldTR = this.subA("shield")
+        unenergizedTR = this.sub("unenergized")
+        shieldTR = this.sub("shield")
     }
 
     override fun setBars() {

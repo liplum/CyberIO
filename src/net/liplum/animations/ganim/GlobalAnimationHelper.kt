@@ -2,7 +2,7 @@ package net.liplum.animations.ganim
 
 import net.liplum.ClientOnly
 import net.liplum.blocks.AnimedBlock
-import net.liplum.utils.animA
+import net.liplum.utils.anim
 
 fun <T : AnimedBlock> T.animation(duration: Float, frameCount: Int): T {
     ClientOnly {
@@ -11,7 +11,7 @@ fun <T : AnimedBlock> T.animation(duration: Float, frameCount: Int): T {
             this.fullIcon.set(it)
         }.register()
         this.addLoadListener {
-            a.frames = this.animA(number = frameCount)
+            a.frames = this.anim(number = frameCount)
         }
     }
     return this

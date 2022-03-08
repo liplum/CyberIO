@@ -47,9 +47,9 @@ open class HoloWall(name: String) : Wall(name) {
 
     override fun load() {
         super.load()
-        BaseTR = this.subA("base")
-        ImageTR = this.subA("image")
-        DyedImageTR = this.subA("dyed-image") or ImageTR
+        BaseTR = this.sub("base")
+        ImageTR = this.sub("image")
+        DyedImageTR = this.sub("dyed-image") or ImageTR
     }
 
     override fun icons(): Array<TextureRegion> {

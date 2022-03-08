@@ -96,7 +96,7 @@ class CioBlocks : ContentTable {
             )
             health = 100
             outputItem = ItemStack(CioItems.ic, 1)
-            craftTime = 1200f
+            craftTime = 1600f
             size = 2
             craftEffect = Fx.smelt
             itemCapacity = 40
@@ -256,7 +256,7 @@ class CioBlocks : ContentTable {
                 )
             )
             buildCostMultiplier = 2f
-            size = 3
+            size = 4
             health = 1500
         }
 
@@ -268,7 +268,7 @@ class CioBlocks : ContentTable {
                     ItemStack(Items.titanium, 200),
                 )
             )
-            size = 4
+            size = 2
             health = 4000
             prismType = prism
         }

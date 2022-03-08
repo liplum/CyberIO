@@ -116,7 +116,7 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
 
     override fun load() {
         super.load()
-        spiralTR = this.subA("spiral")
+        spiralTR = this.sub("spiral")
     }
 
     override fun changePlacementPath(points: Seq<Point2>, rotation: Int) {

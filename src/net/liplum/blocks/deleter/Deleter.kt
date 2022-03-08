@@ -20,7 +20,7 @@ import net.liplum.draw
 import net.liplum.utils.TR
 import net.liplum.utils.lostHp
 import net.liplum.utils.quadratic
-import net.liplum.utils.subA
+import net.liplum.utils.sub
 
 private val P2Alpha = quadratic(0.95f, 0.35f)
 
@@ -41,7 +41,7 @@ open class Deleter(name: String) : PowerTurret(name), IExecutioner {
 
     override fun load() {
         super.load()
-        HaloTR = this.subA("halo")
+        HaloTR = this.sub("halo")
     }
 
     open fun configBullet(config: DeleterWave.() -> Unit) {

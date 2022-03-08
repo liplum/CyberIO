@@ -2,6 +2,9 @@ package net.liplum.blocks.prism
 
 import arc.struct.EnumSet
 import arc.util.Time
+import arc.util.io.Reads
+import arc.util.io.Writes
+import mindustry.Vars
 import mindustry.gen.Building
 import mindustry.ui.Bar
 import mindustry.world.Block
@@ -54,6 +57,16 @@ class PrismObelisk(name: String) : Block(name) {
             if (mayLinked != null && mayLinked.tile.build != mayLinked) {
                 linked = null
             }
+        }
+
+        override fun read(read: Reads, revision: Byte) {
+            super.read(read, revision)
+            linked = Vars.world.build(read.i()) as? PrismBuild
+        }
+
+        override fun write(write: Writes) {
+            super.write(write)
+            write.i(linked?.pos() ?: -1)
         }
     }
 }

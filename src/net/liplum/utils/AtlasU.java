@@ -49,6 +49,21 @@ public class AtlasU {
         return slice(tr, isHorizontal, number);
     }
 
+    public static TextureRegion[] sheet(MappableContent content, @Nullable String subName, int number) {
+        return sheet(content, subName, true, number);
+    }
+
+    public static TextureRegion[] sheet(MappableContent content, @Nullable String subName, boolean isHorizontal, int number) {
+        String identity;
+        if (subName != null) {
+            identity = content.name + '-' + subName;
+        } else {
+            identity = content.name;
+        }
+        TextureRegion tr = Core.atlas.find(identity);
+        return slice(tr, isHorizontal, number);
+    }
+
     public static TextureRegion[] animationCio(String name, int number) {
         return animationCio(name, true, number);
     }

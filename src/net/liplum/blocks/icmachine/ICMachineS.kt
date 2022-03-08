@@ -68,7 +68,7 @@ open class ICMachineS(name: String) : AniedCrafter<ICMachineS, ICMachineS.ICMach
 
     override fun load() {
         super.load()
-        Baffle = this.subA("baffle")
+        Baffle = this.sub("baffle")
     }
 
     override fun icons() = arrayOf(

@@ -26,7 +26,6 @@ import mindustry.world.meta.BlockGroup
 import net.liplum.ClientOnly
 import net.liplum.DebugOnly
 import net.liplum.R
-import net.liplum.animations.anims.Animation
 import net.liplum.blocks.prism.TintedBullets.Companion.isTintIgnored
 import net.liplum.blocks.prism.TintedBullets.Companion.tintedRGB
 import net.liplum.draw
@@ -55,15 +54,11 @@ open class Prism(name: String) : Block(name) {
     @JvmField var maxPrisel = 3
     @ClientOnly @JvmField var prismRotationSpeed = 0.05f
     @ClientOnly @JvmField var elevation = -1f
-    @ClientOnly lateinit var PrismAnim: Animation
     @ClientOnly lateinit var BaseTR: TR
-    @ClientOnly lateinit var BaseHaloTR: TR
-    @ClientOnly lateinit var BaseCoreTR: TR
-    @ClientOnly lateinit var PriselTR: TR
+    @ClientOnly lateinit var CrystalTRs: Array<TR>
+    @ClientOnly @JvmField var CrystalVariants = 7
     @ClientOnly @JvmField var clockwiseColor: Color = R.C.prismClockwise
     @ClientOnly @JvmField var antiClockwiseColor: Color = R.C.prismAntiClockwise
-    @ClientOnly @JvmField var PrismAnimFrame = 7
-    @ClientOnly @JvmField var PrismAnimDuration = 60f
     @JvmField var tintBullet = true
 
     init {
@@ -88,11 +83,8 @@ open class Prism(name: String) : Block(name) {
 
     override fun load() {
         super.load()
-        PrismAnim = this.autoAnim(frame = PrismAnimFrame, totalDuration = PrismAnimDuration)
-        BaseTR = this.subA("base")
-        BaseHaloTR = this.subA("base-halo")
-        BaseCoreTR = this.subA("base-core")
-        PriselTR = PrismAnim[0]
+        BaseTR = region
+        CrystalTRs = this.sheet("crystals", CrystalVariants)
     }
 
     var perDeflectionAngle = 0f
@@ -126,6 +118,7 @@ open class Prism(name: String) : Block(name) {
     }
 
     open inner class PrismBuild : Building(), ControlBlock {
+        lateinit var crystalImg: TR
         var prisels: Seq<Prisel> = Seq(maxPrisel)
         var unit = UnitTypes.block.create(team) as BlockUnitc
         var obelisks: Seq<Int> = Seq()
@@ -139,6 +132,13 @@ open class Prism(name: String) : Block(name) {
             unit.tile(this)
             unit.team(team)
             return (unit as Unit)
+        }
+
+        override fun created() {
+            super.created()
+            ClientOnly {
+                crystalImg = CrystalTRs[Mathf.random(0, CrystalTRs.size - 1)]
+            }
         }
 
         override fun canControl() = playerControllable
@@ -284,12 +284,6 @@ open class Prism(name: String) : Block(name) {
 
         override fun draw() {
             Draw.rect(BaseTR, x, y)
-            Draw.alpha(Mathf.absin(Time.time, 20f, 1f) + 0.5f)
-            Draw.rect(BaseCoreTR, x, y)
-            Draw.color(team.color)
-            Draw.alpha(Mathf.absin(Time.time, 10f, 1f))
-            Draw.rect(BaseHaloTR, x, y)
-            Draw.color()
             var priselX: Float
             var priselY: Float
             for ((i, prisel) in prisels.withIndex()) {
@@ -297,14 +291,14 @@ open class Prism(name: String) : Block(name) {
                 priselY = prisel.revolution.toY() + y
                 Draw.z(Layer.blockOver)
                 Drawf.shadow(
-                    PriselTR,
+                    crystalImg,
                     priselX - elevation * Mathf.log(3f, i + 3f) * 7f,
                     priselY - elevation * Mathf.log(3f, i + 3f) * 7f,
                     prisel.rotation.a.degree.draw
                 )
                 Draw.z(Layer.turret)
                 Draw.rect(
-                    PriselTR,
+                    crystalImg,
                     priselX,
                     priselY,
                     prisel.rotation.a.degree.draw

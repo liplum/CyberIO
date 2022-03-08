@@ -137,7 +137,7 @@ open class Cloud(name: String) : PowerBlock(name) {
 
     override fun load() {
         super.load()
-        cloud = this.subA("cloud")
+        cloud = this.sub("cloud")
         DataTransferAnim = this.autoAnim("data-transfer", 18, 50f)
         ShredderAnim = this.autoAnim("shredder", 13, 60f)
     }
