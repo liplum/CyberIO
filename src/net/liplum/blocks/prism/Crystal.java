@@ -6,17 +6,19 @@ import net.liplum.math.PolarPos;
 import net.liplum.persistance.RWU;
 import net.liplum.utils.ByteU;
 
-public class Prisel {
+public class Crystal {
     public PolarPos revolution;
     public PolarPos rotation;
     private static final int ClockwisePos = 0;
     private static final int RemovedPos = 1;
-    private static final int Pos3 = 2;
+    private static final int AwaitAddingPos = 2;
     private static final int Pos4 = 3;
     private static final int Pos5 = 4;
     private static final int Pos6 = 5;
     private static final int Pos7 = 6;
     private static final int Pos8 = 7;
+
+    public int orbitPos = 0;
     public int data = 0;
 
     public boolean isClockwise() {
@@ -35,23 +37,38 @@ public class Prisel {
     }
 
     public void setRemoved(boolean removed) {
-        if (removed)
+        if (removed) {
             data = ByteU.on(data, RemovedPos);
-        else
+            setAwaitAdding(false);
+        } else
             data = ByteU.off(data, RemovedPos);
     }
 
-    public static void write(Writes writes, Prisel prisel) {
-        RWU.writePolarPos(writes, prisel.revolution);
-        RWU.writePolarPos(writes, prisel.rotation);
-        writes.b(prisel.data);
+    public boolean isAwaitAdding() {
+        return ByteU.isOn(data, AwaitAddingPos);
     }
 
-    public static Prisel read(Reads reads) {
-        Prisel prisel = new Prisel();
-        prisel.revolution = RWU.readPolarPos(reads);
-        prisel.rotation = RWU.readPolarPos(reads);
-        prisel.data = reads.b();
-        return prisel;
+    public void setAwaitAdding(boolean awaitAdding) {
+        if (awaitAdding) {
+            data = ByteU.on(data, AwaitAddingPos);
+            setRemoved(false);
+        } else
+            data = ByteU.off(data, AwaitAddingPos);
+    }
+
+    public static void write(Writes writes, Crystal crystal) {
+        writes.b(crystal.orbitPos);
+        RWU.writePolarPos(writes, crystal.revolution);
+        RWU.writePolarPos(writes, crystal.rotation);
+        writes.b(crystal.data);
+    }
+
+    public static Crystal read(Reads reads) {
+        Crystal crystal = new Crystal();
+        crystal.orbitPos = reads.b();
+        crystal.revolution = RWU.readPolarPos(reads);
+        crystal.rotation = RWU.readPolarPos(reads);
+        crystal.data = reads.b();
+        return crystal;
     }
 }

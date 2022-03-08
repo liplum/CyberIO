@@ -59,6 +59,8 @@ public class R {
                 LinkedN = "linked",
                 Linked = Gen(LinkedN),
                 NoLink = Gen(LinkedN + ".no");
+        public static final String StatusN = "status",
+                Status = Gen(StatusN);
     }
 
     public static final class Ctrl {

@@ -15,3 +15,7 @@ fun <T> ArrayList(len: Int, gen: (Int) -> T) =
             add(gen(i))
         }
     }
+
+infix fun Int.between(end: Int): IntRange {
+    return IntRange(this + 1, end - 1)
+}
