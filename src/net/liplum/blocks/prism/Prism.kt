@@ -6,14 +6,11 @@ import arc.math.Angles
 import arc.math.Mathf
 import arc.struct.EnumSet
 import arc.util.Time
-import arc.util.io.Reads
-import arc.util.io.Writes
 import mindustry.content.UnitTypes
 import mindustry.entities.TargetPriority
 import mindustry.gen.BlockUnitc
 import mindustry.gen.Building
 import mindustry.gen.Groups
-import mindustry.gen.Unit
 import mindustry.graphics.Drawf
 import mindustry.graphics.Layer
 import mindustry.graphics.Pal
@@ -25,9 +22,6 @@ import mindustry.world.meta.BlockGroup
 import net.liplum.ClientOnly
 import net.liplum.DebugOnly
 import net.liplum.R
-import net.liplum.animations.anims.AnimationObj
-import net.liplum.blocks.prism.CrystalManager.Companion.read
-import net.liplum.blocks.prism.CrystalManager.Companion.write
 import net.liplum.blocks.prism.TintedBullets.Companion.isTintIgnored
 import net.liplum.blocks.prism.TintedBullets.Companion.tintedRGB
 import net.liplum.draw
@@ -38,6 +32,7 @@ import kotlin.math.abs
 enum class PrismData {
     Duplicate
 }
+typealias UnitT = mindustry.gen.Unit
 
 open class Prism(name: String) : Block(name) {
     var PS: FUNC = quadratic(1.2f, 0.2f)
@@ -156,7 +151,11 @@ open class Prism(name: String) : Block(name) {
 
     open inner class PrismBuild : Building(), ControlBlock {
         @ClientOnly lateinit var crystalImg: TR
-        var cm: CrystalManager = CrystalManager().apply { prism = this@PrismBuild }
+        var cm: CrystalManager = CrystalManager({
+            revolution = PolarPos(0f, 0f)
+            rotation = PolarPos(prismRange, 0f)
+            isClockwise = orbitPos % 2 != 0
+        }, maxAmount = maxCrystal).apply { prism = this@PrismBuild }
         var unit = UnitTypes.block.create(team) as BlockUnitc
         override fun canControl() = playerControllable
         val crystalAmount: Int
@@ -167,17 +166,6 @@ open class Prism(name: String) : Block(name) {
             ClientOnly {
                 crystalImg = CrystalTRs[Mathf.random(0, CrystalTRs.size - 1)]
             }
-            if (cm.validAmount == 0) {
-                addNewPriselToOutermost()
-            }
-        }
-
-        fun addNewPriselToOutermost() {
-            cm.tryAddNew {
-                revolution = PolarPos(0f, 0f)
-                rotation = PolarPos(prismRange, 0f)
-                isClockwise = orbitPos % 2 != 0
-            }
         }
 
         fun removeOutermostPrisel() =
@@ -185,11 +173,6 @@ open class Prism(name: String) : Block(name) {
 
         override fun onRemoved() =
             cm.unlinkAllObelisks()
-
-        override fun onProximityAdded() {
-            super.onProximityAdded()
-            cm.tryInit()
-        }
 
         override fun onProximityUpdate() {
             super.onProximityUpdate()
@@ -201,18 +184,11 @@ open class Prism(name: String) : Block(name) {
                         b is Obelisk &&
                         b.canLink(this)
                     ) {
-                        tryLink(b)
+                        cm.tryLink(b)
                     }
                 }
             }
             cm.updateObelisk()
-        }
-
-        fun tryLink(obelisk: Obelisk) {
-            if (cm.tryLink(obelisk)) {
-                obelisk.linked = this
-                addNewPriselToOutermost()
-            }
         }
 
         override fun updateTile() {
@@ -263,7 +239,7 @@ open class Prism(name: String) : Block(name) {
                 cm.update {
                     priselX = revolution.toX() + x
                     priselY = revolution.toY() + y
-                    if (it.team == team && Util2D.distance(it.x, it.y, priselX, priselY) < prismRange) {
+                    if (it.team == team && Util2D.distance(it.x, it.y, priselX, priselY) <= prismRange) {
                         if (it.data != PrismData.Duplicate) {
                             it.data = PrismData.Duplicate
                             val angle = it.rotation()
@@ -302,10 +278,17 @@ open class Prism(name: String) : Block(name) {
             Draw.rect(LeftDownEndTR, x, y, -90f)
             Draw.color()
             val delta = process * G.D(15f)
+
+            Draw.z(Layer.blockOver)
             Draw.rect(UpTR, x, y + delta)
             Draw.rect(DownTR, x, y - delta)
             Draw.rect(LeftTR, x - delta, y)
             Draw.rect(RightTR, x + delta, y)
+
+            Drawf.shadow(UpTR, x, y + delta)
+            Drawf.shadow(DownTR, x, y - delta)
+            Drawf.shadow(LeftTR, x - delta, y)
+            Drawf.shadow(RightTR, x + delta, y)
             var priselX: Float
             var priselY: Float
             cm.render {
@@ -346,20 +329,10 @@ open class Prism(name: String) : Block(name) {
             }
         }
 
-        override fun unit(): Unit {
+        override fun unit(): UnitT {
             unit.tile(this)
             unit.team(team)
-            return (unit as Unit)
-        }
-
-        override fun read(read: Reads, revision: Byte) {
-            super.read(read, revision)
-            cm = read.read().apply { prism = this@PrismBuild }
-        }
-
-        override fun write(write: Writes) {
-            super.write(write)
-            write.write(cm)
+            return (unit as UnitT)
         }
     }
 }

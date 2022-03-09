@@ -1,15 +1,7 @@
 package net.liplum.blocks.prism
 
 import arc.math.Mathf
-import arc.struct.IntMap
 import arc.struct.Seq
-import arc.util.io.Reads
-import arc.util.io.Writes
-import mindustry.Vars
-import net.liplum.persistance.readIntMap
-import net.liplum.persistance.readSeq
-import net.liplum.persistance.writeIntMap
-import net.liplum.persistance.writeSeq
 
 enum class Status {
     Shrinking, Expending
@@ -17,8 +9,9 @@ enum class Status {
 internal typealias Obelisk = PrismObelisk.ObeliskBuild
 
 class CrystalManager(
+    val addCallback: Crystal.() -> Unit,
+    initCrystalCount: Int = 1,
     maxAmount: Int = 3,
-    initCapacity: Int = maxAmount
 ) {
     lateinit var prism: Prism.PrismBuild
     var maxAmount: Int = maxAmount
@@ -26,9 +19,9 @@ class CrystalManager(
             field = value.coerceAtLeast(0)
         }
     @JvmField var crystals: Seq<Crystal> = Seq(
-        initCapacity + Mathf.log2(initCapacity.toFloat()).toInt()
+        maxAmount + Mathf.log2(maxAmount.toFloat()).toInt()
     )
-    @JvmField var obelisks: IntMap<Obelisk?> = IntMap(
+    @JvmField var obelisks: Seq<Obelisk> = Seq(
         maxAmount - 1
     )
     val inOrbitAmount: Int
@@ -58,31 +51,27 @@ class CrystalManager(
         get() = !this.isAwaitAdding
     val Crystal.canReallyBeRemovedNow: Boolean
         get() = this.isRemoved && this.revolution.r <= 0f
-    val anyInQueue: Boolean
-        get() {
-            for (crystal in crystals) {
-                if (crystal.canReallyBeRemovedNow || crystal.isAwaitAdding) {
-                    return true
-                }
-            }
-            return false
-        }
     val canReleaseMore: Boolean
         get() = inOrbitAmount <= validAmount
 
-    fun tryInit() {
-        if (!inited) {
-            obelisks.forEach {
-                obelisks.put(it.key, Vars.world.build(it.key) as Obelisk)
-            }
-            inited = true
+    init {
+        for (i in 0 until initCrystalCount) {
+            tryAddNew()
         }
     }
 
     fun spend(delta: Float) {
-        val anyInQueue = anyInQueue
+        var anyInQueue = false
+        for (crystal in crystals) {
+            if (crystal.isAwaitAdding || crystal.isRemoved) {
+                anyInQueue = true
+                break
+            }
+        }
         if (anyInQueue) {
             status = Status.Expending
+        } else {
+            status = Status.Shrinking
         }
 
         when (status) {
@@ -100,27 +89,26 @@ class CrystalManager(
 
     fun tryLink(obelisk: Obelisk): Boolean {
         if (canLinkAnyObelisk) {
-            obelisks.put(obelisk.pos(), obelisk)
+            obelisks.add(obelisk)
+            obelisk.linked = prism
+            tryAddNew()
             return true
         }
         return false
     }
 
     fun unlinkAllObelisks() {
-        obelisks.values().forEach {
-            it?.linked = null
+        obelisks.forEach {
+            it.linked = null
         }
     }
 
     fun removeNonexistentObelisk() {
         obelisks.removeAll {
-            if (it.value == null) {
+            if (it == null) {
                 false
             } else {
-                val o = it.value!!
-                val r = o.tile.build != o
-                val r2 = o.linked != prism
-                r || r2
+                it.tile.build != it || it.linked != prism
             }
         }
     }
@@ -140,7 +128,7 @@ class CrystalManager(
         return null
     }
 
-    inline fun tryAddNew(init: Crystal.() -> Unit): Boolean {
+    fun tryAddNew(): Boolean {
         if (canAdd) {
             val orbitPos = validAmount
             val stillAlive = findFirstInOrbit(orbitPos)
@@ -150,7 +138,7 @@ class CrystalManager(
                 crystals.add(Crystal().apply {
                     this.orbitPos = orbitPos
                     isAwaitAdding = true
-                }.apply(init))
+                }.apply(addCallback))
                 status = Status.Expending
             }
             validAmount++
@@ -207,27 +195,6 @@ class CrystalManager(
             if (crystal.isInOrbit) {
                 crystal.update()
             }
-        }
-    }
-
-    companion object {
-        @JvmStatic
-        fun Writes.write(cm: CrystalManager) {
-            this.writeSeq(cm.crystals, Crystal::write)
-            this.writeIntMap(cm.obelisks) { it!!.pos() }
-            this.f(cm.curExpendTime)
-            this.b(cm.validAmount)
-            this.b(cm.status.ordinal)
-        }
-        @JvmStatic
-        fun Reads.read(): CrystalManager {
-            val cm = CrystalManager()
-            cm.crystals = this.readSeq(Crystal::read)
-            cm.obelisks = this.readIntMap { null }
-            cm.curExpendTime = this.f()
-            cm.validAmount = this.b().toInt()
-            cm.status = Status.values()[this.b().toInt()]
-            return cm
         }
     }
 }

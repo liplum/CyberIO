@@ -2,9 +2,6 @@ package net.liplum.blocks.prism
 
 import arc.struct.EnumSet
 import arc.util.Time
-import arc.util.io.Reads
-import arc.util.io.Writes
-import mindustry.Vars
 import mindustry.gen.Building
 import mindustry.ui.Bar
 import mindustry.world.Block
@@ -60,7 +57,6 @@ open class PrismObelisk(name: String) : Block(name) {
     }
 
     open inner class ObeliskBuild : Building() {
-        @JvmField var linkedPos = -1
         var linked: PrismBuild? = null
         /**
          * Left->Down->Right->Up
@@ -73,11 +69,6 @@ open class PrismObelisk(name: String) : Block(name) {
             if (mayLinked != null && mayLinked.tile.build != mayLinked) {
                 linked = null
             }
-        }
-
-        override fun onProximityAdded() {
-            super.onProximityAdded()
-            linked = Vars.world.build(linkedPos) as? PrismBuild
         }
 
         override fun created() {
@@ -101,17 +92,6 @@ open class PrismObelisk(name: String) : Block(name) {
                 obj.spend(d)
                 obj.draw(x, y, i * 90f)
             }
-        }
-
-        override fun read(read: Reads, revision: Byte) {
-            super.read(read, revision)
-            linkedPos = read.i()
-            linked = Vars.world.build(linkedPos) as? PrismBuild
-        }
-
-        override fun write(write: Writes) {
-            super.write(write)
-            write.i(linked?.pos() ?: -1)
         }
     }
 }
