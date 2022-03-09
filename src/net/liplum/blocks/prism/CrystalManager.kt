@@ -1,7 +1,16 @@
 package net.liplum.blocks.prism
 
 import arc.math.Mathf
+import arc.struct.OrderedSet
 import arc.struct.Seq
+import arc.util.io.Reads
+import arc.util.io.Writes
+import net.liplum.persistance.intSet
+import net.liplum.persistance.readSeq
+import net.liplum.persistance.writeSeq
+import net.liplum.utils.build
+import net.liplum.utils.exists
+import net.liplum.utils.te
 
 enum class Status {
     Shrinking, Expending
@@ -9,10 +18,10 @@ enum class Status {
 internal typealias Obelisk = PrismObelisk.ObeliskBuild
 
 class CrystalManager(
-    val addCallback: Crystal.() -> Unit,
-    initCrystalCount: Int = 1,
     maxAmount: Int = 3,
 ) {
+    var initCrystalCount: Int = 1
+    lateinit var addCallback: Crystal.() -> Unit
     lateinit var prism: Prism.PrismBuild
     var maxAmount: Int = maxAmount
         set(value) {
@@ -21,7 +30,7 @@ class CrystalManager(
     @JvmField var crystals: Seq<Crystal> = Seq(
         maxAmount + Mathf.log2(maxAmount.toFloat()).toInt()
     )
-    @JvmField var obelisks: Seq<Obelisk> = Seq(
+    @JvmField var obelisks: OrderedSet<Int> = OrderedSet(
         maxAmount - 1
     )
     val inOrbitAmount: Int
@@ -54,12 +63,6 @@ class CrystalManager(
     val canReleaseMore: Boolean
         get() = inOrbitAmount <= validAmount
 
-    init {
-        for (i in 0 until initCrystalCount) {
-            tryAddNew()
-        }
-    }
-
     fun spend(delta: Float) {
         var anyInQueue = false
         for (crystal in crystals) {
@@ -89,8 +92,8 @@ class CrystalManager(
 
     fun tryLink(obelisk: Obelisk): Boolean {
         if (canLinkAnyObelisk) {
-            obelisks.add(obelisk)
-            obelisk.linked = prism
+            obelisks.add(obelisk.pos())
+            obelisk.link(prism)
             tryAddNew()
             return true
         }
@@ -99,7 +102,7 @@ class CrystalManager(
 
     fun unlinkAllObelisks() {
         obelisks.forEach {
-            it.linked = null
+            it.te<Obelisk>()?.linked = -1
         }
     }
 
@@ -108,7 +111,8 @@ class CrystalManager(
             if (it == null) {
                 false
             } else {
-                it.tile.build != it || it.linked != prism
+                val build = it.build
+                !build.exists || (build as? Obelisk)?.linked != prism.pos()
             }
         }
     }
@@ -195,6 +199,27 @@ class CrystalManager(
             if (crystal.isInOrbit) {
                 crystal.update()
             }
+        }
+    }
+
+    companion object {
+        @JvmStatic
+        fun Writes.write(cm: CrystalManager) {
+            this.writeSeq(cm.crystals, Crystal::write)
+            this.intSet(cm.obelisks)
+            this.f(cm.curExpendTime)
+            this.b(cm.validAmount)
+            this.b(cm.status.ordinal)
+        }
+        @JvmStatic
+        fun Reads.read(): CrystalManager {
+            val cm = CrystalManager()
+            cm.crystals = this.readSeq(Crystal::read)
+            cm.obelisks = this.intSet()
+            cm.curExpendTime = this.f()
+            cm.validAmount = this.b().toInt()
+            cm.status = Status.values()[this.b().toInt()]
+            return cm
         }
     }
 }

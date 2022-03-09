@@ -1,7 +1,8 @@
 package net.liplum.blocks.prism
 
 import arc.struct.EnumSet
-import arc.util.Time
+import arc.util.io.Reads
+import arc.util.io.Writes
 import mindustry.gen.Building
 import mindustry.ui.Bar
 import mindustry.world.Block
@@ -15,6 +16,8 @@ import net.liplum.animations.anims.pingPong
 import net.liplum.blocks.prism.Prism.PrismBuild
 import net.liplum.utils.autoAnim
 import net.liplum.utils.bundle
+import net.liplum.utils.exists
+import net.liplum.utils.te
 
 open class PrismObelisk(name: String) : Block(name) {
     @JvmField var prismType: Prism? = null
@@ -40,24 +43,18 @@ open class PrismObelisk(name: String) : Block(name) {
         bars.add<ObeliskBuild>(R.Bar.LinkedN) {
             Bar(
                 {
-                    if (it.linked != null)
+                    if (it.linked != -1)
                         R.Bar.Linked.bundle()
                     else
                         R.Bar.NoLink.bundle()
-                },
-                {
-                    val rgb = R.C.PrismRgbFG
-                    val len = rgb.size
-                    val total = len * 60f
-                    rgb[((Time.time % total / total) * len).toInt().coerceIn(0, len - 1)]
-                },
-                { if (it.linked != null) 1f else 0f }
+                }, TintedBullets.AutoRGB,
+                { if (it.linked != -1) 1f else 0f }
             )
         }
     }
 
     open inner class ObeliskBuild : Building() {
-        var linked: PrismBuild? = null
+        var linked: Int = -1
         /**
          * Left->Down->Right->Up
          */
@@ -66,8 +63,8 @@ open class PrismObelisk(name: String) : Block(name) {
         override fun onProximityUpdate() {
             super.onProximityUpdate()
             val mayLinked = linked
-            if (mayLinked != null && mayLinked.tile.build != mayLinked) {
-                linked = null
+            if (mayLinked != -1 && !mayLinked.te<PrismBuild>().exists) {
+                linked = -1
             }
         }
 
@@ -80,18 +77,34 @@ open class PrismObelisk(name: String) : Block(name) {
             }
         }
 
-        open fun canLink(prism: PrismBuild) = prismType == prism.block && linked == null
+        open fun canLink(prism: PrismBuild) = prismType == prism.block && linked == -1
+        open fun link(prism: PrismBuild) {
+            if (canLink(prism)) {
+                linked = prism.pos()
+            }
+        }
+
         override fun draw() {
             super.draw()
             val d = delta()
             for ((i, obj) in BlinkObjs.withIndex()) {
-                if (linked == null) {
+                if (linked == -1) {
                     obj.sleep()
                 } else
                     obj.wakeUp()
                 obj.spend(d)
                 obj.draw(x, y, i * 90f)
             }
+        }
+
+        override fun read(read: Reads, revision: Byte) {
+            super.read(read, revision)
+            linked = read.i()
+        }
+
+        override fun write(write: Writes) {
+            super.write(write)
+            write.i(linked)
         }
     }
 }

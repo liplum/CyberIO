@@ -165,10 +165,10 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
 
     override fun load() {
         super.load()
-        CoverTR = AtlasU.cio("rs-cover")
-        DownArrowTR = AtlasU.cio("rs-down-arrow")
-        UnconnectedTR = AtlasU.cio("rs-unconnected")
-        NoPowerTR = AtlasU.cio("rs-no-power")
+        CoverTR = this.inMod("rs-cover")
+        DownArrowTR = this.inMod("rs-down-arrow")
+        UnconnectedTR = this.inMod("rs-unconnected")
+        NoPowerTR = this.inMod("rs-no-power")
         loadAnimation()
     }
 

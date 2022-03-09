@@ -31,7 +31,7 @@ public class CioMod extends Mod {
                 BaseDialog dialog = new BaseDialog("Welcome");
                 dialog.cont.add("Welcome to play Cyber IO mod").row();
                 // mod sprites are prefixed with the mod name (this mod is called 'example-java-mod' in its config)
-                dialog.cont.image(AtlasU.cio("icon")).maxSize(200f).pad(20f).row();
+                dialog.cont.image(AtlasU.inCio("icon")).maxSize(200f).pad(20f).row();
                 dialog.cont.button("Thanks", dialog::hide).size(100f, 50f);
                 dialog.show();
             });

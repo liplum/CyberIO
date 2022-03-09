@@ -4,6 +4,7 @@ import arc.graphics.Color
 import arc.graphics.g2d.Draw
 import arc.graphics.g2d.Fill
 import arc.math.Angles
+import arc.util.Time
 import mindustry.entities.Effect
 import mindustry.entities.bullet.*
 import net.liplum.R
@@ -30,6 +31,12 @@ class TintedBullets {
                 is LiquidBulletType -> b.tinted
                 else -> b.tintRedGeneral
             }
+        }
+        val AutoRGB =  {
+            val rgb = R.C.PrismRgbFG
+            val len = rgb.size
+            val total = len * 60f
+            rgb[((Time.time % total / total) * len).toInt().coerceIn(0, len - 1)]!!
         }
         @JvmStatic
         val BasicBullets: HashMap<BasicBulletType, ArrayList<BasicBulletType>> = HashMap()

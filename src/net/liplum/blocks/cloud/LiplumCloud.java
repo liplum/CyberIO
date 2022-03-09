@@ -8,6 +8,7 @@ import mindustry.game.Team;
 import mindustry.io.JsonIO;
 import net.liplum.CioMod;
 
+@SuppressWarnings("unchecked")
 public class LiplumCloud {
     private static OrderedMap<Integer, SharedRoom> CurGameCloudRoom;
     private static boolean Saved = false;

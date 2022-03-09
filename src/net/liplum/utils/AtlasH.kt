@@ -14,6 +14,10 @@ fun MappableContent.sub(subName: String): TR {
     return AtlasU.sub(this, subName)
 }
 
+fun MappableContent.inMod(subName: String): TR {
+    return AtlasU.inMod(this, subName)
+}
+
 fun TR.orSubA(obj: MappableContent, subName: String): TR {
     return if (Core.atlas.isFound(this))
         this

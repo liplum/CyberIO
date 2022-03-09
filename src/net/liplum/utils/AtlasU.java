@@ -11,7 +11,11 @@ public class AtlasU {
         return Core.atlas.find(content.name + '-' + subName);
     }
 
-    public static TextureRegion cio(String name) {
+    public static TextureRegion inMod(MappableContent content, String name) {
+        return Core.atlas.find(content.minfo.mod.name + '-' + name);
+    }
+
+    public static TextureRegion inCio(String name) {
         return Core.atlas.find(Meta.ModID + '-' + name);
     }
 

@@ -5,7 +5,8 @@ import arc.graphics.g2d.Draw
 import arc.math.Angles
 import arc.math.Mathf
 import arc.struct.EnumSet
-import arc.util.Time
+import arc.util.io.Reads
+import arc.util.io.Writes
 import mindustry.content.UnitTypes
 import mindustry.entities.TargetPriority
 import mindustry.gen.BlockUnitc
@@ -22,6 +23,8 @@ import mindustry.world.meta.BlockGroup
 import net.liplum.ClientOnly
 import net.liplum.DebugOnly
 import net.liplum.R
+import net.liplum.blocks.prism.CrystalManager.Companion.read
+import net.liplum.blocks.prism.CrystalManager.Companion.write
 import net.liplum.blocks.prism.TintedBullets.Companion.isTintIgnored
 import net.liplum.blocks.prism.TintedBullets.Companion.tintedRGB
 import net.liplum.draw
@@ -115,47 +118,51 @@ open class Prism(name: String) : Block(name) {
                         "${it.crystalAmount} ${R.Bar.PrismPl.bundle()}"
                     else
                         "${it.crystalAmount} ${R.Bar.Prism.bundle()}"
-                },
-                {
-                    val rgb = R.C.PrismRgbFG
-                    val len = rgb.size
-                    val total = len * 60f
-                    rgb[((Time.time % total / total) * len).toInt().coerceIn(0, len - 1)]
-                },
+                }, TintedBullets.AutoRGB,
                 { it.crystalAmount.toFloat() / maxCrystal }
             )
         }
-
-        bars.add<PrismBuild>(R.Bar.ProgressN) {
-            Bar(
-                { R.Bar.Progress.bundle(it.cm.process) },
-                { Pal.power },
-                { it.cm.process / 1f }
-            )
-        }
-        bars.add<PrismBuild>(R.Bar.StatusN) {
-            Bar(
-                { it.cm.status.toString() },
-                { Pal.accent },
-                { 1f }
-            )
-        }
-        bars.add<PrismBuild>("count") {
-            Bar(
-                { "Obelisk:${it.cm.obeliskCount}" },
-                { Pal.accent },
-                { it.cm.obeliskCount.toFloat() / (maxCrystal - 1) }
-            )
+        DebugOnly {
+            bars.add<PrismBuild>(R.Bar.ProgressN) {
+                Bar(
+                    { R.Bar.Progress.bundle(it.cm.process) },
+                    { Pal.power },
+                    { it.cm.process / 1f }
+                )
+            }
+            bars.add<PrismBuild>(R.Bar.StatusN) {
+                Bar(
+                    { it.cm.status.toString() },
+                    { Pal.accent },
+                    { 1f }
+                )
+            }
+            bars.add<PrismBuild>("obelisk-count") {
+                Bar(
+                    { "Obelisk:${it.cm.obeliskCount}" },
+                    { Pal.accent },
+                    { it.cm.obeliskCount.toFloat() / (maxCrystal - 1) }
+                )
+            }
         }
     }
 
     open inner class PrismBuild : Building(), ControlBlock {
         @ClientOnly lateinit var crystalImg: TR
-        var cm: CrystalManager = CrystalManager({
+        val cmAddCallback: Crystal.() -> Unit = {
             revolution = PolarPos(0f, 0f)
             rotation = PolarPos(prismRange, 0f)
             isClockwise = orbitPos % 2 != 0
-        }, maxAmount = maxCrystal).apply { prism = this@PrismBuild }
+        }
+        val cmInit: CrystalManager.() -> Unit = {
+            maxAmount = maxCrystal
+            prism = this@PrismBuild
+            addCallback = cmAddCallback
+            for (i in 0 until initCrystalCount) {
+                tryAddNew()
+            }
+        }
+        var cm: CrystalManager = CrystalManager().apply(cmInit)
         var unit = UnitTypes.block.create(team) as BlockUnitc
         override fun canControl() = playerControllable
         val crystalAmount: Int
@@ -333,6 +340,16 @@ open class Prism(name: String) : Block(name) {
             unit.tile(this)
             unit.team(team)
             return (unit as UnitT)
+        }
+
+        override fun read(read: Reads, revision: Byte) {
+            super.read(read, revision)
+            cm = read.read().apply(cmInit)
+        }
+
+        override fun write(write: Writes) {
+            super.write(write)
+            write.write(cm)
         }
     }
 }

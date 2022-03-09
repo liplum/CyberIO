@@ -53,87 +53,18 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
                 receiverPackedPos.toInt()
             )
         }
-    }
-
-    override fun genAniState() {
-        IdleAni = addAniState("Idle")
-
-        UploadAni = addAniState("Upload") { _, build ->
-            UploadAnim.draw(
-                Color.green,
-                build.x,
-                build.y
-            )
-        }
-        BlockedAni = addAniState("Blocked") { sender, build ->
-            Draw.color(Color.red)
-            Draw.rect(
-                sender.UpArrowTR,
-                build.x, build.y
-            )
-            Draw.color()
-        }
-        NoPowerAni = addAniState("NoPower") { sender, build ->
-            Draw.rect(
-                sender.NoPowerTR,
-                build.x, build.y
-            )
-        }
-    }
-
-    override fun genAniConfig() {
-        aniConfig = AniConfig<Sender, SenderBuild>().apply {
-            defaultState(IdleAni)
-            // Idle
-            From(IdleAni) To UploadAni When { _, build ->
-                val reb = build.receiverBuilding
-                reb != null && reb.canAcceptAnyData(build)
-            } To BlockedAni When { _, build ->
-                val reb = build.receiverBuilding
-                reb != null && !reb.isOutputting && !reb.canAcceptAnyData(build)
-            } To NoPowerAni When { _, build ->
-                Mathf.zero(build.power.status)
-            }
-            // Upload
-            From(UploadAni) To IdleAni When { _, build ->
-                build.getReceiverPackedPos() == -1
-            } To BlockedAni When { _, build ->
-                val reb = build.receiverBuilding
-                reb != null && !reb.isOutputting && !reb.canAcceptAnyData(build)
-            } To NoPowerAni When { _, build ->
-                Mathf.zero(build.power.status)
-            }
-            // Blocked
-            From(BlockedAni) To IdleAni When { _, build ->
-                build.getReceiverPackedPos() == -1
-            } To UploadAni When { _, build ->
-                val reb = build.receiverBuilding
-                reb != null && (reb.isOutputting || reb.canAcceptAnyData(build))
-            } To NoPowerAni When { _, build ->
-                Mathf.zero(build.power.status)
-            }
-            // NoPower
-            From(NoPowerAni) To IdleAni When { _, build ->
-                !Mathf.zero(build.power.status)
-            } To UploadAni When { _, build ->
-                if (Mathf.zero(build.power.status)) {
-                    false
-                } else {
-                    val reb = build.receiverBuilding
-                    reb != null && reb.canAcceptAnyData(build)
-                }
-            }
-            build()
+        configClear<SenderBuild> {
+            it.clearReceiver()
         }
     }
 
     override fun load() {
         super.load()
-        CoverTR = AtlasU.cio("rs-cover")
-        UpArrowTR = AtlasU.cio("rs-up-arrow")
-        CrossTR = AtlasU.cio("rs-cross")
-        UnconnectedTR = AtlasU.cio("rs-unconnected")
-        NoPowerTR = AtlasU.cio("rs-no-power")
+        CoverTR = this.inMod("rs-cover")
+        UpArrowTR = this.inMod("rs-up-arrow")
+        CrossTR = this.inMod("rs-cross")
+        UnconnectedTR = this.inMod("rs-unconnected")
+        NoPowerTR = this.inMod("rs-no-power")
         loadAnimation()
     }
 
@@ -289,6 +220,78 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
 
         override fun getBlock(): Block {
             return block()
+        }
+    }
+
+    override fun genAniState() {
+        IdleAni = addAniState("Idle")
+
+        UploadAni = addAniState("Upload") { _, build ->
+            UploadAnim.draw(
+                Color.green,
+                build.x,
+                build.y
+            )
+        }
+        BlockedAni = addAniState("Blocked") { sender, build ->
+            Draw.color(Color.red)
+            Draw.rect(
+                sender.UpArrowTR,
+                build.x, build.y
+            )
+            Draw.color()
+        }
+        NoPowerAni = addAniState("NoPower") { sender, build ->
+            Draw.rect(
+                sender.NoPowerTR,
+                build.x, build.y
+            )
+        }
+    }
+
+    override fun genAniConfig() {
+        aniConfig = AniConfig<Sender, SenderBuild>().apply {
+            defaultState(IdleAni)
+            // Idle
+            From(IdleAni) To UploadAni When { _, build ->
+                val reb = build.receiverBuilding
+                reb != null && reb.canAcceptAnyData(build)
+            } To BlockedAni When { _, build ->
+                val reb = build.receiverBuilding
+                reb != null && !reb.isOutputting && !reb.canAcceptAnyData(build)
+            } To NoPowerAni When { _, build ->
+                Mathf.zero(build.power.status)
+            }
+            // Upload
+            From(UploadAni) To IdleAni When { _, build ->
+                build.getReceiverPackedPos() == -1
+            } To BlockedAni When { _, build ->
+                val reb = build.receiverBuilding
+                reb != null && !reb.isOutputting && !reb.canAcceptAnyData(build)
+            } To NoPowerAni When { _, build ->
+                Mathf.zero(build.power.status)
+            }
+            // Blocked
+            From(BlockedAni) To IdleAni When { _, build ->
+                build.getReceiverPackedPos() == -1
+            } To UploadAni When { _, build ->
+                val reb = build.receiverBuilding
+                reb != null && (reb.isOutputting || reb.canAcceptAnyData(build))
+            } To NoPowerAni When { _, build ->
+                Mathf.zero(build.power.status)
+            }
+            // NoPower
+            From(NoPowerAni) To IdleAni When { _, build ->
+                !Mathf.zero(build.power.status)
+            } To UploadAni When { _, build ->
+                if (Mathf.zero(build.power.status)) {
+                    false
+                } else {
+                    val reb = build.receiverBuilding
+                    reb != null && reb.canAcceptAnyData(build)
+                }
+            }
+            build()
         }
     }
 }
