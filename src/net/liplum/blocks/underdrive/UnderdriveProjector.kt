@@ -98,7 +98,7 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
         saveConfig = true
 
         config(
-            java.lang.Byte::class.java
+            Integer::class.java
         ) { b: UnderdriveBuild, i ->
             b.curGear = i.toInt()
         }
@@ -368,7 +368,7 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
                     false
                 ).apply {
                     value = curGear.toFloat() - 1
-                    moved { configure(Mathf.round(it + 1).toByte()) }
+                    moved { configure(Mathf.round(it + 1)) }
                 })
             }
         }

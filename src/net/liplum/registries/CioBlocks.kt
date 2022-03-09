@@ -96,7 +96,7 @@ class CioBlocks : ContentTable {
             )
             health = 100
             outputItem = ItemStack(CioItems.ic, 1)
-            craftTime = 1600f
+            craftTime = 1300f
             size = 2
             craftEffect = Fx.smelt
             itemCapacity = 40
@@ -257,7 +257,7 @@ class CioBlocks : ContentTable {
             )
             buildCostMultiplier = 2f
             size = 4
-            health = 1500
+            health = 5000
         }
 
         prismObelisk = PrismObelisk("prism-obelisk").apply {
@@ -269,7 +269,7 @@ class CioBlocks : ContentTable {
                 )
             )
             size = 2
-            health = 4000
+            health = 2000
             prismType = prism
         }
 
@@ -315,8 +315,8 @@ class CioBlocks : ContentTable {
             requirements(
                 Category.defense, BuildVisibility.shown, arrayOf(
                     ItemStack(CioItems.ic, 2),
-                    ItemStack(Items.titanium, 30 * 4),
-                    ItemStack(Items.silicon, 20),
+                    ItemStack(Items.titanium, 25 * 4),
+                    ItemStack(Items.silicon, 10),
                 )
             )
             size = 2
@@ -337,11 +337,11 @@ class CioBlocks : ContentTable {
             ammo(
                 Items.sporePod, CioBulletTypes.virus
             )
-            maxAmmo = 60
+            maxAmmo = 80
             spread = 4f
             reloadTime = 5f
             restitution = 0.03f
-            range = 240f
+            range = 260f
             shootCone = 15f
             shots = 2
             size = 4
@@ -363,6 +363,7 @@ class CioBlocks : ContentTable {
             Blocks.powerSource.buildVisibility = BuildVisibility.shown
             Blocks.itemSource.buildVisibility = BuildVisibility.shown
             Blocks.liquidSource.buildVisibility = BuildVisibility.shown
+            Blocks.payloadSource.buildVisibility = BuildVisibility.shown
         }
     }
 }
