@@ -1,5 +1,6 @@
 package net.liplum.persistance;
 
+import arc.struct.IntMap;
 import arc.struct.ObjectSet;
 import arc.struct.OrderedSet;
 import arc.struct.Seq;
@@ -105,8 +106,35 @@ public class RWU {
         int length = reads.i();
         Seq<T> seq = new Seq<>(length);
         for (int i = 0; i < length; i++) {
-            seq.add(howToRead.read(reads));
+            try {
+                T read = howToRead.read(reads);
+                seq.add(read);
+            } catch (Exception ignored) {
+
+            }
         }
         return seq;
+    }
+
+    public static <T> void writeIntMap(Writes writes, IntMap<T> map, IWriteIntMap<T> howToWrite) {
+        writes.i(map.size);
+        for (T data : map.values()) {
+            writes.i(howToWrite.write(data));
+        }
+    }
+
+    public static <T> IntMap<T> readIntMap(Reads reads, IReadIntMap<T> howToRead) {
+        int length = reads.i();
+        IntMap<T> map = new IntMap<>(length);
+        for (int i = 0; i < length; i++) {
+            try {
+                int key = reads.i();
+                T value = howToRead.read(key);
+                map.put(key, value);
+            } catch (Exception ignored) {
+
+            }
+        }
+        return map;
     }
 }

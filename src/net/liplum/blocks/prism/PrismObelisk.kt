@@ -10,12 +10,20 @@ import mindustry.ui.Bar
 import mindustry.world.Block
 import mindustry.world.meta.BlockFlag
 import mindustry.world.meta.BlockGroup
+import net.liplum.ClientOnly
 import net.liplum.R
+import net.liplum.animations.anims.Animation
+import net.liplum.animations.anims.AnimationObj
+import net.liplum.animations.anims.pingPong
 import net.liplum.blocks.prism.Prism.PrismBuild
+import net.liplum.utils.autoAnim
 import net.liplum.utils.bundle
 
-class PrismObelisk(name: String) : Block(name) {
+open class PrismObelisk(name: String) : Block(name) {
     @JvmField var prismType: Prism? = null
+    lateinit var BlinkAnim: Animation
+    @JvmField var BlinkFrames = 6
+    @JvmField var BlinkDuration = 20f
 
     init {
         absorbLasers = true
@@ -23,6 +31,11 @@ class PrismObelisk(name: String) : Block(name) {
         solid = true
         group = BlockGroup.turrets
         flags = EnumSet.of(BlockFlag.turret)
+    }
+
+    override fun load() {
+        super.load()
+        BlinkAnim = this.autoAnim("blink", BlinkFrames, BlinkDuration)
     }
 
     override fun setBars() {
@@ -46,11 +59,14 @@ class PrismObelisk(name: String) : Block(name) {
         }
     }
 
-    inner class ObeliskBuild : Building() {
+    open inner class ObeliskBuild : Building() {
+        @JvmField var linkedPos = -1
         var linked: PrismBuild? = null
-        val prismType: Prism
-            get() = this@PrismObelisk.prismType!!
-
+        /**
+         * Left->Down->Right->Up
+         */
+        @JvmField var prismOrient = 0
+        @ClientOnly lateinit var BlinkObjs: Array<AnimationObj>
         override fun onProximityUpdate() {
             super.onProximityUpdate()
             val mayLinked = linked
@@ -59,9 +75,38 @@ class PrismObelisk(name: String) : Block(name) {
             }
         }
 
+        override fun onProximityAdded() {
+            super.onProximityAdded()
+            linked = Vars.world.build(linkedPos) as? PrismBuild
+        }
+
+        override fun created() {
+            super.created()
+            ClientOnly {
+                BlinkObjs = Array(4) {
+                    BlinkAnim.gen().pingPong().apply { sleepInstantly() }
+                }
+            }
+        }
+
+        open fun canLink(prism: PrismBuild) = prismType == prism.block && linked == null
+        override fun draw() {
+            super.draw()
+            val d = delta()
+            for ((i, obj) in BlinkObjs.withIndex()) {
+                if (linked == null) {
+                    obj.sleep()
+                } else
+                    obj.wakeUp()
+                obj.spend(d)
+                obj.draw(x, y, i * 90f)
+            }
+        }
+
         override fun read(read: Reads, revision: Byte) {
             super.read(read, revision)
-            linked = Vars.world.build(read.i()) as? PrismBuild
+            linkedPos = read.i()
+            linked = Vars.world.build(linkedPos) as? PrismBuild
         }
 
         override fun write(write: Writes) {

@@ -25,6 +25,7 @@ import mindustry.world.meta.BlockGroup
 import net.liplum.ClientOnly
 import net.liplum.DebugOnly
 import net.liplum.R
+import net.liplum.animations.anims.AnimationObj
 import net.liplum.blocks.prism.CrystalManager.Companion.read
 import net.liplum.blocks.prism.CrystalManager.Companion.write
 import net.liplum.blocks.prism.TintedBullets.Companion.isTintIgnored
@@ -58,6 +59,14 @@ open class Prism(name: String) : Block(name) {
     @ClientOnly @JvmField var clockwiseColor: Color = R.C.prismClockwise
     @ClientOnly @JvmField var antiClockwiseColor: Color = R.C.prismAntiClockwise
     @JvmField var tintBullet = true
+    @ClientOnly lateinit var UpTR: TR
+    @ClientOnly lateinit var DownTR: TR
+    @ClientOnly lateinit var LeftTR: TR
+    @ClientOnly lateinit var RightTR: TR
+    @ClientOnly lateinit var RightUpStartTR: TR
+    @ClientOnly lateinit var RightUpEndTR: TR
+    @ClientOnly lateinit var LeftDownStartTR: TR
+    @ClientOnly lateinit var LeftDownEndTR: TR
 
     init {
         absorbLasers = true
@@ -81,8 +90,16 @@ open class Prism(name: String) : Block(name) {
 
     override fun load() {
         super.load()
-        BaseTR = region
+        BaseTR = this.sub("base")
         CrystalTRs = this.sheet("crystals", CrystalVariants)
+        UpTR = this.sub("up")
+        LeftTR = this.sub("left")
+        DownTR = this.sub("down")
+        RightTR = this.sub("right")
+        RightUpStartTR = this.sub("rightup-start")
+        RightUpEndTR = this.sub("rightup-end")
+        LeftDownStartTR = this.sub("leftdown-start")
+        LeftDownEndTR = this.sub("leftdown-end")
     }
 
     var perDeflectionAngle = 0f
@@ -128,6 +145,13 @@ open class Prism(name: String) : Block(name) {
                 { 1f }
             )
         }
+        bars.add<PrismBuild>("count") {
+            Bar(
+                { "Obelisk:${it.cm.obeliskCount}" },
+                { Pal.accent },
+                { it.cm.obeliskCount.toFloat() / (maxCrystal - 1) }
+            )
+        }
     }
 
     open inner class PrismBuild : Building(), ControlBlock {
@@ -162,6 +186,11 @@ open class Prism(name: String) : Block(name) {
         override fun onRemoved() =
             cm.unlinkAllObelisks()
 
+        override fun onProximityAdded() {
+            super.onProximityAdded()
+            cm.tryInit()
+        }
+
         override fun onProximityUpdate() {
             super.onProximityUpdate()
             cm.removeNonexistentObelisk()
@@ -170,8 +199,7 @@ open class Prism(name: String) : Block(name) {
                     if (
                         cm.canAdd &&
                         b is Obelisk &&
-                        b.prismType == this@Prism &&
-                        b.linked == null
+                        b.canLink(this)
                     ) {
                         tryLink(b)
                     }
@@ -261,6 +289,23 @@ open class Prism(name: String) : Block(name) {
 
         override fun draw() {
             Draw.rect(BaseTR, x, y)
+            val process = cm.process
+            Draw.alpha(1f - process)
+            Draw.rect(RightUpStartTR, x, y)
+            Draw.rect(RightUpStartTR, x, y, 90f)
+            Draw.rect(LeftDownStartTR, x, y)
+            Draw.rect(LeftDownStartTR, x, y, -90f)
+            Draw.alpha(process)
+            Draw.rect(RightUpEndTR, x, y)
+            Draw.rect(RightUpEndTR, x, y, 90f)
+            Draw.rect(LeftDownEndTR, x, y)
+            Draw.rect(LeftDownEndTR, x, y, -90f)
+            Draw.color()
+            val delta = process * G.D(15f)
+            Draw.rect(UpTR, x, y + delta)
+            Draw.rect(DownTR, x, y - delta)
+            Draw.rect(LeftTR, x - delta, y)
+            Draw.rect(RightTR, x + delta, y)
             var priselX: Float
             var priselY: Float
             cm.render {

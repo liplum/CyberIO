@@ -1,11 +1,14 @@
 package net.liplum.blocks.prism
 
 import arc.math.Mathf
+import arc.struct.IntMap
 import arc.struct.Seq
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.Vars
+import net.liplum.persistance.readIntMap
 import net.liplum.persistance.readSeq
+import net.liplum.persistance.writeIntMap
 import net.liplum.persistance.writeSeq
 
 enum class Status {
@@ -25,10 +28,10 @@ class CrystalManager(
     @JvmField var crystals: Seq<Crystal> = Seq(
         initCapacity + Mathf.log2(initCapacity.toFloat()).toInt()
     )
-    @JvmField var obelisks: Seq<Obelisk> = Seq(
+    @JvmField var obelisks: IntMap<Obelisk?> = IntMap(
         maxAmount - 1
     )
-    val orbitedAmount: Int
+    val inOrbitAmount: Int
         get() = crystals.size
     var validAmount: Int = 0
         set(value) {
@@ -39,6 +42,7 @@ class CrystalManager(
         set(value) {
             field = value.coerceIn(0f, expendRequirement)
         }
+    @JvmField var inited: Boolean = false
     val process: Float
         get() = curExpendTime / expendRequirement
     val canAdd: Boolean
@@ -63,40 +67,61 @@ class CrystalManager(
             }
             return false
         }
+    val canReleaseMore: Boolean
+        get() = inOrbitAmount <= validAmount
+
+    fun tryInit() {
+        if (!inited) {
+            obelisks.forEach {
+                obelisks.put(it.key, Vars.world.build(it.key) as Obelisk)
+            }
+            inited = true
+        }
+    }
 
     fun spend(delta: Float) {
+        val anyInQueue = anyInQueue
         if (anyInQueue) {
             status = Status.Expending
         }
+
         when (status) {
             Status.Expending -> curExpendTime += delta
             Status.Shrinking -> curExpendTime -= delta
         }
-        if (process >= 0.999f) {
+        if (process >= 0.999f && anyInQueue) {
             retrieveAll()
-            releaseAll()
+            if (canReleaseMore) {
+                releaseAll()
+            }
             status = Status.Shrinking
-            curExpendTime = 0f
         }
     }
 
     fun tryLink(obelisk: Obelisk): Boolean {
         if (canLinkAnyObelisk) {
-            obelisks.add(obelisk)
+            obelisks.put(obelisk.pos(), obelisk)
             return true
         }
         return false
     }
 
     fun unlinkAllObelisks() {
-        obelisks.forEach {
-            it.linked = null
+        obelisks.values().forEach {
+            it?.linked = null
         }
     }
 
     fun removeNonexistentObelisk() {
         obelisks.removeAll {
-            it.tile.build != it || it.linked != prism
+            if (it.value == null) {
+                false
+            } else {
+                val o = it.value!!
+                val r = o.tile.build != o
+                val r2 = o.linked != prism
+                r || r2
+            }
         }
     }
 
@@ -107,14 +132,28 @@ class CrystalManager(
         }
     }
 
+    fun findFirstInOrbit(pos: Int): Crystal? {
+        crystals.forEach {
+            if (it.orbitPos == pos)
+                return it
+        }
+        return null
+    }
+
     inline fun tryAddNew(init: Crystal.() -> Unit): Boolean {
         if (canAdd) {
-            crystals.add(Crystal().apply {
-                orbitPos = validAmount
-                isAwaitAdding = true
-            }.apply(init))
+            val orbitPos = validAmount
+            val stillAlive = findFirstInOrbit(orbitPos)
+            if (stillAlive != null && stillAlive.isRemoved) {
+                stillAlive.isRemoved = false
+            } else {
+                crystals.add(Crystal().apply {
+                    this.orbitPos = orbitPos
+                    isAwaitAdding = true
+                }.apply(init))
+                status = Status.Expending
+            }
             validAmount++
-            status = Status.Expending
             return true
         }
         return false
@@ -175,21 +214,19 @@ class CrystalManager(
         @JvmStatic
         fun Writes.write(cm: CrystalManager) {
             this.writeSeq(cm.crystals, Crystal::write)
-            this.writeSeq(cm.obelisks) { write, it ->
-                write.i(it.pos())
-            }
+            this.writeIntMap(cm.obelisks) { it!!.pos() }
             this.f(cm.curExpendTime)
             this.b(cm.validAmount)
+            this.b(cm.status.ordinal)
         }
         @JvmStatic
         fun Reads.read(): CrystalManager {
             val cm = CrystalManager()
             cm.crystals = this.readSeq(Crystal::read)
-            cm.obelisks = this.readSeq {
-                Vars.world.build(it.i()) as Obelisk
-            }
+            cm.obelisks = this.readIntMap { null }
             cm.curExpendTime = this.f()
             cm.validAmount = this.b().toInt()
+            cm.status = Status.values()[this.b().toInt()]
             return cm
         }
     }
