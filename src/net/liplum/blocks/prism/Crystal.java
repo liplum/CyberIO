@@ -1,7 +1,9 @@
 package net.liplum.blocks.prism;
 
+import arc.graphics.g2d.TextureRegion;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
+import net.liplum.ClientOnly;
 import net.liplum.math.PolarPos;
 import net.liplum.persistance.RWU;
 import net.liplum.utils.ByteU;
@@ -9,6 +11,8 @@ import net.liplum.utils.ByteU;
 public class Crystal {
     public PolarPos revolution;
     public PolarPos rotation;
+    @ClientOnly
+    public TextureRegion img;
     private static final int ClockwisePos = 0;
     private static final int RemovedPos = 1;
     private static final int AwaitAddingPos = 2;

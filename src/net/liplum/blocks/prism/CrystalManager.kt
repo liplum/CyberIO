@@ -21,7 +21,8 @@ class CrystalManager(
     maxAmount: Int = 3,
 ) {
     var initCrystalCount: Int = 1
-    lateinit var addCallback: Crystal.() -> Unit
+    lateinit var addCrystalCallback: Crystal.() -> Unit
+    lateinit var genCrystalImgCallback: Crystal.() -> Unit
     lateinit var prism: Prism.PrismBuild
     var maxAmount: Int = maxAmount
         set(value) {
@@ -139,10 +140,13 @@ class CrystalManager(
             if (stillAlive != null && stillAlive.isRemoved) {
                 stillAlive.isRemoved = false
             } else {
-                crystals.add(Crystal().apply {
-                    this.orbitPos = orbitPos
-                    isAwaitAdding = true
-                }.apply(addCallback))
+                crystals.add(
+                    Crystal().apply {
+                        this.orbitPos = orbitPos
+                        isAwaitAdding = true
+                    }.apply(addCrystalCallback)
+                        .also(genCrystalImgCallback)
+                )
                 status = Status.Expending
             }
             validAmount++
@@ -204,22 +208,21 @@ class CrystalManager(
 
     companion object {
         @JvmStatic
-        fun Writes.write(cm: CrystalManager) {
-            this.writeSeq(cm.crystals, Crystal::write)
-            this.intSet(cm.obelisks)
-            this.f(cm.curExpendTime)
-            this.b(cm.validAmount)
-            this.b(cm.status.ordinal)
+        fun CrystalManager.write(writes: Writes) {
+            writes.writeSeq(crystals, Crystal::write)
+            writes.intSet(obelisks)
+            writes.f(curExpendTime)
+            writes.b(validAmount)
+            writes.b(status.ordinal)
         }
         @JvmStatic
-        fun Reads.read(): CrystalManager {
-            val cm = CrystalManager()
-            cm.crystals = this.readSeq(Crystal::read)
-            cm.obelisks = this.intSet()
-            cm.curExpendTime = this.f()
-            cm.validAmount = this.b().toInt()
-            cm.status = Status.values()[this.b().toInt()]
-            return cm
+        fun CrystalManager.read(read: Reads) {
+            crystals = read.readSeq(Crystal::read)
+            crystals.forEach(genCrystalImgCallback)
+            obelisks = read.intSet()
+            curExpendTime = read.f()
+            validAmount = read.b().toInt()
+            status = Status.values()[read.b().toInt()]
         }
     }
 }

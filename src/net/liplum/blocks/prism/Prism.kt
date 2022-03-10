@@ -25,16 +25,11 @@ import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.blocks.prism.CrystalManager.Companion.read
 import net.liplum.blocks.prism.CrystalManager.Companion.write
-import net.liplum.blocks.prism.TintedBullets.Companion.isTintIgnored
-import net.liplum.blocks.prism.TintedBullets.Companion.tintedRGB
 import net.liplum.draw
 import net.liplum.math.PolarPos
 import net.liplum.utils.*
 import kotlin.math.abs
 
-enum class PrismData {
-    Duplicate
-}
 typealias UnitT = mindustry.gen.Unit
 
 open class Prism(name: String) : Block(name) {
@@ -107,6 +102,7 @@ open class Prism(name: String) : Block(name) {
         if (elevation < 0) {
             elevation = size / 2f
         }
+        clipSize = Agl + (prismRange * 2 * maxCrystal) + elevation
     }
 
     override fun setBars() {
@@ -118,7 +114,7 @@ open class Prism(name: String) : Block(name) {
                         "${it.crystalAmount} ${R.Bar.PrismPl.bundle()}"
                     else
                         "${it.crystalAmount} ${R.Bar.Prism.bundle()}"
-                }, TintedBullets.AutoRGB,
+                }, AutoRGB,
                 { it.crystalAmount.toFloat() / maxCrystal }
             )
         }
@@ -149,29 +145,33 @@ open class Prism(name: String) : Block(name) {
 
     open inner class PrismBuild : Building(), ControlBlock {
         @ClientOnly lateinit var crystalImg: TR
-        val cmAddCallback: Crystal.() -> Unit = {
-            revolution = PolarPos(0f, 0f)
-            rotation = PolarPos(prismRange, 0f)
-            isClockwise = orbitPos % 2 != 0
-        }
-        val cmInit: CrystalManager.() -> Unit = {
-            maxAmount = maxCrystal
-            prism = this@PrismBuild
-            addCallback = cmAddCallback
-            for (i in 0 until initCrystalCount) {
-                tryAddNew()
-            }
-        }
-        var cm: CrystalManager = CrystalManager().apply(cmInit)
+        lateinit var cm: CrystalManager
         var unit = UnitTypes.block.create(team) as BlockUnitc
         override fun canControl() = playerControllable
         val crystalAmount: Int
             get() = cm.validAmount
+        val outer: Prism
+            get() = this@Prism
 
         override fun created() {
             super.created()
             ClientOnly {
                 crystalImg = CrystalTRs[Mathf.random(0, CrystalTRs.size - 1)]
+            }
+            cm = CrystalManager().apply {
+                maxAmount = maxCrystal
+                prism = this@PrismBuild
+                genCrystalImgCallback = {
+                    img = CrystalTRs.randomOne()
+                }
+                addCrystalCallback = {
+                    revolution = PolarPos(0f, 0f)
+                    rotation = PolarPos(prismRange, 0f)
+                    isClockwise = orbitPos % 2 != 0
+                }
+                for (i in 0 until initCrystalCount) {
+                    tryAddNew()
+                }
             }
         }
 
@@ -236,33 +236,34 @@ open class Prism(name: String) : Block(name) {
             var priselX: Float
             var priselY: Float
             val realRange = Agl + (prismRange * 2 * crystalAmount)
-            val realRangeHalf = realRange / 2
+            val realRangeX2 = realRange * 2
             Groups.bullet.intersect(
-                x - realRangeHalf,
-                y - realRangeHalf,
-                realRange,
-                realRange
+                x - realRange,
+                y - realRange,
+                realRangeX2,
+                realRangeX2
             ) {
                 cm.update {
                     priselX = revolution.toX() + x
                     priselY = revolution.toY() + y
-                    if (it.team == team && Util2D.distance(it.x, it.y, priselX, priselY) <= prismRange) {
-                        if (it.data != PrismData.Duplicate) {
-                            it.data = PrismData.Duplicate
-                            val angle = it.rotation()
-                            val copyRed = it.copy()
-                            val copyBlue = it.copy()
-                            val start = angle - deflectionAngle
-                            copyRed.rotation(start)
-                            it.rotation(start + perDeflectionAngle)
-                            copyBlue.rotation(start + perDeflectionAngle * 2)
-                            if (tintBullet) {
-                                if (!it.type.isTintIgnored) {
-                                    val rgbs = tintedRGB(it.type)
-                                    copyRed.type = rgbs[0]
-                                    it.type = rgbs[1]
-                                    copyBlue.type = rgbs[2]
-                                }
+                    if (it.team == team &&
+                        !it.data.isDuplicate &&
+                        Util2D.distance(it.x, it.y, priselX, priselY) <= prismRange
+                    ) {
+                        it.setDuplicate()
+                        val angle = it.rotation()
+                        val copyRed = it.copy()
+                        val copyBlue = it.copy()
+                        val start = angle - deflectionAngle
+                        copyRed.rotation(start)
+                        it.rotation(start + perDeflectionAngle)
+                        copyBlue.rotation(start + perDeflectionAngle * 2)
+                        if (tintBullet) {
+                            if (!it.type.isTintIgnored) {
+                                val rgbs = tintedRGB(it.type)
+                                copyRed.type = rgbs[0]
+                                it.type = rgbs[1]
+                                copyBlue.type = rgbs[2]
                             }
                         }
                     }
@@ -344,12 +345,12 @@ open class Prism(name: String) : Block(name) {
 
         override fun read(read: Reads, revision: Byte) {
             super.read(read, revision)
-            cm = read.read().apply(cmInit)
+            cm.read(read)
         }
 
         override fun write(write: Writes) {
             super.write(write)
-            write.write(cm)
+            cm.write(write)
         }
     }
 }

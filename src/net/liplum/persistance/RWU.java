@@ -91,6 +91,7 @@ public class RWU {
         writes.f(pos.a);
     }
 
+    @NotNull
     public static PolarPos readPolarPos(Reads reads) {
         return new PolarPos(reads.f(), reads.f());
     }
@@ -102,6 +103,7 @@ public class RWU {
         }
     }
 
+    @NotNull
     public static <T> Seq<T> readSeq(Reads reads, IHowToRead<T> howToRead) {
         int length = reads.i();
         Seq<T> seq = new Seq<>(length);
@@ -123,6 +125,7 @@ public class RWU {
         }
     }
 
+    @NotNull
     public static <T> IntMap<T> readIntMap(Reads reads, IReadIntMap<T> howToRead) {
         int length = reads.i();
         IntMap<T> map = new IntMap<>(length);

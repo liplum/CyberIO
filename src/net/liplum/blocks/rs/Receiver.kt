@@ -4,7 +4,6 @@ import arc.graphics.Color
 import arc.graphics.g2d.Draw
 import arc.math.Mathf
 import arc.scene.ui.layout.Table
-import arc.struct.ObjectSet
 import arc.struct.OrderedSet
 import arc.util.Eachable
 import arc.util.Time
@@ -26,6 +25,8 @@ import net.liplum.animations.anis.AniConfig
 import net.liplum.animations.anis.AniState
 import net.liplum.api.data.IDataReceiver
 import net.liplum.api.data.IDataSender
+import net.liplum.api.data.ds
+import net.liplum.api.data.exists
 import net.liplum.blocks.AniedBlock
 import net.liplum.blocks.rs.Receiver.ReceiverBuild
 import net.liplum.persistance.intSet
@@ -187,39 +188,18 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
         drawRequestConfigCenter(req, req.config, "center", true)
     }
 
-    override fun outputsItems(): Boolean {
-        return true
-    }
-
+    override fun outputsItems(): Boolean = true
     inner class ReceiverBuild : AniedBuild(), IDataReceiver {
         var outputItem: Item? = null
         private var isOutputting = false
         private var lastOutputDelta = 0f
         var lastFullDataDelta = 0f
-        var sendersPos = OrderedSet<Int>()
-        override fun isOutputting(): Boolean {
-            return lastOutputDelta < 30f
-        }
-
-        override fun connect(sender: IDataSender) {
-            sendersPos.add(sender.building.pos())
-        }
-
-        override fun disconnect(sender: IDataSender) {
-            sendersPos.remove(sender.building.pos())
-        }
-
+        var senders = OrderedSet<Int>()
         fun checkSenderPos() {
-            val it = sendersPos.iterator()
-            while (it.hasNext) {
-                val curSenderPos: Int = it.next()
-                val sBuild = Vars.world.build(curSenderPos)
-                if (sBuild !is IDataSender) {
-                    it.remove()
-                }
-            }
+            senders.removeAll { !it.ds().exists }
         }
 
+        override fun isOutputting(): Boolean = lastOutputDelta < 30f
         override fun drawSelect() {
             val outputItem = outputItem
             G.init()
@@ -232,7 +212,7 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
                 Draw.reset()
                 Draw.rect(outputItem.uiIcon, dx, dy)
             }
-            CyberU.drawSenders(this, sendersPos)
+            CyberU.drawSenders(this, senders)
         }
 
         override fun fixedUpdateTile() {
@@ -274,10 +254,7 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
             return true
         }
 
-        override fun acceptItem(source: Building, item: Item): Boolean {
-            return false
-        }
-
+        override fun acceptItem(source: Building, item: Item): Boolean = false
         override fun acceptData(source: IDataSender, item: Item): Boolean {
             return items[item] < getMaximumAccepted(item) &&
                     outputItem === item
@@ -292,50 +269,36 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
             items.add(item, 1)
         }
 
-        override fun config(): Item {
-            return (outputItem)!!
-        }
-
+        override fun config(): Item? = outputItem
         override fun write(write: Writes) {
             super.write(write)
             write.s(if (outputItem == null) -1 else outputItem!!.id.toInt())
             write.bool(isOutputting)
-            write.intSet(sendersPos)
+            write.intSet(senders)
         }
 
         override fun read(read: Reads, revision: Byte) {
             super.read(read, revision)
             outputItem = Vars.content.item(read.s().toInt())
             isOutputting = read.bool()
-            sendersPos = read.intSet()
+            senders = read.intSet()
         }
 
-        override fun connectedSenders(): ObjectSet<Int> {
-            return sendersPos
+        override fun connect(sender: IDataSender) {
+            senders.add(sender.building.pos())
         }
 
-        override fun connectedSender(): Int? {
-            return sendersPos.first()
+        override fun disconnect(sender: IDataSender) {
+            senders.remove(sender.building.pos())
         }
 
-        override fun acceptConnection(sender: IDataSender): Boolean {
-            return if (maxConnection == -1) {
-                true
-            } else {
-                sendersPos.size < maxConnection
-            }
-        }
+        override fun connectedSenders() = senders
+        override fun connectedSender(): Int? = senders.first()
+        override fun acceptConnection(sender: IDataSender) =
+            if (maxConnection == -1) true else senders.size < maxConnection
 
-        override fun getBuilding(): Building {
-            return this
-        }
-
-        override fun getTile(): Tile {
-            return tile()
-        }
-
-        override fun getBlock(): Block {
-            return block()
-        }
+        override fun getBuilding(): Building = this
+        override fun getTile(): Tile = tile()
+        override fun getBlock(): Block = block()
     }
 }

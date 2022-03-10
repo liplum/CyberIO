@@ -47,7 +47,7 @@ open class PrismObelisk(name: String) : Block(name) {
                         R.Bar.Linked.bundle()
                     else
                         R.Bar.NoLink.bundle()
-                }, TintedBullets.AutoRGB,
+                }, AutoRGB,
                 { if (it.linked != -1) 1f else 0f }
             )
         }
