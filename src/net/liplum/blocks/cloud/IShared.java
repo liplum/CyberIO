@@ -16,5 +16,5 @@ public interface IShared {
     @NotNull
     CloudInfo getSharedInfo();
 
-    void setSharedInfo(@NotNull CloudInfo logic);
+    void setSharedInfo(@NotNull CloudInfo info);
 }

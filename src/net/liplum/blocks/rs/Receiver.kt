@@ -2,7 +2,6 @@ package net.liplum.blocks.rs
 
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
-import arc.math.Mathf
 import arc.scene.ui.layout.Table
 import arc.struct.OrderedSet
 import arc.util.Eachable
@@ -21,12 +20,9 @@ import net.liplum.CioMod
 import net.liplum.ClientOnly
 import net.liplum.R
 import net.liplum.animations.anims.Animation
-import net.liplum.animations.anis.AniConfig
 import net.liplum.animations.anis.AniState
-import net.liplum.api.data.IDataReceiver
-import net.liplum.api.data.IDataSender
-import net.liplum.api.data.ds
-import net.liplum.api.data.exists
+import net.liplum.animations.anis.config
+import net.liplum.api.data.*
 import net.liplum.blocks.AniedBlock
 import net.liplum.blocks.rs.Receiver.ReceiverBuild
 import net.liplum.persistance.intSet
@@ -89,81 +85,6 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
         )
     }
 
-    override fun genAniState() {
-        DownloadAni = addAniState("Download") { _, build ->
-            if (build.outputItem != null) {
-                DownloadAnim.draw(Color.green, build.x, build.y)
-            }
-        }
-        UnconnectedAni = addAniState("Unconnected") { sender, build ->
-            Draw.color(Color.white)
-            Draw.rect(
-                sender.UnconnectedTR,
-                build.x, build.y
-            )
-            Draw.color()
-        }
-        BlockedAni = addAniState("Blocked") { sender, build ->
-            Draw.color(Color.red)
-            Draw.rect(
-                sender.DownArrowTR,
-                build.x, build.y
-            )
-            Draw.color()
-        }
-        NoPowerAni = addAniState("NoPower") { sender, build ->
-            Draw.rect(
-                sender.NoPowerTR,
-                build.x, build.y
-            )
-        }
-    }
-
-    override fun genAniConfig() {
-        aniConfig = AniConfig<Receiver, ReceiverBuild>().apply {
-            defaultState(UnconnectedAni)
-            // UnconnectedAni
-            From(UnconnectedAni) To DownloadAni When { _, build ->
-                build.outputItem != null
-            } To NoPowerAni When { _, build ->
-                Mathf.zero(
-                    build.power.status
-                )
-            }
-            // BlockedAni
-            From(BlockedAni) To UnconnectedAni When { _, build ->
-                build.outputItem == null
-            } To DownloadAni When { _, build ->
-                build.isOutputting || build.lastFullDataDelta < 60
-            } To NoPowerAni When { _, build ->
-                Mathf.zero(
-                    build.power.status
-                )
-            }
-            // DownloadAni
-            From(DownloadAni) To UnconnectedAni When { _, build ->
-                build.outputItem == null
-            } To BlockedAni When { _, build ->
-                !build.isOutputting && build.lastFullDataDelta > 60
-            } To NoPowerAni When { _, build ->
-                Mathf.zero(
-                    build.power.status
-                )
-            }
-            // NoPower
-            From(NoPowerAni) To UnconnectedAni When { _, build ->
-                !Mathf.zero(
-                    build.power.status
-                ) && build.outputItem == null
-            } To DownloadAni When { _, build ->
-                !Mathf.zero(
-                    build.power.status
-                ) && build.outputItem != null
-            }
-            build()
-        }
-    }
-
     override fun load() {
         super.load()
         CoverTR = this.inMod("rs-cover")
@@ -189,17 +110,18 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
     }
 
     override fun outputsItems(): Boolean = true
-    inner class ReceiverBuild : AniedBuild(), IDataReceiver {
+    open inner class ReceiverBuild : AniedBuild(), IDataReceiver {
         var outputItem: Item? = null
-        private var isOutputting = false
+        @ClientOnly
         private var lastOutputDelta = 0f
+        @ClientOnly
         var lastFullDataDelta = 0f
         var senders = OrderedSet<Int>()
-        fun checkSenderPos() {
+        open fun checkSenderPos() {
             senders.removeAll { !it.ds().exists }
         }
-
-        override fun isOutputting(): Boolean = lastOutputDelta < 30f
+        @ClientOnly
+        override fun isBlocked(): Boolean = lastOutputDelta > 30f
         override fun drawSelect() {
             val outputItem = outputItem
             G.init()
@@ -215,7 +137,7 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
             CyberU.drawSenders(this, senders)
         }
 
-        override fun fixedUpdateTile() {
+        override fun updateTile() {
             // Check connection every second
             if (Time.time % 60f < 1) {
                 checkSenderPos()
@@ -230,11 +152,13 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
                     lastFullDataDelta += deltaT
                 }
             }
-            if (!Mathf.zero(power.status) && outputItem != null) {
-                if (dump(outputItem)) {
-                    lastOutputDelta = 0f
-                } else {
-                    lastOutputDelta += deltaT
+            ClientOnly {
+                if (!power.status.isZero() && outputItem != null) {
+                    if (dump(outputItem)) {
+                        lastOutputDelta = 0f
+                    } else {
+                        lastOutputDelta += deltaT
+                    }
                 }
             }
         }
@@ -255,32 +179,33 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
         }
 
         override fun acceptItem(source: Building, item: Item): Boolean = false
-        override fun acceptData(source: IDataSender, item: Item): Boolean {
-            return items[item] < getMaximumAccepted(item) &&
-                    outputItem === item
-        }
-
-        override fun canAcceptAnyData(sender: IDataSender): Boolean {
-            val outputItem = outputItem ?: return false
-            return items[outputItem] < getMaximumAccepted(outputItem)
-        }
+        override fun acceptedAmount(sender: IDataSender, itme: Item) =
+            if (itme == outputItem)
+                getMaximumAccepted(outputItem) - items[outputItem]
+            else
+                0
 
         override fun receiveData(sender: IDataSender, item: Item, amount: Int) {
-            items.add(item, 1)
+            items.add(item, amount)
+        }
+
+        override fun getRequirements() = outputItem.req
+        @ClientOnly
+        override fun canAcceptAnyData(sender: IDataSender): Boolean {
+            val outputItem = outputItem ?: return false
+            return items[outputItem] < getMaximumAccepted(outputItem) && !isBlocked
         }
 
         override fun config(): Item? = outputItem
         override fun write(write: Writes) {
             super.write(write)
             write.s(if (outputItem == null) -1 else outputItem!!.id.toInt())
-            write.bool(isOutputting)
             write.intSet(senders)
         }
 
         override fun read(read: Reads, revision: Byte) {
             super.read(read, revision)
             outputItem = Vars.content.item(read.s().toInt())
-            isOutputting = read.bool()
             senders = read.intSet()
         }
 
@@ -300,5 +225,59 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
         override fun getBuilding(): Building = this
         override fun getTile(): Tile = tile()
         override fun getBlock(): Block = block()
+    }
+
+    override fun genAniState() {
+        DownloadAni = addAniState("Download") {
+            if (it.outputItem != null) {
+                DownloadAnim.draw(Color.green, it.x, it.y)
+            }
+        }
+        UnconnectedAni = addAniState("Unconnected") {
+            Draw.color(Color.white)
+            Draw.rect(UnconnectedTR, it.x, it.y)
+            Draw.color()
+        }
+        BlockedAni = addAniState("Blocked") {
+            Draw.color(Color.red)
+            Draw.rect(DownArrowTR, it.x, it.y)
+            Draw.color()
+        }
+        NoPowerAni = addAniState("NoPower") {
+            Draw.rect(NoPowerTR, it.x, it.y)
+        }
+    }
+
+    override fun genAniConfig() {
+        config {
+            // UnconnectedAni
+            From(UnconnectedAni) To DownloadAni When {
+                it.outputItem != null
+            } To NoPowerAni When {
+                it.power.status.isZero()
+            }
+            // BlockedAni
+            From(BlockedAni) To UnconnectedAni When {
+                it.outputItem == null
+            } To DownloadAni When {
+                !it.isBlocked || it.lastFullDataDelta < 60
+            } To NoPowerAni When {
+                it.power.status.isZero()
+            }
+            // DownloadAni
+            From(DownloadAni) To UnconnectedAni When {
+                it.outputItem == null
+            } To BlockedAni When {
+                it.isBlocked && it.lastFullDataDelta > 60
+            } To NoPowerAni When {
+                it.power.status.isZero()
+            }
+            // NoPower
+            From(NoPowerAni) To UnconnectedAni When {
+                !it.power.status.isZero() && it.outputItem == null
+            } To DownloadAni When {
+                !it.power.status.isZero() && it.outputItem != null
+            }
+        }
     }
 }

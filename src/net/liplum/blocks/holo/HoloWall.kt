@@ -131,7 +131,7 @@ open class HoloWall(name: String) : Wall(name) {
             if (!this.dead()) {
                 val dm = Vars.state.rules.blockHealth(team)
                 var d = damage
-                if (Mathf.zero(dm)) {
+                if (dm.isZero()) {
                     d = this.health + 1.0f
                 } else {
                     d /= dm

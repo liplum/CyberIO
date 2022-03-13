@@ -21,6 +21,7 @@ import net.liplum.api.virus.setUninfectedFloor
 import net.liplum.blocks.cloud.Cloud
 import net.liplum.blocks.debugonly.AdjustableOverdrive
 import net.liplum.blocks.deleter.Deleter
+import net.liplum.blocks.gadgets.SmartDistributor
 import net.liplum.blocks.holo.HoloFloor
 import net.liplum.blocks.holo.HoloWall
 import net.liplum.blocks.holo.LandProjector
@@ -56,6 +57,7 @@ class CioBlocks : ContentTable {
         @JvmStatic lateinit var holoWall: HoloWall
         @JvmStatic lateinit var holoWallLarge: HoloWall
         @JvmStatic lateinit var TMTRAINER: TMTRAINER
+        @JvmStatic lateinit var smartDistributor: SmartDistributor
     }
 
     override fun firstLoad() {
@@ -354,6 +356,21 @@ class CioBlocks : ContentTable {
                         TMTRAINER.description = RandomName.one(25)
                     }
                 }
+            }
+        }
+        DebugOnly {
+            smartDistributor = SmartDistributor("smart-distributor").apply {
+                requirements(
+                    Category.distribution, BuildVisibility.shown, arrayOf(
+                        ItemStack(CioItems.ic, 15),
+                        ItemStack(Items.surgeAlloy, 50),
+                        ItemStack(Items.thorium, 200),
+                        ItemStack(Items.phaseFabric, 100),
+                    )
+                )
+                consumes.power(3f)
+                health = 1000
+                size = 2
             }
         }
     }

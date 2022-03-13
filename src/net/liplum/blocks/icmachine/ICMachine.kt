@@ -11,6 +11,7 @@ import net.liplum.animations.anis.config
 import net.liplum.blocks.AniedCrafter
 import net.liplum.utils.FUNC
 import net.liplum.utils.autoAnim
+import net.liplum.utils.isZero
 
 private typealias AniStateM = AniState<ICMachine, ICMachine.ICMachineBuild>
 
@@ -30,20 +31,20 @@ open class ICMachine(name: String) : AniedCrafter<ICMachine, ICMachine.ICMachine
 
     override fun genAniState() {
         IdleState = addAniState("Idle")
-        WorkingState = addAniState("Working") { _, build ->
-            Draw.alpha(workingAnimAlpha(build.progress))
-            build.workingAnimObj.draw(build.x, build.y)
+        WorkingState = addAniState("Working") {
+            Draw.alpha(workingAnimAlpha(it.progress))
+            it.workingAnimObj.draw(it.x, it.y)
         }
     }
 
     override fun genAniConfig() {
         config {
             defaultState(IdleState)
-            From(IdleState) To WorkingState When { _, build ->
-                !Mathf.zero(build.progress) && !Mathf.zero(build.power.status)
+            From(IdleState) To WorkingState When {
+                !it.progress.isZero() && !it.power.status.isZero()
             }
-            From(WorkingState) To IdleState When { _, build ->
-                Mathf.zero(build.progress) || Mathf.zero(build.power.status)
+            From(WorkingState) To IdleState When {
+                it.progress.isZero() || it.power.status.isZero()
             }
             build()
         }

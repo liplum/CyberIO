@@ -37,6 +37,7 @@ dependencies {
     compileOnly "com.github.Anuken.Mindustry:core:$mindustryVersion"
     testCompileOnly "com.github.Anuken.Arc:arc-core:$mindustryVersion"
     testCompileOnly "com.github.Anuken.Mindustry:core:$mindustryVersion"
+    implementation "com.google.guava:guava:31.1-jre"
     // annotationProcessor "com.github.Anuken:jabel:$jabelVersion"
 }
 

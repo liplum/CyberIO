@@ -61,6 +61,14 @@ public class LiplumCloud {
         Read = true;
     }
 
+    public static void update() {
+        if (CurGameCloudRoom != null) {
+            for (SharedRoom room : CurGameCloudRoom.values()) {
+                room.update();
+            }
+        }
+    }
+
     public static void reset() {
         Saved = false;
         Read = false;

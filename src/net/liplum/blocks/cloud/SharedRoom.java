@@ -11,12 +11,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class SharedRoom implements Json.JsonSerializable {
-    private final transient OrderedSet<Building> users = new OrderedSet<>();
-    @Nullable
+    public final transient OrderedSet<Building> users = new OrderedSet<>();
+    /**
+     * Lateinit
+     */
     public ItemModule sharedItemModule;
     private transient boolean onlyOnCloud = false;
     @NotNull
-    public transient CloudInfo sharedInfo = new CloudInfo();
+    public transient CloudInfo sharedInfo = new CloudInfo(this);
     public transient Runnable whenOfflineLastOne = null;
 
     public void online(IShared sharedBuild) {
@@ -37,6 +39,12 @@ public class SharedRoom implements Json.JsonSerializable {
                 whenOfflineLastOne.run();
             }
             users.remove(b);
+        }
+    }
+
+    public void update() {
+        if (!users.isEmpty() && sharedItemModule != null) {
+            sharedInfo.update();
         }
     }
 

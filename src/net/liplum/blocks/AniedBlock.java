@@ -78,7 +78,7 @@ public abstract class AniedBlock<TBlock extends AniedBlock<?, ?>, TBuild extends
      * @param canEnter When the current State can enter next
      * @return the configuration self
      */
-    public AniConfig<TBlock, TBuild> entry(String from, String to, ITrigger<TBlock, TBuild> canEnter) {
+    public AniConfig<TBlock, TBuild> entry(String from, String to, ITrigger<TBuild> canEnter) {
         return aniConfig.entry(getAniStateByName(from), getAniStateByName(to), canEnter);
     }
 
@@ -107,24 +107,8 @@ public abstract class AniedBlock<TBlock extends AniedBlock<?, ?>, TBuild extends
         /**
          * Overwrite this please
          */
-        public void fixedUpdateTile() {
-
-        }
-
-        /**
-         * Overwrite this please
-         */
         public void fixedDraw() {
 
-        }
-
-        /**
-         * Don't overwrite it unless you want a custom function
-         */
-        @Override
-        public void updateTile() {
-            super.updateTile();
-            fixedUpdateTile();
         }
 
         /**

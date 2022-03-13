@@ -4,11 +4,15 @@ import arc.util.Nullable;
 import mindustry.gen.Building;
 import mindustry.world.Block;
 import net.liplum.api.ITrigger;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
 
 public class AniStateM<TBlock extends Block, TBuild extends Building> {
     private final TBlock block;
     private final TBuild build;
     private final AniConfig<TBlock, TBuild> config;
+    @NotNull
     private AniState<TBlock, TBuild> curState;
     @Nullable
     private ISwitchAniStateListener<TBlock, TBuild> switchAniStateListener;
@@ -17,7 +21,7 @@ public class AniStateM<TBlock extends Block, TBuild extends Building> {
 
     public AniStateM(AniConfig<TBlock, TBuild> config, TBlock block, TBuild build) {
         this.config = config;
-        this.curState = config.getDefaultState();
+        this.curState = Objects.requireNonNull(config.getDefaultState());
         this.block = block;
         this.build = build;
     }
@@ -39,20 +43,21 @@ public class AniStateM<TBlock extends Block, TBuild extends Building> {
         return this;
     }
 
+    @NotNull
     public AniState<TBlock, TBuild> getCurState() {
         return curState;
     }
 
-    public void setCurState(AniState<TBlock, TBuild> curState) {
+    public void setCurState(@NotNull AniState<TBlock, TBuild> curState) {
         this.curState = curState;
     }
 
     public void drawBuilding() {
-        curState.drawBuilding(this.block, this.build);
+        curState.drawBuilding(this.build);
     }
 
     public boolean curOverwriteBlock() {
-        return curState != null && curState.isOverwriteBlock();
+        return curState.isOverwriteBlock();
     }
 
     public void update() {
@@ -60,8 +65,8 @@ public class AniStateM<TBlock extends Block, TBuild extends Building> {
             onUpdate.run();
         }
         for (AniState<TBlock, TBuild> to : config.getAllEntrances(curState)) {
-            ITrigger<TBlock, TBuild> canEnter = config.getCanEnter(curState, to);
-            if (canEnter != null && canEnter.canTrigger(this.block, this.build)) {
+            ITrigger<TBuild> canEnter = config.getCanEnter(curState, to);
+            if (canEnter != null && canEnter.canTrigger(this.build)) {
                 if (switchAniStateListener != null) {
                     switchAniStateListener.onSwitch(this.block, this.build, curState, to);
                 }

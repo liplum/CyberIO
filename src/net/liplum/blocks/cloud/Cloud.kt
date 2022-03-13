@@ -3,6 +3,7 @@ package net.liplum.blocks.cloud
 import arc.graphics.g2d.Draw
 import arc.math.Mathf
 import arc.struct.ObjectSet
+import arc.struct.OrderedSet
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.gen.Building
@@ -22,11 +23,15 @@ import net.liplum.animations.anims.IFrameIndexer
 import net.liplum.animations.anims.ixAuto
 import net.liplum.animations.anis.AniConfig
 import net.liplum.animations.anis.AniState
+import net.liplum.animations.anis.config
 import net.liplum.animations.blocks.*
+import net.liplum.api.data.CyberU
 import net.liplum.api.data.IDataReceiver
 import net.liplum.api.data.IDataSender
+import net.liplum.api.data.dr
 import net.liplum.persistance.intSet
 import net.liplum.utils.*
+import kotlin.math.absoluteValue
 
 private typealias Anim = Animation
 private typealias BGType = BlockGroupType<Cloud, Cloud.CloudBuild>
@@ -54,32 +59,248 @@ open class Cloud(name: String) : PowerBlock(name) {
         saveConfig = true
         configurable = true
         itemCapacity = 10
+        noUpdateDisabled = true
+        unloadable = false
+        group = BlockGroup.none
 
-        group = BlockGroup.logic
         ClientOnly {
             this.genAnimState()
             this.genAniConfig()
             this.genBlockTypes()
         }
+
+        config(Integer::class.java) { obj: CloudBuild, receiverPackedPos ->
+            obj.setReceiver(receiverPackedPos.toInt())
+        }
+        configClear { obj: CloudBuild ->
+            obj.clearReceiver()
+        }
+    }
+
+    override fun setBars() {
+        super.setBars()
+        bars.remove("items")
+        DebugOnly {
+            bars.addTeamInfo()
+        }
+    }
+
+    override fun load() {
+        super.load()
+        cloud = this.sub("cloud")
+        DataTransferAnim = this.autoAnim("data-transfer", 18, 50f)
+        ShredderAnim = this.autoAnim("shredder", 13, 60f)
+    }
+
+    override fun outputsItems() = false
+    open inner class CloudBuild : Building(), IShared, IDataReceiver, IDataSender {
+        lateinit var cloudRoom: SharedRoom
+        lateinit var aniBlockGroupObj: BlockGroupObj<Cloud, CloudBuild>
+        lateinit var info: CloudInfo
+        lateinit var floatingCloudIx: IFrameIndexer
+        lateinit var dataTransferIx: IFrameIndexer
+        lateinit var shredderIx: IFrameIndexer
+        var cloudXOffset = 0f
+        var cloudYOffset = 0f
+        var teamID = 0
+        val isWorking: Boolean
+            get() = !power.status.isZero()
+
+        override fun updateTile() {
+        }
+
+        open fun setReceiver(pos: Int) {
+            if (pos >= 0) {
+                val dr = pos.dr()
+                if (dr != null) {
+                    connect(dr)
+                }
+            } else {
+                val dr = pos.absoluteValue.dr()
+                if (dr != null) {
+                    disconnect(dr)
+                }
+            }
+        }
+
+        open fun clearReceiver() {
+            info.receiversPos.clear()
+        }
+
+        override fun created() {
+            cloudRoom = LiplumCloud.getCloud(team)
+            cloudRoom.online(this)
+            ClientOnly {
+                //floatingCloudIx = floatingCloudAnim.indexByTimeScale(this)
+                dataTransferIx = DataTransferAnim.ixAuto(this)
+                shredderIx = ShredderAnim.ixAuto(this)
+                aniBlockGroupObj = BlockG.newObj(this@Cloud, this)
+            }
+        }
+
+        override fun onRemoved() {
+            cloudRoom.offline(this)
+        }
+
+        override fun acceptItem(source: Building, item: Item) = false
+        override fun sendData(receiver: IDataReceiver, item: Item, amount: Int): Int {
+            val rest = super.sendData(receiver, item, amount)
+            info.lastReceiveOrSendDataTime = 0f
+            return rest
+        }
+
+        override fun receiveData(sender: IDataSender, item: Item, amount: Int) {
+            val space = itemCapacity - items[item]//100-98=2 or 100-87=13
+            if (space >= 0) {//2>0 or 13>0
+                val rest = amount - space//5-2=3 or 5-13=-8
+                if (rest >= 0) {
+                    items.add(item, space)//space < amount
+                    info.lastShredTime = 0f
+                } else {
+                    items.add(item, amount)//space > amount
+                }
+                info.lastReceiveOrSendDataTime = 0f
+            } else {
+                items[item] = itemCapacity
+                info.lastShredTime = 0f
+            }
+        }
+
+        override fun acceptedAmount(sender: IDataSender, itme: Item): Int {
+            return -1
+        }
+
+        override fun handleItem(source: Building, item: Item) {
+        }
+
+        override fun handleStack(item: Item, amount: Int, source: Teamc) {
+        }
+        @ClientOnly
+        override fun canAcceptAnyData(sender: IDataSender) = true
+        override fun getRequirements(): Array<Item>? = null
+        @ClientOnly
+        override fun isBlocked() = false
+        override fun connect(sender: IDataSender) {
+            info.sendersPos.add(sender.building.pos())
+        }
+
+        override fun disconnect(sender: IDataSender) {
+            info.sendersPos.remove(sender.building.pos())
+        }
+
+        override fun connect(receiver: IDataReceiver) {
+            info.receiversPos.add(receiver.building.pos())
+        }
+
+        override fun disconnect(receiver: IDataReceiver) {
+            info.receiversPos.remove(receiver.building.pos())
+        }
+
+        override fun draw() {
+            WhenRefresh {
+                aniBlockGroupObj.update()
+            }
+            super.draw()
+            aniBlockGroupObj.drawBuilding()
+        }
+
+        override fun onConfigureTileTapped(other: Building): Boolean {
+            if (this === other) {
+                deselect()
+                configure(null)
+                return false
+            }
+            if (other.pos() in info.receiversPos) {
+                deselect()
+                configure(-other.pos())
+                return false
+            }
+            if (other is IDataReceiver) {
+                deselect()
+                if (other.acceptConnection(this)) {
+                    configure(other.pos())
+                }
+                return false
+            }
+            return true
+        }
+
+        override fun drawSelect() {
+            G.init()
+            G.drawSurroundingCircle(tile, R.C.Cloud)
+
+            CyberU.drawSenders(this, info.sendersPos)
+            CyberU.drawReceivers(this, info.receiversPos)
+        }
+
+        override fun connectedSenders(): ObjectSet<Int> =
+            info.sendersPos
+
+        override fun connectedSender(): Int? =
+            if (info.sendersPos.isEmpty)
+                null
+            else
+                info.sendersPos.first()
+
+        override fun canMultipleConnect() = true
+        override fun connectedReceiver(): Int? =
+            if (info.receiversPos.isEmpty)
+                null
+            else
+                info.receiversPos.first()
+
+        override fun connectedReceivers(): OrderedSet<Int> =
+            info.sendersPos
+
+        override fun acceptConnection(sender: IDataSender): Boolean {
+            return true
+        }
+
+        override fun write(write: Writes) {
+            super.write(write)
+            write.intSet(info.sendersPos)
+        }
+
+        override fun read(read: Reads, revision: Byte) {
+            super.read(read, revision)
+            info.sendersPos = read.intSet()
+        }
+
+        override fun getSharedItems(): ItemModule = items
+        override fun setSharedItems(itemModule: ItemModule) {
+            items = itemModule
+        }
+
+        override fun getBuilding() = this
+        override fun getSharedInfo(): CloudInfo = info
+        override fun setSharedInfo(info: CloudInfo) {
+            this.info = info
+        }
+
+        override fun getTile(): Tile = tile
+        override fun getBlock(): Block = block
     }
 
     open fun genAnimState() {
-        CloudIdleAni = AniState("Idle") { _, build ->
+        CloudIdleAni = AniState("Idle") {
             Draw.rect(
                 cloud,
-                build.x + build.cloudXOffset,
-                build.y + build.cloudYOffset
+                it.x + it.cloudXOffset,
+                it.y + it.cloudYOffset
             )
         }
         CloudNoPowerAni = AniState("NoPower")
     }
 
     open fun genAniConfig() {
-        CloudAniConfig = AniConfig()
-        CloudAniConfig.defaultState(CloudNoPowerAni)
-        CloudAniConfig.entry(CloudNoPowerAni, CloudIdleAni) { _, build -> build.isWorking }
-        CloudAniConfig.entry(CloudIdleAni, CloudNoPowerAni) { _, build -> !build.isWorking }
-        CloudAniConfig.build()
+        CloudAniConfig = config {
+            From(CloudNoPowerAni) To CloudIdleAni When {
+                it.isWorking
+            }
+            From(CloudIdleAni) To CloudNoPowerAni When {
+                !it.isWorking
+            }
+        }
     }
 
     open fun genBlockTypes() {
@@ -92,7 +313,7 @@ open class Cloud(name: String) : PowerBlock(name) {
                     }
 
                     override fun drawBuild() {
-                        xOffset =Mathf.range(cloudFloatRange)
+                        xOffset = Mathf.range(cloudFloatRange)
                         build.cloudXOffset = xOffset
                         yOffset = Mathf.range(cloudFloatRange)
                         build.cloudYOffset = yOffset
@@ -125,140 +346,5 @@ open class Cloud(name: String) : PowerBlock(name) {
                 }
             })
         }
-    }
-
-    override fun setBars() {
-        super.setBars()
-        bars.remove("items")
-        DebugOnly {
-            bars.addTeamInfo()
-        }
-    }
-
-    override fun load() {
-        super.load()
-        cloud = this.sub("cloud")
-        DataTransferAnim = this.autoAnim("data-transfer", 18, 50f)
-        ShredderAnim = this.autoAnim("shredder", 13, 60f)
-    }
-
-    override fun outputsItems() = false
-    open inner class CloudBuild : Building(), IShared, IDataReceiver, IDataSender {
-        lateinit var cloudRoom: SharedRoom
-        lateinit var aniBlockGroupObj: BlockGroupObj<Cloud, CloudBuild>
-        lateinit var info: CloudInfo
-        lateinit var floatingCloudIx: IFrameIndexer
-        lateinit var dataTransferIx: IFrameIndexer
-        lateinit var shredderIx: IFrameIndexer
-        var cloudXOffset = 0f
-        var cloudYOffset = 0f
-        var teamID = 0
-        val isWorking: Boolean
-            get() = !Mathf.zero(power.status)
-
-        override fun updateTile() {
-            info.lastReceiveOrSendDataTime += edelta()
-            info.lastShredTime += edelta()
-        }
-
-        override fun created() {
-            cloudRoom = LiplumCloud.getCloud(team)
-            cloudRoom.online(this)
-            ClientOnly {
-                //floatingCloudIx = floatingCloudAnim.indexByTimeScale(this)
-                dataTransferIx = DataTransferAnim.ixAuto(this)
-                shredderIx = ShredderAnim.ixAuto(this)
-                aniBlockGroupObj = BlockG.newObj(this@Cloud, this)
-            }
-        }
-
-        override fun onRemoved() {
-            cloudRoom.offline(this)
-        }
-
-        override fun acceptItem(source: Building, item: Item) = false
-        override fun sendData(receiver: IDataReceiver, item: Item, amount: Int) {
-            receiver.receiveData(this, item, amount)
-            info.lastReceiveOrSendDataTime = 0f
-        }
-
-        override fun acceptData(sender: IDataSender, item: Item) = true
-        override fun receiveData(sender: IDataSender, item: Item, amount: Int) {
-            val space = itemCapacity - items[item]//100-98=2 or 100-87=13
-            if (space >= 0) {//2>0 or 13>0
-                val rest = amount - space//5-2=3 or 5-13=-8
-                if (rest >= 0) {
-                    items.add(item, space)//space < amount
-                    info.lastShredTime = 0f
-                } else {
-                    items.add(item, amount)//space > amount
-                }
-                info.lastReceiveOrSendDataTime = 0f
-            } else {
-                items[item] = itemCapacity
-                info.lastShredTime = 0f
-            }
-        }
-
-        override fun handleItem(source: Building, item: Item) {}
-        override fun handleStack(item: Item, amount: Int, source: Teamc) {}
-        override fun canAcceptAnyData(sender: IDataSender) = true
-        override fun isOutputting() = true
-        override fun connect(sender: IDataSender) {
-            info.sendersPos.add(sender.building.pos())
-        }
-
-        override fun disconnect(sender: IDataSender) {
-            info.sendersPos.remove(sender.building.pos())
-        }
-
-        override fun draw() {
-            WhenRefresh {
-                aniBlockGroupObj.update()
-            }
-            super.draw()
-            aniBlockGroupObj.drawBuilding()
-        }
-
-        override fun drawSelect() {
-            G.init()
-            G.drawSurroundingCircle(tile, R.C.Cloud)
-
-            CyberU.drawSenders(this, info.sendersPos)
-        }
-
-        override fun connectedReceiver(): Int? {
-            return null
-        }
-
-        override fun connectedSenders(): ObjectSet<Int> = info.sendersPos
-        override fun connectedSender(): Int? = info.sendersPos.first()
-        override fun acceptConnection(sender: IDataSender): Boolean {
-            return true
-        }
-
-        override fun write(write: Writes) {
-            super.write(write)
-            write.intSet(info.sendersPos)
-        }
-
-        override fun read(read: Reads, revision: Byte) {
-            super.read(read, revision)
-            info.sendersPos = read.intSet()
-        }
-
-        override fun getSharedItems(): ItemModule = items
-        override fun setSharedItems(itemModule: ItemModule) {
-            items = itemModule
-        }
-
-        override fun getBuilding() = this
-        override fun getSharedInfo(): CloudInfo = info
-        override fun setSharedInfo(info: CloudInfo) {
-            this.info = info
-        }
-
-        override fun getTile(): Tile = tile
-        override fun getBlock(): Block = block
     }
 }

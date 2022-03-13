@@ -13,7 +13,7 @@ import mindustry.world.Block;
 public class AniState<TBlock extends Block, TBuild extends Building> {
     private final String stateName;
     @Nullable
-    private final IRenderBehavior<TBlock, TBuild> renderBehavior;
+    private final IRenderBehavior<TBuild> renderBehavior;
     private boolean overwriteBlock = false;
 
     /**
@@ -28,7 +28,7 @@ public class AniState<TBlock extends Block, TBuild extends Building> {
      * @param stateName a name
      * @param rb        how to render
      */
-    public AniState(String stateName, IRenderBehavior<TBlock, TBuild> rb) {
+    public AniState(String stateName, IRenderBehavior<TBuild> rb) {
         this.stateName = stateName;
         this.renderBehavior = rb;
     }
@@ -44,12 +44,11 @@ public class AniState<TBlock extends Block, TBuild extends Building> {
 
     /**
      * Renders the current image
-     * @param block the block of {@code build}
      * @param build the subject to be rendered
      */
-    public void drawBuilding(TBlock block, TBuild build) {
+    public void drawBuilding(TBuild build) {
         if (this.renderBehavior != null) {
-            this.renderBehavior.drawBuild(block, build);
+            this.renderBehavior.drawBuild(build);
         }
     }
 

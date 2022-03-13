@@ -1,7 +1,6 @@
 package net.liplum.blocks.icmachine
 
 import arc.graphics.g2d.Draw
-import arc.math.Mathf
 import mindustry.graphics.Pal
 import mindustry.type.Item
 import mindustry.ui.Bar
@@ -34,20 +33,20 @@ open class ICMachineS(name: String) : AniedCrafter<ICMachineS, ICMachineS.ICMach
     @ClientOnly @JvmField var baffleMinAlpha = 0.65f
     @ClientOnly @JvmField var baffleMaxAlpha = 1f
     override fun genAniState() {
-        IdleState = addAniState("Idle") { _, build ->
-            Draw.alpha(build.baffleAlpha)
-            Draw.rect(Baffle, build.x, build.y)
+        IdleState = addAniState("Idle") {
+            Draw.alpha(it.baffleAlpha)
+            Draw.rect(Baffle, it.x, it.y)
         }
-        WorkingState = addAniState("Working") { _, build ->
+        WorkingState = addAniState("Working") {
             Draw.alpha(1f)
-            val animProgress = build.progress * phase
+            val animProgress = it.progress * phase
             val curIndex = animProgress.toInt().coerceIn(0, processIcons.size - 1)
             val curTR = processIcons[curIndex].fullIcon
-            val progressInCurPeriod = build.progress % (1f / phase) / (1f / phase)
+            val progressInCurPeriod = it.progress % (1f / phase) / (1f / phase)
             Draw.alpha(P2A(progressInCurPeriod))
-            Draw.rect(curTR, build.x, build.y)
-            Draw.alpha(build.baffleAlpha)
-            Draw.rect(Baffle, build.x, build.y)
+            Draw.rect(curTR, it.x, it.y)
+            Draw.alpha(it.baffleAlpha)
+            Draw.rect(Baffle, it.x, it.y)
         }
     }
 
@@ -78,11 +77,11 @@ open class ICMachineS(name: String) : AniedCrafter<ICMachineS, ICMachineS.ICMach
     override fun genAniConfig() {
         config {
             defaultState(IdleState)
-            From(IdleState) To WorkingState When { _, build ->
-                !Mathf.zero(build.progress) && !Mathf.zero(build.power.status)
+            From(IdleState) To WorkingState When {
+                !it.progress.isZero() && !it.power.status.isZero()
             }
-            From(WorkingState) To IdleState When { _, build ->
-                Mathf.zero(build.progress) || Mathf.zero(build.power.status)
+            From(WorkingState) To IdleState When {
+                it.progress.isZero() || it.power.status.isZero()
             }
             build()
         }

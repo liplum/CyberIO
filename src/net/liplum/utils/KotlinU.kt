@@ -19,3 +19,5 @@ fun <T> ArrayList(len: Int, gen: (Int) -> T) =
 infix fun Int.between(end: Int): IntRange {
     return IntRange(this + 1, end - 1)
 }
+
+fun <T> Class<T>.EmptyArray(): Array<T> = JavaU.emptyArray(this)

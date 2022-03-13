@@ -9,10 +9,7 @@ import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.ui.Bar
 import mindustry.world.blocks.defense.OverdriveProjector
-import net.liplum.utils.ExpLogGen
-import net.liplum.utils.FUNC
-import net.liplum.utils.percentI
-import net.liplum.utils.shrink
+import net.liplum.utils.*
 import kotlin.math.abs
 
 open class AdjustableOverdrive(name: String) : OverdriveProjector(name) {
@@ -26,6 +23,7 @@ open class AdjustableOverdrive(name: String) : OverdriveProjector(name) {
         hasBoost = false
         baseColor = Color.red
         configurable = true
+        saveConfig = true
         config(java.lang.Byte::class.java) { b: AOBuild, i ->
             b.setGear(i.toInt())
         }
@@ -50,7 +48,7 @@ open class AdjustableOverdrive(name: String) : OverdriveProjector(name) {
     override fun init() {
         super.init()
         adjustBase = abs(adjustBase)
-        if (Mathf.zero(adjustBase)) {
+        if (adjustBase.isZero()) {
             adjustBase = 1f
         }
         val (func, rfunc) = ExpLogGen(adjustBase)

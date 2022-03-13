@@ -16,11 +16,12 @@ class AniConfig<TBlock : Block, TBuild : Building> {
     /**
      * Key --to--> When can go to the next State
      */
-    private val canEnters = HashMap<Any, ITrigger<TBlock, TBuild>>()
+    private val canEnters = HashMap<Any, ITrigger<TBuild>>()
     /**
      * Current State --to--> The next all possible State
      */
     private val allEntrances = HashMap<AniState<TBlock, TBuild>, MutableList<AniState<TBlock, TBuild>>>()
+    var firstConfigedState: AniState<TBlock, TBuild>? = null
     /**
      * Gets the default State
      *
@@ -34,7 +35,8 @@ class AniConfig<TBlock : Block, TBuild : Building> {
     /**
      * Whether this configuration has built
      */
-    private var built = false
+    var built = false
+        private set
     /**
      * Which from State is configuring
      */
@@ -59,6 +61,9 @@ class AniConfig<TBlock : Block, TBuild : Building> {
         defaultState = state
         return this
     }
+
+    val allConfigedStates: MutableSet<AniState<TBlock, TBuild>>
+        get() = allEntrances.keys
     /**
      * Creates an entry
      *
@@ -71,7 +76,7 @@ class AniConfig<TBlock : Block, TBuild : Building> {
      */
     fun entry(
         from: AniState<TBlock, TBuild>, to: AniState<TBlock, TBuild>,
-        canEnter: ITrigger<TBlock, TBuild>
+        canEnter: ITrigger<TBuild>
     ): AniConfig<TBlock, TBuild> {
         if (built) {
             throw AlreadyBuiltException(this.toString())
@@ -98,6 +103,9 @@ class AniConfig<TBlock : Block, TBuild : Building> {
         if (built) {
             throw AlreadyBuiltException(this.toString())
         }
+        if (firstConfigedState == null) {
+            firstConfigedState = from
+        }
         curConfiguringFromState = from
         return this
     }
@@ -108,7 +116,7 @@ class AniConfig<TBlock : Block, TBuild : Building> {
      * @param canEnter When the State Machine can go from current State to next State
      * @return this
      */
-    fun To(to: AniState<TBlock, TBuild>, canEnter: ITrigger<TBlock, TBuild>): AniConfig<TBlock, TBuild> {
+    fun To(to: AniState<TBlock, TBuild>, canEnter: ITrigger<TBuild>): AniConfig<TBlock, TBuild> {
         if (built) {
             throw AlreadyBuiltException(this.toString())
         }
@@ -146,7 +154,7 @@ class AniConfig<TBlock : Block, TBuild : Building> {
      * @param canEnter When the State Machine can go from current State to next State
      * @return this
      */
-    infix fun When(canEnter: ITrigger<TBlock, TBuild>): AniConfig<TBlock, TBuild> {
+    infix fun When(canEnter: ITrigger<TBuild>): AniConfig<TBlock, TBuild> {
         if (built) {
             throw AlreadyBuiltException(this.toString())
         }
@@ -205,7 +213,7 @@ class AniConfig<TBlock : Block, TBuild : Building> {
      * @return if the key of `form`->`to` exists, return the condition. Otherwise, return null.
      */
     @Nullable
-    fun getCanEnter(from: AniState<TBlock, TBuild>, to: AniState<TBlock, TBuild>): ITrigger<TBlock, TBuild>? {
+    fun getCanEnter(from: AniState<TBlock, TBuild>, to: AniState<TBlock, TBuild>): ITrigger<TBuild>? {
         return canEnters[getKey(from, to)]!!
     }
     /**

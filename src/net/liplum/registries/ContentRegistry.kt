@@ -19,7 +19,6 @@ object ContentRegistry {
         ContentTables.forEach {
             it.lastLoad()
         }
-        tintedBulletsRegistryLoad()
     }
 
     fun ContentTable.add(): ContentTable {

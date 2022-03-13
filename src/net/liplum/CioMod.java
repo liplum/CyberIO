@@ -5,6 +5,7 @@ import arc.Events;
 import arc.util.Log;
 import arc.util.Time;
 import mindustry.Vars;
+import mindustry.core.GameState;
 import mindustry.io.JsonIO;
 import mindustry.mod.Mod;
 import mindustry.ui.dialogs.BaseDialog;
@@ -15,6 +16,7 @@ import net.liplum.registries.ShaderRegistry;
 import net.liplum.utils.AtlasU;
 
 import static mindustry.game.EventType.*;
+import static net.liplum.registries.TintedBulletsRegistryKt.tintedBulletsRegistryLoad;
 
 public class CioMod extends Mod {
     public static final boolean IsClient = !Vars.headless;
@@ -65,7 +67,13 @@ public class CioMod extends Mod {
         if (DebugMode) {
             Vars.enableConsole = true;
         }
-        //Core.settings.put("",1);
+        tintedBulletsRegistryLoad();
+        Events.run(Trigger.update, () -> {
+            GameState state = Vars.state;
+            if (state.isGame() && !state.isPaused()) {
+                LiplumCloud.update();
+            }
+        });
     }
 
     @Override

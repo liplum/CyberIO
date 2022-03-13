@@ -3,8 +3,8 @@ package net.liplum.blocks.rs
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
 import arc.graphics.g2d.Lines
-import arc.math.Mathf
 import arc.util.Nullable
+import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.Vars
@@ -17,10 +17,12 @@ import net.liplum.CioMod
 import net.liplum.ClientOnly
 import net.liplum.R
 import net.liplum.animations.anims.Animation
-import net.liplum.animations.anis.AniConfig
 import net.liplum.animations.anis.AniState
+import net.liplum.animations.anis.config
+import net.liplum.api.data.CyberU
 import net.liplum.api.data.IDataReceiver
 import net.liplum.api.data.IDataSender
+import net.liplum.api.data.isAccepted
 import net.liplum.blocks.AniedBlock
 import net.liplum.blocks.rs.Sender.SenderBuild
 import net.liplum.utils.*
@@ -48,10 +50,9 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
         configurable = true
         group = BlockGroup.transportation
         canOverdrive = false
+        unloadable = false
         config(Integer::class.java) { obj: SenderBuild, receiverPackedPos ->
-            obj.setReceiverPackedPos(
-                receiverPackedPos.toInt()
-            )
+            obj.receiverPackedPos = receiverPackedPos.toInt()
         }
         configClear<SenderBuild> {
             it.clearReceiver()
@@ -79,36 +80,31 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
         }
     }
 
-    inner class SenderBuild : AniedBuild(), IDataSender {
-        private var receiverPackedPos = -1
-        fun getReceiverPackedPos(): Int {
-            return receiverPackedPos
-        }
+    open inner class SenderBuild : AniedBuild(), IDataSender {
+        var receiverPackedPos = -1
+            set(value) {
+                var curBuild = receiverBuilding
+                curBuild?.disconnect(this)
+                field = value
+                curBuild = receiverBuilding
+                curBuild?.connect(this)
+            }
 
-        fun setReceiverPackedPos(receiverPackedPos: Int) {
-            var curBuild = receiverBuilding
-            curBuild?.disconnect(this)
-            this.receiverPackedPos = receiverPackedPos
-            curBuild = receiverBuilding
-            curBuild?.connect(this)
-        }
-
-        private fun checkReceiverPos() {
-            if (getReceiverPackedPos() != -1 && receiverBuilding == null) {
-                setReceiverPackedPos(-1)
+        open fun checkReceiverPos() {
+            if (receiverPackedPos != -1 && receiverBuilding == null) {
+                receiverPackedPos = -1
             }
         }
 
-        override fun fixedUpdateTile() {
-            checkReceiverPos()
+        override fun updateTile() {
+            // Check connection every second
+            if (Time.time % 60f < 1) {
+                checkReceiverPos()
+            }
         }
 
         override fun toString(): String {
             return super.toString() + "(receiverPackedPos:" + receiverPackedPos + ")"
-        }
-
-        override fun sendData(receiver: IDataReceiver, item: Item, amount: Int) {
-            receiver.receiveData(this, item, amount)
         }
         @Nullable
         override fun connectedReceiver(): Int? {
@@ -118,26 +114,21 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
         override fun drawSelect() {
             G.init()
             G.drawSurroundingCircle(tile, R.C.Sender)
-            val dr = receiverBuilding
-            if (dr != null) {
-                val ret = dr.tile
-                G.drawSurroundingCircle(ret, R.C.Receiver)
-                G.drawDashLineBetweenTwoBlocks(tile, ret, R.C.Sender)
-                G.drawArrowBetweenTwoBlocks(tile, ret, R.C.Sender)
-            }
+
+            CyberU.drawReceiver(this, receiverPackedPos)
         }
 
         override fun handleItem(source: Building, item: Item) {
             val reb = receiverBuilding
-            if (reb != null && !Mathf.zero(power.status)) {
+            if (reb != null && !power.status.isZero()) {
                 sendData(reb, item, 1)
             }
         }
-
-        @get:Nullable val receiverBuilding: IDataReceiver?
+        @get:Nullable
+        val receiverBuilding: IDataReceiver?
             get() {
-                if (getReceiverPackedPos() != -1) {
-                    val rBuild = Vars.world.build(getReceiverPackedPos())
+                if (receiverPackedPos != -1) {
+                    val rBuild = Vars.world.build(receiverPackedPos)
                     if (rBuild is IDataReceiver) {
                         return rBuild
                     }
@@ -149,13 +140,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
             G.init()
             Lines.stroke(1f)
             G.drawSurroundingCircle(tile, R.C.Sender)
-            val dr = receiverBuilding
-            if (dr != null) {
-                val ret = dr.tile
-                G.drawSurroundingCircle(ret, R.C.Receiver)
-                G.drawDashLineBetweenTwoBlocks(tile, ret, R.C.Sender)
-                G.drawArrowBetweenTwoBlocks(tile, ret, R.C.Sender)
-            }
+            CyberU.drawReceiver(this, receiverPackedPos)
         }
 
         fun clearReceiver() {
@@ -168,16 +153,15 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
                 clearReceiver()
                 return false
             }
-            if (getReceiverPackedPos() == other.pos()) {
+            if (receiverPackedPos == other.pos()) {
                 deselect()
                 clearReceiver()
                 return false
             }
             if (other is IDataReceiver) {
                 deselect()
-                val receiver = other as IDataReceiver
-                if (receiver.acceptConnection(this)) {
-                    setReceiver(receiver)
+                if (other.acceptConnection(this)) {
+                    setReceiver(other)
                 }
                 return false
             }
@@ -189,11 +173,11 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
         }
 
         override fun acceptItem(source: Building, item: Item): Boolean {
-            if (Mathf.zero(power.status)) {
+            if (power.status.isZero()) {
                 return false
             }
             val reb = receiverBuilding
-            return reb?.acceptData(this, item) ?: false
+            return reb?.acceptedAmount(this, item)?.isAccepted() ?: false
         }
 
         override fun write(write: Writes) {
@@ -207,7 +191,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
         }
 
         override fun config(): Any {
-            return getReceiverPackedPos()
+            return receiverPackedPos
         }
 
         override fun getBuilding(): Building {
@@ -221,77 +205,83 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
         override fun getBlock(): Block {
             return block()
         }
+
+        override fun connect(receiver: IDataReceiver) {
+            setReceiver(receiver)
+        }
+
+        override fun disconnect(receiver: IDataReceiver) {
+            clearReceiver()
+        }
     }
 
     override fun genAniState() {
         IdleAni = addAniState("Idle")
 
-        UploadAni = addAniState("Upload") { _, build ->
+        UploadAni = addAniState("Upload") {
             UploadAnim.draw(
                 Color.green,
-                build.x,
-                build.y
+                it.x,
+                it.y
             )
         }
-        BlockedAni = addAniState("Blocked") { sender, build ->
+        BlockedAni = addAniState("Blocked") {
             Draw.color(Color.red)
             Draw.rect(
-                sender.UpArrowTR,
-                build.x, build.y
+                UpArrowTR,
+                it.x, it.y
             )
             Draw.color()
         }
-        NoPowerAni = addAniState("NoPower") { sender, build ->
+        NoPowerAni = addAniState("NoPower") {
             Draw.rect(
-                sender.NoPowerTR,
-                build.x, build.y
+                NoPowerTR,
+                it.x, it.y
             )
         }
     }
 
     override fun genAniConfig() {
-        aniConfig = AniConfig<Sender, SenderBuild>().apply {
-            defaultState(IdleAni)
+        config {
             // Idle
-            From(IdleAni) To UploadAni When { _, build ->
-                val reb = build.receiverBuilding
-                reb != null && reb.canAcceptAnyData(build)
-            } To BlockedAni When { _, build ->
-                val reb = build.receiverBuilding
-                reb != null && !reb.isOutputting && !reb.canAcceptAnyData(build)
-            } To NoPowerAni When { _, build ->
-                Mathf.zero(build.power.status)
+            From(IdleAni) To UploadAni When {
+                val reb = it.receiverBuilding
+                reb != null && reb.canAcceptAnyData(it)
+            } To BlockedAni When {
+                val reb = it.receiverBuilding
+                reb != null && (reb.isBlocked || !reb.canAcceptAnyData(it))
+            } To NoPowerAni When {
+                it.power.status.isZero()
             }
             // Upload
-            From(UploadAni) To IdleAni When { _, build ->
-                build.getReceiverPackedPos() == -1
-            } To BlockedAni When { _, build ->
-                val reb = build.receiverBuilding
-                reb != null && !reb.isOutputting && !reb.canAcceptAnyData(build)
-            } To NoPowerAni When { _, build ->
-                Mathf.zero(build.power.status)
+            From(UploadAni) To IdleAni When {
+                it.receiverPackedPos == -1
+            } To BlockedAni When {
+                val reb = it.receiverBuilding
+                reb != null && (reb.isBlocked || !reb.canAcceptAnyData(it))
+            } To NoPowerAni When {
+                it.power.status.isZero()
             }
             // Blocked
-            From(BlockedAni) To IdleAni When { _, build ->
-                build.getReceiverPackedPos() == -1
-            } To UploadAni When { _, build ->
-                val reb = build.receiverBuilding
-                reb != null && (reb.isOutputting || reb.canAcceptAnyData(build))
-            } To NoPowerAni When { _, build ->
-                Mathf.zero(build.power.status)
+            From(BlockedAni) To IdleAni When {
+                it.receiverPackedPos == -1
+            } To UploadAni When {
+                val reb = it.receiverBuilding
+                reb != null && (!reb.isBlocked || reb.canAcceptAnyData(it))
+            } To NoPowerAni When {
+                it.power.status.isZero()
             }
             // NoPower
-            From(NoPowerAni) To IdleAni When { _, build ->
-                !Mathf.zero(build.power.status)
-            } To UploadAni When { _, build ->
-                if (Mathf.zero(build.power.status)) {
+            From(NoPowerAni) To IdleAni When {
+                !it.power.status.isZero()
+            } To UploadAni When {
+                if (it.power.status.isZero()) {
                     false
                 } else {
-                    val reb = build.receiverBuilding
-                    reb != null && reb.canAcceptAnyData(build)
+                    val reb = it.receiverBuilding
+                    reb != null && reb.canAcceptAnyData(it)
                 }
             }
-            build()
         }
     }
 }

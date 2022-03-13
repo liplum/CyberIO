@@ -192,13 +192,13 @@ open class AntiVirus(name: String) : Block(name) {
 
         override fun draw() {
             super.draw()
-            if (Mathf.zero(power.status)) {
+            if (power.status.isZero()) {
                 Draw.rect(unenergizedTR, x, y)
             }
         }
 
         override fun drawSelect() {
-            if (!Mathf.zero(power.status)) {
+            if (!power.status.isZero()) {
                 Vars.indexer.eachBlock(this, realRange,
                     {
                         true

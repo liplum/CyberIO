@@ -31,6 +31,7 @@ open class PrismObelisk(name: String) : Block(name) {
         solid = true
         group = BlockGroup.turrets
         flags = EnumSet.of(BlockFlag.turret)
+        noUpdateDisabled = true
     }
 
     override fun load() {

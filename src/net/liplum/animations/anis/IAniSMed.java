@@ -85,7 +85,7 @@ public interface IAniSMed<TBlock extends Block, TBuild extends Building> {
      * @param rb   how to render
      * @return {@code aniState} self
      */
-    default AniState<TBlock, TBuild> addAniState(String name, IRenderBehavior<TBlock, TBuild> rb) {
+    default AniState<TBlock, TBuild> addAniState(String name, IRenderBehavior<TBuild> rb) {
         return addAniState(new AniState<>(name, rb));
     }
 
