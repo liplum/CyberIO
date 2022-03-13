@@ -32,6 +32,13 @@ inline fun ClientOnly(func: () -> Unit): Boolean {
     }
     return false
 }
+
+inline fun <reified T> T.ClientOnly(func: T.() -> Unit): T {
+    if (!Vars.headless) {
+        func()
+    }
+    return this
+}
 /**
  * Runs codes only on Logical Server
  */
@@ -41,6 +48,14 @@ inline fun ServerOnly(func: () -> Unit): Boolean {
         func()
     }
     return false
+}
+
+inline fun <reified T> T.ServerOnly(func: T.() -> Unit): T {
+    val net = Vars.net
+    if (net.server() || !net.active()) {
+        func()
+    }
+    return this
 }
 
 fun IsServer(): Boolean {
@@ -62,6 +77,13 @@ inline fun DebugOnly(func: () -> Unit): Boolean {
         return true
     }
     return false
+}
+
+inline fun <reified T> T.DebugOnly(func: T.() -> Unit): T {
+    if (CioMod.DebugMode) {
+        func()
+    }
+    return this
 }
 
 inline infix fun Boolean.Else(func: () -> Unit) {
