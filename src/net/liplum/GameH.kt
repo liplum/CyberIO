@@ -33,7 +33,7 @@ inline fun ClientOnly(func: () -> Unit): Boolean {
     return false
 }
 
-inline fun <reified T> T.ClientOnly(func: T.() -> Unit): T {
+inline fun <reified T> T.ClientOnlyOn(func: T.() -> Unit): T {
     if (!Vars.headless) {
         func()
     }
@@ -50,7 +50,7 @@ inline fun ServerOnly(func: () -> Unit): Boolean {
     return false
 }
 
-inline fun <reified T> T.ServerOnly(func: T.() -> Unit): T {
+inline fun <reified T> T.ServerOnlyOn(func: T.() -> Unit): T {
     val net = Vars.net
     if (net.server() || !net.active()) {
         func()
@@ -79,7 +79,7 @@ inline fun DebugOnly(func: () -> Unit): Boolean {
     return false
 }
 
-inline fun <reified T> T.DebugOnly(func: T.() -> Unit): T {
+inline fun <reified T> T.DebugOnlyOn(func: T.() -> Unit): T {
     if (CioMod.DebugMode) {
         func()
     }

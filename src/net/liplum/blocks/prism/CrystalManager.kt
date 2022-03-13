@@ -5,7 +5,7 @@ import arc.struct.OrderedSet
 import arc.struct.Seq
 import arc.util.io.Reads
 import arc.util.io.Writes
-import net.liplum.ClientOnly
+import net.liplum.ClientOnlyOn
 import net.liplum.persistance.intSet
 import net.liplum.persistance.readSeq
 import net.liplum.persistance.writeSeq
@@ -145,7 +145,7 @@ class CrystalManager(
                     Crystal().apply {
                         this.orbitPos = orbitPos
                         isAwaitAdding = true
-                    }.apply(addCrystalCallback).ClientOnly {
+                    }.apply(addCrystalCallback).ClientOnlyOn {
                         genCrystalImgCallback()
                     }
                 )
