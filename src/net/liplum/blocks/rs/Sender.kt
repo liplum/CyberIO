@@ -219,25 +219,15 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
         IdleAni = addAniState("Idle")
 
         UploadAni = addAniState("Upload") {
-            UploadAnim.draw(
-                Color.green,
-                it.x,
-                it.y
-            )
+            UploadAnim.draw(Color.green, it.x, it.y)
         }
         BlockedAni = addAniState("Blocked") {
             Draw.color(Color.red)
-            Draw.rect(
-                UpArrowTR,
-                it.x, it.y
-            )
+            Draw.rect(UpArrowTR, it.x, it.y)
             Draw.color()
         }
         NoPowerAni = addAniState("NoPower") {
-            Draw.rect(
-                NoPowerTR,
-                it.x, it.y
-            )
+            Draw.rect(NoPowerTR, it.x, it.y)
         }
     }
 
@@ -246,10 +236,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
             // Idle
             From(IdleAni) To UploadAni When {
                 val reb = it.receiverBuilding
-                reb != null && reb.canAcceptAnyData(it)
-            } To BlockedAni When {
-                val reb = it.receiverBuilding
-                reb != null && (reb.isBlocked || !reb.canAcceptAnyData(it))
+                reb != null && reb.canAcceptAnyData(it) && !reb.isBlocked
             } To NoPowerAni When {
                 it.power.status.isZero()
             }
@@ -258,7 +245,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
                 it.receiverPackedPos == -1
             } To BlockedAni When {
                 val reb = it.receiverBuilding
-                reb != null && (reb.isBlocked || !reb.canAcceptAnyData(it))
+                reb != null && (reb.isBlocked && !reb.canAcceptAnyData(it))
             } To NoPowerAni When {
                 it.power.status.isZero()
             }
@@ -274,13 +261,6 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
             // NoPower
             From(NoPowerAni) To IdleAni When {
                 !it.power.status.isZero()
-            } To UploadAni When {
-                if (it.power.status.isZero()) {
-                    false
-                } else {
-                    val reb = it.receiverBuilding
-                    reb != null && reb.canAcceptAnyData(it)
-                }
             }
         }
     }

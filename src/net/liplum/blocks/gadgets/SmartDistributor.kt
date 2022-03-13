@@ -142,6 +142,8 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
         }
 
         override fun acceptedAmount(sender: IDataSender, item: Item): Int {
+            if (!consValid()) return 0
+
             return if (item in requirements)
                 getMaximumAccepted(item) - items[item]
             else
@@ -149,7 +151,7 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
         }
         @ClientOnly
         override fun canAcceptAnyData(sender: IDataSender) =
-            !power.status.isZero() && requirements.isNotEmpty() && !isBlocked
+            consValid() && requirements.isNotEmpty()
 
         override fun getRequirements(): Array<Item>? = requirements
         @ClientOnly

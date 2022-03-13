@@ -145,20 +145,24 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
             val outputItem = outputItem
             val deltaT = Time.delta
             if (outputItem != null) {
-                val isFullData = items[outputItem] < getMaximumAccepted(outputItem)
-                if (isFullData) {
-                    lastFullDataDelta = 0f
-                } else {
-                    lastFullDataDelta += deltaT
-                }
-            }
-            ClientOnly {
-                if (!power.status.isZero() && outputItem != null) {
-                    if (dump(outputItem)) {
-                        lastOutputDelta = 0f
+                ClientOnly {
+                    val isFullData = items[outputItem] < getMaximumAccepted(outputItem)
+                    if (isFullData) {
+                        lastFullDataDelta = 0f
                     } else {
-                        lastOutputDelta += deltaT
+                        lastFullDataDelta += deltaT
                     }
+                }
+                if (!power.status.isZero()) {
+                    val dumped = dump(outputItem)
+                    ClientOnly {
+                        if (dumped) {
+                            lastOutputDelta = 0f
+                        }
+                    }
+                }
+                ClientOnly {
+                    lastOutputDelta += deltaT
                 }
             }
         }
@@ -179,11 +183,14 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
         }
 
         override fun acceptItem(source: Building, item: Item): Boolean = false
-        override fun acceptedAmount(sender: IDataSender, itme: Item) =
-            if (itme == outputItem)
+        override fun acceptedAmount(sender: IDataSender, itme: Item): Int {
+            if (!consValid()) return 0
+
+            return if (itme == outputItem)
                 getMaximumAccepted(outputItem) - items[outputItem]
             else
                 0
+        }
 
         override fun receiveData(sender: IDataSender, item: Item, amount: Int) {
             items.add(item, amount)
@@ -192,8 +199,9 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
         override fun getRequirements() = outputItem.req
         @ClientOnly
         override fun canAcceptAnyData(sender: IDataSender): Boolean {
+            if (!consValid()) return false
             val outputItem = outputItem ?: return false
-            return items[outputItem] < getMaximumAccepted(outputItem) && !isBlocked
+            return items[outputItem] < getMaximumAccepted(outputItem)
         }
 
         override fun config(): Item? = outputItem

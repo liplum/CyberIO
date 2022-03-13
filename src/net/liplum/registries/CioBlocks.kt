@@ -288,7 +288,7 @@ class CioBlocks : ContentTable {
             cooldown = 0.1f
             recoilAmount = 5f
             reloadTime = 15f
-            powerUse = 2.5f
+            powerUse = 2f
             size = 3
             buildCostMultiplier = 1.5f
             extraLostHpBounce = 0.005f
@@ -363,8 +363,8 @@ class CioBlocks : ContentTable {
                 requirements(
                     Category.distribution, BuildVisibility.shown, arrayOf(
                         ItemStack(CioItems.ic, 15),
-                        ItemStack(Items.surgeAlloy, 50),
-                        ItemStack(Items.thorium, 200),
+                        ItemStack(Items.surgeAlloy, 100),
+                        ItemStack(Items.thorium, 300),
                         ItemStack(Items.phaseFabric, 100),
                     )
                 )

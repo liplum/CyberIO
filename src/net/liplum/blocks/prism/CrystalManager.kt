@@ -5,6 +5,7 @@ import arc.struct.OrderedSet
 import arc.struct.Seq
 import arc.util.io.Reads
 import arc.util.io.Writes
+import net.liplum.ClientOnly
 import net.liplum.ClientOnlyOn
 import net.liplum.persistance.intSet
 import net.liplum.persistance.readSeq
@@ -23,6 +24,7 @@ class CrystalManager(
 ) {
     var initCrystalCount: Int = 1
     lateinit var addCrystalCallback: Crystal.() -> Unit
+    @ClientOnly
     lateinit var genCrystalImgCallback: Crystal.() -> Unit
     lateinit var prism: Prism.PrismBuild
     var maxAmount: Int = maxAmount
