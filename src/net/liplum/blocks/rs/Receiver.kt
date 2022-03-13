@@ -16,9 +16,10 @@ import mindustry.world.Block
 import mindustry.world.Tile
 import mindustry.world.blocks.ItemSelection
 import mindustry.world.meta.BlockGroup
-import net.liplum.CioMod
 import net.liplum.ClientOnly
+import net.liplum.DebugOnly
 import net.liplum.R
+import net.liplum.UndebugOnly
 import net.liplum.animations.anims.Animation
 import net.liplum.animations.anis.AniState
 import net.liplum.animations.anis.config
@@ -26,6 +27,7 @@ import net.liplum.api.data.*
 import net.liplum.blocks.AniedBlock
 import net.liplum.blocks.rs.Receiver.ReceiverBuild
 import net.liplum.persistance.intSet
+import net.liplum.ui.bars.removeItems
 import net.liplum.utils.*
 
 private typealias AniStateR = AniState<Receiver, ReceiverBuild>
@@ -55,6 +57,8 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
         noUpdateDisabled = true
         acceptsItems = false
         canOverdrive = false
+        allowConfigInventory = false
+
         config(
             Item::class.java
         ) { obj: ReceiverBuild, item ->
@@ -100,7 +104,10 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
 
     override fun setBars() {
         super.setBars()
-        if (CioMod.DebugMode) {
+        UndebugOnly {
+            bars.removeItems()
+        }
+        DebugOnly {
             bars.addAniStateInfo<AniedBuild>()
         }
     }

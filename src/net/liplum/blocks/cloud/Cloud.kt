@@ -62,7 +62,10 @@ open class Cloud(name: String) : PowerBlock(name) {
         noUpdateDisabled = true
         unloadable = false
         group = BlockGroup.none
-
+        allowConfigInventory = false
+        DebugOnly {
+            allowConfigInventory = true
+        }
         ClientOnly {
             this.genAnimState()
             this.genAniConfig()

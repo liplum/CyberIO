@@ -43,6 +43,7 @@ open class HoloWall(name: String) : Wall(name) {
         hasShadow = false
         absorbLasers = true
         flashHit = true
+        floating = true
     }
 
     override fun load() {

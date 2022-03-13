@@ -79,6 +79,14 @@ inline fun DebugOnly(func: () -> Unit): Boolean {
     return false
 }
 
+inline fun UndebugOnly(func: () -> Unit): Boolean {
+    if (CioMod.DebugMode) {
+        return false
+    }
+    func()
+    return true
+}
+
 inline fun <reified T> T.DebugOnlyOn(func: T.() -> Unit): T {
     if (CioMod.DebugMode) {
         func()

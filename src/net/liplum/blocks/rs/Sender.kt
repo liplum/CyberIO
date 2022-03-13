@@ -9,12 +9,14 @@ import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.Vars
 import mindustry.gen.Building
+import mindustry.graphics.Pal
 import mindustry.type.Item
+import mindustry.ui.Bar
 import mindustry.world.Block
 import mindustry.world.Tile
 import mindustry.world.meta.BlockGroup
-import net.liplum.CioMod
 import net.liplum.ClientOnly
+import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.animations.anims.Animation
 import net.liplum.animations.anis.AniState
@@ -75,12 +77,26 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
 
     override fun setBars() {
         super.setBars()
-        if (CioMod.DebugMode) {
+        DebugOnly {
+            bars.add<SenderBuild>("last-sending") {
+                Bar(
+                    { "Last Send: ${it.lastSendingTime.toInt()}" },
+                    { Pal.bar },
+                    { it.lastSendingTime / 30f }
+                )
+            }
             bars.addAniStateInfo<AniedBuild>()
         }
     }
 
     open inner class SenderBuild : AniedBuild(), IDataSender {
+        @ClientOnly var lastSendingTime = 0f
+            set(value) {
+                field = value.coerceAtLeast(0f)
+            }
+        @ClientOnly
+        open val isBlocked: Boolean
+            get() = lastSendingTime > 30f
         var receiverPackedPos = -1
             set(value) {
                 var curBuild = receiverBuilding
@@ -101,6 +117,9 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
             if (Time.time % 60f < 1) {
                 checkReceiverPos()
             }
+            ClientOnly {
+                lastSendingTime += Time.delta
+            }
         }
 
         override fun toString(): String {
@@ -119,9 +138,15 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
         }
 
         override fun handleItem(source: Building, item: Item) {
+            if (!consValid()) {
+                return
+            }
             val reb = receiverBuilding
-            if (reb != null && !power.status.isZero()) {
+            if (reb != null) {
                 sendData(reb, item, 1)
+                ClientOnly {
+                    lastSendingTime = 0f
+                }
             }
         }
         @get:Nullable
@@ -173,7 +198,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
         }
 
         override fun acceptItem(source: Building, item: Item): Boolean {
-            if (power.status.isZero()) {
+            if (!consValid()) {
                 return false
             }
             val reb = receiverBuilding
@@ -236,31 +261,31 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
             // Idle
             From(IdleAni) To UploadAni When {
                 val reb = it.receiverBuilding
-                reb != null && reb.canAcceptAnyData(it) && !reb.isBlocked
+                reb != null
             } To NoPowerAni When {
-                it.power.status.isZero()
+                !it.consValid()
             }
             // Upload
             From(UploadAni) To IdleAni When {
                 it.receiverPackedPos == -1
             } To BlockedAni When {
                 val reb = it.receiverBuilding
-                reb != null && (reb.isBlocked && !reb.canAcceptAnyData(it))
+                reb != null && it.isBlocked
             } To NoPowerAni When {
-                it.power.status.isZero()
+                !it.consValid()
             }
             // Blocked
             From(BlockedAni) To IdleAni When {
                 it.receiverPackedPos == -1
             } To UploadAni When {
                 val reb = it.receiverBuilding
-                reb != null && (!reb.isBlocked || reb.canAcceptAnyData(it))
+                reb != null && !it.isBlocked
             } To NoPowerAni When {
-                it.power.status.isZero()
+                !it.consValid()
             }
             // NoPower
             From(NoPowerAni) To IdleAni When {
-                !it.power.status.isZero()
+                it.consValid()
             }
         }
     }
