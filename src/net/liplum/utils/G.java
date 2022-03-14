@@ -153,10 +153,12 @@ public class G {
                                       float range, Color color) {
         Drawf.dashCircle(building.x, building.y, range + sin - 2, color);
     }
+
     public static void drawDashCircle(float x, float y,
                                       float range, Color color) {
         Drawf.dashCircle(x, y, range + sin - 2, color);
     }
+
     public static void drawDashCircle(Block b, short blockX, short BlockY,
                                       float range, Color color) {
         float drawX = WorldU.toDrawXY(b, blockX);

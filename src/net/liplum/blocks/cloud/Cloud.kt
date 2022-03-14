@@ -14,10 +14,7 @@ import mindustry.world.Tile
 import mindustry.world.blocks.power.PowerBlock
 import mindustry.world.meta.BlockGroup
 import mindustry.world.modules.ItemModule
-import net.liplum.ClientOnly
-import net.liplum.DebugOnly
-import net.liplum.R
-import net.liplum.WhenRefresh
+import net.liplum.*
 import net.liplum.animations.anims.Animation
 import net.liplum.animations.anims.IFrameIndexer
 import net.liplum.animations.anims.ixAuto
@@ -29,9 +26,9 @@ import net.liplum.api.data.CyberU
 import net.liplum.api.data.IDataReceiver
 import net.liplum.api.data.IDataSender
 import net.liplum.api.data.dr
+import net.liplum.delegates.Delegate1
 import net.liplum.persistance.intSet
 import net.liplum.utils.*
-import kotlin.math.absoluteValue
 
 private typealias Anim = Animation
 private typealias BGType = BlockGroupType<Cloud, Cloud.CloudBuild>
@@ -63,9 +60,7 @@ open class Cloud(name: String) : PowerBlock(name) {
         unloadable = false
         group = BlockGroup.none
         allowConfigInventory = false
-        DebugOnly {
-            allowConfigInventory = true
-        }
+
         ClientOnly {
             this.genAnimState()
             this.genAniConfig()
@@ -84,6 +79,8 @@ open class Cloud(name: String) : PowerBlock(name) {
         super.setBars()
         bars.remove("items")
         DebugOnly {
+            bars.addSenderInfo<CloudBuild>()
+            bars.addReceiverInfo<CloudBuild>()
             bars.addTeamInfo()
         }
     }
@@ -108,26 +105,29 @@ open class Cloud(name: String) : PowerBlock(name) {
         var teamID = 0
         val isWorking: Boolean
             get() = !power.status.isZero()
-
+        @JvmField var onRequirementUpdated: Delegate1<IDataReceiver> = Delegate1()
+        override fun getOnRequirementUpdated() = onRequirementUpdated
         override fun updateTile() {
         }
-
+        @CalledBySync
         open fun setReceiver(pos: Int) {
-            if (pos >= 0) {
-                val dr = pos.dr()
-                if (dr != null) {
-                    connect(dr)
-                }
+            if (pos in info.receiversPos) {
+                pos.dr()?.let { disconnectReceiver(it) }
             } else {
-                val dr = pos.absoluteValue.dr()
-                if (dr != null) {
-                    disconnect(dr)
-                }
+                pos.dr()?.let { connectReceiver(it) }
             }
         }
-
+        @CalledBySync
         open fun clearReceiver() {
             info.receiversPos.clear()
+        }
+        @CalledBySync
+        open fun connectReceiver(receiver: IDataReceiver) {
+            info.receiversPos.add(receiver.building.pos())
+        }
+        @CalledBySync
+        open fun disconnectReceiver(receiver: IDataReceiver) {
+            info.receiversPos.remove(receiver.building.pos())
         }
 
         override fun created() {
@@ -145,7 +145,6 @@ open class Cloud(name: String) : PowerBlock(name) {
             cloudRoom.offline(this)
         }
 
-        override fun acceptItem(source: Building, item: Item) = false
         override fun sendData(receiver: IDataReceiver, item: Item, amount: Int): Int {
             val rest = super.sendData(receiver, item, amount)
             info.lastReceiveOrSendDataTime = 0f
@@ -173,6 +172,7 @@ open class Cloud(name: String) : PowerBlock(name) {
             return -1
         }
 
+        override fun acceptItem(source: Building, item: Item) = false
         override fun handleItem(source: Building, item: Item) {
         }
 
@@ -183,20 +183,21 @@ open class Cloud(name: String) : PowerBlock(name) {
         override fun getRequirements(): Array<Item>? = null
         @ClientOnly
         override fun isBlocked() = false
+        @CalledBySync
         override fun connect(sender: IDataSender) {
             info.sendersPos.add(sender.building.pos())
         }
-
+        @CalledBySync
         override fun disconnect(sender: IDataSender) {
             info.sendersPos.remove(sender.building.pos())
         }
-
-        override fun connect(receiver: IDataReceiver) {
-            info.receiversPos.add(receiver.building.pos())
+        @SendDataPack
+        override fun connectSync(receiver: IDataReceiver) {
+            configure(receiver.building.pos())
         }
-
-        override fun disconnect(receiver: IDataReceiver) {
-            info.receiversPos.remove(receiver.building.pos())
+        @SendDataPack
+        override fun disconnectSync(receiver: IDataReceiver) {
+            configure(receiver.building.pos())
         }
 
         override fun draw() {
@@ -213,15 +214,16 @@ open class Cloud(name: String) : PowerBlock(name) {
                 configure(null)
                 return false
             }
-            if (other.pos() in info.receiversPos) {
+            val pos = other.pos()
+            if (pos in info.receiversPos) {
                 deselect()
-                configure(-other.pos())
+                pos.dr()?.let { disconnectSync(it) }
                 return false
             }
             if (other is IDataReceiver) {
                 deselect()
                 if (other.acceptConnection(this)) {
-                    configure(other.pos())
+                    connectSync(other)
                 }
                 return false
             }
@@ -229,6 +231,15 @@ open class Cloud(name: String) : PowerBlock(name) {
         }
 
         override fun drawSelect() {
+            drawDataNetGraphic()
+        }
+
+        override fun drawConfigure() {
+            super.drawConfigure()
+            drawDataNetGraphic()
+        }
+
+        open fun drawDataNetGraphic() {
             G.init()
             G.drawSurroundingCircle(tile, R.C.Cloud)
 
@@ -282,6 +293,8 @@ open class Cloud(name: String) : PowerBlock(name) {
 
         override fun getTile(): Tile = tile
         override fun getBlock(): Block = block
+        override fun maxSenderConnection() = -1
+        override fun maxReceiverConnection() = -1
     }
 
     open fun genAnimState() {

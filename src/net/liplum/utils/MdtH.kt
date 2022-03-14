@@ -4,6 +4,7 @@ package net.liplum.utils
 
 import arc.math.Mathf
 import mindustry.Vars
+import mindustry.ctype.Content
 import mindustry.gen.Building
 
 val Int.build: Building?
@@ -20,3 +21,6 @@ val Building?.exists: Boolean
 
 fun <T> Array<T>.randomOne(): T =
     this[Mathf.random(0, this.size - 1)]
+
+val Content.ID: Int
+    get() = this.id.toInt()

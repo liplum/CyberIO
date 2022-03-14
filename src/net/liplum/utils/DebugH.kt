@@ -11,6 +11,8 @@ import mindustry.world.blocks.production.GenericCrafter
 import mindustry.world.meta.BlockBars
 import net.liplum.R
 import net.liplum.animations.anis.IAniSMedBuild
+import net.liplum.api.data.IDataReceiver
+import net.liplum.api.data.IDataSender
 
 annotation class CioDebugOnly
 
@@ -70,6 +72,52 @@ fun <T> BlockBars.addProgressInfo() where T : GenericCrafter.GenericCrafterBuild
             { R.Bar.Progress.bundle(it.progress.percentI) },
             { Pal.power },
             { it.progress / 1f }
+        )
+    }
+}
+
+fun <T> BlockBars.addReceiverInfo() where T : Building, T : IDataSender {
+    this.add<T>(
+        R.Bar.ReceiverN
+    ) {
+        Bar(
+            {
+                val connected = if (it.canMultipleConnect())
+                    it.connectedReceivers().size
+                else
+                    if (it.connectedReceiver() != null) 1 else 0
+                R.Bar.Receiver.bundle(connected)
+            },
+            { R.C.Receiver },
+            {
+                val connected = if (it.canMultipleConnect())
+                    it.connectedReceivers().size
+                else
+                    if (it.connectedReceiver() != null) 1 else 0
+                var max = it.maxReceiverConnection()
+                if (max == -1) {
+                    max = 10
+                }
+                connected.toFloat() / max
+            }
+        )
+    }
+}
+
+fun <T> BlockBars.addSenderInfo() where T : Building, T : IDataReceiver {
+    this.add<T>(
+        R.Bar.SenderN
+    ) {
+        Bar(
+            { R.Bar.Sender.bundle(it.connectedSenders().size) },
+            { R.C.Sender },
+            {
+                var max = it.maxSenderConnection()
+                if (max == -1) {
+                    max = 10
+                }
+                it.connectedSenders().size.toFloat() / max
+            }
         )
     }
 }

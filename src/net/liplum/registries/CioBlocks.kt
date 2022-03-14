@@ -22,6 +22,7 @@ import net.liplum.blocks.cloud.Cloud
 import net.liplum.blocks.debugonly.AdjustableOverdrive
 import net.liplum.blocks.deleter.Deleter
 import net.liplum.blocks.gadgets.SmartDistributor
+import net.liplum.blocks.gadgets.SmartUnloader
 import net.liplum.blocks.holo.HoloFloor
 import net.liplum.blocks.holo.HoloWall
 import net.liplum.blocks.holo.LandProjector
@@ -58,6 +59,7 @@ class CioBlocks : ContentTable {
         @JvmStatic lateinit var holoWallLarge: HoloWall
         @JvmStatic lateinit var TMTRAINER: TMTRAINER
         @JvmStatic lateinit var smartDistributor: SmartDistributor
+        @JvmStatic lateinit var smartUnloader: SmartUnloader
     }
 
     override fun firstLoad() {
@@ -358,16 +360,31 @@ class CioBlocks : ContentTable {
                 }
             }
         }
+        smartDistributor = SmartDistributor("smart-distributor").apply {
+            requirements(
+                Category.distribution, BuildVisibility.shown, arrayOf(
+                    ItemStack(CioItems.ic, 15),
+                    ItemStack(Items.surgeAlloy, 100),
+                    ItemStack(Items.thorium, 300),
+                    ItemStack(Items.phaseFabric, 100),
+                )
+            )
+            consumes.power(6f)
+            health = 1000
+            size = 2
+        }
+
         DebugOnly {
-            smartDistributor = SmartDistributor("smart-distributor").apply {
+            smartUnloader = SmartUnloader("smart-unloader").apply {
                 requirements(
                     Category.distribution, BuildVisibility.shown, arrayOf(
-                        ItemStack(CioItems.ic, 15),
-                        ItemStack(Items.surgeAlloy, 100),
-                        ItemStack(Items.thorium, 300),
-                        ItemStack(Items.phaseFabric, 100),
+                        ItemStack(CioItems.ic, 8),
+                        ItemStack(Items.metaglass, 80),
+                        ItemStack(Items.silicon, 150),
+                        ItemStack(Items.phaseFabric, 80),
                     )
                 )
+                unloadSpeed = 5f
                 consumes.power(3f)
                 health = 1000
                 size = 2

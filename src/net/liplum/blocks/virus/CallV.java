@@ -11,11 +11,11 @@ public class CallV {
     public static void infect(
             Tile tile, Virus virusType, Team team,
             int curGeneration, @Nullable Color raceColor
-            ) {
+    ) {
         if (Vars.net.server() || !Vars.net.active()) {
             Tile.setTile(tile, virusType, team, 0);
             Building build = tile.build;
-            if(build instanceof Virus.VirusBuild){
+            if (build instanceof Virus.VirusBuild) {
                 Virus.VirusBuild vb = (Virus.VirusBuild) build;
                 vb.setCurGeneration(curGeneration);
                 vb.setRaceColor(raceColor);

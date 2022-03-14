@@ -4,12 +4,13 @@ import mindustry.Vars;
 import mindustry.gen.Building;
 import mindustry.world.Tile;
 import net.liplum.R;
-import net.liplum.api.data.IDataReceiver;
-import net.liplum.api.data.IDataSender;
 import net.liplum.utils.G;
 
 public class CyberU {
     public static void drawSender(IDataReceiver receiver, Integer sender) {
+        if (sender == null) {
+            return;
+        }
         Tile receiverT = receiver.getTile();
         Building senderBuild = Vars.world.build(sender);
         if (senderBuild instanceof IDataSender) {
@@ -34,6 +35,9 @@ public class CyberU {
     }
 
     public static void drawReceiver(IDataSender sender, Integer receiver) {
+        if (receiver == null) {
+            return;
+        }
         Tile senderT = sender.getTile();
         Building receiverBuild = Vars.world.build(receiver);
         if (receiverBuild instanceof IDataReceiver) {

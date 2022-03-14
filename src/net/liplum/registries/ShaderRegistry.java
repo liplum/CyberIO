@@ -12,12 +12,10 @@ import static net.liplum.CioMod.IsClient;
 public class ShaderRegistry {
     @Nullable
     @ClientOnly
-    private static LinkedList<Shader> allShaders;
-
+    public static Shader test;
     @Nullable
     @ClientOnly
-    public static Shader test;
-
+    private static LinkedList<Shader> allShaders;
     private static boolean isLoaded = false;
 
     public static void load() {

@@ -41,14 +41,14 @@ public abstract class AniedCrafter<TBlock extends AniedCrafter<?, ?>, TBuild ext
     }
 
     @Override
-    public AniConfig<TBlock, TBuild> createAniConfig() {
-        aniConfig = new AniConfig<>();
-        return aniConfig;
+    public void setAniConfig(AniConfig<TBlock, TBuild> config) {
+        aniConfig = config;
     }
 
     @Override
-    public void setAniConfig(AniConfig<TBlock, TBuild> config) {
-        aniConfig = config;
+    public AniConfig<TBlock, TBuild> createAniConfig() {
+        aniConfig = new AniConfig<>();
+        return aniConfig;
     }
 
     @Override

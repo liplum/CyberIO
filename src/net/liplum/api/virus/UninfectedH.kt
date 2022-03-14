@@ -34,6 +34,7 @@ fun <T : BlockFlag> T.setUninfected(): T {
     UninfectedBlocksRegistry.flag(this)
     return this
 }
+
 fun <T : BlockGroup> T.setUninfected(): T {
     UninfectedBlocksRegistry.group(this)
     return this

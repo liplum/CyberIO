@@ -29,27 +29,6 @@ open class ICMachine(name: String) : AniedCrafter<ICMachine, ICMachine.ICMachine
         hasPower = true
     }
 
-    override fun genAniState() {
-        IdleState = addAniState("Idle")
-        WorkingState = addAniState("Working") {
-            Draw.alpha(workingAnimAlpha(it.progress))
-            it.workingAnimObj.draw(it.x, it.y)
-        }
-    }
-
-    override fun genAniConfig() {
-        config {
-            defaultState(IdleState)
-            From(IdleState) To WorkingState When {
-                !it.progress.isZero() && !it.power.status.isZero()
-            }
-            From(WorkingState) To IdleState When {
-                it.progress.isZero() || it.power.status.isZero()
-            }
-            build()
-        }
-    }
-
     override fun load() {
         super.load()
         WorkingAnim = this.autoAnim("indicator-light", WorkingAnimFrameNumber, WorkingAnimDuration)
@@ -72,6 +51,25 @@ open class ICMachine(name: String) : AniedCrafter<ICMachine, ICMachine.ICMachine
         override fun draw() {
             workingAnimObj.spend(Time.delta)
             super.draw()
+        }
+    }
+
+    override fun genAniState() {
+        IdleState = addAniState("Idle")
+        WorkingState = addAniState("Working") {
+            Draw.alpha(workingAnimAlpha(it.progress))
+            it.workingAnimObj.draw(it.x, it.y)
+        }
+    }
+
+    override fun genAniConfig() {
+        config {
+            From(IdleState) To WorkingState When {
+                !it.progress.isZero() && !it.power.status.isZero()
+            }
+            From(WorkingState) To IdleState When {
+                it.progress.isZero() || it.power.status.isZero()
+            }
         }
     }
 }

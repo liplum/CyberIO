@@ -3,10 +3,6 @@ package net.liplum.blocks.underdrive;
 import mindustry.gen.Building;
 
 public class UnderdriveUtil {
-    public enum OverwriteRule {
-        KeepMin, KeepMax, Coerce
-    }
-
     public static void applyBoostOrSlow(Building build, float laxityOrIntensity, float duration, OverwriteRule rule) {
         float oldTS = build.timeScale;
         float oldTSD = build.timeScaleDuration;
@@ -27,5 +23,9 @@ public class UnderdriveUtil {
     public static void resetBoost(Building build) {
         build.timeScale = 1f;
         build.timeScaleDuration = 0;
+    }
+
+    public enum OverwriteRule {
+        KeepMin, KeepMax, Coerce
     }
 }

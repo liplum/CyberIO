@@ -4,7 +4,6 @@ import net.liplum.api.data.IDataReceiver
 
 open class Tracker(val maxConnection: Int) {
     val receivers: ArrayList<IDataReceiver> = ArrayList(maxConnection)
-    var curIndex = 0
     fun canAddMore(): Boolean {
         return receivers.size <= maxConnection
     }
@@ -13,5 +12,9 @@ open class Tracker(val maxConnection: Int) {
         if (canAddMore()) {
             receivers.add(receiver)
         }
+    }
+
+    fun clear() {
+        receivers.clear()
     }
 }

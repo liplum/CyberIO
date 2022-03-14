@@ -12,15 +12,16 @@ import mindustry.world.consumers.ConsumeType
 import mindustry.world.meta.BlockGroup
 import net.liplum.ClientOnly
 import net.liplum.DebugOnly
-import net.liplum.R
 import net.liplum.UndebugOnly
+import net.liplum.animations.anims.Animation
+import net.liplum.animations.anims.AnimationObj
 import net.liplum.animations.anis.AniState
 import net.liplum.animations.anis.config
-import net.liplum.api.data.CyberU
 import net.liplum.api.data.IDataReceiver
 import net.liplum.api.data.IDataSender
+import net.liplum.api.data.drawDataNetGraphic
 import net.liplum.blocks.AniedBlock
-import net.liplum.delegates.Delegate
+import net.liplum.delegates.Delegate1
 import net.liplum.persistance.intSet
 import net.liplum.ui.bars.removeItems
 import net.liplum.utils.*
@@ -28,10 +29,14 @@ import net.liplum.utils.*
 private typealias AniStateD = AniState<SmartDistributor, SmartDistributor.SmartDISBuild>
 
 open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDistributor.SmartDISBuild>(name) {
-    @ClientOnly lateinit var RequireAni: AniStateD
+    @ClientOnly lateinit var DistributingAni: AniStateD
     @ClientOnly lateinit var NoPowerAni: AniStateD
     @JvmField var maxConnection = -1
     @ClientOnly lateinit var NoPowerTR: TR
+    @ClientOnly lateinit var ArrowsAnim: Animation
+    @JvmField @ClientOnly var ArrowsAnimFrames = 9
+    @JvmField @ClientOnly var ArrowsAnimDuration = 70f
+    @JvmField @ClientOnly var DistributionTime = 60f
 
     init {
         solid = true
@@ -49,6 +54,7 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
     override fun load() {
         super.load()
         NoPowerTR = this.inMod("rs-no-power")
+        ArrowsAnim = this.autoAnim("arrows", ArrowsAnimFrames, ArrowsAnimDuration)
     }
 
     override fun setBars() {
@@ -57,7 +63,6 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
             bars.removeItems()
         }
         DebugOnly {
-            bars.addAniStateInfo<SmartDISBuild>()
         }
     }
 
@@ -65,18 +70,21 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
         IDataReceiver {
         @JvmField var requirements: Array<Item> = Item::class.java.EmptyArray()
         var senders = OrderedSet<Int>()
-        var onRequirementUpdated: Delegate = Delegate()
+        @JvmField var onRequirementUpdated: Delegate1<IDataReceiver> = Delegate1()
+        override fun getOnRequirementUpdated() = onRequirementUpdated
         @ClientOnly var lastDistributionTime = 0f
             set(value) {
                 field = value.coerceAtLeast(0f)
             }
+        @ClientOnly lateinit var arrowsAnimObj: AnimationObj
+        @ClientOnly open val isDistributing: Boolean
+            get() = lastDistributionTime < DistributionTime
 
-        override fun drawSelect() {
-            G.init()
-
-            G.drawSurroundingCircle(tile, R.C.Cloud)
-
-            CyberU.drawSenders(this, senders)
+        override fun created() {
+            super.created()
+            ClientOnly {
+                arrowsAnimObj = ArrowsAnim.gen()
+            }
         }
 
         open fun updateRequirements() {
@@ -95,7 +103,7 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
             } else {
                 all.toTypedArray()
             }
-            onRequirementUpdated()
+            onRequirementUpdated(this)
         }
 
         override fun onProximityUpdate() {
@@ -137,12 +145,7 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
             }
             return dised
         }
-        /*override fun beforeFixedDraw() {
-            Draw.rect(BaseTR, x, y)
-            Draw.color(Color.brown)
-            Draw.rect(BaffleTR, x, y)
-        }
-        */
+
         override fun receiveData(sender: IDataSender, item: Item, amount: Int) {
             items.add(item, amount)
         }
@@ -180,11 +183,31 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
             write.intSet(senders)
         }
 
+        override fun drawSelect() {
+            this.drawDataNetGraphic()
+        }
+
+        override fun beforeDraw() {
+            arrowsAnimObj.spend(delta())
+            if (isDistributing) {
+                arrowsAnimObj.wakeUp()
+            } else {
+                arrowsAnimObj.sleep()
+            }
+        }
+
+        override fun fixedDraw() {
+            super.fixedDraw()
+            Draw.color(team.color)
+            arrowsAnimObj.draw(x, y)
+        }
+
         override fun connectedSenders() = senders
         override fun connectedSender(): Int? = senders.first()
         override fun acceptConnection(sender: IDataSender) =
             if (maxConnection == -1) true else senders.size < maxConnection
 
+        override fun maxSenderConnection() = maxConnection
         override fun getBuilding(): SmartDISBuild = this
         override fun getTile(): Tile = this.tile
         override fun getBlock() = this@SmartDistributor
@@ -192,17 +215,17 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
 
     override fun genAniConfig() {
         config {
-            From(NoPowerAni) To RequireAni When {
+            From(NoPowerAni) To DistributingAni When {
                 !it.power.status.isZero()
             }
-            From(RequireAni) To NoPowerAni When {
+            From(DistributingAni) To NoPowerAni When {
                 it.power.status.isZero()
             }
         }
     }
 
     override fun genAniState() {
-        RequireAni = addAniState("Require")
+        DistributingAni = addAniState("Distributing")
         NoPowerAni = addAniState("NoPower") {
             Draw.rect(NoPowerTR, it.x, it.y)
         }

@@ -1,7 +1,6 @@
 package net.liplum.animations.anis;
 
 import mindustry.gen.Building;
-import mindustry.world.Block;
 
 public interface IRenderBehavior<TBuild extends Building> {
     /**

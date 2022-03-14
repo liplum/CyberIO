@@ -2,12 +2,10 @@ package net.liplum.blocks.rs
 
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
-import arc.graphics.g2d.Lines
 import arc.util.Nullable
 import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
-import mindustry.Vars
 import mindustry.gen.Building
 import mindustry.graphics.Pal
 import mindustry.type.Item
@@ -15,16 +13,11 @@ import mindustry.ui.Bar
 import mindustry.world.Block
 import mindustry.world.Tile
 import mindustry.world.meta.BlockGroup
-import net.liplum.ClientOnly
-import net.liplum.DebugOnly
-import net.liplum.R
+import net.liplum.*
 import net.liplum.animations.anims.Animation
 import net.liplum.animations.anis.AniState
 import net.liplum.animations.anis.config
-import net.liplum.api.data.CyberU
-import net.liplum.api.data.IDataReceiver
-import net.liplum.api.data.IDataSender
-import net.liplum.api.data.isAccepted
+import net.liplum.api.data.*
 import net.liplum.blocks.AniedBlock
 import net.liplum.blocks.rs.Sender.SenderBuild
 import net.liplum.utils.*
@@ -37,10 +30,6 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
     @ClientOnly lateinit var CrossTR: TR
     @ClientOnly lateinit var NoPowerTR: TR
     @ClientOnly lateinit var UnconnectedTR: TR
-    @ClientOnly lateinit var IdleAni: AniStateS
-    @ClientOnly lateinit var UploadAni: AniStateS
-    @ClientOnly lateinit var BlockedAni: AniStateS
-    @ClientOnly lateinit var NoPowerAni: AniStateS
     @ClientOnly lateinit var UploadAnim: Animation
     @JvmField var UploadAnimFrameNumber = 7
     @JvmField var UploadAnimDuration = 30f
@@ -57,7 +46,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
             obj.receiverPackedPos = receiverPackedPos.toInt()
         }
         configClear<SenderBuild> {
-            it.clearReceiver()
+            it.receiverPackedPos = -1
         }
     }
 
@@ -78,6 +67,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
     override fun setBars() {
         super.setBars()
         DebugOnly {
+            bars.addReceiverInfo<SenderBuild>()
             bars.add<SenderBuild>("last-sending") {
                 Bar(
                     { "Last Send: ${it.lastSendingTime.toInt()}" },
@@ -85,7 +75,6 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
                     { it.lastSendingTime / 30f }
                 )
             }
-            bars.addAniStateInfo<AniedBuild>()
         }
     }
 
@@ -97,6 +86,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
         @ClientOnly
         open val isBlocked: Boolean
             get() = lastSendingTime > 30f
+        @set:CalledBySync
         var receiverPackedPos = -1
             set(value) {
                 var curBuild = receiverBuilding
@@ -107,7 +97,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
             }
 
         open fun checkReceiverPos() {
-            if (receiverPackedPos != -1 && receiverBuilding == null) {
+            if (!receiverPackedPos.dr().exists) {
                 receiverPackedPos = -1
             }
         }
@@ -130,13 +120,6 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
             return if (receiverPackedPos == -1) null else receiverPackedPos
         }
 
-        override fun drawSelect() {
-            G.init()
-            G.drawSurroundingCircle(tile, R.C.Sender)
-
-            CyberU.drawReceiver(this, receiverPackedPos)
-        }
-
         override fun handleItem(source: Building, item: Item) {
             if (!consValid()) {
                 return
@@ -149,52 +132,43 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
                 }
             }
         }
-        @get:Nullable
+
         val receiverBuilding: IDataReceiver?
             get() {
                 if (receiverPackedPos != -1) {
-                    val rBuild = Vars.world.build(receiverPackedPos)
-                    if (rBuild is IDataReceiver) {
-                        return rBuild
-                    }
+                    return receiverPackedPos.dr()
                 }
                 return null
             }
-
+        @ClientOnly
         override fun drawConfigure() {
-            G.init()
-            Lines.stroke(1f)
-            G.drawSurroundingCircle(tile, R.C.Sender)
-            CyberU.drawReceiver(this, receiverPackedPos)
+            super.drawConfigure()
+            this.drawDataNetGraphic()
         }
-
-        fun clearReceiver() {
-            configure(-1)
+        @ClientOnly
+        override fun drawSelect() {
+            this.drawDataNetGraphic()
         }
-
+        @ClientOnly
         override fun onConfigureTileTapped(other: Building): Boolean {
             if (this === other) {
                 deselect()
-                clearReceiver()
+                configure(null)
                 return false
             }
             if (receiverPackedPos == other.pos()) {
                 deselect()
-                clearReceiver()
+                configure(null)
                 return false
             }
             if (other is IDataReceiver) {
                 deselect()
                 if (other.acceptConnection(this)) {
-                    setReceiver(other)
+                    connectSync(other)
                 }
                 return false
             }
             return true
-        }
-
-        fun setReceiver(receiver: IDataReceiver) {
-            configure(receiver.building.pos())
         }
 
         override fun acceptItem(source: Building, item: Item): Boolean {
@@ -219,27 +193,25 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
             return receiverPackedPos
         }
 
-        override fun getBuilding(): Building {
-            return this
+        override fun getBuilding(): Building = this
+        override fun getTile(): Tile = tile
+        override fun getBlock(): Block = this@Sender
+        @SendDataPack
+        override fun connectSync(receiver: IDataReceiver) {
+            configure(receiver.building.pos())
         }
-
-        override fun getTile(): Tile {
-            return tile()
-        }
-
-        override fun getBlock(): Block {
-            return block()
-        }
-
-        override fun connect(receiver: IDataReceiver) {
-            setReceiver(receiver)
-        }
-
-        override fun disconnect(receiver: IDataReceiver) {
-            clearReceiver()
+        @SendDataPack
+        override fun disconnectSync(receiver: IDataReceiver) {
+            if (receiver.building.pos() == receiverPackedPos) {
+                configure(null)
+            }
         }
     }
 
+    @ClientOnly lateinit var IdleAni: AniStateS
+    @ClientOnly lateinit var UploadAni: AniStateS
+    @ClientOnly lateinit var BlockedAni: AniStateS
+    @ClientOnly lateinit var NoPowerAni: AniStateS
     override fun genAniState() {
         IdleAni = addAniState("Idle")
 
@@ -247,7 +219,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
             UploadAnim.draw(Color.green, it.x, it.y)
         }
         BlockedAni = addAniState("Blocked") {
-            Draw.color(Color.red)
+            Draw.color(R.C.Stop)
             Draw.rect(UpArrowTR, it.x, it.y)
             Draw.color()
         }

@@ -8,7 +8,6 @@ import mindustry.Vars;
 import mindustry.gen.Building;
 import mindustry.world.modules.ItemModule;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class SharedRoom implements Json.JsonSerializable {
     public final transient OrderedSet<Building> users = new OrderedSet<>();
@@ -16,10 +15,10 @@ public class SharedRoom implements Json.JsonSerializable {
      * Lateinit
      */
     public ItemModule sharedItemModule;
-    private transient boolean onlyOnCloud = false;
     @NotNull
     public transient CloudInfo sharedInfo = new CloudInfo(this);
     public transient Runnable whenOfflineLastOne = null;
+    private transient boolean onlyOnCloud = false;
 
     public void online(IShared sharedBuild) {
         if (sharedItemModule == null) {

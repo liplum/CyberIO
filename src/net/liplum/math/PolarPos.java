@@ -13,6 +13,25 @@ public class PolarPos {
         this.a = a;
     }
 
+    public PolarPos() {
+    }
+
+    public static float toR(float x, float y) {
+        return Mathf.sqrt(x * x + y * y);
+    }
+
+    public static float toA(float x, float y) {
+        return (float) Math.atan2(y, x);
+    }
+
+    public static PolarPos byXY(float x, float y) {
+        return new PolarPos().fromXY(x, y);
+    }
+
+    public static PolarPos byV2d(Vec2 v2d) {
+        return new PolarPos().fromV2d(v2d);
+    }
+
     public PolarPos fromXY(float x, float y) {
         r = Mathf.sqrt(x * x + y * y);
         a = (float) Math.atan2(y, x);
@@ -24,31 +43,12 @@ public class PolarPos {
         return this;
     }
 
-    public static float toR(float x, float y) {
-        return Mathf.sqrt(x * x + y * y);
-    }
-
-    public static float toA(float x, float y) {
-        return (float) Math.atan2(y, x);
-    }
-
-    public PolarPos() {
-    }
-
     public float toX() {
         return r * Mathf.cos(a);
     }
 
     public float toY() {
         return r * Mathf.sin(a);
-    }
-
-    public static PolarPos byXY(float x, float y) {
-        return new PolarPos().fromXY(x, y);
-    }
-
-    public static PolarPos byV2d(Vec2 v2d) {
-        return new PolarPos().fromV2d(v2d);
     }
 
     public Vec2 toV2d() {

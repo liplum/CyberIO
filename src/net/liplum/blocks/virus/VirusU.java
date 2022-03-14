@@ -6,7 +6,6 @@ import mindustry.world.blocks.environment.Floor;
 import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.meta.BlockFlag;
 import net.liplum.api.virus.UninfectedBlocksRegistry;
-import net.liplum.blocks.virus.Virus;
 
 public class VirusU {
     public static boolean canInfect(Tile tile) {

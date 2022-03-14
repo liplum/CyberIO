@@ -8,6 +8,7 @@ import net.liplum.CioMod;
 import net.liplum.GameH;
 import net.liplum.animations.anis.*;
 import net.liplum.api.ITrigger;
+import net.liplum.utils.DebugH;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -29,6 +30,14 @@ public abstract class AniedBlock<TBlock extends AniedBlock<?, ?>, TBuild extends
         if (CioMod.IsClient) {
             this.genAniState();
             this.genAniConfig();
+        }
+    }
+
+    @Override
+    public void setBars() {
+        super.setBars();
+        if (CioMod.DebugMode) {
+            DebugH.addAniStateInfo(bars);
         }
     }
 
@@ -112,10 +121,18 @@ public abstract class AniedBlock<TBlock extends AniedBlock<?, ?>, TBuild extends
         }
 
         /**
+         * Overwrite this please
+         */
+        public void beforeDraw() {
+
+        }
+
+        /**
          * Don't overwrite it unless you want a custom function
          */
         @Override
         public void draw() {
+            beforeDraw();
             if (GameH.CanRefresh()) {
                 aniStateM.update();
             }

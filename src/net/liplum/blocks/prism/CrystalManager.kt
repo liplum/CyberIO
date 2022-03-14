@@ -75,10 +75,10 @@ class CrystalManager(
                 break
             }
         }
-        if (anyInQueue) {
-            status = Status.Expending
+        status = if (anyInQueue) {
+            Status.Expending
         } else {
-            status = Status.Shrinking
+            Status.Shrinking
         }
 
         when (status) {
@@ -106,7 +106,7 @@ class CrystalManager(
 
     fun unlinkAllObelisks() {
         obelisks.forEach {
-            it.te<Obelisk>()?.linked = -1
+            it.te<Obelisk>()?.unlink()
         }
     }
 
@@ -147,8 +147,8 @@ class CrystalManager(
                     Crystal().apply {
                         this.orbitPos = orbitPos
                         isAwaitAdding = true
-                    }.apply(addCrystalCallback).ClientOnlyOn {
-                        genCrystalImgCallback()
+                        addCrystalCallback()
+                        ClientOnlyOn(genCrystalImgCallback)
                     }
                 )
                 status = Status.Expending

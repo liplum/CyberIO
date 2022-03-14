@@ -14,6 +14,8 @@ public class R {
     }
 
     public static final class Bar {
+        public static final String NeighborStateN = "neighbor-state";
+
         public static String Gen(String content) {
             return "bar." + Meta.ModID + "." + content;
         }
@@ -46,7 +48,7 @@ public class R {
                 RestRestore = Gen(RestRestoreN);
         public static final String ChargeN = "charge",
                 Charge = Gen(ChargeN);
-        public static final String NeighborStateN = "neighbor-state";
+
         public static final String LastDamagedN = "last-damaged",
                 LastDamaged = Gen(LastDamagedN);
         public static final String ProgressN = "progress",
@@ -61,17 +63,22 @@ public class R {
                 NoLink = Gen(LinkedN + ".no");
         public static final String StatusN = "status",
                 Status = Gen(StatusN);
+        public static final String ReceiverN = "receiver",
+                Receiver = Gen(ReceiverN);
+        public static final String SenderN = "sender",
+                Sender = Gen(SenderN);
+
     }
 
     public static final class Ctrl {
-        public static String Gen(String content) {
-            return "control." + Meta.ModID + "." + content;
-        }
-
         public static final String
                 Yes = Gen("yes"),
                 No = Gen("no"),
                 OK = Gen("ok");
+
+        public static String Gen(String content) {
+            return "control." + Meta.ModID + "." + content;
+        }
     }
 
     public static final class C {
@@ -86,8 +93,8 @@ public class R {
         public static final Color Cloud = Color.white;
         public static final Color IcLight = Color.valueOf("#047b04");
         public static final Color IcDark = Color.valueOf("#024202");
-        public static final Color shadow = new Color(0, 0, 0, 0.71f);
-        public static final Color blendShadow = Color.white.cpy().lerp(Color.black, shadow.a);
+        public static final Color Shadow = new Color(0, 0, 0, 0.71f);
+        public static final Color BlendShadow = Color.white.cpy().lerp(Color.black, Shadow.a);
         public static final Color
                 PrismRedFG = Color.valueOf("#EF5350"), PrismRedBK = Color.valueOf("#E53935"),
                 PrismGreenFG = Color.valueOf("#76FF03"), PrismGreenBK = Color.valueOf("#00C853"),
@@ -103,13 +110,14 @@ public class R {
         public static final Color
                 prismClockwise = Pal.power,
                 prismAntiClockwise = Pal.lancerLaser;
+        public static final Color Stop = Color.red;/* Color.valueOf("#dd2c00");*/
     }
 
     public static final class S {
+        public static final String Test = Gen("test");
+
         public static String Gen(String name) {
             return "shaders/" + name + ".frag";
         }
-
-        public static final String Test = Gen("test");
     }
 }

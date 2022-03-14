@@ -85,6 +85,10 @@ open class PrismObelisk(name: String) : Block(name) {
             }
         }
 
+        open fun unlink() {
+            linked = -1
+        }
+
         override fun draw() {
             super.draw()
             val d = delta()

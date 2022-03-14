@@ -4,6 +4,7 @@ package net.liplum.api.data
 
 import mindustry.Vars
 import mindustry.type.Item
+import net.liplum.utils.ID
 import net.liplum.utils.build
 import net.liplum.utils.exists
 
@@ -39,7 +40,7 @@ val Item?.req: SingleItemArray
     get() = if (this == null)
         EmptySingleItemArray
     else
-        DataCenter.SingleItems[this.id.toInt()]
+        DataCenter.SingleItems[this.ID]
 
 fun Item?.match(requirements: SingleItemArray?): Boolean {
     this ?: return false

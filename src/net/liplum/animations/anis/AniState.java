@@ -44,6 +44,7 @@ public class AniState<TBlock extends Block, TBuild extends Building> {
 
     /**
      * Renders the current image
+     *
      * @param build the subject to be rendered
      */
     public void drawBuilding(TBuild build) {

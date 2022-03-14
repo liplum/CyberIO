@@ -5,18 +5,6 @@ import arc.struct.*;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
 public class ArcU {
-    public static <T> Seq<T> emptySeq() {
-        return EmptySeq;
-    }
-
-    public static <T> OrderedSet<T> emptySet() {
-        return EmptyOrderedSet;
-    }
-
-    public static <TK, TV> OrderedMap<TK, TV> emptyMap() {
-        return EmptyMap;
-    }
-
     private static final Seq EmptySeq = new Seq() {
         @Override
         public void add(Object value) {
@@ -162,7 +150,6 @@ public class ArcU {
             return JavaU.emptyArray(Object.class);
         }
     };
-
     private static final OrderedSet EmptyOrderedSet = new OrderedSet() {
         @Override
         public boolean add(Object key) {
@@ -337,5 +324,17 @@ public class ArcU {
         }
 
     };
+
+    public static <T> Seq<T> emptySeq() {
+        return EmptySeq;
+    }
+
+    public static <T> OrderedSet<T> emptySet() {
+        return EmptyOrderedSet;
+    }
+
+    public static <TK, TV> OrderedMap<TK, TV> emptyMap() {
+        return EmptyMap;
+    }
 
 }

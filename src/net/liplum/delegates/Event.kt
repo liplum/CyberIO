@@ -19,7 +19,7 @@ class Event<TOwner : Any> {
         return this
     }
 
-    fun clear():Event<TOwner>{
+    fun clear(): Event<TOwner> {
         subscribers.clear()
         return this
     }

@@ -5,22 +5,43 @@ package net.liplum
 import arc.util.Time
 import mindustry.Vars
 import net.liplum.utils.format
+import java.lang.annotation.Inherited
 
 /**
  * It indicates this should be called or accessed only on Physical Client
  */
 @Retention(AnnotationRetention.SOURCE)
+@Inherited
 annotation class ClientOnly
 /**
  * It indicates this should be called or accessed only on Logical Server
  */
 @Retention(AnnotationRetention.SOURCE)
+@Inherited
 annotation class ServerOnly
+/**
+ * It indicates this will send data packet to synchronize no matter which Server/Client
+ */
+@Retention(AnnotationRetention.SOURCE)
+@Target(
+    AnnotationTarget.FUNCTION,
+    AnnotationTarget.PROPERTY_SETTER,
+    AnnotationTarget.CONSTRUCTOR,
+)
+@Inherited
+annotation class SendDataPack
+/**
+ * It indicates this will be called by a function which handles data packet
+ */
+@Retention(AnnotationRetention.SOURCE)
+@Inherited
+annotation class CalledBySync
 /**
  * It indicates this function use random number which may not be synchronized on Physical Server between Physical Client
  * so that you have to send data packet manually to share data.
  */
 @Retention(AnnotationRetention.SOURCE)
+@Inherited
 annotation class UseRandom
 /**
  * Runs codes only on Physical Client

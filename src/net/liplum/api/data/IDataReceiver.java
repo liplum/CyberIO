@@ -2,7 +2,9 @@ package net.liplum.api.data;
 
 import arc.struct.ObjectSet;
 import mindustry.type.Item;
+import net.liplum.CalledBySync;
 import net.liplum.ClientOnly;
+import net.liplum.delegates.Delegate1;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -36,15 +38,26 @@ public interface IDataReceiver extends IDataBuilding {
     @ClientOnly
     boolean isBlocked();
 
+    @CalledBySync
     void connect(@NotNull IDataSender sender);
 
+    @CalledBySync
     void disconnect(@NotNull IDataSender sender);
 
     @NotNull
     ObjectSet<Integer> connectedSenders();
 
+    default boolean isConnectedWith(@NotNull IDataSender sender) {
+        return connectedSenders().contains(sender.getBuilding().pos());
+    }
+
+    @NotNull
+    Delegate1<IDataReceiver> getOnRequirementUpdated();
+
     @Nullable
     Integer connectedSender();
+
+    int maxSenderConnection();
 
     boolean acceptConnection(@NotNull IDataSender sender);
 }

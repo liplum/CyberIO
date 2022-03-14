@@ -35,7 +35,7 @@ public class VirusColors {
         Color color;
         do {
             color = Colors[Mathf.random(max)];
-        } while (JavaU.equals(color,notThis));
+        } while (JavaU.equals(color, notThis));
         return color;
     }
 }
