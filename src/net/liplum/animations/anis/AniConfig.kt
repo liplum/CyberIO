@@ -230,7 +230,7 @@ open class AniConfig<TBlock : Block, TBuild : Building> {
      */
     @Nullable
     open fun getCanEnter(from: AniState<TBlock, TBuild>, to: AniState<TBlock, TBuild>): ITrigger<TBuild>? {
-        return canEnters[getKey(from, to)]!!
+        return canEnters[getKey(from, to)]
     }
     /**
      * Gets all possible States that `from` State can enter

@@ -224,7 +224,7 @@ class CioBlocks : ContentTable {
 
         cloud = Cloud("cloud").apply {
             requirements(
-                Category.logic, BuildVisibility.shown, arrayOf(
+                Category.logic, BuildVisibility.sandboxOnly, arrayOf(
                     ItemStack(CioItems.ic, 10),
                     ItemStack(Items.titanium, 1000),
                     ItemStack(Items.thorium, 1000),
@@ -239,7 +239,7 @@ class CioBlocks : ContentTable {
         DebugOnly {
             hyperOverdriveSphere = AdjustableOverdrive("hyper-overdrive-sphere").apply {
                 requirements(
-                    Category.effect, BuildVisibility.sandboxOnly, arrayOf(
+                    Category.effect, BuildVisibility.shown, arrayOf(
                     )
                 )
                 size = 3
@@ -374,21 +374,19 @@ class CioBlocks : ContentTable {
             size = 2
         }
 
-        DebugOnly {
-            smartUnloader = SmartUnloader("smart-unloader").apply {
-                requirements(
-                    Category.distribution, BuildVisibility.shown, arrayOf(
-                        ItemStack(CioItems.ic, 8),
-                        ItemStack(Items.metaglass, 80),
-                        ItemStack(Items.silicon, 150),
-                        ItemStack(Items.phaseFabric, 80),
-                    )
+        smartUnloader = SmartUnloader("smart-unloader").apply {
+            requirements(
+                Category.distribution, BuildVisibility.shown, arrayOf(
+                    ItemStack(CioItems.ic, 8),
+                    ItemStack(Items.metaglass, 80),
+                    ItemStack(Items.silicon, 150),
+                    ItemStack(Items.phaseFabric, 80),
                 )
-                unloadSpeed = 5f
-                consumes.power(3f)
-                health = 1000
-                size = 2
-            }
+            )
+            unloadSpeed = 5f
+            consumes.power(3f)
+            health = 1000
+            size = 2
         }
     }
 

@@ -4,6 +4,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -26,6 +28,7 @@ public class ReflectU {
     public static void set(Class<?> clz, Object obj, String name, Object value) {
         getEntry(clz).set(obj, name, value);
     }
+
 
     public static <TFrom, TTO extends TFrom> void copyFields(TFrom from, TTO to) {
         Class<?> fromClz = from.getClass();
@@ -69,6 +72,8 @@ public class ReflectU {
         public final Class<?> clz;
         @NotNull
         public final HashMap<String, Field> fields = new HashMap<>();
+        @NotNull
+        public final HashMap<Object, Method> methods = new HashMap<>();
         @Nullable
         public Field[] allFields;
         @Nullable
@@ -84,6 +89,22 @@ public class ReflectU {
                     Field field = clz.getDeclaredField(name);
                     field.setAccessible(true);
                     return field;
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        }
+
+        private Object getKey(String name, Object[] args) {
+            return name.hashCode() ^ Arrays.hashCode(args);
+        }
+
+        private Method getMethod(String name, Class<?>... classes) {
+            return methods.computeIfAbsent(getKey(name, classes), n -> {
+                try {
+                    Method method = clz.getDeclaredMethod(name, classes);
+                    method.setAccessible(true);
+                    return method;
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }

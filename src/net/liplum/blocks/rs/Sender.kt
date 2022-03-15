@@ -18,10 +18,7 @@ import net.liplum.animations.anis.*
 import net.liplum.api.data.*
 import net.liplum.blocks.AniedBlock
 import net.liplum.blocks.rs.Sender.SenderBuild
-import net.liplum.utils.AnimU
-import net.liplum.utils.TR
-import net.liplum.utils.addReceiverInfo
-import net.liplum.utils.inMod
+import net.liplum.utils.*
 
 private typealias AniStateS = AniState<Sender, SenderBuild>
 
@@ -151,7 +148,6 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
         override fun drawSelect() {
             this.drawDataNetGraphic()
         }
-
         @ClientOnly
         override fun onConfigureTileTapped(other: Building): Boolean {
             if (this === other) {
