@@ -3,6 +3,7 @@ package net.liplum.utils;
 import com.google.common.collect.ObjectArrays;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
 import java.util.HashMap;
 
 @SuppressWarnings("unchecked")
@@ -22,5 +23,15 @@ public class JavaU {
             return false;
         }
         return a.equals(b);
+    }
+
+    public static <T> boolean equalsNoOrder(T[] a, T[] b) {
+        if (a.length == b.length) {
+            if (a.length == 0) {
+                return true;
+            }
+            return Arrays.asList(a).containsAll(Arrays.asList(b));
+        }
+        return false;
     }
 }

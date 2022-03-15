@@ -251,6 +251,9 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
                     }
                 }
             }
+            DebugOnly {
+                needUnloadItemsText = genNeedUnloadItemsText()
+            }
         }
 
         override fun onProximityUpdate() {
@@ -258,9 +261,17 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
             updateUnloaded()
             updateTracker()
         }
-
+        @CioDebugOnly
+        var needUnloadItemsText: String = ""
+        @CioDebugOnly
+        fun genNeedUnloadItemsText() = needUnloadItems.genText()
         override fun drawSelect() {
             this.drawDataNetGraphic()
+            DebugOnly {
+                if (needUnloadItemsText.isNotEmpty()) {
+                    drawPlaceText(needUnloadItemsText, tileX(), tileY(), true)
+                }
+            }
         }
 
         override fun drawConfigure() {
@@ -276,12 +287,16 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
             }
             val pos = other.pos()
             if (pos in receiversPos) {
-                deselect()
+                if (!canMultipleConnect()) {
+                    deselect()
+                }
                 pos.dr()?.let { disconnectSync(it) }
                 return false
             }
             if (other is IDataReceiver) {
-                deselect()
+                if (!canMultipleConnect()) {
+                    deselect()
+                }
                 if (receiversPos.size < maxConnection &&
                     other.acceptConnection(this)
                 ) {
@@ -302,6 +317,19 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
                 pos.dr()?.let {
                     connectReceiver(it)
                     it.connect(this)
+                }
+            }
+        }
+
+        override fun onProximityAdded() {
+            super.onProximityAdded()
+            resubscribeRequirementUpdated()
+        }
+
+        open fun resubscribeRequirementUpdated() {
+            receiversPos.forEach { pos ->
+                pos.dr()?.let {
+                    it.onRequirementUpdated += ::onReceiverRequirementsUpdated
                 }
             }
         }
@@ -353,7 +381,6 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
 
         override fun maxReceiverConnection() = maxConnection
         override fun acceptItem(source: Building, item: Item) = false
-        override fun canMultipleConnect() = true
         override fun connectedReceivers(): OrderedSet<Int> = receiversPos
         override fun getBuilding() = this
         override fun getTile(): Tile = tile

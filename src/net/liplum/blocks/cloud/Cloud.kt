@@ -22,10 +22,7 @@ import net.liplum.animations.anis.AniConfig
 import net.liplum.animations.anis.AniState
 import net.liplum.animations.anis.config
 import net.liplum.animations.blocks.*
-import net.liplum.api.data.CyberU
-import net.liplum.api.data.IDataReceiver
-import net.liplum.api.data.IDataSender
-import net.liplum.api.data.dr
+import net.liplum.api.data.*
 import net.liplum.delegates.Delegate1
 import net.liplum.persistance.intSet
 import net.liplum.utils.*
@@ -92,6 +89,11 @@ open class Cloud(name: String) : PowerBlock(name) {
         ShredderAnim = this.autoAnim("shredder", 13, 60f)
     }
 
+    override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
+        super.drawPlace(x, y, rotation, valid)
+        this.drawLinkedLineToReceiverWhenConfiguring(x, y)
+    }
+
     override fun outputsItems() = false
     open inner class CloudBuild : Building(), IShared, IDataReceiver, IDataSender {
         lateinit var cloudRoom: SharedRoom
@@ -143,6 +145,7 @@ open class Cloud(name: String) : PowerBlock(name) {
 
         override fun onRemoved() {
             cloudRoom.offline(this)
+            onRequirementUpdated.clear()
         }
 
         override fun sendData(receiver: IDataReceiver, item: Item, amount: Int): Int {
@@ -216,12 +219,16 @@ open class Cloud(name: String) : PowerBlock(name) {
             }
             val pos = other.pos()
             if (pos in info.receiversPos) {
-                deselect()
+                if (!canMultipleConnect()) {
+                    deselect()
+                }
                 pos.dr()?.let { disconnectSync(it) }
                 return false
             }
             if (other is IDataReceiver) {
-                deselect()
+                if (!canMultipleConnect()) {
+                    deselect()
+                }
                 if (other.acceptConnection(this)) {
                     connectSync(other)
                 }
@@ -256,7 +263,6 @@ open class Cloud(name: String) : PowerBlock(name) {
             else
                 info.sendersPos.first()
 
-        override fun canMultipleConnect() = true
         override fun connectedReceiver(): Int? =
             if (info.receiversPos.isEmpty)
                 null

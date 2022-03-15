@@ -254,9 +254,9 @@ class CioBlocks : ContentTable {
         prism = Prism("prism").apply {
             requirements(
                 Category.turret, BuildVisibility.shown, arrayOf(
-                    ItemStack(CioItems.ic, 3),
+                    ItemStack(CioItems.ic, 5),
                     ItemStack(Items.metaglass, 100),
-                    ItemStack(Items.titanium, 50),
+                    ItemStack(Items.titanium, 100),
                 )
             )
             buildCostMultiplier = 2f
@@ -267,9 +267,9 @@ class CioBlocks : ContentTable {
         prismObelisk = PrismObelisk("prism-obelisk").apply {
             requirements(
                 Category.turret, BuildVisibility.shown, arrayOf(
-                    ItemStack(CioItems.ic, 5),
-                    ItemStack(Items.metaglass, 200),
-                    ItemStack(Items.titanium, 200),
+                    ItemStack(CioItems.ic, 8),
+                    ItemStack(Items.metaglass, 300),
+                    ItemStack(Items.titanium, 300),
                 )
             )
             size = 2

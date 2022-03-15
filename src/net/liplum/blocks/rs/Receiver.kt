@@ -67,24 +67,7 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
 
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)
-        if (!Vars.control.input.frag.config.isShown) return
-        val selected = Vars.control.input.frag.config.selectedTile
-        if (selected == null ||
-            selected.block !is Sender
-        ) {
-            return
-        }
-        G.init()
-        val selectedTile = selected.tile()
-        G.drawDashLineBetweenTwoBlocks(
-            selected.block, selectedTile.x, selectedTile.y,
-            this, x.toShort(), y.toShort(),
-            R.C.Sender
-        )
-        G.drawArrowBetweenTwoBlocks(
-            selected.block, selectedTile.x, selectedTile.y, this, x.toShort(), y.toShort(),
-            R.C.Sender
-        )
+        this.drawLinkedLineToReceiverWhenConfiguring(x, y)
     }
 
     override fun load() {
@@ -134,6 +117,9 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
 
         @JvmField var onRequirementUpdated: Delegate1<IDataReceiver> = Delegate1()
         override fun getOnRequirementUpdated() = onRequirementUpdated
+        override fun onRemoved() {
+            onRequirementUpdated.clear()
+        }
         @ClientOnly
         override fun isBlocked(): Boolean = lastOutputDelta > blockTime
         override fun drawSelect() {
@@ -167,7 +153,7 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
                         lastFullDataDelta += deltaT
                     }
                 }
-                if (!power.status.isZero()) {
+                if (consValid()) {
                     val dumped = dump(outputItem)
                     ClientOnly {
                         if (dumped) {

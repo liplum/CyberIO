@@ -272,6 +272,8 @@ open class Prism(name: String) : Block(name) {
         }
 
         override fun draw() {
+            G.init()
+
             Draw.rect(BaseTR, x, y)
             val process = cm.process
             Draw.alpha(1f - process)
@@ -318,8 +320,8 @@ open class Prism(name: String) : Block(name) {
                 )
 
                 DebugOnly {
-                    Draw.z(Layer.overlayUI)
-                    Drawf.circles(priselX, priselY, prismRange, color)
+                    Draw.z(Layer.power - 1f)
+                    G.drawDashCircle(priselX, priselY, prismRange, color)
                 }
             }
             Draw.reset()
@@ -327,7 +329,7 @@ open class Prism(name: String) : Block(name) {
 
         override fun drawSelect() {
             G.init()
-            Draw.z(Layer.blockUnder)
+            Draw.z(Layer.turret)
             cm.render {
                 G.drawDashCircle(
                     this@PrismBuild,

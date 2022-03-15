@@ -3,6 +3,7 @@
 package net.liplum.utils
 
 import mindustry.Vars
+import mindustry.ctype.UnlockableContent
 import mindustry.gen.Building
 import mindustry.graphics.Pal
 import mindustry.logic.Ranged
@@ -129,4 +130,28 @@ fun <T> BlockBars.addSenderInfo() where T : Building, T : IDataReceiver {
             }
         )
     }
+}
+
+fun <T : UnlockableContent> Array<T>.genText(): String {
+    val s = StringBuilder()
+    s.append('[')
+    s.append(this.size)
+    s.append(']')
+    for (req in this.sortedBy { it.id }) {
+        s.append(req.localizedName)
+        s.append(' ')
+    }
+    return s.toString()
+}
+
+fun <T : UnlockableContent> Iterable<T>.genText(): String {
+    val s = StringBuilder()
+    var count = 0
+    for (req in this.sortedBy { it.id }) {
+        s.append(req.localizedName)
+        s.append(' ')
+        count++
+    }
+    s.insert(0, "[$count]")
+    return s.toString()
 }

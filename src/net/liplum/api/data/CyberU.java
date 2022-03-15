@@ -2,6 +2,7 @@ package net.liplum.api.data;
 
 import mindustry.Vars;
 import mindustry.gen.Building;
+import mindustry.world.Block;
 import mindustry.world.Tile;
 import net.liplum.R;
 import net.liplum.utils.G;
@@ -59,5 +60,28 @@ public class CyberU {
                 G.drawArrowBetweenTwoBlocks(senderT, receiverT, R.C.Sender);
             }
         }
+    }
+
+    public static void drawLinkedLineToReceiverWhenConfiguring(Block curBlock, int x, int y) {
+        if (!Vars.control.input.frag.config.isShown())
+            return;
+        Building selected = Vars.control.input.frag.config.getSelectedTile();
+        if (!(selected instanceof IDataSender)
+        ) {
+            return;
+        }
+        G.init();
+        Tile selectedTile = selected.tile();
+        G.drawDashLineBetweenTwoBlocks(
+                selected.block, selectedTile.x, selectedTile.y,
+                curBlock, (short) x, (short) y,
+                R.C.Receiver
+        );
+        G.drawArrowBetweenTwoBlocks(
+                selected.block, selectedTile.x, selectedTile.y,
+                curBlock, (short) x, (short) y,
+                R.C.Sender
+        );
+        G.drawSurroundingCircle(curBlock, x, y, R.C.Receiver);
     }
 }

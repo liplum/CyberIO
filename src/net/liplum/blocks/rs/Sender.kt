@@ -151,6 +151,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
         override fun drawSelect() {
             this.drawDataNetGraphic()
         }
+
         @ClientOnly
         override fun onConfigureTileTapped(other: Building): Boolean {
             if (this === other) {

@@ -5,9 +5,12 @@ import arc.struct.OrderedSet
 import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
+import mindustry.gen.Building
 import mindustry.type.Item
+import mindustry.type.ItemStack
 import mindustry.world.Tile
 import mindustry.world.consumers.Consume
+import mindustry.world.consumers.ConsumeItemDynamic
 import mindustry.world.consumers.ConsumeItems
 import mindustry.world.consumers.ConsumeType
 import mindustry.world.meta.BlockGroup
@@ -22,6 +25,7 @@ import net.liplum.animations.anis.config
 import net.liplum.api.data.IDataReceiver
 import net.liplum.api.data.IDataSender
 import net.liplum.api.data.drawDataNetGraphic
+import net.liplum.api.data.drawLinkedLineToReceiverWhenConfiguring
 import net.liplum.blocks.AniedBlock
 import net.liplum.delegates.Delegate1
 import net.liplum.persistance.intSet
@@ -39,6 +43,7 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
     @JvmField @ClientOnly var ArrowsAnimFrames = 9
     @JvmField @ClientOnly var ArrowsAnimDuration = 70f
     @JvmField @ClientOnly var DistributionTime = 60f
+    @JvmField var DynamicReqUpdateTime = 30f
 
     init {
         solid = true
@@ -64,8 +69,11 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
         UndebugOnly {
             bars.removeItems()
         }
-        DebugOnly {
-        }
+    }
+
+    override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
+        super.drawPlace(x, y, rotation, valid)
+        this.drawLinkedLineToReceiverWhenConfiguring(x, y)
     }
 
     open inner class SmartDISBuild : AniedBlock<SmartDistributor, SmartDistributor.SmartDISBuild>.AniedBuild(),
@@ -81,7 +89,8 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
         @ClientOnly lateinit var arrowsAnimObj: AnimationObj
         @ClientOnly open val isDistributing: Boolean
             get() = lastDistributionTime < DistributionTime
-
+        var hasDynamicRequirements: Boolean = false
+        var dynamicReqUpdateTimer = 0f
         override fun created() {
             super.created()
             ClientOnly {
@@ -89,8 +98,13 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
             }
         }
 
+        override fun onRemoved() {
+            onRequirementUpdated.clear()
+        }
+
         open fun updateRequirements() {
             val all = HashSet<Item>()
+            hasDynamicRequirements = false
             for (build in proximity) {
                 val consumes = build.block.consumes
                 if (consumes.has(ConsumeType.item)) {
@@ -99,15 +113,26 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
                         for (req in reqs.items) {
                             all.add(req.item)
                         }
+                    } else if (reqs is ConsumeItemDynamic) {
+                        for (req in reqs.items.get(build)) {
+                            all.add(req.item)
+                        }
+                        hasDynamicRequirements = true
                     }
                 }
             }
-            requirements = if (all.isEmpty()) {
+            val newReqs = if (all.isEmpty()) {
                 Item::class.java.EmptyArray()
             } else {
                 all.toTypedArray()
             }
-            onRequirementUpdated(this)
+            if (!newReqs.equalsNoOrder(requirements)) {
+                requirements = newReqs
+                DebugOnly {
+                    requirementsText = genRequirementsText()
+                }
+                onRequirementUpdated(this)
+            }
         }
 
         override fun onProximityUpdate() {
@@ -115,14 +140,28 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
             updateRequirements()
         }
 
+        override fun onProximityAdded() {
+            super.onProximityAdded()
+            updateRequirements()
+        }
+
         override fun updateTile() {
+            if (hasDynamicRequirements) {
+                dynamicReqUpdateTimer += Time.delta
+                if (dynamicReqUpdateTimer >= DynamicReqUpdateTime) {
+                    dynamicReqUpdateTimer = 0f
+                    updateRequirements()
+                }
+            } else {
+                dynamicReqUpdateTimer = 0f
+            }
             if (consValid()) {
                 val dised = distribute()
                 if (dised) {
                     lastDistributionTime = 0f
                 }
             }
-            lastDistributionTime += Time.delta
+            lastDistributionTime += delta()
         }
 
         open fun distribute(): Boolean {
@@ -136,20 +175,26 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
                     if (consumes.has(ConsumeType.item)) {
                         val reqs: Consume = consumes[ConsumeType.item]
                         if (reqs is ConsumeItems) {
-                            for (req in reqs.items) {
-                                val item = req.item
-                                if (items.has(item) && b.acceptItem(this, item)) {
-                                    b.handleItem(this, item)
-                                    items.remove(item, 1)
-                                    dised = true
-                                    break
-                                }
-                            }
+                            dised = distributeFunc(b, reqs.items)
+                        } else if (reqs is ConsumeItemDynamic) {
+                            dised = distributeFunc(b, reqs.items.get(b))
                         }
                     }
                 }
             }
             return dised
+        }
+
+        protected open fun distributeFunc(other: Building, reqs: Array<ItemStack>): Boolean {
+            for (req in reqs) {
+                val item = req.item
+                if (items.has(item) && other.acceptItem(this, item)) {
+                    other.handleItem(this, item)
+                    items.remove(item, 1)
+                    return true
+                }
+            }
+            return false
         }
 
         override fun receiveData(sender: IDataSender, item: Item, amount: Int) {
@@ -188,9 +233,17 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
             super.write(write)
             write.intSet(senders)
         }
-
+        @CioDebugOnly
+        var requirementsText: String = ""
+        @CioDebugOnly
+        fun genRequirementsText() = requirements.genText()
         override fun drawSelect() {
             this.drawDataNetGraphic()
+            DebugOnly {
+                if (requirementsText.isNotEmpty()) {
+                    drawPlaceText(requirementsText, tileX(), tileY(), true)
+                }
+            }
         }
 
         override fun beforeDraw() {
