@@ -19,6 +19,8 @@ import mindustry.world.meta.BlockGroup
 import net.liplum.*
 import net.liplum.animations.anims.Animation
 import net.liplum.animations.anis.AniState
+import net.liplum.animations.anis.DrawTR
+import net.liplum.animations.anis.SetColor
 import net.liplum.animations.anis.config
 import net.liplum.api.data.*
 import net.liplum.blocks.AniedBlock
@@ -257,12 +259,12 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
             DownloadAnim.draw(Color.green, it.x, it.y)
         }
         UnconnectedAni = addAniState("Unconnected") {
-            Draw.color(Color.white)
-            Draw.rect(UnconnectedTR, it.x, it.y)
+            SetColor(R.C.Unconnected)
+            DrawTR(UnconnectedTR, it.x, it.y)
             Draw.color()
         }
         BlockedAni = addAniState("Blocked") {
-            Draw.color(R.C.Stop)
+            SetColor(R.C.Stop)
             Draw.rect(DownArrowTR, it.x, it.y)
             Draw.color()
         }

@@ -7,6 +7,7 @@ import net.liplum.ClientOnly
 import net.liplum.animations.anims.Animation
 import net.liplum.animations.anims.AnimationObj
 import net.liplum.animations.anis.AniState
+import net.liplum.animations.anis.SetAlpha
 import net.liplum.animations.anis.config
 import net.liplum.blocks.AniedCrafter
 import net.liplum.utils.FUNC
@@ -57,7 +58,7 @@ open class ICMachine(name: String) : AniedCrafter<ICMachine, ICMachine.ICMachine
     override fun genAniState() {
         IdleState = addAniState("Idle")
         WorkingState = addAniState("Working") {
-            Draw.alpha(workingAnimAlpha(it.progress))
+            SetAlpha(workingAnimAlpha(it.progress))
             it.workingAnimObj.draw(it.x, it.y)
         }
     }

@@ -97,6 +97,7 @@ public abstract class AniedCrafter<TBlock extends AniedCrafter<?, ?>, TBuild ext
 
         @Override
         public void draw() {
+            aniStateM.spend(delta());
             if (GameH.CanRefresh()) {
                 aniStateM.update();
             }

@@ -12,7 +12,7 @@ import java.util.*
  * @param <TBlock> the type of block which has this animation configuration
  * @param <TBuild> the corresponding [Building] type
 </TBuild></TBlock> */
-class AniConfig<TBlock : Block, TBuild : Building> {
+open class AniConfig<TBlock : Block, TBuild : Building> {
     /**
      * Key --to--> When can go to the next State
      */
@@ -37,6 +37,10 @@ class AniConfig<TBlock : Block, TBuild : Building> {
      */
     var built = false
         private set
+    var transition: TransitionEffect = Fade
+        private set
+    var transitionDuration: Float = 30f
+        private set
     /**
      * Which from State is configuring
      */
@@ -54,12 +58,34 @@ class AniConfig<TBlock : Block, TBuild : Building> {
      * @return this
      * @throws AlreadyBuiltException thrown when this configuration has already built
      */
-    fun defaultState(state: AniState<TBlock, TBuild>): AniConfig<TBlock, TBuild> {
+    open fun defaultState(state: AniState<TBlock, TBuild>): AniConfig<TBlock, TBuild> {
+        checkBuilt()
+        defaultState = state
+        return this
+    }
+    /**
+     * Sets the transition effect
+     */
+    open fun transition(transitionEffect: TransitionEffect): AniConfig<TBlock, TBuild> {
+        checkBuilt()
+        transition = transitionEffect
+        return this
+    }
+
+    open fun transitionDuration(duration: Float) : AniConfig<TBlock, TBuild>{
+        checkBuilt()
+        transitionDuration = duration
+        return this
+    }
+    /**
+     * Check whether this Animation Config has been built.
+     * Raising [AlreadyBuiltException] when built
+     * @throws AlreadyBuiltException thrown when this configuration has already built
+     */
+    private fun checkBuilt() {
         if (built) {
             throw AlreadyBuiltException(this.toString())
         }
-        defaultState = state
-        return this
     }
 
     val allConfigedStates: MutableSet<AniState<TBlock, TBuild>>
@@ -74,13 +100,11 @@ class AniConfig<TBlock : Block, TBuild : Building> {
      * @throws AlreadyBuiltException    thrown when this configuration has already built
      * @throws CannotEnterSelfException thrown when `from` equals to `to`
      */
-    fun entry(
+    open fun entry(
         from: AniState<TBlock, TBuild>, to: AniState<TBlock, TBuild>,
         canEnter: ITrigger<TBuild>
     ): AniConfig<TBlock, TBuild> {
-        if (built) {
-            throw AlreadyBuiltException(this.toString())
-        }
+        checkBuilt()
         if (from === to || from.stateName == to.stateName) {
             throw CannotEnterSelfException(this.toString())
         }
@@ -99,10 +123,8 @@ class AniConfig<TBlock : Block, TBuild : Building> {
      * @param from the current State
      * @return this
      */
-    infix fun From(from: AniState<TBlock, TBuild>): AniConfig<TBlock, TBuild> {
-        if (built) {
-            throw AlreadyBuiltException(this.toString())
-        }
+    open infix fun From(from: AniState<TBlock, TBuild>): AniConfig<TBlock, TBuild> {
+        checkBuilt()
         if (firstConfigedState == null) {
             firstConfigedState = from
         }
@@ -116,10 +138,8 @@ class AniConfig<TBlock : Block, TBuild : Building> {
      * @param canEnter When the State Machine can go from current State to next State
      * @return this
      */
-    fun To(to: AniState<TBlock, TBuild>, canEnter: ITrigger<TBuild>): AniConfig<TBlock, TBuild> {
-        if (built) {
-            throw AlreadyBuiltException(this.toString())
-        }
+    open fun To(to: AniState<TBlock, TBuild>, canEnter: ITrigger<TBuild>): AniConfig<TBlock, TBuild> {
+        checkBuilt()
         if (curConfiguringFromState == null) {
             throw NoFromStateException(this.toString())
         }
@@ -141,10 +161,8 @@ class AniConfig<TBlock : Block, TBuild : Building> {
      * @param to the next State
      * @return this
      */
-    infix fun To(to: AniState<TBlock, TBuild>): AniConfig<TBlock, TBuild> {
-        if (built) {
-            throw AlreadyBuiltException(this.toString())
-        }
+    open infix fun To(to: AniState<TBlock, TBuild>): AniConfig<TBlock, TBuild> {
+        checkBuilt()
         curConfiguringToState = to
         return this
     }
@@ -154,10 +172,8 @@ class AniConfig<TBlock : Block, TBuild : Building> {
      * @param canEnter When the State Machine can go from current State to next State
      * @return this
      */
-    infix fun When(canEnter: ITrigger<TBuild>): AniConfig<TBlock, TBuild> {
-        if (built) {
-            throw AlreadyBuiltException(this.toString())
-        }
+    open infix fun When(canEnter: ITrigger<TBuild>): AniConfig<TBlock, TBuild> {
+        checkBuilt()
         if (curConfiguringFromState == null) {
             throw NoFromStateException(this.toString())
         }
@@ -184,7 +200,7 @@ class AniConfig<TBlock : Block, TBuild : Building> {
      * @return this
      * @throws NoDefaultStateException thrown when the default State hasn't been set yet
      */
-    fun build(): AniConfig<TBlock, TBuild> {
+    open fun build(): AniConfig<TBlock, TBuild> {
         if (defaultState == null) {
             throw NoDefaultStateException(this.toString())
         }
@@ -199,7 +215,7 @@ class AniConfig<TBlock : Block, TBuild : Building> {
      * @return an Animation State Machine
      * @throws HasNotBuiltYetException thrown when this hasn't built yet
      */
-    fun gen(block: TBlock, build: TBuild): AniStateM<TBlock, TBuild> {
+    open fun gen(block: TBlock, build: TBuild): AniStateM<TBlock, TBuild> {
         if (!built) {
             throw HasNotBuiltYetException(this.toString())
         }
@@ -213,7 +229,7 @@ class AniConfig<TBlock : Block, TBuild : Building> {
      * @return if the key of `form`->`to` exists, return the condition. Otherwise, return null.
      */
     @Nullable
-    fun getCanEnter(from: AniState<TBlock, TBuild>, to: AniState<TBlock, TBuild>): ITrigger<TBuild>? {
+    open fun getCanEnter(from: AniState<TBlock, TBuild>, to: AniState<TBlock, TBuild>): ITrigger<TBuild>? {
         return canEnters[getKey(from, to)]!!
     }
     /**
@@ -222,7 +238,7 @@ class AniConfig<TBlock : Block, TBuild : Building> {
      * @param from the current State
      * @return a collection of States
      */
-    fun getAllEntrances(from: AniState<TBlock, TBuild>): Collection<AniState<TBlock, TBuild>> {
+    open fun getAllEntrances(from: AniState<TBlock, TBuild>): Collection<AniState<TBlock, TBuild>> {
         return allEntrances.computeIfAbsent(
             from
         ) { LinkedList() }

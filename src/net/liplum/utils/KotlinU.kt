@@ -21,3 +21,7 @@ infix fun Int.between(end: Int): IntRange {
 }
 
 fun <T> Class<T>.EmptyArray(): Array<T> = JavaU.emptyArray(this)
+val Boolean.Int: Int
+    get() = if (this) 1 else 0
+val Boolean.Float: Float
+    get() = if (this) 1f else 0f

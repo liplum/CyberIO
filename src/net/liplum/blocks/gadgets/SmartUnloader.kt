@@ -17,6 +17,7 @@ import net.liplum.*
 import net.liplum.animations.anims.Animation
 import net.liplum.animations.anims.AnimationObj
 import net.liplum.animations.anis.AniState
+import net.liplum.animations.anis.DrawTR
 import net.liplum.animations.anis.config
 import net.liplum.api.data.*
 import net.liplum.blocks.AniedBlock
@@ -118,9 +119,9 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
                 field = value.coerceAtLeast(0f)
             }
         @ClientOnly val isSending: Boolean
-            get() = lastSendingTime > SendingTime
+            get() = lastSendingTime < SendingTime
         @ClientOnly val isUnloading: Boolean
-            get() = lastUnloadTime > UnloadTime
+            get() = lastUnloadTime < UnloadTime
         @ClientOnly lateinit var shrinkingAnimObj: AnimationObj
         override fun created() {
             super.created()
@@ -398,7 +399,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
             it.shrinkingAnimObj.draw(it.x, it.y)
         }
         NoPowerAni = addAniState("NoPower") {
-            Draw.rect(NoPowerTR, it.x, it.y)
+            DrawTR(NoPowerTR, it.x, it.y)
         }
         BlockedAni = addAniState("Blocked") {
             it.shrinkingAnimObj.draw(R.C.Stop, it.x, it.y)

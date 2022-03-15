@@ -132,6 +132,7 @@ public abstract class AniedBlock<TBlock extends AniedBlock<?, ?>, TBuild extends
          */
         @Override
         public void draw() {
+            aniStateM.spend(delta());
             beforeDraw();
             if (GameH.CanRefresh()) {
                 aniStateM.update();

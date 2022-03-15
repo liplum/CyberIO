@@ -1,14 +1,12 @@
 package net.liplum.blocks.icmachine
 
-import arc.graphics.g2d.Draw
 import mindustry.graphics.Pal
 import mindustry.type.Item
 import mindustry.ui.Bar
 import net.liplum.ClientOnly
 import net.liplum.DebugOnly
 import net.liplum.R
-import net.liplum.animations.anis.AniState
-import net.liplum.animations.anis.config
+import net.liplum.animations.anis.*
 import net.liplum.blocks.AniedCrafter
 import net.liplum.utils.*
 import kotlin.math.sqrt
@@ -25,31 +23,11 @@ private val P2A: FUNC = {
 }
 
 open class ICMachineS(name: String) : AniedCrafter<ICMachineS, ICMachineS.ICMachineSBuild>(name) {
-    @ClientOnly lateinit var IdleState: AniStateMS
-    @ClientOnly lateinit var WorkingState: AniStateMS
     @ClientOnly var phase = 3
     @ClientOnly lateinit var Baffle: TR
     @ClientOnly lateinit var processIcons: Array<Item>
     @ClientOnly @JvmField var baffleMinAlpha = 0.65f
     @ClientOnly @JvmField var baffleMaxAlpha = 1f
-    override fun genAniState() {
-        IdleState = addAniState("Idle") {
-            Draw.alpha(it.baffleAlpha)
-            Draw.rect(Baffle, it.x, it.y)
-        }
-        WorkingState = addAniState("Working") {
-            Draw.alpha(1f)
-            val animProgress = it.progress * phase
-            val curIndex = animProgress.toInt().coerceIn(0, processIcons.size - 1)
-            val curTR = processIcons[curIndex].fullIcon
-            val progressInCurPeriod = it.progress % (1f / phase) / (1f / phase)
-            Draw.alpha(P2A(progressInCurPeriod))
-            Draw.rect(curTR, it.x, it.y)
-            Draw.alpha(it.baffleAlpha)
-            Draw.rect(Baffle, it.x, it.y)
-        }
-    }
-
     override fun setBars() {
         super.setBars()
         DebugOnly {
@@ -73,19 +51,6 @@ open class ICMachineS(name: String) : AniedCrafter<ICMachineS, ICMachineS.ICMach
     override fun icons() = arrayOf(
         region, Baffle
     )
-
-    override fun genAniConfig() {
-        config {
-            defaultState(IdleState)
-            From(IdleState) To WorkingState When {
-                !it.progress.isZero() && !it.power.status.isZero()
-            }
-            From(WorkingState) To IdleState When {
-                it.progress.isZero() || it.power.status.isZero()
-            }
-            build()
-        }
-    }
 
     open inner class ICMachineSBuild : AniedCrafter<ICMachineS, ICMachineSBuild>.AniedCrafterBuild() {
         @ClientOnly open var baffleAlpha = baffleMinAlpha
@@ -111,6 +76,37 @@ open class ICMachineS(name: String) : AniedCrafter<ICMachineS, ICMachineS.ICMach
                 }
             } else {
                 processEffectShown = false
+            }
+        }
+    }
+
+    @ClientOnly lateinit var IdleState: AniStateMS
+    @ClientOnly lateinit var WorkingState: AniStateMS
+    override fun genAniState() {
+        IdleState = addAniState("Idle") {
+            SetAlpha(it.baffleAlpha)
+            DrawTR(Baffle, it.x, it.y)
+        }
+        WorkingState = addAniState("Working") {
+            val animProgress = it.progress * phase
+            val curIndex = animProgress.toInt().coerceIn(0, processIcons.size - 1)
+            val curTR = processIcons[curIndex].fullIcon
+            val progressInCurPeriod = it.progress % (1f / phase) / (1f / phase)
+            SetAlpha(P2A(progressInCurPeriod))
+            DrawTR(curTR, it.x, it.y)
+            SetAlpha(it.baffleAlpha)
+            DrawTR(Baffle, it.x, it.y)
+        }
+    }
+
+    override fun genAniConfig() {
+        config {
+            transition(None)
+            From(IdleState) To WorkingState When {
+                !it.progress.isZero() && !it.power.status.isZero()
+            }
+            From(WorkingState) To IdleState When {
+                it.progress.isZero() || it.power.status.isZero()
             }
         }
     }

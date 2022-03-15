@@ -1,7 +1,6 @@
 package net.liplum.blocks.rs
 
 import arc.graphics.Color
-import arc.graphics.g2d.Draw
 import arc.util.Nullable
 import arc.util.Time
 import arc.util.io.Reads
@@ -15,12 +14,14 @@ import mindustry.world.Tile
 import mindustry.world.meta.BlockGroup
 import net.liplum.*
 import net.liplum.animations.anims.Animation
-import net.liplum.animations.anis.AniState
-import net.liplum.animations.anis.config
+import net.liplum.animations.anis.*
 import net.liplum.api.data.*
 import net.liplum.blocks.AniedBlock
 import net.liplum.blocks.rs.Sender.SenderBuild
-import net.liplum.utils.*
+import net.liplum.utils.AnimU
+import net.liplum.utils.TR
+import net.liplum.utils.addReceiverInfo
+import net.liplum.utils.inMod
 
 private typealias AniStateS = AniState<Sender, SenderBuild>
 
@@ -219,12 +220,12 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
             UploadAnim.draw(Color.green, it.x, it.y)
         }
         BlockedAni = addAniState("Blocked") {
-            Draw.color(R.C.Stop)
-            Draw.rect(UpArrowTR, it.x, it.y)
-            Draw.color()
+            SetColor(R.C.Stop)
+            DrawTR(UpArrowTR, it.x, it.y)
+            ResetColor()
         }
         NoPowerAni = addAniState("NoPower") {
-            Draw.rect(NoPowerTR, it.x, it.y)
+            DrawTR(NoPowerTR, it.x, it.y)
         }
     }
 

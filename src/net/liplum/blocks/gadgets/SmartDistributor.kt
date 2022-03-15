@@ -16,6 +16,7 @@ import net.liplum.UndebugOnly
 import net.liplum.animations.anims.Animation
 import net.liplum.animations.anims.AnimationObj
 import net.liplum.animations.anis.AniState
+import net.liplum.animations.anis.DrawTR
 import net.liplum.animations.anis.config
 import net.liplum.api.data.IDataReceiver
 import net.liplum.api.data.IDataSender
@@ -227,7 +228,7 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
     override fun genAniState() {
         DistributingAni = addAniState("Distributing")
         NoPowerAni = addAniState("NoPower") {
-            Draw.rect(NoPowerTR, it.x, it.y)
+            DrawTR(NoPowerTR, it.x, it.y)
         }
     }
 }

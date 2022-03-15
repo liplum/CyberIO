@@ -50,6 +50,15 @@ fun <T> BlockBars.addAniStateInfo() where T : Building, T : IAniSMedBuild<*, *> 
             { 1f }
         )
     }
+    this.add<T>(
+        R.Bar.AniStateLastN
+    ) {
+        Bar(
+            { R.Bar.AniStateLast.bundle(it.aniStateM.lastState?.stateName ?: "") },
+            { Pal.bar },
+            { (it.aniStateM.lastState != null).Float }
+        )
+    }
 }
 
 fun BlockBars.addSleepInfo() {
@@ -59,7 +68,7 @@ fun BlockBars.addSleepInfo() {
         Bar(
             { R.Bar.IsAsleep.bundle(it.sleeping.yesNo()) },
             { Pal.power },
-            { if (it.sleeping) 1f else 0f }
+            { (it.sleeping).Float }
         )
     }
 }

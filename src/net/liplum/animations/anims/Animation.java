@@ -1,8 +1,8 @@
 package net.liplum.animations.anims;
 
 import arc.graphics.Color;
-import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
+import net.liplum.animations.anis.DrawT;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -124,7 +124,8 @@ public class Animation implements IAnimated {
     public void draw(float x, float y, float rotation) {
         TextureRegion curTR = getCurTR();
         if (curTR != null) {
-            Draw.rect(curTR, x, y, rotation);
+            DrawT.DrawTR(curTR, x, y, rotation);
+            DrawT.Reset();
         }
     }
 
@@ -132,9 +133,9 @@ public class Animation implements IAnimated {
     public void draw(@NotNull Color color, float x, float y, float rotation) {
         TextureRegion curTR = getCurTR();
         if (curTR != null) {
-            Draw.color(color);
-            Draw.rect(curTR, x, y, rotation);
-            Draw.color();
+            DrawT.SetColor(color);
+            DrawT.DrawTR(curTR, x, y, rotation);
+            DrawT.Reset();
         }
     }
 
@@ -143,7 +144,7 @@ public class Animation implements IAnimated {
         TextureRegion curTR = getCurTR();
         if (curTR != null) {
             howToRender.render(curTR);
-            Draw.reset();
+            DrawT.Reset();
         }
     }
 
@@ -152,23 +153,24 @@ public class Animation implements IAnimated {
         TextureRegion curTR = getCurTR(indexer);
         if (curTR != null) {
             howToRender.render(curTR);
-            Draw.reset();
+            DrawT.Reset();
         }
     }
 
     public void draw(@NotNull AnimationObj obj, float x, float y, float rotation) {
         TextureRegion curTR = getCurTRByObj(obj);
         if (curTR != null) {
-            Draw.rect(curTR, x, y, rotation);
+            DrawT.DrawTR(curTR, x, y, rotation);
+            DrawT.Reset();
         }
     }
 
     public void draw(@NotNull AnimationObj obj, @NotNull Color color, float x, float y, float rotation) {
         TextureRegion curTR = getCurTRByObj(obj);
         if (curTR != null) {
-            Draw.color(color);
-            Draw.rect(curTR, x, y, rotation);
-            Draw.color();
+            DrawT.SetColor(color);
+            DrawT.DrawTR(curTR, x, y, rotation);
+            DrawT.Reset();
         }
     }
 
@@ -177,7 +179,7 @@ public class Animation implements IAnimated {
             TextureRegion curTR = getCurTRByObj(obj);
             if (curTR != null) {
                 howToRender.render(curTR);
-                Draw.reset();
+                DrawT.Reset();
             }
         }
     }

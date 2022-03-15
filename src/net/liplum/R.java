@@ -42,6 +42,10 @@ public class R {
                 IsAsleep = Gen(IsAsleepN);
         public static final String AniStateN = "ani-state",
                 AniState = Gen(AniStateN);
+        public static final String AniStateLastN = "ani-state-last",
+                AniStateLast = Gen(AniStateLastN);
+        public static final String NullN = "null",
+                Null = Gen(NullN);
         public static final String IsProjectingN = "is-projecting",
                 IsProjecting = Gen(IsProjectingN);
         public static final String RestRestoreN = "rest-restore",
@@ -111,6 +115,7 @@ public class R {
                 prismClockwise = Pal.power,
                 prismAntiClockwise = Pal.lancerLaser;
         public static final Color Stop = Color.red;/* Color.valueOf("#dd2c00");*/
+        public static final Color Unconnected = Color.white;
     }
 
     public static final class S {
