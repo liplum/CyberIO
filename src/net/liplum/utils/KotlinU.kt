@@ -25,3 +25,6 @@ val Boolean.Int: Int
     get() = if (this) 1 else 0
 val Boolean.Float: Float
     get() = if (this) 1f else 0f
+
+fun <T> Array<T>.equalsNoOrder(other: Array<T>): Boolean =
+    JavaU.equalsNoOrder(this, other)

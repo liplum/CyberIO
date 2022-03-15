@@ -34,7 +34,7 @@ public interface IDataSender extends IDataBuilding {
     Integer connectedReceiver();
 
     default boolean canMultipleConnect() {
-        return false;
+        return maxReceiverConnection() != 1;
     }
 
     default boolean isConnectedWith(@NotNull IDataReceiver receiver) {
@@ -50,6 +50,11 @@ public interface IDataSender extends IDataBuilding {
         }
     }
 
+    /**
+     * Gets the maximum limit of connection.<br/>
+     * -1 : unlimited
+     * @return the maximum of connection
+     */
     default int maxReceiverConnection() {
         return 1;
     }

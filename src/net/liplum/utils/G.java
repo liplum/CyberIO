@@ -149,6 +149,22 @@ public class G {
         );
     }
 
+    public static void drawSurroundingCircle(Block b, float drawX, float drawY, Color circleColor) {
+        Drawf.circles(drawX, drawY,
+                (b.size / 2f + 1) * Vars.tilesize + sin - 2f,
+                circleColor
+        );
+    }
+
+    public static void drawSurroundingCircle(Block b, int worldX, int worldY, Color circleColor) {
+        float drawX = WorldU.toDrawXY(b, worldX);
+        float drawY = WorldU.toDrawXY(b, worldY);
+        Drawf.circles(drawX, drawY,
+                (b.size / 2f + 1) * Vars.tilesize + sin - 2f,
+                circleColor
+        );
+    }
+
     public static void drawDashCircle(Building building,
                                       float range, Color color) {
         Drawf.dashCircle(building.x, building.y, range + sin - 2, color);
