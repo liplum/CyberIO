@@ -146,7 +146,6 @@ open class Prism(name: String) : Block(name) {
     }
 
     open inner class PrismBuild : Building(), ControlBlock {
-        @ClientOnly lateinit var crystalImg: TR
         lateinit var cm: CrystalManager
         var unit = UnitTypes.block.create(team) as BlockUnitc
         override fun canControl() = playerControllable
@@ -157,14 +156,13 @@ open class Prism(name: String) : Block(name) {
 
         override fun created() {
             super.created()
-            ClientOnly {
-                crystalImg = CrystalTRs[Mathf.random(0, CrystalTRs.size - 1)]
-            }
             cm = CrystalManager().apply {
                 maxAmount = maxCrystal
                 prism = this@PrismBuild
-                genCrystalImgCallback = {
-                    img = CrystalTRs.randomOne()
+                ClientOnly {
+                    genCrystalImgCallback = {
+                        img = CrystalTRs.randomOne()
+                    }
                 }
                 addCrystalCallback = {
                     revolution = PolarPos(0f, 0f)
@@ -306,14 +304,14 @@ open class Prism(name: String) : Block(name) {
                 priselY = revolution.toY() + y
                 Draw.z(Layer.blockOver)
                 Drawf.shadow(
-                    crystalImg,
+                    img,
                     priselX - elevation * Mathf.log(3f, orbitPos + 3f) * 7f,
                     priselY - elevation * Mathf.log(3f, orbitPos + 3f) * 7f,
                     rotation.a.degree.draw
                 )
                 Draw.z(Layer.turret)
                 Draw.rect(
-                    crystalImg,
+                    img,
                     priselX,
                     priselY,
                     rotation.a.degree.draw

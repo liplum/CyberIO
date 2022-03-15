@@ -6,7 +6,6 @@ import arc.struct.Seq
 import arc.util.io.Reads
 import arc.util.io.Writes
 import net.liplum.ClientOnly
-import net.liplum.ClientOnlyOn
 import net.liplum.persistance.intSet
 import net.liplum.persistance.readSeq
 import net.liplum.persistance.writeSeq
@@ -25,7 +24,7 @@ class CrystalManager(
     var initCrystalCount: Int = 1
     lateinit var addCrystalCallback: Crystal.() -> Unit
     @ClientOnly
-    lateinit var genCrystalImgCallback: Crystal.() -> Unit
+    var genCrystalImgCallback: (Crystal.() -> Unit)? = null
     lateinit var prism: Prism.PrismBuild
     var maxAmount: Int = maxAmount
         set(value) {
@@ -143,14 +142,15 @@ class CrystalManager(
             if (stillAlive != null && stillAlive.isRemoved) {
                 stillAlive.isRemoved = false
             } else {
-                crystals.add(
-                    Crystal().apply {
-                        this.orbitPos = orbitPos
-                        isAwaitAdding = true
-                        addCrystalCallback()
-                        ClientOnlyOn(genCrystalImgCallback)
-                    }
-                )
+                val crystal = Crystal().apply {
+                    this.orbitPos = orbitPos
+                    isAwaitAdding = true
+                    addCrystalCallback()
+                }
+                crystals.add(crystal)
+                ClientOnly {
+                    genCrystalImgCallback?.let { crystal.it() }
+                }
                 status = Status.Expending
             }
             validAmount++
@@ -222,7 +222,7 @@ class CrystalManager(
         @JvmStatic
         fun CrystalManager.read(read: Reads) {
             crystals = read.readSeq(Crystal::read)
-            crystals.forEach(genCrystalImgCallback)
+            genCrystalImgCallback?.let { crystals.forEach(it) }
             obelisks = read.intSet()
             curExpendTime = read.f()
             validAmount = read.b().toInt()
