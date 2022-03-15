@@ -1,6 +1,5 @@
 package net.liplum.blocks.gadgets
 
-import arc.graphics.g2d.Draw
 import arc.struct.OrderedSet
 import arc.struct.Seq
 import arc.util.Time
@@ -123,6 +122,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
         @ClientOnly val isUnloading: Boolean
             get() = lastUnloadTime < UnloadTime
         @ClientOnly lateinit var shrinkingAnimObj: AnimationObj
+        var restored = false
         override fun created() {
             super.created()
             ClientOnly {
@@ -144,16 +144,12 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
             receiversPos.removeAll { !it.dr().exists }
         }
 
-        override fun onProximityAdded() {
-            super.onProximityAdded()
-            updateTracker()
-        }
-
         override fun updateTile() {
-/*            if (restored) {
+            if (restored) {
                 updateTracker()
                 restored = false
-            }*/
+            }
+
             ClientOnly {
                 lastUnloadTime += Time.delta
                 lastSendingTime += Time.delta
@@ -259,6 +255,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
         override fun onProximityUpdate() {
             super.onProximityUpdate()
             updateUnloaded()
+            updateTracker()
         }
 
         override fun drawSelect() {
@@ -363,6 +360,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
         override fun read(read: Reads, revision: Byte) {
             super.read(read, revision)
             receiversPos = read.intSet()
+            restored = true
         }
 
         override fun write(write: Writes) {

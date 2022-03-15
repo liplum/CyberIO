@@ -2,6 +2,7 @@ package net.liplum.utils;
 
 import arc.Core;
 import arc.graphics.g2d.TextureRegion;
+import arc.util.Log;
 import mindustry.ctype.MappableContent;
 import net.liplum.Meta;
 import org.jetbrains.annotations.Nullable;
@@ -50,6 +51,13 @@ public class AtlasU {
             identity = content.name + "-anim";
         }
         TextureRegion tr = Core.atlas.find(identity);
+        if (!Core.atlas.isFound(tr)) {
+            String possibleName = identity.substring(0, identity.length() - 5);
+            String possibility = Core.atlas.isFound(Core.atlas.find(possibleName)) ?
+                    "Maybe it's " + possibleName + "?" :
+                    "";
+            Log.warn("Can't find texture[" + identity + "]." + possibility);
+        }
         return slice(tr, isHorizontal, number);
     }
 

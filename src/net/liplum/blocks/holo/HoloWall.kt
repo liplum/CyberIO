@@ -44,6 +44,7 @@ open class HoloWall(name: String) : Wall(name) {
         absorbLasers = true
         flashHit = true
         floating = true
+        sync = true
     }
 
     override fun load() {

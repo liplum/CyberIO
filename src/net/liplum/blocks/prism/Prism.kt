@@ -70,6 +70,7 @@ open class Prism(name: String) : Block(name) {
         group = BlockGroup.turrets
         flags = EnumSet.of(BlockFlag.turret)
         noUpdateDisabled = true
+        sync = true
     }
 
     open val Crystal.color: Color
