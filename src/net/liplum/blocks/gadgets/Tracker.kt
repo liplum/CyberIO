@@ -1,9 +1,18 @@
 package net.liplum.blocks.gadgets
 
 import net.liplum.api.data.IDataReceiver
+import kotlin.math.absoluteValue
 
 open class Tracker(val maxConnection: Int) {
     val receivers: ArrayList<IDataReceiver> = ArrayList(maxConnection)
+    var curIndex = 0
+        set(value) {
+            field = (if (receivers.isEmpty())
+                0
+            else
+                value.absoluteValue % receivers.size)
+        }
+
     fun canAddMore(): Boolean {
         return receivers.size <= maxConnection
     }
@@ -16,5 +25,6 @@ open class Tracker(val maxConnection: Int) {
 
     fun clear() {
         receivers.clear()
+        curIndex = 0
     }
 }

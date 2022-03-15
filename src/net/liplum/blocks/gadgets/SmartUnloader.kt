@@ -100,10 +100,10 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
         var needUnloadItems: OrderedSet<Item> = OrderedSet()
         var unloadedNearbyIndex = 0
             set(value) {
-                field = (if (nearby.size <= 1)
+                field = (if (nearby.isEmpty)
                     0
                 else
-                    value.absoluteValue % (nearby.size - 1))
+                    value.absoluteValue % nearby.size)
             }
         var unloadTimer = 0f
             set(value) {
@@ -208,17 +208,15 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
             var sent = false
             for (item in needUnloadItems) {
                 val tracker = trackers[item.ID]
-                if (!this.items.has(item))
+                if (tracker.receivers.isEmpty() || !this.items.has(item))
                     continue
-                for (receiver in tracker.receivers) {
-                    if (!this.items.has(item))
-                        break
-                    if (receiver.acceptedAmount(this, item).isAccepted()) {
-                        this.items.remove(item, 1)
-                        this.sendData(receiver, item, 1)
-                        sent = true
-                    }
+                val receiver = tracker.receivers[tracker.curIndex]
+                if (receiver.acceptedAmount(this, item).isAccepted()) {
+                    this.items.remove(item, 1)
+                    this.sendData(receiver, item, 1)
+                    sent = true
                 }
+                tracker.curIndex++
             }
             return sent
         }
