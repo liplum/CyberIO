@@ -34,6 +34,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
     @ClientOnly lateinit var UploadAnim: Animation
     @JvmField var UploadAnimFrameNumber = 7
     @JvmField var UploadAnimDuration = 30f
+    @ClientOnly @JvmField var SendingTime = 60f
 
     init {
         solid = true
@@ -73,7 +74,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
                 Bar(
                     { "Last Send: ${it.lastSendingTime.toInt()}" },
                     { Pal.bar },
-                    { it.lastSendingTime / 30f }
+                    { it.lastSendingTime / SendingTime }
                 )
             }
         }
@@ -86,7 +87,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
             }
         @ClientOnly
         open val isBlocked: Boolean
-            get() = lastSendingTime > 30f
+            get() = lastSendingTime > SendingTime
         @set:CalledBySync
         var receiverPackedPos = -1
             set(value) {

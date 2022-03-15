@@ -309,7 +309,7 @@ open class Prism(name: String) : Block(name) {
                     priselY - elevation * Mathf.log(3f, orbitPos + 3f) * 7f,
                     rotation.a.degree.draw
                 )
-                Draw.z(Layer.turret)
+                Draw.z(Layer.power + 1f)
                 Draw.rect(
                     img,
                     priselX,

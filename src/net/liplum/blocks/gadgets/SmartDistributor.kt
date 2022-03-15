@@ -134,14 +134,16 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
                 if (b.team == team) {
                     val consumes = b.block.consumes
                     if (consumes.has(ConsumeType.item)) {
-                        val reqs: ConsumeItems = consumes[ConsumeType.item]
-                        for (req in reqs.items) {
-                            val item = req.item
-                            if (items.has(item) && b.acceptItem(this, item)) {
-                                b.handleItem(this, item)
-                                items.remove(item, 1)
-                                dised = true
-                                break
+                        val reqs: Consume = consumes[ConsumeType.item]
+                        if (reqs is ConsumeItems) {
+                            for (req in reqs.items) {
+                                val item = req.item
+                                if (items.has(item) && b.acceptItem(this, item)) {
+                                    b.handleItem(this, item)
+                                    items.remove(item, 1)
+                                    dised = true
+                                    break
+                                }
                             }
                         }
                     }
