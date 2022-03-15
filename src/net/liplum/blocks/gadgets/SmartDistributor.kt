@@ -7,6 +7,7 @@ import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.type.Item
 import mindustry.world.Tile
+import mindustry.world.consumers.Consume
 import mindustry.world.consumers.ConsumeItems
 import mindustry.world.consumers.ConsumeType
 import mindustry.world.meta.BlockGroup
@@ -93,9 +94,11 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
             for (build in proximity) {
                 val consumes = build.block.consumes
                 if (consumes.has(ConsumeType.item)) {
-                    val reqs: ConsumeItems = consumes[ConsumeType.item]
-                    for (req in reqs.items) {
-                        all.add(req.item)
+                    val reqs: Consume = consumes[ConsumeType.item]
+                    if (reqs is ConsumeItems) {
+                        for (req in reqs.items) {
+                            all.add(req.item)
+                        }
                     }
                 }
             }

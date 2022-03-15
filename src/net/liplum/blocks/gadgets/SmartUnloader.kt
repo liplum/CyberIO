@@ -28,14 +28,17 @@ private typealias AniStateU = AniState<SmartUnloader, SmartUnloader.SmartULDBuil
 private typealias SmartDIS = SmartDistributor.SmartDISBuild
 
 open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader.SmartULDBuild>(name) {
+    /**
+     * The lager the number the slower the unloading speed. Belongs to [0,+inf)
+     */
     @JvmField var unloadSpeed = 1f
     @JvmField var maxConnection = 5
-    @ClientOnly lateinit var ShrinkingAnim: Animation
-    @ClientOnly lateinit var CoverTR: TR
-    @JvmField @ClientOnly var ShrinkingAnimFrames = 13
-    @JvmField @ClientOnly var ShrinkingAnimDuration = 120f
     @JvmField @ClientOnly var SendingTime = 60f
     @JvmField @ClientOnly var UnloadTime = 60f
+    @ClientOnly lateinit var ShrinkingAnim: Animation
+    @JvmField @ClientOnly var ShrinkingAnimFrames = 13
+    @JvmField @ClientOnly var ShrinkingAnimDuration = 120f
+    @ClientOnly lateinit var CoverTR: TR
     @ClientOnly lateinit var NoPowerTR: TR
 
     init {
