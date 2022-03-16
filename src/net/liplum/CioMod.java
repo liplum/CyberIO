@@ -15,6 +15,7 @@ import net.liplum.blocks.cloud.SharedRoom;
 import net.liplum.registries.ContentRegistry;
 import net.liplum.registries.ShaderRegistry;
 import net.liplum.utils.AtlasU;
+import net.liplum.utils.G;
 
 import static mindustry.game.EventType.*;
 import static net.liplum.registries.TintedBulletsRegistryKt.tintedBulletsRegistryLoad;
@@ -76,6 +77,7 @@ public class CioMod extends Mod {
             }
         });
         DataCenter.initData();
+        Events.run(Trigger.preDraw, G::init);
     }
 
     @Override

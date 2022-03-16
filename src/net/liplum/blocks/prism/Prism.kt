@@ -272,7 +272,6 @@ open class Prism(name: String) : Block(name) {
         }
 
         override fun draw() {
-            G.init()
 
             Draw.rect(BaseTR, x, y)
             val process = cm.process
@@ -328,7 +327,6 @@ open class Prism(name: String) : Block(name) {
         }
 
         override fun drawSelect() {
-            G.init()
             Draw.z(Layer.turret)
             cm.render {
                 G.drawDashCircle(

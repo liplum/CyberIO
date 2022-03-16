@@ -5,7 +5,6 @@ import net.liplum.R
 import net.liplum.utils.G
 
 fun IDataSender.drawDataNetGraphic() {
-    G.init()
     G.drawSurroundingCircle(tile, R.C.Sender)
     if (canMultipleConnect()) {
         CyberU.drawReceivers(this, connectedReceivers())
@@ -15,11 +14,16 @@ fun IDataSender.drawDataNetGraphic() {
 }
 
 fun IDataReceiver.drawDataNetGraphic() {
-    G.init()
     G.drawSurroundingCircle(tile, R.C.Receiver)
     CyberU.drawSenders(this, connectedSenders())
 }
 
 fun Block.drawLinkedLineToReceiverWhenConfiguring(x: Int, y: Int) {
     CyberU.drawLinkedLineToReceiverWhenConfiguring(this, x, y)
+}
+
+inline fun whenNotConfiguringSender(func: () -> Unit) {
+    if (!CyberU.isConfiguringSender()) {
+        func()
+    }
 }

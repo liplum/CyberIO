@@ -22,10 +22,7 @@ import net.liplum.animations.anims.AnimationObj
 import net.liplum.animations.anis.AniState
 import net.liplum.animations.anis.DrawTR
 import net.liplum.animations.anis.config
-import net.liplum.api.data.IDataReceiver
-import net.liplum.api.data.IDataSender
-import net.liplum.api.data.drawDataNetGraphic
-import net.liplum.api.data.drawLinkedLineToReceiverWhenConfiguring
+import net.liplum.api.data.*
 import net.liplum.blocks.AniedBlock
 import net.liplum.delegates.Delegate1
 import net.liplum.persistance.intSet
@@ -56,6 +53,7 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
         canOverdrive = false
         unloadable = false
         allowConfigInventory = false
+        sync = true
     }
 
     override fun load() {
@@ -91,6 +89,7 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
             get() = lastDistributionTime < DistributionTime
         var hasDynamicRequirements: Boolean = false
         var dynamicReqUpdateTimer = 0f
+        var disIndex = 0
         override fun created() {
             super.created()
             ClientOnly {
@@ -169,7 +168,21 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
                 return false
             }
             var dised = false
-            for (b in proximity) {
+            disIndex %= proximity.size
+            val b = proximity[disIndex]
+            if (b.team == team) {
+                val consumes = b.block.consumes
+                if (consumes.has(ConsumeType.item)) {
+                    val reqs: Consume = consumes[ConsumeType.item]
+                    if (reqs is ConsumeItems) {
+                        dised = distributeFunc(b, reqs.items)
+                    } else if (reqs is ConsumeItemDynamic) {
+                        dised = distributeFunc(b, reqs.items.get(b))
+                    }
+                }
+            }
+            disIndex++
+            /*for (b in proximity) {
                 if (b.team == team) {
                     val consumes = b.block.consumes
                     if (consumes.has(ConsumeType.item)) {
@@ -181,7 +194,7 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
                         }
                     }
                 }
-            }
+            }*/
             return dised
         }
 
@@ -227,18 +240,22 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
         override fun read(read: Reads, revision: Byte) {
             super.read(read, revision)
             senders = read.intSet()
+            disIndex = read.b().toInt()
         }
 
         override fun write(write: Writes) {
             super.write(write)
             write.intSet(senders)
+            write.b(disIndex)
         }
         @CioDebugOnly
         var requirementsText: String = ""
         @CioDebugOnly
         fun genRequirementsText() = requirements.genText()
         override fun drawSelect() {
-            this.drawDataNetGraphic()
+            whenNotConfiguringSender {
+                this.drawDataNetGraphic()
+            }
             DebugOnly {
                 if (requirementsText.isNotEmpty()) {
                     drawPlaceText(requirementsText, tileX(), tileY(), true)

@@ -28,7 +28,10 @@ import net.liplum.blocks.rs.Receiver.ReceiverBuild
 import net.liplum.delegates.Delegate1
 import net.liplum.persistance.intSet
 import net.liplum.ui.bars.removeItems
-import net.liplum.utils.*
+import net.liplum.utils.AnimU
+import net.liplum.utils.TR
+import net.liplum.utils.addSenderInfo
+import net.liplum.utils.inMod
 
 private typealias AniStateR = AniState<Receiver, ReceiverBuild>
 
@@ -124,8 +127,9 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
         override fun isBlocked(): Boolean = lastOutputDelta > blockTime
         override fun drawSelect() {
             val outputItem = outputItem
-            G.init()
-            G.drawSurroundingCircle(tile, R.C.Receiver)
+            whenNotConfiguringSender {
+                this.drawDataNetGraphic()
+            }
             if (outputItem != null) {
                 val dx = x - size * Vars.tilesize / 2f
                 val dy = y + size * Vars.tilesize / 2f
@@ -134,7 +138,6 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
                 Draw.reset()
                 Draw.rect(outputItem.uiIcon, dx, dy)
             }
-            CyberU.drawSenders(this, senders)
         }
 
         override fun updateTile() {

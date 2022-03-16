@@ -238,7 +238,9 @@ open class Cloud(name: String) : PowerBlock(name) {
         }
 
         override fun drawSelect() {
-            drawDataNetGraphic()
+            whenNotConfiguringSender {
+                drawDataNetGraphic()
+            }
         }
 
         override fun drawConfigure() {
@@ -247,7 +249,6 @@ open class Cloud(name: String) : PowerBlock(name) {
         }
 
         open fun drawDataNetGraphic() {
-            G.init()
             G.drawSurroundingCircle(tile, R.C.Cloud)
 
             CyberU.drawSenders(this, info.sendersPos)

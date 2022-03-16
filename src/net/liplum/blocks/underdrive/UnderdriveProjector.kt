@@ -143,7 +143,6 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
 
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)
-        G.init()
         G.drawDashCircle(this, x.toShort(), y.toShort(), range, color)
         Vars.indexer.eachBlock(
             Vars.player.team(),
@@ -383,7 +382,6 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
 
         override fun draw() {
             super.draw()
-            G.init()
             //Draw shadows
             val realRange = buildingProgress * realRange
             Draw.z(Layer.blockUnder)

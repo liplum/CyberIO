@@ -5,6 +5,7 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
+import arc.math.geom.Vec2;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.Vars;
@@ -140,6 +141,95 @@ public class G {
                 4f + sin,
                 arrowColor);
 
+    }
+
+    public static void drawArrowPointingThis(
+            Block pointedBlock, short pointedBlockX, short pointedBlockY,
+            float degrees,
+            Color arrowColor) {
+        float pointedDrawX = WorldU.toDrawXY(pointedBlock, pointedBlockX);
+        float pointedDrawY = WorldU.toDrawXY(pointedBlock, pointedBlockY);
+        Tmp.v2.set(1, 1).setAngle(degrees).setLength(22f);
+        Drawf.arrow(
+                pointedDrawX + Tmp.v2.x, pointedDrawY + Tmp.v2.y,
+                pointedDrawX, pointedDrawY,
+                pointedBlock.size * tilesize + sin,
+                4f + sin,
+                arrowColor);
+
+    }
+
+    public static void drawArrowLine(
+            float startDrawX, float startDrawY,
+            float endDrawX, float endDrawY,
+            int blockSize,
+            float density, Color arrowColor
+    ) {
+        Vec2 T = Tmp.v2.set(endDrawX, endDrawY).sub(startDrawX, startDrawY);
+        float length = T.len();
+        int count = Mathf.ceil(length / density);
+        Vec2 per = T.scl(1f / count);
+        float curX = startDrawX;
+        float curY = startDrawY;
+        for (int i = 1; i < count; i++) {
+            Drawf.arrow(
+                    curX,
+                    curY,
+                    curX + per.x,
+                    curY + per.y,
+                    blockSize * tilesize + sin,
+                    4f + sin,
+                    arrowColor
+            );
+            curX += per.x;
+            curY += per.y;
+        }
+    }
+
+    public static void drawArrowLine(
+            short startBlockX, short startBlockY,
+            short endBlockX, short endBlockY,
+            float density, Color arrowColor
+    ) {
+        drawArrowLine(
+                WorldU.toDrawXY(startBlockX),
+                WorldU.toDrawXY(startBlockY),
+                WorldU.toDrawXY(endBlockX),
+                WorldU.toDrawXY(endBlockY),
+                2, density, arrowColor
+        );
+    }
+
+    public static void drawArrowLine(
+            Block startBlock,
+            short startBlockX, short startBlockY,
+            Block endBlock,
+            short endBlockX, short endBlockY,
+            float density, Color arrowColor
+    ) {
+        drawArrowLine(
+                WorldU.toDrawXY(startBlock, startBlockX),
+                WorldU.toDrawXY(startBlock, startBlockY),
+                WorldU.toDrawXY(endBlock, endBlockX),
+                WorldU.toDrawXY(endBlock, endBlockY),
+                startBlock.size, density, arrowColor
+        );
+    }
+
+    public static void drawArrowLine(
+            Building start,
+            Building end,
+            float density, Color arrowColor
+    ) {
+        float sx = start.x;
+        float sy = start.y;
+        float ex = end.x;
+        float ey = end.y;
+        drawArrowLine(
+                start.x, start.y,
+                end.x, end.y,
+                start.block.size, density, arrowColor
+        );
     }
 
     public static void drawSurroundingCircle(Tile t, Color circleColor) {
