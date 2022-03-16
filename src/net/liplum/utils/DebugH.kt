@@ -14,6 +14,8 @@ import net.liplum.R
 import net.liplum.animations.anis.IAniSMedBuild
 import net.liplum.api.data.IDataReceiver
 import net.liplum.api.data.IDataSender
+import net.liplum.api.stream.IStreamClient
+import net.liplum.api.stream.IStreamHost
 
 annotation class CioDebugOnly
 
@@ -55,7 +57,11 @@ fun <T> BlockBars.addAniStateInfo() where T : Building, T : IAniSMedBuild<*, *> 
         R.Bar.AniStateLastN
     ) {
         Bar(
-            { R.Bar.AniStateLast.bundle(it.aniStateM.lastState?.stateName ?: "") },
+            {
+                R.Bar.AniStateLast.bundle(
+                    it.aniStateM.lastState?.stateName ?: R.Bar.Null.bundle()
+                )
+            },
             { Pal.bar },
             { (it.aniStateM.lastState != null).Float }
         )
@@ -127,6 +133,42 @@ fun <T> BlockBars.addSenderInfo() where T : Building, T : IDataReceiver {
                     max = 10
                 }
                 it.connectedSenders().size.toFloat() / max
+            }
+        )
+    }
+}
+
+fun <T> BlockBars.addClientInfo() where T : Building, T : IStreamHost {
+    this.add<T>(
+        R.Bar.ClientN
+    ) {
+        Bar(
+            { R.Bar.Client.bundle(it.connectedClients().size) },
+            { R.C.Client },
+            {
+                var max = it.maxClientConnection()
+                if (max == -1) {
+                    max = 10
+                }
+                it.connectedClients().size.toFloat() / max
+            }
+        )
+    }
+}
+
+fun <T> BlockBars.addHostInfo() where T : Building, T : IStreamClient {
+    this.add<T>(
+        R.Bar.HostN
+    ) {
+        Bar(
+            { R.Bar.Host.bundle(it.connectedHosts().size) },
+            { R.C.Host },
+            {
+                var max = it.maxHostConnection()
+                if (max == -1) {
+                    max = 10
+                }
+                it.connectedHosts().size.toFloat() / max
             }
         )
     }

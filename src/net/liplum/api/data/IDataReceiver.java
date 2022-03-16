@@ -21,9 +21,6 @@ public interface IDataReceiver extends IDataBuilding {
      */
     int acceptedAmount(@NotNull IDataSender sender, @NotNull Item itme);
 
-    @ClientOnly
-    boolean canAcceptAnyData(@NotNull IDataSender sender);
-
     /**
      * Gets what this receiver wants<br/>
      * null : Any<br/>
@@ -57,7 +54,24 @@ public interface IDataReceiver extends IDataBuilding {
     @Nullable
     Integer connectedSender();
 
+    /**
+     * Gets the maximum limit of connection.<br/>
+     * -1 : unlimited
+     *
+     * @return the maximum of connection
+     */
     int maxSenderConnection();
 
-    boolean acceptConnection(@NotNull IDataSender sender);
+
+    default boolean acceptConnection(@NotNull IDataSender host) {
+        return canHaveMoreSenderConnection();
+    }
+
+    default boolean canHaveMoreSenderConnection() {
+        int max = maxSenderConnection();
+        if (max == -1) {
+            return true;
+        }
+        return connectedSenders().size < max;
+    }
 }

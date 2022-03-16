@@ -1,6 +1,6 @@
 package net.liplum.api.data;
 
-import arc.struct.OrderedSet;
+import arc.struct.ObjectSet;
 import mindustry.type.Item;
 import net.liplum.SendDataPack;
 import net.liplum.utils.ArcU;
@@ -8,6 +8,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public interface IDataSender extends IDataBuilding {
+    /**
+     * sends items
+     * @param receiver the target who receives the item(s)
+     * @param item which kind of item will be sent soon
+     * @param amount how many item(s) will be sent
+     * @return the rest of item(s)
+     */
     default int sendData(@NotNull IDataReceiver receiver, @NotNull Item item, int amount) {
         int maxAccepted = receiver.acceptedAmount(this, item);
         if (maxAccepted == -1) {
@@ -53,14 +60,23 @@ public interface IDataSender extends IDataBuilding {
     /**
      * Gets the maximum limit of connection.<br/>
      * -1 : unlimited
+     *
      * @return the maximum of connection
      */
     default int maxReceiverConnection() {
         return 1;
     }
 
+    default boolean canHaveMoreReceiverConnection() {
+        int max = maxReceiverConnection();
+        if (max == -1) {
+            return true;
+        }
+        return connectedReceivers().size < max;
+    }
+
     @NotNull
-    default OrderedSet<Integer> connectedReceivers() {
+    default ObjectSet<Integer> connectedReceivers() {
         return ArcU.emptySet();
     }
 }

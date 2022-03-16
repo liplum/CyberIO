@@ -23,6 +23,9 @@ import net.liplum.animations.anis.AniState
 import net.liplum.animations.anis.DrawTR
 import net.liplum.animations.anis.config
 import net.liplum.api.data.*
+import net.liplum.api.drawDataNetGraphic
+import net.liplum.api.drawLinkedLineToReceiverWhenConfiguring
+import net.liplum.api.whenNotConfiguringSender
 import net.liplum.blocks.AniedBlock
 import net.liplum.delegates.Delegate1
 import net.liplum.persistance.intSet
@@ -182,19 +185,6 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
                 }
             }
             disIndex++
-            /*for (b in proximity) {
-                if (b.team == team) {
-                    val consumes = b.block.consumes
-                    if (consumes.has(ConsumeType.item)) {
-                        val reqs: Consume = consumes[ConsumeType.item]
-                        if (reqs is ConsumeItems) {
-                            dised = distributeFunc(b, reqs.items)
-                        } else if (reqs is ConsumeItemDynamic) {
-                            dised = distributeFunc(b, reqs.items.get(b))
-                        }
-                    }
-                }
-            }*/
             return dised
         }
 
@@ -211,7 +201,9 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
         }
 
         override fun receiveData(sender: IDataSender, item: Item, amount: Int) {
-            items.add(item, amount)
+            if (this.isConnectedWith(sender)) {
+                items.add(item, amount)
+            }
         }
 
         override fun acceptedAmount(sender: IDataSender, item: Item): Int {
@@ -222,9 +214,6 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
             else
                 0
         }
-        @ClientOnly
-        override fun canAcceptAnyData(sender: IDataSender) =
-            consValid() && requirements.isNotEmpty()
 
         override fun getRequirements(): Array<Item>? = requirements
         @ClientOnly

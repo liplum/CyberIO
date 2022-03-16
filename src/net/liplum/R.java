@@ -71,6 +71,10 @@ public class R {
                 Receiver = Gen(ReceiverN);
         public static final String SenderN = "sender",
                 Sender = Gen(SenderN);
+        public static final String ClientN = "client",
+                Client = Gen(ClientN);
+        public static final String HostN = "host",
+                Host = Gen(HostN);
 
     }
 
@@ -92,8 +96,8 @@ public class R {
         public static final Color VirusBK = Color.valueOf("#cd44ff");
         public static final Color IsAive = Color.green;
         public static final Color CoolDown = Color.gray;
-        public static final Color Sender = Color.red;
-        public static final Color Receiver = Pal.place;
+        public static final Color Sender = Color.red,
+                Receiver = Pal.place;
         public static final Color Cloud = Color.white;
         public static final Color IcLight = Color.valueOf("#047b04");
         public static final Color IcDark = Color.valueOf("#024202");
@@ -116,6 +120,11 @@ public class R {
                 prismAntiClockwise = Pal.lancerLaser;
         public static final Color Stop = Color.red;/* Color.valueOf("#dd2c00");*/
         public static final Color Unconnected = Color.white;
+        public static final Color Host = Color.red,
+                Client = Pal.place;
+        public static Color[] LiquidColors;
+        public static Color[] HostLiquidColors;
+        public static Color[] ClientLiquidColors;
     }
 
     public static final class S {

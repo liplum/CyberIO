@@ -16,9 +16,13 @@ import net.liplum.*
 import net.liplum.animations.anims.Animation
 import net.liplum.animations.anis.*
 import net.liplum.api.data.*
+import net.liplum.api.drawDataNetGraphic
 import net.liplum.blocks.AniedBlock
 import net.liplum.blocks.rs.Sender.SenderBuild
-import net.liplum.utils.*
+import net.liplum.utils.AnimU
+import net.liplum.utils.TR
+import net.liplum.utils.addReceiverInfo
+import net.liplum.utils.inMod
 
 private typealias AniStateS = AniState<Sender, SenderBuild>
 
@@ -188,16 +192,15 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
             receiverPackedPos = read.i()
         }
 
-        override fun config(): Any {
-            return receiverPackedPos
-        }
-
         override fun getBuilding(): Building = this
         override fun getTile(): Tile = tile
         override fun getBlock(): Block = this@Sender
         @SendDataPack
         override fun connectSync(receiver: IDataReceiver) {
-            configure(receiver.building.pos())
+            val pos = receiver.building.pos()
+            if (pos != receiverPackedPos) {
+                configure(pos)
+            }
         }
         @SendDataPack
         override fun disconnectSync(receiver: IDataReceiver) {

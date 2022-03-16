@@ -19,6 +19,7 @@ import net.liplum.animations.anis.AniState
 import net.liplum.animations.anis.DrawTR
 import net.liplum.animations.anis.config
 import net.liplum.api.data.*
+import net.liplum.api.drawDataNetGraphic
 import net.liplum.blocks.AniedBlock
 import net.liplum.persistance.intSet
 import net.liplum.utils.*
@@ -95,7 +96,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
 
     open inner class SmartULDBuild : AniedBlock<SmartUnloader, SmartUnloader.SmartULDBuild>.AniedBuild(),
         IDataSender {
-        var receiversPos = OrderedSet<Int>()
+        var receivers = OrderedSet<Int>()
         var nearby: Seq<Building> = Seq()
         var trackers: Array<Tracker> = Array(Vars.content.items().size) {
             Tracker(maxConnection)
@@ -125,7 +126,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
         @ClientOnly val isUnloading: Boolean
             get() = lastUnloadTime < UnloadTime
         @ClientOnly lateinit var shrinkingAnimObj: AnimationObj
-        var restored = false
+        var justRestored = false
         override fun created() {
             super.created()
             ClientOnly {
@@ -144,13 +145,13 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
         }
 
         open fun checkReceiverPos() {
-            receiversPos.removeAll { !it.dr().exists }
+            receivers.removeAll { !it.dr().exists }
         }
 
         override fun updateTile() {
-            if (restored) {
+            if (justRestored) {
                 updateTracker()
-                restored = false
+                justRestored = false
             }
 
             ClientOnly {
@@ -163,7 +164,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
             if (!consValid()) {
                 return
             }
-            if (receiversPos.isEmpty) {
+            if (receivers.isEmpty) {
                 return
             }
             unloadTimer += delta()
@@ -236,7 +237,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
 
         open fun updateTracker() {
             clearTrackers()
-            for (receiverPos in receiversPos) {
+            for (receiverPos in receivers) {
                 val receiver = receiverPos.dr()
                 if (receiver != null) {
                     val reqs = receiver.requirements
@@ -286,7 +287,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
                 return false
             }
             val pos = other.pos()
-            if (pos in receiversPos) {
+            if (pos in receivers) {
                 if (!canMultipleConnect()) {
                     deselect()
                 }
@@ -297,7 +298,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
                 if (!canMultipleConnect()) {
                     deselect()
                 }
-                if (receiversPos.size < maxConnection &&
+                if (canHaveMoreReceiverConnection() &&
                     other.acceptConnection(this)
                 ) {
                     connectSync(other)
@@ -308,7 +309,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
         }
         @CalledBySync
         open fun setReceiver(pos: Int) {
-            if (pos in receiversPos) {
+            if (pos in receivers) {
                 pos.dr()?.let {
                     disconnectReceiver(it)
                     it.disconnect(this)
@@ -327,7 +328,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
         }
 
         open fun resubscribeRequirementUpdated() {
-            receiversPos.forEach { pos ->
+            receivers.forEach { pos ->
                 pos.dr()?.let {
                     it.onRequirementUpdated += ::onReceiverRequirementsUpdated
                 }
@@ -335,43 +336,49 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
         }
         @CalledBySync
         open fun connectReceiver(receiver: IDataReceiver) {
-            if (receiversPos.add(receiver.building.pos())) {
+            if (receivers.add(receiver.building.pos())) {
                 updateTracker()
                 receiver.onRequirementUpdated += ::onReceiverRequirementsUpdated
             }
         }
         @CalledBySync
         open fun disconnectReceiver(receiver: IDataReceiver) {
-            if (receiversPos.remove(receiver.building.pos())) {
+            if (receivers.remove(receiver.building.pos())) {
                 updateTracker()
                 receiver.onRequirementUpdated -= ::onReceiverRequirementsUpdated
             }
         }
         @CalledBySync
         open fun clearReceivers() {
-            receiversPos.forEach { pos ->
+            receivers.forEach { pos ->
                 pos.dr()?.let {
                     it.disconnect(this)
                     it.onRequirementUpdated -= ::onReceiverRequirementsUpdated
                 }
             }
-            receiversPos.clear()
+            receivers.clear()
             updateTracker()
         }
         @SendDataPack
         override fun connectSync(receiver: IDataReceiver) {
-            configure(receiver.building.pos())
+            val pos = receiver.building.pos()
+            if (pos !in receivers) {
+                configure(pos)
+            }
         }
         @SendDataPack
         override fun disconnectSync(receiver: IDataReceiver) {
-            configure(receiver.building.pos())
+            val pos = receiver.building.pos()
+            if (pos in receivers) {
+                configure(pos)
+            }
         }
 
         override fun connectedReceiver(): Int? =
-            if (receiversPos.isEmpty)
+            if (receivers.isEmpty)
                 null
             else
-                receiversPos.first()
+                receivers.first()
 
         override fun beforeDraw() {
             if (consValid() && isUnloading && isSending) {
@@ -381,19 +388,19 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
 
         override fun maxReceiverConnection() = maxConnection
         override fun acceptItem(source: Building, item: Item) = false
-        override fun connectedReceivers(): OrderedSet<Int> = receiversPos
+        override fun connectedReceivers(): OrderedSet<Int> = receivers
         override fun getBuilding() = this
         override fun getTile(): Tile = tile
         override fun getBlock() = this@SmartUnloader
         override fun read(read: Reads, revision: Byte) {
             super.read(read, revision)
-            receiversPos = read.intSet()
-            restored = true
+            receivers = read.intSet()
+            justRestored = true
         }
 
         override fun write(write: Writes) {
             super.write(write)
-            write.intSet(receiversPos)
+            write.intSet(receivers)
         }
     }
 

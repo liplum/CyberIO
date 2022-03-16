@@ -10,6 +10,7 @@ import mindustry.io.JsonIO;
 import mindustry.mod.Mod;
 import mindustry.ui.dialogs.BaseDialog;
 import net.liplum.api.data.DataCenter;
+import net.liplum.api.stream.StreamCenter;
 import net.liplum.blocks.cloud.LiplumCloud;
 import net.liplum.blocks.cloud.SharedRoom;
 import net.liplum.registries.ContentRegistry;
@@ -23,6 +24,7 @@ import static net.liplum.registries.TintedBulletsRegistryKt.tintedBulletsRegistr
 public class CioMod extends Mod {
     public static final boolean IsClient = !Vars.headless;
     public static boolean DebugMode = true;
+    public static boolean ExperimentalMode = false;
     public static boolean CanGlobalAnimationPlay = false;
     public static float UpdateFrequency = 5f;
 
@@ -77,6 +79,9 @@ public class CioMod extends Mod {
             }
         });
         DataCenter.initData();
+        StreamCenter.initStream();
+        StreamCenter.loadLiquidsColor();
+        StreamCenter.initStreamColors();
         Events.run(Trigger.preDraw, G::init);
     }
 

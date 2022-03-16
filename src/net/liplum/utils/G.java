@@ -9,6 +9,7 @@ import arc.math.geom.Vec2;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.Vars;
+import mindustry.ctype.UnlockableContent;
 import mindustry.gen.Building;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
@@ -281,5 +282,14 @@ public class G {
                 other,
                 temp.set(color).a(Mathf.absin(4f, 1f))
         );
+    }
+
+    public static void drawMaterialIcon(Building b, UnlockableContent material) {
+        float dx = b.x - b.block.size * Vars.tilesize / 2f;
+        float dy = b.y + b.block.size * Vars.tilesize / 2f;
+        Draw.mixcol(Color.darkGray, 1f);
+        Draw.rect(material.uiIcon, dx, dy - 1);
+        Draw.reset();
+        Draw.rect(material.uiIcon, dx, dy);
     }
 }

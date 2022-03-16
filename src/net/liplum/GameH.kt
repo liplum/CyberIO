@@ -100,6 +100,14 @@ inline fun DebugOnly(func: () -> Unit): Boolean {
     return false
 }
 
+inline fun ExperimentalOnly(func: () -> Unit): Boolean {
+    if (CioMod.ExperimentalMode) {
+        func()
+        return true
+    }
+    return false
+}
+
 inline fun UndebugOnly(func: () -> Unit): Boolean {
     if (CioMod.DebugMode) {
         return false

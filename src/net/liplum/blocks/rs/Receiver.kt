@@ -23,15 +23,15 @@ import net.liplum.animations.anis.DrawTR
 import net.liplum.animations.anis.SetColor
 import net.liplum.animations.anis.config
 import net.liplum.api.data.*
+import net.liplum.api.drawDataNetGraphic
+import net.liplum.api.drawLinkedLineToReceiverWhenConfiguring
+import net.liplum.api.whenNotConfiguringSender
 import net.liplum.blocks.AniedBlock
 import net.liplum.blocks.rs.Receiver.ReceiverBuild
 import net.liplum.delegates.Delegate1
 import net.liplum.persistance.intSet
 import net.liplum.ui.bars.removeItems
-import net.liplum.utils.AnimU
-import net.liplum.utils.TR
-import net.liplum.utils.addSenderInfo
-import net.liplum.utils.inMod
+import net.liplum.utils.*
 
 private typealias AniStateR = AniState<Receiver, ReceiverBuild>
 
@@ -79,10 +79,6 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
         DownArrowTR = this.inMod("rs-down-arrow")
         UnconnectedTR = this.inMod("rs-unconnected")
         NoPowerTR = this.inMod("rs-no-power")
-        loadAnimation()
-    }
-
-    fun loadAnimation() {
         DownloadAnim = AnimU.autoCio("rs-down-arrow", DownloadAnimFrameNumber, DownloadAnimDuration)
     }
 
@@ -126,17 +122,12 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
         @ClientOnly
         override fun isBlocked(): Boolean = lastOutputDelta > blockTime
         override fun drawSelect() {
-            val outputItem = outputItem
             whenNotConfiguringSender {
                 this.drawDataNetGraphic()
             }
+            val outputItem = outputItem
             if (outputItem != null) {
-                val dx = x - size * Vars.tilesize / 2f
-                val dy = y + size * Vars.tilesize / 2f
-                Draw.mixcol(Color.darkGray, 1f)
-                Draw.rect(outputItem.uiIcon, dx, dy - 1)
-                Draw.reset()
-                Draw.rect(outputItem.uiIcon, dx, dy)
+                G.drawMaterialIcon(this, outputItem)
             }
         }
 
@@ -146,14 +137,13 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
                 checkSenderPos()
             }
             val outputItem = outputItem
-            val deltaT = Time.delta
             if (outputItem != null) {
                 ClientOnly {
                     val isFullData = items[outputItem] < getMaximumAccepted(outputItem)
                     if (isFullData) {
                         lastFullDataDelta = 0f
                     } else {
-                        lastFullDataDelta += deltaT
+                        lastFullDataDelta += Time.delta
                     }
                 }
                 if (consValid()) {
@@ -165,7 +155,7 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
                     }
                 }
                 ClientOnly {
-                    lastOutputDelta += deltaT
+                    lastOutputDelta += Time.delta
                 }
             }
         }
@@ -196,21 +186,17 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
         }
 
         override fun receiveData(sender: IDataSender, item: Item, amount: Int) {
-            items.add(item, amount)
+            if (this.isConnectedWith(sender)) {
+                items.add(item, amount)
+            }
         }
 
         override fun getRequirements() = outputItem.req
-        @ClientOnly
-        override fun canAcceptAnyData(sender: IDataSender): Boolean {
-            if (!consValid()) return false
-            val outputItem = outputItem ?: return false
-            return items[outputItem] < getMaximumAccepted(outputItem)
-        }
-
         override fun config(): Item? = outputItem
         override fun write(write: Writes) {
             super.write(write)
-            write.s(if (outputItem == null) -1 else outputItem!!.id.toInt())
+            val outputItem = outputItem
+            write.s(outputItem?.id?.toInt() ?: -1)
             write.intSet(senders)
         }
 
@@ -230,8 +216,6 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
 
         override fun connectedSenders() = senders
         override fun connectedSender(): Int? = senders.first()
-        override fun acceptConnection(sender: IDataSender) =
-            if (maxConnection == -1) true else senders.size < maxConnection
 
         override fun maxSenderConnection() = maxConnection
         override fun getBuilding(): Building = this

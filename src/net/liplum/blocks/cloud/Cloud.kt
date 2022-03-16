@@ -22,7 +22,10 @@ import net.liplum.animations.anis.AniConfig
 import net.liplum.animations.anis.AniState
 import net.liplum.animations.anis.config
 import net.liplum.animations.blocks.*
+import net.liplum.api.CyberU
 import net.liplum.api.data.*
+import net.liplum.api.drawLinkedLineToReceiverWhenConfiguring
+import net.liplum.api.whenNotConfiguringSender
 import net.liplum.delegates.Delegate1
 import net.liplum.persistance.intSet
 import net.liplum.utils.*
@@ -68,7 +71,7 @@ open class Cloud(name: String) : PowerBlock(name) {
             obj.setReceiver(receiverPackedPos.toInt())
         }
         configClear { obj: CloudBuild ->
-            obj.clearReceiver()
+            obj.clearReceivers()
         }
     }
 
@@ -120,7 +123,7 @@ open class Cloud(name: String) : PowerBlock(name) {
             }
         }
         @CalledBySync
-        open fun clearReceiver() {
+        open fun clearReceivers() {
             info.receiversPos.clear()
         }
         @CalledBySync
@@ -155,6 +158,7 @@ open class Cloud(name: String) : PowerBlock(name) {
         }
 
         override fun receiveData(sender: IDataSender, item: Item, amount: Int) {
+            if (!this.isConnectedWith(sender)) return
             val space = itemCapacity - items[item]//100-98=2 or 100-87=13
             if (space >= 0) {//2>0 or 13>0
                 val rest = amount - space//5-2=3 or 5-13=-8
@@ -181,8 +185,7 @@ open class Cloud(name: String) : PowerBlock(name) {
 
         override fun handleStack(item: Item, amount: Int, source: Teamc) {
         }
-        @ClientOnly
-        override fun canAcceptAnyData(sender: IDataSender) = true
+
         override fun getRequirements(): Array<Item>? = null
         @ClientOnly
         override fun isBlocked() = false
@@ -196,11 +199,17 @@ open class Cloud(name: String) : PowerBlock(name) {
         }
         @SendDataPack
         override fun connectSync(receiver: IDataReceiver) {
-            configure(receiver.building.pos())
+            val pos = receiver.building.pos()
+            if (pos !in info.receiversPos) {
+                configure(pos)
+            }
         }
         @SendDataPack
         override fun disconnectSync(receiver: IDataReceiver) {
-            configure(receiver.building.pos())
+            val pos = receiver.building.pos()
+            if (pos in info.receiversPos) {
+                configure(pos)
+            }
         }
 
         override fun draw() {

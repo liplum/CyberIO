@@ -11,10 +11,7 @@ import mindustry.type.ItemStack
 import mindustry.world.blocks.defense.OverdriveProjector
 import mindustry.world.blocks.production.GenericCrafter
 import mindustry.world.meta.BuildVisibility
-import net.liplum.ClientOnly
-import net.liplum.DebugOnly
-import net.liplum.R
-import net.liplum.WhenRefresh
+import net.liplum.*
 import net.liplum.animations.ganim.animation
 import net.liplum.api.virus.setUninfected
 import net.liplum.api.virus.setUninfectedFloor
@@ -32,6 +29,8 @@ import net.liplum.blocks.prism.Prism
 import net.liplum.blocks.prism.PrismObelisk
 import net.liplum.blocks.rs.Receiver
 import net.liplum.blocks.rs.Sender
+import net.liplum.blocks.stream.StreamClient
+import net.liplum.blocks.stream.StreamHost
 import net.liplum.blocks.tmtrainer.RandomName
 import net.liplum.blocks.tmtrainer.TMTRAINER
 import net.liplum.blocks.underdrive.UnderdriveProjector
@@ -60,6 +59,8 @@ class CioBlocks : ContentTable {
         @JvmStatic lateinit var TMTRAINER: TMTRAINER
         @JvmStatic lateinit var smartDistributor: SmartDistributor
         @JvmStatic lateinit var smartUnloader: SmartUnloader
+        @JvmStatic lateinit var streamClient: StreamClient
+        @JvmStatic lateinit var streamHost: StreamHost
     }
 
     override fun firstLoad() {
@@ -388,6 +389,38 @@ class CioBlocks : ContentTable {
             health = 1000
             size = 2
         }
+
+        streamClient = StreamClient("stream-client").apply {
+            requirements(
+                Category.liquid, BuildVisibility.sandboxOnly, arrayOf(
+                    ItemStack(CioItems.ic, 2),
+                    ItemStack(Items.metaglass, 40),
+                    ItemStack(Items.silicon, 10),
+                    ItemStack(Items.titanium, 60),
+                )
+            )
+            health = 150
+            consumes.power(0.7f)
+            liquidCapacity = 300f
+            replaceable = false
+        }
+
+        streamHost = StreamHost("stream-host").apply {
+            requirements(
+                Category.liquid, BuildVisibility.sandboxOnly, arrayOf(
+                    ItemStack(CioItems.ic, 4),
+                    ItemStack(Items.metaglass, 150),
+                    ItemStack(Items.silicon, 35),
+                    ItemStack(Items.titanium, 100),
+                )
+            )
+            health = 400
+            size = 2
+            consumes.power(0.7f)
+            networkSpeed = 2f
+            liquidCapacity = 800f
+            replaceable = false
+        }
     }
 
     override fun lastLoad() {
@@ -396,6 +429,12 @@ class CioBlocks : ContentTable {
             Blocks.itemSource.buildVisibility = BuildVisibility.shown
             Blocks.liquidSource.buildVisibility = BuildVisibility.shown
             Blocks.payloadSource.buildVisibility = BuildVisibility.shown
+        }
+        ExperimentalOnly {
+            Blocks.conveyor.sync = true
+            Blocks.titaniumConveyor.sync = true
+            Blocks.armoredConveyor.sync = true
+            Blocks.plastaniumConveyor.sync = true
         }
     }
 }
