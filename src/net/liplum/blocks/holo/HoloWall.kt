@@ -22,6 +22,7 @@ import net.liplum.ClientOnly
 import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.api.holo.IRegenerate
+import net.liplum.registries.CioShaders
 import net.liplum.seconds
 import net.liplum.utils.*
 
@@ -42,7 +43,7 @@ open class HoloWall(name: String) : Wall(name) {
         update = true
         hasShadow = false
         absorbLasers = true
-        flashHit = true
+        flashHit = false
         floating = true
         sync = true
     }
@@ -153,15 +154,24 @@ open class HoloWall(name: String) : Wall(name) {
             Draw.rect(BaseTR, x, y)
             updateFloating()
             if (isProjecting) {
-                Draw.color(R.C.Holo)
-                Draw.alpha(healthPct / 4f * 3f)
-                Draw.z(Layer.power)
-                Draw.rect(
-                    ImageTR,
-                    x + xOffset,
-                    y + yOffset
-                )
-                Draw.reset()
+                Draw.draw(Layer.power) {
+                    val hologram = CioShaders.hologram
+                    val range = (1.2f - healthPct) * 50f
+                    hologram.randomRange = Mathf.random(range)
+                    hologram.alpha = healthPct / 4f * 3f
+                    hologram.speed *= 2f - healthPct
+                    Draw.shader(hologram)
+                    Draw.color(R.C.Holo)
+                    Draw.rect(
+                        ImageTR,
+                        x + xOffset,
+                        y + yOffset
+                    )
+                    Draw.shader()
+                    Draw.reset()
+                    hologram.reset()
+                }
+
                 if (flashHit) {
                     if (hit < 0.0001f) return
                     Draw.color(flashColor)

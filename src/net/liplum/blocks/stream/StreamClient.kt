@@ -38,9 +38,8 @@ private typealias AniStateC = AniState<StreamClient, StreamClient.ClientBuild>
 
 open class StreamClient(name: String) : AniedBlock<StreamClient, StreamClient.ClientBuild>(name) {
     @JvmField var maxConnection = -1
-    @ClientOnly lateinit var BaseTR: TR
-    @ClientOnly lateinit var BaffleTR: TR
     @ClientOnly lateinit var NoPowerTR: TR
+    @ClientOnly lateinit var LiquidTR: TR
 
     init {
         hasLiquids = true
@@ -70,9 +69,8 @@ open class StreamClient(name: String) : AniedBlock<StreamClient, StreamClient.Cl
 
     override fun load() {
         super.load()
-        BaseTR = this.sub("base")
-        BaffleTR = this.sub("baffle")
         NoPowerTR = this.inMod("rs-no-power")
+        LiquidTR = this.sub("liquid")
     }
 
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
@@ -196,9 +194,9 @@ open class StreamClient(name: String) : AniedBlock<StreamClient, StreamClient.Cl
             if (CanRefresh()) {
                 aniStateM.update()
             }
-            Draw.rect(BaseTR, x, y)
+            Draw.rect(region, x, y)
             Drawf.liquid(
-                BaffleTR, x, y,
+                LiquidTR, x, y,
                 liquids.total() / liquidCapacity,
                 liquids.current().color,
                 (rotation - 90).toFloat()

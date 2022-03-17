@@ -15,7 +15,7 @@ public class SurfaceShader extends Shader {
 
     public SurfaceShader(String fragName) {
         super(getShaderFi("screenspace.vert"),
-                Vars.tree.get(R.S.Gen(fragName)));
+                Vars.tree.get(R.S.GenFrag(fragName)));
         loadNoise();
     }
 

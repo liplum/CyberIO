@@ -22,31 +22,29 @@ val IStreamNode?.exists: Boolean
 
 typealias SingleLiquidArray = Array<Liquid>
 
-class StreamCenter {
-    companion object {
-        @JvmField var SingleLiquid: Array<SingleLiquidArray> = emptyArray()
-        @JvmStatic
-        fun initStream() {
-            val liquids = Vars.content.liquids()
-            SingleLiquid = Array(liquids.size) {
-                arrayOf(liquids[it])
-            }
+object StreamCenter {
+    @JvmField var SingleLiquid: Array<SingleLiquidArray> = emptyArray()
+    @JvmStatic
+    fun initStream() {
+        val liquids = Vars.content.liquids()
+        SingleLiquid = Array(liquids.size) {
+            arrayOf(liquids[it])
         }
-        @JvmStatic
-        fun loadLiquidsColor() {
-            val liquids = Vars.content.liquids()
-            R.C.LiquidColors = Array(liquids.size) {
-                liquids[it].color
-            }
+    }
+    @JvmStatic
+    fun loadLiquidsColor() {
+        val liquids = Vars.content.liquids()
+        R.C.LiquidColors = Array(liquids.size) {
+            liquids[it].color
         }
-        @JvmStatic
-        fun initStreamColors() {
-            R.C.HostLiquidColors = Array(R.C.LiquidColors.size) {
-                R.C.LiquidColors[it].cpy().lerp(R.C.Host, 0.4f)
-            }
-            R.C.ClientLiquidColors = Array(R.C.LiquidColors.size) {
-                R.C.LiquidColors[it].cpy().lerp(R.C.Client, 0.4f)
-            }
+    }
+    @JvmStatic
+    fun initStreamColors() {
+        R.C.HostLiquidColors = Array(R.C.LiquidColors.size) {
+            R.C.LiquidColors[it].cpy().lerp(R.C.Host, 0.4f)
+        }
+        R.C.ClientLiquidColors = Array(R.C.LiquidColors.size) {
+            R.C.LiquidColors[it].cpy().lerp(R.C.Client, 0.4f)
         }
     }
 }

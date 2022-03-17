@@ -12,7 +12,7 @@ import static mindustry.graphics.Shaders.getShaderFi;
 public class BlockShader extends Shader {
     public BlockShader(String fragName) {
         super(getShaderFi("default.vert"),
-                Vars.tree.get(R.S.Gen(fragName)));
+                Vars.tree.get(R.S.GenFrag(fragName)));
     }
 
     @Override

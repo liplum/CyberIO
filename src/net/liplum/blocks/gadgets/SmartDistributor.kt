@@ -14,6 +14,8 @@ import mindustry.world.consumers.ConsumeItemDynamic
 import mindustry.world.consumers.ConsumeItems
 import mindustry.world.consumers.ConsumeType
 import mindustry.world.meta.BlockGroup
+import mindustry.world.meta.Stat
+import mindustry.world.meta.StatUnit
 import net.liplum.ClientOnly
 import net.liplum.DebugOnly
 import net.liplum.UndebugOnly
@@ -22,7 +24,8 @@ import net.liplum.animations.anims.AnimationObj
 import net.liplum.animations.anis.AniState
 import net.liplum.animations.anis.DrawTR
 import net.liplum.animations.anis.config
-import net.liplum.api.data.*
+import net.liplum.api.data.IDataReceiver
+import net.liplum.api.data.IDataSender
 import net.liplum.api.drawDataNetGraphic
 import net.liplum.api.drawLinkedLineToReceiverWhenConfiguring
 import net.liplum.api.whenNotConfiguringSender
@@ -44,6 +47,8 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
     @JvmField @ClientOnly var ArrowsAnimDuration = 70f
     @JvmField @ClientOnly var DistributionTime = 60f
     @JvmField var DynamicReqUpdateTime = 30f
+    @JvmField var powerUsagePerItem = 2.5f
+    @JvmField var powerUsageBasic = 3f
 
     init {
         solid = true
@@ -59,16 +64,31 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
         sync = true
     }
 
+    override fun init() {
+        consumes.powerDynamic<SmartDISBuild> {
+            it._requirements.size * powerUsagePerItem + powerUsageBasic
+        }
+        super.init()
+    }
+
     override fun load() {
         super.load()
         NoPowerTR = this.inMod("rs-no-power")
         ArrowsAnim = this.autoAnim("arrows", ArrowsAnimFrames, ArrowsAnimDuration)
     }
 
+    override fun setStats() {
+        super.setStats()
+        stats.add(Stat.powerUse, powerUsageBasic * 60f, StatUnit.powerSecond)
+    }
+
     override fun setBars() {
         super.setBars()
         UndebugOnly {
             bars.removeItems()
+        }
+        DebugOnly {
+            bars.addSenderInfo<SmartDISBuild>()
         }
     }
 
@@ -79,10 +99,10 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
 
     open inner class SmartDISBuild : AniedBlock<SmartDistributor, SmartDistributor.SmartDISBuild>.AniedBuild(),
         IDataReceiver {
-        @JvmField var requirements: Array<Item> = Item::class.java.EmptyArray()
+        @JvmField var _requirements: Array<Item> = Item::class.java.EmptyArray()
         var senders = OrderedSet<Int>()
-        @JvmField var onRequirementUpdated: Delegate1<IDataReceiver> = Delegate1()
-        override fun getOnRequirementUpdated() = onRequirementUpdated
+        @JvmField var _onRequirementUpdated: Delegate1<IDataReceiver> = Delegate1()
+        override fun getOnRequirementUpdated() = _onRequirementUpdated
         @ClientOnly var lastDistributionTime = 0f
             set(value) {
                 field = value.coerceAtLeast(0f)
@@ -101,7 +121,7 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
         }
 
         override fun onRemoved() {
-            onRequirementUpdated.clear()
+            _onRequirementUpdated.clear()
         }
 
         open fun updateRequirements() {
@@ -128,12 +148,12 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
             } else {
                 all.toTypedArray()
             }
-            if (!newReqs.equalsNoOrder(requirements)) {
-                requirements = newReqs
+            if (!newReqs.equalsNoOrder(_requirements)) {
+                _requirements = newReqs
                 DebugOnly {
                     requirementsText = genRequirementsText()
                 }
-                onRequirementUpdated(this)
+                _onRequirementUpdated(this)
             }
         }
 
@@ -171,6 +191,7 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
                 return false
             }
             var dised = false
+            if(proximity.isEmpty) return false
             disIndex %= proximity.size
             val b = proximity[disIndex]
             if (b.team == team) {
@@ -209,13 +230,13 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
         override fun acceptedAmount(sender: IDataSender, item: Item): Int {
             if (!consValid()) return 0
 
-            return if (item in requirements)
+            return if (item in _requirements)
                 getMaximumAccepted(item) - items[item]
             else
                 0
         }
 
-        override fun getRequirements(): Array<Item>? = requirements
+        override fun getRequirements(): Array<Item>? = _requirements
         @ClientOnly
         override fun isBlocked() = lastDistributionTime > 30f
         override fun connect(sender: IDataSender) {
@@ -240,7 +261,7 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
         @CioDebugOnly
         var requirementsText: String = ""
         @CioDebugOnly
-        fun genRequirementsText() = requirements.genText()
+        fun genRequirementsText() = _requirements.genText()
         override fun drawSelect() {
             whenNotConfiguringSender {
                 this.drawDataNetGraphic()

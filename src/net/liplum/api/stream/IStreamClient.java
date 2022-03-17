@@ -4,6 +4,7 @@ import arc.graphics.Color;
 import arc.struct.ObjectSet;
 import mindustry.type.Liquid;
 import net.liplum.CalledBySync;
+import net.liplum.ClientOnly;
 import net.liplum.delegates.Delegate1;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -53,5 +54,6 @@ public interface IStreamClient extends IStreamNode {
     }
 
     @NotNull
+    @ClientOnly
     Color getClientColor();
 }

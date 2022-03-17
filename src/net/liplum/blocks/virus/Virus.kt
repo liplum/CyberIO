@@ -20,7 +20,7 @@ import mindustry.world.Tile
 import net.liplum.*
 import net.liplum.api.virus.UninfectedBlocksRegistry
 import net.liplum.blocks.AnimedBlock
-import net.liplum.registries.ShaderRegistry
+import net.liplum.registries.CioShaders
 import net.liplum.utils.*
 
 typealias UBR = UninfectedBlocksRegistry
@@ -188,18 +188,16 @@ open class Virus(name: String) : AnimedBlock(name) {
 
         override fun draw() {
             DebugOnly {
-                if (ShaderRegistry.test != null) {
-                    Draw.draw(Layer.block) {
-                        Draw.shader(ShaderRegistry.test)
-                        Draw.rect(block.region, x, y)
-                        if (raceColor != null) {
-                            Draw.color(raceColor)
-                            Draw.rect(raceMaskTR, x, y)
-                            Draw.color()
-                        }
-                        Draw.shader()
-                        Draw.reset()
+                Draw.draw(Layer.block) {
+                    Draw.shader(CioShaders.dynamicColor)
+                    Draw.rect(block.region, x, y)
+                    if (raceColor != null) {
+                        Draw.color(raceColor)
+                        Draw.rect(raceMaskTR, x, y)
+                        Draw.color()
                     }
+                    Draw.shader()
+                    Draw.reset()
                 }
             } Else {
                 Draw.rect(block.region, x, y)

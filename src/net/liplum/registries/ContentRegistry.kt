@@ -9,6 +9,7 @@ object ContentRegistry {
     var BulletsList = CioBulletTypes().add()
     var BlockList = CioBlocks().add()
     var UnitTypeList = CioUnitTypes().add()
+    @JvmStatic
     fun loadContent() {
         ContentTables.forEach {
             it.firstLoad()
@@ -21,6 +22,7 @@ object ContentRegistry {
         }
     }
 
+    @JvmStatic
     fun ContentTable.add(): ContentTable {
         ContentTables.add(this)
         return this

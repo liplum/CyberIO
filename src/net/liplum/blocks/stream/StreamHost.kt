@@ -11,18 +11,21 @@ import mindustry.type.Liquid
 import mindustry.world.Block
 import mindustry.world.Tile
 import mindustry.world.meta.BlockGroup
-import net.liplum.*
+import net.liplum.CalledBySync
+import net.liplum.ClientOnly
+import net.liplum.DebugOnly
+import net.liplum.SendDataPack
 import net.liplum.api.drawStreamGraphic
 import net.liplum.api.stream.*
 import net.liplum.persistance.intSet
 import net.liplum.utils.TR
 import net.liplum.utils.addClientInfo
+import net.liplum.utils.sub
 
 open class StreamHost(name: String) : Block(name) {
     @JvmField var maxConnection = 5
     @JvmField var liquidColorLerp = 0.5f
     @ClientOnly lateinit var BaseTR: TR
-    @ClientOnly lateinit var BaffleTR: TR
     /**
      * 1 networkSpeed = 60 per seconds
      */
@@ -48,6 +51,11 @@ open class StreamHost(name: String) : Block(name) {
         }
     }
 
+    override fun load() {
+        super.load()
+        BaseTR = this.sub("base")
+    }
+
     override fun setBars() {
         super.setBars()
         DebugOnly {
@@ -61,19 +69,7 @@ open class StreamHost(name: String) : Block(name) {
             clients.removeAll { !it.sc().exists }
         }
 
-        @JvmField var hostColor: Color = R.C.Host.cpy()
-        override fun getHostColor() = hostColor
-        open fun updateHostColor() {
-            hostColor = R.C.Host.cpy()
-            clients.forEach { pos ->
-                pos.sc()?.let {
-                    if (it.clientColor != R.C.Client) {
-                        hostColor.lerp(it.clientColor, liquidColorLerp)
-                    }
-                }
-            }
-        }
-
+        override fun getHostColor(): Color = liquids.current().color
         override fun updateTile() {
             // Check connection every second
             if (Time.time % 60f < 1) {
@@ -88,7 +84,7 @@ open class StreamHost(name: String) : Block(name) {
                 }
             }
             val liquid = liquids.current()
-            var needPumped = networkSpeed
+            var needPumped = networkSpeed.coerceAtMost(liquids.currentAmount())
             var per = needPumped / clients.size
             var resetClient = clients.size
             for (client in SharedClientSeq) {
@@ -109,8 +105,10 @@ open class StreamHost(name: String) : Block(name) {
             resubscribeRequirementUpdated()
         }
 
-        fun onClientRequirementsUpdated(client: IStreamClient) {
-            updateHostColor()
+        open fun onClientRequirementsUpdated(client: IStreamClient) {
+        }
+
+        open fun onClientsChanged() {
         }
 
         open fun resubscribeRequirementUpdated() {
@@ -120,6 +118,7 @@ open class StreamHost(name: String) : Block(name) {
                 }
             }
         }
+
         override fun acceptLiquid(source: Building, liquid: Liquid): Boolean {
             return liquids.current() === liquid || liquids.currentAmount() < 0.2f
         }
@@ -140,14 +139,14 @@ open class StreamHost(name: String) : Block(name) {
         @CalledBySync
         open fun connectClient(client: IStreamClient) {
             if (clients.add(client.building.pos())) {
-                updateHostColor()
+                onClientsChanged()
                 client.onRequirementUpdated += ::onClientRequirementsUpdated
             }
         }
         @CalledBySync
         open fun disconnectClient(client: IStreamClient) {
             if (clients.remove(client.building.pos())) {
-                updateHostColor()
+                onClientsChanged()
                 client.onRequirementUpdated -= ::onClientRequirementsUpdated
             }
         }
@@ -160,7 +159,7 @@ open class StreamHost(name: String) : Block(name) {
                 }
             }
             clients.clear()
-            updateHostColor()
+            onClientsChanged()
         }
 
         override fun onConfigureTileTapped(other: Building): Boolean {

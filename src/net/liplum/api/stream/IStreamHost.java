@@ -3,6 +3,7 @@ package net.liplum.api.stream;
 import arc.graphics.Color;
 import arc.struct.OrderedSet;
 import mindustry.type.Liquid;
+import net.liplum.ClientOnly;
 import net.liplum.SendDataPack;
 import org.jetbrains.annotations.NotNull;
 
@@ -61,5 +62,6 @@ public interface IStreamHost extends IStreamNode {
     OrderedSet<Integer> connectedClients();
 
     @NotNull
+    @ClientOnly
     Color getHostColor();
 }

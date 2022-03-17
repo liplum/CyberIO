@@ -31,6 +31,7 @@ import net.liplum.blocks.rs.Receiver
 import net.liplum.blocks.rs.Sender
 import net.liplum.blocks.stream.StreamClient
 import net.liplum.blocks.stream.StreamHost
+import net.liplum.blocks.stream.StreamServer
 import net.liplum.blocks.tmtrainer.RandomName
 import net.liplum.blocks.tmtrainer.TMTRAINER
 import net.liplum.blocks.underdrive.UnderdriveProjector
@@ -61,6 +62,7 @@ class CioBlocks : ContentTable {
         @JvmStatic lateinit var smartUnloader: SmartUnloader
         @JvmStatic lateinit var streamClient: StreamClient
         @JvmStatic lateinit var streamHost: StreamHost
+        @JvmStatic lateinit var streamServer: StreamServer
     }
 
     override fun firstLoad() {
@@ -370,7 +372,6 @@ class CioBlocks : ContentTable {
                     ItemStack(Items.phaseFabric, 100),
                 )
             )
-            consumes.power(6f)
             health = 1000
             size = 2
         }
@@ -385,14 +386,13 @@ class CioBlocks : ContentTable {
                 )
             )
             unloadSpeed = 5f
-            consumes.power(3f)
             health = 1000
             size = 2
         }
 
         streamClient = StreamClient("stream-client").apply {
             requirements(
-                Category.liquid, BuildVisibility.sandboxOnly, arrayOf(
+                Category.liquid, BuildVisibility.shown, arrayOf(
                     ItemStack(CioItems.ic, 2),
                     ItemStack(Items.metaglass, 40),
                     ItemStack(Items.silicon, 10),
@@ -407,7 +407,7 @@ class CioBlocks : ContentTable {
 
         streamHost = StreamHost("stream-host").apply {
             requirements(
-                Category.liquid, BuildVisibility.sandboxOnly, arrayOf(
+                Category.liquid, BuildVisibility.shown, arrayOf(
                     ItemStack(CioItems.ic, 4),
                     ItemStack(Items.metaglass, 150),
                     ItemStack(Items.silicon, 35),
@@ -419,6 +419,23 @@ class CioBlocks : ContentTable {
             consumes.power(0.7f)
             networkSpeed = 2f
             liquidCapacity = 800f
+            replaceable = false
+        }
+
+        streamServer = StreamServer("stream-server").apply {
+            requirements(
+                Category.liquid, BuildVisibility.shown, arrayOf(
+                    ItemStack(CioItems.ic, 10),
+                    ItemStack(Items.metaglass, 300),
+                    ItemStack(Items.silicon, 100),
+                    ItemStack(Items.thorium, 500),
+                )
+            )
+            health = 2000
+            size = 3
+            consumes.power(2f)
+            networkSpeed = 5f
+            liquidCapacity = 1500f
             replaceable = false
         }
     }

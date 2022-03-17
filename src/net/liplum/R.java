@@ -128,10 +128,13 @@ public class R {
     }
 
     public static final class S {
-        public static final String Test = Gen("test");
+        public static final String Test = GenFrag("test");
 
-        public static String Gen(String name) {
+        public static String GenFrag(String name) {
             return "shaders/" + name + ".frag";
+        }
+        public static String GenTR(String name) {
+            return "sprites/shaders/" + name + ".png";
         }
     }
 }

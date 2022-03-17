@@ -5,13 +5,14 @@ import arc.struct.Seq
 import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
-import mindustry.Vars
 import mindustry.gen.Building
 import mindustry.graphics.Pal
 import mindustry.type.Item
 import mindustry.ui.Bar
 import mindustry.world.Tile
 import mindustry.world.meta.BlockGroup
+import mindustry.world.meta.Stat
+import mindustry.world.meta.StatUnit
 import net.liplum.*
 import net.liplum.animations.anims.Animation
 import net.liplum.animations.anims.AnimationObj
@@ -41,6 +42,9 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
     @JvmField @ClientOnly var ShrinkingAnimDuration = 120f
     @ClientOnly lateinit var CoverTR: TR
     @ClientOnly lateinit var NoPowerTR: TR
+    @JvmField var powerUsagePerItem = 2.5f
+    @JvmField var powerUsagePerConnection = 2f
+    @JvmField var powerUsageBasic = 1.5f
 
     init {
         solid = true
@@ -64,6 +68,20 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
         configClear<SmartULDBuild> {
             it.clearReceivers()
         }
+    }
+
+    override fun init() {
+        consumes.powerDynamic<SmartULDBuild> {
+            (powerUsageBasic
+                    + powerUsagePerItem * it.needUnloadItems.size
+                    + powerUsagePerConnection * it.connectedReceivers().size)
+        }
+        super.init()
+    }
+
+    override fun setStats() {
+        super.setStats()
+        stats.add(Stat.powerUse, powerUsageBasic * 60f, StatUnit.powerSecond)
     }
 
     override fun load() {
@@ -98,10 +116,10 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
         IDataSender {
         var receivers = OrderedSet<Int>()
         var nearby: Seq<Building> = Seq()
-        var trackers: Array<Tracker> = Array(Vars.content.items().size) {
+        var trackers: Array<Tracker> = Array(ItemTypeNumber()) {
             Tracker(maxConnection)
         }
-        var needUnloadItems: OrderedSet<Item> = OrderedSet()
+        var needUnloadItems: OrderedSet<Item> = OrderedSet(ItemTypeNumber())
         var unloadedNearbyIndex = 0
             set(value) {
                 field = (if (nearby.isEmpty)
@@ -237,6 +255,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
 
         open fun updateTracker() {
             clearTrackers()
+            needUnloadItems.clear()
             for (receiverPos in receivers) {
                 val receiver = receiverPos.dr()
                 if (receiver != null) {

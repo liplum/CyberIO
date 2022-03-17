@@ -22,15 +22,13 @@ val IDataBuilding?.exists: Boolean
 
 typealias SingleItemArray = Array<Item>
 
-class DataCenter {
-    companion object {
-        @JvmField var SingleItems: Array<SingleItemArray> = emptyArray()
-        @JvmStatic
-        fun initData() {
-            val items = Vars.content.items()
-            SingleItems = Array(items.size) {
-                arrayOf(items[it])
-            }
+object DataCenter {
+    @JvmField var SingleItems: Array<SingleItemArray> = emptyArray()
+    @JvmStatic
+    fun initData() {
+        val items = Vars.content.items()
+        SingleItems = Array(items.size) {
+            arrayOf(items[it])
         }
     }
 }

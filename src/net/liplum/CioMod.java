@@ -14,7 +14,7 @@ import net.liplum.api.stream.StreamCenter;
 import net.liplum.blocks.cloud.LiplumCloud;
 import net.liplum.blocks.cloud.SharedRoom;
 import net.liplum.registries.ContentRegistry;
-import net.liplum.registries.ShaderRegistry;
+import net.liplum.registries.CioShaders;
 import net.liplum.utils.AtlasU;
 import net.liplum.utils.G;
 
@@ -43,11 +43,11 @@ public class CioMod extends Mod {
             });
         });
         Events.on(FileTreeInitEvent.class,
-                e -> Core.app.post(ShaderRegistry::load)
+                e -> Core.app.post(CioShaders::init)
         );
 
         Events.on(DisposeEvent.class,
-                e -> ShaderRegistry.dispose()
+                e -> CioShaders.dispose()
         );
     }
 
@@ -82,12 +82,13 @@ public class CioMod extends Mod {
         StreamCenter.initStream();
         StreamCenter.loadLiquidsColor();
         StreamCenter.initStreamColors();
+        CioShaders.loadResource();
         Events.run(Trigger.preDraw, G::init);
     }
 
     @Override
     public void loadContent() {
-        ContentRegistry.INSTANCE.loadContent();
+        ContentRegistry.loadContent();
         Log.info("Cyber IO mod's contents loaded.");
     }
 }
