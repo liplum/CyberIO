@@ -5,11 +5,14 @@ import net.liplum.ClientOnly
 import net.liplum.shaders.BlockShader
 import net.liplum.shaders.HologramShader
 import net.liplum.shaders.ILoadResource
+import net.liplum.shaders.TrShader
 import java.util.*
 
 object CioShaders {
     @ClientOnly lateinit var dynamicColor: Shader
     @ClientOnly lateinit var hologram: HologramShader
+    @ClientOnly lateinit var monochrome: TrShader
+    @ClientOnly lateinit var invertColor: TrShader
     @ClientOnly
     @JvmStatic
     private lateinit var allShaders: LinkedList<Shader>
@@ -23,6 +26,8 @@ object CioShaders {
             allLoadable = LinkedList()
             dynamicColor = BlockShader("dynamic-color").register()
             hologram = HologramShader("hologram").register()
+            monochrome = TrShader("monochrome").register()
+            invertColor = TrShader("invert-color").register()
             isInited = true
         }
     }

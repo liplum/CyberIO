@@ -272,7 +272,6 @@ open class Prism(name: String) : Block(name) {
         }
 
         override fun draw() {
-
             Draw.rect(BaseTR, x, y)
             val process = cm.process
             Draw.alpha(1f - process)
