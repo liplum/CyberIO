@@ -24,7 +24,7 @@ open class AdjustableOverdrive(name: String) : OverdriveProjector(name) {
         baseColor = Color.red
         configurable = true
         saveConfig = true
-        config(java.lang.Byte::class.java) { b: AOBuild, i ->
+        config(Integer::class.java) { b: AOBuild, i ->
             b.setGear(i.toInt())
         }
         configClear<AOBuild> {
@@ -70,7 +70,7 @@ open class AdjustableOverdrive(name: String) : OverdriveProjector(name) {
         override fun buildConfiguration(table: Table) {
             table.add(Slider(0f, maxGear.toFloat(), 1f, false).apply {
                 value = curGear.toFloat()
-                moved { configure(Mathf.round(it).toByte()) }
+                moved { configure(Mathf.round(it)) }
             })
         }
 

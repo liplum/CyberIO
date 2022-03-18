@@ -31,13 +31,13 @@ object CioBulletTypes : ContentTable {
             statusDuration = CioSEffects.infected.initTime
         }
 
-        radiationInterference = ShaderBasicBulletT(1.0f, 28f, "bullet").apply {
+        radiationInterference = ShaderBasicBulletT(4f, 28f, "bullet").apply {
             ClientOnly {
                 shader = SD.tvSnow
             }
-            width = 10f
-            height = 12f
-            lifetime = 100f
+            width = 5f
+            height = 5f
+            lifetime = 80f
             despawnEffect = StaticFx
             hitEffect = StaticFx
             shootEffect = StaticFx

@@ -9,6 +9,7 @@ import mindustry.game.EventType
 import net.liplum.CanRefresh
 import net.liplum.CioMod
 import net.liplum.ClientOnly
+import net.liplum.delegates.Delegate
 
 open class GlobalAnimation(
     val duration: Float,
@@ -46,5 +47,14 @@ open class GlobalAnimation(
             }
         }
         return this
+    }
+
+    companion object {
+        val loadingTask: Delegate = Delegate()
+        @JvmStatic
+        fun loadAllResources() {
+            loadingTask()
+            loadingTask.clear()
+        }
     }
 }

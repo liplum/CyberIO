@@ -32,7 +32,7 @@ infix fun TR.or(texture: TR): TR {
         texture
 }
 /**
- * Gets an array of Texture Region of "sprites/{this}-{subName}" or "sprites/{this}" if subName is null.
+ * Gets an array of Texture Region of "sprites/{this}-{subName}-anim" or "sprites/{this}-anim" if subName is null.
  * @param subName the following name after a hyphen. If it's null, use the {this} name
  * @param number the amount of frames in that image. Splits it by row.
  */

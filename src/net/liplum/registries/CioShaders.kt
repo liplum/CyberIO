@@ -15,10 +15,8 @@ object CioShaders {
     @ClientOnly lateinit var invertColor: TrShader
     @ClientOnly lateinit var tvSnow: TrShader
     @ClientOnly
-    @JvmStatic
-    private lateinit var allShaders: LinkedList<Shader>
-    @JvmStatic
-    private lateinit var allLoadable: LinkedList<ILoadResource>
+    private var allShaders: LinkedList<Shader> = LinkedList()
+    private var allLoadable: LinkedList<ILoadResource> = LinkedList()
     private var isInited = false
     @JvmStatic
     fun init() {

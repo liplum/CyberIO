@@ -10,6 +10,7 @@ import mindustry.content.Bullets
 import mindustry.entities.Effect
 import mindustry.entities.Effect.EffectContainer
 import mindustry.entities.bullet.BulletType
+import net.liplum.ExperimentalOnly
 import net.liplum.R
 import net.liplum.blocks.prism.RgbList
 import net.liplum.blocks.prism.SmallRgbFx
@@ -60,7 +61,7 @@ val shootPyraFlameFx = RgbList {
 }
 
 fun tintedBulletsRegistryLoad() {
-    if (false) {
+    ExperimentalOnly {
         Bullets.basicFlame.registerRGBIndex {
             (this.copy() as BulletType).apply {
                 shootEffect = SmallRgbFx[it]

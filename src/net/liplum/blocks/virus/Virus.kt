@@ -16,10 +16,10 @@ import mindustry.gen.Call
 import mindustry.graphics.Layer
 import mindustry.graphics.Pal
 import mindustry.ui.Bar
+import mindustry.world.Block
 import mindustry.world.Tile
 import net.liplum.*
 import net.liplum.api.virus.UninfectedBlocksRegistry
-import net.liplum.blocks.AnimedBlock
 import net.liplum.registries.CioShaders
 import net.liplum.utils.*
 
@@ -37,7 +37,7 @@ private val Number2Y = arrayOf(
 )
 private const val OmniInfected = 0b1111_1111
 
-open class Virus(name: String) : AnimedBlock(name) {
+open class Virus(name: String) : Block(name) {
     /**
      * The lager the number the slower the spreading speed. Belongs to [0,+inf)
      */

@@ -13,7 +13,7 @@ import mindustry.world.blocks.defense.OverdriveProjector
 import mindustry.world.blocks.production.GenericCrafter
 import mindustry.world.meta.BuildVisibility
 import net.liplum.*
-import net.liplum.animations.ganim.animation
+import net.liplum.animations.ganim.globalAnim
 import net.liplum.api.virus.setUninfected
 import net.liplum.api.virus.setUninfectedFloor
 import net.liplum.blocks.cloud.Cloud
@@ -42,7 +42,6 @@ import net.liplum.blocks.virus.Virus
 import net.liplum.bullets.ShaderCLaser
 import net.liplum.seffects.StaticFx
 import net.liplum.shaders.SD
-import net.liplum.utils.CioDebugOnly
 
 object CioBlocks : ContentTable {
     @JvmStatic lateinit var icMachine: GenericCrafter
@@ -58,7 +57,7 @@ object CioBlocks : ContentTable {
     @JvmStatic lateinit var prism: Prism
     @JvmStatic lateinit var prismObelisk: PrismObelisk
     @JvmStatic lateinit var deleter: Deleter
-    @CioDebugOnly @JvmStatic var hyperOverdriveSphere: OverdriveProjector? = null
+    @JvmStatic var hyperOverdriveSphere: OverdriveProjector? = null
     @JvmStatic lateinit var holoWall: HoloWall
     @JvmStatic lateinit var holoWallLarge: HoloWall
     @JvmStatic lateinit var TMTRAINER: TMTRAINER
@@ -168,7 +167,7 @@ object CioBlocks : ContentTable {
             maxGeneration = 100
             inheritChildrenNumber = false
             mutationRate = 10
-        }.animation(60f, 3)
+        }.globalAnim(30f, 3)
 
         Blocks.air.setUninfectedFloor()
         Blocks.space.setUninfectedFloor()
@@ -242,19 +241,19 @@ object CioBlocks : ContentTable {
             consumes.power(1f)
         }
 
-        DebugOnly {
-            hyperOverdriveSphere = AdjustableOverdrive("hyper-overdrive-sphere").apply {
-                requirements(
-                    Category.effect, BuildVisibility.shown, arrayOf(
-                    )
-                )
-                size = 3
-                maxBoost = 50f
-                minBoost = 0.5f
-                consumes.power(50f)
-                speedBoost = 50f
-                range = 1000f
+        hyperOverdriveSphere = AdjustableOverdrive("hyper-overdrive-sphere").apply {
+            requirements(
+                Category.effect, BuildVisibility.sandboxOnly, arrayOf()
+            )
+            DebugOnly {
+                buildVisibility = BuildVisibility.shown
             }
+            size = 3
+            maxBoost = 50f
+            minBoost = 0.5f
+            consumes.power(50f)
+            speedBoost = 50f
+            range = 1000f
         }
 
         prism = Prism("prism").apply {
@@ -346,6 +345,7 @@ object CioBlocks : ContentTable {
             )
             ammo(
                 Items.sporePod, CioBulletTypes.virus,
+                Items.thorium, CioBulletTypes.radiationInterference,
             )
             maxAmmo = 80
             spread = 4f
@@ -442,47 +442,45 @@ object CioBlocks : ContentTable {
             replaceable = false
         }
 
-        DebugOnly {
-            jammer = Jammer("jammer").apply {
-                requirements(
-                    Category.turret, BuildVisibility.shown, arrayOf(
-                        ItemStack(CioItems.ic, 8),
-                        ItemStack(Items.lead, 350),
-                        ItemStack(Items.thorium, 200),
-                        ItemStack(Items.titanium, 200),
-                    )
+        jammer = Jammer("jammer").apply {
+            requirements(
+                Category.turret, BuildVisibility.shown, arrayOf(
+                    ItemStack(CioItems.ic, 8),
+                    ItemStack(Items.lead, 350),
+                    ItemStack(Items.thorium, 200),
+                    ItemStack(Items.surgeAlloy, 150),
                 )
-                size = 3
+            )
+            size = 3
 
-                shootEffect = StaticFx
-                shootCone = 40f
-                recoilAmount = 4f
-                shootShake = 2f
-                range = 150f
-                cooldown = 10f
-                reloadTime = 80f
-                firingMoveFract = 0.25f
-                shootDuration = 180f
-                shootSound = Sounds.laserbig
-                loopSound = Sounds.beam
-                loopSoundVolume = 1.5f
-                rotateSpeed = 2f
-                powerUse = 12f
+            shootEffect = StaticFx
+            shootCone = 40f
+            recoilAmount = 4f
+            shootShake = 2f
+            range = 150f
+            cooldown = 10f
+            reloadTime = 40f
+            firingMoveFract = 0.25f
+            shootDuration = 180f
+            shootSound = Sounds.laserbig
+            loopSound = Sounds.beam
+            loopSoundVolume = 1.5f
+            rotateSpeed = 2f
+            powerUse = 10f
 
-                shootType = ShaderCLaser().apply {
-                    damage = 60f
-                    length = range
-                    hitEffect = StaticFx
-                    hitColor = Color.white
-                    status = CioSEffects.static
-                    drawSize = 300f
-                    incendChance = 0.4f
-                    incendSpread = 5f
-                    incendAmount = 1
-                    ammoMultiplier = 1f
-                    ClientOnly {
-                        shader = SD.tvSnow
-                    }
+            shootType = ShaderCLaser().apply {
+                damage = 120f
+                length = range
+                hitEffect = StaticFx
+                hitColor = Color.white
+                status = CioSEffects.static
+                drawSize = 300f
+                incendChance = 0.4f
+                incendSpread = 5f
+                incendAmount = 1
+                ammoMultiplier = 1f
+                ClientOnly {
+                    shader = SD.tvSnow
                 }
             }
         }

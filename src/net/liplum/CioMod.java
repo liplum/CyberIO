@@ -9,6 +9,7 @@ import mindustry.core.GameState;
 import mindustry.io.JsonIO;
 import mindustry.mod.Mod;
 import mindustry.ui.dialogs.BaseDialog;
+import net.liplum.animations.ganim.GlobalAnimation;
 import net.liplum.api.data.DataCenter;
 import net.liplum.api.stream.StreamCenter;
 import net.liplum.blocks.cloud.LiplumCloud;
@@ -84,6 +85,7 @@ public class CioMod extends Mod {
         StreamCenter.loadLiquidsColor();
         StreamCenter.initStreamColors();
         CioShaders.loadResource();
+        GlobalAnimation.loadAllResources();
         Events.run(Trigger.preDraw, G::init);
     }
 
