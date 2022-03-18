@@ -81,3 +81,10 @@ vec2 modVec2(vec2 a, float b){
     a[1] - (b * floor(a[1]/b))
     );
 }
+/**
+@param xy[0] x
+@param xy[1] y
+*/
+float rand(vec2 xy){
+    return fract(sin(dot(xy, vec2(12.9898, 78.233))) * 43758.5453);
+}
