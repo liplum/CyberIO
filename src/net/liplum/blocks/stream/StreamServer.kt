@@ -17,13 +17,11 @@ import net.liplum.utils.TR
 import net.liplum.utils.sub
 
 open class StreamServer(name: String) : StreamHost(name) {
-    @ClientOnly lateinit var TankTR: TR
-    @ClientOnly lateinit var CoverTR: TR
+    @ClientOnly lateinit var RotatorTR: TR
     @JvmField var fireproof = false
     override fun load() {
         super.load()
-        TankTR = this.sub("tank")
-        CoverTR = this.sub("cover")
+        RotatorTR = this.sub("rotator")
     }
 
     open inner class ServerBuild : HostBuild() {
@@ -85,32 +83,41 @@ open class StreamServer(name: String) : StreamHost(name) {
                     SharedClientSeq.add(client)
                 }
             }
-            var needPumped = networkSpeed.coerceAtMost(liquids.total())
-            var per = needPumped / clients.size
-            var resetClient = clients.size
+            val needPumped = networkSpeed.coerceAtMost(liquids.total())
+            var restNeedPumped = needPumped
+            var per = restNeedPumped / clients.size
+            var restClient = clients.size
             for (client in SharedClientSeq) {
                 val reqs = client.requirements
                 if (reqs == null) {
                     val current = liquids.current()
                     val pumpedThisTime = per.coerceAtMost(liquids.currentAmount())
-                    val rest = streaming(client, current, pumpedThisTime)
-                    val consumed = (pumpedThisTime - rest)
-                    liquids.remove(current, consumed)
-                    needPumped -= consumed
+                    if (pumpedThisTime > 0.01f) {
+                        val rest = streaming(client, current, pumpedThisTime)
+                        val consumed = (pumpedThisTime - rest)
+                        liquids.remove(current, consumed)
+                        restNeedPumped -= consumed
+                    }
                 } else if (reqs.isNotEmpty()) {
                     val perThisTime = per / reqs.size
                     for (liquidNeed in reqs) {
                         val pumpedThisTime = perThisTime.coerceAtMost(liquids.get(liquidNeed))
-                        val rest = streaming(client, liquidNeed, pumpedThisTime)
-                        val consumed = (per - rest)
-                        liquids.remove(liquidNeed, consumed)
-                        needPumped -= consumed
+                        if (pumpedThisTime > 0.01f) {
+                            val rest = streaming(client, liquidNeed, pumpedThisTime)
+                            val consumed = (per - rest)
+                            liquids.remove(liquidNeed, consumed)
+                            restNeedPumped -= consumed
+                        }
                     }
                 }
-                resetClient--
-                if (resetClient > 0) {
-                    per = needPumped / resetClient
+                restClient--
+                if (restClient > 0) {
+                    per = restNeedPumped / restClient
                 }
+            }
+            val consumed = needPumped - restNeedPumped
+            ClientOnly {
+                liquidFlow += consumed
             }
         }
 
@@ -118,15 +125,22 @@ open class StreamServer(name: String) : StreamHost(name) {
             return liquids.get(liquid) < liquidCapacity
         }
 
+        override fun handleLiquid(source: Building, liquid: Liquid, amount: Float) {
+            super.handleLiquid(source, liquid, amount)
+            ClientOnly {
+                liquidFlow += amount
+            }
+        }
+
         override fun draw() {
             Draw.rect(BaseTR, x, y)
             Drawf.liquid(
-                TankTR, x, y,
+                LiquidTR, x, y,
                 liquids.total() / liquidCapacity,
                 mixedLiquidColor,
                 (rotation - 90).toFloat()
             )
-            Draw.rect(CoverTR, x, y)
+            Draw.rect(RotatorTR, x, y, liquidFlow)
             drawTeamTop()
         }
     }

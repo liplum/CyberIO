@@ -51,7 +51,7 @@ open class StreamClient(name: String) : AniedBlock<StreamClient, StreamClient.Cl
         saveConfig = true
         noUpdateDisabled = true
         canOverdrive = false
-
+        sync = true
         config(
             Liquid::class.java
         ) { obj: ClientBuild, liquid ->
@@ -143,10 +143,10 @@ open class StreamClient(name: String) : AniedBlock<StreamClient, StreamClient.Cl
         override fun drawSelect() {
             whenNotConfiguringHost {
                 this.drawStreamGraphic()
-            }
-            val outputLiquid = outputLiquid
-            if (outputLiquid != null) {
-                G.drawMaterialIcon(this, outputLiquid)
+                val outputLiquid = outputLiquid
+                if (outputLiquid != null) {
+                    G.drawMaterialIcon(this, outputLiquid)
+                }
             }
         }
 

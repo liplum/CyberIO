@@ -2,7 +2,6 @@ package net.liplum.shaders;
 
 import arc.Core;
 import arc.graphics.gl.Shader;
-import arc.scene.ui.layout.Scl;
 import arc.util.Time;
 import mindustry.Vars;
 import net.liplum.R;
@@ -18,7 +17,7 @@ public class TrShader extends Shader {
 
     @Override
     public void apply() {
-        setUniformf("u_time", Time.time / Scl.scl(1f));
+        setUniformf("u_time", Time.time);
         setUniformf("u_offset",
                 Core.camera.position.x,
                 Core.camera.position.y

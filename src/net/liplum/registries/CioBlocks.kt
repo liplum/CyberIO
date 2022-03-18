@@ -1,6 +1,7 @@
 package net.liplum.registries
 
 import arc.Events
+import arc.graphics.Color
 import mindustry.content.Blocks
 import mindustry.content.Fx
 import mindustry.content.Items
@@ -25,6 +26,7 @@ import net.liplum.blocks.holo.HoloWall
 import net.liplum.blocks.holo.LandProjector
 import net.liplum.blocks.icmachine.ICMachine
 import net.liplum.blocks.icmachine.ICMachineS
+import net.liplum.blocks.jammer.Jammer
 import net.liplum.blocks.prism.Prism
 import net.liplum.blocks.prism.PrismObelisk
 import net.liplum.blocks.rs.Receiver
@@ -37,34 +39,35 @@ import net.liplum.blocks.tmtrainer.TMTRAINER
 import net.liplum.blocks.underdrive.UnderdriveProjector
 import net.liplum.blocks.virus.AntiVirus
 import net.liplum.blocks.virus.Virus
+import net.liplum.bullets.ShaderCLaser
+import net.liplum.seffects.StaticFx
+import net.liplum.shaders.SD
 import net.liplum.utils.CioDebugOnly
 
-class CioBlocks : ContentTable {
-    companion object {
-        @JvmStatic lateinit var icMachine: GenericCrafter
-        @JvmStatic lateinit var icMachineSmall: GenericCrafter
-        @JvmStatic lateinit var receiver: Receiver
-        @JvmStatic lateinit var sender: Sender
-        @JvmStatic lateinit var virus: Virus
-        @JvmStatic lateinit var landProjector: LandProjector
-        @JvmStatic lateinit var holoFloor: HoloFloor
-        @JvmStatic lateinit var underdriveProjector: UnderdriveProjector
-        @JvmStatic lateinit var antiVirus: AntiVirus
-        @JvmStatic lateinit var cloud: Cloud
-        @JvmStatic lateinit var prism: Prism
-        @JvmStatic lateinit var prismObelisk: PrismObelisk
-        @JvmStatic lateinit var deleter: Deleter
-        @CioDebugOnly @JvmStatic var hyperOverdriveSphere: OverdriveProjector? = null
-        @JvmStatic lateinit var holoWall: HoloWall
-        @JvmStatic lateinit var holoWallLarge: HoloWall
-        @JvmStatic lateinit var TMTRAINER: TMTRAINER
-        @JvmStatic lateinit var smartDistributor: SmartDistributor
-        @JvmStatic lateinit var smartUnloader: SmartUnloader
-        @JvmStatic lateinit var streamClient: StreamClient
-        @JvmStatic lateinit var streamHost: StreamHost
-        @JvmStatic lateinit var streamServer: StreamServer
-    }
-
+object CioBlocks : ContentTable {
+    @JvmStatic lateinit var icMachine: GenericCrafter
+    @JvmStatic lateinit var icMachineSmall: GenericCrafter
+    @JvmStatic lateinit var receiver: Receiver
+    @JvmStatic lateinit var sender: Sender
+    @JvmStatic lateinit var virus: Virus
+    @JvmStatic lateinit var landProjector: LandProjector
+    @JvmStatic lateinit var holoFloor: HoloFloor
+    @JvmStatic lateinit var underdriveProjector: UnderdriveProjector
+    @JvmStatic lateinit var antiVirus: AntiVirus
+    @JvmStatic lateinit var cloud: Cloud
+    @JvmStatic lateinit var prism: Prism
+    @JvmStatic lateinit var prismObelisk: PrismObelisk
+    @JvmStatic lateinit var deleter: Deleter
+    @CioDebugOnly @JvmStatic var hyperOverdriveSphere: OverdriveProjector? = null
+    @JvmStatic lateinit var holoWall: HoloWall
+    @JvmStatic lateinit var holoWallLarge: HoloWall
+    @JvmStatic lateinit var TMTRAINER: TMTRAINER
+    @JvmStatic lateinit var smartDistributor: SmartDistributor
+    @JvmStatic lateinit var smartUnloader: SmartUnloader
+    @JvmStatic lateinit var streamClient: StreamClient
+    @JvmStatic lateinit var streamHost: StreamHost
+    @JvmStatic lateinit var streamServer: StreamServer
+    @JvmStatic lateinit var jammer: Jammer
     override fun firstLoad() {
     }
 
@@ -342,7 +345,7 @@ class CioBlocks : ContentTable {
                 )
             )
             ammo(
-                Items.sporePod, CioBulletTypes.virus
+                Items.sporePod, CioBulletTypes.virus,
             )
             maxAmmo = 80
             spread = 4f
@@ -437,6 +440,49 @@ class CioBlocks : ContentTable {
             networkSpeed = 5f
             liquidCapacity = 1500f
             replaceable = false
+        }
+
+        DebugOnly {
+            jammer = Jammer("jammer").apply {
+                requirements(
+                    Category.turret, BuildVisibility.shown, arrayOf(
+                        ItemStack(CioItems.ic, 8),
+                        ItemStack(Items.lead, 350),
+                        ItemStack(Items.thorium, 200),
+                        ItemStack(Items.titanium, 200),
+                    )
+                )
+                size = 3
+
+                shootEffect = StaticFx
+                shootCone = 40f
+                recoilAmount = 4f
+                shootShake = 2f
+                range = 150f
+                cooldown = 10f
+                reloadTime = 80f
+                firingMoveFract = 0.25f
+                shootDuration = 180f
+                shootSound = Sounds.laserbig
+                loopSound = Sounds.beam
+                loopSoundVolume = 1.5f
+                rotateSpeed = 2f
+                powerUse = 12f
+
+                shootType = ShaderCLaser().apply {
+                    damage = 60f
+                    length = range
+                    hitEffect = StaticFx
+                    hitColor = Color.white
+                    status = CioSEffects.static
+                    drawSize = 300f
+                    incendChance = 0.4f
+                    incendSpread = 5f
+                    incendAmount = 1
+                    ammoMultiplier = 1f
+                    shader = SD.tvSnow
+                }
+            }
         }
     }
 

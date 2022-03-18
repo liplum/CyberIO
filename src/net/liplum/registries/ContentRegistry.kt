@@ -4,11 +4,11 @@ import java.util.*
 
 object ContentRegistry {
     var ContentTables: MutableList<ContentTable> = LinkedList()
-    var ItemList = CioItems().add()
-    var StatusEffectList = CioStatusEffects().add()
-    var BulletsList = CioBulletTypes().add()
-    var BlockList = CioBlocks().add()
-    var UnitTypeList = CioUnitTypes().add()
+    var ItemList = CioItems.add()
+    var StatusEffectList = CioSEffects.add()
+    var BulletsList = CioBulletTypes.add()
+    var BlockList = CioBlocks.add()
+    var UnitTypeList = CioUnitTypes.add()
     @JvmStatic
     fun loadContent() {
         ContentTables.forEach {

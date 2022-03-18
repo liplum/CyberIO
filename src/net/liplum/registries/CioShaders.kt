@@ -13,6 +13,7 @@ object CioShaders {
     @ClientOnly lateinit var hologram: HologramShader
     @ClientOnly lateinit var monochrome: TrShader
     @ClientOnly lateinit var invertColor: TrShader
+    @ClientOnly lateinit var tvSnow: TrShader
     @ClientOnly
     @JvmStatic
     private lateinit var allShaders: LinkedList<Shader>
@@ -28,6 +29,7 @@ object CioShaders {
             hologram = HologramShader("hologram").register()
             monochrome = TrShader("monochrome").register()
             invertColor = TrShader("invert-color").register()
+            tvSnow = TrShader("tv-static").register()
             isInited = true
         }
     }

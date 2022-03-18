@@ -13,6 +13,7 @@ import net.liplum.api.data.DataCenter;
 import net.liplum.api.stream.StreamCenter;
 import net.liplum.blocks.cloud.LiplumCloud;
 import net.liplum.blocks.cloud.SharedRoom;
+import net.liplum.registries.CioCLs;
 import net.liplum.registries.ContentRegistry;
 import net.liplum.registries.CioShaders;
 import net.liplum.utils.AtlasU;
@@ -88,6 +89,7 @@ public class CioMod extends Mod {
 
     @Override
     public void loadContent() {
+        CioCLs.load();
         ContentRegistry.loadContent();
         Log.info("Cyber IO mod's contents loaded.");
     }

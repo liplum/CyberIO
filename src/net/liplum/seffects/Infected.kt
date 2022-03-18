@@ -16,10 +16,10 @@ enum class DamageMode {
 }
 
 open class Infected(name: String) : StatusEffect(name) {
-    var range = 50f
-    var infectedInitTime = 10 * 60f
-    var damageProportion = 1f / 10f / 60f
-    var damageMode = DamageMode.CurHP
+    @JvmField var range = 50f
+    @JvmField var initTime = 10 * 60f
+    @JvmField var damageProportion = 1f / 10f / 60f
+    @JvmField var damageMode = DamageMode.CurHP
 
     init {
         color = R.C.VirusBK
@@ -59,7 +59,7 @@ open class Infected(name: String) : StatusEffect(name) {
                 body.dst(it) <= range &&
                 it.team() == body.team
             ) {
-                it.apply(this, infectedInitTime)
+                it.apply(this, initTime)
             }
         }
     }

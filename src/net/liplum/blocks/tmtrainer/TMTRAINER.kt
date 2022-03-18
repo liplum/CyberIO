@@ -22,7 +22,7 @@ open class TMTRAINER(name: String) : ItemTurret(name) {
     @ClientOnly lateinit var CoreAnim: Animation
     @ClientOnly lateinit var EmptyCoreAnim: Animation
     @ClientOnly lateinit var HeadTR: TR
-    @JvmField @ClientOnly var headMax = 0.6f
+    @JvmField @ClientOnly var headMax = 0.45f
     @JvmField @ClientOnly var headMin = -3f
     @JvmField var CoreAnimFrames = 8
     @JvmField var maxVirusChargeSpeedUp = 2.5f
@@ -79,7 +79,6 @@ open class TMTRAINER(name: String) : ItemTurret(name) {
             Draw.color()
 
             Draw.z(Layer.turret)
-
             targetPol.a = rotation.radian
             var tpr = targetPol.r
             val delta = virusCharge * 0.001f

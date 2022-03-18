@@ -3,11 +3,8 @@ package net.liplum.registries
 import mindustry.type.Item
 import net.liplum.R
 
-class CioItems : ContentTable {
-    companion object {
-        @JvmStatic lateinit var ic: Item
-    }
-
+object CioItems : ContentTable {
+    @JvmStatic lateinit var ic: Item
     override fun load() {
     }
 

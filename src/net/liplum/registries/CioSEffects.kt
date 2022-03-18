@@ -1,20 +1,20 @@
 package net.liplum.registries
 
 import net.liplum.seffects.Infected
+import net.liplum.seffects.Static
 import net.liplum.seffects.Vulnerable
 
-class CioStatusEffects : ContentTable {
-    companion object {
-        @JvmStatic lateinit var infected: Infected
-        @JvmStatic lateinit var vulnerable: Vulnerable
-    }
-
+object CioSEffects : ContentTable {
+    @JvmStatic lateinit var infected: Infected
+    @JvmStatic lateinit var vulnerable: Vulnerable
+    @JvmStatic lateinit var static: Static
     override fun firstLoad() {
     }
 
     override fun load() {
         infected = Infected("infected")
         vulnerable = Vulnerable("vulnerable")
+        static = Static("static")
     }
 
     override fun lastLoad() {

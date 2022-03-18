@@ -2,6 +2,7 @@ package net.liplum.api;
 
 import mindustry.Vars;
 import mindustry.gen.Building;
+import mindustry.type.Liquid;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 import net.liplum.R;
@@ -128,6 +129,10 @@ public class CyberU {
                 IStreamClient sc = (IStreamClient) clientB;
                 G.drawSurroundingCircle(clientT, sc.getClientColor());
                 G.drawArrowLine(host.getBuilding(), clientB, ArrowDensity, host.getHostColor());
+                Liquid[] reqs = sc.getRequirements();
+                if (reqs != null && reqs.length == 1) {
+                    G.drawMaterialIcon(sc.getBuilding(), reqs[0]);
+                }
             }
         }
     }

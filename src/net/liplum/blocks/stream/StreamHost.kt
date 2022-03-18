@@ -26,6 +26,7 @@ open class StreamHost(name: String) : Block(name) {
     @JvmField var maxConnection = 5
     @JvmField var liquidColorLerp = 0.5f
     @ClientOnly lateinit var BaseTR: TR
+    @ClientOnly lateinit var LiquidTR: TR
     /**
      * 1 networkSpeed = 60 per seconds
      */
@@ -43,6 +44,7 @@ open class StreamHost(name: String) : Block(name) {
         noUpdateDisabled = true
         hasLiquids = true
         canOverdrive = false
+        sync = true
         config(Integer::class.java) { obj: HostBuild, clientPackedPos ->
             obj.setClient(clientPackedPos.toInt())
         }
@@ -54,6 +56,7 @@ open class StreamHost(name: String) : Block(name) {
     override fun load() {
         super.load()
         BaseTR = this.sub("base")
+        LiquidTR = this.sub("liquid")
     }
 
     override fun setBars() {
@@ -65,6 +68,7 @@ open class StreamHost(name: String) : Block(name) {
 
     open inner class HostBuild : Building(), IStreamHost {
         var clients = OrderedSet<Int>()
+        @ClientOnly @JvmField var liquidFlow = 0f
         open fun checkClientsPos() {
             clients.removeAll { !it.sc().exists }
         }
@@ -122,6 +126,7 @@ open class StreamHost(name: String) : Block(name) {
         override fun acceptLiquid(source: Building, liquid: Liquid): Boolean {
             return liquids.current() === liquid || liquids.currentAmount() < 0.2f
         }
+
         @CalledBySync
         open fun setClient(pos: Int) {
             if (pos in clients) {

@@ -29,11 +29,11 @@ vec4 blend(vec4 bk, vec4 fg, float fgA){
 void main() {
     vec2 uv = v_texCoords.xy;
     vec4 origin = texture2D(u_texture, uv);
-    if (origin.a < 0.01f){
+    if (origin.a < 0.01){
         return;
     }
 
-    origin = blend(origin, v_color, 0.35f);
+    origin = blend(origin, v_color, 0.35);
 
     vec2 offset = vec2(u_time * u_speed / 100.0);
     vec2 tiling = tilingAndOffset(uv, hologramTextureTiling, offset);

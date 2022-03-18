@@ -59,6 +59,7 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
         acceptsItems = false
         canOverdrive = false
         allowConfigInventory = false
+        sync = true
 
         config(
             Item::class.java
