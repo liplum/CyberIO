@@ -2,6 +2,7 @@ package net.liplum.api;
 
 import mindustry.Vars;
 import mindustry.gen.Building;
+import mindustry.type.Item;
 import mindustry.type.Liquid;
 import mindustry.world.Block;
 import mindustry.world.Tile;
@@ -51,11 +52,16 @@ public class CyberU {
         if (receiver == null) {
             return;
         }
-        Building receiverBuild = Vars.world.build(receiver);
-        if (receiverBuild instanceof IDataReceiver) {
-            Tile receiverT = receiverBuild.tile();
+        Building receiverB = Vars.world.build(receiver);
+        if (receiverB instanceof IDataReceiver) {
+            Tile receiverT = receiverB.tile();
+            IDataReceiver rb = (IDataReceiver) receiverB;
             G.drawSurroundingCircle(receiverT, R.C.Receiver);
-            G.drawArrowLine(sender.getBuilding(), receiverBuild, ArrowDensity, R.C.Sender);
+            G.drawArrowLine(sender.getBuilding(), receiverB, ArrowDensity, R.C.Sender);
+            Item[] reqs = rb.getRequirements();
+            if (reqs != null && reqs.length == 1) {
+                G.drawMaterialIcon(rb.getBuilding(), reqs[0]);
+            }
         }
     }
 
@@ -64,11 +70,16 @@ public class CyberU {
      */
     public static void drawReceivers(IDataSender sender, Iterable<Integer> receivers) {
         for (Integer receiver : receivers) {
-            Building receiverBuild = Vars.world.build(receiver);
-            if (receiverBuild instanceof IDataReceiver) {
-                Tile receiverT = receiverBuild.tile();
+            Building receiverB = Vars.world.build(receiver);
+            if (receiverB instanceof IDataReceiver) {
+                Tile receiverT = receiverB.tile();
+                IDataReceiver rb = (IDataReceiver) receiverB;
                 G.drawSurroundingCircle(receiverT, R.C.Receiver);
-                G.drawArrowLine(sender.getBuilding(), receiverBuild, ArrowDensity, R.C.Sender);
+                G.drawArrowLine(sender.getBuilding(), receiverB, ArrowDensity, R.C.Sender);
+                Item[] reqs = rb.getRequirements();
+                if (reqs != null && reqs.length == 1) {
+                    G.drawMaterialIcon(rb.getBuilding(), reqs[0]);
+                }
             }
         }
     }

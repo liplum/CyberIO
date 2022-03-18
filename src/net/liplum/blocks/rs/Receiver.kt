@@ -217,7 +217,6 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
 
         override fun connectedSenders() = senders
         override fun connectedSender(): Int? = senders.first()
-
         override fun maxSenderConnection() = maxConnection
         override fun getBuilding(): Building = this
         override fun getTile(): Tile = tile()
