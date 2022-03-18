@@ -14,9 +14,14 @@ uniform sampler2D u_hologram;
 
 varying vec2 v_texCoords;
 varying lowp vec4 v_color;
-
+vec2 modVec2(vec2 a, float b){
+    return vec2(
+    a[0] - (b * floor(a[0]/b)),
+    a[1] - (b * floor(a[1]/b))
+    );
+}
 vec2 tilingAndOffset(vec2 uv, vec2 tiling, vec2 offset) {
-    return mod(uv * tiling + offset, 1);
+    return modVec2(uv * tiling + offset, 1.0);
 }
 vec4 blend(vec4 bk, vec4 fg, float fgA){
     vec4 res;

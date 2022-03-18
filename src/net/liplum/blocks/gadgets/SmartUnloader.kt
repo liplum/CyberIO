@@ -23,6 +23,7 @@ import net.liplum.api.data.*
 import net.liplum.api.drawDataNetGraphic
 import net.liplum.blocks.AniedBlock
 import net.liplum.persistance.intSet
+import net.liplum.ui.bars.removeItems
 import net.liplum.utils.*
 import kotlin.math.absoluteValue
 
@@ -93,6 +94,9 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
 
     override fun setBars() {
         super.setBars()
+        UndebugOnly {
+            bars.removeItems()
+        }
         DebugOnly {
             bars.addReceiverInfo<SmartULDBuild>()
             bars.add<SmartULDBuild>("last-unloading") {
