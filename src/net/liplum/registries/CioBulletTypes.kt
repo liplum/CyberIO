@@ -4,6 +4,7 @@ import mindustry.content.Fx
 import mindustry.entities.bullet.BasicBulletType
 import mindustry.entities.bullet.BulletType
 import mindustry.graphics.Pal
+import net.liplum.ClientOnly
 import net.liplum.bullets.ShaderBasicBulletT
 import net.liplum.seffects.StaticFx
 import net.liplum.shaders.SD
@@ -31,7 +32,9 @@ object CioBulletTypes : ContentTable {
         }
 
         radiationInterference = ShaderBasicBulletT(1.0f, 28f, "bullet").apply {
-            shader = SD.tvSnow
+            ClientOnly {
+                shader = SD.tvSnow
+            }
             width = 10f
             height = 12f
             lifetime = 100f
@@ -41,7 +44,6 @@ object CioBulletTypes : ContentTable {
             smokeEffect = StaticFx
             status = CioSEffects.static
             statusDuration = CioSEffects.static.initTime
-
         }
     }
 

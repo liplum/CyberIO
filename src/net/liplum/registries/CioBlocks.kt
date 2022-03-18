@@ -480,7 +480,9 @@ object CioBlocks : ContentTable {
                     incendSpread = 5f
                     incendAmount = 1
                     ammoMultiplier = 1f
-                    shader = SD.tvSnow
+                    ClientOnly {
+                        shader = SD.tvSnow
+                    }
                 }
             }
         }
