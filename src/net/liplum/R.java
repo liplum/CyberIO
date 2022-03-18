@@ -133,8 +133,15 @@ public class R {
         public static String GenFrag(String name) {
             return "shaders/" + name + ".frag";
         }
+
         public static String GenTR(String name) {
             return "sprites/shaders/" + name + ".png";
+        }
+    }
+
+    public static final class Welcome {
+        public static String Gen(String name) {
+            return "welcome." + Meta.ModID + "." + name;
         }
     }
 }

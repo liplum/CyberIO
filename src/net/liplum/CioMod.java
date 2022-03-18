@@ -15,8 +15,8 @@ import net.liplum.api.stream.StreamCenter;
 import net.liplum.blocks.cloud.LiplumCloud;
 import net.liplum.blocks.cloud.SharedRoom;
 import net.liplum.registries.CioCLs;
-import net.liplum.registries.ContentRegistry;
 import net.liplum.registries.CioShaders;
+import net.liplum.registries.ContentRegistry;
 import net.liplum.utils.AtlasU;
 import net.liplum.utils.G;
 
@@ -25,7 +25,7 @@ import static net.liplum.registries.TintedBulletsRegistryKt.tintedBulletsRegistr
 
 public class CioMod extends Mod {
     public static final boolean IsClient = !Vars.headless;
-    public static boolean DebugMode = true;
+    public static boolean DebugMode = false;
     public static boolean ExperimentalMode = false;
     public static boolean CanGlobalAnimationPlay = false;
     public static float UpdateFrequency = 5f;
@@ -36,11 +36,12 @@ public class CioMod extends Mod {
         Events.on(ClientLoadEvent.class, e -> {
             //show dialog upon startup
             Time.runTask(10f, () -> {
-                BaseDialog dialog = new BaseDialog("Welcome");
-                dialog.cont.add("Welcome to play Cyber IO mod").row();
+                BaseDialog dialog = new BaseDialog(News.getTitle());
                 // mod sprites are prefixed with the mod name (this mod is called 'example-java-mod' in its config)
                 dialog.cont.image(AtlasU.inCio("icon")).maxSize(200f).pad(20f).row();
-                dialog.cont.button("Thanks", dialog::hide).size(100f, 50f);
+                dialog.cont.add(News.getWelcome()).row();
+                dialog.cont.add(News.getNews()).row();
+                dialog.cont.button(News.getRead(), dialog::hide).size(100f, 50f);
                 dialog.show();
             });
         });
