@@ -35,7 +35,7 @@ private typealias BGType = BlockGroupType<Cloud, Cloud.CloudBuild>
 private typealias BType = BlockType<Cloud, Cloud.CloudBuild>
 private typealias Ani = AniState<Cloud, Cloud.CloudBuild>
 
-open class Cloud(name: String) : PowerBlock(name) {
+open class Cloud(name: String) : PowerBlock(name){
     @ClientOnly lateinit var cloud: TR
     @ClientOnly lateinit var FloatingCloudAnim: Anim
     @ClientOnly lateinit var DataTransferAnim: Anim
@@ -59,6 +59,7 @@ open class Cloud(name: String) : PowerBlock(name) {
         itemCapacity = 10
         noUpdateDisabled = true
         unloadable = false
+        canOverdrive = false
         group = BlockGroup.none
         allowConfigInventory = false
 
@@ -322,7 +323,11 @@ open class Cloud(name: String) : PowerBlock(name) {
             )
         }
         CloudNoPowerAni = AniState("NoPower") {
-            NoPowerTR.DrawOn(it)
+            NoPowerTR.DrawSize(
+                it.x + it.floating.xOffset,
+                it.y + it.floating.yOffset,
+                1f / 7f * this@Cloud.size
+            )
         }
     }
 

@@ -65,6 +65,7 @@ open class Virus(name: String) : Block(name) {
         update = true
         canOverdrive = true
         size = 1
+        sync = true
     }
 
     override fun load() {

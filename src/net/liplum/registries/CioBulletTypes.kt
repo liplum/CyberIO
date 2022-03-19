@@ -21,6 +21,7 @@ object CioBulletTypes : ContentTable {
             height = 12f
             shrinkY = 0.1f
             lifetime = 100f
+            hitSize = 10f
             backColor = Pal.spore
             frontColor = Pal.spore
             despawnEffect = Fx.sporeSlowed
@@ -31,12 +32,13 @@ object CioBulletTypes : ContentTable {
             statusDuration = CioSEffects.infected.initTime
         }
 
-        radiationInterference = ShaderBasicBulletT(4f, 28f, "bullet").apply {
+        radiationInterference = ShaderBasicBulletT(2.3f, 28f, "bullet").apply {
             ClientOnly {
                 shader = SD.tvSnow
             }
-            width = 5f
-            height = 5f
+            width = 15f
+            height = 15f
+            hitSize = 15f
             lifetime = 80f
             despawnEffect = StaticFx
             hitEffect = StaticFx

@@ -3,7 +3,6 @@ package net.liplum.blocks.tmtrainer
 import arc.Core
 import arc.graphics.g2d.Draw
 import arc.util.Time
-import mindustry.content.Fx
 import mindustry.graphics.Drawf
 import mindustry.graphics.Layer
 import mindustry.world.blocks.defense.turrets.ItemTurret
@@ -29,7 +28,6 @@ open class TMTRAINER(name: String) : ItemTurret(name) {
 
     init {
         alternate = true
-        shootEffect = Fx.sporeSlowed
         inaccuracy = 1f
         rotateSpeed = 10f
     }

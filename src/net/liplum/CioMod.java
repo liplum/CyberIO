@@ -25,7 +25,7 @@ import static net.liplum.registries.TintedBulletsRegistryKt.tintedBulletsRegistr
 
 public class CioMod extends Mod {
     public static final boolean IsClient = !Vars.headless;
-    public static boolean DebugMode = false;
+    public static boolean DebugMode = true;
     public static boolean ExperimentalMode = false;
     public static boolean CanGlobalAnimationPlay = false;
     public static float UpdateFrequency = 5f;

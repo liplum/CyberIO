@@ -82,7 +82,7 @@ object CioBlocks : ContentTable {
             )
             health = 2000
             outputItem = ItemStack(CioItems.ic, 1)
-            craftTime = 600f
+            craftTime = 500f
             size = 3
             buildCostMultiplier = 3f
             craftEffect = Fx.smelt
@@ -103,9 +103,9 @@ object CioBlocks : ContentTable {
                     ItemStack(Items.graphite, 20),
                 )
             )
-            health = 100
+            health = 600
             outputItem = ItemStack(CioItems.ic, 1)
-            craftTime = 1300f
+            craftTime = 1150f
             size = 2
             craftEffect = Fx.smelt
             itemCapacity = 40
@@ -114,7 +114,7 @@ object CioBlocks : ContentTable {
                 ItemStack(Items.sand, 40),
                 ItemStack(Items.lead, 10),
             )
-            consumes.power(1f)
+            consumes.power(2f)
 
             processIcons = arrayOf(
                 Items.metaglass,
@@ -145,7 +145,7 @@ object CioBlocks : ContentTable {
                     ItemStack(Items.copper, 50),
                     ItemStack(Items.graphite, 20),
                     ItemStack(Items.metaglass, 20),
-                    ItemStack(Items.phaseFabric, 10),
+                    ItemStack(Items.thorium, 10),
                 )
             )
             health = 100
@@ -272,7 +272,7 @@ object CioBlocks : ContentTable {
         prismObelisk = PrismObelisk("prism-obelisk").apply {
             requirements(
                 Category.turret, BuildVisibility.shown, arrayOf(
-                    ItemStack(CioItems.ic, 8),
+                    ItemStack(CioItems.ic, 5),
                     ItemStack(Items.metaglass, 300),
                     ItemStack(Items.titanium, 300),
                 )
@@ -437,8 +437,8 @@ object CioBlocks : ContentTable {
             health = 2000
             size = 3
             consumes.power(2f)
-            networkSpeed = 5f
-            liquidCapacity = 1500f
+            networkSpeed = 7f
+            liquidCapacity = 2000f
             replaceable = false
         }
 
