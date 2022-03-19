@@ -39,8 +39,8 @@ public class CioMod extends Mod {
                 BaseDialog dialog = new BaseDialog(News.getTitle());
                 // mod sprites are prefixed with the mod name (this mod is called 'example-java-mod' in its config)
                 dialog.cont.image(AtlasU.inCio("icon")).maxSize(200f).pad(20f).row();
-                dialog.cont.add(News.getWelcome()).row();
-                dialog.cont.add(News.getNews()).row();
+                dialog.cont.add(News.getWelcome()).wrapLabel(true).row();
+                dialog.cont.add(News.getNews()).wrapLabel(true).row();
                 dialog.cont.button(News.getRead(), dialog::hide).size(100f, 50f);
                 dialog.show();
             });

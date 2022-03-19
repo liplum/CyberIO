@@ -358,7 +358,7 @@ object CioBlocks : ContentTable {
             health = 250 * size * size
             limitRange(20f)
             ClientOnly {
-                Events.run(EventType.Trigger.draw) {
+                Events.run(EventType.Trigger.preDraw) {
                     WhenRefresh {
                         TMTRAINER.localizedName = RandomName.one(8)
                         TMTRAINER.description = RandomName.one(25)

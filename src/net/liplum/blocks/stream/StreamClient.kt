@@ -1,7 +1,6 @@
 package net.liplum.blocks.stream
 
 import arc.graphics.Color
-import arc.graphics.g2d.Draw
 import arc.scene.ui.layout.Table
 import arc.struct.ObjectSet
 import arc.struct.OrderedSet
@@ -19,20 +18,24 @@ import mindustry.world.Tile
 import mindustry.world.blocks.ItemSelection
 import mindustry.world.meta.BlockGroup
 import net.liplum.CalledBySync
-import net.liplum.CanRefresh
 import net.liplum.ClientOnly
 import net.liplum.DebugOnly
 import net.liplum.animations.anis.AniState
+import net.liplum.animations.anis.DrawOn
 import net.liplum.animations.anis.DrawTR
 import net.liplum.animations.anis.config
 import net.liplum.api.drawLinkedLineToClientWhenConfiguring
+import net.liplum.api.drawRequirements
 import net.liplum.api.drawStreamGraphic
 import net.liplum.api.stream.*
 import net.liplum.api.whenNotConfiguringHost
 import net.liplum.blocks.AniedBlock
 import net.liplum.delegates.Delegate1
 import net.liplum.persistance.intSet
-import net.liplum.utils.*
+import net.liplum.utils.TR
+import net.liplum.utils.addHostInfo
+import net.liplum.utils.inMod
+import net.liplum.utils.sub
 
 private typealias AniStateC = AniState<StreamClient, StreamClient.ClientBuild>
 
@@ -40,6 +43,7 @@ open class StreamClient(name: String) : AniedBlock<StreamClient, StreamClient.Cl
     @JvmField var maxConnection = -1
     @ClientOnly lateinit var NoPowerTR: TR
     @ClientOnly lateinit var LiquidTR: TR
+    @ClientOnly lateinit var TopTR: TR
 
     init {
         hasLiquids = true
@@ -71,6 +75,7 @@ open class StreamClient(name: String) : AniedBlock<StreamClient, StreamClient.Cl
         super.load()
         NoPowerTR = this.inMod("rs-no-power")
         LiquidTR = this.sub("liquid")
+        TopTR = this.sub("top")
     }
 
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
@@ -144,10 +149,7 @@ open class StreamClient(name: String) : AniedBlock<StreamClient, StreamClient.Cl
             whenNotConfiguringHost {
                 this.drawStreamGraphic()
             }
-            val outputLiquid = outputLiquid
-            if (outputLiquid != null) {
-                G.drawMaterialIcon(this, outputLiquid)
-            }
+            this.drawRequirements()
         }
 
         override fun acceptLiquid(source: Building, liquid: Liquid) = false
@@ -188,21 +190,14 @@ open class StreamClient(name: String) : AniedBlock<StreamClient, StreamClient.Cl
             hosts = read.intSet()
         }
 
-        override fun draw() {
-            aniStateM.spend(delta())
-            beforeDraw()
-            if (CanRefresh()) {
-                aniStateM.update()
-            }
-            Draw.rect(region, x, y)
+        override fun fixedDraw() {
             Drawf.liquid(
                 LiquidTR, x, y,
                 liquids.total() / liquidCapacity,
                 liquids.current().color,
                 (rotation - 90).toFloat()
             )
-            fixedDraw()
-            aniStateM.drawBuilding()
+            TopTR.DrawOn(this)
         }
 
         override fun getBuilding(): Building = this

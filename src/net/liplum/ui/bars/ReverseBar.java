@@ -4,7 +4,10 @@ import arc.Core;
 import arc.func.Floatp;
 import arc.func.Prov;
 import arc.graphics.Color;
-import arc.graphics.g2d.*;
+import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.Font;
+import arc.graphics.g2d.GlyphLayout;
+import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.math.geom.Rect;
 import arc.scene.style.Drawable;
@@ -108,14 +111,7 @@ public class ReverseBar extends BarBase {
 
         TextureRegion barTopTR = Core.atlas.find("bar-top");
         float leftMargin = width - topWidth;
-        if (topWidth > barTopTR.width) {
-            top.draw(x + leftMargin, y, topWidth, height);
-        } else {
-            if (ScissorStack.push(scissor.set(x, y, topWidth, height))) {
-                top.draw(x + leftMargin, y, barTopTR.width, height);
-                ScissorStack.pop();
-            }
-        }
+        top.draw(x + leftMargin, y, topWidth, height);
 
         Draw.color();
 

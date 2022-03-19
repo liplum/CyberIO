@@ -292,4 +292,19 @@ public class G {
         Draw.reset();
         Draw.rect(material.uiIcon, dx, dy);
     }
+
+
+    public static void drawMaterialIcons(Building b, UnlockableContent[] materials) {
+        float dx = b.x - b.block.size * Vars.tilesize / 2f;
+        float dy = b.y + b.block.size * Vars.tilesize / 2f;
+        for (int i = 0; i < materials.length; i++) {
+            UnlockableContent material = materials[i];
+            TextureRegion uiIcon = material.uiIcon;
+            Draw.mixcol(Color.darkGray, 1f);
+            float x = dx + i * G.D(uiIcon.width);
+            Draw.rect(uiIcon, x, dy - 1);
+            Draw.reset();
+            Draw.rect(uiIcon, x, dy);
+        }
+    }
 }

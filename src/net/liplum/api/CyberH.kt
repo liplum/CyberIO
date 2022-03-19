@@ -22,6 +22,9 @@ fun IDataReceiver.drawDataNetGraphic() {
     CyberU.drawSenders(this, connectedSenders())
 }
 
+fun IDataReceiver.drawRequirements() {
+    CyberU.drawRequirements(this)
+}
 fun Block.drawLinkedLineToReceiverWhenConfiguring(x: Int, y: Int) {
     CyberU.drawLinkedLineToReceiverWhenConfiguring(this, x, y)
 }
@@ -40,6 +43,10 @@ fun IStreamHost.drawStreamGraphic() {
 fun IStreamClient.drawStreamGraphic() {
     G.drawSurroundingCircle(tile, clientColor)
     CyberU.drawHosts(this, connectedHosts())
+}
+
+fun IStreamClient.drawRequirements() {
+    CyberU.drawRequirements(this)
 }
 
 fun Block.drawLinkedLineToClientWhenConfiguring(x: Int, y: Int) {

@@ -5,6 +5,7 @@ import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.world.Block;
 import net.liplum.CioMod;
+import net.liplum.ClientOnly;
 import net.liplum.GameH;
 import net.liplum.animations.anis.*;
 import net.liplum.api.ITrigger;
@@ -22,8 +23,12 @@ import java.util.HashMap;
  */
 @SuppressWarnings("unchecked")
 public abstract class AniedBlock<TBlock extends AniedBlock<?, ?>, TBuild extends AniedBlock<?, ?>.AniedBuild> extends Block implements IAniSMed<TBlock, TBuild> {
+    @ClientOnly
     protected final HashMap<String, AniState<TBlock, TBuild>> allAniStates = new HashMap<>();
+    @ClientOnly
     protected AniConfig<TBlock, TBuild> aniConfig;
+    @ClientOnly
+    public boolean callDefaultBlockDraw = true;
 
     public AniedBlock(String name) {
         super(name);
@@ -137,7 +142,7 @@ public abstract class AniedBlock<TBlock extends AniedBlock<?, ?>, TBuild extends
             if (GameH.CanRefresh()) {
                 aniStateM.update();
             }
-            if (!aniStateM.curOverwriteBlock()) {
+            if (callDefaultBlockDraw && !aniStateM.curOverwriteBlock()) {
                 super.draw();
             }
             fixedDraw();

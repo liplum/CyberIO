@@ -28,6 +28,7 @@ import net.liplum.api.data.IDataReceiver
 import net.liplum.api.data.IDataSender
 import net.liplum.api.drawDataNetGraphic
 import net.liplum.api.drawLinkedLineToReceiverWhenConfiguring
+import net.liplum.api.drawRequirements
 import net.liplum.api.whenNotConfiguringSender
 import net.liplum.blocks.AniedBlock
 import net.liplum.delegates.Delegate1
@@ -266,6 +267,7 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
             whenNotConfiguringSender {
                 this.drawDataNetGraphic()
             }
+            this.drawRequirements()
             DebugOnly {
                 if (requirementsText.isNotEmpty()) {
                     drawPlaceText(requirementsText, tileX(), tileY(), true)

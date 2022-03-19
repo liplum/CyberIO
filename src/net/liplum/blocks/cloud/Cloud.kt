@@ -1,7 +1,6 @@
 package net.liplum.blocks.cloud
 
 import arc.graphics.g2d.Draw
-import arc.math.Mathf
 import arc.struct.ObjectSet
 import arc.struct.OrderedSet
 import arc.util.io.Reads
@@ -15,15 +14,16 @@ import mindustry.world.blocks.power.PowerBlock
 import mindustry.world.meta.BlockGroup
 import mindustry.world.modules.ItemModule
 import net.liplum.*
+import net.liplum.animations.Floating
 import net.liplum.animations.anims.Animation
 import net.liplum.animations.anims.IFrameIndexer
 import net.liplum.animations.anims.ixAuto
-import net.liplum.animations.anis.AniConfig
-import net.liplum.animations.anis.AniState
-import net.liplum.animations.anis.config
+import net.liplum.animations.anis.*
 import net.liplum.animations.blocks.*
 import net.liplum.api.CyberU
-import net.liplum.api.data.*
+import net.liplum.api.data.IDataReceiver
+import net.liplum.api.data.IDataSender
+import net.liplum.api.data.dr
 import net.liplum.api.drawLinkedLineToReceiverWhenConfiguring
 import net.liplum.api.whenNotConfiguringSender
 import net.liplum.delegates.Delegate1
@@ -47,7 +47,8 @@ open class Cloud(name: String) : PowerBlock(name) {
     @ClientOnly lateinit var CloudAniConfig: AniConfig<Cloud, CloudBuild>
     @ClientOnly lateinit var CloudIdleAni: Ani
     @ClientOnly lateinit var CloudNoPowerAni: Ani
-    var cloudFloatRange = 1f
+    @ClientOnly @JvmField var cloudFloatRange = 1.5f
+    @ClientOnly lateinit var NoPowerTR: TR
 
     init {
         solid = true
@@ -90,6 +91,7 @@ open class Cloud(name: String) : PowerBlock(name) {
         cloud = this.sub("cloud")
         DataTransferAnim = this.autoAnim("data-transfer", 18, 50f)
         ShredderAnim = this.autoAnim("shredder", 13, 60f)
+        NoPowerTR = this.inMod("rs-no-power-large")
     }
 
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
@@ -105,11 +107,8 @@ open class Cloud(name: String) : PowerBlock(name) {
         lateinit var floatingCloudIx: IFrameIndexer
         lateinit var dataTransferIx: IFrameIndexer
         lateinit var shredderIx: IFrameIndexer
-        var cloudXOffset = 0f
-        var cloudYOffset = 0f
         var teamID = 0
-        val isWorking: Boolean
-            get() = !power.status.isZero()
+        @JvmField var floating: Floating = Floating(cloudFloatRange).randomXY()
         @JvmField var onRequirementUpdated: Delegate1<IDataReceiver> = Delegate1()
         override fun getOnRequirementUpdated() = onRequirementUpdated
         override fun updateTile() {
@@ -213,6 +212,8 @@ open class Cloud(name: String) : PowerBlock(name) {
         }
 
         override fun draw() {
+            val d = G.D(0.1f * cloudFloatRange * delta())
+            floating.move(d)
             WhenRefresh {
                 aniBlockGroupObj.update()
             }
@@ -315,22 +316,23 @@ open class Cloud(name: String) : PowerBlock(name) {
 
     open fun genAnimState() {
         CloudIdleAni = AniState("Idle") {
-            Draw.rect(
-                cloud,
-                it.x + it.cloudXOffset,
-                it.y + it.cloudYOffset
+            cloud.Draw(
+                it.x + it.floating.xOffset,
+                it.y + it.floating.yOffset
             )
         }
-        CloudNoPowerAni = AniState("NoPower")
+        CloudNoPowerAni = AniState("NoPower") {
+            NoPowerTR.DrawOn(it)
+        }
     }
 
     open fun genAniConfig() {
         CloudAniConfig = config {
             From(CloudNoPowerAni) To CloudIdleAni When {
-                it.isWorking
+                it.consValid()
             }
             From(CloudIdleAni) To CloudNoPowerAni When {
-                !it.isWorking
+                !it.consValid()
             }
         }
     }
@@ -345,17 +347,15 @@ open class Cloud(name: String) : PowerBlock(name) {
                     }
 
                     override fun drawBuild() {
-                        xOffset = Mathf.range(cloudFloatRange)
-                        build.cloudXOffset = xOffset
-                        yOffset = Mathf.range(cloudFloatRange)
-                        build.cloudYOffset = yOffset
+                        xOffset = build.floating.xOffset
+                        yOffset = build.floating.yOffset
                         cloudAniSM.drawBuilding()
                     }
                 }
             })
 
             DataAniBlock = addType(BlockType.render { _, build ->
-                if (build.isWorking && build.info.isDataTransferring) {
+                if (build.consValid() && build.info.isDataTransferring) {
                     DataTransferAnim.draw(build.dataTransferIx) {
                         Draw.rect(
                             it,
@@ -367,7 +367,7 @@ open class Cloud(name: String) : PowerBlock(name) {
             })
 
             ShredderAniBlock = addType(BlockType.render { _, build ->
-                if (build.isWorking && build.info.isShredding) {
+                if (build.consValid() && build.info.isShredding) {
                     ShredderAnim.draw(build.shredderIx) {
                         Draw.rect(
                             it,

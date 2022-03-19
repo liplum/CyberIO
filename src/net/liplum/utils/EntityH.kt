@@ -3,12 +3,17 @@ package net.liplum.utils
 import mindustry.gen.Healthc
 
 var Healthc.lostHp: Float
-    get() = this.maxHealth() - this.health()
+    get() = maxHealth() - health()
     set(value) {
-        this.health(this.maxHealth() - value)
+        health(maxHealth() - value)
     }
 var Healthc.lostHpPct: Float
-    get() = (this.maxHealth() - this.health()) / this.maxHealth()
+    get() = (maxHealth() - health()) / maxHealth()
     set(value) {
-        this.health((1 - value.coerceIn(0f, 1f)) * this.maxHealth())
+        health((1 - value.coerceIn(0f, 1f)) * maxHealth())
+    }
+var Healthc.healthPct: Float
+    get() = (health() / maxHealth()).coerceIn(0f, 1f)
+    set(value) {
+        health(value.coerceIn(0f, 1f) * maxHealth())
     }

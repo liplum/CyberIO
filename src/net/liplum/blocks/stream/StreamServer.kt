@@ -1,7 +1,6 @@
 package net.liplum.blocks.stream
 
 import arc.graphics.Color
-import arc.graphics.g2d.Draw
 import arc.util.Time
 import mindustry.Vars
 import mindustry.entities.Fires
@@ -10,18 +9,17 @@ import mindustry.graphics.Drawf
 import mindustry.type.Liquid
 import net.liplum.ClientOnly
 import net.liplum.R
+import net.liplum.animations.anis.DrawOn
+import net.liplum.animations.anis.DrawRotateOn
 import net.liplum.api.stream.IStreamClient
 import net.liplum.api.stream.sc
 import net.liplum.utils.ForProximity
-import net.liplum.utils.TR
-import net.liplum.utils.sub
 
 open class StreamServer(name: String) : StreamHost(name) {
-    @ClientOnly lateinit var RotatorTR: TR
     @JvmField var fireproof = false
-    override fun load() {
-        super.load()
-        RotatorTR = this.sub("rotator")
+
+    init {
+        callDefaultBlockDraw = false
     }
 
     open inner class ServerBuild : HostBuild() {
@@ -122,7 +120,7 @@ open class StreamServer(name: String) : StreamHost(name) {
         }
 
         override fun acceptLiquid(source: Building, liquid: Liquid): Boolean {
-            return liquids.get(liquid) < liquidCapacity
+            return consValid() && liquids.get(liquid) < liquidCapacity
         }
 
         override fun handleLiquid(source: Building, liquid: Liquid, amount: Float) {
@@ -132,15 +130,15 @@ open class StreamServer(name: String) : StreamHost(name) {
             }
         }
 
-        override fun draw() {
-            Draw.rect(BaseTR, x, y)
+        override fun fixedDraw() {
+            BaseTR.DrawOn(this)
             Drawf.liquid(
                 LiquidTR, x, y,
                 liquids.total() / liquidCapacity,
                 mixedLiquidColor,
                 (rotation - 90).toFloat()
             )
-            Draw.rect(RotatorTR, x, y, liquidFlow)
+            TopTR.DrawRotateOn(this, liquidFlow)
             drawTeamTop()
         }
     }

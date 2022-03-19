@@ -21,12 +21,11 @@ import mindustry.world.blocks.defense.Wall
 import net.liplum.ClientOnly
 import net.liplum.DebugOnly
 import net.liplum.R
+import net.liplum.animations.Floating
 import net.liplum.api.holo.IRegenerate
 import net.liplum.registries.CioShaders
 import net.liplum.seconds
 import net.liplum.utils.*
-
-private const val FloatingRange = 0.6f
 
 open class HoloWall(name: String) : Wall(name) {
     @JvmField var restoreReload = 10 * 60f
@@ -34,7 +33,8 @@ open class HoloWall(name: String) : Wall(name) {
     @ClientOnly lateinit var ImageTR: TR
     @ClientOnly lateinit var DyedImageTR: TR
     @JvmField var minHealthProportion = 0.05f
-    @JvmField var maxSleepyTime = 30 * 60f
+    //@JvmField var maxSleepyTime = 30 * 60f
+    @ClientOnly @JvmField var FloatingRange = 0.6f
 
     init {
         solid = false
@@ -90,7 +90,7 @@ open class HoloWall(name: String) : Wall(name) {
                     { it.lastDamagedTime / restoreReload }
                 )
             }
-            bars.addSleepInfo()
+            //bars.addSleepInfo()
         }
     }
 
@@ -98,27 +98,13 @@ open class HoloWall(name: String) : Wall(name) {
         var restoreCharge = restoreReload
         open val isProjecting: Boolean
             get() = health > maxHealth * minHealthProportion
-        open val healthPct: Float
-            get() = (health / maxHealth).coerceIn(0f, 1f)
         open var restRestore = 0f
             set(value) {
                 field = value.coerceAtLeast(0f)
             }
         open var lastDamagedTime = restoreReload
-        @ClientOnly
-        var xOffset = Mathf.range(FloatingRange)
-            set(value) {
-                field = value coIn FloatingRange
-            }
-        @ClientOnly
-        var xAdding = false
-        @ClientOnly
-        var yOffset = Mathf.range(FloatingRange)
-            set(value) {
-                field = value coIn FloatingRange
-            }
-        @ClientOnly
-        var yAdding = false
+        @ClientOnly @JvmField
+        var floating: Floating = Floating(FloatingRange).randomXY()
         override fun collide(other: Bullet): Boolean {
             return isProjecting
         }
@@ -143,7 +129,7 @@ open class HoloWall(name: String) : Wall(name) {
                 val restHealth = (health - d).coerceAtLeast(maxHealth * minHealthProportion)
                 Call.tileDamage(this, restHealth)
                 lastDamagedTime = 0f
-                noSleep()
+                //noSleep()
             }
         }
 
@@ -164,8 +150,8 @@ open class HoloWall(name: String) : Wall(name) {
                     Draw.color(R.C.Holo)
                     Draw.rect(
                         ImageTR,
-                        x + xOffset,
-                        y + yOffset
+                        x + floating.xOffset,
+                        y + floating.yOffset
                     )
                     Draw.shader()
                     Draw.reset()
@@ -189,24 +175,8 @@ open class HoloWall(name: String) : Wall(name) {
         }
         @ClientOnly
         open fun updateFloating() {
-            val d = G.D(0.1f * FloatingRange * delta() * healthPct)
-            if (xAdding) {
-                xOffset += d
-            } else {
-                xOffset -= d
-            }
-            if (xOffset == -FloatingRange || xOffset == FloatingRange) {
-                xAdding = !xAdding
-            }
-
-            if (yAdding) {
-                yOffset += d
-            } else {
-                yOffset -= d
-            }
-            if (yOffset == -FloatingRange || yOffset == FloatingRange) {
-                yAdding = !yAdding
-            }
+            val d = G.D(0.1f * FloatingRange * delta() * (2f - healthPct))
+            floating.move(d)
         }
 
         open val canRestore: Boolean
@@ -236,13 +206,13 @@ open class HoloWall(name: String) : Wall(name) {
                     restRestore = maxHealth
                 }
             }
-            if (!isRecovering &&
+            /*if (!isRecovering &&
                 !canRestore &&
                 restoreCharge >= restoreReload &&
                 lastDamagedTime >= maxSleepyTime
             ) {
                 sleep()
-            }
+            }*/
         }
 
         override fun drawCracks() {

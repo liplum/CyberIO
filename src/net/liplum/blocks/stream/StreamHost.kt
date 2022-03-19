@@ -7,6 +7,7 @@ import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.gen.Building
+import mindustry.graphics.Drawf
 import mindustry.type.Liquid
 import mindustry.world.Block
 import mindustry.world.Tile
@@ -15,18 +16,26 @@ import net.liplum.CalledBySync
 import net.liplum.ClientOnly
 import net.liplum.DebugOnly
 import net.liplum.SendDataPack
+import net.liplum.animations.Floating
+import net.liplum.animations.anis.*
 import net.liplum.api.drawStreamGraphic
 import net.liplum.api.stream.*
+import net.liplum.blocks.AniedBlock
 import net.liplum.persistance.intSet
-import net.liplum.utils.TR
-import net.liplum.utils.addClientInfo
-import net.liplum.utils.sub
+import net.liplum.utils.*
 
-open class StreamHost(name: String) : Block(name) {
+private typealias AniStateH = AniState<StreamHost, StreamHost.HostBuild>
+
+open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuild>(name) {
     @JvmField var maxConnection = 5
     @JvmField var liquidColorLerp = 0.5f
     @ClientOnly lateinit var BaseTR: TR
     @ClientOnly lateinit var LiquidTR: TR
+    @ClientOnly lateinit var TopTR: TR
+    @ClientOnly lateinit var NoPowerAni: AniStateH
+    @ClientOnly lateinit var NormalAni: AniStateH
+    @ClientOnly lateinit var NoPowerTR: TR
+    @ClientOnly @JvmField var IconFloatingRange = 1f
     /**
      * 1 networkSpeed = 60 per seconds
      */
@@ -57,6 +66,13 @@ open class StreamHost(name: String) : Block(name) {
         super.load()
         BaseTR = this.sub("base")
         LiquidTR = this.sub("liquid")
+        TopTR = this.sub("top")
+        NoPowerTR = this.inMod("rs-no-power-large")
+    }
+
+    override fun init() {
+        super.init()
+        IconFloatingRange = IconFloatingRange / 8f * size
     }
 
     override fun setBars() {
@@ -66,13 +82,14 @@ open class StreamHost(name: String) : Block(name) {
         }
     }
 
-    open inner class HostBuild : Building(), IStreamHost {
+    open inner class HostBuild : AniedBuild(), IStreamHost {
         var clients = OrderedSet<Int>()
         @ClientOnly @JvmField var liquidFlow = 0f
         open fun checkClientsPos() {
             clients.removeAll { !it.sc().exists }
         }
-
+        @ClientOnly @JvmField
+        var floating: Floating = Floating(IconFloatingRange).randomXY()
         override fun getHostColor(): Color = liquids.current().color
         override fun updateTile() {
             // Check connection every second
@@ -124,9 +141,8 @@ open class StreamHost(name: String) : Block(name) {
         }
 
         override fun acceptLiquid(source: Building, liquid: Liquid): Boolean {
-            return liquids.current() === liquid || liquids.currentAmount() < 0.2f
+            return consValid() && liquids.current() === liquid || liquids.currentAmount() < 0.2f
         }
-
         @CalledBySync
         open fun setClient(pos: Int) {
             if (pos in clients) {
@@ -227,9 +243,49 @@ open class StreamHost(name: String) : Block(name) {
             clients = read.intSet()
         }
 
+        override fun beforeDraw() {
+            val d = G.D(0.1f * IconFloatingRange * delta())
+            floating.move(d)
+        }
+
         override fun write(write: Writes) {
             super.write(write)
             write.intSet(clients)
+        }
+
+        override fun fixedDraw() {
+            BaseTR.DrawOn(this)
+            Drawf.liquid(
+                LiquidTR, x, y,
+                liquids.total() / liquidCapacity,
+                liquids.current().color,
+                (rotation - 90).toFloat()
+            )
+            TopTR.DrawOn(this)
+        }
+    }
+
+    override fun genAniState() {
+        NoPowerAni = addAniState("NoPower") {
+            SetAlpha(0.8f)
+            NoPowerTR.DrawSize(
+                it.x + it.floating.xOffset,
+                it.y + it.floating.yOffset,
+                1f / 7f * this@StreamHost.size
+            )
+        }
+        NormalAni = addAniState("Normal")
+    }
+
+    override fun genAniConfig() {
+        config {
+            From(NoPowerAni) To NormalAni When {
+                it.consValid()
+            }
+
+            From(NormalAni) To NoPowerAni When {
+                !it.consValid()
+            }
         }
     }
 }

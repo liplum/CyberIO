@@ -1,5 +1,6 @@
 package net.liplum.api;
 
+import arc.graphics.g2d.Draw;
 import mindustry.Vars;
 import mindustry.gen.Building;
 import mindustry.type.Item;
@@ -15,6 +16,12 @@ import net.liplum.utils.G;
 
 public class CyberU {
     public static float ArrowDensity = 15f;
+    public static void drawRequirements(IDataReceiver r) {
+        Item[] reqs = r.getRequirements();
+        if (reqs != null) {
+            G.drawMaterialIcons(r.getBuilding(), reqs);
+        }
+    }
 
     /**
      * Called in Receiver block
@@ -58,10 +65,7 @@ public class CyberU {
             IDataReceiver rb = (IDataReceiver) receiverB;
             G.drawSurroundingCircle(receiverT, R.C.Receiver);
             G.drawArrowLine(sender.getBuilding(), receiverB, ArrowDensity, R.C.Sender);
-            Item[] reqs = rb.getRequirements();
-            if (reqs != null && reqs.length == 1) {
-                G.drawMaterialIcon(rb.getBuilding(), reqs[0]);
-            }
+            drawRequirements(rb);
         }
     }
 
@@ -69,19 +73,19 @@ public class CyberU {
      * Called in Sender block
      */
     public static void drawReceivers(IDataSender sender, Iterable<Integer> receivers) {
+        float original = Draw.z();
         for (Integer receiver : receivers) {
             Building receiverB = Vars.world.build(receiver);
             if (receiverB instanceof IDataReceiver) {
                 Tile receiverT = receiverB.tile();
                 IDataReceiver rb = (IDataReceiver) receiverB;
+                Draw.z(original);
                 G.drawSurroundingCircle(receiverT, R.C.Receiver);
                 G.drawArrowLine(sender.getBuilding(), receiverB, ArrowDensity, R.C.Sender);
-                Item[] reqs = rb.getRequirements();
-                if (reqs != null && reqs.length == 1) {
-                    G.drawMaterialIcon(rb.getBuilding(), reqs[0]);
-                }
+                drawRequirements(rb);
             }
         }
+        Draw.z(original);
     }
 
     /**
@@ -114,6 +118,13 @@ public class CyberU {
         return selected instanceof IDataSender;
     }
 
+    public static void drawRequirements(IStreamClient c) {
+        Liquid[] reqs = c.getRequirements();
+        if (reqs != null) {
+            G.drawMaterialIcons(c.getBuilding(), reqs);
+        }
+    }
+
     /**
      * Called in Client block
      */
@@ -140,10 +151,7 @@ public class CyberU {
                 IStreamClient sc = (IStreamClient) clientB;
                 G.drawSurroundingCircle(clientT, sc.getClientColor());
                 G.drawArrowLine(host.getBuilding(), clientB, ArrowDensity, host.getHostColor());
-                Liquid[] reqs = sc.getRequirements();
-                if (reqs != null && reqs.length == 1) {
-                    G.drawMaterialIcon(sc.getBuilding(), reqs[0]);
-                }
+                drawRequirements(sc);
             }
         }
     }
@@ -178,5 +186,4 @@ public class CyberU {
                 (short) x, (short) y,
                 ArrowDensity, host.getHostColor());
     }
-
 }

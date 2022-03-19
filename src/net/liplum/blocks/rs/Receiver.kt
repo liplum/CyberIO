@@ -25,6 +25,7 @@ import net.liplum.animations.anis.config
 import net.liplum.api.data.*
 import net.liplum.api.drawDataNetGraphic
 import net.liplum.api.drawLinkedLineToReceiverWhenConfiguring
+import net.liplum.api.drawRequirements
 import net.liplum.api.whenNotConfiguringSender
 import net.liplum.blocks.AniedBlock
 import net.liplum.blocks.rs.Receiver.ReceiverBuild
@@ -126,10 +127,7 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
             whenNotConfiguringSender {
                 this.drawDataNetGraphic()
             }
-            val outputItem = outputItem
-            if (outputItem != null) {
-                G.drawMaterialIcon(this, outputItem)
-            }
+            this.drawRequirements()
         }
 
         override fun updateTile() {
