@@ -144,3 +144,5 @@ val Float.seconds: Int
 fun Float.toSeconds(digits: Int): String = (this / Time.toSeconds).format(digits)
 val Float.draw: Float
     get() = this - 90
+val String.Cio: String
+    get() = R.Gen(this)

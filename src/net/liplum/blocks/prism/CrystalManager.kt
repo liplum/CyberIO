@@ -18,7 +18,7 @@ enum class Status {
 }
 internal typealias Obelisk = PrismObelisk.ObeliskBuild
 
-class CrystalManager(
+open class CrystalManager(
     maxAmount: Int = 3,
 ) {
     var initCrystalCount: Int = 1

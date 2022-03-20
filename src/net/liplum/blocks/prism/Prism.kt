@@ -11,6 +11,7 @@ import mindustry.content.UnitTypes
 import mindustry.entities.TargetPriority
 import mindustry.gen.BlockUnitc
 import mindustry.gen.Building
+import mindustry.gen.Bullet
 import mindustry.gen.Groups
 import mindustry.graphics.Drawf
 import mindustry.graphics.Layer
@@ -250,23 +251,27 @@ open class Prism(name: String) : Block(name) {
                         !it.data.isDuplicate &&
                         Util2D.distance(it.x, it.y, priselX, priselY) <= prismRange
                     ) {
-                        it.setDuplicate()
-                        val angle = it.rotation()
-                        val copyRed = it.copy()
-                        val copyBlue = it.copy()
-                        val start = angle - deflectionAngle
-                        copyRed.rotation(start)
-                        it.rotation(start + perDeflectionAngle)
-                        copyBlue.rotation(start + perDeflectionAngle * 2)
-                        if (tintBullet) {
-                            if (!it.type.isTintIgnored) {
-                                val rgbs = tintedRGB(it.type)
-                                copyRed.type = rgbs[0]
-                                it.type = rgbs[1]
-                                copyBlue.type = rgbs[2]
-                            }
-                        }
+                        it.passThrough()
                     }
+                }
+            }
+        }
+
+        open fun Bullet.passThrough() {
+            this.setDuplicate()
+            val angle = this.rotation()
+            val copyRed = this.copy()
+            val copyBlue = this.copy()
+            val start = angle - deflectionAngle
+            copyRed.rotation(start)
+            this.rotation(start + perDeflectionAngle)
+            copyBlue.rotation(start + perDeflectionAngle * 2)
+            if (tintBullet) {
+                if (!this.type.isTintIgnored) {
+                    val rgbs = tintedRGB(this.type)
+                    copyRed.type = rgbs[0]
+                    this.type = rgbs[1]
+                    copyBlue.type = rgbs[2]
                 }
             }
         }

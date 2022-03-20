@@ -35,7 +35,7 @@ private typealias BGType = BlockGroupType<Cloud, Cloud.CloudBuild>
 private typealias BType = BlockType<Cloud, Cloud.CloudBuild>
 private typealias Ani = AniState<Cloud, Cloud.CloudBuild>
 
-open class Cloud(name: String) : PowerBlock(name){
+open class Cloud(name: String) : PowerBlock(name) {
     @ClientOnly lateinit var cloud: TR
     @ClientOnly lateinit var FloatingCloudAnim: Anim
     @ClientOnly lateinit var DataTransferAnim: Anim
@@ -109,7 +109,7 @@ open class Cloud(name: String) : PowerBlock(name){
         lateinit var dataTransferIx: IFrameIndexer
         lateinit var shredderIx: IFrameIndexer
         var teamID = 0
-        @JvmField var floating: Floating = Floating(cloudFloatRange).randomXY()
+        @JvmField var floating: Floating = Floating(cloudFloatRange).randomXY().changeRate(2)
         @JvmField var onRequirementUpdated: Delegate1<IDataReceiver> = Delegate1()
         override fun getOnRequirementUpdated() = onRequirementUpdated
         override fun updateTile() {

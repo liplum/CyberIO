@@ -7,6 +7,7 @@ open class Floating {
     val minY: Float
     val maxX: Float
     val maxY: Float
+    var changeRate = 0
     var xOffset = 0f
         set(value) {
             field = value.coerceIn(minX, maxX)
@@ -43,6 +44,11 @@ open class Floating {
         return this
     }
 
+    open fun changeRate(changeRate: Int): Floating {
+        this.changeRate = changeRate
+        return this
+    }
+
     open fun randomXY(): Floating {
         this.xOffset = Mathf.random(minX, maxX)
         this.yOffset = Mathf.random(minY, maxY)
@@ -53,14 +59,18 @@ open class Floating {
 
     open fun tryFlipX() {
         val x = xOffset
-        if (x <= minX || x >= maxX) {
+        if (x <= minX || x >= maxX ||
+            (changeRate > 0 && Mathf.random(99) < changeRate)
+        ) {
             xAdding = !xAdding
         }
     }
 
     open fun tryFlipY() {
         val x = yOffset
-        if (x <= minY || x >= maxY) {
+        if (x <= minY || x >= maxY ||
+            (changeRate > 0 && Mathf.random(99) < changeRate)
+        ) {
             yAdding = !yAdding
         }
     }

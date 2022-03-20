@@ -12,7 +12,7 @@ inline fun Shader?.on(crossinline func: () -> Unit) {
             Draw.shader(this)
             func()
             Draw.shader()
-            if(this is IReusable){
+            if (this is IReusable) {
                 this.reset()
             }
         }
@@ -21,12 +21,12 @@ inline fun Shader?.on(crossinline func: () -> Unit) {
     }
 }
 
-inline fun Shader.use(crossinline func: (Shader) -> Unit) {
+inline fun <T:Shader> T.use(crossinline func: (T) -> Unit) {
     Draw.draw(Draw.z()) {
         Draw.shader(this)
         func(this)
         Draw.shader()
-        if(this is IReusable){
+        if (this is IReusable) {
             this.reset()
         }
     }
@@ -38,7 +38,7 @@ inline fun Shader?.on(zIndex: Float, crossinline func: () -> Unit) {
             Draw.shader(this)
             func()
             Draw.shader()
-            if(this is IReusable){
+            if (this is IReusable) {
                 this.reset()
             }
         }
@@ -47,12 +47,12 @@ inline fun Shader?.on(zIndex: Float, crossinline func: () -> Unit) {
     }
 }
 
-inline fun Shader.use(zIndex: Float, crossinline func: (Shader) -> Unit) {
+inline fun <T : Shader> T.use(zIndex: Float, crossinline func: (T) -> Unit) {
     Draw.draw(zIndex) {
         Draw.shader(this)
         func(this)
         Draw.shader()
-        if(this is IReusable){
+        if (this is IReusable) {
             this.reset()
         }
     }

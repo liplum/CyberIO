@@ -5,6 +5,7 @@ import java.util.*
 object ContentRegistry {
     var ContentTables: MutableList<ContentTable> = LinkedList()
     var ItemList = CioItems.add()
+    var LiquidList = CioLiquids.add()
     var StatusEffectList = CioSEffects.add()
     var BulletsList = CioBulletTypes.add()
     var BlockList = CioBlocks.add()
@@ -21,7 +22,6 @@ object ContentRegistry {
             it.lastLoad()
         }
     }
-
     @JvmStatic
     fun ContentTable.add(): ContentTable {
         ContentTables.add(this)

@@ -9,9 +9,20 @@ public class R {
         public static final String IC = "ic";
     }
 
+    public static final class Liquid {
+        public static final String Cyberion = "cyberion";
+    }
+
     public static final class B {
 
     }
+
+
+    public static final class Unit {
+        public static final String HoloMiner = "holo-miner";
+        public static final String HoloFighter = "holo-fighter";
+    }
+
 
     public static final class Bar {
         public static final String NeighborStateN = "neighbor-state";
@@ -91,7 +102,7 @@ public class R {
 
     public static final class C {
         public static final Color LightBlue = Color.valueOf("#add8e6");
-        public static final Color Holo = Color.valueOf("#42a5f5");
+        public static final Color Holo = Color.valueOf("#42a5f5");//(0.2588,0.6471,0.9608)
         public static final Color HoloDark = Color.valueOf("#1e88e5");
         public static final Color VirusBK = Color.valueOf("#cd44ff");
         public static final Color IsAive = Color.green;
@@ -142,6 +153,22 @@ public class R {
     public static final class Welcome {
         public static String Gen(String name) {
             return "welcome." + Meta.ModID + "." + name;
+        }
+    }
+
+    public static String Gen(String name) {
+        return Meta.ModID + "-" + name;
+    }
+
+    public static final class Sound {
+        public static String OGG(String name) {
+            return "sounds/" + name + ".ogg";
+        }
+        public static String WAV(String name) {
+            return "sounds/" + name + ".wav";
+        }
+        public static String MP3(String name) {
+            return "sounds/" + name + ".mp3";
         }
     }
 }

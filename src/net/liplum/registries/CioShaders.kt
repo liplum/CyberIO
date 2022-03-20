@@ -1,19 +1,22 @@
 package net.liplum.registries
 
 import arc.graphics.gl.Shader
+import mindustry.Vars
 import net.liplum.ClientOnly
 import net.liplum.shaders.BlockShader
-import net.liplum.shaders.HologramShader
 import net.liplum.shaders.ILoadResource
 import net.liplum.shaders.TrShader
+import net.liplum.shaders.holo.Hologram
+import net.liplum.shaders.holo.Hologram2
 import java.util.*
 
 object CioShaders {
     @ClientOnly lateinit var dynamicColor: Shader
-    @ClientOnly lateinit var hologram: HologramShader
+    @ClientOnly lateinit var hologram: Hologram
     @ClientOnly lateinit var monochrome: TrShader
     @ClientOnly lateinit var invertColor: TrShader
     @ClientOnly lateinit var tvSnow: TrShader
+    @ClientOnly lateinit var hologram2: Hologram2
     @ClientOnly
     private var allShaders: LinkedList<Shader> = LinkedList()
     private var allLoadable: LinkedList<ILoadResource> = LinkedList()
@@ -24,10 +27,11 @@ object CioShaders {
             allShaders = LinkedList()
             allLoadable = LinkedList()
             dynamicColor = BlockShader("dynamic-color").register()
-            hologram = HologramShader("hologram").register()
+            hologram = Hologram("hologram").register()
             monochrome = TrShader("monochrome").register()
             invertColor = TrShader("invert-color").register()
-            tvSnow = TrShader("tv-static").register()
+            tvSnow = TrShader("tv-static".compatible).register()
+            hologram2 = Hologram2("hologram2").register()
             isInited = true
         }
     }
@@ -61,3 +65,9 @@ object CioShaders {
         return this
     }
 }
+
+val String.compatible: String
+    get() = if (Vars.mobile || Vars.testMobile)
+        "$this-mobile"
+    else
+        this

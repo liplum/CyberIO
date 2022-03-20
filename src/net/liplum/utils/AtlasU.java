@@ -3,6 +3,7 @@ package net.liplum.utils;
 import arc.Core;
 import arc.graphics.g2d.TextureRegion;
 import arc.util.Log;
+import mindustry.Vars;
 import mindustry.ctype.MappableContent;
 import net.liplum.Meta;
 import org.jetbrains.annotations.Nullable;
@@ -14,6 +15,10 @@ public class AtlasU {
 
     public static TextureRegion inMod(MappableContent content, String name) {
         return Core.atlas.find(content.minfo.mod.name + '-' + name);
+    }
+
+    public static TextureRegion inMod(String name) {
+        return Core.atlas.find(Vars.content.transformName(name));
     }
 
     public static TextureRegion inCio(String name) {

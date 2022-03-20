@@ -26,10 +26,10 @@ fun <T> Array<T>.randomOne(): T =
 val Content.ID: Int
     get() = this.id.toInt()
 
-fun ItemTypeNumber(): Int =
+fun ItemTypeAmount(): Int =
     Vars.content.items().size
 
-fun LiquidTypeNumber(): Int =
+fun LiquidTypeAmount(): Int =
     Vars.content.liquids().size
 
 inline fun ForProximity(centerX: Int, centerY: Int, tileDistance: Int, func: (Tile) -> Unit) {

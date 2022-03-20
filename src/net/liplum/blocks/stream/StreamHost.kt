@@ -89,7 +89,7 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
             clients.removeAll { !it.sc().exists }
         }
         @ClientOnly @JvmField
-        var floating: Floating = Floating(IconFloatingRange).randomXY()
+        var floating: Floating = Floating(IconFloatingRange).randomXY().changeRate(1)
         override fun getHostColor(): Color = liquids.current().color
         override fun updateTile() {
             // Check connection every second

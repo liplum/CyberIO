@@ -25,6 +25,7 @@ import net.liplum.animations.Floating
 import net.liplum.api.holo.IRegenerate
 import net.liplum.registries.CioShaders
 import net.liplum.seconds
+import net.liplum.shaders.use
 import net.liplum.utils.*
 
 open class HoloWall(name: String) : Wall(name) {
@@ -104,7 +105,7 @@ open class HoloWall(name: String) : Wall(name) {
             }
         open var lastDamagedTime = restoreReload
         @ClientOnly @JvmField
-        var floating: Floating = Floating(FloatingRange).randomXY()
+        var floating: Floating = Floating(FloatingRange).randomXY().changeRate(1)
         override fun collide(other: Bullet): Boolean {
             return isProjecting
         }
@@ -140,22 +141,19 @@ open class HoloWall(name: String) : Wall(name) {
             Draw.rect(BaseTR, x, y)
             updateFloating()
             if (isProjecting) {
-                Draw.draw(Layer.power) {
-                    val hologram = CioShaders.hologram
-                    val range = (1.2f - healthPct) * 50f
-                    hologram.randomRange = Mathf.random(range)
-                    hologram.alpha = healthPct / 4f * 3f
-                    hologram.speed *= 2f - healthPct
-                    Draw.shader(hologram)
+                CioShaders.hologram2.use(Layer.power) {
+                    val healthPct = healthPct
+                    it.alpha = healthPct / 4f * 3f
+                    it.opacityNoise *= 2f - healthPct
+                    it.flickering = it.DefaultFlickering + (1f - healthPct)
+                    it.blendHoloColor = false
                     Draw.color(R.C.Holo)
                     Draw.rect(
                         ImageTR,
                         x + floating.xOffset,
                         y + floating.yOffset
                     )
-                    Draw.shader()
                     Draw.reset()
-                    hologram.reset()
                 }
 
                 if (flashHit) {

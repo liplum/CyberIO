@@ -16,6 +16,7 @@ import net.liplum.blocks.cloud.LiplumCloud;
 import net.liplum.blocks.cloud.SharedRoom;
 import net.liplum.registries.CioCLs;
 import net.liplum.registries.CioShaders;
+import net.liplum.registries.CioSounds;
 import net.liplum.registries.ContentRegistry;
 import net.liplum.utils.AtlasU;
 import net.liplum.utils.G;
@@ -46,7 +47,10 @@ public class CioMod extends Mod {
             });
         });
         Events.on(FileTreeInitEvent.class,
-                e -> Core.app.post(CioShaders::init)
+                e -> {
+                    Core.app.post(CioShaders::init);
+                    Core.app.post(CioSounds::load);
+                }
         );
 
         Events.on(DisposeEvent.class,

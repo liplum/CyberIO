@@ -120,10 +120,10 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
         IDataSender {
         var receivers = OrderedSet<Int>()
         var nearby: Seq<Building> = Seq()
-        var trackers: Array<Tracker> = Array(ItemTypeNumber()) {
+        var trackers: Array<Tracker> = Array(ItemTypeAmount()) {
             Tracker(maxConnection)
         }
-        var needUnloadItems: OrderedSet<Item> = OrderedSet(ItemTypeNumber())
+        var needUnloadItems: OrderedSet<Item> = OrderedSet(ItemTypeAmount())
         var unloadedNearbyIndex = 0
             set(value) {
                 field = (if (nearby.isEmpty)

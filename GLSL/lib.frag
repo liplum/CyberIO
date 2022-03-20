@@ -88,3 +88,16 @@ vec2 modVec2(vec2 a, float b){
 float rand(vec2 xy){
     return fract(sin(dot(xy, vec2(12.9898, 78.233))) * 43758.5453);
 }
+
+float rand(vec2 xy, float time){
+    return fract(dot(xy, vec2(12.9898, 78.233)) * time);
+}
+
+float blend(float x, float y) {
+    return (x < 0.5) ? (2.0 * x * y) : (1.0 - 2.0 * (1.0 - x) * (1.0 - y));
+}
+
+vec3 blend(vec3 x, vec3 y, float opacity) {
+    vec3 z = vec3(blend(x.r, y.r), blend(x.g, y.g), blend(x.b, y.b));
+    return z * opacity + x * (1.0 - opacity);
+}

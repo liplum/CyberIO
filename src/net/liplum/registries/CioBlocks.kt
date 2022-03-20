@@ -2,21 +2,26 @@ package net.liplum.registries
 
 import arc.Events
 import arc.graphics.Color
+import arc.struct.Seq
 import mindustry.content.Blocks
 import mindustry.content.Fx
 import mindustry.content.Items
+import mindustry.content.Liquids
 import mindustry.game.EventType
 import mindustry.gen.Sounds
 import mindustry.type.Category
 import mindustry.type.ItemStack
+import mindustry.type.LiquidStack
 import mindustry.world.blocks.defense.OverdriveProjector
 import mindustry.world.blocks.production.GenericCrafter
+import mindustry.world.blocks.production.LiquidConverter
 import mindustry.world.meta.BuildVisibility
 import net.liplum.*
 import net.liplum.animations.ganim.globalAnim
 import net.liplum.api.virus.setUninfected
 import net.liplum.api.virus.setUninfectedFloor
 import net.liplum.blocks.cloud.Cloud
+import net.liplum.blocks.cyberion.CyberionMixer
 import net.liplum.blocks.debugonly.AdjustableOverdrive
 import net.liplum.blocks.deleter.Deleter
 import net.liplum.blocks.gadgets.SmartDistributor
@@ -40,6 +45,9 @@ import net.liplum.blocks.underdrive.UnderdriveProjector
 import net.liplum.blocks.virus.AntiVirus
 import net.liplum.blocks.virus.Virus
 import net.liplum.bullets.ShaderCLaser
+import net.liplum.holo.HoloPlan
+import net.liplum.holo.HoloProjector
+import net.liplum.holo.Requirement
 import net.liplum.seffects.StaticFx
 import net.liplum.shaders.SD
 
@@ -57,7 +65,7 @@ object CioBlocks : ContentTable {
     @JvmStatic lateinit var prism: Prism
     @JvmStatic lateinit var prismObelisk: PrismObelisk
     @JvmStatic lateinit var deleter: Deleter
-    @JvmStatic var hyperOverdriveSphere: OverdriveProjector? = null
+    @JvmStatic lateinit var hyperOverdriveSphere: OverdriveProjector
     @JvmStatic lateinit var holoWall: HoloWall
     @JvmStatic lateinit var holoWallLarge: HoloWall
     @JvmStatic lateinit var TMTRAINER: TMTRAINER
@@ -67,6 +75,8 @@ object CioBlocks : ContentTable {
     @JvmStatic lateinit var streamHost: StreamHost
     @JvmStatic lateinit var streamServer: StreamServer
     @JvmStatic lateinit var jammer: Jammer
+    @JvmStatic lateinit var cyberionMixer: LiquidConverter
+    @JvmStatic lateinit var holoProjector: HoloProjector
     override fun firstLoad() {
     }
 
@@ -462,9 +472,9 @@ object CioBlocks : ContentTable {
             reloadTime = 40f
             firingMoveFract = 0.25f
             shootDuration = 180f
-            shootSound = Sounds.laserbig
-            loopSound = Sounds.beam
-            loopSoundVolume = 1.5f
+            shootSound = CioSounds.jammerPreShoot
+            loopSound = CioSounds.tvStatic
+            loopSoundVolume = 0.5f
             rotateSpeed = 2f
             powerUse = 10f
 
@@ -482,6 +492,43 @@ object CioBlocks : ContentTable {
                 ClientOnly {
                     shader = SD.tvSnow
                 }
+            }
+        }
+        DebugOnly {
+            cyberionMixer = CyberionMixer("cyberion-mixer").apply {
+                requirements(
+                    Category.crafting, BuildVisibility.shown, arrayOf(
+                        ItemStack(CioItems.ic, 5),
+                    )
+                )
+                outputLiquid = LiquidStack(CioLiquids.cyberion, 0.5f)
+                craftTime = 100f
+                size = 2
+                consumes.power(1f)
+                consumes.item(Items.thorium, 1)
+                consumes.liquid(Liquids.cryofluid, 0.3f)
+            }
+
+            holoProjector = HoloProjector("holo-projector").apply {
+                requirements(
+                    Category.units, BuildVisibility.shown, arrayOf(
+                        ItemStack(CioItems.ic, 12),
+                    )
+                )
+                plans = Seq.with(
+                    HoloPlan(
+                        CioUnitTypes.holoMiner,
+                        Requirement(8f),
+                        60 * 8f
+                    ),
+                    HoloPlan(
+                        CioUnitTypes.holoFighter,
+                        Requirement(12f),
+                        60 * 10f
+                    ),
+                )
+                size = 4
+                consumes.power(2f)
             }
         }
     }
