@@ -7,25 +7,25 @@ import arc.struct.Seq
 import arc.util.Structs
 import arc.util.io.Reads
 import arc.util.io.Writes
+import mindustry.entities.Units
 import mindustry.gen.Building
+import mindustry.gen.Iconc
 import mindustry.graphics.Pal
 import mindustry.type.Item
 import mindustry.type.Liquid
 import mindustry.type.UnitType
+import mindustry.ui.Fonts
 import mindustry.ui.Styles
 import mindustry.world.Block
 import mindustry.world.blocks.ItemSelection
 import mindustry.world.consumers.ConsumeItemDynamic
 import mindustry.world.meta.BlockGroup
-import net.liplum.CalledBySync
-import net.liplum.DebugOnly
-import net.liplum.R
+import net.liplum.*
 import net.liplum.liquidCons.DynamicLiquidCons
 import net.liplum.registries.CioLiquids.cyberion
 import net.liplum.ui.bars.AddBar
-import net.liplum.utils.ID
-import net.liplum.utils.ItemTypeAmount
-import net.liplum.utils.bundle
+import net.liplum.ui.bars.removeItems
+import net.liplum.utils.*
 import kotlin.math.max
 
 open class HoloProjector(name: String) : Block(name) {
@@ -40,7 +40,6 @@ open class HoloProjector(name: String) : Block(name) {
         hasItems = true
         hasLiquids = true
         group = BlockGroup.units
-        rotate = true
         configurable = true
         sync = true
         config(Integer::class.java) { obj: HoloPBuild, plan ->
@@ -76,13 +75,42 @@ open class HoloProjector(name: String) : Block(name) {
 
     override fun setBars() {
         super.setBars()
+        UndebugOnly {
+            bars.removeItems()
+        }
         DebugOnly {
             AddBar<HoloPBuild>(R.Bar.ProgressN,
-                { R.Bar.Progress.bundle(progress) },
+                { R.Bar.Progress.bundle(progress.percentI) },
+                { Pal.bar },
+                { progress }
+            )
+        }.Else {
+            AddBar<HoloPBuild>(R.Bar.Vanilla.BuildProgressN,
+                { R.Bar.Vanilla.BuildProgress.bundle },
                 { Pal.bar },
                 { progress }
             )
         }
+        AddBar<HoloPBuild>(R.Bar.Vanilla.UnitsN,
+            {
+                val curPlan = curPlan
+                if (curPlan == null)
+                    "[lightgray]${Iconc.cancel}"
+                else {
+                    val unitType = curPlan.unitType
+                    R.Bar.Vanilla.UnitCapacity.bundle(
+                        Fonts.getUnicodeStr(unitType.name),
+                        team.data().countType(unitType),
+                        Units.getStringCap(team)
+                    )
+                }
+            },
+            { Pal.power },
+            {
+                val curPlan = curPlan
+                curPlan?.unitType?.pctOfTeamOwns(team) ?: 0f
+            }
+        )
     }
 
     protected val Int.plan: HoloPlan?
@@ -100,21 +128,22 @@ open class HoloProjector(name: String) : Block(name) {
             get() {
                 val plan = curPlan
                 return if (plan != null)
-                    progressTime / plan.time
+                    (progressTime / plan.time).coerceIn(0f, 1f)
                 else
                     0f
             }
 
         override fun updateTile() {
-            val itemsModule = items
             if (!consValid()) return
             val plan = curPlan ?: return
             progressTime += delta()
 
             if (progressTime >= plan.time) {
-                consume()
-                projectUnit(plan.unitType)
-                progressTime = 0f
+                val projected = projectUnit(plan.unitType)
+                if (projected) {
+                    consume()
+                    progressTime = 0f
+                }
             }
         }
         @CalledBySync
@@ -125,7 +154,11 @@ open class HoloProjector(name: String) : Block(name) {
             }
             if (order == planOrder) return
             planOrder = order
-            progressTime = 0f
+            val p = curPlan
+            progressTime = if (p != null)
+                progressTime.coerceAtMost(p.time)
+            else
+                0f
         }
 
         override fun buildConfiguration(table: Table) {
@@ -159,8 +192,12 @@ open class HoloProjector(name: String) : Block(name) {
             return true
         }
 
-        open fun projectUnit(unitType: UnitType) {
-            unitType.spawn(team, this)
+        open fun projectUnit(unitType: UnitType): Boolean {
+            if (Units.canCreate(team, unitType)) {
+                unitType.spawn(team, this)
+                return true
+            }
+            return false
         }
 
         override fun acceptLiquid(source: Building, liquid: Liquid) =
@@ -179,10 +216,14 @@ open class HoloProjector(name: String) : Block(name) {
 
         override fun read(read: Reads, revision: Byte) {
             super.read(read, revision)
+            planOrder = read.b().toInt()
+            progressTime = read.f()
         }
 
         override fun write(write: Writes) {
             super.write(write)
+            write.b(planOrder)
+            write.f(progressTime)
         }
     }
 }

@@ -1,6 +1,7 @@
 package net.liplum.utils
 
 import mindustry.gen.Healthc
+import mindustry.gen.UnitEntity
 
 var Healthc.lostHp: Float
     get() = maxHealth() - health()
@@ -17,3 +18,5 @@ var Healthc.healthPct: Float
     set(value) {
         health(value.coerceIn(0f, 1f) * maxHealth())
     }
+val UnitEntity.hasShields: Boolean
+    get() = shield > 1.0E-4f

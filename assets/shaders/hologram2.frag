@@ -7,8 +7,8 @@ uniform float u_time;
 uniform float u_alpha;//1f as default
 uniform float u_opacityNoise;//0.2f as default
 uniform float u_flickering;//0.03f as default
-uniform bool u_blendHoloColorB;//true as default
-uniform bool u_blendFormerColorB;//true as default
+uniform float u_blendHoloColorOpacity;//0.8f as default
+uniform float u_blendFormerColorOpacity;//0.6f as default
 varying vec2 v_texCoords;
 varying lowp vec4 v_color;
 
@@ -34,11 +34,11 @@ void main(){
         return;
     }
     vec3 col = original.rgb;
-    if (u_blendFormerColorB){
-        col = blend(col, v_color.rgb, 0.60);
+    if (u_blendFormerColorOpacity > 0.01){
+        col = blend(col, v_color.rgb, u_blendFormerColorOpacity);
     }
-    if (u_blendHoloColorB){
-        col = blend(col, Holo, 0.8);
+    if (u_blendHoloColorOpacity > 0.01){
+        col = blend(col, Holo, u_blendHoloColorOpacity);
     }
     float count = Density;
     vec2 sl = vec2(sin(uv.y * count), cos(uv.y * count));

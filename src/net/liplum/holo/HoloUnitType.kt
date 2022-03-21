@@ -1,13 +1,18 @@
 package net.liplum.holo
 
+import arc.graphics.Color
 import arc.graphics.g2d.Draw
+import arc.graphics.g2d.Fill
+import arc.graphics.g2d.Lines
 import arc.math.Angles
 import arc.math.Mathf
+import arc.util.Tmp
 import mindustry.Vars
 import mindustry.gen.Payloadc
 import mindustry.gen.Unit
 import mindustry.graphics.Layer
 import mindustry.type.UnitType
+import net.liplum.ClientOnly
 import net.liplum.R
 import net.liplum.shaders.SD
 import net.liplum.shaders.use
@@ -15,8 +20,9 @@ import net.liplum.utils.healthPct
 import kotlin.math.min
 
 open class HoloUnitType(name: String) : UnitType(name) {
-    @JvmField var GhostingBlend = true
-    @JvmField var minAlpha = 0.15f
+    @JvmField @ClientOnly var ColorOpacity = -1f
+    @JvmField @ClientOnly var HoloOpacity = -1f
+    @JvmField @ClientOnly var minAlpha = 0.15f
 
     init {
         //outlineColor = R.C.HoloDark
@@ -27,9 +33,8 @@ open class HoloUnitType(name: String) : UnitType(name) {
         mechLegColor = R.C.HoloDark
     }
 
-    override fun update(unit: Unit) {
-        super.update(unit)
-    }
+    open val Unit.holoAlpha: Float
+        get() = this.healthPct.coerceAtLeast(minAlpha)
 
     override fun draw(unit: Unit) {
         val z =
@@ -56,7 +61,7 @@ open class HoloUnitType(name: String) : UnitType(name) {
             drawPayload(unit)
         }
         val healthPct = unit.healthPct
-        val alpha = healthPct.coerceAtLeast(minAlpha)
+        val alpha = unit.holoAlpha
         drawSoftShadow(unit, alpha)
 
         Draw.z(z)
@@ -64,8 +69,11 @@ open class HoloUnitType(name: String) : UnitType(name) {
             it.alpha = alpha
             it.opacityNoise *= 2f - healthPct
             it.flickering = it.DefaultFlickering + (1f - healthPct)
-
-            it.blendFormerColor = GhostingBlend
+            if (ColorOpacity > 0f)
+                it.blendFormerColorOpacity = ColorOpacity
+            if (HoloOpacity > 0f) {
+                it.blendHoloColorOpacity = HoloOpacity
+            }
             if (drawBody) {
                 drawOutline(unit)
             }
@@ -80,14 +88,14 @@ open class HoloUnitType(name: String) : UnitType(name) {
                 drawCell(unit)
             }
             drawWeapons(unit)
+            drawLight(unit)
         }
-        if (drawItems) {
-            drawItems(unit)
-        }
-        drawLight(unit)
 
         if (unit.shieldAlpha > 0 && drawShields) {
             drawShield(unit)
+        }
+        if (drawItems) {
+            drawItems(unit)
         }
 
         if (decals.size > 0) {
@@ -115,5 +123,17 @@ open class HoloUnitType(name: String) : UnitType(name) {
         }
 
         Draw.reset()
+    }
+
+    override fun drawShield(unit: Unit) {
+        val alpha = unit.shieldAlpha()
+        val radius = unit.hitSize() * 1.3f
+        Fill.light(
+            unit.x, unit.y, Lines.circleVertices(radius), radius,
+            Color.clear,
+            Tmp.c2.set(R.C.Holo)
+                .lerp(Color.white, Mathf.clamp(unit.hitTime() / 2f))
+                .a(0.7f * alpha)
+        )
     }
 }

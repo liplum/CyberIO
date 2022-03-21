@@ -146,7 +146,7 @@ open class HoloWall(name: String) : Wall(name) {
                     it.alpha = healthPct / 4f * 3f
                     it.opacityNoise *= 2f - healthPct
                     it.flickering = it.DefaultFlickering + (1f - healthPct)
-                    it.blendHoloColor = false
+                    it.blendHoloColorOpacity = 0f
                     Draw.color(R.C.Holo)
                     Draw.rect(
                         ImageTR,

@@ -2,21 +2,41 @@ package net.liplum.registries
 
 import mindustry.content.Fx
 import mindustry.entities.bullet.BasicBulletType
-import mindustry.entities.bullet.BulletType
 import mindustry.graphics.Pal
 import net.liplum.ClientOnly
+import net.liplum.R
 import net.liplum.bullets.ShaderBasicBulletT
 import net.liplum.seffects.StaticFx
 import net.liplum.shaders.SD
+import net.liplum.shaders.TrShader
+import net.liplum.shaders.holo.Hologram2
 
 object CioBulletTypes : ContentTable {
-    @JvmStatic lateinit var virus: BulletType
-    @JvmStatic lateinit var radiationInterference: BulletType
+    @JvmStatic lateinit var virus: BasicBulletType
+    @JvmStatic lateinit var radiationInterference: ShaderBasicBulletT<TrShader>
+    @JvmStatic lateinit var holoBullet: ShaderBasicBulletT<Hologram2>
     override fun firstLoad() {
+        holoBullet = ShaderBasicBulletT<Hologram2>(
+            2f, 35f
+        ).apply {
+            ClientOnly {
+                shader = SD.hologram2
+            }
+            width = 10f
+            height = 10f
+            hitSize = 10f
+            lifetime = 60f
+            pierce = true
+            pierceCap = 5
+            backColor = R.C.HoloDark2
+            frontColor = R.C.HoloDark2
+        }
     }
 
     override fun load() {
-        virus = BasicBulletType(2.5f, 45f, "bullet").apply {
+        virus = BasicBulletType(
+            2.5f, 45f, "bullet"
+        ).apply {
             width = 10f
             height = 12f
             shrinkY = 0.1f
@@ -32,7 +52,9 @@ object CioBulletTypes : ContentTable {
             statusDuration = CioSEffects.infected.initTime
         }
 
-        radiationInterference = ShaderBasicBulletT(2.3f, 28f, "bullet").apply {
+        radiationInterference = ShaderBasicBulletT<TrShader>(
+            2.3f, 28f, "bullet"
+        ).apply {
             ClientOnly {
                 shader = SD.tvSnow
             }

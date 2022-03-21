@@ -8,7 +8,6 @@ import mindustry.Vars;
 import mindustry.core.GameState;
 import mindustry.io.JsonIO;
 import mindustry.mod.Mod;
-import mindustry.ui.dialogs.BaseDialog;
 import net.liplum.animations.ganim.GlobalAnimation;
 import net.liplum.api.data.DataCenter;
 import net.liplum.api.stream.StreamCenter;
@@ -18,7 +17,6 @@ import net.liplum.registries.CioCLs;
 import net.liplum.registries.CioShaders;
 import net.liplum.registries.CioSounds;
 import net.liplum.registries.ContentRegistry;
-import net.liplum.utils.AtlasU;
 import net.liplum.utils.G;
 
 import static mindustry.game.EventType.*;
@@ -27,6 +25,7 @@ import static net.liplum.registries.TintedBulletsRegistryKt.tintedBulletsRegistr
 public class CioMod extends Mod {
     public static final boolean IsClient = !Vars.headless;
     public static boolean DebugMode = true;
+    public static boolean TestMobileOnly = false;
     public static boolean ExperimentalMode = false;
     public static boolean CanGlobalAnimationPlay = false;
     public static float UpdateFrequency = 5f;
@@ -36,15 +35,7 @@ public class CioMod extends Mod {
         //listen for game load event
         Events.on(ClientLoadEvent.class, e -> {
             //show dialog upon startup
-            Time.runTask(10f, () -> {
-                BaseDialog dialog = new BaseDialog(News.getTitle());
-                // mod sprites are prefixed with the mod name (this mod is called 'example-java-mod' in its config)
-                dialog.cont.image(AtlasU.inCio("icon")).maxSize(200f).pad(20f).row();
-                dialog.cont.add(News.getWelcome()).wrapLabel(true).row();
-                dialog.cont.add(News.getNews()).wrapLabel(true).row();
-                dialog.cont.button(News.getRead(), dialog::hide).size(100f, 50f);
-                dialog.show();
-            });
+            Time.runTask(10f, Welcome::showWelcomeDialog);
         });
         Events.on(FileTreeInitEvent.class,
                 e -> {
@@ -52,7 +43,6 @@ public class CioMod extends Mod {
                     Core.app.post(CioSounds::load);
                 }
         );
-
         Events.on(DisposeEvent.class,
                 e -> CioShaders.dispose()
         );

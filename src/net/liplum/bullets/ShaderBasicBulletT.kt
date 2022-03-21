@@ -8,26 +8,23 @@ import mindustry.entities.bullet.BasicBulletType
 import mindustry.gen.Bullet
 import net.liplum.shaders.on
 
-open class ShaderBasicBulletT : BasicBulletType {
-    @JvmField var shader: Shader? = null
-    @JvmField var preShader: (Shader, Bullet) -> Unit = { _, _ -> }
+open class ShaderBasicBulletT<TS : Shader> : BasicBulletType {
+    @JvmField var shader: TS? = null
+    @JvmField var preShader: (TS, Bullet) -> Unit = { _, _ -> }
 
     constructor(speed: Float, damage: Float, bulletSprite: String)
-            : super(speed, damage) {
-        sprite = bulletSprite
-    }
+            : super(speed, damage, bulletSprite)
 
     constructor(speed: Float, damage: Float) :
             this(speed, damage, "bullet")
 
-    constructor() :
-            this(1f, 1f, "bullet")
+    constructor() : this(1f, 1f, "bullet")
 
     override fun draw(b: Bullet) {
-        drawTrail(b)
         val shader = shader
         shader.on {
             preShader(shader!!, b)
+            drawTrail(b)
             val height = height * (1f - shrinkY + shrinkY * b.fout())
             val width = width * (1f - shrinkX + shrinkX * b.fout())
             val offset = -90 + if (spin != 0f) Mathf.randomSeed(b.id.toLong(), 360f) + b.time * spin else 0f

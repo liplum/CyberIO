@@ -3,16 +3,15 @@ package net.liplum.registries
 import arc.Events
 import arc.graphics.Color
 import arc.struct.Seq
-import mindustry.content.Blocks
-import mindustry.content.Fx
-import mindustry.content.Items
-import mindustry.content.Liquids
+import mindustry.content.*
 import mindustry.game.EventType
 import mindustry.gen.Sounds
+import mindustry.graphics.CacheLayer
 import mindustry.type.Category
 import mindustry.type.ItemStack
 import mindustry.type.LiquidStack
 import mindustry.world.blocks.defense.OverdriveProjector
+import mindustry.world.blocks.environment.Floor
 import mindustry.world.blocks.production.GenericCrafter
 import mindustry.world.blocks.production.LiquidConverter
 import mindustry.world.meta.BuildVisibility
@@ -77,6 +76,7 @@ object CioBlocks : ContentTable {
     @JvmStatic lateinit var jammer: Jammer
     @JvmStatic lateinit var cyberionMixer: LiquidConverter
     @JvmStatic lateinit var holoProjector: HoloProjector
+    @JvmStatic lateinit var aquacyberion: Floor
     override fun firstLoad() {
     }
 
@@ -92,7 +92,7 @@ object CioBlocks : ContentTable {
             )
             health = 2000
             outputItem = ItemStack(CioItems.ic, 1)
-            craftTime = 500f
+            craftTime = 450f
             size = 3
             buildCostMultiplier = 3f
             craftEffect = Fx.smelt
@@ -282,7 +282,7 @@ object CioBlocks : ContentTable {
         prismObelisk = PrismObelisk("prism-obelisk").apply {
             requirements(
                 Category.turret, BuildVisibility.shown, arrayOf(
-                    ItemStack(CioItems.ic, 5),
+                    ItemStack(CioItems.ic, 3),
                     ItemStack(Items.metaglass, 300),
                     ItemStack(Items.titanium, 300),
                 )
@@ -297,8 +297,8 @@ object CioBlocks : ContentTable {
                 Category.turret, BuildVisibility.shown, arrayOf(
                     ItemStack(CioItems.ic, 10),
                     ItemStack(Items.graphite, 100),
-                    ItemStack(Items.silicon, 50),
-                    ItemStack(Items.thorium, 200),
+                    ItemStack(Items.silicon, 60),
+                    ItemStack(Items.thorium, 250),
                 )
             )
             range = 180f
@@ -380,7 +380,7 @@ object CioBlocks : ContentTable {
             requirements(
                 Category.distribution, BuildVisibility.shown, arrayOf(
                     ItemStack(CioItems.ic, 15),
-                    ItemStack(Items.surgeAlloy, 100),
+                    ItemStack(Items.surgeAlloy, 50),
                     ItemStack(Items.thorium, 300),
                     ItemStack(Items.phaseFabric, 100),
                 )
@@ -498,13 +498,15 @@ object CioBlocks : ContentTable {
             cyberionMixer = CyberionMixer("cyberion-mixer").apply {
                 requirements(
                     Category.crafting, BuildVisibility.shown, arrayOf(
-                        ItemStack(CioItems.ic, 5),
+                        ItemStack(CioItems.ic, 2),
+                        ItemStack(Items.lead, 100),
+                        ItemStack(Items.titanium, 100),
                     )
                 )
-                outputLiquid = LiquidStack(CioLiquids.cyberion, 0.5f)
+                outputLiquid = LiquidStack(CioLiquids.cyberion, 0.3f)
                 craftTime = 100f
                 size = 2
-                consumes.power(1f)
+                consumes.power(1.5f)
                 consumes.item(Items.thorium, 1)
                 consumes.liquid(Liquids.cryofluid, 0.3f)
             }
@@ -512,23 +514,56 @@ object CioBlocks : ContentTable {
             holoProjector = HoloProjector("holo-projector").apply {
                 requirements(
                     Category.units, BuildVisibility.shown, arrayOf(
-                        ItemStack(CioItems.ic, 12),
+                        ItemStack(CioItems.ic, 7),
+                        ItemStack(Items.silicon, 80),
+                        ItemStack(Items.graphite, 60),
+                        ItemStack(Items.thorium, 100),
                     )
                 )
                 plans = Seq.with(
                     HoloPlan(
                         CioUnitTypes.holoMiner,
-                        Requirement(8f),
-                        60 * 8f
+                        Requirement(20f),
+                        8 * 60f
                     ),
                     HoloPlan(
                         CioUnitTypes.holoFighter,
-                        Requirement(12f),
-                        60 * 10f
+                        Requirement(25f),
+                        10 * 60f
+                    ),
+                    HoloPlan(
+                        CioUnitTypes.holoGuardian,
+                        Requirement(30f),
+                        12f * 60
+                    ),
+                    HoloPlan(
+                        CioUnitTypes.holoArchitect,
+                        Requirement(35f),
+                        15f * 60
+                    ),
+                    HoloPlan(
+                        CioUnitTypes.holoSupporter,
+                        Requirement(30f),
+                        15f * 60
                     ),
                 )
                 size = 4
                 consumes.power(2f)
+            }
+            aquacyberion = Floor("aqua-cyberion").apply {
+                drownTime = 0f
+                status = StatusEffects.freezing
+                statusDuration = 240f
+                speedMultiplier = 0.1f
+                variants = 0
+                liquidDrop = CioLiquids.cyberion
+                liquidMultiplier = 0.1f
+                isLiquid = true
+                cacheLayer = CacheLayer.cryofluid
+
+                emitLight = true
+                lightRadius = 30f
+                lightColor = R.C.Holo.cpy().a(0.19f)
             }
         }
     }

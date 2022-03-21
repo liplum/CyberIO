@@ -2,6 +2,7 @@ package net.liplum;
 
 import arc.graphics.Color;
 import mindustry.graphics.Pal;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 public class R {
@@ -19,17 +20,17 @@ public class R {
 
 
     public static final class Unit {
-        public static final String HoloMiner = "holo-miner";
-        public static final String HoloFighter = "holo-fighter";
+        public static final String
+                HoloMiner = "holo-miner",
+                HoloFighter = "holo-fighter",
+                HoloGuardian = "holo-guardian",
+                HoloArchitect = "holo-architect",
+                HoloSupporter = "holo-supporter";
     }
 
 
     public static final class Bar {
         public static final String NeighborStateN = "neighbor-state";
-
-        public static String Gen(String content) {
-            return "bar." + Meta.ModID + "." + content;
-        }
 
         public static final String GenerationN = "generation",
                 Generation = Gen(GenerationN);
@@ -86,6 +87,23 @@ public class R {
                 Client = Gen(ClientN);
         public static final String HostN = "host",
                 Host = Gen(HostN);
+        public static final String RestLifeN = "rest-life",
+                RestLife = Gen(RestLifeN),
+                RestLifeFigure = Gen(RestLifeN + ".figure");
+
+        public static final class Vanilla {
+            public static final String BuildProgressN = "progress",
+                    BuildProgress = "bar.progress";
+            public static final String UnitsN = "units",
+                    UnitCapacity = "bar.unitcap";
+
+        }
+
+        @NotNull
+        @Contract(pure = true)
+        public static String Gen(String content) {
+            return "bar." + Meta.ModID + "." + content;
+        }
 
     }
 
@@ -95,6 +113,8 @@ public class R {
                 No = Gen("no"),
                 OK = Gen("ok");
 
+        @NotNull
+        @Contract(pure = true)
         public static String Gen(String content) {
             return "control." + Meta.ModID + "." + content;
         }
@@ -104,6 +124,7 @@ public class R {
         public static final Color LightBlue = Color.valueOf("#add8e6");
         public static final Color Holo = Color.valueOf("#42a5f5");//(0.2588,0.6471,0.9608)
         public static final Color HoloDark = Color.valueOf("#1e88e5");
+        public static final Color HoloDark2 = Color.valueOf("##0c80df");
         public static final Color VirusBK = Color.valueOf("#cd44ff");
         public static final Color IsAive = Color.green;
         public static final Color CoolDown = Color.gray;
@@ -119,11 +140,11 @@ public class R {
                 PrismGreenFG = Color.valueOf("#76FF03"), PrismGreenBK = Color.valueOf("#00C853"),
                 PrismBlueFG = Color.valueOf("#039BE5"), PrismBlueBK = Color.valueOf("#1565C0");
         @NotNull
-        public static final Color[] PrismRgbFG = new Color[]{
+        public static final Color[] PrismRgbFG = {
                 PrismRedFG, PrismGreenFG, PrismBlueFG
         };
         @NotNull
-        public static final Color[] PrismRgbBK = new Color[]{
+        public static final Color[] PrismRgbBK = {
                 PrismRedBK, PrismGreenBK, PrismBlueBK
         };
         public static final Color
@@ -141,34 +162,69 @@ public class R {
     public static final class S {
         public static final String Test = GenFrag("test");
 
+        @NotNull
+        @Contract(pure = true)
         public static String GenFrag(String name) {
             return "shaders/" + name + ".frag";
         }
 
+        @NotNull
+        @Contract(pure = true)
         public static String GenTR(String name) {
             return "sprites/shaders/" + name + ".png";
         }
     }
 
     public static final class Welcome {
+        @NotNull
+        @Contract(pure = true)
         public static String Gen(String name) {
             return "welcome." + Meta.ModID + "." + name;
         }
     }
 
+    @NotNull
+    @Contract(pure = true)
     public static String Gen(String name) {
         return Meta.ModID + "-" + name;
     }
 
     public static final class Sound {
+        public static final String ogg = "ogg",
+                wav = "wav",
+                mp3 = "mp3";
+        public static final String[] extensions = {
+                wav, ogg, mp3
+        };
+
+        @NotNull
+        @Contract(pure = true)
         public static String OGG(String name) {
-            return "sounds/" + name + ".ogg";
+            return Gen(name, ogg);
         }
+
+        @NotNull
+        @Contract(pure = true)
         public static String WAV(String name) {
-            return "sounds/" + name + ".wav";
+            return Gen(name, wav);
         }
+
+        @NotNull
+        @Contract(pure = true)
         public static String MP3(String name) {
-            return "sounds/" + name + ".mp3";
+            return Gen(name, mp3);
+        }
+
+        @NotNull
+        @Contract(pure = true)
+        public static String Gen(String name) {
+            return "sounds/" + name + ".";
+        }
+
+        @NotNull
+        @Contract(pure = true)
+        public static String Gen(String name, String extension) {
+            return Gen(name) + extension;
         }
     }
 }

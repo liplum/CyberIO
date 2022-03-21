@@ -2,6 +2,7 @@ package net.liplum.registries
 
 import arc.graphics.gl.Shader
 import mindustry.Vars
+import net.liplum.CioMod.TestMobileOnly
 import net.liplum.ClientOnly
 import net.liplum.shaders.BlockShader
 import net.liplum.shaders.ILoadResource
@@ -67,7 +68,7 @@ object CioShaders {
 }
 
 val String.compatible: String
-    get() = if (Vars.mobile || Vars.testMobile)
+    get() = if (Vars.mobile || Vars.testMobile || TestMobileOnly)
         "$this-mobile"
     else
         this

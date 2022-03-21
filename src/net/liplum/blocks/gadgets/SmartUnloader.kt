@@ -216,11 +216,12 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
             if (!nearby.isEmpty) {
                 val container = nearby[unloadedNearbyIndex]
                 for (item in needUnloadItems) {
+                    val containerItems = container.items ?: continue
                     if (!item.canBeUnloadedToThis()) {
                         continue
                     }
-                    if (container.items.has(item)) {
-                        container.items.remove(item, 1)
+                    if (containerItems.has(item)) {
+                        containerItems.remove(item, 1)
                         this.items.add(item, 1)
                         unloaded = true
                     }

@@ -14,10 +14,7 @@ fun BlockBars.removeIfExist(name: String) {
 }
 
 fun BlockBars.removeItems() {
-    try {
-        this.remove("items")
-    } catch (_: RuntimeException) {
-    }
+    this.removeIfExist("items")
 }
 
 inline fun <T : Building> Block.AddBar(
@@ -27,6 +24,21 @@ inline fun <T : Building> Block.AddBar(
     crossinline fraction: T.() -> Float
 ) {
     this.bars.add<T>(key) {
+        Bar(
+            { it.name() },
+            { it.color() },
+            { it.fraction() }
+        )
+    }
+}
+
+inline fun Block.addBar(
+    key: String,
+    crossinline name: Building.() -> String,
+    crossinline color: Building.() -> Color,
+    crossinline fraction: Building.() -> Float
+) {
+    this.bars.add<Building>(key) {
         Bar(
             { it.name() },
             { it.color() },

@@ -12,8 +12,13 @@ import static mindustry.graphics.Shaders.getShaderFi;
 public class Hologram2 extends Shader implements IReusable {
     public float alpha = 1f;
     public float opacityNoise = 0.2f;
-    public boolean blendHoloColor = true;
-    public boolean blendFormerColor = true;
+
+    public final float DefaultBlendHoloColorOpacity = 0.8f;
+    public float blendHoloColorOpacity = DefaultBlendHoloColorOpacity;
+
+    public final float DefaultBlendFormerColorOpacity = 0.6f;
+    public float blendFormerColorOpacity = DefaultBlendFormerColorOpacity;
+
     public final float DefaultFlickering = 0.03f;
     public float flickering = DefaultFlickering;
 
@@ -28,8 +33,8 @@ public class Hologram2 extends Shader implements IReusable {
         setUniformf("u_alpha", alpha);
         setUniformf("u_opacityNoise", opacityNoise);
         setUniformf("u_flickering", flickering);
-        setUniformi("u_blendHoloColorB", blendHoloColor ? 1 : 0);
-        setUniformi("u_blendFormerColorB", blendFormerColor ? 1 : 0);
+        setUniformf("u_blendHoloColorOpacity", blendHoloColorOpacity);
+        setUniformf("u_blendFormerColorOpacity", blendFormerColorOpacity);
 
         renderer.effectBuffer.getTexture().bind(0);
     }
@@ -39,7 +44,7 @@ public class Hologram2 extends Shader implements IReusable {
         this.alpha = 1f;
         this.opacityNoise = 0.2f;
         this.flickering = DefaultFlickering;
-        this.blendHoloColor = true;
-        this.blendFormerColor = true;
+        this.blendHoloColorOpacity = DefaultBlendHoloColorOpacity;
+        this.blendFormerColorOpacity = DefaultBlendFormerColorOpacity;
     }
 }

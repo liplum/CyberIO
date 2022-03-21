@@ -5,7 +5,10 @@ package net.liplum.utils
 import arc.math.Mathf
 import mindustry.Vars
 import mindustry.ctype.Content
+import mindustry.entities.Units
+import mindustry.game.Team
 import mindustry.gen.Building
+import mindustry.type.UnitType
 import mindustry.world.Tile
 
 val Int.build: Building?
@@ -55,3 +58,6 @@ inline fun Building.ForProximity(tileDistance: Int, func: (Tile) -> Unit) {
 inline fun Building.ForProximity(func: (Tile) -> Unit) {
     ForProximity(this.tileX(), this.tileY(), 1, func)
 }
+
+fun UnitType.pctOfTeamOwns(team: Team) =
+    team.data().countType(this).toFloat() / Units.getCap(team)
