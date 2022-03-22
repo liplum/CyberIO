@@ -455,10 +455,10 @@ object CioBlocks : ContentTable {
         jammer = Jammer("jammer").apply {
             requirements(
                 Category.turret, BuildVisibility.shown, arrayOf(
-                    ItemStack(CioItems.ic, 8),
+                    ItemStack(CioItems.ic, 12),
                     ItemStack(Items.lead, 350),
                     ItemStack(Items.thorium, 200),
-                    ItemStack(Items.surgeAlloy, 150),
+                    ItemStack(Items.surgeAlloy, 200),
                 )
             )
             size = 3
@@ -476,7 +476,7 @@ object CioBlocks : ContentTable {
             loopSound = CioSounds.tvStatic
             loopSoundVolume = 0.5f
             rotateSpeed = 2f
-            powerUse = 10f
+            powerUse = 15f
 
             shootType = ShaderCLaser().apply {
                 damage = 120f

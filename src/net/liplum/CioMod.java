@@ -13,7 +13,6 @@ import net.liplum.api.data.DataCenter;
 import net.liplum.api.stream.StreamCenter;
 import net.liplum.blocks.cloud.LiplumCloud;
 import net.liplum.blocks.cloud.SharedRoom;
-import net.liplum.blocks.prism.Prism;
 import net.liplum.registries.*;
 import net.liplum.utils.G;
 
@@ -36,10 +35,7 @@ public class CioMod extends Mod {
             Time.runTask(10f, Welcome::showWelcomeDialog);
         });
         Events.on(FileTreeInitEvent.class,
-                e -> {
-                    Core.app.post(CioShaders::init);
-                    Core.app.post(CioSounds::load);
-                }
+                e -> Core.app.post(CioShaders::init)
         );
         Events.on(DisposeEvent.class,
                 e -> CioShaders.dispose()
@@ -84,6 +80,7 @@ public class CioMod extends Mod {
 
     @Override
     public void loadContent() {
+        CioSounds.load();
         EntityRegistry.registerAll();
         CioCLs.load();
         ContentRegistry.loadContent();

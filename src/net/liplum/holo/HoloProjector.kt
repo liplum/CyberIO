@@ -17,12 +17,12 @@ import mindustry.type.UnitType
 import mindustry.ui.Fonts
 import mindustry.ui.Styles
 import mindustry.world.Block
-import mindustry.world.blocks.ItemSelection
 import mindustry.world.consumers.ConsumeItemDynamic
 import mindustry.world.meta.BlockGroup
 import net.liplum.*
 import net.liplum.liquidCons.DynamicLiquidCons
 import net.liplum.registries.CioLiquids.cyberion
+import net.liplum.ui.addItemSelectorDefault
 import net.liplum.ui.bars.AddBar
 import net.liplum.ui.bars.removeItems
 import net.liplum.utils.*
@@ -168,7 +168,7 @@ open class HoloProjector(name: String) : Block(name) {
                 it.unlockedNow() && !it.isBanned
             }
             if (options.any()) {
-                ItemSelection.buildTable(this@HoloProjector, table, options,
+                table.addItemSelectorDefault(this@HoloProjector, options,
                     { curPlan?.unitType }
                 ) { unit: UnitType? ->
                     val selected = plans.indexOf {
@@ -194,7 +194,9 @@ open class HoloProjector(name: String) : Block(name) {
 
         open fun projectUnit(unitType: UnitType): Boolean {
             if (Units.canCreate(team, unitType)) {
-                unitType.spawn(team, this)
+                ServerOnly {
+                    unitType.spawn(team, this)
+                }
                 return true
             }
             return false
