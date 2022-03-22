@@ -28,3 +28,8 @@ val Boolean.Float: Float
 
 fun <T> Array<T>.equalsNoOrder(other: Array<T>): Boolean =
     JavaU.equalsNoOrder(this, other)
+
+val Int.isOdd: Boolean
+    get() = this % 2 == 1
+val Int.isEven: Boolean
+    get() = this % 2 == 0

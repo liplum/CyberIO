@@ -13,10 +13,8 @@ import net.liplum.api.data.DataCenter;
 import net.liplum.api.stream.StreamCenter;
 import net.liplum.blocks.cloud.LiplumCloud;
 import net.liplum.blocks.cloud.SharedRoom;
-import net.liplum.registries.CioCLs;
-import net.liplum.registries.CioShaders;
-import net.liplum.registries.CioSounds;
-import net.liplum.registries.ContentRegistry;
+import net.liplum.blocks.prism.Prism;
+import net.liplum.registries.*;
 import net.liplum.utils.G;
 
 import static mindustry.game.EventType.*;
@@ -55,7 +53,6 @@ public class CioMod extends Mod {
         } else {
             UpdateFrequency = 5f;
         }
-        CanGlobalAnimationPlay = true;
         JsonIO.json.addClassTag(SharedRoom.class.getName(), SharedRoom.class);
         Events.on(WorldLoadEvent.class, e -> {
             LiplumCloud.reset();
@@ -82,12 +79,16 @@ public class CioMod extends Mod {
         CioShaders.loadResource();
         GlobalAnimation.loadAllResources();
         Events.run(Trigger.preDraw, G::init);
+        Log.info("Cyber IO initialized.");
     }
 
     @Override
     public void loadContent() {
+        EntityRegistry.registerAll();
         CioCLs.load();
         ContentRegistry.loadContent();
+        PrismBlackList.block();
+        CanGlobalAnimationPlay = true;
         Log.info("Cyber IO mod's contents loaded.");
     }
 }

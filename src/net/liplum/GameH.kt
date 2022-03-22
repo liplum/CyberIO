@@ -4,6 +4,7 @@ package net.liplum
 
 import arc.util.Time
 import mindustry.Vars
+import net.liplum.lib.Condition
 import net.liplum.utils.format
 import java.lang.annotation.Inherited
 
@@ -52,6 +53,17 @@ inline fun ClientOnly(func: () -> Unit): Boolean {
         return true
     }
     return false
+}
+
+val OnlyClient = Condition {
+    !Vars.headless
+}
+val OnlyServer = Condition {
+    val net = Vars.net
+    net.server() || !net.active()
+}
+val OnlyDebug = Condition {
+    CioMod.DebugMode
 }
 
 inline fun <reified T> T.ClientOnlyOn(func: T.() -> Unit): T {

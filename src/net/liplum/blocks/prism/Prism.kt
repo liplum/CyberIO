@@ -258,6 +258,7 @@ open class Prism(name: String) : Block(name) {
         }
 
         open fun Bullet.passThrough() {
+            if (!type.canDispersion) return
             this.setDuplicate()
             val angle = this.rotation()
             val copyRed = this.copy()

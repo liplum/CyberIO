@@ -1,21 +1,30 @@
 package net.liplum.holo
 
+import arc.Core
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
 import arc.graphics.g2d.Fill
 import arc.graphics.g2d.Lines
 import arc.math.Angles
 import arc.math.Mathf
+import arc.scene.ui.Image
+import arc.scene.ui.layout.Table
+import arc.util.Scaling
 import arc.util.Tmp
 import mindustry.Vars
+import mindustry.ai.types.LogicAI
+import mindustry.content.Blocks
+import mindustry.gen.Iconc
 import mindustry.gen.Payloadc
 import mindustry.gen.Unit
 import mindustry.graphics.Layer
+import mindustry.graphics.Pal
 import mindustry.type.UnitType
-import net.liplum.ClientOnly
-import net.liplum.R
+import mindustry.ui.Bar
+import net.liplum.*
 import net.liplum.shaders.SD
 import net.liplum.shaders.use
+import net.liplum.utils.bundle
 import net.liplum.utils.healthPct
 import kotlin.math.min
 
@@ -23,6 +32,8 @@ open class HoloUnitType(name: String) : UnitType(name) {
     @JvmField @ClientOnly var ColorOpacity = -1f
     @JvmField @ClientOnly var HoloOpacity = -1f
     @JvmField @ClientOnly var minAlpha = 0.15f
+    @JvmField var lose = 0.3f
+    @JvmField var lifespan = 120 * 60f
 
     init {
         //outlineColor = R.C.HoloDark
@@ -31,6 +42,19 @@ open class HoloUnitType(name: String) : UnitType(name) {
         healColor = R.C.Holo
         engineColorInner = R.C.HoloDark
         mechLegColor = R.C.HoloDark
+
+        immunities.addAll(Vars.content.statusEffects())
+    }
+
+    open fun AutoLife(lose: Float) {
+        this.lose = lose
+        this.lifespan = this.health / lose
+    }
+
+    open fun AutoLife(maxHealth: Float, lose: Float) {
+        this.health = maxHealth
+        this.lose = lose
+        this.lifespan = this.health / lose
     }
 
     open val Unit.holoAlpha: Float
@@ -123,6 +147,80 @@ open class HoloUnitType(name: String) : UnitType(name) {
         }
 
         Draw.reset()
+    }
+
+    open fun setBars(unit: Unit, bars: Table) {
+        if (unit is HoloUnit) {
+            DebugOnly {
+                bars.add(Bar(
+                    { R.Bar.RestLifeFigure.bundle(unit.restLife.seconds) },
+                    { R.C.Holo },
+                    { unit.restLifePercent }
+                ))
+            }.Else {
+                bars.add(Bar(
+                    { R.Bar.RestLife.bundle },
+                    { R.C.Holo },
+                    { unit.restLifePercent }
+                ))
+            }
+            bars.row()
+        }
+    }
+
+    override fun display(unit: Unit, table: Table) {
+        table.table { t: Table ->
+            t.left()
+            t.add(Image(uiIcon)).size(Vars.iconMed).scaling(Scaling.fit)
+            t.labelWrap(localizedName).left().width(190f).padLeft(5f)
+        }.growX().left()
+        table.row()
+
+        table.table { bars: Table ->
+            bars.defaults().growX().height(20f).pad(4f)
+            bars.add(
+                Bar("stat.health", Pal.health) { unit.healthf() }.blink(Color.white)
+            )
+            bars.row()
+            if (Vars.state.rules.unitAmmo) {
+                bars.add(
+                    Bar(
+                        ammoType.icon() + " " + Core.bundle["stat.ammo"], ammoType.barColor()
+                    ) { unit.ammo / ammoCapacity }
+                )
+                bars.row()
+            }
+            setBars(unit, bars)
+            for (ability in unit.abilities) {
+                ability.displayBars(unit, bars)
+            }
+            if (unit is Payloadc) {
+                bars.add(
+                    Bar(
+                        "stat.payloadcapacity",
+                        Pal.items
+                    ) { unit.payloadUsed() / unit.type().payloadCapacity }
+                )
+                bars.row()
+                val count = floatArrayOf(-1f)
+                bars.table().update { t: Table? ->
+                    if (count[0] != unit.payloadUsed()) {
+                        unit.contentInfo(t, (8 * 2).toFloat(), 270f)
+                        count[0] = unit.payloadUsed()
+                    }
+                }.growX().left().height(0f).pad(0f)
+            }
+        }.growX()
+
+        if (unit.controller() is LogicAI) {
+            table.row()
+            table.add(Blocks.microProcessor.emoji() + " " + Core.bundle["units.processorcontrol"]).growX().wrap().left()
+            table.row()
+            table.label { Iconc.settings.toString() + " " + unit.flag.toLong() + "" }.color(Color.lightGray).growX()
+                .wrap().left()
+        }
+
+        table.row()
     }
 
     override fun drawShield(unit: Unit) {
