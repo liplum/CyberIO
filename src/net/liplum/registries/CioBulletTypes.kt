@@ -5,6 +5,8 @@ import mindustry.entities.bullet.BasicBulletType
 import mindustry.graphics.Pal
 import net.liplum.ClientOnly
 import net.liplum.R
+import net.liplum.bullets.RuvikBullet
+import net.liplum.bullets.STEM_VERSION
 import net.liplum.bullets.ShaderBasicBulletT
 import net.liplum.seffects.StaticFx
 import net.liplum.shaders.SD
@@ -15,6 +17,8 @@ object CioBulletTypes : ContentTable {
     @JvmStatic lateinit var virus: BasicBulletType
     @JvmStatic lateinit var radiationInterference: ShaderBasicBulletT<TrShader>
     @JvmStatic lateinit var holoBullet: ShaderBasicBulletT<Hologram2>
+    @JvmStatic lateinit var ruvik: RuvikBullet
+    @JvmStatic lateinit var ruvik2: RuvikBullet
     override fun firstLoad() {
         holoBullet = ShaderBasicBulletT<Hologram2>(
             2f, 35f
@@ -30,6 +34,20 @@ object CioBulletTypes : ContentTable {
             pierceCap = 5
             backColor = R.C.HoloDark2
             frontColor = R.C.HoloDark2
+        }
+        ruvik = RuvikBullet(1.5f, 30f).apply {
+            stemVersion = STEM_VERSION.STEM1
+            width = 10f
+            height = 10f
+            hitSize = 10f
+            lifetime = 240f
+        }
+        ruvik2 = RuvikBullet(1.5f, 30f).apply {
+            stemVersion = STEM_VERSION.STEM2
+            width = 10f
+            height = 10f
+            hitSize = 10f
+            lifetime = 240f
         }
     }
 

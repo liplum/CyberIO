@@ -34,6 +34,7 @@ open class HoloUnitType(name: String) : UnitType(name) {
     @JvmField @ClientOnly var minAlpha = 0.15f
     @JvmField var lose = 0.3f
     @JvmField var lifespan = 120 * 60f
+    @JvmField var overageDmgFactor = 0.5f
 
     init {
         //outlineColor = R.C.HoloDark

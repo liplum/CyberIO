@@ -4,8 +4,11 @@ import arc.Events
 import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
+import mindustry.content.Fx
+import mindustry.entities.abilities.ForceFieldAbility
 import mindustry.game.EventType.UnitDestroyEvent
 import mindustry.gen.UnitEntity
+import net.liplum.R
 import net.liplum.registries.EntityRegistry
 import net.liplum.utils.hasShields
 
@@ -15,6 +18,8 @@ open class HoloUnit : UnitEntity() {
         get() = type as HoloUnitType
     open val lifespan: Float
         get() = HoloType.lifespan
+    open val overageDmgFactor: Float
+        get() = HoloType.overageDmgFactor
     open val lose: Float
         get() = HoloType.lose
     open val restLifePercent: Float
@@ -29,7 +34,7 @@ open class HoloUnit : UnitEntity() {
         var damage = lose
         val overage = time - lifespan
         if (overage > 0) {
-            damage += overage * lose * 0.5f
+            damage += overage * lose * overageDmgFactor
         }
         damageByHoloDimming(damage)
     }
@@ -59,6 +64,15 @@ open class HoloUnit : UnitEntity() {
         }
         health -= amount
         if (health <= 0.0f && !dead) {
+            if (hasShields) {
+                Time.run(30f) {
+                    (abilities.find {
+                        it is ForceFieldAbility
+                    } as? ForceFieldAbility)?.let {
+                        Fx.shieldBreak.at(x, y, it.radius, R.C.Holo)
+                    }
+                }
+            }
             kill()
         }
     }

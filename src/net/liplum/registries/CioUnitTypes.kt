@@ -12,16 +12,14 @@ import mindustry.entities.abilities.RepairFieldAbility
 import mindustry.entities.bullet.LaserBoltBulletType
 import mindustry.entities.bullet.MissileBulletType
 import mindustry.gen.Sounds
-import mindustry.graphics.Pal
-import mindustry.type.Weapon
 import mindustry.type.ammo.ItemAmmoType
 import mindustry.type.ammo.PowerAmmoType
 import mindustry.world.meta.BlockFlag
 import net.liplum.Cio
 import net.liplum.R
-import net.liplum.holo.HoloForceField
-import net.liplum.holo.HoloUnit
-import net.liplum.holo.HoloUnitType
+import net.liplum.bullets.RuvikBullet
+import net.liplum.bullets.STEM_VERSION
+import net.liplum.holo.*
 import net.liplum.utils.NewUnitType
 
 object CioUnitTypes : ContentTable {
@@ -69,19 +67,27 @@ object CioUnitTypes : ContentTable {
             commandLimit = 5
             circleTarget = true
             ammoType = ItemAmmoType(Items.plastanium)
-            weapons.add(Weapon("holo-fighter-gun".Cio).apply {
+            weapons.add(HoloWeapon("holo-fighter-gun".Cio).apply {
                 top = false
                 shootSound = Sounds.flame
                 shootY = 2f
                 reload = 11f
                 recoil = 1f
                 ejectEffect = Fx.none
-                bullet = CioBulletTypes.holoBullet
+                bullet = RuvikBullet(1.6f, 40f).apply {
+                    stemVersion = STEM_VERSION.STEM1
+                    width = 10f
+                    height = 10f
+                    hitSize = 10f
+                    lifetime = 240f
+                    frontColor = R.C.Holo
+                    backColor = R.C.HoloDark
+                }
             })
         }
 
         holoGuardian = NewUnitType(R.Unit.HoloGuardian, ::HoloUnitType, ::HoloUnit).apply {
-            AutoLife(maxHealth = 5000f, lose = 0.3f)
+            AutoLife(maxHealth = 5000f, lose = 0.5f)
             abilities.add(
                 HoloForceField(
                     60f, 4f, 2000f, 60f * 8
@@ -100,7 +106,7 @@ object CioUnitTypes : ContentTable {
             hitSize = 15f
             armor = 5f
         }
-        val holoArchitectWeapon = Weapon().apply {
+        val holoArchitectWeapon = HoloWeapon().apply {
             x = 0f
             y = 5f
             top = false
@@ -118,16 +124,16 @@ object CioUnitTypes : ContentTable {
                 weaveScale = 4f
                 lifetime = 50f
                 keepVelocity = false
-                shootEffect = Fx.shootHeal
-                smokeEffect = Fx.hitLaser
-                despawnEffect = Fx.hitLaser
+                shootEffect = HoloFx.shootHeal
+                smokeEffect = HoloFx.hitLaser
+                despawnEffect = HoloFx.hitLaser
                 hitEffect = despawnEffect
                 frontColor = Color.white
                 hitSound = Sounds.none
                 healPercent = 5.5f
                 collidesTeam = true
-                backColor = Pal.heal
-                trailColor = Pal.heal
+                backColor = R.C.Holo
+                trailColor = R.C.HoloDark
             }
         }
         holoArchitect = NewUnitType(R.Unit.HoloArchitect, ::HoloUnitType, ::HoloUnit).apply {
@@ -156,8 +162,10 @@ object CioUnitTypes : ContentTable {
         holoSupporter = NewUnitType(R.Unit.HoloSupporter, ::HoloUnitType, ::HoloUnit).apply {
             AutoLife(maxHealth = 4000f, lose = 0.15f)
             abilities.add(
-
-                RepairFieldAbility(20f, 60f * 8, 60f)
+                RepairFieldAbility(20f, 60f * 8, 60f).apply {
+                    healEffect = HoloFx.heal
+                    activeEffect = HoloFx.healWaveDynamic
+                }
             )
             defaultController = Prov { RepairAI() }
             flying = true
@@ -172,7 +180,7 @@ object CioUnitTypes : ContentTable {
             engineSize = 2f
             engineOffset = 3f
             ammoType = PowerAmmoType(1100f)
-            weapons.add(Weapon((R.Unit.HoloSupporter + "-gun").Cio).apply {
+            weapons.add(HoloWeapon((R.Unit.HoloSupporter + "-gun").Cio).apply {
                 shootSound = Sounds.lasershoot
                 reload = 15f
                 x = 4f
@@ -180,10 +188,14 @@ object CioUnitTypes : ContentTable {
                 rotate = true
                 bullet = LaserBoltBulletType(5.2f, 15f).apply {
                     lifetime = 35f
-                    healPercent = 6f
+                    healPercent = 8f
                     collidesTeam = true
-                    backColor = Pal.heal
-                    frontColor = Color.white
+                    backColor = R.C.HoloDark
+                    frontColor = R.C.Holo
+                    smokeEffect = HoloFx.hitLaser
+                    hitEffect = HoloFx.hitLaser
+                    despawnEffect = HoloFx.hitLaser
+                    lightColor = R.C.Holo
                 }
             })
         }

@@ -2,14 +2,6 @@ uniform float u_time;
 varying vec2 v_texCoords;
 uniform sampler2D u_texture;
 
-float rand(vec2 xy){
-    return fract(sin(dot(xy, vec2(12.9898, 78.233))) * 43758.5453);
-}
-
-float rand(vec2 xy, float time){
-    return fract(dot(xy, vec2(12.9898, 78.233)) * time);
-}
-
 // grabbed from https://stackoverflow.com/questions/4200224/random-noise-functions-for-glsl
 // A single iteration of Bob Jenkins' One-At-A-Time hashing algorithm.
 uint hash(uint x) {

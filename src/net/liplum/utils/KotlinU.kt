@@ -33,3 +33,6 @@ val Int.isOdd: Boolean
     get() = this % 2 == 1
 val Int.isEven: Boolean
     get() = this % 2 == 0
+
+infix fun Any?.NullOr(planB: Any?): Any? =
+    this ?: planB
