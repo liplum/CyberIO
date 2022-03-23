@@ -1,5 +1,7 @@
 package net.liplum.registries
 
+import arc.Core
+import arc.graphics.Gl
 import arc.graphics.gl.Shader
 import mindustry.Vars
 import net.liplum.CioMod.TestMobileOnly
@@ -68,7 +70,7 @@ object CioShaders {
 }
 
 val String.compatible: String
-    get() = if (Vars.mobile || Vars.testMobile || TestMobileOnly)
-        "$this-mobile"
+    get() = if (!Core.graphics.isGL30Available)
+        "$this-gl20"
     else
         this

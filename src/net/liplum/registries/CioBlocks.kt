@@ -516,7 +516,7 @@ object CioBlocks : ContentTable {
             holoProjector = HoloProjector("holo-projector").apply {
                 requirements(
                     Category.units, BuildVisibility.shown, arrayOf(
-                        ItemStack(CioItems.ic, 7),
+                        ItemStack(CioItems.ic, 10),
                         ItemStack(Items.silicon, 80),
                         ItemStack(Items.graphite, 60),
                         ItemStack(Items.thorium, 100),
@@ -525,27 +525,27 @@ object CioBlocks : ContentTable {
                 plans = Seq.with(
                     HoloPlan(
                         CioUnitTypes.holoMiner,
-                        Requirement(20f),
-                        8 * 60f
+                        Requirement(70f),
+                        15 * 60f
                     ),
                     HoloPlan(
                         CioUnitTypes.holoFighter,
-                        Requirement(25f),
+                        Requirement(50f),
                         10 * 60f
                     ),
                     HoloPlan(
                         CioUnitTypes.holoGuardian,
                         Requirement(30f),
-                        12f * 60
+                        8f * 60
                     ),
                     HoloPlan(
                         CioUnitTypes.holoArchitect,
-                        Requirement(35f),
+                        Requirement(80f),
                         15f * 60
                     ),
                     HoloPlan(
                         CioUnitTypes.holoSupporter,
-                        Requirement(30f),
+                        Requirement(50f),
                         15f * 60
                     ),
                 )
