@@ -11,6 +11,7 @@ import mindustry.type.Category
 import mindustry.type.ItemStack
 import mindustry.type.LiquidStack
 import mindustry.world.blocks.defense.OverdriveProjector
+import mindustry.world.blocks.distribution.PayloadConveyor
 import mindustry.world.blocks.environment.Floor
 import mindustry.world.blocks.production.GenericCrafter
 import mindustry.world.blocks.production.LiquidConverter
@@ -20,7 +21,7 @@ import net.liplum.animations.ganim.globalAnim
 import net.liplum.api.virus.setUninfected
 import net.liplum.api.virus.setUninfectedFloor
 import net.liplum.blocks.cloud.Cloud
-import net.liplum.blocks.cyberion.CyberionMixer
+import net.liplum.blocks.cyberion.CyberionMixerDrawer
 import net.liplum.blocks.debugonly.AdjustableOverdrive
 import net.liplum.blocks.deleter.Deleter
 import net.liplum.blocks.gadgets.SmartDistributor
@@ -117,7 +118,7 @@ object CioBlocks : ContentTable {
             outputItem = ItemStack(CioItems.ic, 1)
             craftTime = 1150f
             size = 2
-            craftEffect = Fx.smelt
+            craftEffect = Fx.formsmoke
             itemCapacity = 40
             consumes.items(
                 ItemStack(Items.copper, 30),
@@ -495,7 +496,7 @@ object CioBlocks : ContentTable {
             }
         }
         DebugOnly {
-            cyberionMixer = CyberionMixer("cyberion-mixer").apply {
+            cyberionMixer = LiquidConverter("cyberion-mixer").apply {
                 requirements(
                     Category.crafting, BuildVisibility.shown, arrayOf(
                         ItemStack(CioItems.ic, 2),
@@ -503,9 +504,10 @@ object CioBlocks : ContentTable {
                         ItemStack(Items.titanium, 100),
                     )
                 )
+                drawer = CyberionMixerDrawer(R.C.Holo, R.C.HoloDark)
                 outputLiquid = LiquidStack(CioLiquids.cyberion, 0.3f)
                 craftTime = 100f
-                size = 2
+                size = 3
                 consumes.power(1.5f)
                 consumes.item(Items.thorium, 1)
                 consumes.liquid(Liquids.cryofluid, 0.3f)
@@ -574,6 +576,7 @@ object CioBlocks : ContentTable {
             Blocks.itemSource.buildVisibility = BuildVisibility.shown
             Blocks.liquidSource.buildVisibility = BuildVisibility.shown
             Blocks.payloadSource.buildVisibility = BuildVisibility.shown
+            (Blocks.payloadConveyor as PayloadConveyor).payloadLimit = 5f
         }
         ExperimentalOnly {
             Blocks.conveyor.sync = true

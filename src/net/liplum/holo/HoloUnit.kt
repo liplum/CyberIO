@@ -8,6 +8,7 @@ import mindustry.content.Fx
 import mindustry.entities.abilities.ForceFieldAbility
 import mindustry.game.EventType.UnitDestroyEvent
 import mindustry.gen.UnitEntity
+import mindustry.logic.LAccess
 import net.liplum.R
 import net.liplum.registries.EntityRegistry
 import net.liplum.utils.hasShields
@@ -99,5 +100,12 @@ open class HoloUnit : UnitEntity() {
     override fun writeSync(write: Writes) {
         super.writeSync(write)
         write.f(time)
+    }
+
+    override fun sense(sensor: LAccess): Double {
+        return when (sensor) {
+            LAccess.progress -> (1f - restLifePercent).toDouble()
+            else -> super.sense(sensor)
+        }
     }
 }

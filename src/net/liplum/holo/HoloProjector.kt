@@ -11,6 +11,7 @@ import mindustry.entities.Units
 import mindustry.gen.Building
 import mindustry.gen.Iconc
 import mindustry.graphics.Pal
+import mindustry.logic.LAccess
 import mindustry.type.Item
 import mindustry.type.Liquid
 import mindustry.type.UnitType
@@ -146,6 +147,7 @@ open class HoloProjector(name: String) : Block(name) {
                 }
             }
         }
+
         @CalledBySync
         open fun setPlan(plan: Int) {
             var order = plan
@@ -226,6 +228,20 @@ open class HoloProjector(name: String) : Block(name) {
             super.write(write)
             write.b(planOrder)
             write.f(progressTime)
+        }
+
+        override fun senseObject(sensor: LAccess): Any? {
+            return when (sensor) {
+                LAccess.config -> planOrder
+                else -> super.sense(sensor)
+            }
+        }
+
+        override fun sense(sensor: LAccess): Double {
+            return when (sensor) {
+                LAccess.progress -> progress.toDouble()
+                else -> super.sense(sensor)
+            }
         }
     }
 }

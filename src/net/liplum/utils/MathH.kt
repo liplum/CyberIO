@@ -1,6 +1,10 @@
+@file:JvmName("MathH")
+
 package net.liplum.utils
 
+import arc.math.Angles
 import arc.math.Mathf
+import arc.math.geom.Vec2
 import kotlin.math.*
 
 typealias FUNC = (Float) -> Float
@@ -92,3 +96,33 @@ fun ExpLogGen(base: Float): Pair<FUNC, FUNC> =
 
 val LogE: FUNC = ::ln
 val ExpE: FUNC = ::exp
+fun toAngle(x: Float, y: Float): Float =
+    Angles.angle(x, y)
+
+fun toAngle(x: Int, y: Int): Float =
+    Angles.angle(x.toFloat(), y.toFloat())
+
+fun toAngle(x1: Int, y1: Int, x2: Int, y2: Int): Float =
+    Angles.angle(x1.toFloat(), y1.toFloat(), x2.toFloat(), y2.toFloat())
+
+fun toAngle(x1: Float, y1: Float, x2: Float, y2: Float): Float =
+    Angles.angle(x1, y1, x2, y2)
+
+fun toAngle(x: Double, y: Double): Float =
+    Angles.angle(x.toFloat(), y.toFloat())
+
+fun distance(x1: Float, y1: Float, x2: Float, y2: Float): Float {
+    val x = x1 - x2
+    val y = y1 - y2
+    return Mathf.sqrt(x * x + y * y)
+}
+
+fun Vec2.normal(): Vec2 {
+    this.set(y, -x)
+    return this
+}
+
+fun Vec2.normal(factor: Float): Vec2 {
+    this.set(factor * y, -factor * x)
+    return this
+}

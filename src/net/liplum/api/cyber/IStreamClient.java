@@ -1,11 +1,11 @@
-package net.liplum.api.stream;
+package net.liplum.api.cyber;
 
 import arc.graphics.Color;
 import arc.struct.ObjectSet;
 import mindustry.type.Liquid;
 import net.liplum.CalledBySync;
 import net.liplum.ClientOnly;
-import net.liplum.delegates.Delegate1;
+import net.liplum.lib.delegates.Delegate1;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

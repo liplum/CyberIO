@@ -1,11 +1,11 @@
-package net.liplum.api.data;
+package net.liplum.api.cyber;
 
 import mindustry.gen.Building;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 import org.jetbrains.annotations.NotNull;
 
-public interface IDataBuilding {
+public interface ICyberEntity {
     @NotNull
     Building getBuilding();
 

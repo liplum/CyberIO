@@ -1,6 +1,5 @@
 package net.liplum.blocks.icmachine
 
-import arc.graphics.g2d.Draw
 import arc.math.Mathf
 import arc.util.Time
 import net.liplum.ClientOnly
@@ -37,8 +36,8 @@ open class ICMachine(name: String) : AniedCrafter<ICMachine, ICMachine.ICMachine
 
     open inner class ICMachineBuild : AniedCrafter<ICMachine, ICMachineBuild>.AniedCrafterBuild() {
         lateinit var workingAnimObj: AnimationObj
-        override fun created() {
-            super.created()
+
+        init {
             ClientOnly {
                 workingAnimObj = WorkingAnim.gen()
                 workingAnimObj.tmod {

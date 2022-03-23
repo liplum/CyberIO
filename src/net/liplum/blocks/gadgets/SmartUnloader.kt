@@ -7,6 +7,7 @@ import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.gen.Building
 import mindustry.graphics.Pal
+import mindustry.logic.LAccess
 import mindustry.type.Item
 import mindustry.ui.Bar
 import mindustry.world.Tile
@@ -19,8 +20,7 @@ import net.liplum.animations.anims.AnimationObj
 import net.liplum.animations.anis.AniState
 import net.liplum.animations.anis.DrawTR
 import net.liplum.animations.anis.config
-import net.liplum.api.data.*
-import net.liplum.api.drawDataNetGraphic
+import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
 import net.liplum.persistance.intSet
 import net.liplum.ui.bars.removeItems
@@ -149,8 +149,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
             get() = lastUnloadTime < UnloadTime
         @ClientOnly lateinit var shrinkingAnimObj: AnimationObj
         var justRestored = false
-        override fun created() {
-            super.created()
+        init {
             ClientOnly {
                 shrinkingAnimObj = ShrinkingAnim.gen()
             }
@@ -426,6 +425,25 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
             super.write(write)
             write.intSet(receivers)
         }
+
+        override fun control(type: LAccess, p1: Any?, p2: Double, p3: Double, p4: Double) {
+            when (type) {
+                LAccess.shoot ->
+                    if (p1 is IDataReceiver) connectSync(p1)
+                else -> super.control(type, p1, p2, p3, p4)
+            }
+        }
+
+        override fun control(type: LAccess, p1: Double, p2: Double, p3: Double, p4: Double) {
+            when (type) {
+                LAccess.shoot -> {
+                    val receiver = buildAt(p1, p2)
+                    if (receiver is IDataReceiver) connectSync(receiver)
+                }
+                else -> super.control(type, p1, p2, p3, p4)
+            }
+        }
+
     }
 
     @ClientOnly lateinit var UnloadingAni: AniStateU

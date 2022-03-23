@@ -1,4 +1,4 @@
-package net.liplum.api.data;
+package net.liplum.api.cyber;
 
 import arc.struct.ObjectSet;
 import mindustry.type.Item;

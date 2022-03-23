@@ -9,7 +9,7 @@ import mindustry.game.EventType
 import net.liplum.CanRefresh
 import net.liplum.CioMod
 import net.liplum.ClientOnly
-import net.liplum.delegates.Delegate
+import net.liplum.lib.delegates.Delegate
 
 open class GlobalAnimation(
     val duration: Float,

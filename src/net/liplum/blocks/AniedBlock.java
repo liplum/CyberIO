@@ -108,14 +108,11 @@ public abstract class AniedBlock<TBlock extends AniedBlock<?, ?>, TBuild extends
             return aniStateM;
         }
 
-        @Override
-        public Building create(Block block, Team team) {
-            super.create(block, team);
+        public AniedBuild() {
             if (CioMod.IsClient) {
                 AniedBlock<TBlock, TBuild> outer = AniedBlock.this;
                 this.aniStateM = outer.getAniConfig().gen((TBlock) outer, (TBuild) this);
             }
-            return this;
         }
 
         /**

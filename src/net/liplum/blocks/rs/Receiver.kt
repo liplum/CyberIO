@@ -22,17 +22,16 @@ import net.liplum.animations.anis.AniState
 import net.liplum.animations.anis.DrawTR
 import net.liplum.animations.anis.SetColor
 import net.liplum.animations.anis.config
-import net.liplum.api.data.*
-import net.liplum.api.drawDataNetGraphic
-import net.liplum.api.drawLinkedLineToReceiverWhenConfiguring
-import net.liplum.api.drawRequirements
-import net.liplum.api.whenNotConfiguringSender
+import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
 import net.liplum.blocks.rs.Receiver.ReceiverBuild
-import net.liplum.delegates.Delegate1
+import net.liplum.lib.delegates.Delegate1
 import net.liplum.persistance.intSet
 import net.liplum.ui.bars.removeItems
-import net.liplum.utils.*
+import net.liplum.utils.AnimU
+import net.liplum.utils.TR
+import net.liplum.utils.addSenderInfo
+import net.liplum.utils.inMod
 
 private typealias AniStateR = AniState<Receiver, ReceiverBuild>
 

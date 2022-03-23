@@ -24,14 +24,14 @@ import net.liplum.animations.anims.AnimationObj
 import net.liplum.animations.anis.AniState
 import net.liplum.animations.anis.DrawTR
 import net.liplum.animations.anis.config
-import net.liplum.api.data.IDataReceiver
-import net.liplum.api.data.IDataSender
-import net.liplum.api.drawDataNetGraphic
-import net.liplum.api.drawLinkedLineToReceiverWhenConfiguring
-import net.liplum.api.drawRequirements
-import net.liplum.api.whenNotConfiguringSender
+import net.liplum.api.cyber.IDataReceiver
+import net.liplum.api.cyber.IDataSender
+import net.liplum.api.cyber.drawDataNetGraphic
+import net.liplum.api.cyber.drawLinkedLineToReceiverWhenConfiguring
+import net.liplum.api.cyber.drawRequirements
+import net.liplum.api.cyber.whenNotConfiguringSender
 import net.liplum.blocks.AniedBlock
-import net.liplum.delegates.Delegate1
+import net.liplum.lib.delegates.Delegate1
 import net.liplum.persistance.intSet
 import net.liplum.ui.bars.removeItems
 import net.liplum.utils.*
@@ -114,8 +114,7 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
         var hasDynamicRequirements: Boolean = false
         var dynamicReqUpdateTimer = 0f
         var disIndex = 0
-        override fun created() {
-            super.created()
+        init {
             ClientOnly {
                 arrowsAnimObj = ArrowsAnim.gen()
             }

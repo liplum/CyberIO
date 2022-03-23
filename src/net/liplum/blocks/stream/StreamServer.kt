@@ -6,14 +6,16 @@ import mindustry.Vars
 import mindustry.entities.Fires
 import mindustry.gen.Building
 import mindustry.graphics.Drawf
+import mindustry.logic.LAccess
 import mindustry.type.Liquid
 import net.liplum.ClientOnly
 import net.liplum.R
 import net.liplum.animations.anis.DrawOn
 import net.liplum.animations.anis.DrawRotateOn
-import net.liplum.api.stream.IStreamClient
-import net.liplum.api.stream.sc
+import net.liplum.api.cyber.IStreamClient
+import net.liplum.api.cyber.sc
 import net.liplum.utils.ForProximity
+import net.liplum.utils.buildAt
 
 open class StreamServer(name: String) : StreamHost(name) {
     @JvmField var fireproof = false
@@ -140,6 +142,24 @@ open class StreamServer(name: String) : StreamHost(name) {
             )
             TopTR.DrawRotateOn(this, liquidFlow)
             drawTeamTop()
+        }
+
+        override fun control(type: LAccess, p1: Any?, p2: Double, p3: Double, p4: Double) {
+            when (type) {
+                LAccess.shoot ->
+                    if (p1 is IStreamClient) connectSync(p1)
+                else -> super.control(type, p1, p2, p3, p4)
+            }
+        }
+
+        override fun control(type: LAccess, p1: Double, p2: Double, p3: Double, p4: Double) {
+            when (type) {
+                LAccess.shoot -> {
+                    val receiver = buildAt(p1, p2)
+                    if (receiver is IStreamClient) connectSync(receiver)
+                }
+                else -> super.control(type, p1, p2, p3, p4)
+            }
         }
     }
 }

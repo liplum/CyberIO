@@ -11,6 +11,24 @@ import mindustry.gen.Building
 import mindustry.type.UnitType
 import mindustry.world.Tile
 
+fun tileAt(x: Int, y: Int): Tile? =
+    Vars.world.tile(x, y)
+
+fun tileAt(x: Float, y: Float): Tile? =
+    Vars.world.tile(x.toInt(), y.toInt())
+
+fun tileAt(x: Double, y: Double): Tile? =
+    Vars.world.tile(x.toInt(), y.toInt())
+
+fun buildAt(x: Int, y: Int): Building? =
+    Vars.world.build(x, y)
+
+fun buildAt(x: Float, y: Float): Building? =
+    Vars.world.build(x.toInt(), y.toInt())
+
+fun buildAt(x: Double, y: Double): Building? =
+    Vars.world.build(x.toInt(), y.toInt())
+
 val Int.build: Building?
     get() = Vars.world.build(this)
 

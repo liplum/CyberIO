@@ -1,4 +1,4 @@
-package net.liplum.api.stream;
+package net.liplum.api.cyber;
 
 import arc.graphics.Color;
 import arc.struct.OrderedSet;

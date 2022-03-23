@@ -32,6 +32,7 @@ open class PrismObelisk(name: String) : Block(name) {
         group = BlockGroup.turrets
         flags = EnumSet.of(BlockFlag.turret)
         noUpdateDisabled = true
+        canOverdrive = false
     }
 
     override fun load() {
@@ -61,20 +62,19 @@ open class PrismObelisk(name: String) : Block(name) {
          */
         @JvmField var prismOrient = 0
         @ClientOnly lateinit var BlinkObjs: Array<AnimationObj>
+        init {
+            ClientOnly {
+                BlinkObjs = Array(4) {
+                    BlinkAnim.gen().pingPong().apply { sleepInstantly() }
+                }
+            }
+        }
+
         override fun onProximityUpdate() {
             super.onProximityUpdate()
             val mayLinked = linked
             if (mayLinked != -1 && !mayLinked.te<PrismBuild>().exists) {
                 linked = -1
-            }
-        }
-
-        override fun created() {
-            super.created()
-            ClientOnly {
-                BlinkObjs = Array(4) {
-                    BlinkAnim.gen().pingPong().apply { sleepInstantly() }
-                }
             }
         }
 

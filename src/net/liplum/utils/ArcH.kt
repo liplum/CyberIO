@@ -2,6 +2,7 @@ package net.liplum.utils
 
 import arc.func.Cons
 import arc.func.Prov
+import arc.math.Interp
 import arc.math.Mathf
 import arc.struct.OrderedMap
 import arc.struct.OrderedSet
@@ -21,3 +22,6 @@ operator fun <T> Cons<T>.invoke(t: T) {
 
 operator fun <T> Prov<T>.invoke(): T =
     this.get()
+
+operator fun Interp.invoke(x: Float): Float =
+    this.apply(x)

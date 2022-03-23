@@ -28,6 +28,7 @@ annotation class ServerOnly
     AnnotationTarget.FUNCTION,
     AnnotationTarget.PROPERTY_SETTER,
     AnnotationTarget.CONSTRUCTOR,
+    AnnotationTarget.PROPERTY,
 )
 @Inherited
 annotation class SendDataPack

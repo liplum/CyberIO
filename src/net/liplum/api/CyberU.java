@@ -8,10 +8,10 @@ import mindustry.type.Liquid;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 import net.liplum.R;
-import net.liplum.api.data.IDataReceiver;
-import net.liplum.api.data.IDataSender;
-import net.liplum.api.stream.IStreamClient;
-import net.liplum.api.stream.IStreamHost;
+import net.liplum.api.cyber.IDataReceiver;
+import net.liplum.api.cyber.IDataSender;
+import net.liplum.api.cyber.IStreamClient;
+import net.liplum.api.cyber.IStreamHost;
 import net.liplum.utils.G;
 
 public class CyberU {

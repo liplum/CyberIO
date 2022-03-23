@@ -21,12 +21,8 @@ import net.liplum.animations.anims.ixAuto
 import net.liplum.animations.anis.*
 import net.liplum.animations.blocks.*
 import net.liplum.api.CyberU
-import net.liplum.api.data.IDataReceiver
-import net.liplum.api.data.IDataSender
-import net.liplum.api.data.dr
-import net.liplum.api.drawLinkedLineToReceiverWhenConfiguring
-import net.liplum.api.whenNotConfiguringSender
-import net.liplum.delegates.Delegate1
+import net.liplum.api.cyber.*
+import net.liplum.lib.delegates.Delegate1
 import net.liplum.persistance.intSet
 import net.liplum.utils.*
 
@@ -101,7 +97,8 @@ open class Cloud(name: String) : PowerBlock(name) {
     }
 
     override fun outputsItems() = false
-    open inner class CloudBuild : Building(), IShared, IDataReceiver, IDataSender {
+    open inner class CloudBuild : Building(), IShared, IDataReceiver,
+        IDataSender {
         lateinit var cloudRoom: SharedRoom
         lateinit var aniBlockGroupObj: BlockGroupObj<Cloud, CloudBuild>
         lateinit var info: CloudInfo
@@ -112,6 +109,16 @@ open class Cloud(name: String) : PowerBlock(name) {
         @JvmField var floating: Floating = Floating(cloudFloatRange).randomXY().changeRate(2)
         @JvmField var onRequirementUpdated: Delegate1<IDataReceiver> = Delegate1()
         override fun getOnRequirementUpdated() = onRequirementUpdated
+
+        init {
+            ClientOnly {
+                //floatingCloudIx = floatingCloudAnim.indexByTimeScale(this)
+                dataTransferIx = DataTransferAnim.ixAuto(this)
+                shredderIx = ShredderAnim.ixAuto(this)
+                aniBlockGroupObj = BlockG.newObj(this@Cloud, this)
+            }
+        }
+
         override fun updateTile() {
         }
         @CalledBySync
@@ -138,12 +145,6 @@ open class Cloud(name: String) : PowerBlock(name) {
         override fun created() {
             cloudRoom = LiplumCloud.getCloud(team)
             cloudRoom.online(this)
-            ClientOnly {
-                //floatingCloudIx = floatingCloudAnim.indexByTimeScale(this)
-                dataTransferIx = DataTransferAnim.ixAuto(this)
-                shredderIx = ShredderAnim.ixAuto(this)
-                aniBlockGroupObj = BlockG.newObj(this@Cloud, this)
-            }
         }
 
         override fun onRemoved() {

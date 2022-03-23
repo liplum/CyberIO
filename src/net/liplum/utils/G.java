@@ -90,7 +90,7 @@ public class G {
         float endDrawY = WorldU.toDrawXY(endBlock, endBlockY);
 
 
-        float segsf = Util2D.distance(startDrawX, startDrawY, endBlockX * tilesize, endBlockY * tilesize) / tilesize;
+        float segsf = MathH.distance(startDrawX, startDrawY, endBlockX * tilesize, endBlockY * tilesize) / tilesize;
         Tmp.v1.set(endDrawX, endDrawY)
                 .sub(startDrawX, startDrawY)
                 .limit((endBlock.size / 2f + 1) * tilesize + sin + 0.5f);

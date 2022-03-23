@@ -59,7 +59,13 @@ open class HoloUnitType(name: String) : UnitType(name) {
     }
 
     open val Unit.holoAlpha: Float
-        get() = this.healthPct.coerceAtLeast(minAlpha)
+        get() {
+            var alpha = this.healthPct
+            if (this is HoloUnit) {
+                alpha = min(alpha, this.restLifePercent)
+            }
+            return alpha.coerceAtLeast(minAlpha)
+        }
 
     override fun draw(unit: Unit) {
         val z =

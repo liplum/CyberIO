@@ -1,0 +1,70 @@
+package net.liplum.blocks.cyberion
+
+import arc.graphics.Color
+import arc.graphics.g2d.Draw
+import arc.graphics.g2d.Fill
+import arc.math.Mathf
+import arc.util.Time
+import mindustry.graphics.Drawf
+import mindustry.graphics.Layer
+import mindustry.world.Block
+import mindustry.world.blocks.production.GenericCrafter
+import mindustry.world.draw.DrawSmelter
+import net.liplum.ClientOnly
+import net.liplum.registries.CioLiquids
+import net.liplum.utils.TR
+import net.liplum.utils.sub
+
+class CyberionMixerDrawer : DrawSmelter {
+    @ClientOnly lateinit var LiquidTR: TR
+    @JvmField var lightColor: Color = Color.white
+
+    constructor() : super()
+    constructor(
+        flameColor: Color,
+        lightColor: Color
+    ) : super(flameColor) {
+        this.lightColor = lightColor
+    }
+
+    init {
+        flameRadius = 1.8f
+    }
+
+    override fun load(block: Block) {
+        super.load(block)
+        LiquidTR = block.sub("liquid")
+    }
+
+    override fun draw(build: GenericCrafter.GenericCrafterBuild) {
+        Draw.rect(
+            build.block.region, build.x, build.y,
+            if (build.block.rotate)
+                build.rotdeg()
+            else 0f
+        )
+
+        Drawf.liquid(
+            LiquidTR, build.x, build.y,
+            build.liquids[CioLiquids.cyberion] / build.block.liquidCapacity,
+            CioLiquids.cyberion.color,
+            (build.rotation - 90).toFloat()
+        )
+
+        if (build.warmup > 0f && flameColor.a > 0.001f) {
+            val g = 0.3f
+            val r = 0.06f
+            val cr = Mathf.random(0.1f)
+            Draw.z(Layer.block + 0.01f)
+            Draw.alpha(build.warmup)
+            Draw.rect(top, build.x, build.y)
+            Draw.alpha((1f - g + Mathf.absin(Time.time, 8f, g) + Mathf.random(r) - r) * build.warmup)
+            Draw.tint(flameColor)
+            Fill.circle(build.x, build.y, flameRadius + Mathf.absin(Time.time, flameRadiusScl, flameRadiusMag) + cr)
+            Draw.color(lightColor)
+            Draw.alpha(build.warmup)
+            Fill.circle(build.x, build.y, flameRadiusIn + Mathf.absin(Time.time, flameRadiusScl, flameRadiusInMag) + cr)
+            Draw.color()
+        }
+    }
+}

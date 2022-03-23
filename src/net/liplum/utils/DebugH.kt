@@ -12,10 +12,10 @@ import mindustry.world.blocks.production.GenericCrafter
 import mindustry.world.meta.BlockBars
 import net.liplum.R
 import net.liplum.animations.anis.IAniSMedBuild
-import net.liplum.api.data.IDataReceiver
-import net.liplum.api.data.IDataSender
-import net.liplum.api.stream.IStreamClient
-import net.liplum.api.stream.IStreamHost
+import net.liplum.api.cyber.IDataReceiver
+import net.liplum.api.cyber.IDataSender
+import net.liplum.api.cyber.IStreamClient
+import net.liplum.api.cyber.IStreamHost
 
 annotation class CioDebugOnly
 

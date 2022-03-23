@@ -7,6 +7,7 @@ import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.gen.Building
 import mindustry.graphics.Pal
+import mindustry.logic.LAccess
 import mindustry.type.Item
 import mindustry.ui.Bar
 import mindustry.world.Block
@@ -15,14 +16,10 @@ import mindustry.world.meta.BlockGroup
 import net.liplum.*
 import net.liplum.animations.anims.Animation
 import net.liplum.animations.anis.*
-import net.liplum.api.data.*
-import net.liplum.api.drawDataNetGraphic
+import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
 import net.liplum.blocks.rs.Sender.SenderBuild
-import net.liplum.utils.AnimU
-import net.liplum.utils.TR
-import net.liplum.utils.addReceiverInfo
-import net.liplum.utils.inMod
+import net.liplum.utils.*
 
 private typealias AniStateS = AniState<Sender, SenderBuild>
 
@@ -92,10 +89,10 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
         @set:CalledBySync
         var receiverPackedPos = -1
             set(value) {
-                var curBuild = receiverBuilding
+                var curBuild = receiver
                 curBuild?.disconnect(this)
                 field = value
-                curBuild = receiverBuilding
+                curBuild = receiver
                 curBuild?.connect(this)
             }
 
@@ -127,7 +124,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
             if (!consValid()) {
                 return
             }
-            val reb = receiverBuilding
+            val reb = receiver
             if (reb != null) {
                 sendData(reb, item, 1)
                 ClientOnly {
@@ -136,7 +133,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
             }
         }
 
-        val receiverBuilding: IDataReceiver?
+        val receiver: IDataReceiver?
             get() {
                 if (receiverPackedPos != -1) {
                     return receiverPackedPos.dr()
@@ -178,7 +175,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
             if (!consValid()) {
                 return false
             }
-            val reb = receiverBuilding
+            val reb = receiver
             return reb?.acceptedAmount(this, item)?.isAccepted() ?: false
         }
 
@@ -208,6 +205,32 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
                 configure(null)
             }
         }
+
+        override fun control(type: LAccess, p1: Any?, p2: Double, p3: Double, p4: Double) {
+            when (type) {
+                LAccess.shoot ->
+                    if (p1 is IDataReceiver) connectSync(p1)
+                else -> super.control(type, p1, p2, p3, p4)
+            }
+        }
+
+        override fun control(type: LAccess, p1: Double, p2: Double, p3: Double, p4: Double) {
+            when (type) {
+                LAccess.shoot -> {
+                    val receiver = buildAt(p1, p2)
+                    if (receiver is IDataReceiver) connectSync(receiver)
+                }
+                else -> super.control(type, p1, p2, p3, p4)
+            }
+        }
+
+        override fun sense(sensor: LAccess): Double {
+            return when (sensor) {
+                LAccess.shootX -> receiver.tileXd
+                LAccess.shootY -> receiver.tileYd
+                else -> super.sense(sensor)
+            }
+        }
     }
 
     @ClientOnly lateinit var IdleAni: AniStateS
@@ -234,7 +257,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
         config {
             // Idle
             From(IdleAni) To UploadAni When {
-                val reb = it.receiverBuilding
+                val reb = it.receiver
                 reb != null
             } To NoPowerAni When {
                 !it.consValid()
@@ -243,7 +266,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
             From(UploadAni) To IdleAni When {
                 it.receiverPackedPos == -1
             } To BlockedAni When {
-                val reb = it.receiverBuilding
+                val reb = it.receiver
                 reb != null && it.isBlocked
             } To NoPowerAni When {
                 !it.consValid()
@@ -252,7 +275,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
             From(BlockedAni) To IdleAni When {
                 it.receiverPackedPos == -1
             } To UploadAni When {
-                val reb = it.receiverBuilding
+                val reb = it.receiver
                 reb != null && !it.isBlocked
             } To NoPowerAni When {
                 !it.consValid()

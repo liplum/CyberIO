@@ -1,4 +1,4 @@
-package net.liplum.delegates
+package net.liplum.lib.delegates
 
 typealias EventHandler<T> = (sender: T, e: Args) -> Unit
 

@@ -1,4 +1,4 @@
-package net.liplum.delegates
+package net.liplum.lib.delegates
 
 open class Args {
     var data: Any? = null

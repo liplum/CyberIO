@@ -1,10 +1,10 @@
-package net.liplum.api.data;
+package net.liplum.api.cyber;
 
 import arc.struct.ObjectSet;
 import mindustry.type.Item;
 import net.liplum.CalledBySync;
 import net.liplum.ClientOnly;
-import net.liplum.delegates.Delegate1;
+import net.liplum.lib.delegates.Delegate1;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

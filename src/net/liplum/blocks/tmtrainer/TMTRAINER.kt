@@ -12,10 +12,7 @@ import net.liplum.animations.anims.AnimationObj
 import net.liplum.animations.anims.ITimeModifier
 import net.liplum.draw
 import net.liplum.math.PolarPos
-import net.liplum.utils.TR
-import net.liplum.utils.autoAnim
-import net.liplum.utils.radian
-import net.liplum.utils.sub
+import net.liplum.utils.*
 
 open class TMTRAINER(name: String) : ItemTurret(name) {
     @ClientOnly lateinit var CoreAnim: Animation
@@ -52,13 +49,7 @@ open class TMTRAINER(name: String) : ItemTurret(name) {
                 field = value.coerceIn(0f, 60f)
             }
 
-        override fun update() {
-            super.update()
-            val delta = if (wasShooting) delta() else -delta()
-            virusCharge += delta / 2.5f
-        }
-
-        override fun created() {
+        init {
             ClientOnly {
                 val boost = ITimeModifier {
                     if (unit.ammo() > 0)
@@ -68,6 +59,12 @@ open class TMTRAINER(name: String) : ItemTurret(name) {
                 coreAnimObj = CoreAnim.gen().tmod(boost)
                 emptyCoreAnimObj = EmptyCoreAnim.gen().tmod(boost)
             }
+        }
+
+        override fun update() {
+            super.update()
+            val delta = if (wasShooting) delta() else -delta()
+            virusCharge += delta / 2.5f
         }
 
         override fun draw() {
@@ -96,7 +93,7 @@ open class TMTRAINER(name: String) : ItemTurret(name) {
             )
 
             Drawf.shadow(region, drawX - elevation, drawY - elevation, drawRotation)
-            drawer[this]
+            drawer(this)
             emptyCoreAnimObj.draw(
                 drawX,
                 drawY,
@@ -113,7 +110,7 @@ open class TMTRAINER(name: String) : ItemTurret(name) {
             }
 
             if (Core.atlas.isFound(heatRegion)) {
-                heatDrawer[this]
+                heatDrawer(this)
             }
         }
     }

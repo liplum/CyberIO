@@ -81,8 +81,7 @@ public abstract class AniedCrafter<TBlock extends AniedCrafter<?, ?>, TBuild ext
             return aniStateM;
         }
 
-        @Override
-        public void created() {
+        public AniedCrafterBuild() {
             if (CioMod.IsClient) {
                 AniedCrafter<TBlock, TBuild> out = AniedCrafter.this;
                 this.aniStateM = out.getAniConfig().gen((TBlock) out, (TBuild) this);

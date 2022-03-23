@@ -8,6 +8,7 @@ import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.gen.Building
 import mindustry.graphics.Drawf
+import mindustry.logic.LAccess
 import mindustry.type.Liquid
 import mindustry.world.Block
 import mindustry.world.Tile
@@ -18,8 +19,7 @@ import net.liplum.DebugOnly
 import net.liplum.SendDataPack
 import net.liplum.animations.Floating
 import net.liplum.animations.anis.*
-import net.liplum.api.drawStreamGraphic
-import net.liplum.api.stream.*
+import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
 import net.liplum.persistance.intSet
 import net.liplum.utils.*
@@ -262,6 +262,24 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
                 (rotation - 90).toFloat()
             )
             TopTR.DrawOn(this)
+        }
+
+        override fun control(type: LAccess, p1: Any?, p2: Double, p3: Double, p4: Double) {
+            when (type) {
+                LAccess.shoot ->
+                    if (p1 is IStreamClient) connectSync(p1)
+                else -> super.control(type, p1, p2, p3, p4)
+            }
+        }
+
+        override fun control(type: LAccess, p1: Double, p2: Double, p3: Double, p4: Double) {
+            when (type) {
+                LAccess.shoot -> {
+                    val receiver = buildAt(p1, p2)
+                    if (receiver is IStreamClient) connectSync(receiver)
+                }
+                else -> super.control(type, p1, p2, p3, p4)
+            }
         }
     }
 

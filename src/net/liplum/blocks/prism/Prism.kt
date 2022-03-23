@@ -4,21 +4,23 @@ import arc.graphics.Color
 import arc.graphics.g2d.Draw
 import arc.math.Angles
 import arc.math.Mathf
+import arc.math.geom.Vec2
 import arc.struct.EnumSet
+import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.content.UnitTypes
 import mindustry.entities.TargetPriority
-import mindustry.gen.BlockUnitc
-import mindustry.gen.Building
-import mindustry.gen.Bullet
-import mindustry.gen.Groups
+import mindustry.gen.*
 import mindustry.graphics.Drawf
 import mindustry.graphics.Layer
 import mindustry.graphics.Pal
+import mindustry.logic.LAccess
+import mindustry.logic.Ranged
 import mindustry.ui.Bar
 import mindustry.world.Block
 import mindustry.world.blocks.ControlBlock
+import mindustry.world.blocks.defense.turrets.Turret
 import mindustry.world.meta.BlockFlag
 import mindustry.world.meta.BlockGroup
 import net.liplum.ClientOnly
@@ -30,8 +32,7 @@ import net.liplum.draw
 import net.liplum.math.PolarPos
 import net.liplum.utils.*
 import kotlin.math.abs
-
-typealias UnitT = mindustry.gen.Unit
+import kotlin.math.log2
 
 open class Prism(name: String) : Block(name) {
     var PS: FUNC = quadratic(1.2f, 0.2f)
@@ -146,35 +147,36 @@ open class Prism(name: String) : Block(name) {
         }
     }
 
-    open inner class PrismBuild : Building(), ControlBlock {
-        lateinit var cm: CrystalManager
+    open inner class PrismBuild : Building(), ControlBlock, Ranged {
+        @JvmField var cm: CrystalManager = CrystalManager().apply {
+            maxAmount = maxCrystal
+            prism = this@PrismBuild
+            ClientOnly {
+                genCrystalImgCallback = {
+                    img = CrystalTRs.randomOne()
+                }
+            }
+            addCrystalCallback = {
+                revolution = PolarPos(0f, 0f)
+                rotation = PolarPos(prismRange, 0f)
+                isClockwise = orbitPos % 2 != 0
+            }
+            for (i in 0 until initCrystalCount) {
+                tryAddNew()
+            }
+        }
         var unit = UnitTypes.block.create(team) as BlockUnitc
         override fun canControl() = playerControllable
         val crystalAmount: Int
             get() = cm.validAmount
         val outer: Prism
             get() = this@Prism
-
-        override fun created() {
-            super.created()
-            cm = CrystalManager().apply {
-                maxAmount = maxCrystal
-                prism = this@PrismBuild
-                ClientOnly {
-                    genCrystalImgCallback = {
-                        img = CrystalTRs.randomOne()
-                    }
-                }
-                addCrystalCallback = {
-                    revolution = PolarPos(0f, 0f)
-                    rotation = PolarPos(prismRange, 0f)
-                    isClockwise = orbitPos % 2 != 0
-                }
-                for (i in 0 until initCrystalCount) {
-                    tryAddNew()
-                }
-            }
-        }
+        var logicControlTime = -1f
+        val controlByLogic: Boolean
+            get() = logicControlTime > 0f
+        var logicAngle = 0f
+        val realRange: Float
+            get() = Agl + (prismRange * 2 * crystalAmount)
 
         fun removeOutermostPrisel() =
             cm.tryRemoveOutermost()
@@ -199,11 +201,17 @@ open class Prism(name: String) : Block(name) {
             cm.updateObelisk()
         }
 
+        override fun delta(): Float {
+            return Time.delta * log2(timeScale + 1f)
+        }
+
         override fun updateTile() {
             cm.spend(delta())
+            if (logicControlTime > 0f) {
+                logicControlTime -= Time.delta
+            }
             val perRevl = prismRevolutionSpeed * delta()
             val perRota = prismRotationSpeed * delta()
-            val ta = PolarPos.toA(unit.aimX() - x, unit.aimY() - y)
             var curPerRelv: Float
             var curPerRota: Float
 
@@ -212,9 +220,16 @@ open class Prism(name: String) : Block(name) {
                 curPerRelv = perRevl / ip1 * 0.8f
                 curPerRota = perRota * ip1 * 0.8f
                 if (isControlled) {
+                    val ta = PolarPos.toA(unit.aimX() - x, unit.aimY() - y)
                     revolution.a =
                         Angles.moveToward(
                             revolution.a.degree, ta.degree,
+                            curPerRelv * 100 * delta()
+                        ).radian
+                } else if (controlByLogic) {
+                    revolution.a =
+                        Angles.moveToward(
+                            revolution.a.degree, logicAngle,
                             curPerRelv * 100 * delta()
                         ).radian
                 } else {
@@ -236,7 +251,7 @@ open class Prism(name: String) : Block(name) {
             }
             var priselX: Float
             var priselY: Float
-            val realRange = Agl + (prismRange * 2 * crystalAmount)
+            val realRange = realRange
             val realRangeX2 = realRange * 2
             Groups.bullet.intersect(
                 x - realRange,
@@ -249,7 +264,7 @@ open class Prism(name: String) : Block(name) {
                     priselY = revolution.toY() + y
                     if (it.team == team &&
                         !it.data.isDuplicate &&
-                        Util2D.distance(it.x, it.y, priselX, priselY) <= prismRange
+                        it.dst(priselX, priselY) <= prismRange
                     ) {
                         it.passThrough()
                     }
@@ -342,10 +357,39 @@ open class Prism(name: String) : Block(name) {
             }
         }
 
-        override fun unit(): UnitT {
+        override fun unit(): MdtUnit {
             unit.tile(this)
             unit.team(team)
-            return (unit as UnitT)
+            return (unit as MdtUnit)
+        }
+
+        override fun control(type: LAccess, p1: Double, p2: Double, p3: Double, p4: Double) {
+            if (type == LAccess.shoot && !unit.isPlayer) {
+                logicAngle = toAngle(p1, p2)
+                logicControlTime = 60f
+            }
+            super.control(type, p1, p2, p3, p4)
+        }
+
+        open fun findNearestTurret(): Vec2? {
+            var pos: Vec2? = null
+            Groups.build.each {
+                if (it is Turret.TurretBuild && it.dst(this) <= 60f && it.isActive) {
+                    pos = Vec2(it.x, it.y)
+                    return@each
+                }
+            }
+            return pos
+        }
+
+        override fun control(type: LAccess, p1: Any?, p2: Double, p3: Double, p4: Double) {
+            if (type == LAccess.shootp && !unit.isPlayer) {
+                if (p1 is Posc) {
+                    logicControlTime = 60f
+                    logicAngle = toAngle(x, y, p1.x, p1.y)
+                }
+            }
+            super.control(type, p1, p2, p3, p4)
         }
 
         override fun read(read: Reads, revision: Byte) {
@@ -357,5 +401,7 @@ open class Prism(name: String) : Block(name) {
             super.write(write)
             cm.write(write)
         }
+
+        override fun range() = realRange
     }
 }

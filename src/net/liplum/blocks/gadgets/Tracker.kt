@@ -1,6 +1,6 @@
 package net.liplum.blocks.gadgets
 
-import net.liplum.api.data.IDataReceiver
+import net.liplum.api.cyber.IDataReceiver
 import kotlin.math.absoluteValue
 
 open class Tracker(val maxConnection: Int) {
