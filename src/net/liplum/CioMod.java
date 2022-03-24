@@ -43,8 +43,6 @@ public class CioMod extends Mod {
         Events.on(DisposeEvent.class,
                 e -> CioShaders.dispose()
         );
-        OutputStreamWriter op = new OutputStreamWriter(new ByteArrayOutputStream());
-        String s = new ByteArrayOutputStream().toString();
     }
 
     @Override
