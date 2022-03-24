@@ -20,7 +20,6 @@ vec3 hsv2rgb(vec3 c){
     vec3 p = abs(fract(c.xxx + H2R.xyz) * 6.0 - H2R.www);
     return c.z * mix(H2R.xxx, clamp(p - H2R.xxx, 0.0, 1.0), c.y);
 }
-// 0 <= stepNumber <= lastStepNumber
 float lerpX(float start, float end, float t) {
     return (1.0 - t) * start + t * end;
 }

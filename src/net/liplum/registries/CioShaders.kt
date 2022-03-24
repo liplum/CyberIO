@@ -44,11 +44,11 @@ object CioShaders {
             TvStatic = TrShader("TvStatic".compatible).register()
             Pulse = TrShader("Pulse").register()
 
-            InvertingColorRGB = ProgressShader("InvertingColorRgb").register()
+            InvertingColorRGB = ProgressShader("InvertingColorRgb".compatible).register()
             InvertingColorRbg2HsvInHsv = ProgressShader("InvertingColorRgb2HsvInHsv").register()
             InvertingColorRbg2HsvInRgb = ProgressShader("InvertingColorRgb2HsvInRgb").register()
 
-            Monochromize = ProgressShader("Monochromize").register()
+            Monochromize = ProgressShader("Monochromize".compatible).register()
 
             isInited = true
         }
