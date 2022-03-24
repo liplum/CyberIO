@@ -16,6 +16,9 @@ import net.liplum.blocks.cloud.SharedRoom;
 import net.liplum.registries.*;
 import net.liplum.utils.G;
 
+import java.io.*;
+import java.nio.charset.Charset;
+
 import static mindustry.game.EventType.*;
 import static net.liplum.registries.TintedBulletsRegistryKt.tintedBulletsRegistryLoad;
 
@@ -40,6 +43,8 @@ public class CioMod extends Mod {
         Events.on(DisposeEvent.class,
                 e -> CioShaders.dispose()
         );
+        OutputStreamWriter op = new OutputStreamWriter(new ByteArrayOutputStream());
+        String s = new ByteArrayOutputStream().toString();
     }
 
     @Override
