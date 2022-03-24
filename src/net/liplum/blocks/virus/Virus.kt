@@ -190,7 +190,7 @@ open class Virus(name: String) : Block(name) {
         override fun draw() {
             DebugOnly {
                 Draw.draw(Layer.block) {
-                    Draw.shader(CioShaders.dynamicColor)
+                    Draw.shader(CioShaders.DynamicColor)
                     Draw.rect(block.region, x, y)
                     if (raceColor != null) {
                         Draw.color(raceColor)

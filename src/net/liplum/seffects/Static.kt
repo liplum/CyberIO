@@ -11,7 +11,7 @@ import net.liplum.shaders.SD
 import net.liplum.shaders.on
 
 val StaticFx = Effect(40f) {
-    SD.tvSnow.on {
+    SD.TvStatic.on {
         Draw.color(Color.white)
         Fill.circle(
             it.x, it.y,

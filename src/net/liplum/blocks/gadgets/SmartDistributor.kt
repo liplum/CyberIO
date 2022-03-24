@@ -1,11 +1,13 @@
 package net.liplum.blocks.gadgets
 
 import arc.graphics.g2d.Draw
+import arc.math.Mathf
 import arc.struct.OrderedSet
 import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.gen.Building
+import mindustry.graphics.Pal
 import mindustry.type.Item
 import mindustry.type.ItemStack
 import mindustry.world.Tile
@@ -24,17 +26,14 @@ import net.liplum.animations.anims.AnimationObj
 import net.liplum.animations.anis.AniState
 import net.liplum.animations.anis.DrawTR
 import net.liplum.animations.anis.config
-import net.liplum.api.cyber.IDataReceiver
-import net.liplum.api.cyber.IDataSender
-import net.liplum.api.cyber.drawDataNetGraphic
-import net.liplum.api.cyber.drawLinkedLineToReceiverWhenConfiguring
-import net.liplum.api.cyber.drawRequirements
-import net.liplum.api.cyber.whenNotConfiguringSender
+import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
 import net.liplum.lib.delegates.Delegate1
 import net.liplum.persistance.intSet
+import net.liplum.ui.bars.addBar
 import net.liplum.ui.bars.removeItems
 import net.liplum.utils.*
+import kotlin.math.log2
 
 private typealias AniStateD = AniState<SmartDistributor, SmartDistributor.SmartDISBuild>
 
@@ -50,6 +49,16 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
     @JvmField var DynamicReqUpdateTime = 30f
     @JvmField var powerUsagePerItem = 2.5f
     @JvmField var powerUsageBasic = 3f
+    @JvmField var boost2Count: (Float) -> Int = {
+        if (it <= 1.1f)
+            1
+        else if (it in 1.1f..2.1f)
+            2
+        else if (it in 2.1f..3f)
+            3
+        else
+            Mathf.round(log2(it + 5.1f))
+    }
 
     init {
         solid = true
@@ -59,7 +68,7 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
         hasPower = true
         group = BlockGroup.transportation
         noUpdateDisabled = true
-        canOverdrive = false
+        canOverdrive = true
         unloadable = false
         allowConfigInventory = false
         sync = true
@@ -89,6 +98,13 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
             bars.removeItems()
         }
         DebugOnly {
+            addBar("dis-count", {
+                "Count:" + boost2Count(timeScale)
+            }, {
+                Pal.power
+            }, {
+                boost2Count(timeScale) / 4f
+            })
             bars.addSenderInfo<SmartDISBuild>()
         }
     }
@@ -114,6 +130,7 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
         var hasDynamicRequirements: Boolean = false
         var dynamicReqUpdateTimer = 0f
         var disIndex = 0
+
         init {
             ClientOnly {
                 arrowsAnimObj = ArrowsAnim.gen()
@@ -178,7 +195,7 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
                 dynamicReqUpdateTimer = 0f
             }
             if (consValid()) {
-                val dised = distribute()
+                val dised = distributeMultiple()
                 if (dised) {
                     lastDistributionTime = 0f
                 }
@@ -186,12 +203,27 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
             lastDistributionTime += delta()
         }
 
+        open fun distributeMultiple(): Boolean {
+            return if (canOverdrive) {
+                var distributed = false
+                val times = boost2Count(timeScale)
+                for (i in 0 until times) {
+                    if (distribute()) {
+                        distributed = true
+                    }
+                }
+                distributed
+            } else {
+                distribute()
+            }
+        }
+
         open fun distribute(): Boolean {
             if (!block.hasItems || items.total() == 0) {
                 return false
             }
             var dised = false
-            if(proximity.isEmpty) return false
+            if (proximity.isEmpty) return false
             disIndex %= proximity.size
             val b = proximity[disIndex]
             if (b.team == team) {
@@ -199,9 +231,9 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
                 if (consumes.has(ConsumeType.item)) {
                     val reqs: Consume = consumes[ConsumeType.item]
                     if (reqs is ConsumeItems) {
-                        dised = distributeFunc(b, reqs.items)
+                        dised = distributeTo(b, reqs.items)
                     } else if (reqs is ConsumeItemDynamic) {
-                        dised = distributeFunc(b, reqs.items.get(b))
+                        dised = distributeTo(b, reqs.items.get(b))
                     }
                 }
             }
@@ -209,7 +241,7 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
             return dised
         }
 
-        protected open fun distributeFunc(other: Building, reqs: Array<ItemStack>): Boolean {
+        protected open fun distributeTo(other: Building, reqs: Array<ItemStack>): Boolean {
             for (req in reqs) {
                 val item = req.item
                 if (items.has(item) && other.acceptItem(this, item)) {

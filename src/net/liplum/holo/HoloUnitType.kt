@@ -33,6 +33,7 @@ open class HoloUnitType(name: String) : UnitType(name) {
     @JvmField @ClientOnly var HoloOpacity = -1f
     @JvmField @ClientOnly var minAlpha = 0.15f
     @JvmField var lose = 0.3f
+    @JvmField var loseMultiplierWhereMissing = 12f
     @JvmField var lifespan = 120 * 60f
     @JvmField var overageDmgFactor = 0.5f
 
@@ -96,7 +97,7 @@ open class HoloUnitType(name: String) : UnitType(name) {
         drawSoftShadow(unit, alpha)
 
         Draw.z(z)
-        SD.hologram2.use {
+        SD.Hologram2.use {
             it.alpha = alpha
             it.opacityNoise *= 2f - healthPct
             it.flickering = it.DefaultFlickering + (1f - healthPct)

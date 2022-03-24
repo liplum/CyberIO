@@ -52,7 +52,7 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
         group = BlockGroup.liquids
         noUpdateDisabled = true
         hasLiquids = true
-        canOverdrive = false
+        canOverdrive = true
         sync = true
         config(Integer::class.java) { obj: HostBuild, clientPackedPos ->
             obj.setClient(clientPackedPos.toInt())
@@ -88,6 +88,9 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
         open fun checkClientsPos() {
             clients.removeAll { !it.sc().exists }
         }
+
+        val realNetworkSpeed: Float
+            get() = networkSpeed * timeScale
         @ClientOnly @JvmField
         var floating: Floating = Floating(IconFloatingRange).randomXY().changeRate(1)
         override fun getHostColor(): Color = liquids.current().color
@@ -105,20 +108,21 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
                 }
             }
             val liquid = liquids.current()
-            var needPumped = networkSpeed.coerceAtMost(liquids.currentAmount())
-            var per = needPumped / clients.size
+            val needPumped = realNetworkSpeed.coerceAtMost(liquids.currentAmount())
+            var restNeedPumped = needPumped
+            var per = restNeedPumped / clients.size
             var resetClient = clients.size
             for (client in SharedClientSeq) {
                 if (liquid.match(client.requirements)) {
                     val rest = streaming(client, liquid, per)
-                    needPumped -= (per - rest)
+                    restNeedPumped -= (per - rest)
                 }
                 resetClient--
                 if (resetClient > 0) {
-                    per = needPumped / resetClient
+                    per = restNeedPumped / resetClient
                 }
             }
-            liquids.remove(liquid, networkSpeed - needPumped)
+            liquids.remove(liquid, needPumped - restNeedPumped)
         }
 
         override fun onProximityAdded() {

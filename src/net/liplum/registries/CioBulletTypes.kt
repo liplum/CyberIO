@@ -24,7 +24,7 @@ object CioBulletTypes : ContentTable {
             2f, 35f
         ).apply {
             ClientOnly {
-                shader = SD.hologram2
+                shader = SD.Hologram2
             }
             width = 10f
             height = 10f
@@ -74,7 +74,7 @@ object CioBulletTypes : ContentTable {
             2.3f, 28f, "bullet"
         ).apply {
             ClientOnly {
-                shader = SD.tvSnow
+                shader = SD.TvStatic
             }
             width = 15f
             height = 15f

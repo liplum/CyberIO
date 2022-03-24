@@ -7,7 +7,6 @@ import arc.struct.Seq
 import arc.util.Structs
 import arc.util.io.Reads
 import arc.util.io.Writes
-import mindustry.entities.Units
 import mindustry.gen.Building
 import mindustry.gen.Iconc
 import mindustry.graphics.Pal
@@ -26,13 +25,17 @@ import net.liplum.registries.CioLiquids.cyberion
 import net.liplum.ui.addItemSelectorDefault
 import net.liplum.ui.bars.AddBar
 import net.liplum.ui.bars.removeItems
-import net.liplum.utils.*
+import net.liplum.utils.ID
+import net.liplum.utils.ItemTypeAmount
+import net.liplum.utils.bundle
+import net.liplum.utils.percentI
 import kotlin.math.max
 
 open class HoloProjector(name: String) : Block(name) {
     @JvmField var plans: Seq<HoloPlan> = Seq()
     @JvmField var itemCapabilities: IntArray = IntArray(0)
     @JvmField var cyberionCapacity: Float = 0f
+    @JvmField var holoUnitCapacity = 8
 
     init {
         solid = true
@@ -102,7 +105,7 @@ open class HoloProjector(name: String) : Block(name) {
                     R.Bar.Vanilla.UnitCapacity.bundle(
                         Fonts.getUnicodeStr(unitType.name),
                         team.data().countType(unitType),
-                        Units.getStringCap(team)
+                        team.getStringHoloCap()
                     )
                 }
             },
@@ -147,7 +150,6 @@ open class HoloProjector(name: String) : Block(name) {
                 }
             }
         }
-
         @CalledBySync
         open fun setPlan(plan: Int) {
             var order = plan
@@ -194,10 +196,15 @@ open class HoloProjector(name: String) : Block(name) {
             return true
         }
 
-        open fun projectUnit(unitType: UnitType): Boolean {
-            if (Units.canCreate(team, unitType)) {
+        open fun projectUnit(unitType: HoloUnitType): Boolean {
+            if (unitType.canCreateHoloUnitIn(team)) {
                 ServerOnly {
-                    unitType.spawn(team, this)
+                    val unit = unitType.create(team)
+                    if (unit is HoloUnit) {
+                        unit.set(x, y)
+                        unit.add()
+                        unit.setProjector(this)
+                    }
                 }
                 return true
             }

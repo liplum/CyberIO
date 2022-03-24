@@ -2,11 +2,10 @@ package net.liplum.holo
 
 import mindustry.type.ItemStack
 import mindustry.type.LiquidStack
-import mindustry.type.UnitType
 import net.liplum.registries.CioLiquids
 
 open class HoloPlan(
-    val unitType: UnitType,
+    val unitType: HoloUnitType,
     val req: Requirement,
     val time: Float
 )

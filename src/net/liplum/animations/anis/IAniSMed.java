@@ -3,6 +3,7 @@ package net.liplum.animations.anis;
 import arc.util.Nullable;
 import mindustry.gen.Building;
 import mindustry.world.Block;
+import net.liplum.ClientOnly;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -13,6 +14,7 @@ import java.util.Collection;
  * @param <TBlock> the block type
  * @param <TBuild> its corresponding building type
  */
+@ClientOnly
 public interface IAniSMed<TBlock extends Block, TBuild extends Building> {
     /**
      * Gets the Animation State by its name
@@ -21,6 +23,7 @@ public interface IAniSMed<TBlock extends Block, TBuild extends Building> {
      * @return if the name was registered, return the animation state. Otherwise, return null.
      */
     @Nullable
+    @ClientOnly
     AniState<TBlock, TBuild> getAniStateByName(String name);
 
     /**
@@ -30,6 +33,7 @@ public interface IAniSMed<TBlock extends Block, TBuild extends Building> {
      * @return Animation State Machine
      */
     @NotNull
+    @ClientOnly
     AniStateM<TBlock, TBuild> getAniStateM(TBuild build);
 
     /**
@@ -37,18 +41,21 @@ public interface IAniSMed<TBlock extends Block, TBuild extends Building> {
      *
      * @return the collection of all Animation States
      */
+    @ClientOnly
     Collection<AniState<TBlock, TBuild>> getAllAniStates();
 
     /**
      * Overwrite this.
      * Generates the Animation State.
      */
+    @ClientOnly
     void genAniState();
 
     /**
      * Overwrite this.
      * Generates the configuration of the Animation State Machine
      */
+    @ClientOnly
     void genAniConfig();
 
     /**
@@ -56,6 +63,7 @@ public interface IAniSMed<TBlock extends Block, TBuild extends Building> {
      *
      * @return Animation State Configuration
      */
+    @ClientOnly
     AniConfig<TBlock, TBuild> getAniConfig();
 
     /**
@@ -63,6 +71,7 @@ public interface IAniSMed<TBlock extends Block, TBuild extends Building> {
      *
      * @param config Animation State Configuration
      */
+    @ClientOnly
     void setAniConfig(AniConfig<TBlock, TBuild> config);
 
     /**
@@ -71,6 +80,7 @@ public interface IAniSMed<TBlock extends Block, TBuild extends Building> {
      * @param aniState Animation State
      * @return {@code aniState} self
      */
+    @ClientOnly
     AniState<TBlock, TBuild> addAniState(AniState<TBlock, TBuild> aniState);
 
     /**
@@ -78,6 +88,7 @@ public interface IAniSMed<TBlock extends Block, TBuild extends Building> {
      *
      * @return the Animation Config of this
      */
+    @ClientOnly
     AniConfig<TBlock, TBuild> createAniConfig();
 
     /**
@@ -85,6 +96,7 @@ public interface IAniSMed<TBlock extends Block, TBuild extends Building> {
      * @param rb   how to render
      * @return {@code aniState} self
      */
+    @ClientOnly
     default AniState<TBlock, TBuild> addAniState(String name, IRenderBehavior<TBuild> rb) {
         return addAniState(new AniState<>(name, rb));
     }
@@ -93,6 +105,7 @@ public interface IAniSMed<TBlock extends Block, TBuild extends Building> {
      * @param name name
      * @return {@code aniState} self
      */
+    @ClientOnly
     default AniState<TBlock, TBuild> addAniState(String name) {
         return addAniState(new AniState<>(name));
     }

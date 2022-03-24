@@ -9,6 +9,8 @@ import net.liplum.animations.anis.AniState
 import net.liplum.animations.anis.SetAlpha
 import net.liplum.animations.anis.config
 import net.liplum.blocks.AniedCrafter
+import net.liplum.shaders.SD
+import net.liplum.shaders.use
 import net.liplum.utils.FUNC
 import net.liplum.utils.autoAnim
 import net.liplum.utils.isZero
@@ -48,9 +50,14 @@ open class ICMachine(name: String) : AniedCrafter<ICMachine, ICMachine.ICMachine
             }
         }
 
-        override fun draw() {
+        override fun beforeDraw() {
             workingAnimObj.spend(Time.delta)
-            super.draw()
+        }
+
+        override fun draw() {
+            SD.Pulse.use {
+                super.draw()
+            }
         }
     }
 

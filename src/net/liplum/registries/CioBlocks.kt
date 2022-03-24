@@ -270,9 +270,9 @@ object CioBlocks : ContentTable {
         prism = Prism("prism").apply {
             requirements(
                 Category.turret, BuildVisibility.shown, arrayOf(
-                    ItemStack(CioItems.ic, 5),
+                    ItemStack(CioItems.ic, 7),
                     ItemStack(Items.metaglass, 100),
-                    ItemStack(Items.titanium, 100),
+                    ItemStack(Items.titanium, 200),
                 )
             )
             buildCostMultiplier = 2f
@@ -431,7 +431,7 @@ object CioBlocks : ContentTable {
             health = 400
             size = 2
             consumes.power(0.7f)
-            networkSpeed = 2f
+            networkSpeed = 2.5f
             liquidCapacity = 800f
             replaceable = false
         }
@@ -491,7 +491,7 @@ object CioBlocks : ContentTable {
                 incendAmount = 1
                 ammoMultiplier = 1f
                 ClientOnly {
-                    shader = SD.tvSnow
+                    shader = SD.TvStatic
                 }
             }
         }

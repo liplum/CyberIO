@@ -1,7 +1,6 @@
 package net.liplum.blocks;
 
 import arc.util.Nullable;
-import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.world.Block;
 import net.liplum.CioMod;
@@ -22,7 +21,9 @@ import java.util.HashMap;
  * @param <TBuild> its corresponding building type
  */
 @SuppressWarnings("unchecked")
-public abstract class AniedBlock<TBlock extends AniedBlock<?, ?>, TBuild extends AniedBlock<?, ?>.AniedBuild> extends Block implements IAniSMed<TBlock, TBuild> {
+public abstract class AniedBlock<TBlock extends AniedBlock<?, ?>, TBuild extends AniedBlock<?, ?>.AniedBuild>
+        extends Block
+        implements IAniSMed<TBlock, TBuild> {
     @ClientOnly
     protected final HashMap<String, AniState<TBlock, TBuild>> allAniStates = new HashMap<>();
     @ClientOnly
@@ -118,6 +119,7 @@ public abstract class AniedBlock<TBlock extends AniedBlock<?, ?>, TBuild extends
         /**
          * Overwrite this please
          */
+        @ClientOnly
         public void fixedDraw() {
 
         }
@@ -125,6 +127,7 @@ public abstract class AniedBlock<TBlock extends AniedBlock<?, ?>, TBuild extends
         /**
          * Overwrite this please
          */
+        @ClientOnly
         public void beforeDraw() {
 
         }

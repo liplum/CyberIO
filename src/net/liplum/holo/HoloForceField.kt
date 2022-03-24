@@ -11,7 +11,7 @@ open class HoloForceField(
     radius: Float, regen: Float, max: Float, cooldown: Float
 ) : ForceFieldAbility(radius, regen, max, cooldown) {
     override fun draw(unit: Unit) {
-        SD.hologram2.use(Layer.shields) {
+        SD.Hologram2.use(Layer.shields) {
             super.draw(unit)
         }
     }

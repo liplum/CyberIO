@@ -1,4 +1,6 @@
 uniform float u_time;
+uniform vec2 u_resolution;
+uniform vec2 u_offset;
 varying vec2 v_texCoords;
 uniform sampler2D u_texture;
 

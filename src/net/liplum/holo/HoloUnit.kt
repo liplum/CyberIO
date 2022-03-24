@@ -10,7 +10,10 @@ import mindustry.game.EventType.UnitDestroyEvent
 import mindustry.gen.UnitEntity
 import mindustry.logic.LAccess
 import net.liplum.R
+import net.liplum.holo.HoloProjector.HoloPBuild
 import net.liplum.registries.EntityRegistry
+import net.liplum.utils.build
+import net.liplum.utils.exists
 import net.liplum.utils.hasShields
 
 open class HoloUnit : UnitEntity() {
@@ -27,11 +30,27 @@ open class HoloUnit : UnitEntity() {
         get() = (1f - (time / lifespan)).coerceIn(0f, 1f)
     open val restLife: Float
         get() = (lifespan - time).coerceIn(0f, lifespan)
+    open val loseMultiplierWhereMissing: Float
+        get() = HoloType.loseMultiplierWhereMissing
+    var projectorPos: Int = -1
+    val isProjectorMissing: Boolean
+        get() = !projectorPos.build.exists
+
+    open fun setProjector(projector: HoloPBuild) {
+        projectorPos = projector.pos()
+    }
 
     override fun update() {
-        time += Time.delta
+        val loseMultiplier: Float
+        if (isProjectorMissing) {
+            loseMultiplier = loseMultiplierWhereMissing
+            projectorPos = -1
+        } else {
+            loseMultiplier = 1f
+        }
+        time += Time.delta * loseMultiplier
         super.update()
-        val lose = lose
+        val lose = lose * loseMultiplier
         var damage = lose
         val overage = time - lifespan
         if (overage > 0) {
@@ -56,6 +75,10 @@ open class HoloUnit : UnitEntity() {
             }
             this.remove()
         }
+    }
+
+    override fun cap(): Int {
+        return team.holoCapacity
     }
 
     open fun damageByHoloDimming(amount: Float) {
@@ -85,21 +108,25 @@ open class HoloUnit : UnitEntity() {
     override fun read(read: Reads) {
         super.read(read)
         time = read.f()
+        projectorPos = read.i()
     }
 
     override fun write(write: Writes) {
         super.write(write)
         write.f(time)
+        write.i(projectorPos)
     }
 
     override fun readSync(read: Reads) {
         super.readSync(read)
         time = read.f()
+        projectorPos = read.i()
     }
 
     override fun writeSync(write: Writes) {
         super.writeSync(write)
         write.f(time)
+        write.i(projectorPos)
     }
 
     override fun sense(sensor: LAccess): Double {

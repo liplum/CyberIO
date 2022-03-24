@@ -9,8 +9,10 @@ import net.liplum.R;
 import static mindustry.Vars.renderer;
 import static mindustry.graphics.Shaders.getShaderFi;
 
-public class TrShader extends Shader {
-    public TrShader(String fragName) {
+public class ProgressShader extends Shader implements IReusable {
+    public float progress = 0f;
+
+    public ProgressShader(String fragName) {
         super(getShaderFi("default.vert"),
                 Vars.tree.get(R.S.GenFrag(fragName)));
     }
@@ -18,6 +20,7 @@ public class TrShader extends Shader {
     @Override
     public void apply() {
         setUniformf("u_time", Time.time);
+        setUniformf("u_progress", progress);
         setUniformf("u_resolution",
                 Core.graphics.getWidth(),
                 Core.graphics.getHeight()
@@ -27,5 +30,10 @@ public class TrShader extends Shader {
                 Core.camera.position.y
         );
         renderer.effectBuffer.getTexture().bind(0);
+    }
+
+    @Override
+    public void reset() {
+        this.progress = 0f;
     }
 }

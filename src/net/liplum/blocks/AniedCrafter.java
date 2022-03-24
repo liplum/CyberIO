@@ -15,9 +15,12 @@ import java.util.HashMap;
 public abstract class AniedCrafter<TBlock extends AniedCrafter<?, ?>, TBuild extends AniedCrafter<?, ?>.AniedCrafterBuild>
         extends GenericCrafter
         implements IAniSMed<TBlock, TBuild> {
+    @ClientOnly
     public AniConfig<TBlock, TBuild> aniConfig;
+    @ClientOnly
     public HashMap<String, AniState<TBlock, TBuild>> allAniStates = new HashMap<>();
-
+    @ClientOnly
+    public boolean callDefaultBlockDraw = true;
     public AniedCrafter(String name) {
         super(name);
         if (CioMod.IsClient) {
@@ -94,9 +97,18 @@ public abstract class AniedCrafter<TBlock extends AniedCrafter<?, ?>, TBuild ext
 
         }
 
+        /**
+         * Overwrite this please
+         */
+        @ClientOnly
+        public void beforeDraw() {
+
+        }
+
         @Override
         public void draw() {
             aniStateM.spend(delta());
+            beforeDraw();
             if (GameH.CanRefresh()) {
                 aniStateM.update();
             }

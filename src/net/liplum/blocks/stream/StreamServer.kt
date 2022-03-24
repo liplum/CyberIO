@@ -83,7 +83,7 @@ open class StreamServer(name: String) : StreamHost(name) {
                     SharedClientSeq.add(client)
                 }
             }
-            val needPumped = networkSpeed.coerceAtMost(liquids.total())
+            val needPumped = realNetworkSpeed.coerceAtMost(liquids.total())
             var restNeedPumped = needPumped
             var per = restNeedPumped / clients.size
             var restClient = clients.size
