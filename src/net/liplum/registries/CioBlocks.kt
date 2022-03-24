@@ -12,7 +12,11 @@ import mindustry.type.ItemStack
 import mindustry.type.LiquidStack
 import mindustry.world.blocks.defense.OverdriveProjector
 import mindustry.world.blocks.distribution.PayloadConveyor
+import mindustry.world.blocks.distribution.PayloadRouter
 import mindustry.world.blocks.environment.Floor
+import mindustry.world.blocks.payloads.PayloadLoader
+import mindustry.world.blocks.payloads.PayloadMassDriver
+import mindustry.world.blocks.payloads.PayloadUnloader
 import mindustry.world.blocks.production.GenericCrafter
 import mindustry.world.blocks.production.LiquidConverter
 import mindustry.world.meta.BuildVisibility
@@ -576,7 +580,17 @@ object CioBlocks : ContentTable {
             Blocks.itemSource.buildVisibility = BuildVisibility.shown
             Blocks.liquidSource.buildVisibility = BuildVisibility.shown
             Blocks.payloadSource.buildVisibility = BuildVisibility.shown
-            (Blocks.payloadConveyor as PayloadConveyor).payloadLimit = 5f
+
+            Blocks.powerVoid.buildVisibility = BuildVisibility.shown
+            Blocks.itemVoid.buildVisibility = BuildVisibility.shown
+            Blocks.liquidVoid.buildVisibility = BuildVisibility.shown
+            Blocks.payloadVoid.buildVisibility = BuildVisibility.shown
+
+            (Blocks.payloadConveyor as PayloadConveyor).payloadLimit = 10f
+            (Blocks.payloadLoader as PayloadLoader).maxBlockSize = 10
+            (Blocks.payloadRouter as PayloadRouter).payloadLimit = 10f
+            (Blocks.payloadUnloader as PayloadUnloader).maxBlockSize = 10
+            (Blocks.payloadPropulsionTower as PayloadMassDriver).maxPayloadSize = 10f
         }
         ExperimentalOnly {
             Blocks.conveyor.sync = true
