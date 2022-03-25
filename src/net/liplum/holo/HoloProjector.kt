@@ -20,11 +20,11 @@ import mindustry.world.Block
 import mindustry.world.consumers.ConsumeItemDynamic
 import mindustry.world.meta.BlockGroup
 import net.liplum.*
+import net.liplum.lib.ui.bars.AddBar
+import net.liplum.lib.ui.bars.removeItems
 import net.liplum.liquidCons.DynamicLiquidCons
 import net.liplum.registries.CioLiquids.cyberion
 import net.liplum.ui.addItemSelectorDefault
-import net.liplum.ui.bars.AddBar
-import net.liplum.ui.bars.removeItems
 import net.liplum.utils.ID
 import net.liplum.utils.ItemTypeAmount
 import net.liplum.utils.bundle

@@ -52,8 +52,8 @@ import net.liplum.bullets.ShaderCLaser
 import net.liplum.holo.HoloPlan
 import net.liplum.holo.HoloProjector
 import net.liplum.holo.Requirement
+import net.liplum.lib.shaders.SD
 import net.liplum.seffects.StaticFx
-import net.liplum.shaders.SD
 
 object CioBlocks : ContentTable {
     @JvmStatic lateinit var icMachine: GenericCrafter
@@ -183,14 +183,6 @@ object CioBlocks : ContentTable {
             inheritChildrenNumber = false
             mutationRate = 10
         }.globalAnim(30f, 3)
-
-        Blocks.air.setUninfectedFloor()
-        Blocks.space.setUninfectedFloor()
-        Blocks.water.setUninfectedFloor()
-        Blocks.deepwater.setUninfectedFloor()
-        Blocks.itemSource.setUninfected()
-        Blocks.liquidSource.setUninfected()
-        Blocks.powerSource.setUninfected()
 
         landProjector = LandProjector("land-projector").apply {
             requirements(
@@ -591,6 +583,9 @@ object CioBlocks : ContentTable {
             (Blocks.payloadRouter as PayloadRouter).payloadLimit = 10f
             (Blocks.payloadUnloader as PayloadUnloader).maxBlockSize = 10
             (Blocks.payloadPropulsionTower as PayloadMassDriver).maxPayloadSize = 10f
+            /*val coreBlock = Blocks.coreShard as CoreBlock
+            coreBlock.unitType = CioUnitTypes.holoFighter
+            coreBlock.solid = false*/
         }
         ExperimentalOnly {
             Blocks.conveyor.sync = true

@@ -88,7 +88,7 @@ public class CioMod extends Mod {
         EntityRegistry.registerAll();
         CioCLs.load();
         ContentRegistry.loadContent();
-        PrismBlackList.block();
+        PrismBlackList.load();
         CanGlobalAnimationPlay = true;
         Log.info("Cyber IO mod's contents loaded.");
     }

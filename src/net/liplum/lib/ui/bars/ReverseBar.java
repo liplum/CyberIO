@@ -1,41 +1,50 @@
-package net.liplum.ui.bars;
+package net.liplum.lib.ui.bars;
 
 import arc.Core;
 import arc.func.Floatp;
 import arc.func.Prov;
 import arc.graphics.Color;
-import arc.graphics.g2d.*;
+import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.Font;
+import arc.graphics.g2d.GlyphLayout;
+import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.math.geom.Rect;
 import arc.scene.style.Drawable;
 import arc.util.pooling.Pools;
 import mindustry.gen.Tex;
+import mindustry.ui.Bar;
 import mindustry.ui.Fonts;
 
-public class ScrollBar extends BarBase {
+public class ReverseBar extends BarBase {
     public static Rect scissor = new Rect();
 
     public Floatp fraction;
     public String name = "";
-    public float progress;
+    public float value;
+    public float lastValue;
+    public float blink;
+    public Color blinkColor = new Color();
 
-    public ScrollBar(String name, Color color, Floatp fraction) {
+    public ReverseBar(String name, Color color, Floatp fraction) {
         this.fraction = fraction;
         this.name = Core.bundle.get(name, name);
-        progress = fraction.get();
+        this.blinkColor.set(color);
+        lastValue = value = fraction.get();
         setColor(color);
     }
 
-    public ScrollBar(Prov<String> name, Prov<Color> color, Floatp fraction) {
+    public ReverseBar(Prov<String> name, Prov<Color> color, Floatp fraction) {
         this.fraction = fraction;
         try {
-            progress = Mathf.clamp(fraction.get());
+            lastValue = value = Mathf.clamp(fraction.get());
         } catch (Exception e) { //getting the fraction may involve referring to invalid data
-            progress = 0f;
+            lastValue = value = 0f;
         }
         update(() -> {
             try {
                 this.name = name.get();
+                this.blinkColor.set(color.get());
                 setColor(color.get());
             } catch (Exception e) { //getting the fraction may involve referring to invalid data
                 this.name = "";
@@ -43,18 +52,25 @@ public class ScrollBar extends BarBase {
         });
     }
 
-    public ScrollBar() {
+    public ReverseBar() {
 
     }
 
     public void reset(float value) {
-        this.progress = value;
+        this.value = lastValue = blink = value;
     }
 
     public void set(Prov<String> name, Floatp fraction, Color color) {
         this.fraction = fraction;
+        this.lastValue = fraction.get();
+        this.blinkColor.set(color);
         setColor(color);
         update(() -> this.name = name.get());
+    }
+
+    public Bar blink(Color color) {
+        blinkColor.set(color);
+        return this;
     }
 
     @Override
@@ -69,31 +85,33 @@ public class ScrollBar extends BarBase {
             computed = 0f;
         }
 
-        if (Float.isNaN(progress)) progress = 0;
-        if (Float.isInfinite(progress)) progress = 1f;
+        if (lastValue > computed) {
+            blink = 1f;
+            lastValue = computed;
+        }
+
+        if (Float.isNaN(lastValue)) lastValue = 0;
+        if (Float.isInfinite(lastValue)) lastValue = 1f;
+        if (Float.isNaN(value)) value = 0;
+        if (Float.isInfinite(value)) value = 1f;
         if (Float.isNaN(computed)) computed = 0;
         if (Float.isInfinite(computed)) computed = 1f;
 
-        progress = Mathf.lerpDelta(progress, computed, 0.15f);
+        blink = Mathf.lerpDelta(blink, 0f, 0.2f);
+        value = Mathf.lerpDelta(value, computed, 0.15f);
 
         Drawable bar = Tex.bar;
 
         Draw.colorl(0.1f);
         bar.draw(x, y, width, height);
+        Draw.color(color, blinkColor, blink);
 
         Drawable top = Tex.barTop;
-        float topWidth = width * progress;
+        float topWidth = width * value;
 
         TextureRegion barTopTR = Core.atlas.find("bar-top");
-        if (topWidth > barTopTR.width) {
-            float leftMargin = width - topWidth;
-            top.draw(x + leftMargin, y, topWidth, height);
-        } else {
-            if (ScissorStack.push(scissor.set(x, y, topWidth, height))) {
-                top.draw(x, y, barTopTR.width, height);
-                ScissorStack.pop();
-            }
-        }
+        float leftMargin = width - topWidth;
+        top.draw(x + leftMargin, y, topWidth, height);
 
         Draw.color();
 

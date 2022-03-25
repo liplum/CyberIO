@@ -12,8 +12,8 @@ import mindustry.graphics.Layer
 import net.liplum.Cptb
 import net.liplum.R
 import net.liplum.abilites.localized
-import net.liplum.shaders.SD
-import net.liplum.shaders.use
+import net.liplum.lib.shaders.SD
+import net.liplum.lib.shaders.use
 
 open class HoloForceField(
     radius: Float, regen: Float, max: Float, cooldown: Float

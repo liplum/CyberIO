@@ -27,9 +27,9 @@ public abstract class AniedBlock<TBlock extends AniedBlock<?, ?>, TBuild extends
     @ClientOnly
     protected final HashMap<String, AniState<TBlock, TBuild>> allAniStates = new HashMap<>();
     @ClientOnly
-    protected AniConfig<TBlock, TBuild> aniConfig;
-    @ClientOnly
     public boolean callDefaultBlockDraw = true;
+    @ClientOnly
+    protected AniConfig<TBlock, TBuild> aniConfig;
 
     public AniedBlock(String name) {
         super(name);
@@ -103,17 +103,17 @@ public abstract class AniedBlock<TBlock extends AniedBlock<?, ?>, TBuild extends
     public abstract class AniedBuild extends Building implements IAniSMedBuild<TBlock, TBuild> {
         protected AniStateM<TBlock, TBuild> aniStateM;
 
-        @NotNull
-        @Override
-        public AniStateM<TBlock, TBuild> getAniStateM() {
-            return aniStateM;
-        }
-
         public AniedBuild() {
             if (CioMod.IsClient) {
                 AniedBlock<TBlock, TBuild> outer = AniedBlock.this;
                 this.aniStateM = outer.getAniConfig().gen((TBlock) outer, (TBuild) this);
             }
+        }
+
+        @NotNull
+        @Override
+        public AniStateM<TBlock, TBuild> getAniStateM() {
+            return aniStateM;
         }
 
         /**

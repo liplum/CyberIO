@@ -6,7 +6,7 @@ import net.liplum.blocks.prism.banInWeapons
 
 object PrismBlackList {
     @JvmStatic
-    fun block() {
+    fun load() {
         UnitTypes.arkyid.banInWeapon("spiroct-weapon")
         UnitTypes.spiroct.banInWeapons(
             "spiroct-weapon",

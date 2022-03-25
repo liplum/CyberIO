@@ -4,7 +4,7 @@ import arc.graphics.gl.Shader;
 import arc.util.Time;
 import mindustry.Vars;
 import net.liplum.R;
-import net.liplum.shaders.IReusable;
+import net.liplum.lib.shaders.IReusable;
 
 import static mindustry.Vars.renderer;
 import static mindustry.graphics.Shaders.getShaderFi;

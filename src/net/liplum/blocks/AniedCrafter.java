@@ -21,6 +21,7 @@ public abstract class AniedCrafter<TBlock extends AniedCrafter<?, ?>, TBuild ext
     public HashMap<String, AniState<TBlock, TBuild>> allAniStates = new HashMap<>();
     @ClientOnly
     public boolean callDefaultBlockDraw = true;
+
     public AniedCrafter(String name) {
         super(name);
         if (CioMod.IsClient) {
@@ -78,18 +79,18 @@ public abstract class AniedCrafter<TBlock extends AniedCrafter<?, ?>, TBuild ext
     public class AniedCrafterBuild extends GenericCrafterBuild implements IAniSMedBuild<TBlock, TBuild> {
         private AniStateM<TBlock, TBuild> aniStateM;
 
-        @NotNull
-        @Override
-        public AniStateM<TBlock, TBuild> getAniStateM() {
-            return aniStateM;
-        }
-
         public AniedCrafterBuild() {
             if (CioMod.IsClient) {
                 AniedCrafter<TBlock, TBuild> out = AniedCrafter.this;
                 this.aniStateM = out.getAniConfig().gen((TBlock) out, (TBuild) this);
                 this.aniStateM.onUpdate(this::onAniStateMUpdate);
             }
+        }
+
+        @NotNull
+        @Override
+        public AniStateM<TBlock, TBuild> getAniStateM() {
+            return aniStateM;
         }
 
         @ClientOnly

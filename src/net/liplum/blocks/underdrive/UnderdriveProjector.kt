@@ -35,7 +35,7 @@ import mindustry.world.meta.StatUnit
 import net.liplum.ClientOnly
 import net.liplum.DebugOnly
 import net.liplum.R
-import net.liplum.ui.bars.ReverseBar
+import net.liplum.lib.ui.bars.ReverseBar
 import net.liplum.utils.*
 import kotlin.math.max
 
@@ -146,8 +146,8 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
         G.drawDashCircle(this, x.toShort(), y.toShort(), range, color)
         Vars.indexer.eachBlock(
             Vars.player.team(),
-            WorldU.toDrawXY(this, x),
-            WorldU.toDrawXY(this, y),
+            x.toDrawXY(this),
+            y.toDrawXY(this),
             range,
             {
                 it.block.canOverdrive

@@ -47,7 +47,7 @@ public interface IDataSender extends IDataBuilding {
     }
 
     @SendDataPack
-    default void disconnectSync(int receiver){
+    default void disconnectSync(int receiver) {
         IDataReceiver dr = CyberH.dr(receiver);
         if (dr != null) {
             disconnectSync(dr);

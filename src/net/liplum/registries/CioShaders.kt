@@ -3,9 +3,9 @@ package net.liplum.registries
 import arc.graphics.gl.Shader
 import net.liplum.CioMod
 import net.liplum.ClientOnly
-import net.liplum.shaders.ILoadResource
-import net.liplum.shaders.ProgressShader
-import net.liplum.shaders.TrShader
+import net.liplum.lib.shaders.ILoadResource
+import net.liplum.lib.shaders.ProgressShader
+import net.liplum.lib.shaders.TrShader
 import net.liplum.shaders.holo.Hologram
 import net.liplum.shaders.holo.Hologram2
 import net.liplum.useCompatible
@@ -40,9 +40,12 @@ object CioShaders {
             TvStatic = TrShader("TvStatic".compatible).register()
             Pulse = TrShader("Pulse").register()
 
-            InvertingColorRGB = ProgressShader("InvertingColorRgb".compatible).register()
-            InvertingColorRbg2HsvInHsv = ProgressShader("InvertingColorRgb2HsvInHsv").register()
-            InvertingColorRbg2HsvInRgb = ProgressShader("InvertingColorRgb2HsvInRgb").register()
+            InvertingColorRGB = ProgressShader("InvertingColorRgb".compatible)
+                .register()
+            InvertingColorRbg2HsvInHsv = ProgressShader("InvertingColorRgb2HsvInHsv")
+                .register()
+            InvertingColorRbg2HsvInRgb = ProgressShader("InvertingColorRgb2HsvInRgb")
+                .register()
 
             Monochromize = ProgressShader("Monochromize".compatible).register()
 

@@ -14,10 +14,10 @@ import net.liplum.animations.anims.Animation
 import net.liplum.animations.anims.AnimationObj
 import net.liplum.animations.anims.pingPong
 import net.liplum.blocks.prism.Prism.PrismBuild
+import net.liplum.utils.TE
 import net.liplum.utils.autoAnim
 import net.liplum.utils.bundle
 import net.liplum.utils.exists
-import net.liplum.utils.TE
 
 open class PrismObelisk(name: String) : Block(name) {
     @JvmField var prismType: Prism? = null
@@ -62,6 +62,7 @@ open class PrismObelisk(name: String) : Block(name) {
          */
         @JvmField var prismOrient = 0
         @ClientOnly lateinit var BlinkObjs: Array<AnimationObj>
+
         init {
             ClientOnly {
                 BlinkObjs = Array(4) {

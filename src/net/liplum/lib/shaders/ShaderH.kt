@@ -1,4 +1,4 @@
-package net.liplum.shaders
+package net.liplum.lib.shaders
 
 import arc.graphics.g2d.Draw
 import arc.graphics.gl.Shader
@@ -21,7 +21,7 @@ inline fun Shader?.on(crossinline func: () -> Unit) {
     }
 }
 
-inline fun <T:Shader> T.use(crossinline func: (T) -> Unit) {
+inline fun <T : Shader> T.use(crossinline func: (T) -> Unit) {
     Draw.draw(Draw.z()) {
         Draw.shader(this)
         func(this)

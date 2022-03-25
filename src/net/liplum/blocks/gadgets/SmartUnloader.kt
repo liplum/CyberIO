@@ -22,8 +22,8 @@ import net.liplum.animations.anis.DrawTR
 import net.liplum.animations.anis.config
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
+import net.liplum.lib.ui.bars.removeItems
 import net.liplum.persistance.intSet
-import net.liplum.ui.bars.removeItems
 import net.liplum.utils.*
 import kotlin.math.absoluteValue
 
@@ -149,6 +149,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
             get() = lastUnloadTime < UnloadTime
         @ClientOnly lateinit var shrinkingAnimObj: AnimationObj
         var justRestored = false
+
         init {
             ClientOnly {
                 shrinkingAnimObj = ShrinkingAnim.gen()
@@ -443,7 +444,6 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
                 else -> super.control(type, p1, p2, p3, p4)
             }
         }
-
     }
 
     @ClientOnly lateinit var UnloadingAni: AniStateU

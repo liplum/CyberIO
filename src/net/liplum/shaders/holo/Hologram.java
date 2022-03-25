@@ -6,18 +6,18 @@ import arc.math.Mathf;
 import arc.util.Time;
 import mindustry.Vars;
 import net.liplum.R;
-import net.liplum.shaders.ILoadResource;
-import net.liplum.shaders.IReusable;
-import net.liplum.utils.AtlasU;
+import net.liplum.lib.shaders.ILoadResource;
+import net.liplum.lib.shaders.IReusable;
 
 import static mindustry.Vars.renderer;
 import static mindustry.graphics.Shaders.getShaderFi;
+import static net.liplum.utils.AtlasHKt.inCio;
 
 public class Hologram extends Shader implements ILoadResource, IReusable {
+    public static final float DefaultSpeed = 0.5f;
     public Texture fringe;
     public float randomRange = 0f;
     public float alpha = 1f;
-    public static final float DefaultSpeed = 0.5f;
     public float speed = DefaultSpeed;
 
     public Hologram(String fragName) {
@@ -38,8 +38,9 @@ public class Hologram extends Shader implements ILoadResource, IReusable {
 
     @Override
     public void loadResource() {
-        fringe = AtlasU.inCio("hologram").texture;
+        fringe = inCio("hologram").texture;
         fringe.setFilter(Texture.TextureFilter.linear);
+        fringe.setWrap(Texture.TextureWrap.repeat);
     }
 
     @Override

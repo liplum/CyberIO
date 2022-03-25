@@ -6,7 +6,7 @@ import arc.math.Mathf
 import arc.util.Tmp
 import mindustry.entities.bullet.BasicBulletType
 import mindustry.gen.Bullet
-import net.liplum.shaders.on
+import net.liplum.lib.shaders.on
 
 open class ShaderBasicBulletT<TS : Shader> : BasicBulletType {
     @JvmField var shader: TS? = null

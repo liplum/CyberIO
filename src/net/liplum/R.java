@@ -6,6 +6,12 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 public class R {
+    @NotNull
+    @Contract(pure = true)
+    public static String Gen(String name) {
+        return Meta.ModID + "-" + name;
+    }
+
     public static final class I {
         public static final String IC = "ic";
     }
@@ -18,7 +24,6 @@ public class R {
 
     }
 
-
     public static final class Unit {
         public static final String
                 HoloMiner = "holo-miner",
@@ -28,13 +33,23 @@ public class R {
                 HoloSupporter = "holo-supporter";
     }
 
-
     public static final class Bar {
         public static final String NeighborStateN = "neighbor-state";
 
-        public static final String GenerationN = "generation",
+        @NotNull
+        @Contract(pure = true)
+        public static String Gen(String content) {
+            return "bar." + Meta.ModID + "." + content;
+        }        public static final String GenerationN = "generation",
                 Generation = Gen(GenerationN);
-        public static final String SlowDownN = "slow-down",
+
+        public static final class Vanilla {
+            public static final String BuildProgressN = "progress",
+                    BuildProgress = "bar.progress";
+            public static final String UnitsN = "units",
+                    UnitCapacity = "bar.unitcap";
+
+        }        public static final String SlowDownN = "slow-down",
                 SlowDown = Gen(SlowDownN);
         public static final String EfficiencyAbsorptionN = "efficiency-absorption",
                 EfficiencyAbsorption = Gen(EfficiencyAbsorptionN);
@@ -91,19 +106,9 @@ public class R {
                 RestLife = Gen(RestLifeN),
                 RestLifeFigure = Gen(RestLifeN + ".figure");
 
-        public static final class Vanilla {
-            public static final String BuildProgressN = "progress",
-                    BuildProgress = "bar.progress";
-            public static final String UnitsN = "units",
-                    UnitCapacity = "bar.unitcap";
 
-        }
 
-        @NotNull
-        @Contract(pure = true)
-        public static String Gen(String content) {
-            return "bar." + Meta.ModID + "." + content;
-        }
+
 
     }
 
@@ -183,12 +188,6 @@ public class R {
         }
     }
 
-    @NotNull
-    @Contract(pure = true)
-    public static String Gen(String name) {
-        return Meta.ModID + "-" + name;
-    }
-
     public static final class Sound {
         public static final String ogg = "ogg",
                 wav = "wav",
@@ -228,7 +227,7 @@ public class R {
         }
     }
 
-    public static final class Setting{
+    public static final class Setting {
         public static final String LinkOpacity = Gen("connection-opacity");
     }
 }

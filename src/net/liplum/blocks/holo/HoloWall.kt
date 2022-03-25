@@ -23,9 +23,9 @@ import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.animations.Floating
 import net.liplum.api.holo.IRegenerate
+import net.liplum.lib.shaders.use
 import net.liplum.registries.CioShaders
 import net.liplum.seconds
-import net.liplum.shaders.use
 import net.liplum.utils.*
 
 open class HoloWall(name: String) : Wall(name) {

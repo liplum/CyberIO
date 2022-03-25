@@ -29,9 +29,9 @@ import net.liplum.animations.anis.config
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
 import net.liplum.lib.delegates.Delegate1
+import net.liplum.lib.ui.bars.addBar
+import net.liplum.lib.ui.bars.removeItems
 import net.liplum.persistance.intSet
-import net.liplum.ui.bars.addBar
-import net.liplum.ui.bars.removeItems
 import net.liplum.utils.*
 import kotlin.math.log2
 

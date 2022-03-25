@@ -1,4 +1,4 @@
-package net.liplum.ui.bars
+package net.liplum.lib.ui.bars
 
 import arc.graphics.Color
 import mindustry.gen.Building

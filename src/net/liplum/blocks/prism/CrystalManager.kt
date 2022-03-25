@@ -9,9 +9,9 @@ import net.liplum.ClientOnly
 import net.liplum.persistance.intSet
 import net.liplum.persistance.readSeq
 import net.liplum.persistance.writeSeq
+import net.liplum.utils.TE
 import net.liplum.utils.build
 import net.liplum.utils.exists
-import net.liplum.utils.TE
 
 enum class Status {
     Shrinking, Expending

@@ -4,22 +4,19 @@ import arc.graphics.gl.Shader;
 import arc.util.Time;
 import mindustry.Vars;
 import net.liplum.R;
-import net.liplum.shaders.IReusable;
+import net.liplum.lib.shaders.IReusable;
 
 import static mindustry.Vars.renderer;
 import static mindustry.graphics.Shaders.getShaderFi;
 
 public class Hologram2 extends Shader implements IReusable {
+    public final float DefaultBlendHoloColorOpacity = 0.8f;
+    public final float DefaultBlendFormerColorOpacity = 0.6f;
+    public final float DefaultFlickering = 0.03f;
     public float alpha = 1f;
     public float opacityNoise = 0.2f;
-
-    public final float DefaultBlendHoloColorOpacity = 0.8f;
     public float blendHoloColorOpacity = DefaultBlendHoloColorOpacity;
-
-    public final float DefaultBlendFormerColorOpacity = 0.6f;
     public float blendFormerColorOpacity = DefaultBlendFormerColorOpacity;
-
-    public final float DefaultFlickering = 0.03f;
     public float flickering = DefaultFlickering;
 
     public Hologram2(String fragName) {

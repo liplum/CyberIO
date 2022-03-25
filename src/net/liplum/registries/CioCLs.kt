@@ -1,8 +1,6 @@
 package net.liplum.registries
 
 import mindustry.graphics.CacheLayer
-import mindustry.graphics.CacheLayer.ShaderLayer
-import net.liplum.ClientOnly
 
 object CioCLs {
     private var registered = false
@@ -12,7 +10,6 @@ object CioCLs {
         allCacheLayers = ArrayList()
         registerAll()
     }
-
     @JvmStatic
     fun registerAll() {
         if (!registered) {

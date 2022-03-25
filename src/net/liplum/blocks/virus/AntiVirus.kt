@@ -21,8 +21,8 @@ import mindustry.world.meta.BlockGroup
 import net.liplum.ClientOnly
 import net.liplum.DebugOnly
 import net.liplum.R
+import net.liplum.lib.ui.bars.ReverseBar
 import net.liplum.seconds
-import net.liplum.ui.bars.ReverseBar
 import net.liplum.utils.*
 
 internal const val T2SD = 5f / 6f * Mathf.pi
@@ -113,8 +113,8 @@ open class AntiVirus(name: String) : Block(name) {
         G.drawDashCircle(this, x.toShort(), y.toShort(), range, uninfectedColor)
         Vars.indexer.eachBlock(
             Vars.player.team(),
-            WorldU.toDrawXY(this, x),
-            WorldU.toDrawXY(this, y),
+            x.toDrawXY(this),
+            y.toDrawXY(this),
             range,
             {
                 true

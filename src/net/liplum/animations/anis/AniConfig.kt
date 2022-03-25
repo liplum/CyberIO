@@ -72,7 +72,7 @@ open class AniConfig<TBlock : Block, TBuild : Building> {
         return this
     }
 
-    open fun transitionDuration(duration: Float) : AniConfig<TBlock, TBuild>{
+    open fun transitionDuration(duration: Float): AniConfig<TBlock, TBuild> {
         checkBuilt()
         transitionDuration = duration
         return this

@@ -22,8 +22,8 @@ import mindustry.graphics.Pal
 import mindustry.type.UnitType
 import mindustry.ui.Bar
 import net.liplum.*
-import net.liplum.shaders.SD
-import net.liplum.shaders.use
+import net.liplum.lib.shaders.SD
+import net.liplum.lib.shaders.use
 import net.liplum.utils.bundle
 import net.liplum.utils.healthPct
 import kotlin.math.min

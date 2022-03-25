@@ -8,9 +8,9 @@ import net.liplum.R
 import net.liplum.bullets.RuvikBullet
 import net.liplum.bullets.STEM_VERSION
 import net.liplum.bullets.ShaderBasicBulletT
+import net.liplum.lib.shaders.SD
+import net.liplum.lib.shaders.TrShader
 import net.liplum.seffects.StaticFx
-import net.liplum.shaders.SD
-import net.liplum.shaders.TrShader
 import net.liplum.shaders.holo.Hologram2
 
 object CioBulletTypes : ContentTable {

@@ -24,7 +24,6 @@ import net.liplum.utils.*
 private typealias AniStateS = AniState<Sender, SenderBuild>
 
 open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
-    @ClientOnly lateinit var CoverTR: TR
     @ClientOnly lateinit var UpArrowTR: TR
     @ClientOnly lateinit var CrossTR: TR
     @ClientOnly lateinit var NoPowerTR: TR
@@ -52,16 +51,11 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
 
     override fun load() {
         super.load()
-        CoverTR = this.inMod("rs-cover")
         UpArrowTR = this.inMod("rs-up-arrow")
         CrossTR = this.inMod("rs-cross")
         UnconnectedTR = this.inMod("rs-unconnected")
         NoPowerTR = this.inMod("rs-no-power")
-        loadAnimation()
-    }
-
-    fun loadAnimation() {
-        UploadAnim = AnimU.autoCio("rs-up-arrow", UploadAnimFrameNumber, UploadAnimDuration)
+        UploadAnim = this.autoAnim("rs-up-arrow", UploadAnimFrameNumber, UploadAnimDuration)
     }
 
     override fun setBars() {
@@ -140,8 +134,8 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
 
         val receiver: IDataReceiver?
             get() = if (receiverPackedPos != -1)
-                /* TODO: For payload
-                receiverPackedPos.dr() Or { receiverPackedPos.inPayload() }*/
+            /* TODO: For payload
+            receiverPackedPos.dr() Or { receiverPackedPos.inPayload() }*/
                 receiverPackedPos.dr()
             else
                 null

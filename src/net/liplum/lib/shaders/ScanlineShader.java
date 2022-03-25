@@ -1,4 +1,4 @@
-package net.liplum.shaders;
+package net.liplum.lib.shaders;
 
 import arc.Core;
 import arc.graphics.gl.Shader;
