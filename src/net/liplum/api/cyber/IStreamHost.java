@@ -18,7 +18,7 @@ public interface IStreamHost extends IStreamNode {
      */
     default float streaming(@NotNull IStreamClient client, @NotNull Liquid liquid, float amount) {
         float maxAccepted = client.acceptedAmount(this, liquid);
-        if (maxAccepted == -1) {
+        if (maxAccepted < 0) {
             client.readStream(this, liquid, amount);
             return 0;
         }

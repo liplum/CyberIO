@@ -12,6 +12,14 @@ import org.jetbrains.annotations.Nullable;
 public interface IStreamClient extends IStreamNode {
     void readStream(@NotNull IStreamHost host, @NotNull Liquid liquid, float amount);
 
+    /**
+     * Gets the max acceptable number of this {@code liquid}.
+     * negative number means any
+     *
+     * @param host   host
+     * @param liquid liquid
+     * @return amount
+     */
     float acceptedAmount(@NotNull IStreamHost host, @NotNull Liquid liquid);
 
     @NotNull
