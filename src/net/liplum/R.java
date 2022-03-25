@@ -227,4 +227,8 @@ public class R {
             return Gen(name) + extension;
         }
     }
+
+    public static final class Setting{
+        public static final String LinkOpacity = "linkopacity";
+    }
 }

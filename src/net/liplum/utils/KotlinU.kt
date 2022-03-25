@@ -36,3 +36,6 @@ val Int.isEven: Boolean
 
 infix fun Any?.NullOr(planB: Any?): Any? =
     this ?: planB
+
+inline infix fun <reified T> T?.Or(other: () -> T?): T? =
+    this ?: other()

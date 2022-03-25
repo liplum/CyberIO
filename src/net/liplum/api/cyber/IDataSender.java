@@ -10,9 +10,10 @@ import org.jetbrains.annotations.Nullable;
 public interface IDataSender extends IDataBuilding {
     /**
      * sends items
+     *
      * @param receiver the target who receives the item(s)
-     * @param item which kind of item will be sent soon
-     * @param amount how many item(s) will be sent
+     * @param item     which kind of item will be sent soon
+     * @param amount   how many item(s) will be sent
      * @return the rest of item(s)
      */
     default int sendData(@NotNull IDataReceiver receiver, @NotNull Item item, int amount) {
@@ -36,6 +37,22 @@ public interface IDataSender extends IDataBuilding {
 
     @SendDataPack
     void disconnectSync(@NotNull IDataReceiver receiver);
+
+    @SendDataPack
+    default void connectSync(int receiver) {
+        IDataReceiver dr = CyberH.dr(receiver);
+        if (dr != null) {
+            connectSync(dr);
+        }
+    }
+
+    @SendDataPack
+    default void disconnectSync(int receiver){
+        IDataReceiver dr = CyberH.dr(receiver);
+        if (dr != null) {
+            disconnectSync(dr);
+        }
+    }
 
     @Nullable
     Integer connectedReceiver();

@@ -11,7 +11,7 @@ import net.liplum.persistance.readSeq
 import net.liplum.persistance.writeSeq
 import net.liplum.utils.build
 import net.liplum.utils.exists
-import net.liplum.utils.te
+import net.liplum.utils.TE
 
 enum class Status {
     Shrinking, Expending
@@ -105,7 +105,7 @@ open class CrystalManager(
 
     fun unlinkAllObelisks() {
         obelisks.forEach {
-            it.te<Obelisk>()?.unlink()
+            it.TE<Obelisk>()?.unlink()
         }
     }
 

@@ -97,6 +97,11 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
             }
 
         open fun checkReceiverPos() {
+            if (receiverPackedPos == -1) return
+            /* TODO: For payload
+             if (receiverPackedPos.drOrPayload() == null) {
+                 receiverPackedPos = -1
+             }*/
             if (!receiverPackedPos.dr().exists) {
                 receiverPackedPos = -1
             }
@@ -134,12 +139,12 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
         }
 
         val receiver: IDataReceiver?
-            get() {
-                if (receiverPackedPos != -1) {
-                    return receiverPackedPos.dr()
-                }
-                return null
-            }
+            get() = if (receiverPackedPos != -1)
+                /* TODO: For payload
+                receiverPackedPos.dr() Or { receiverPackedPos.inPayload() }*/
+                receiverPackedPos.dr()
+            else
+                null
         @ClientOnly
         override fun drawConfigure() {
             super.drawConfigure()
@@ -168,6 +173,20 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
                 }
                 return false
             }
+            /* TODO: For payload
+            if (other is PayloadConveyor.PayloadConveyorBuild) {
+                val payload = other.payload
+                if (payload is BuildPayload) {
+                    val build = payload.build
+                    if (build is IDataReceiver) {
+                        deselect()
+                        if (build.acceptConnection(this)) {
+                            connectSync(other.pos())
+                        }
+                        return false
+                    }
+                }
+            }*/
             return true
         }
 
@@ -205,7 +224,15 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
                 configure(null)
             }
         }
-
+        /* TODO: For payload
+        @SendDataPack
+        override fun connectSync(receiver: Int) {
+            configure(receiver)
+        }
+        @SendDataPack
+        override fun disconnectSync(receiver: Int) {
+            configure(null)
+        }*/
         override fun control(type: LAccess, p1: Any?, p2: Double, p3: Double, p4: Double) {
             when (type) {
                 LAccess.shoot ->

@@ -20,7 +20,6 @@ import net.liplum.animations.anims.IFrameIndexer
 import net.liplum.animations.anims.ixAuto
 import net.liplum.animations.anis.*
 import net.liplum.animations.blocks.*
-import net.liplum.api.CyberU
 import net.liplum.api.cyber.*
 import net.liplum.lib.delegates.Delegate1
 import net.liplum.persistance.intSet
@@ -263,8 +262,8 @@ open class Cloud(name: String) : PowerBlock(name) {
         open fun drawDataNetGraphic() {
             G.drawSurroundingCircle(tile, R.C.Cloud)
 
-            CyberU.drawSenders(this, info.sendersPos)
-            CyberU.drawReceivers(this, info.receiversPos)
+            this.drawSenders(info.sendersPos)
+            this.drawReceivers(info.receiversPos)
         }
 
         override fun connectedSenders(): ObjectSet<Int> =

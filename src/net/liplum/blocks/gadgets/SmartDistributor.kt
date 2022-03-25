@@ -323,9 +323,6 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
 
         override fun connectedSenders() = senders
         override fun connectedSender(): Int? = senders.first()
-        override fun acceptConnection(sender: IDataSender) =
-            if (maxConnection == -1) true else senders.size < maxConnection
-
         override fun maxSenderConnection() = maxConnection
         override fun getBuilding(): SmartDISBuild = this
         override fun getTile(): Tile = this.tile

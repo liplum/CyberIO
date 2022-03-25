@@ -17,7 +17,7 @@ import net.liplum.blocks.prism.Prism.PrismBuild
 import net.liplum.utils.autoAnim
 import net.liplum.utils.bundle
 import net.liplum.utils.exists
-import net.liplum.utils.te
+import net.liplum.utils.TE
 
 open class PrismObelisk(name: String) : Block(name) {
     @JvmField var prismType: Prism? = null
@@ -73,7 +73,7 @@ open class PrismObelisk(name: String) : Block(name) {
         override fun onProximityUpdate() {
             super.onProximityUpdate()
             val mayLinked = linked
-            if (mayLinked != -1 && !mayLinked.te<PrismBuild>().exists) {
+            if (mayLinked != -1 && !mayLinked.TE<PrismBuild>().exists) {
                 linked = -1
             }
         }

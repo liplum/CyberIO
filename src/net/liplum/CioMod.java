@@ -8,12 +8,14 @@ import mindustry.Vars;
 import mindustry.core.GameState;
 import mindustry.io.JsonIO;
 import mindustry.mod.Mod;
+import mindustry.ui.dialogs.SettingsMenuDialog;
 import net.liplum.animations.ganim.GlobalAnimation;
 import net.liplum.api.cyber.DataCenter;
 import net.liplum.api.cyber.StreamCenter;
 import net.liplum.blocks.cloud.LiplumCloud;
 import net.liplum.blocks.cloud.SharedRoom;
 import net.liplum.registries.*;
+import net.liplum.ui.Settings;
 import net.liplum.utils.G;
 
 import static mindustry.game.EventType.*;
@@ -75,6 +77,7 @@ public class CioMod extends Mod {
         CioShaders.loadResource();
         GlobalAnimation.loadAllResources();
         Events.run(Trigger.preDraw, G::init);
+        Settings.addGraphicSettings();
         Log.info("Cyber IO initialized.");
     }
 

@@ -10,6 +10,9 @@ import mindustry.game.Team
 import mindustry.gen.Building
 import mindustry.type.UnitType
 import mindustry.world.Tile
+import mindustry.world.blocks.distribution.PayloadConveyor
+import mindustry.world.blocks.payloads.BuildPayload
+import mindustry.world.blocks.payloads.UnitPayload
 
 fun tileAt(x: Int, y: Int): Tile? =
     Vars.world.tile(x, y)
@@ -32,14 +35,47 @@ fun buildAt(x: Double, y: Double): Building? =
 val Int.build: Building?
     get() = Vars.world.build(this)
 
-fun <T : Building> Int.te(): T? =
+fun <T : Building> Int.TE(): T? =
     Vars.world.build(this) as? T
 
-fun <T> Int.tea(): T? =
+fun <T> Int.TEAny(): T? =
     Vars.world.build(this) as? T
+
+fun <T> Int.inPayload(): T? {
+    val build = this.build
+    if (build is PayloadConveyor.PayloadConveyorBuild) {
+        val payload = build.payload
+        if (payload is BuildPayload) {
+            return payload.build as? T
+        } else if (payload is UnitPayload) {
+            return payload.unit as? T
+        }
+    }
+    return null
+}
+
+fun <T> Int.inPayloadBuilding(): T? where T : Building {
+    val build = this.build
+    if (build is PayloadConveyor.PayloadConveyorBuild) {
+        return (build.payload as? BuildPayload)?.build as? T
+    }
+    return null
+}
+
+fun <T> Int.inPayloadUnit(): T? where T : MdtUnit {
+    val build = this.build
+    if (build is PayloadConveyor.PayloadConveyorBuild) {
+        return (build.payload as? UnitPayload)?.unit as? T
+    }
+    return null
+}
 
 val Building?.exists: Boolean
     get() = this != null && this.tile.build == this
+val Building?.inPayload: Boolean
+    get() = this != null && this.tile == Vars.emptyTile
+val Building?.existsOrInPayload: Boolean
+    get() = this != null && (this.tile.build == this || this.tile == Vars.emptyTile)
 
 fun <T> Array<T>.randomOne(): T =
     this[Mathf.random(0, this.size - 1)]

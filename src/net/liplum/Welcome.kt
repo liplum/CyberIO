@@ -7,6 +7,10 @@ import net.liplum.utils.AtlasU
 object Welcome {
     @JvmStatic
     fun showWelcomeDialog() {
+        show()
+    }
+
+    fun show() {
         val dialog = BaseDialog(News.getTitle())
         // mod sprites are prefixed with the mod name (this mod is called 'example-java-mod' in its config)
         dialog.cont.image(AtlasU.inCio("icon"))
