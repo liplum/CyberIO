@@ -4,13 +4,12 @@ package net.liplum.api.cyber
 
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
-import arc.util.Tmp
 import mindustry.Vars
 import mindustry.type.Item
 import mindustry.type.Liquid
 import mindustry.world.Block
 import net.liplum.R
-import net.liplum.ui.Settings
+import net.liplum.Settings
 import net.liplum.utils.*
 
 fun Int.db(): IDataBuilding? =
@@ -170,12 +169,13 @@ fun Block.drawLinkedLineToReceiverWhenConfiguring(x: Int, y: Int) {
         return
     }
     val selectedTile = selected.tile()
-    G.drawSurroundingCircle(this, x, y, R.C.Receiver)
+    val opacity = Settings.LinkOpacity
+    G.drawSurroundingCircle(this, x, y, R.C.Receiver, alpha = opacity)
     G.drawArrowLine(
         selected.block,
         selectedTile.x, selectedTile.y,
         this, x.toShort(), y.toShort(),
-        ArrowDensity, R.C.Receiver
+        ArrowDensity, R.C.Receiver, alpha = opacity
     )
 }
 
@@ -215,12 +215,13 @@ fun Block.drawLinkedLineToClientWhenConfiguring(x: Int, y: Int) {
     }
     val host = selected as IStreamHost
     val selectedTile = selected.tile()
-    G.drawSurroundingCircle(this, x, y, R.C.Client)
+    val opacity = Settings.LinkOpacity
+    G.drawSurroundingCircle(this, x, y, R.C.Client, alpha = opacity)
     G.drawArrowLine(
         selected.block,
         selectedTile.x, selectedTile.y,
         this, x.toShort(), y.toShort(),
-        ArrowDensity, host.hostColor
+        ArrowDensity, host.hostColor, alpha = opacity
     )
 }
 
@@ -239,10 +240,11 @@ fun IDataReceiver.drawSender(sender: Int?) {
         return
     }
     val sb = Vars.world.build(sender)
+    val opacity = Settings.LinkOpacity
     if (sb is IDataSender) {
         val senderT = sb.tile()
-        G.drawSurroundingCircle(senderT, R.C.Sender)
-        G.drawArrowLine(sb, this.building, ArrowDensity, R.C.Receiver)
+        G.drawSurroundingCircle(senderT, R.C.Sender, alpha = opacity)
+        G.drawArrowLine(sb, this.building, ArrowDensity, R.C.Receiver, alpha = opacity)
     }
     /* TODO: For payload
     else {
@@ -320,12 +322,13 @@ fun isConfiguringSender(): Boolean {
  * Called in Client block
  */
 fun IStreamClient.drawHosts(hosts: Iterable<Int>) {
+    val opacity = Settings.LinkOpacity
     for (host in hosts) {
         val hostB = Vars.world.build(host)
         if (hostB is IStreamHost) {
             val hostT = hostB.tile()
-            G.drawSurroundingCircle(hostT, hostB.hostColor)
-            G.drawArrowLine(hostB, this.building, ArrowDensity, this.clientColor)
+            G.drawSurroundingCircle(hostT, hostB.hostColor, alpha = opacity)
+            G.drawArrowLine(hostB, this.building, ArrowDensity, this.clientColor, alpha = opacity)
         }
     }
 }
@@ -333,12 +336,13 @@ fun IStreamClient.drawHosts(hosts: Iterable<Int>) {
  * Called in Host block
  */
 fun IStreamHost.drawClients(clients: Iterable<Int>) {
+    val opacity = Settings.LinkOpacity
     for (client in clients) {
         val clientB = Vars.world.build(client)
         if (clientB is IStreamClient) {
             val clientT = clientB.tile()
-            G.drawSurroundingCircle(clientT, clientB.clientColor)
-            G.drawArrowLine(this.building, clientB, ArrowDensity, this.hostColor)
+            G.drawSurroundingCircle(clientT, clientB.clientColor, alpha = opacity)
+            G.drawArrowLine(this.building, clientB, ArrowDensity, this.hostColor, alpha = opacity)
             clientB.drawRequirements()
         }
     }

@@ -1,31 +1,27 @@
 package net.liplum.registries
 
-import arc.Core
 import arc.graphics.gl.Shader
-import net.liplum.CioMod.TestMobileOnly
+import net.liplum.CioMod
 import net.liplum.ClientOnly
 import net.liplum.shaders.ILoadResource
 import net.liplum.shaders.ProgressShader
 import net.liplum.shaders.TrShader
 import net.liplum.shaders.holo.Hologram
 import net.liplum.shaders.holo.Hologram2
+import net.liplum.useCompatible
 import java.util.*
 
 object CioShaders {
     @ClientOnly lateinit var DynamicColor: TrShader
-
     @ClientOnly lateinit var Hologram: Hologram
     @ClientOnly lateinit var Hologram2: Hologram2
-
     @ClientOnly lateinit var Monochrome: TrShader
     @ClientOnly lateinit var InvertColor: TrShader
     @ClientOnly lateinit var TvStatic: TrShader
     @ClientOnly lateinit var Pulse: TrShader
-
     @ClientOnly lateinit var InvertingColorRGB: ProgressShader
     @ClientOnly lateinit var InvertingColorRbg2HsvInHsv: ProgressShader
     @ClientOnly lateinit var InvertingColorRbg2HsvInRgb: ProgressShader
-
     @ClientOnly lateinit var Monochromize: ProgressShader
     @ClientOnly
     private var AllShaders: LinkedList<Shader> = LinkedList()
@@ -85,7 +81,7 @@ object CioShaders {
 }
 
 val String.compatible: String
-    get() = if (!Core.graphics.isGL30Available || TestMobileOnly)
-        "$this-gl20"
+    get() = if (CioMod.TestGlCompatibility || this.useCompatible)
+        "$this-compatible"
     else
         this

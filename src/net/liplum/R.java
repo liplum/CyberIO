@@ -229,6 +229,6 @@ public class R {
     }
 
     public static final class Setting{
-        public static final String LinkOpacity = "linkopacity";
+        public static final String LinkOpacity = Gen("connection-opacity");
     }
 }

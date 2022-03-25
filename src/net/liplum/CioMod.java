@@ -8,14 +8,13 @@ import mindustry.Vars;
 import mindustry.core.GameState;
 import mindustry.io.JsonIO;
 import mindustry.mod.Mod;
-import mindustry.ui.dialogs.SettingsMenuDialog;
 import net.liplum.animations.ganim.GlobalAnimation;
 import net.liplum.api.cyber.DataCenter;
 import net.liplum.api.cyber.StreamCenter;
 import net.liplum.blocks.cloud.LiplumCloud;
 import net.liplum.blocks.cloud.SharedRoom;
 import net.liplum.registries.*;
-import net.liplum.ui.Settings;
+import net.liplum.ui.SettingsUI;
 import net.liplum.utils.G;
 
 import static mindustry.game.EventType.*;
@@ -24,13 +23,14 @@ import static net.liplum.registries.TintedBulletsRegistryKt.tintedBulletsRegistr
 public class CioMod extends Mod {
     public static final boolean IsClient = !Vars.headless;
     public static boolean DebugMode = true;
-    public static boolean TestMobileOnly = false;
+    public static boolean TestGlCompatibility = false;
     public static boolean ExperimentalMode = false;
     public static boolean CanGlobalAnimationPlay = false;
     public static float UpdateFrequency = 5f;
 
     public CioMod() {
         Log.info("Cyber IO mod loaded.");
+        GL.handleCompatible();
         //listen for game load event
         Events.on(ClientLoadEvent.class, e -> {
             //show dialog upon startup
@@ -77,7 +77,8 @@ public class CioMod extends Mod {
         CioShaders.loadResource();
         GlobalAnimation.loadAllResources();
         Events.run(Trigger.preDraw, G::init);
-        Settings.addGraphicSettings();
+        SettingsUI.addGraphicSettings();
+        Settings.updateSettings();
         Log.info("Cyber IO initialized.");
     }
 

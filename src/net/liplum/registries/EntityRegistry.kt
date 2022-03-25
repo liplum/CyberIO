@@ -5,14 +5,11 @@ import arc.struct.ObjectMap
 import arc.util.Log
 import mindustry.gen.EntityMapping
 import mindustry.gen.Entityc
+import net.liplum.Clog.log
 import net.liplum.Meta
 import net.liplum.OnlyDebug
 import net.liplum.OnlyServer
 import net.liplum.holo.HoloUnit
-import net.liplum.lib.addLeft
-import net.liplum.lib.addRight
-import net.liplum.lib.buildCenterFillUntil
-import net.liplum.lib.buildFill
 
 object EntityRegistry {
     //start from 100
@@ -45,13 +42,9 @@ object EntityRegistry {
         }
         keys.forEach { register(it) }
         (OnlyDebug or OnlyServer){
-            val infoHead = Meta.Name.buildCenterFillUntil('=', 20) addLeft "//" addRight "\\\\"
-            Log.info(infoHead.toString())
-            Clz2Id.each { clz, i ->
+            Clz2Id.log("${Meta.Name} Unit") { clz, i ->
                 Log.info("$i|${clz.simpleName}")
             }
-            val infoTail = buildFill('=', 20) addLeft "\\\\" addRight "//"
-            Log.info(infoTail.toString())
         }
     }
 }
