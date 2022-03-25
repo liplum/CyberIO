@@ -28,10 +28,7 @@ import net.liplum.blocks.rs.Receiver.ReceiverBuild
 import net.liplum.lib.delegates.Delegate1
 import net.liplum.lib.ui.bars.removeItems
 import net.liplum.persistance.intSet
-import net.liplum.utils.TR
-import net.liplum.utils.addSenderInfo
-import net.liplum.utils.autoAnim
-import net.liplum.utils.inMod
+import net.liplum.utils.*
 
 private typealias AniStateR = AniState<Receiver, ReceiverBuild>
 
@@ -78,7 +75,7 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
         DownArrowTR = this.inMod("rs-down-arrow")
         UnconnectedTR = this.inMod("rs-unconnected")
         NoPowerTR = this.inMod("rs-no-power")
-        DownloadAnim = this.autoAnim("rs-down-arrow", DownloadAnimFrameNumber, DownloadAnimDuration)
+        DownloadAnim = this.autoAnimInMod("rs-down-arrow", DownloadAnimFrameNumber, DownloadAnimDuration)
     }
 
     override fun setBars() {

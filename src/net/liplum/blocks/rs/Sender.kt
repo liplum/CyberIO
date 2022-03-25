@@ -55,7 +55,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
         CrossTR = this.inMod("rs-cross")
         UnconnectedTR = this.inMod("rs-unconnected")
         NoPowerTR = this.inMod("rs-no-power")
-        UploadAnim = this.autoAnim("rs-up-arrow", UploadAnimFrameNumber, UploadAnimDuration)
+        UploadAnim = this.autoAnimInMod("rs-up-arrow", UploadAnimFrameNumber, UploadAnimDuration)
     }
 
     override fun setBars() {

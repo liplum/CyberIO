@@ -16,6 +16,16 @@ fun MappableContent.autoAnim(
     return AutoAnimation(totalDuration, *this.anim(subName, true, frame))
 }
 
+fun MappableContent.autoAnimInMod(
+    name: String,
+    frame: Int,
+    totalDuration: Float
+): Animation {
+    val identity = "${this.minfo.mod.name}-$name-anim"
+    val tr: TextureRegion = Core.atlas.find(identity)
+    return AutoAnimation(totalDuration, *tr.slice(frame))
+}
+
 fun String.autoAnimInCio(
     frame: Int,
     totalDuration: Float
