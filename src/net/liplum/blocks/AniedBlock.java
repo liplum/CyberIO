@@ -1,6 +1,7 @@
 package net.liplum.blocks;
 
 import arc.util.Nullable;
+import mindustry.Vars;
 import mindustry.gen.Building;
 import mindustry.world.Block;
 import net.liplum.CioMod;
@@ -137,8 +138,10 @@ public abstract class AniedBlock<TBlock extends AniedBlock<?, ?>, TBuild extends
          */
         @Override
         public void draw() {
-            aniStateM.spend(delta());
-            beforeDraw();
+            if (!Vars.state.isPaused()) {
+                aniStateM.spend(delta());
+                beforeDraw();
+            }
             if (GameH.CanRefresh()) {
                 aniStateM.update();
             }

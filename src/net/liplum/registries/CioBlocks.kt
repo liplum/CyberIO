@@ -545,8 +545,8 @@ object CioBlocks : ContentTable {
                         15f * 60
                     ),
                 )
-                size = 4
-                consumes.power(2f)
+                size = 5
+                consumes.power(3f)
             }
             aquacyberion = Floor("aqua-cyberion").apply {
                 drownTime = 0f

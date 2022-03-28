@@ -144,7 +144,7 @@ inline infix fun Boolean.Else(func: () -> Unit) {
 
 fun CanRefresh() = Time.time % CioMod.UpdateFrequency < 1f
 inline fun WhenRefresh(func: () -> Unit): Boolean {
-    if (Time.time % CioMod.UpdateFrequency < 1f) {
+    if (!Vars.state.isPaused && Time.time % CioMod.UpdateFrequency < 1f) {
         func()
         return true
     }

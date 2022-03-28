@@ -225,6 +225,21 @@ open class HoloProjector(name: String) : Block(name) {
                     }
         }
 
+        override fun add() {
+            super.add()
+            team.updateHoloCapacity()
+        }
+
+        override fun updateProximity() {
+            super.updateProximity()
+            team.updateHoloCapacity()
+        }
+
+        override fun remove() {
+            super.remove()
+            team.updateHoloCapacity()
+        }
+
         override fun read(read: Reads, revision: Byte) {
             super.read(read, revision)
             planOrder = read.b().toInt()

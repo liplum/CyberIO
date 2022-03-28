@@ -261,7 +261,7 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
             BaseTR.DrawOn(this)
             Drawf.liquid(
                 LiquidTR, x, y,
-                liquids.total() / liquidCapacity,
+                liquids.currentAmount() / liquidCapacity,
                 liquids.current().color,
                 (rotation - 90).toFloat()
             )

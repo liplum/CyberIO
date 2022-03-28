@@ -4,6 +4,7 @@ package net.liplum.utils
 
 import arc.math.Mathf
 import mindustry.Vars
+import mindustry.content.Blocks
 import mindustry.ctype.Content
 import mindustry.entities.Units
 import mindustry.game.Team
@@ -12,6 +13,7 @@ import mindustry.type.UnitType
 import mindustry.world.Tile
 import mindustry.world.blocks.distribution.PayloadConveyor
 import mindustry.world.blocks.payloads.BuildPayload
+import mindustry.world.blocks.payloads.PayloadSource
 import mindustry.world.blocks.payloads.UnitPayload
 
 fun tileAt(x: Int, y: Int): Tile? =
@@ -115,3 +117,15 @@ inline fun Building.ForProximity(func: (Tile) -> Unit) {
 
 fun UnitType.pctOfTeamOwns(team: Team) =
     team.data().countType(this).toFloat() / Units.getCap(team)
+
+fun <T> Class<T>.registerPayloadSource() where T : UnitType {
+    val source = Blocks.payloadSource as PayloadSource
+    source.config(this) { build: PayloadSource.PayloadSourceBuild, unitType ->
+        if (source.canProduce(unitType) && build.unit !== unitType) {
+            build.unit = unitType
+            build.block = null
+            build.payload = null
+            build.scl = 0f
+        }
+    }
+}

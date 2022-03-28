@@ -120,7 +120,7 @@ open class StreamClient(name: String) : AniedBlock<StreamClient, StreamClient.Cl
             val outputLiquid = outputLiquid
             if (outputLiquid != null) {
                 if (consValid()) {
-                    if (liquids.total() > 0.1f) {
+                    if (liquids.currentAmount() > 0.1f) {
                         dumpLiquid(outputLiquid)
                     }
                 }
@@ -156,7 +156,7 @@ open class StreamClient(name: String) : AniedBlock<StreamClient, StreamClient.Cl
         }
 
         open fun tryConfigOutputLiquid(liquid: Liquid?): Boolean {
-            if (liquids.total() > 0.1f) {
+            if (liquids.currentAmount() > 0.1f) {
                 return false
             }
             configure(liquid)
@@ -189,7 +189,7 @@ open class StreamClient(name: String) : AniedBlock<StreamClient, StreamClient.Cl
         override fun fixedDraw() {
             Drawf.liquid(
                 LiquidTR, x, y,
-                liquids.total() / liquidCapacity,
+                liquids.currentAmount() / liquidCapacity,
                 liquids.current().color,
                 (rotation - 90).toFloat()
             )

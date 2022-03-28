@@ -1,5 +1,6 @@
 package net.liplum.blocks;
 
+import mindustry.Vars;
 import mindustry.world.blocks.production.GenericCrafter;
 import net.liplum.CioMod;
 import net.liplum.ClientOnly;
@@ -108,8 +109,10 @@ public abstract class AniedCrafter<TBlock extends AniedCrafter<?, ?>, TBuild ext
 
         @Override
         public void draw() {
-            aniStateM.spend(delta());
-            beforeDraw();
+            if (!Vars.state.isPaused()) {
+                aniStateM.spend(delta());
+                beforeDraw();
+            }
             if (GameH.CanRefresh()) {
                 aniStateM.update();
             }
