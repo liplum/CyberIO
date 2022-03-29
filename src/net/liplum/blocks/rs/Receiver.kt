@@ -19,7 +19,7 @@ import mindustry.world.meta.BlockGroup
 import net.liplum.*
 import net.liplum.animations.anims.Animation
 import net.liplum.animations.anis.AniState
-import net.liplum.animations.anis.DrawTR
+import net.liplum.animations.anis.Draw
 import net.liplum.animations.anis.SetColor
 import net.liplum.animations.anis.config
 import net.liplum.api.cyber.*
@@ -28,7 +28,10 @@ import net.liplum.blocks.rs.Receiver.ReceiverBuild
 import net.liplum.lib.delegates.Delegate1
 import net.liplum.lib.ui.bars.removeItems
 import net.liplum.persistance.intSet
-import net.liplum.utils.*
+import net.liplum.utils.TR
+import net.liplum.utils.addSenderInfo
+import net.liplum.utils.autoAnimInMod
+import net.liplum.utils.inMod
 
 private typealias AniStateR = AniState<Receiver, ReceiverBuild>
 
@@ -220,20 +223,20 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
     @ClientOnly lateinit var NoPowerAni: AniStateR
     override fun genAniState() {
         DownloadAni = addAniState("Download") {
-            DownloadAnim.draw(Color.green, it.x, it.y)
+            DownloadAnim.draw(Color.green, x, y)
         }
         UnconnectedAni = addAniState("Unconnected") {
             SetColor(R.C.Unconnected)
-            DrawTR(UnconnectedTR, it.x, it.y)
+            UnconnectedTR.Draw(x, y)
             Draw.color()
         }
         BlockedAni = addAniState("Blocked") {
             SetColor(R.C.Stop)
-            Draw.rect(DownArrowTR, it.x, it.y)
+            DownArrowTR.Draw(x, y)
             Draw.color()
         }
         NoPowerAni = addAniState("NoPower") {
-            Draw.rect(NoPowerTR, it.x, it.y)
+            NoPowerTR.Draw(x, y)
         }
     }
 
@@ -241,31 +244,31 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
         config {
             // UnconnectedAni
             From(UnconnectedAni) To DownloadAni When {
-                it.outputItem != null
+                outputItem != null
             } To NoPowerAni When {
-                !it.consValid()
+                !consValid()
             }
             // BlockedAni
             From(BlockedAni) To UnconnectedAni When {
-                it.outputItem == null
+                outputItem == null
             } To DownloadAni When {
-                !it.isBlocked || it.lastFullDataDelta < fullTime
+                !isBlocked || lastFullDataDelta < fullTime
             } To NoPowerAni When {
-                !it.consValid()
+                !consValid()
             }
             // DownloadAni
             From(DownloadAni) To UnconnectedAni When {
-                it.outputItem == null
+                outputItem == null
             } To BlockedAni When {
-                it.isBlocked && it.lastFullDataDelta > fullTime
+                isBlocked && lastFullDataDelta > fullTime
             } To NoPowerAni When {
-                !it.consValid()
+                !consValid()
             }
             // NoPower
             From(NoPowerAni) To UnconnectedAni When {
-                it.consValid() && it.outputItem == null
+                consValid() && outputItem == null
             } To DownloadAni When {
-                it.consValid() && it.outputItem != null
+                consValid() && outputItem != null
             }
         }
     }

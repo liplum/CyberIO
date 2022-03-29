@@ -213,13 +213,17 @@ open class Cloud(name: String) : PowerBlock(name) {
         }
 
         override fun draw() {
-            val d = G.D(0.1f * cloudFloatRange * delta())
-            floating.move(d)
+            WhenNotPaused {
+                val d = G.D(0.1f * cloudFloatRange * delta())
+                floating.move(d)
+                aniBlockGroupObj.spend(delta())
+            }
             WhenRefresh {
                 aniBlockGroupObj.update()
             }
-            super.draw()
+            Draw.rect(region, x, y)
             aniBlockGroupObj.drawBuilding()
+            drawTeamTop()
         }
 
         override fun onConfigureTileTapped(other: Building): Boolean {
@@ -312,14 +316,14 @@ open class Cloud(name: String) : PowerBlock(name) {
     open fun genAnimState() {
         CloudIdleAni = AniState("Idle") {
             cloud.Draw(
-                it.x + it.floating.xOffset,
-                it.y + it.floating.yOffset
+                x + floating.xOffset,
+                y + floating.yOffset
             )
         }
         CloudNoPowerAni = AniState("NoPower") {
             NoPowerTR.DrawSize(
-                it.x + it.floating.xOffset,
-                it.y + it.floating.yOffset,
+                x + floating.xOffset,
+                y + floating.yOffset,
                 1f / 7f * this@Cloud.size
             )
         }
@@ -328,29 +332,38 @@ open class Cloud(name: String) : PowerBlock(name) {
     open fun genAniConfig() {
         CloudAniConfig = config {
             From(CloudNoPowerAni) To CloudIdleAni When {
-                it.consValid()
+                consValid()
             }
             From(CloudIdleAni) To CloudNoPowerAni When {
-                !it.consValid()
+                !consValid()
             }
+            transitionDuration = 60f
+        }
+    }
+
+    inner class CloudBlockObj(
+        block: Cloud, build: CloudBuild
+    ) : BlockObj<Cloud, CloudBuild>(block, build, CloudAniBlock) {
+        var cloudAniSM = CloudAniConfig.gen(block, build)
+        override fun update() {
+            cloudAniSM.update()
+        }
+
+        override fun spend(time: Float) {
+            cloudAniSM.spend(time)
+        }
+
+        override fun drawBuild() {
+            xOffset = build.floating.xOffset
+            yOffset = build.floating.yOffset
+            cloudAniSM.drawBuilding()
         }
     }
 
     open fun genBlockTypes() {
         BlockG = BlockGroupType {
             CloudAniBlock = addType(BlockType.byObj(ShareMode.UseMain) { block, build ->
-                object : BlockObj<Cloud, CloudBuild>(block, build, CloudAniBlock) {
-                    var cloudAniSM = CloudAniConfig.gen(block, build)
-                    override fun update() {
-                        cloudAniSM.update()
-                    }
-
-                    override fun drawBuild() {
-                        xOffset = build.floating.xOffset
-                        yOffset = build.floating.yOffset
-                        cloudAniSM.drawBuilding()
-                    }
-                }
+                CloudBlockObj(block, build)
             })
 
             DataAniBlock = addType(BlockType.render { _, build ->

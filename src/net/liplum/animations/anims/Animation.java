@@ -124,7 +124,7 @@ public class Animation implements IAnimated {
     public void draw(float x, float y, float rotation) {
         TextureRegion curTR = getCurTR();
         if (curTR != null) {
-            DrawT.DrawTR(curTR, x, y, rotation);
+            DrawT.Draw(curTR, x, y, rotation);
             DrawT.Reset();
         }
     }
@@ -134,7 +134,7 @@ public class Animation implements IAnimated {
         TextureRegion curTR = getCurTR();
         if (curTR != null) {
             DrawT.SetColor(color);
-            DrawT.DrawTR(curTR, x, y, rotation);
+            DrawT.Draw(curTR, x, y, rotation);
             DrawT.Reset();
         }
     }
@@ -160,7 +160,7 @@ public class Animation implements IAnimated {
     public void draw(@NotNull AnimationObj obj, float x, float y, float rotation) {
         TextureRegion curTR = getCurTRByObj(obj);
         if (curTR != null) {
-            DrawT.DrawTR(curTR, x, y, rotation);
+            DrawT.Draw(curTR, x, y, rotation);
             DrawT.Reset();
         }
     }
@@ -169,7 +169,7 @@ public class Animation implements IAnimated {
         TextureRegion curTR = getCurTRByObj(obj);
         if (curTR != null) {
             DrawT.SetColor(color);
-            DrawT.DrawTR(curTR, x, y, rotation);
+            DrawT.Draw(curTR, x, y, rotation);
             DrawT.Reset();
         }
     }

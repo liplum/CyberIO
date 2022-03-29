@@ -18,6 +18,10 @@ open class BlockGroupObj<TBlock : Block, TBuild : Building>(
         }
     }
 
+    open fun spend(time: Float) {
+        blockObjs.forEach { it.spend(time) }
+    }
+
     open fun drawBuilding() {
         blockObjs.forEach {
             if (it.isMain) {

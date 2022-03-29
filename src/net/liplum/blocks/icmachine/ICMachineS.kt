@@ -84,18 +84,18 @@ open class ICMachineS(name: String) : AniedCrafter<ICMachineS, ICMachineS.ICMach
     @ClientOnly lateinit var WorkingState: AniStateMS
     override fun genAniState() {
         IdleState = addAniState("Idle") {
-            SetAlpha(it.baffleAlpha)
-            DrawTR(Baffle, it.x, it.y)
+            SetAlpha(baffleAlpha)
+            Baffle.Draw(x, y)
         }
         WorkingState = addAniState("Working") {
-            val animProgress = it.progress * phase
+            val animProgress = progress * phase
             val curIndex = animProgress.toInt().coerceIn(0, processIcons.size - 1)
             val curTR = processIcons[curIndex].fullIcon
-            val progressInCurPeriod = it.progress % (1f / phase) / (1f / phase)
+            val progressInCurPeriod = progress % (1f / phase) / (1f / phase)
             SetAlpha(P2A(progressInCurPeriod))
-            DrawTR(curTR, it.x, it.y)
-            SetAlpha(it.baffleAlpha)
-            DrawTR(Baffle, it.x, it.y)
+            curTR.Draw(x, y)
+            SetAlpha(baffleAlpha)
+            Baffle.Draw(x, y)
         }
     }
 
@@ -103,10 +103,10 @@ open class ICMachineS(name: String) : AniedCrafter<ICMachineS, ICMachineS.ICMach
         config {
             transition(None)
             From(IdleState) To WorkingState When {
-                !it.progress.isZero() && !it.power.status.isZero()
+                !progress.isZero() && !power.status.isZero()
             }
             From(WorkingState) To IdleState When {
-                it.progress.isZero() || it.power.status.isZero()
+                progress.isZero() || power.status.isZero()
             }
         }
     }

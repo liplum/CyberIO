@@ -7,6 +7,7 @@ import mindustry.graphics.Drawf
 import mindustry.graphics.Layer
 import mindustry.world.blocks.defense.turrets.ItemTurret
 import net.liplum.ClientOnly
+import net.liplum.WhenNotPaused
 import net.liplum.animations.anims.Animation
 import net.liplum.animations.anims.AnimationObj
 import net.liplum.animations.anims.ITimeModifier
@@ -68,18 +69,22 @@ open class TMTRAINER(name: String) : ItemTurret(name) {
         }
 
         override fun draw() {
-            coreAnimObj.spend(Time.delta)
-            emptyCoreAnimObj.spend(Time.delta)
+            WhenNotPaused {
+                coreAnimObj.spend(Time.delta)
+                emptyCoreAnimObj.spend(Time.delta)
+            }
             Draw.rect(baseRegion, x, y)
             Draw.color()
 
             Draw.z(Layer.turret)
-            targetPol.a = rotation.radian
-            var tpr = targetPol.r
-            val delta = virusCharge * 0.001f
-            tpr = if (wasShooting) tpr - delta else tpr + delta
-            tpr = tpr.coerceIn(headMin, headMax)
-            targetPol.r = tpr
+            WhenNotPaused {
+                targetPol.a = rotation.radian
+                var tpr = targetPol.r
+                val delta = virusCharge * 0.001f
+                tpr = if (wasShooting) tpr - delta else tpr + delta
+                tpr = tpr.coerceIn(headMin, headMax)
+                targetPol.r = tpr
+            }
 
             tr2.trns(rotation, -recoil)
             val drawRotation = rotation.draw

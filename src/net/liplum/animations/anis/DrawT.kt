@@ -88,6 +88,10 @@ fun TR.Draw(x: Float, y: Float, rotation: Float) {
     DrawTR(this, x, y, rotation)
 }
 
+fun TR.DrawCuttingWidth(x: Float, y: Float,width: Float) {
+
+}
+
 fun ResetColor() {
     Draw.color()
 }

@@ -151,6 +151,12 @@ inline fun WhenRefresh(func: () -> Unit): Boolean {
     return false
 }
 
+inline fun WhenNotPaused(func: () -> Unit) {
+    if (!Vars.state.isPaused) {
+        func()
+    }
+}
+
 val Float.seconds: Int
     get() = (this / Time.toSeconds).toInt()
 

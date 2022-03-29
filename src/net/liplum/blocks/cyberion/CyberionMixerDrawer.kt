@@ -56,14 +56,23 @@ class CyberionMixerDrawer : DrawSmelter {
             val r = 0.06f
             val cr = Mathf.random(0.1f)
             Draw.z(Layer.block + 0.01f)
+            val random = Mathf.randomSeedRange(build.pos().toLong(), 12f)
             Draw.alpha(build.warmup)
             Draw.rect(top, build.x, build.y)
-            Draw.alpha((1f - g + Mathf.absin(Time.time, 8f, g) + Mathf.random(r) - r) * build.warmup)
+            Draw.alpha((1f - g + Mathf.absin(Time.time + random, 8f, g) + Mathf.random(r) - r) * build.warmup)
             Draw.tint(flameColor)
-            Fill.circle(build.x, build.y, flameRadius + Mathf.absin(Time.time, flameRadiusScl, flameRadiusMag) + cr)
+            Fill.circle(
+                build.x,
+                build.y,
+                flameRadius + Mathf.absin(Time.time + random, flameRadiusScl, flameRadiusMag) + cr
+            )
             Draw.color(lightColor)
             Draw.alpha(build.warmup)
-            Fill.circle(build.x, build.y, flameRadiusIn + Mathf.absin(Time.time, flameRadiusScl, flameRadiusInMag) + cr)
+            Fill.circle(
+                build.x,
+                build.y,
+                flameRadiusIn + Mathf.absin(Time.time + random, flameRadiusScl, flameRadiusInMag) + cr
+            )
             Draw.color()
         }
     }

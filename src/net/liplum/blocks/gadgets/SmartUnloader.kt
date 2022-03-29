@@ -1,5 +1,6 @@
 package net.liplum.blocks.gadgets
 
+import arc.math.Mathf
 import arc.struct.OrderedSet
 import arc.struct.Seq
 import arc.util.Time
@@ -18,7 +19,7 @@ import net.liplum.*
 import net.liplum.animations.anims.Animation
 import net.liplum.animations.anims.AnimationObj
 import net.liplum.animations.anis.AniState
-import net.liplum.animations.anis.DrawTR
+import net.liplum.animations.anis.Draw
 import net.liplum.animations.anis.config
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
@@ -26,6 +27,7 @@ import net.liplum.lib.ui.bars.removeItems
 import net.liplum.persistance.intSet
 import net.liplum.utils.*
 import kotlin.math.absoluteValue
+import kotlin.math.log2
 
 private typealias AniStateU = AniState<SmartUnloader, SmartUnloader.SmartULDBuild>
 private typealias SmartDIS = SmartDistributor.SmartDISBuild
@@ -46,6 +48,16 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
     @JvmField var powerUsagePerItem = 2.5f
     @JvmField var powerUsagePerConnection = 2f
     @JvmField var powerUsageBasic = 1.5f
+    @JvmField var boost2Count: (Float) -> Int = {
+        if (it <= 1.1f)
+            1
+        else if (it in 1.1f..2.1f)
+            2
+        else if (it in 2.1f..3f)
+            3
+        else
+            Mathf.round(log2(it + 5.1f))
+    }
 
     init {
         solid = true
@@ -55,7 +67,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
         group = BlockGroup.transportation
         noUpdateDisabled = true
         unloadable = false
-        canOverdrive = false
+        canOverdrive = true
         unloadable = false
         itemCapacity = 50
         allowConfigInventory = false
@@ -192,14 +204,14 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
             unloadTimer += delta()
             if (unloadTimer >= unloadSpeed) {
                 unloadTimer = 0f
-                val unloaded = unload()
+                val unloaded = DoMultipleBool(canOverdrive, boost2Count(timeScale), this::unload)
                 ClientOnly {
                     if (unloaded) {
                         lastUnloadTime = 0f
                     }
                 }
             }
-            val sent = sendData()
+            val sent = DoMultipleBool(canOverdrive, boost2Count(timeScale), this::sendData)
             ClientOnly {
                 if (sent) {
                     lastSendingTime = 0f
@@ -452,32 +464,32 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
     override fun genAniConfig() {
         config {
             From(NoPowerAni) To UnloadingAni When {
-                it.consValid()
+                consValid()
             }
 
             From(UnloadingAni) To NoPowerAni When {
-                !it.consValid()
+                !consValid()
             } To BlockedAni When {
-                !it.isUnloading || !it.isSending
+                !isUnloading || !isSending
             }
 
             From(BlockedAni) To NoPowerAni When {
-                !it.consValid()
+                !consValid()
             } To UnloadingAni When {
-                it.isUnloading && it.isSending
+                isUnloading && isSending
             }
         }
     }
 
     override fun genAniState() {
         UnloadingAni = addAniState("Unloading") {
-            it.shrinkingAnimObj.draw(it.x, it.y)
+            shrinkingAnimObj.draw(x, y)
         }
         NoPowerAni = addAniState("NoPower") {
-            DrawTR(NoPowerTR, it.x, it.y)
+            NoPowerTR.Draw(x, y)
         }
         BlockedAni = addAniState("Blocked") {
-            it.shrinkingAnimObj.draw(R.C.Stop, it.x, it.y)
+            shrinkingAnimObj.draw(R.C.Stop, x, y)
         }
     }
 }

@@ -91,7 +91,11 @@ open class HoloUnit : UnitEntity() {
                     (abilities.find {
                         it is HoloForceField
                     } as? HoloForceField)?.let {
-                        HoloFx.shieldBreak.at(x, y, it.realRange(this), R.C.Holo, this)
+                        HoloFx.shieldBreak.at(
+                            x, y,
+                            it.realRange(this),
+                            R.C.Holo, this
+                        )
                     }
                 }
             }

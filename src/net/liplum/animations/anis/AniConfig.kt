@@ -3,8 +3,9 @@ package net.liplum.animations.anis
 import arc.util.Nullable
 import mindustry.gen.Building
 import mindustry.world.Block
-import net.liplum.api.ITrigger
 import java.util.*
+
+typealias TransitionEffect = (Float, () -> Unit, () -> Unit) -> Unit
 
 /**
  * The configuration of an Animation State Machine
@@ -16,7 +17,7 @@ open class AniConfig<TBlock : Block, TBuild : Building> {
     /**
      * Key --to--> When can go to the next State
      */
-    private val canEnters = HashMap<Any, ITrigger<TBuild>>()
+    private val canEnters = HashMap<Any, TBuild.() -> Boolean>()
     /**
      * Current State --to--> The next all possible State
      */
@@ -37,10 +38,16 @@ open class AniConfig<TBlock : Block, TBuild : Building> {
      */
     var built = false
         private set
-    var transition: TransitionEffect = Fade
-        private set
+    var transition: TransitionEffect = SmoothFade
+        set(value) {
+            checkBuilt()
+            field = value
+        }
     var transitionDuration: Float = 30f
-        private set
+        set(value) {
+            checkBuilt()
+            field = value
+        }
     /**
      * Which from State is configuring
      */
@@ -102,7 +109,7 @@ open class AniConfig<TBlock : Block, TBuild : Building> {
      */
     open fun entry(
         from: AniState<TBlock, TBuild>, to: AniState<TBlock, TBuild>,
-        canEnter: ITrigger<TBuild>
+        canEnter: TBuild.() -> Boolean
     ): AniConfig<TBlock, TBuild> {
         checkBuilt()
         if (from === to || from.stateName == to.stateName) {
@@ -138,7 +145,7 @@ open class AniConfig<TBlock : Block, TBuild : Building> {
      * @param canEnter When the State Machine can go from current State to next State
      * @return this
      */
-    open fun To(to: AniState<TBlock, TBuild>, canEnter: ITrigger<TBuild>): AniConfig<TBlock, TBuild> {
+    open fun To(to: AniState<TBlock, TBuild>, canEnter: TBuild.() -> Boolean): AniConfig<TBlock, TBuild> {
         checkBuilt()
         if (curConfiguringFromState == null) {
             throw NoFromStateException(this.toString())
@@ -172,7 +179,7 @@ open class AniConfig<TBlock : Block, TBuild : Building> {
      * @param canEnter When the State Machine can go from current State to next State
      * @return this
      */
-    open infix fun When(canEnter: ITrigger<TBuild>): AniConfig<TBlock, TBuild> {
+    open infix fun When(canEnter: TBuild.() -> Boolean): AniConfig<TBlock, TBuild> {
         checkBuilt()
         if (curConfiguringFromState == null) {
             throw NoFromStateException(this.toString())
@@ -229,7 +236,7 @@ open class AniConfig<TBlock : Block, TBuild : Building> {
      * @return if the key of `form`->`to` exists, return the condition. Otherwise, return null.
      */
     @Nullable
-    open fun getCanEnter(from: AniState<TBlock, TBuild>, to: AniState<TBlock, TBuild>): ITrigger<TBuild>? {
+    open fun getCanEnter(from: AniState<TBlock, TBuild>, to: AniState<TBlock, TBuild>): (TBuild.() -> Boolean)? {
         return canEnters[getKey(from, to)]
     }
     /**

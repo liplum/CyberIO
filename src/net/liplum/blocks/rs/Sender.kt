@@ -262,15 +262,15 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
         IdleAni = addAniState("Idle")
 
         UploadAni = addAniState("Upload") {
-            UploadAnim.draw(Color.green, it.x, it.y)
+            UploadAnim.draw(Color.green, x, y)
         }
         BlockedAni = addAniState("Blocked") {
             SetColor(R.C.Stop)
-            DrawTR(UpArrowTR, it.x, it.y)
+            UpArrowTR.Draw(x, y)
             ResetColor()
         }
         NoPowerAni = addAniState("NoPower") {
-            DrawTR(NoPowerTR, it.x, it.y)
+            NoPowerTR.Draw(x, y)
         }
     }
 
@@ -278,32 +278,32 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
         config {
             // Idle
             From(IdleAni) To UploadAni When {
-                val reb = it.receiver
+                val reb = receiver
                 reb != null
             } To NoPowerAni When {
-                !it.consValid()
+                !consValid()
             }
             // Upload
             From(UploadAni) To IdleAni When {
-                it.receiverPackedPos == -1
+                receiverPackedPos == -1
             } To BlockedAni When {
-                val reb = it.receiver
-                reb != null && it.isBlocked
+                val reb = receiver
+                reb != null && isBlocked
             } To NoPowerAni When {
-                !it.consValid()
+                !consValid()
             }
             // Blocked
             From(BlockedAni) To IdleAni When {
-                it.receiverPackedPos == -1
+                receiverPackedPos == -1
             } To UploadAni When {
-                val reb = it.receiver
-                reb != null && !it.isBlocked
+                val reb = receiver
+                reb != null && !isBlocked
             } To NoPowerAni When {
-                !it.consValid()
+                !consValid()
             }
             // NoPower
             From(NoPowerAni) To IdleAni When {
-                it.consValid()
+                consValid()
             }
         }
     }

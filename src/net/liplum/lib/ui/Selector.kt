@@ -1,4 +1,4 @@
-package net.liplum.ui
+package net.liplum.lib.ui
 
 import arc.func.Cons
 import arc.func.Prov

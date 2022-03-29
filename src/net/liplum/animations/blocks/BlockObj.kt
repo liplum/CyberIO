@@ -19,6 +19,9 @@ open class BlockObj<TBlock : Block, TBuild : Building>(
     open fun update() {
     }
 
+    open fun spend(time: Float) {
+    }
+
     open fun drawBuild() {
         prototype.render?.invoke(this, block, build)
     }

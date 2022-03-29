@@ -10,6 +10,7 @@ import mindustry.world.meta.BlockFlag
 import mindustry.world.meta.BlockGroup
 import net.liplum.ClientOnly
 import net.liplum.R
+import net.liplum.WhenNotPaused
 import net.liplum.animations.anims.Animation
 import net.liplum.animations.anims.AnimationObj
 import net.liplum.animations.anims.pingPong
@@ -92,14 +93,16 @@ open class PrismObelisk(name: String) : Block(name) {
 
         override fun draw() {
             super.draw()
-            val d = delta()
-            for ((i, obj) in BlinkObjs.withIndex()) {
-                if (linked == -1) {
-                    obj.sleep()
-                } else
-                    obj.wakeUp()
-                obj.spend(d)
-                obj.draw(x, y, i * 90f)
+            WhenNotPaused {
+                val d = delta()
+                for ((i, obj) in BlinkObjs.withIndex()) {
+                    if (linked == -1) {
+                        obj.sleep()
+                    } else
+                        obj.wakeUp()
+                    obj.spend(d)
+                    obj.draw(x, y, i * 90f)
+                }
             }
         }
 

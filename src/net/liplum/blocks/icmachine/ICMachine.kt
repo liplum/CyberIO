@@ -56,18 +56,18 @@ open class ICMachine(name: String) : AniedCrafter<ICMachine, ICMachine.ICMachine
     override fun genAniState() {
         IdleState = addAniState("Idle")
         WorkingState = addAniState("Working") {
-            SetAlpha(workingAnimAlpha(it.progress))
-            it.workingAnimObj.draw(it.x, it.y)
+            SetAlpha(workingAnimAlpha(progress))
+            workingAnimObj.draw(x, y)
         }
     }
 
     override fun genAniConfig() {
         config {
             From(IdleState) To WorkingState When {
-                !it.progress.isZero() && !it.power.status.isZero()
+                !progress.isZero() && !power.status.isZero()
             }
             From(WorkingState) To IdleState When {
-                it.progress.isZero() || it.power.status.isZero()
+                progress.isZero() || power.status.isZero()
             }
         }
     }

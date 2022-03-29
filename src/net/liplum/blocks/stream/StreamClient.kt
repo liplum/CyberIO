@@ -21,8 +21,8 @@ import net.liplum.CalledBySync
 import net.liplum.ClientOnly
 import net.liplum.DebugOnly
 import net.liplum.animations.anis.AniState
+import net.liplum.animations.anis.Draw
 import net.liplum.animations.anis.DrawOn
-import net.liplum.animations.anis.DrawTR
 import net.liplum.animations.anis.config
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
@@ -207,17 +207,17 @@ open class StreamClient(name: String) : AniedBlock<StreamClient, StreamClient.Cl
         NormalAni = addAniState("Normal") {
         }
         NoPowerAni = addAniState("NoPower") {
-            DrawTR(NoPowerTR, it.x, it.y)
+            NoPowerTR.Draw(x, y)
         }
     }
 
     override fun genAniConfig() {
         config {
             From(NormalAni) To NoPowerAni When {
-                !it.consValid()
+                !consValid()
             }
             From(NoPowerAni) To NormalAni When {
-                it.consValid()
+                consValid()
             }
         }
     }

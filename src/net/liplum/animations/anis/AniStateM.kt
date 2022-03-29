@@ -9,16 +9,25 @@ open class AniStateM<TBlock : Block, TBuild : Building>(
     val block: TBlock,
     val build: TBuild
 ) {
-    val transition: TransitionEffect = config.transition
-    val transitionDuration: Float = config.transitionDuration
+    var transition: TransitionEffect = config.transition
+    var transitionDuration: Float = config.transitionDuration
     var curState: AniState<TBlock, TBuild> = config.defaultState!!
     var lastState: AniState<TBlock, TBuild>? = null
     var switchAniStateListener: ISwitchAniStateListener<TBlock, TBuild>? = null
-    var onUpdate: Runnable? = null
+    var onUpdate: (() -> Unit)? = null
         private set
 
-    open fun onUpdate(onUpdate: Runnable?): AniStateM<TBlock, TBuild> {
+    open fun onUpdate(onUpdate: () -> Unit): AniStateM<TBlock, TBuild> {
         this.onUpdate = onUpdate
+        return this
+    }
+    /**
+     * For java
+     */
+    fun onUpdate(onUpdate: Runnable): AniStateM<TBlock, TBuild> {
+        onUpdate {
+            onUpdate.run()
+        }
         return this
     }
 
@@ -30,11 +39,8 @@ open class AniStateM<TBlock : Block, TBuild : Building>(
 
     open fun drawBuilding() {
         val delta = curTime - lastSwitchTime
-        val progress = if (delta >= transitionDuration)
-            1f
-        else
-            delta / transitionDuration
-        transition.draw(progress, {
+        val progress = (delta / transitionDuration).coerceIn(0f, 1f)
+        transition(progress, {
             lastState?.drawBuilding(build)
         }, {
             curState.drawBuilding(build)
@@ -48,10 +54,10 @@ open class AniStateM<TBlock : Block, TBuild : Building>(
     }
 
     open fun update() {
-        onUpdate?.run()
+        onUpdate?.invoke()
         for (to in config.getAllEntrances(curState)) {
             val canEnter = config.getCanEnter(curState, to)
-            if (canEnter != null && canEnter.canTrigger(build)) {
+            if (canEnter != null && canEnter(build)) {
                 switchAniStateListener?.onSwitch(block, build, curState, to)
                 lastState = curState
                 curState = to

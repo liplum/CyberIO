@@ -24,7 +24,7 @@ import net.liplum.UndebugOnly
 import net.liplum.animations.anims.Animation
 import net.liplum.animations.anims.AnimationObj
 import net.liplum.animations.anis.AniState
-import net.liplum.animations.anis.DrawTR
+import net.liplum.animations.anis.Draw
 import net.liplum.animations.anis.config
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
@@ -195,27 +195,12 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
                 dynamicReqUpdateTimer = 0f
             }
             if (consValid()) {
-                val dised = distributeMultiple()
+                val dised = DoMultipleBool(canOverdrive, boost2Count(timeScale), this::distribute)
                 if (dised) {
                     lastDistributionTime = 0f
                 }
             }
             lastDistributionTime += delta()
-        }
-
-        open fun distributeMultiple(): Boolean {
-            return if (canOverdrive) {
-                var distributed = false
-                val times = boost2Count(timeScale)
-                for (i in 0 until times) {
-                    if (distribute()) {
-                        distributed = true
-                    }
-                }
-                distributed
-            } else {
-                distribute()
-            }
         }
 
         open fun distribute(): Boolean {
@@ -331,10 +316,10 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
     override fun genAniConfig() {
         config {
             From(NoPowerAni) To DistributingAni When {
-                !it.power.status.isZero()
+                !power.status.isZero()
             }
             From(DistributingAni) To NoPowerAni When {
-                it.power.status.isZero()
+                power.status.isZero()
             }
         }
     }
@@ -342,7 +327,7 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
     override fun genAniState() {
         DistributingAni = addAniState("Distributing")
         NoPowerAni = addAniState("NoPower") {
-            DrawTR(NoPowerTR, it.x, it.y)
+            NoPowerTR.Draw(x, y)
         }
     }
 }

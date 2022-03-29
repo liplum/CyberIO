@@ -291,8 +291,8 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
         NoPowerAni = addAniState("NoPower") {
             SetAlpha(0.8f)
             NoPowerTR.DrawSize(
-                it.x + it.floating.xOffset,
-                it.y + it.floating.yOffset,
+                x + floating.xOffset,
+                y + floating.yOffset,
                 1f / 7f * this@StreamHost.size
             )
         }
@@ -302,11 +302,11 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
     override fun genAniConfig() {
         config {
             From(NoPowerAni) To NormalAni When {
-                it.consValid()
+                consValid()
             }
 
             From(NormalAni) To NoPowerAni When {
-                !it.consValid()
+                !consValid()
             }
         }
     }
