@@ -5,7 +5,6 @@ import net.liplum.Compatible.*
 val CompatibleMap = mapOf(
     "Hologram" to { Hologram },
     "TvStatic" to { TvStatic },
-    "HoloForceField" to { HoloForceField },
     "Monochromize" to { Monochromize },
     "InvertingColorRgb" to { InvertingColorRgb },
 )

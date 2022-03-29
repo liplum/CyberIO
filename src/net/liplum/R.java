@@ -230,5 +230,6 @@ public class R {
     public static final class Setting {
         public static final String LinkOpacity = Gen("connection-opacity");
         public static final String AlwaysShowLink = Gen("always-show-link");
+        public static final String AnimatedShields = "animatedshields";
     }
 }

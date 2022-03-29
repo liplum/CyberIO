@@ -3,10 +3,10 @@ package net.liplum
 import arc.Core
 import arc.graphics.gl.GLVersion
 import arc.graphics.gl.GLVersion.GlType.GLES
-import arc.graphics.gl.GLVersion.GlType.OpenGL
 import arc.util.Log
 import net.liplum.Clog.log
-import net.liplum.Compatible.*
+import net.liplum.Compatible.Hologram
+import net.liplum.Compatible.TvStatic
 
 object GL {
     @JvmStatic
@@ -15,7 +15,6 @@ object GL {
     fun handleCompatible() {
         Hologram = false
         TvStatic = match(GLES, 3, 2)
-        HoloForceField = match(OpenGL, 2, 2) || match(GLES, 2, 0)
 
         CompatibleMap.log("${Meta.Name} Compatible") { name, func ->
             Log.info("$name|${func()}")

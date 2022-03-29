@@ -4,8 +4,6 @@ import arc.Events
 import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
-import mindustry.content.Fx
-import mindustry.entities.abilities.ForceFieldAbility
 import mindustry.game.EventType.UnitDestroyEvent
 import mindustry.gen.UnitEntity
 import mindustry.logic.LAccess
@@ -91,9 +89,9 @@ open class HoloUnit : UnitEntity() {
             if (hasShields) {
                 Time.run(30f) {
                     (abilities.find {
-                        it is ForceFieldAbility
-                    } as? ForceFieldAbility)?.let {
-                        Fx.shieldBreak.at(x, y, it.radius, R.C.Holo)
+                        it is HoloForceField
+                    } as? HoloForceField)?.let {
+                        HoloFx.shieldBreak.at(x, y, it.realRange(this), R.C.Holo, this)
                     }
                 }
             }

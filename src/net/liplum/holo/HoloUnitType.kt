@@ -232,7 +232,7 @@ open class HoloUnitType(name: String) : UnitType(name) {
     }
 
     override fun drawShield(unit: Unit) {
-        val alpha = unit.shieldAlpha()
+        val alpha = unit.shieldAlpha() * 0.5f
         val radius = unit.hitSize() * 1.3f
         Fill.light(
             unit.x, unit.y, Lines.circleVertices(radius), radius,

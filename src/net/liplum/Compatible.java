@@ -7,6 +7,5 @@ public class Compatible {
             Hologram,
             TvStatic = mobile,
             Monochromize = mobile,
-            InvertingColorRgb = mobile,
-            HoloForceField;
+            InvertingColorRgb = mobile;
 }
