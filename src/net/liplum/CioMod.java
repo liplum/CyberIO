@@ -14,6 +14,7 @@ import net.liplum.api.cyber.StreamCenter;
 import net.liplum.blocks.cloud.LiplumCloud;
 import net.liplum.blocks.cloud.SharedRoom;
 import net.liplum.registries.*;
+import net.liplum.render.LinkDrawer;
 import net.liplum.ui.SettingsUI;
 import net.liplum.utils.G;
 
@@ -79,6 +80,7 @@ public class CioMod extends Mod {
         Events.run(Trigger.preDraw, G::init);
         SettingsUI.addGraphicSettings();
         Settings.updateSettings();
+        LinkDrawer.register();
         Log.info("Cyber IO initialized.");
     }
 

@@ -269,12 +269,6 @@ open class Cloud(name: String) : PowerBlock(name) {
         override fun connectedSenders(): ObjectSet<Int> =
             info.sendersPos
 
-        override fun connectedSender(): Int? =
-            if (info.sendersPos.isEmpty)
-                null
-            else
-                info.sendersPos.first()
-
         override fun connectedReceiver(): Int? =
             if (info.receiversPos.isEmpty)
                 null

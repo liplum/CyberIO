@@ -51,9 +51,6 @@ public interface IDataReceiver extends IDataBuilding {
     @NotNull
     Delegate1<IDataReceiver> getOnRequirementUpdated();
 
-    @Nullable
-    Integer connectedSender();
-
     /**
      * Gets the maximum limit of connection.<br/>
      * -1 : unlimited
@@ -65,6 +62,10 @@ public interface IDataReceiver extends IDataBuilding {
 
     default boolean acceptConnection(@NotNull IDataSender host) {
         return canHaveMoreSenderConnection();
+    }
+
+    default int getSenderConnectionNumber() {
+        return connectedSenders().size;
     }
 
     default boolean canHaveMoreSenderConnection() {

@@ -92,6 +92,14 @@ public interface IDataSender extends IDataBuilding {
         return connectedReceivers().size < max;
     }
 
+    default int getReceiverConnectionNumber() {
+        if (canMultipleConnect()) {
+            return connectedReceivers().size;
+        } else {
+            return connectedReceiver() == null ? 0 : 1;
+        }
+    }
+
     @NotNull
     default ObjectSet<Integer> connectedReceivers() {
         return ArcU.emptySet();

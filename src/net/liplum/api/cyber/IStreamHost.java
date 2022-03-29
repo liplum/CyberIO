@@ -58,6 +58,10 @@ public interface IStreamHost extends IStreamNode {
         return connectedClients().size < max;
     }
 
+    default int getClientConnectionNumber() {
+        return connectedClients().size;
+    }
+
     @NotNull
     OrderedSet<Integer> connectedClients();
 

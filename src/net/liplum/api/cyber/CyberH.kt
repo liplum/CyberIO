@@ -135,18 +135,22 @@ val Liquid?.clientColor: Color
 
 fun Float.isAccepted() =
     this <= -1f || this > 0f
-
-fun IDataSender.drawDataNetGraphic() {
-    G.drawSurroundingCircle(tile, R.C.Sender)
+@JvmOverloads
+fun IDataSender.drawDataNetGraphic(showSelfWhenNoLink: Boolean = true) {
+    if (receiverConnectionNumber > 0 || showSelfWhenNoLink) {
+        G.drawSurroundingCircle(tile, R.C.Sender)
+    }
     if (canMultipleConnect()) {
         this.drawReceivers(connectedReceivers())
     } else {
         this.drawReceiver(connectedReceiver())
     }
 }
-
-fun IDataReceiver.drawDataNetGraphic() {
-    G.drawSurroundingCircle(tile, R.C.Receiver)
+@JvmOverloads
+fun IDataReceiver.drawDataNetGraphic(showSelfWhenNoLink: Boolean = true) {
+    if (senderConnectionNumber > 0 || showSelfWhenNoLink) {
+        G.drawSurroundingCircle(tile, R.C.Receiver)
+    }
     this.drawSenders(connectedSenders())
 }
 
@@ -185,13 +189,17 @@ inline fun whenNotConfiguringSender(func: () -> Unit) {
     }
 }
 
-fun IStreamHost.drawStreamGraphic() {
-    G.drawSurroundingCircle(tile, hostColor)
+fun IStreamHost.drawStreamGraphic(showSelfWhenNoLink: Boolean = true) {
+    if (clientConnectionNumber > 0 || showSelfWhenNoLink) {
+        G.drawSurroundingCircle(tile, hostColor)
+    }
     this.drawClients(connectedClients())
 }
 
-fun IStreamClient.drawStreamGraphic() {
-    G.drawSurroundingCircle(tile, clientColor)
+fun IStreamClient.drawStreamGraphic(showSelfWhenNoLink: Boolean = true) {
+    if (hostConnectionNumber > 0 || showSelfWhenNoLink) {
+        G.drawSurroundingCircle(tile, clientColor)
+    }
     this.drawHosts(connectedHosts())
 }
 

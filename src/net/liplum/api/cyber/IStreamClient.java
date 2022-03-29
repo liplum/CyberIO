@@ -61,6 +61,10 @@ public interface IStreamClient extends IStreamNode {
         return connectedHosts().size < max;
     }
 
+    default int getHostConnectionNumber() {
+        return connectedHosts().size;
+    }
+
     @NotNull
     @ClientOnly
     Color getClientColor();
