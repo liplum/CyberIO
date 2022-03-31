@@ -1,13 +1,3 @@
-apply plugin: "java"
-
-version '1.0'
-
-targetCompatibility = 8
-// I don't use "com.github.Anuken:jabel:$jabelVersion" so sourceCompatibility is not 16 but 8
-sourceCompatibility = 8
-
-sourceSets.main.java.srcDirs = ["src"]
-
 buildscript {
     repositories {
         mavenCentral()
@@ -23,9 +13,20 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
     }
 }
-apply plugin: "kotlin"
+plugins {
+}
+var useKotlin = true
+apply plugin: "java"
+sourceSets.main.java.srcDirs = ["src"]
+version '1.0'
+if (useKotlin) {
+    apply plugin: "kotlin"
+    sourceSets.main.kotlin.srcDirs = ["src"]
+}
 
-sourceSets.main.kotlin.srcDirs = ["src"]
+targetCompatibility = 8
+// I don't use "com.github.Anuken:jabel:$jabelVersion" so sourceCompatibility is not 16 but 8
+sourceCompatibility = 8
 
 repositories {
     mavenCentral()
@@ -38,6 +39,7 @@ dependencies {
     testCompileOnly "com.github.Anuken.Arc:arc-core:$mindustryVersion"
     testCompileOnly "com.github.Anuken.Mindustry:core:$mindustryVersion"
     implementation "com.google.guava:guava:31.1-jre"
+    // testImplementation "com.github.Anuken.Mindustry:desktop:$mindustryVersion"
     // annotationProcessor "com.github.Anuken:jabel:$jabelVersion"
 }
 
@@ -76,6 +78,7 @@ jar {
     }
 
     from(rootDir) {
+        // add something into your Jar
         include "mod.hjson"
         include "icon.png"
     }
@@ -87,19 +90,26 @@ jar {
 
 import org.apache.tools.ant.taskdefs.condition.Os
 
+def copyJarFile(jarFile, modsFolder) {
+    copy {
+        from jarFile
+        into modsFolder
+    }
+}
+
 task debugJar {
     dependsOn jar
-    ext.copyJarFile = { jarFile, modsFolder ->
-        copy {
-            from jarFile
-            into modsFolder
-        }
-    }
     doLast {
         var shouldCopy = project.property("AutoCopyModIntoGamePath")
         if (!shouldCopy)
             return
         var jarFile = new File("$buildDir/libs/${project.archivesBaseName}Desktop.jar")
+        if (!jarFile.exists()) {
+            logger.error("Jar cannot be found at ${jarFile.path}")
+            return
+        }
+
+        // I only program on Windows.
         if (Os.isFamily(Os.FAMILY_WINDOWS)) {
             var APPDATA = System.getenv("APPDATA")
             var modsFolder = APPDATA + '/Mindustry/mods'
@@ -107,8 +117,11 @@ task debugJar {
             copyJarFile(jarFile, modsFolder)
             var gamePath = project.property("GamePath")
             if (gamePath) {
-                var runtime = Runtime.getRuntime()
-                runtime.exec("explorer.exe $gamePath")
+                if (new File(gamePath as String).exists()) {
+                    logger.info("Mindustry game was found at $gamePath, now it's to be started.")
+                    var runtime = Runtime.getRuntime()
+                    runtime.exec("explorer.exe $gamePath")
+                }
             }
         }
     }
@@ -116,17 +129,15 @@ task debugJar {
 
 task copyJar {
     dependsOn jar
-    ext.copyJarFile = { jarFile, modsFolder ->
-        copy {
-            from jarFile
-            into modsFolder
-        }
-    }
     doLast {
         var shouldCopy = project.property("AutoCopyModIntoGamePath")
         if (!shouldCopy)
             return
         var jarFile = new File("$buildDir/libs/${project.archivesBaseName}Desktop.jar")
+        if (!jarFile.exists()) {
+            logger.error("Jar cannot be found at ${jarFile.path}")
+            return
+        }
         if (Os.isFamily(Os.FAMILY_WINDOWS)) {
             var APPDATA = System.getenv("APPDATA")
             var modsFolder = APPDATA + '/Mindustry/mods'

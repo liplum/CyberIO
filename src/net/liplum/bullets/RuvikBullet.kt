@@ -24,15 +24,23 @@ open class RuvikBullet : BasicBulletType {
     constructor(speed: Float, damage: Float) : super(speed, damage)
     constructor() : super()
 
-    data class STEM(var ruvikAngle: Float = 0f, var controlled: Boolean = false) {
+    data class STEM(
+        var ruvikAngle: Float = 0f,
+        var controlled: Boolean = false,
+        //var distance: Float = -1f,
+    ) {
         fun reset() {
             ruvikAngle = 0f
             controlled = false
         }
 
-        fun control(angle: Float) {
+        fun control(
+            angle: Float,
+            //dis: Float = -1f,
+        ) {
             ruvikAngle = angle
             controlled = true
+            //distance = dis
         }
     }
 
@@ -44,17 +52,17 @@ open class RuvikBullet : BasicBulletType {
             if (player != null) {
                 val aimX = player.unit().aimX
                 val aimY = player.unit().aimY
-                STEMSystem.control(b.angleTo(aimX, aimY))
+                STEMSystem.control(b.angleTo(aimX, aimY), /*b.dst(aimX, aimY)*/)
             } else {
                 val aimX = data.aimX()
                 val aimY = data.aimY()
-                STEMSystem.control(b.angleTo(aimX, aimY))
+                STEMSystem.control(b.angleTo(aimX, aimY), /*b.dst(aimX, aimY)*/)
             }
         } else if (data is ControlBlock && data.isControlled) {
             val player = data.unit()
             val aimX = player.aimX
             val aimY = player.aimY
-            STEMSystem.control(b.angleTo(aimX, aimY))
+            STEMSystem.control(b.angleTo(aimX, aimY), /*b.dst(aimX, aimY)*/)
         } else if (data is BaseTurret.BaseTurretBuild) {
             STEMSystem.control(data.rotation)
         }
@@ -66,7 +74,7 @@ open class RuvikBullet : BasicBulletType {
             val unit = data.unit()
             val aimX = unit.aimX()
             val aimY = unit.aimY()
-            STEMSystem.control(b.angleTo(aimX, aimY))
+            STEMSystem.control(b.angleTo(aimX, aimY), /*b.dst(aimX, aimY)*/)
         } else {
             ControlBySTEM1(b)
         }
@@ -90,6 +98,12 @@ open class RuvikBullet : BasicBulletType {
                     speed * Time.delta * 50f
                 )
             )
+            /* Taking distance of unit and destination into account
+             val dis = STEMSystem.distance
+             if (dis >= 0f) {
+                 val len = b.vel.len()
+                 b.vel.setLength(len + Mathf.log(100f,dis))
+             }*/
         } else if (homingPower > 0.0001f && b.time >= homingDelay) {
             val target: Teamc? = findNormalTarget(b)
             if (target != null) {
