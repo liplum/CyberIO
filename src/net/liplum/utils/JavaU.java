@@ -1,8 +1,8 @@
 package net.liplum.utils;
 
-import com.google.common.collect.ObjectArrays;
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -12,7 +12,7 @@ public class JavaU {
 
     @NotNull
     public static <T> T[] emptyArray(Class<T> clz) {
-        return (T[]) EmptyArrays.computeIfAbsent(clz, (k) -> ObjectArrays.newArray(k, 0));
+        return (T[]) EmptyArrays.computeIfAbsent(clz, (k) -> (T[]) Array.newInstance(clz, 0));
     }
 
     public static boolean equals(Object a, Object b) {

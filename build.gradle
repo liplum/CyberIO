@@ -3,19 +3,19 @@ buildscript {
         mavenCentral()
     }
     ext {
-        //the build number that this mod is made for
-        mindustryVersion = 'v135'
-        // jabelVersion = "0.7.0"
-        kotlinVersion = "1.6.10"
+        mdtVersion = property("MindustryVersion") as String
+        mdtVersionNum = mdtVersion.replace("v", "") as String
+        kotlinVersion = property("KotlinVersion") as String
         sdkRoot = System.getenv("ANDROID_HOME") ?: System.getenv("ANDROID_SDK_ROOT")
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
     }
 }
+// Add any plugin you want
 plugins {
 }
-var useKotlin = true
+var useKotlin = Boolean.parseBoolean(property("UseKotlin") as String)
 apply plugin: "java"
 sourceSets.main.java.srcDirs = ["src"]
 version '1.0'
@@ -25,7 +25,6 @@ if (useKotlin) {
 }
 
 targetCompatibility = 8
-// I don't use "com.github.Anuken:jabel:$jabelVersion" so sourceCompatibility is not 16 but 8
 sourceCompatibility = 8
 
 repositories {
@@ -34,12 +33,13 @@ repositories {
 }
 
 dependencies {
-    compileOnly "com.github.Anuken.Arc:arc-core:$mindustryVersion"
-    compileOnly "com.github.Anuken.Mindustry:core:$mindustryVersion"
-    testCompileOnly "com.github.Anuken.Arc:arc-core:$mindustryVersion"
-    testCompileOnly "com.github.Anuken.Mindustry:core:$mindustryVersion"
-    implementation "com.google.guava:guava:31.1-jre"
-    // testImplementation "com.github.Anuken.Mindustry:desktop:$mindustryVersion"
+    compileOnly "com.github.Anuken.Arc:arc-core:$mdtVersion"
+    compileOnly "com.github.Anuken.Mindustry:core:$mdtVersion"
+    testCompileOnly "com.github.Anuken.Arc:arc-core:$mdtVersion"
+    testCompileOnly "com.github.Anuken.Mindustry:core:$mdtVersion"
+    testImplementation "com.github.Anuken.Mindustry:desktop:$mdtVersion"
+    testImplementation "com.github.Anuken.Mindustry:server:$mdtVersion"
+    // implementation "com.google.guava:guava:31.1-jre"
     // annotationProcessor "com.github.Anuken:jabel:$jabelVersion"
 }
 
@@ -61,9 +61,11 @@ task jarAndroid {
         try {
             "d8 $paras".execute(null, new File("$buildDir/libs")).waitForProcessOutput(System.out, System.err)
         } catch (Exception ignored) {
+            logger.lifecycle("d8 cannot be found in your PATH, so trying to use an absolute path.")
             def cmdOutput = new ByteArrayOutputStream()
             "where d8".execute().waitForProcessOutput(cmdOutput, System.err)
             def d8FullPath = cmdOutput.toString().replace("\r", "").replace("\n", "")
+            logger.lifecycle("d8 was found at $d8FullPath")
             "$d8FullPath $paras".execute(null, new File("$buildDir/libs")).waitForProcessOutput(System.out, System.err)
         }
     }
@@ -97,45 +99,12 @@ def copyJarFile(jarFile, modsFolder) {
     }
 }
 
-task debugJar {
-    dependsOn jar
-    doLast {
-        var shouldCopy = project.property("AutoCopyModIntoGamePath")
-        if (!shouldCopy)
-            return
-        var jarFile = new File("$buildDir/libs/${project.archivesBaseName}Desktop.jar")
-        if (!jarFile.exists()) {
-            logger.error("Jar cannot be found at ${jarFile.path}")
-            return
-        }
-
-        // I only program on Windows.
-        if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-            var APPDATA = System.getenv("APPDATA")
-            var modsFolder = APPDATA + '/Mindustry/mods'
-            mkdir modsFolder
-            copyJarFile(jarFile, modsFolder)
-            var gamePath = project.property("GamePath")
-            if (gamePath) {
-                if (new File(gamePath as String).exists()) {
-                    logger.info("Mindustry game was found at $gamePath, now it's to be started.")
-                    var runtime = Runtime.getRuntime()
-                    runtime.exec("explorer.exe $gamePath")
-                }
-            }
-        }
-    }
-}
-
 task copyJar {
     dependsOn jar
     doLast {
-        var shouldCopy = project.property("AutoCopyModIntoGamePath")
-        if (!shouldCopy)
-            return
         var jarFile = new File("$buildDir/libs/${project.archivesBaseName}Desktop.jar")
         if (!jarFile.exists()) {
-            logger.error("Jar cannot be found at ${jarFile.path}")
+            logger.lifecycle("Jar cannot be found at ${jarFile.path}")
             return
         }
         if (Os.isFamily(Os.FAMILY_WINDOWS)) {
@@ -165,4 +134,58 @@ task deploy(type: Jar) {
             delete "$buildDir/libs/${project.archivesBaseName}Android.jar"
         }
     }
+}
+
+class DownloadTask extends DefaultTask {
+    @Input
+    String sourceUrl
+    @Input
+    boolean overwrite = false
+    @OutputFile
+    File targetFile
+
+    @TaskAction
+    void download() {
+        if (!targetFile.exists() || overwrite) {
+            logger.lifecycle("Downloading file from $sourceUrl into ${targetFile.path}, please wait for a while.")
+            ant.get(src: sourceUrl, dest: targetFile)
+        }
+    }
+}
+
+task downloadDesktop(type: DownloadTask) {
+    sourceUrl = "http://github.com/Anuken/Mindustry/releases/download/${mdtVersion}/Mindustry.jar"
+    targetFile = new File("$rootDir/run/Mindustry${mdtVersionNum}.jar")
+    if (!targetFile.exists()) {
+        logger.lifecycle("Downloading Mindustry ${mdtVersion}.")
+    } else {
+        logger.lifecycle("You have already downloaded this Mindustry.")
+    }
+}
+
+task downloadServer(type: DownloadTask) {
+    sourceUrl = "https://github.com/Anuken/Mindustry/releases/download/${mdtVersion}/server-release.jar"
+    targetFile = new File("$rootDir/run/MindustryServer${mdtVersionNum}.jar")
+    if (!targetFile.exists()) {
+        logger.lifecycle("Downloading Mindustry Server ${mdtVersion}.")
+    } else {
+        logger.lifecycle("You have already downloaded this Mindustry Server.")
+    }
+}
+
+task runMod(dependsOn: classes, type: JavaExec) {
+    dependsOn copyJar
+    dependsOn downloadDesktop
+    def gameFile = new File("$rootDir/run/Mindustry${mdtVersionNum}.jar")
+    main = "-jar"
+    args = [gameFile.path]
+}
+
+task runModServer(dependsOn: classes, type: JavaExec) {
+    dependsOn copyJar
+    dependsOn downloadServer
+    def gameFile = new File("$rootDir/run/MindustryServer${mdtVersionNum}.jar")
+    main = "-jar"
+    standardInput = System.in
+    args = [gameFile.path]
 }
