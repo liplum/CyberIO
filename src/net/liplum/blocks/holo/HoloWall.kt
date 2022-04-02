@@ -21,7 +21,7 @@ import mindustry.world.blocks.defense.Wall
 import net.liplum.ClientOnly
 import net.liplum.DebugOnly
 import net.liplum.R
-import net.liplum.animations.Floating
+import net.liplum.lib.animations.Floating
 import net.liplum.api.holo.IRegenerate
 import net.liplum.lib.shaders.use
 import net.liplum.registries.CioShaders

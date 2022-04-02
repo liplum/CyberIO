@@ -21,11 +21,11 @@ import mindustry.world.meta.StatUnit
 import net.liplum.ClientOnly
 import net.liplum.DebugOnly
 import net.liplum.UndebugOnly
-import net.liplum.animations.anims.Animation
-import net.liplum.animations.anims.AnimationObj
-import net.liplum.animations.anis.AniState
-import net.liplum.animations.anis.Draw
-import net.liplum.animations.anis.config
+import net.liplum.lib.animations.anims.Animation
+import net.liplum.lib.animations.anims.AnimationObj
+import net.liplum.lib.animations.anis.AniState
+import net.liplum.lib.animations.anis.Draw
+import net.liplum.lib.animations.anis.config
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
 import net.liplum.lib.delegates.Delegate1

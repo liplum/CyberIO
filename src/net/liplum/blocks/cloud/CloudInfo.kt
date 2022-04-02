@@ -4,7 +4,7 @@ import arc.struct.OrderedSet
 import arc.util.Time
 import mindustry.Vars
 import net.liplum.ClientOnly
-import net.liplum.animations.blocks.BlockGroupObj
+import net.liplum.lib.animations.blocks.BlockGroupObj
 import net.liplum.api.cyber.*
 
 open class CloudInfo(val sharedRoom: SharedRoom) {

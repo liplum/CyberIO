@@ -20,6 +20,8 @@ import net.liplum.R
 import net.liplum.bullets.RuvikBullet
 import net.liplum.bullets.STEM_VERSION
 import net.liplum.holo.*
+import net.liplum.npc.NpcUnit
+import net.liplum.npc.NpcUnitType
 import net.liplum.utils.NewUnitType
 import net.liplum.utils.registerPayloadSource
 
@@ -31,6 +33,8 @@ object CioUnitTypes : ContentTable {
     @JvmStatic lateinit var holoSupporter: HoloUnitType
     override fun firstLoad() {
         HoloUnitType::class.java.registerPayloadSource()
+        NpcUnitType::class.java.registerPayloadSource()
+
         holoMiner = NewUnitType(R.Unit.HoloMiner, ::HoloUnitType, ::HoloUnit).apply {
             AutoLife(maxHealth = 2000f, lose = 0.08f)
             health = 2000f

@@ -21,7 +21,7 @@ import mindustry.world.blocks.production.GenericCrafter
 import mindustry.world.blocks.production.LiquidConverter
 import mindustry.world.meta.BuildVisibility
 import net.liplum.*
-import net.liplum.animations.ganim.globalAnim
+import net.liplum.lib.animations.ganim.globalAnim
 import net.liplum.api.virus.setUninfected
 import net.liplum.api.virus.setUninfectedFloor
 import net.liplum.blocks.cloud.Cloud

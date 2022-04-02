@@ -11,6 +11,7 @@ open class Condition(
 ) {
     val and: HashMap<BCondition, ResultCondition> = HashMap()
     val or: HashMap<BCondition, ResultCondition> = HashMap()
+    val xor: HashMap<BCondition, ResultCondition> = HashMap()
     var not: ResultCondition? = null
     operator fun plus(b: Condition): ResultCondition =
         this and b
@@ -38,6 +39,22 @@ open class Condition(
             val newRes = Condition { condition() || b.condition() }
             or[b] = newRes
             b.or[this] = newRes
+            newRes
+        }
+    }
+
+    infix fun xor(b: Condition): ResultCondition {
+        val res = xor[b]
+        return if (res != null) {
+            res
+        } else {
+            val newRes = Condition {
+                val va = condition()
+                val vb = b.condition()
+                (va && !vb) || (!va && vb)
+            }
+            xor[b] = newRes
+            b.xor[this] = newRes
             newRes
         }
     }

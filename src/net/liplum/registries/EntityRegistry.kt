@@ -10,6 +10,7 @@ import net.liplum.Meta
 import net.liplum.OnlyDebug
 import net.liplum.OnlyServer
 import net.liplum.holo.HoloUnit
+import net.liplum.npc.NpcUnit
 
 object EntityRegistry {
     //start from 100
@@ -18,6 +19,7 @@ object EntityRegistry {
 
     init {
         this[HoloUnit::class.java] = { HoloUnit() }
+        this[NpcUnit::class.java] = { NpcUnit() }
     }
 
     operator fun <T : Entityc> set(c: Class<T>, p: ProvEntry) {

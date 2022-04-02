@@ -6,7 +6,7 @@ import mindustry.ui.Bar
 import net.liplum.ClientOnly
 import net.liplum.DebugOnly
 import net.liplum.R
-import net.liplum.animations.anis.*
+import net.liplum.lib.animations.anis.*
 import net.liplum.blocks.AniedCrafter
 import net.liplum.utils.*
 import kotlin.math.sqrt

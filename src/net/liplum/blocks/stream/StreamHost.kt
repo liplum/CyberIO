@@ -17,8 +17,8 @@ import net.liplum.CalledBySync
 import net.liplum.ClientOnly
 import net.liplum.DebugOnly
 import net.liplum.SendDataPack
-import net.liplum.animations.Floating
-import net.liplum.animations.anis.*
+import net.liplum.lib.animations.Floating
+import net.liplum.lib.animations.anis.*
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
 import net.liplum.persistance.intSet

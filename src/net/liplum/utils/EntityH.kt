@@ -10,12 +10,12 @@ var Healthc.lostHp: Float
         health(maxHealth() - value)
     }
 var Healthc.lostHpPct: Float
-    get() = (maxHealth() - health()) / maxHealth()
+    get() = 1f - healthPct
     set(value) {
         health((1 - value.coerceIn(0f, 1f)) * maxHealth())
     }
 var Healthc.healthPct: Float
-    get() = (health() / maxHealth()).coerceIn(0f, 1f)
+    get() = (healthf()).coerceIn(0f, 1f)
     set(value) {
         health(value.coerceIn(0f, 1f) * maxHealth())
     }

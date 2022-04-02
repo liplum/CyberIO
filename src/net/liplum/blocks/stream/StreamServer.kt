@@ -10,8 +10,8 @@ import mindustry.logic.LAccess
 import mindustry.type.Liquid
 import net.liplum.ClientOnly
 import net.liplum.R
-import net.liplum.animations.anis.DrawOn
-import net.liplum.animations.anis.DrawRotateOn
+import net.liplum.lib.animations.anis.DrawOn
+import net.liplum.lib.animations.anis.DrawRotateOn
 import net.liplum.api.cyber.IStreamClient
 import net.liplum.api.cyber.sc
 import net.liplum.utils.ForProximity

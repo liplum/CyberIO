@@ -4,8 +4,8 @@ import arc.Core
 import arc.graphics.g2d.TextureRegion
 import mindustry.ctype.MappableContent
 import net.liplum.Meta
-import net.liplum.animations.anims.Animation
-import net.liplum.animations.anims.AutoAnimation
+import net.liplum.lib.animations.anims.Animation
+import net.liplum.lib.animations.anims.AutoAnimation
 
 @JvmOverloads
 fun MappableContent.autoAnim(

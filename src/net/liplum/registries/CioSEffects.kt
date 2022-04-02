@@ -1,6 +1,6 @@
 package net.liplum.registries
 
-import net.liplum.animations.ganim.globalAnim
+import net.liplum.lib.animations.ganim.globalAnim
 import net.liplum.seffects.Infected
 import net.liplum.seffects.Static
 import net.liplum.seffects.Vulnerable

@@ -5,7 +5,7 @@ import mindustry.world.blocks.production.GenericCrafter
 import net.liplum.CanRefresh
 import net.liplum.CioMod
 import net.liplum.ClientOnly
-import net.liplum.animations.anis.*
+import net.liplum.lib.animations.anis.*
 import net.liplum.utils.addAniStateInfo
 import net.liplum.utils.addProgressInfo
 

@@ -20,10 +20,10 @@ import mindustry.world.meta.BlockGroup
 import net.liplum.CalledBySync
 import net.liplum.ClientOnly
 import net.liplum.DebugOnly
-import net.liplum.animations.anis.AniState
-import net.liplum.animations.anis.Draw
-import net.liplum.animations.anis.DrawOn
-import net.liplum.animations.anis.config
+import net.liplum.lib.animations.anis.AniState
+import net.liplum.lib.animations.anis.Draw
+import net.liplum.lib.animations.anis.DrawOn
+import net.liplum.lib.animations.anis.config
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
 import net.liplum.lib.delegates.Delegate1

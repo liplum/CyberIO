@@ -8,9 +8,9 @@ import mindustry.graphics.Layer
 import mindustry.world.blocks.defense.turrets.ItemTurret
 import net.liplum.ClientOnly
 import net.liplum.WhenNotPaused
-import net.liplum.animations.anims.Animation
-import net.liplum.animations.anims.AnimationObj
-import net.liplum.animations.anims.ITimeModifier
+import net.liplum.lib.animations.anims.Animation
+import net.liplum.lib.animations.anims.AnimationObj
+import net.liplum.lib.animations.anims.ITimeModifier
 import net.liplum.draw
 import net.liplum.math.PolarPos
 import net.liplum.utils.*

@@ -14,8 +14,8 @@ import mindustry.world.Block
 import mindustry.world.Tile
 import mindustry.world.meta.BlockGroup
 import net.liplum.*
-import net.liplum.animations.anims.Animation
-import net.liplum.animations.anis.*
+import net.liplum.lib.animations.anims.Animation
+import net.liplum.lib.animations.anis.*
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
 import net.liplum.blocks.rs.Sender.SenderBuild

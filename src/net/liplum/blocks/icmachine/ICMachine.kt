@@ -3,11 +3,11 @@ package net.liplum.blocks.icmachine
 import arc.math.Mathf
 import arc.util.Time
 import net.liplum.ClientOnly
-import net.liplum.animations.anims.Animation
-import net.liplum.animations.anims.AnimationObj
-import net.liplum.animations.anis.AniState
-import net.liplum.animations.anis.SetAlpha
-import net.liplum.animations.anis.config
+import net.liplum.lib.animations.anims.Animation
+import net.liplum.lib.animations.anims.AnimationObj
+import net.liplum.lib.animations.anis.AniState
+import net.liplum.lib.animations.anis.SetAlpha
+import net.liplum.lib.animations.anis.config
 import net.liplum.blocks.AniedCrafter
 import net.liplum.utils.FUNC
 import net.liplum.utils.autoAnim

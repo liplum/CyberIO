@@ -11,7 +11,7 @@ import mindustry.ui.Bar
 import mindustry.world.blocks.production.GenericCrafter
 import mindustry.world.meta.BlockBars
 import net.liplum.R
-import net.liplum.animations.anis.IAniSMedBuild
+import net.liplum.lib.animations.anis.IAniSMedBuild
 import net.liplum.api.cyber.IDataReceiver
 import net.liplum.api.cyber.IDataSender
 import net.liplum.api.cyber.IStreamClient
