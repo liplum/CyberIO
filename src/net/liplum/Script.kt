@@ -2,7 +2,8 @@ package net.liplum
 
 import arc.Core
 import arc.util.Log
-import net.liplum.Clog.toLinkedString
+import net.liplum.lib.Res
+import net.liplum.lib.toLinkedString
 import net.liplum.utils.bundle
 import net.liplum.utils.loadMore
 import opengal.core.Interpreter
@@ -46,8 +47,8 @@ object Script {
     @JvmStatic
     @ClientOnly
     fun init() {
-        val storyStream = Res.loadInThisJar("/stories/en.properties")
-        val scriptStream = Res.loadInThisJar("/scripts/TestStory-0.node")
+        val storyStream = Res("/stories/en.properties").readStream()
+        val scriptStream = Res("/scripts/TestStory-0.node").readStream()
         val storyReader = storyStream.reader()
         Core.bundle.loadMore(storyReader)
         val TestStoryTree = NodeLang.Default.deserialize(DataInputStream(scriptStream))

@@ -92,3 +92,12 @@ infix fun StringBuilder.addRight(str: String): StringBuilder {
     this.append(str)
     return this
 }
+
+fun Array<out Any>.toLinkedString(): String {
+    val s = StringBuilder()
+    for (e in this) {
+        s.append(e)
+        s.append(' ')
+    }
+    return s.toString()
+}
