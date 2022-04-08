@@ -107,6 +107,12 @@ object StreamCenter {
             R.C.LiquidColors[it].cpy().lerp(R.C.Client, 0.4f)
         }
     }
+    @JvmStatic
+    fun initAndLoad() {
+        initStream()
+        loadLiquidsColor()
+        initStreamColors()
+    }
 }
 
 val EmptySingleLiquidArray: SingleLiquidArray = emptyArray()
@@ -153,11 +159,11 @@ fun IDataReceiver.drawDataNetGraphic(showSelfWhenNoLink: Boolean = true) {
     }
     this.drawSenders(connectedSenders())
 }
-
+@Suppress("UNCHECKED_CAST")
 fun IDataReceiver.drawRequirements() {
     val reqs = this.requirements
     if (reqs != null) {
-        G.drawMaterialIcons(this.building, reqs)
+        G.drawMaterialIcons(this.building, reqs as Array<Item>)
     }
 }
 /**
@@ -202,11 +208,11 @@ fun IStreamClient.drawStreamGraphic(showSelfWhenNoLink: Boolean = true) {
     }
     this.drawHosts(connectedHosts())
 }
-
+@Suppress("UNCHECKED_CAST")
 fun IStreamClient.drawRequirements() {
     val reqs = this.requirements
     if (reqs != null) {
-        G.drawMaterialIcons(this.building, reqs)
+        G.drawMaterialIcons(this.building, reqs as Array<Liquid>)
     }
 }
 /**

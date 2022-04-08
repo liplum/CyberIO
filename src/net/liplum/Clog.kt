@@ -37,4 +37,13 @@ object Clog {
         val infoTail = buildFill('=', length) addLeft "\\\\" addRight "//"
         Log.log(level, infoTail.toString())
     }
+
+    fun Array<out Any>.toLinkedString(): String {
+        val s = StringBuilder()
+        for (e in this) {
+            s.append(e)
+            s.append(' ')
+        }
+        return s.toString()
+    }
 }

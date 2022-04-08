@@ -1,6 +1,7 @@
 package net.liplum.blocks.tmtrainer;
 
 import arc.math.Mathf;
+import org.jetbrains.annotations.NotNull;
 
 public class RandomName {
     /*
@@ -28,6 +29,7 @@ public class RandomName {
         }
     }
 
+    @NotNull
     public static String one(int length) {
         StringBuilder b = new StringBuilder();
         for (int i = 0; i < length; i++) {
@@ -35,5 +37,10 @@ public class RandomName {
             b.append(AllChars[Mathf.random(AllChars.length - 1)]);
         }
         return b.toString();
+    }
+
+    @NotNull
+    public static String oneColor() {
+        return AllColors[Mathf.random(AllColors.length - 1)];
     }
 }

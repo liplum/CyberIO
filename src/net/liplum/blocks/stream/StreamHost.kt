@@ -113,7 +113,8 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
             var per = restNeedPumped / clients.size
             var resetClient = clients.size
             for (client in SharedClientSeq) {
-                if (liquid.match(client.requirements)) {
+                @Suppress("UNCHECKED_CAST")
+                if (liquid.match(client.requirements as Array<Liquid>)) {
                     val rest = streaming(client, liquid, per)
                     restNeedPumped -= (per - rest)
                 }

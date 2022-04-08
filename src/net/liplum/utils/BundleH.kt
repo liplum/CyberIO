@@ -1,7 +1,11 @@
 package net.liplum.utils
 
 import arc.Core
+import arc.files.Fi
+import arc.util.I18NBundle
+import arc.util.io.PropertiesUtils
 import net.liplum.R
+import java.io.Reader
 
 fun String.bundle(vararg args: Any): String {
     return Core.bundle.format(this, *args)
@@ -17,3 +21,11 @@ fun Boolean.yesNo(): String = Core.bundle.format(
         R.Ctrl.No,
     this
 )
+
+fun I18NBundle.loadMore(file: Fi) {
+    loadMore(file.reader())
+}
+
+fun I18NBundle.loadMore(reader: Reader) {
+    PropertiesUtils.load(properties, reader)
+}

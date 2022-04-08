@@ -103,7 +103,7 @@ open class StreamServer(name: String) : StreamHost(name) {
                     for (liquidNeed in reqs) {
                         val pumpedThisTime = perThisTime.coerceAtMost(liquids.get(liquidNeed))
                         if (pumpedThisTime > 0.01f) {
-                            val rest = streaming(client, liquidNeed, pumpedThisTime)
+                            val rest = streaming(client, liquidNeed!!, pumpedThisTime)
                             val consumed = (perThisTime - rest)
                             liquids.remove(liquidNeed, consumed)
                             restNeedPumped -= consumed

@@ -56,7 +56,7 @@ open class CloudInfo(val sharedRoom: SharedRoom) {
                 } else {
                     for (req in reqs) {
                         if (itemModule.has(req) &&
-                            receiver.acceptedAmount(shardBuild, req).isAccepted()
+                            receiver.acceptedAmount(shardBuild, req!!).isAccepted()
                         ) {
                             shardBuild.sendData(receiver, req, 1)
                         }

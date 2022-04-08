@@ -159,3 +159,6 @@ android/libs/
 !GFX/
 run
 cache
+
+#OpenGAL
+*.node

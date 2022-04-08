@@ -14,6 +14,7 @@ buildscript {
 }
 // Add any plugin you want
 plugins {
+    id 'application'
 }
 var useKotlin = Boolean.parseBoolean(property("UseKotlin") as String)
 apply plugin: "java"
@@ -39,6 +40,9 @@ dependencies {
     testCompileOnly "com.github.Anuken.Mindustry:core:$mdtVersion"
     testImplementation "com.github.Anuken.Mindustry:desktop:$mdtVersion"
     testImplementation "com.github.Anuken.Mindustry:server:$mdtVersion"
+    implementation 'com.github.liplum:OpenGAL:v0.2'
+    implementation 'com.github.liplum:OpenGalPlumy:v0.1.1'
+
     // implementation "com.google.guava:guava:31.1-jre"
     // annotationProcessor "com.github.Anuken:jabel:$jabelVersion"
 }
@@ -72,6 +76,7 @@ task jarAndroid {
 }
 
 jar {
+    dependsOn run
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     archiveFileName = "${project.archivesBaseName}Desktop.jar"
 
@@ -81,12 +86,12 @@ jar {
 
     from(rootDir) {
         // add something into your Jar
-        include "mod.hjson"
-        include "icon.png"
+        include 'mod.hjson'
+        include 'icon.png'
     }
 
-    from("assets/") {
-        include "**"
+    from('assets/') {
+        include '**'
     }
 }
 
@@ -188,4 +193,17 @@ task runModServer(dependsOn: classes, type: JavaExec) {
     main = "-jar"
     standardInput = System.in
     args = [gameFile.path]
+}
+
+application {
+    mainClass = 'net.liplum.plumy.PlumyCompilerKt'
+}
+run {
+    args = ['-c',
+            '-recursive=true',
+            '-batch=folder',
+            'scripts',
+            '-t',
+            'assets/scripts'
+    ]
 }

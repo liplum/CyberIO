@@ -279,7 +279,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
                     val reqs = receiver.requirements
                     if (reqs != null) {
                         for (req in reqs) {
-                            val tracker = trackers[req.ID]
+                            val tracker = trackers[req!!.ID]
                             if (tracker.canAddMore()) {
                                 needUnloadItems.add(req)
                                 tracker.add(receiver)
