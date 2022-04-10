@@ -3,10 +3,11 @@ buildscript {
         mavenCentral()
     }
     ext {
-        mdtVersion = property("MindustryVersion") as String
-        mdtVersionNum = mdtVersion.replace("v", "") as String
-        kotlinVersion = property("KotlinVersion") as String
-        sdkRoot = System.getenv("ANDROID_HOME") ?: System.getenv("ANDROID_SDK_ROOT")
+        mdtVersion = property('MindustryVersion') as String
+        plumyVersion = property('OpenGalPlumy') as String
+        mdtVersionNum = mdtVersion.replace('v', '') as String
+        kotlinVersion = property('KotlinVersion') as String
+        sdkRoot = System.getenv('ANDROID_HOME') ?: System.getenv('ANDROID_SDK_ROOT')
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
@@ -36,15 +37,23 @@ repositories {
 dependencies {
     compileOnly "com.github.Anuken.Arc:arc-core:$mdtVersion"
     compileOnly "com.github.Anuken.Mindustry:core:$mdtVersion"
+    implementation 'com.github.liplum:OpenGAL:v0.3.1'
+    // Don't need coroutine
+    //implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0'
+
     testCompileOnly "com.github.Anuken.Arc:arc-core:$mdtVersion"
     testCompileOnly "com.github.Anuken.Mindustry:core:$mdtVersion"
     testImplementation "com.github.Anuken.Mindustry:desktop:$mdtVersion"
     testImplementation "com.github.Anuken.Mindustry:server:$mdtVersion"
-    implementation 'com.github.liplum:OpenGAL:v0.2'
-    implementation 'com.github.liplum:OpenGalPlumy:v0.1.1'
 
     // implementation "com.google.guava:guava:31.1-jre"
     // annotationProcessor "com.github.Anuken:jabel:$jabelVersion"
+}
+
+compileKotlin{
+    kotlinOptions{
+
+    }
 }
 
 task jarAndroid {
@@ -75,8 +84,28 @@ task jarAndroid {
     }
 }
 
+task downloadOpenGalPlumy(type: DownloadTask) {
+    sourceUrl = "https://github.com/liplum/OpenGalPlumy/releases/download/${plumyVersion}/PlumyCompiler.jar"
+    targetFile = new File("$rootDir/run/PlumyCompiler${plumyVersion}.jar")
+}
+
+task compileGAL(dependsOn: classes, type: JavaExec) {
+    dependsOn downloadOpenGalPlumy
+    def plumy = new File("$rootDir/run/PlumyCompiler${plumyVersion}.jar")
+    main = "-jar"
+    standardInput = System.in
+    args = [
+            plumy.path,
+            '-c',
+            '-recursive=true',
+            '-batch=folder',
+            'scripts',
+            '-t',
+            'assets/scripts'
+    ]
+}
 jar {
-    dependsOn run
+    dependsOn compileGAL
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     archiveFileName = "${project.archivesBaseName}Desktop.jar"
 
@@ -92,6 +121,10 @@ jar {
 
     from('assets/') {
         include '**'
+    }
+
+    from('scripts/'){
+        include('ScriptInfo.json')
     }
 }
 
@@ -178,6 +211,7 @@ task downloadServer(type: DownloadTask) {
     }
 }
 
+
 task runMod(dependsOn: classes, type: JavaExec) {
     dependsOn copyJar
     dependsOn downloadDesktop
@@ -195,15 +229,3 @@ task runModServer(dependsOn: classes, type: JavaExec) {
     args = [gameFile.path]
 }
 
-application {
-    mainClass = 'net.liplum.plumy.PlumyCompilerKt'
-}
-run {
-    args = ['-c',
-            '-recursive=true',
-            '-batch=folder',
-            'scripts',
-            '-t',
-            'assets/scripts'
-    ]
-}

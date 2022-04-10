@@ -6,7 +6,7 @@ placeholders = {
     "-*": "}",
 }
 template = """typealias {handler}{T} = ({lambdaT}) -> Unit
-open class {clz}{T} *-
+class {clz}{T} *-
     private val subscribers: HashSet<{handler}{T}> = HashSet()
     operator fun invoke({invokeArgs}) *-
         for (handler in subscribers)

@@ -31,7 +31,7 @@ val AutoRGB = {
     val rgb = R.C.PrismRgbFG
     val len = rgb.size
     val total = len * 60f
-    rgb[((Time.time % total / total) * len).toInt().coerceIn(0, len - 1)]!!
+    rgb[((Time.time % total / total) * len).toInt().coerceIn(0, len - 1)]
 }
 val BasicBullets: HashMap<BasicBulletType, List<BasicBulletType>> = HashMap()
 const val BasicTintLerp = 0.4f

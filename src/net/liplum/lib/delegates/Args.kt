@@ -1,6 +1,6 @@
 package net.liplum.lib.delegates
 
-open class Args {
+class Args {
     var data: Any? = null
         private set
 

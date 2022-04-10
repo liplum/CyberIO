@@ -1,9 +1,12 @@
 package net.liplum
 
 import arc.Core
+import arc.Events
 import arc.util.Log
+import mindustry.game.EventType.Trigger
 import net.liplum.lib.Res
 import net.liplum.lib.toLinkedString
+import net.liplum.npc.NpcSystem
 import net.liplum.utils.bundle
 import net.liplum.utils.loadMore
 import opengal.core.Interpreter
@@ -34,21 +37,21 @@ object Script {
     val Engine = Interpreter()
     val Name2Story = HashMap<String, Story>()
     var CurStory = Story()
-    var newLoaded = true
-    var awating = false
+    var EngineThread = Thread()
     @JvmStatic
     @ClientOnly
     fun loadStory(name: String) {
         val story = Name2Story[name] ?: throw StoryNotFoundException(name)
         CurStory = story
         Engine.tree = CurStory.storyTree
-        newLoaded = true
+        Engine.clearRuntimeStates()
+        Engine.start()
     }
     @JvmStatic
     @ClientOnly
     fun init() {
-        val storyStream = Res("/stories/en.properties").readStream()
-        val scriptStream = Res("/scripts/TestStory-0.node").readStream()
+        val storyStream = Res("/stories/en.properties").readAsStream()
+        val scriptStream = Res("/scripts/TestStory-0.node").readAsStream()
         val storyReader = storyStream.reader()
         Core.bundle.loadMore(storyReader)
         val TestStoryTree = NodeLang.Default.deserialize(DataInputStream(scriptStream))
@@ -57,25 +60,36 @@ object Script {
         }.add()
     }
     @JvmStatic
+    fun goNext() {
+        Engine.resumeExecution()
+    }
+    @JvmStatic
     fun execute() {
-        if (newLoaded) {
-            Engine.clearRuntimeStates()
-            Engine.start()
-            newLoaded = false
-        }
-        while (!awating) {
+        if (!Engine.isEnd) {
             Engine.execute()
         }
     }
+
+    var textID = 0
     @JvmStatic
     @ClientOnly
     fun initInterpreter() {
         Engine.addAction("log") {
             Log.info(it.toLinkedString())
-            awating = true
         }
-        Engine.onBlocked {
-            awating = true
+
+        Engine.addAction("text") {
+            Engine.blockExecution()
+            NpcSystem.curText = "story.${Meta.ModID}.${CurStory.name}.0.text-$textID".bundle
+            textID++
+        }
+
+        Engine.onEnd {
+            NpcSystem.closeDialog()
+        }
+
+        Events.run(Trigger.update) {
+            execute()
         }
     }
 
@@ -83,3 +97,4 @@ object Script {
         Name2Story[name] = this
     }
 }
+

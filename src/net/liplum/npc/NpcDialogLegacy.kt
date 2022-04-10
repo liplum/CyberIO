@@ -8,7 +8,7 @@ import mindustry.core.GameState
 import mindustry.gen.Icon
 import mindustry.gen.Sounds
 
-open class NpcDialog : Dialog {
+open class NpcDialogLegacy : Dialog {
     constructor(title: String, style: DialogStyle) : super(title, style)
     constructor(title: String) : super(title)
 

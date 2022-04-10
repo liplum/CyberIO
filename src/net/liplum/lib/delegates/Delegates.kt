@@ -2,7 +2,7 @@ package net.liplum.lib.delegates
 
 typealias DelegateHandler = () -> Unit
 
-open class Delegate {
+class Delegate {
     private val subscribers: HashSet<DelegateHandler> = HashSet()
     operator fun invoke() {
         for (handler in subscribers)
@@ -35,7 +35,7 @@ open class Delegate {
 
 typealias DelegateHandler1<Arg1> = (Arg1) -> Unit
 
-open class Delegate1<Arg1> {
+class Delegate1<Arg1> {
     private val subscribers: HashSet<DelegateHandler1<Arg1>> = HashSet()
     operator fun invoke(arg1: Arg1) {
         for (handler in subscribers)
@@ -68,7 +68,7 @@ open class Delegate1<Arg1> {
 
 typealias DelegateHandler2<Arg1, Arg2> = (Arg1, Arg2) -> Unit
 
-open class Delegate2<Arg1, Arg2> {
+class Delegate2<Arg1, Arg2> {
     private val subscribers: HashSet<DelegateHandler2<Arg1, Arg2>> = HashSet()
     operator fun invoke(arg1: Arg1, arg2: Arg2) {
         for (handler in subscribers)
@@ -101,7 +101,7 @@ open class Delegate2<Arg1, Arg2> {
 
 typealias DelegateHandler3<Arg1, Arg2, Arg3> = (Arg1, Arg2, Arg3) -> Unit
 
-open class Delegate3<Arg1, Arg2, Arg3> {
+class Delegate3<Arg1, Arg2, Arg3> {
     private val subscribers: HashSet<DelegateHandler3<Arg1, Arg2, Arg3>> = HashSet()
     operator fun invoke(arg1: Arg1, arg2: Arg2, arg3: Arg3) {
         for (handler in subscribers)
@@ -134,7 +134,7 @@ open class Delegate3<Arg1, Arg2, Arg3> {
 
 typealias DelegateHandler4<Arg1, Arg2, Arg3, Arg4> = (Arg1, Arg2, Arg3, Arg4) -> Unit
 
-open class Delegate4<Arg1, Arg2, Arg3, Arg4> {
+class Delegate4<Arg1, Arg2, Arg3, Arg4> {
     private val subscribers: HashSet<DelegateHandler4<Arg1, Arg2, Arg3, Arg4>> = HashSet()
     operator fun invoke(arg1: Arg1, arg2: Arg2, arg3: Arg3, arg4: Arg4) {
         for (handler in subscribers)
@@ -167,7 +167,7 @@ open class Delegate4<Arg1, Arg2, Arg3, Arg4> {
 
 typealias DelegateHandler5<Arg1, Arg2, Arg3, Arg4, Arg5> = (Arg1, Arg2, Arg3, Arg4, Arg5) -> Unit
 
-open class Delegate5<Arg1, Arg2, Arg3, Arg4, Arg5> {
+class Delegate5<Arg1, Arg2, Arg3, Arg4, Arg5> {
     private val subscribers: HashSet<DelegateHandler5<Arg1, Arg2, Arg3, Arg4, Arg5>> = HashSet()
     operator fun invoke(arg1: Arg1, arg2: Arg2, arg3: Arg3, arg4: Arg4, arg5: Arg5) {
         for (handler in subscribers)
@@ -200,7 +200,7 @@ open class Delegate5<Arg1, Arg2, Arg3, Arg4, Arg5> {
 
 typealias DelegateHandler6<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6> = (Arg1, Arg2, Arg3, Arg4, Arg5, Arg6) -> Unit
 
-open class Delegate6<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6> {
+class Delegate6<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6> {
     private val subscribers: HashSet<DelegateHandler6<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6>> = HashSet()
     operator fun invoke(arg1: Arg1, arg2: Arg2, arg3: Arg3, arg4: Arg4, arg5: Arg5, arg6: Arg6) {
         for (handler in subscribers)
@@ -233,7 +233,7 @@ open class Delegate6<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6> {
 
 typealias DelegateHandler7<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7> = (Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7) -> Unit
 
-open class Delegate7<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7> {
+class Delegate7<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7> {
     private val subscribers: HashSet<DelegateHandler7<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7>> = HashSet()
     operator fun invoke(arg1: Arg1, arg2: Arg2, arg3: Arg3, arg4: Arg4, arg5: Arg5, arg6: Arg6, arg7: Arg7) {
         for (handler in subscribers)
@@ -266,7 +266,7 @@ open class Delegate7<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7> {
 
 typealias DelegateHandler8<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8> = (Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8) -> Unit
 
-open class Delegate8<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8> {
+class Delegate8<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8> {
     private val subscribers: HashSet<DelegateHandler8<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8>> = HashSet()
     operator fun invoke(
         arg1: Arg1,
@@ -308,7 +308,7 @@ open class Delegate8<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8> {
 
 typealias DelegateHandler9<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9> = (Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9) -> Unit
 
-open class Delegate9<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9> {
+class Delegate9<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9> {
     private val subscribers: HashSet<DelegateHandler9<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9>> = HashSet()
     operator fun invoke(
         arg1: Arg1,
@@ -351,7 +351,7 @@ open class Delegate9<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9> {
 
 typealias DelegateHandler10<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10> = (Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10) -> Unit
 
-open class Delegate10<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10> {
+class Delegate10<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10> {
     private val subscribers: HashSet<DelegateHandler10<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10>> =
         HashSet()
 
@@ -397,7 +397,7 @@ open class Delegate10<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg1
 
 typealias DelegateHandler11<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11> = (Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11) -> Unit
 
-open class Delegate11<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11> {
+class Delegate11<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11> {
     private val subscribers: HashSet<DelegateHandler11<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11>> =
         HashSet()
 
@@ -444,7 +444,7 @@ open class Delegate11<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg1
 
 typealias DelegateHandler12<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12> = (Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12) -> Unit
 
-open class Delegate12<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12> {
+class Delegate12<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12> {
     private val subscribers: HashSet<DelegateHandler12<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12>> =
         HashSet()
 
@@ -492,7 +492,7 @@ open class Delegate12<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg1
 
 typealias DelegateHandler13<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12, Arg13> = (Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12, Arg13) -> Unit
 
-open class Delegate13<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12, Arg13> {
+class Delegate13<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12, Arg13> {
     private val subscribers: HashSet<DelegateHandler13<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12, Arg13>> =
         HashSet()
 
@@ -541,7 +541,7 @@ open class Delegate13<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg1
 
 typealias DelegateHandler14<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12, Arg13, Arg14> = (Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12, Arg13, Arg14) -> Unit
 
-open class Delegate14<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12, Arg13, Arg14> {
+class Delegate14<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12, Arg13, Arg14> {
     private val subscribers: HashSet<DelegateHandler14<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12, Arg13, Arg14>> =
         HashSet()
 
@@ -591,7 +591,7 @@ open class Delegate14<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg1
 
 typealias DelegateHandler15<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12, Arg13, Arg14, Arg15> = (Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12, Arg13, Arg14, Arg15) -> Unit
 
-open class Delegate15<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12, Arg13, Arg14, Arg15> {
+class Delegate15<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12, Arg13, Arg14, Arg15> {
     private val subscribers: HashSet<DelegateHandler15<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12, Arg13, Arg14, Arg15>> =
         HashSet()
 
@@ -642,7 +642,7 @@ open class Delegate15<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg1
 
 typealias DelegateHandler16<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12, Arg13, Arg14, Arg15, Arg16> = (Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12, Arg13, Arg14, Arg15, Arg16) -> Unit
 
-open class Delegate16<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12, Arg13, Arg14, Arg15, Arg16> {
+class Delegate16<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12, Arg13, Arg14, Arg15, Arg16> {
     private val subscribers: HashSet<DelegateHandler16<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12, Arg13, Arg14, Arg15, Arg16>> =
         HashSet()
 
@@ -711,7 +711,7 @@ open class Delegate16<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg1
 
 typealias DelegateHandler17<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12, Arg13, Arg14, Arg15, Arg16, Arg17> = (Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12, Arg13, Arg14, Arg15, Arg16, Arg17) -> Unit
 
-open class Delegate17<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12, Arg13, Arg14, Arg15, Arg16, Arg17> {
+class Delegate17<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12, Arg13, Arg14, Arg15, Arg16, Arg17> {
     private val subscribers: HashSet<DelegateHandler17<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12, Arg13, Arg14, Arg15, Arg16, Arg17>> =
         HashSet()
 
@@ -782,7 +782,7 @@ open class Delegate17<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg1
 
 typealias DelegateHandler18<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12, Arg13, Arg14, Arg15, Arg16, Arg17, Arg18> = (Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12, Arg13, Arg14, Arg15, Arg16, Arg17, Arg18) -> Unit
 
-open class Delegate18<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12, Arg13, Arg14, Arg15, Arg16, Arg17, Arg18> {
+class Delegate18<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12, Arg13, Arg14, Arg15, Arg16, Arg17, Arg18> {
     private val subscribers: HashSet<DelegateHandler18<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12, Arg13, Arg14, Arg15, Arg16, Arg17, Arg18>> =
         HashSet()
 
@@ -855,7 +855,7 @@ open class Delegate18<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg1
 
 typealias DelegateHandler19<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12, Arg13, Arg14, Arg15, Arg16, Arg17, Arg18, Arg19> = (Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12, Arg13, Arg14, Arg15, Arg16, Arg17, Arg18, Arg19) -> Unit
 
-open class Delegate19<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12, Arg13, Arg14, Arg15, Arg16, Arg17, Arg18, Arg19> {
+class Delegate19<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12, Arg13, Arg14, Arg15, Arg16, Arg17, Arg18, Arg19> {
     private val subscribers: HashSet<DelegateHandler19<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12, Arg13, Arg14, Arg15, Arg16, Arg17, Arg18, Arg19>> =
         HashSet()
 

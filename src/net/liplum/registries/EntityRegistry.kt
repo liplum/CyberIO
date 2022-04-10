@@ -13,7 +13,6 @@ import net.liplum.holo.HoloUnit
 import net.liplum.npc.NpcUnit
 
 object EntityRegistry {
-    //start from 100
     private val Clz2Entry = ObjectMap<Class<*>, ProvEntry>()
     val Clz2Id = ObjectMap<Class<*>, Int>()
 

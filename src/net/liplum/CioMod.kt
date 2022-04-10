@@ -15,7 +15,7 @@ import net.liplum.blocks.cloud.LiplumCloud
 import net.liplum.blocks.cloud.SharedRoom
 import net.liplum.inputs.UnitTap
 import net.liplum.lib.animations.ganim.GlobalAnimation.Companion.loadAllResources
-import net.liplum.npc.NPC
+import net.liplum.npc.NpcSystem
 import net.liplum.registries.*
 import net.liplum.render.LinkDrawer
 import net.liplum.ui.SettingsUI
@@ -46,7 +46,6 @@ class CioMod : Mod() {
                 Script.init()
                 Script.initInterpreter()
                 Script.loadStory("TestStory")
-                Script.execute()
             }
         }
         Events.on(DisposeEvent::class.java) {
@@ -55,7 +54,6 @@ class CioMod : Mod() {
     }
 
     override fun init() {
-        Info = Vars.mods.locateMod(Meta.ModID)
         Welcome.modifierModInfo()
         UpdateFrequency = if (Vars.mobile || Vars.testMobile)
             10f
@@ -90,12 +88,13 @@ class CioMod : Mod() {
         SettingsUI.addGraphicSettings()
         Settings.updateSettings()
         LinkDrawer.register()
-        NPC.registerEvent()
+        NpcSystem.register()
         Core.input.addProcessor(UnitTap)
         Log.info("Cyber IO initialized.")
     }
 
     override fun loadContent() {
+        Info = Vars.mods.locateMod(Meta.ModID)
         CioSounds.load()
         EntityRegistry.registerAll()
         CioCLs.load()
