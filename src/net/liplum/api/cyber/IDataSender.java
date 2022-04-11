@@ -55,7 +55,7 @@ public interface IDataSender extends IDataBuilding {
     }
 
     @Nullable
-    Integer connectedReceiver();
+    Integer getConnectedReceiver();
 
     default boolean canMultipleConnect() {
         return maxReceiverConnection() != 1;
@@ -63,9 +63,9 @@ public interface IDataSender extends IDataBuilding {
 
     default boolean isConnectedWith(@NotNull IDataReceiver receiver) {
         if (canMultipleConnect()) {
-            return connectedReceivers().contains(receiver.getBuilding().pos());
+            return getConnectedReceivers().contains(receiver.getBuilding().pos());
         } else {
-            Integer connected = connectedReceiver();
+            Integer connected = getConnectedReceiver();
             if (connected == null) {
                 return false;
             } else {
@@ -89,19 +89,19 @@ public interface IDataSender extends IDataBuilding {
         if (max == -1) {
             return true;
         }
-        return connectedReceivers().size < max;
+        return getConnectedReceivers().size < max;
     }
 
     default int getReceiverConnectionNumber() {
         if (canMultipleConnect()) {
-            return connectedReceivers().size;
+            return getConnectedReceivers().size;
         } else {
-            return connectedReceiver() == null ? 0 : 1;
+            return getConnectedReceiver() == null ? 0 : 1;
         }
     }
 
     @NotNull
-    default ObjectSet<Integer> connectedReceivers() {
+    default ObjectSet<Integer> getConnectedReceivers() {
         return ArcU.emptySet();
     }
 }

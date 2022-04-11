@@ -39,7 +39,7 @@ public interface IStreamHost extends IStreamNode {
     void disconnectSync(@NotNull IStreamClient client);
 
     default boolean isConnectedWith(@NotNull IStreamClient client) {
-        return connectedClients().contains(client.getBuilding().pos());
+        return getConnectedClients().contains(client.getBuilding().pos());
     }
 
     /**
@@ -55,15 +55,15 @@ public interface IStreamHost extends IStreamNode {
         if (max == -1) {
             return true;
         }
-        return connectedClients().size < max;
+        return getConnectedClients().size < max;
     }
 
     default int getClientConnectionNumber() {
-        return connectedClients().size;
+        return getConnectedClients().size;
     }
 
     @NotNull
-    OrderedSet<Integer> connectedClients();
+    OrderedSet<Integer> getConnectedClients();
 
     @NotNull
     @ClientOnly

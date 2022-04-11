@@ -16,7 +16,7 @@ enum class InsertPos {
 fun SettingsTable.insertSliderPref(
     name: String, def: Int, min: Int, max: Int, step: Int,
     insertPos: InsertPos = InsertPos.After,
-    s: StringProcessor = StringProcessor {it.toString()},
+    s: StringProcessor = StringProcessor { it.toString() },
     onChanged: () -> Unit = {},
     whenTrue: (Setting) -> Boolean
 ): SliderSettingX {
@@ -26,6 +26,30 @@ fun SettingsTable.insertSliderPref(
     } else {
         settings.insertBefore(res, whenTrue)
     }
+    Core.settings.defaults(name, def)
+    rebuild()
+    return res
+}
+
+fun SettingsTable.insertSliderPrefLast(
+    name: String, def: Int, min: Int, max: Int, step: Int,
+    s: StringProcessor = StringProcessor { it.toString() },
+    onChanged: () -> Unit = {},
+): SliderSettingX {
+    val res = SliderSettingX(name, def, min, max, step, onChanged, s)
+    settings.add(res)
+    Core.settings.defaults(name, def)
+    rebuild()
+    return res
+}
+
+fun SettingsTable.insertSliderPrefFirst(
+    name: String, def: Int, min: Int, max: Int, step: Int,
+    s: StringProcessor = StringProcessor { it.toString() },
+    onChanged: () -> Unit = {},
+): SliderSettingX {
+    val res = SliderSettingX(name, def, min, max, step, onChanged, s)
+    settings.insert(0, res)
     Core.settings.defaults(name, def)
     rebuild()
     return res
@@ -43,6 +67,28 @@ fun SettingsTable.insertCheckPref(
     } else {
         settings.insertAfter(res, whenTrue)
     }
+    Core.settings.defaults(name, def)
+    rebuild()
+    return res
+}
+
+fun SettingsTable.insertCheckPrefLast(
+    name: String, def: Boolean,
+    onChanged: Boolc = Boolc {}
+): CheckSetting {
+    val res = CheckSetting(name, def, onChanged)
+    settings.add(res)
+    Core.settings.defaults(name, def)
+    rebuild()
+    return res
+}
+
+fun SettingsTable.insertCheckPrefFirst(
+    name: String, def: Boolean,
+    onChanged: Boolc = Boolc {}
+): CheckSetting {
+    val res = CheckSetting(name, def, onChanged)
+    settings.insert(0, res)
     Core.settings.defaults(name, def)
     rebuild()
     return res

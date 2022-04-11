@@ -11,20 +11,20 @@ import net.liplum.bullets.ShaderBasicBulletT
 import net.liplum.lib.shaders.SD
 import net.liplum.lib.shaders.TrShader
 import net.liplum.seffects.StaticFx
-import net.liplum.shaders.holo.Hologram2
+import net.liplum.shaders.holo.Hologram
 
 object CioBulletTypes : ContentTable {
     @JvmStatic lateinit var virus: BasicBulletType
     @JvmStatic lateinit var radiationInterference: ShaderBasicBulletT<TrShader>
-    @JvmStatic lateinit var holoBullet: ShaderBasicBulletT<Hologram2>
+    @JvmStatic lateinit var holoBullet: ShaderBasicBulletT<Hologram>
     @JvmStatic lateinit var ruvik: RuvikBullet
     @JvmStatic lateinit var ruvik2: RuvikBullet
     override fun firstLoad() {
-        holoBullet = ShaderBasicBulletT<Hologram2>(
+        holoBullet = ShaderBasicBulletT<Hologram>(
             2f, 35f
         ).apply {
             ClientOnly {
-                shader = SD.Hologram2
+                shader = SD.Hologram
             }
             width = 10f
             height = 10f

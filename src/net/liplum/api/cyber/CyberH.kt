@@ -147,9 +147,9 @@ fun IDataSender.drawDataNetGraphic(showSelfWhenNoLink: Boolean = true) {
         G.drawSurroundingCircle(tile, R.C.Sender)
     }
     if (canMultipleConnect()) {
-        this.drawReceivers(connectedReceivers())
+        this.drawReceivers(connectedReceivers)
     } else {
-        this.drawReceiver(connectedReceiver())
+        this.drawReceiver(connectedReceiver)
     }
 }
 @JvmOverloads
@@ -157,13 +157,13 @@ fun IDataReceiver.drawDataNetGraphic(showSelfWhenNoLink: Boolean = true) {
     if (senderConnectionNumber > 0 || showSelfWhenNoLink) {
         G.drawSurroundingCircle(tile, R.C.Receiver)
     }
-    this.drawSenders(connectedSenders())
+    this.drawSenders(connectedSenders)
 }
-@Suppress("UNCHECKED_CAST")
+
 fun IDataReceiver.drawRequirements() {
     val reqs = this.requirements
     if (reqs != null) {
-        G.drawMaterialIcons(this.building, reqs as Array<Item>)
+        G.drawMaterialIcons(this.building, reqs, Settings.LinkOpacity * 0.8f)
     }
 }
 /**
@@ -199,20 +199,20 @@ fun IStreamHost.drawStreamGraphic(showSelfWhenNoLink: Boolean = true) {
     if (clientConnectionNumber > 0 || showSelfWhenNoLink) {
         G.drawSurroundingCircle(tile, hostColor)
     }
-    this.drawClients(connectedClients())
+    this.drawClients(connectedClients)
 }
 
 fun IStreamClient.drawStreamGraphic(showSelfWhenNoLink: Boolean = true) {
     if (hostConnectionNumber > 0 || showSelfWhenNoLink) {
         G.drawSurroundingCircle(tile, clientColor)
     }
-    this.drawHosts(connectedHosts())
+    this.drawHosts(connectedHosts)
 }
-@Suppress("UNCHECKED_CAST")
+
 fun IStreamClient.drawRequirements() {
     val reqs = this.requirements
     if (reqs != null) {
-        G.drawMaterialIcons(this.building, reqs as Array<Liquid>)
+        G.drawMaterialIcons(this.building, reqs, Settings.LinkOpacity * 0.8f)
     }
 }
 /**

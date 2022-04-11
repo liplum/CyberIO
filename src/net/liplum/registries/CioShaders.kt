@@ -6,15 +6,15 @@ import net.liplum.ClientOnly
 import net.liplum.lib.shaders.ILoadResource
 import net.liplum.lib.shaders.ProgressShader
 import net.liplum.lib.shaders.TrShader
+import net.liplum.shaders.holo.HologramOld
 import net.liplum.shaders.holo.Hologram
-import net.liplum.shaders.holo.Hologram2
 import net.liplum.useCompatible
 import java.util.*
 
 object CioShaders {
     @ClientOnly lateinit var DynamicColor: TrShader
+    @ClientOnly lateinit var HologramOld: HologramOld
     @ClientOnly lateinit var Hologram: Hologram
-    @ClientOnly lateinit var Hologram2: Hologram2
     @ClientOnly lateinit var Monochrome: TrShader
     @ClientOnly lateinit var InvertColor: TrShader
     @ClientOnly lateinit var TvStatic: TrShader
@@ -32,8 +32,8 @@ object CioShaders {
         ClientOnly {
             DynamicColor = TrShader("DynamicColor").register()
 
+            HologramOld = HologramOld("HologramOld").register()
             Hologram = Hologram("Hologram").register()
-            Hologram2 = Hologram2("Hologram2").register()
 
             Monochrome = TrShader("Monochrome").register()
             InvertColor = TrShader("InvertColor").register()

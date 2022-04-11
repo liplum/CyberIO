@@ -97,7 +97,7 @@ open class HoloUnitType(name: String) : UnitType(name) {
         drawSoftShadow(unit, alpha)
 
         Draw.z(z)
-        SD.Hologram2.use {
+        SD.Hologram.use {
             it.alpha = alpha
             it.opacityNoise *= 2f - healthPct
             it.flickering = it.DefaultFlickering + (1f - healthPct)

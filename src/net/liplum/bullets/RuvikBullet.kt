@@ -10,7 +10,6 @@ import mindustry.game.Team
 import mindustry.gen.*
 import mindustry.world.blocks.ControlBlock
 import mindustry.world.blocks.defense.turrets.BaseTurret
-import net.liplum.utils.NullOr
 import net.liplum.utils.findPlayer
 
 @Suppress("ClassName")
@@ -52,17 +51,17 @@ open class RuvikBullet : BasicBulletType {
             if (player != null) {
                 val aimX = player.unit().aimX
                 val aimY = player.unit().aimY
-                STEMSystem.control(b.angleTo(aimX, aimY), /*b.dst(aimX, aimY)*/)
+                STEMSystem.control(b.angleTo(aimX, aimY) /*b.dst(aimX, aimY)*/)
             } else {
                 val aimX = data.aimX()
                 val aimY = data.aimY()
-                STEMSystem.control(b.angleTo(aimX, aimY), /*b.dst(aimX, aimY)*/)
+                STEMSystem.control(b.angleTo(aimX, aimY) /*b.dst(aimX, aimY)*/)
             }
         } else if (data is ControlBlock && data.isControlled) {
             val player = data.unit()
             val aimX = player.aimX
             val aimY = player.aimY
-            STEMSystem.control(b.angleTo(aimX, aimY), /*b.dst(aimX, aimY)*/)
+            STEMSystem.control(b.angleTo(aimX, aimY) /*b.dst(aimX, aimY)*/)
         } else if (data is BaseTurret.BaseTurretBuild) {
             STEMSystem.control(data.rotation)
         }
@@ -74,7 +73,7 @@ open class RuvikBullet : BasicBulletType {
             val unit = data.unit()
             val aimX = unit.aimX()
             val aimY = unit.aimY()
-            STEMSystem.control(b.angleTo(aimX, aimY), /*b.dst(aimX, aimY)*/)
+            STEMSystem.control(b.angleTo(aimX, aimY) /*b.dst(aimX, aimY)*/)
         } else {
             ControlBySTEM1(b)
         }
@@ -191,7 +190,7 @@ open class RuvikBullet : BasicBulletType {
         when (stemVersion) {
             STEM_VERSION.STEM1 -> b.data = data ?: owner
             STEM_VERSION.STEM2 -> {
-                b.data = (data ?: owner.findPlayer()) NullOr owner
+                b.data = data ?: owner.findPlayer() ?: owner
             }
         }
         b.drag = drag

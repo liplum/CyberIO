@@ -87,7 +87,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
         consumes.powerDynamic<SmartULDBuild> {
             (powerUsageBasic
                     + powerUsagePerItem * it.needUnloadItems.size
-                    + powerUsagePerConnection * it.connectedReceivers().size)
+                    + powerUsagePerConnection * it.getConnectedReceivers().size)
         }
         super.init()
     }
@@ -410,7 +410,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
             }
         }
 
-        override fun connectedReceiver(): Int? =
+        override fun getConnectedReceiver(): Int? =
             if (receivers.isEmpty)
                 null
             else
@@ -424,7 +424,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
 
         override fun maxReceiverConnection() = maxConnection
         override fun acceptItem(source: Building, item: Item) = false
-        override fun connectedReceivers(): OrderedSet<Int> = receivers
+        override fun getConnectedReceivers(): OrderedSet<Int> = receivers
         override fun getBuilding() = this
         override fun getTile(): Tile = tile
         override fun getBlock() = this@SmartUnloader

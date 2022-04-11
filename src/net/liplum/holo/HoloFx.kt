@@ -37,7 +37,7 @@ object HoloFx {
     }
     val shieldBreak: Effect = Effect(60f) {
         if (Core.settings.getBool(R.Setting.AnimatedShields)) {
-            SD.Hologram2.on(Layer.shields) {
+            SD.Hologram.on(Layer.shields) {
                 Fill.poly(it.x, it.y, 6, it.rotation * it.fout())
                 Draw.reset()
             }

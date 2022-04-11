@@ -9,6 +9,11 @@ import net.liplum.Settings
 
 object SettingsUI {
     @JvmStatic
+    fun appendSettings() {
+        addGraphicSettings()
+        addGameSettings()
+    }
+    @JvmStatic
     fun addGraphicSettings() {
         val graphics = Vars.ui.settings.graphics
         graphics.insertSliderPref(
@@ -27,5 +32,12 @@ object SettingsUI {
         ) {
             it is CheckSetting
         }
+    }
+    @JvmStatic
+    fun addGameSettings() {
+        val game = Vars.ui.settings.game
+        game.insertCheckPrefLast(
+            R.Setting.ShowWelcome, true
+        )
     }
 }

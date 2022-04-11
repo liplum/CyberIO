@@ -21,13 +21,13 @@ import mindustry.world.meta.StatUnit
 import net.liplum.ClientOnly
 import net.liplum.DebugOnly
 import net.liplum.UndebugOnly
+import net.liplum.api.cyber.*
+import net.liplum.blocks.AniedBlock
 import net.liplum.lib.animations.anims.Animation
 import net.liplum.lib.animations.anims.AnimationObj
 import net.liplum.lib.animations.anis.AniState
 import net.liplum.lib.animations.anis.Draw
 import net.liplum.lib.animations.anis.config
-import net.liplum.api.cyber.*
-import net.liplum.blocks.AniedBlock
 import net.liplum.lib.delegates.Delegate1
 import net.liplum.lib.ui.bars.addBar
 import net.liplum.lib.ui.bars.removeItems
@@ -256,14 +256,6 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
         override fun getRequirements(): Array<Item>? = _requirements
         @ClientOnly
         override fun isBlocked() = lastDistributionTime > 30f
-        override fun connect(sender: IDataSender) {
-            senders.add(sender.building.pos())
-        }
-
-        override fun disconnect(sender: IDataSender) {
-            senders.remove(sender.building.pos())
-        }
-
         override fun read(read: Reads, revision: Byte) {
             super.read(read, revision)
             senders = read.intSet()
@@ -306,7 +298,7 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
             arrowsAnimObj.draw(x, y)
         }
 
-        override fun connectedSenders() = senders
+        override fun getConnectedSenders() = senders
         override fun maxSenderConnection() = maxConnection
         override fun getBuilding(): SmartDISBuild = this
         override fun getTile(): Tile = this.tile

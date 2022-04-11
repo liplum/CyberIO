@@ -141,7 +141,7 @@ open class HoloWall(name: String) : Wall(name) {
             Draw.rect(BaseTR, x, y)
             updateFloating()
             if (isProjecting) {
-                CioShaders.Hologram2.use(Layer.power) {
+                CioShaders.Hologram.use(Layer.power) {
                     val healthPct = healthPct
                     it.alpha = healthPct / 4f * 3f
                     it.opacityNoise *= 2f - healthPct

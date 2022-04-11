@@ -16,15 +16,18 @@ import mindustry.world.Block
 import mindustry.world.Tile
 import mindustry.world.blocks.ItemSelection
 import mindustry.world.meta.BlockGroup
-import net.liplum.*
+import net.liplum.ClientOnly
+import net.liplum.DebugOnly
+import net.liplum.R
+import net.liplum.UndebugOnly
+import net.liplum.api.cyber.*
+import net.liplum.blocks.AniedBlock
+import net.liplum.blocks.rs.Receiver.ReceiverBuild
 import net.liplum.lib.animations.anims.Animation
 import net.liplum.lib.animations.anis.AniState
 import net.liplum.lib.animations.anis.Draw
 import net.liplum.lib.animations.anis.SetColor
 import net.liplum.lib.animations.anis.config
-import net.liplum.api.cyber.*
-import net.liplum.blocks.AniedBlock
-import net.liplum.blocks.rs.Receiver.ReceiverBuild
 import net.liplum.lib.delegates.Delegate1
 import net.liplum.lib.ui.bars.removeItems
 import net.liplum.persistance.intSet
@@ -201,16 +204,7 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
             outputItem = Vars.content.item(read.s().toInt())
             senders = read.intSet()
         }
-        @CalledBySync
-        override fun connect(sender: IDataSender) {
-            senders.add(sender.building.pos())
-        }
-        @CalledBySync
-        override fun disconnect(sender: IDataSender) {
-            senders.remove(sender.building.pos())
-        }
-
-        override fun connectedSenders() = senders
+        override fun getConnectedSenders() = senders
         override fun maxSenderConnection() = maxConnection
         override fun getBuilding(): Building = this
         override fun getTile(): Tile = tile()

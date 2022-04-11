@@ -37,7 +37,7 @@ class CioMod : Mod() {
         GL.handleCompatible()
         //listen for game load event
         Events.on(ClientLoadEvent::class.java) {
-            //show dialog upon startup
+            //show welcome dialog upon startup
             Time.runTask(10f) { Welcome.showWelcomeDialog() }
         }
         Events.on(FileTreeInitEvent::class.java) {
@@ -60,15 +60,18 @@ class CioMod : Mod() {
         else
             5f
         JsonIO.json.addClassTag(SharedRoom::class.java.name, SharedRoom::class.java)
-        Events.on(WorldLoadEvent::class.java) {
-            LiplumCloud.reset()
-            LiplumCloud.read()
+        // Cloud is developing
+        DebugOnly {
+            Events.on(WorldLoadEvent::class.java) {
+                LiplumCloud.reset()
+                LiplumCloud.read()
+            }
+            Events.on(SaveWriteEvent::class.java) {
+                LiplumCloud.reset()
+                LiplumCloud.save()
+            }
         }
-        Events.on(SaveWriteEvent::class.java) {
-            LiplumCloud.reset()
-            LiplumCloud.save()
-        }
-        if (DebugMode) {
+        DebugOnly {
             Vars.enableConsole = true
         }
         tintedBulletsRegistryLoad()
@@ -85,7 +88,7 @@ class CioMod : Mod() {
         Events.run(Trigger.preDraw) {
             G.init()
         }
-        SettingsUI.addGraphicSettings()
+        SettingsUI.appendSettings()
         Settings.updateSettings()
         LinkDrawer.register()
         NpcSystem.register()

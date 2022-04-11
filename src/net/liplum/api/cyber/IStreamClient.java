@@ -29,16 +29,20 @@ public interface IStreamClient extends IStreamNode {
     Liquid[] getRequirements();
 
     @CalledBySync
-    void connect(@NotNull IStreamHost host);
+    default void connect(@NotNull IStreamHost host) {
+        getConnectedHosts().add(host.getBuilding().pos());
+    }
 
     @CalledBySync
-    void disconnect(@NotNull IStreamHost host);
+    default void disconnect(@NotNull IStreamHost host) {
+        getConnectedHosts().remove(host.getBuilding().pos());
+    }
 
     @NotNull
-    ObjectSet<Integer> connectedHosts();
+    ObjectSet<Integer> getConnectedHosts();
 
     default boolean isConnectedWith(@NotNull IStreamHost host) {
-        return connectedHosts().contains(host.getBuilding().pos());
+        return getConnectedHosts().contains(host.getBuilding().pos());
     }
 
     /**
@@ -58,11 +62,11 @@ public interface IStreamClient extends IStreamNode {
         if (max == -1) {
             return true;
         }
-        return connectedHosts().size < max;
+        return getConnectedHosts().size < max;
     }
 
     default int getHostConnectionNumber() {
-        return connectedHosts().size;
+        return getConnectedHosts().size;
     }
 
     @NotNull

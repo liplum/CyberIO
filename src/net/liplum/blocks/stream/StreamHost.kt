@@ -242,7 +242,7 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
         }
 
         override fun maxClientConnection() = maxConnection
-        override fun connectedClients(): OrderedSet<Int> = clients
+        override fun getConnectedClients(): OrderedSet<Int> = clients
         override fun read(read: Reads, revision: Byte) {
             super.read(read, revision)
             clients = read.intSet()

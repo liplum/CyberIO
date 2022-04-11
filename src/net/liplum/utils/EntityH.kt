@@ -3,6 +3,7 @@ package net.liplum.utils
 import mindustry.ai.types.FormationAI
 import mindustry.gen.*
 import mindustry.world.blocks.ControlBlock
+import mindustry.world.consumers.Consume
 
 var Healthc.lostHp: Float
     get() = maxHealth() - health()
@@ -42,4 +43,13 @@ fun MdtUnit.findLeaderInFormation(): MdtUnit {
         return controller.leader
     }
     return this
+}
+
+fun Building.otherConsumersAreValid(consume: Consume): Boolean {
+    for (cons in this.block.consumes.all()) {
+        if (cons != consume && !cons.isOptional && !cons.valid(this)) {
+            return false
+        }
+    }
+    return true
 }

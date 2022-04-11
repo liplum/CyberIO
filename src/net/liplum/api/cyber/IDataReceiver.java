@@ -36,16 +36,20 @@ public interface IDataReceiver extends IDataBuilding {
     boolean isBlocked();
 
     @CalledBySync
-    void connect(@NotNull IDataSender sender);
+    default void connect(@NotNull IDataSender sender) {
+        getConnectedSenders().add(sender.getBuilding().pos());
+    }
 
     @CalledBySync
-    void disconnect(@NotNull IDataSender sender);
+    default void disconnect(@NotNull IDataSender sender) {
+        getConnectedSenders().remove(sender.getBuilding().pos());
+    }
 
     @NotNull
-    ObjectSet<Integer> connectedSenders();
+    ObjectSet<Integer> getConnectedSenders();
 
     default boolean isConnectedWith(@NotNull IDataSender sender) {
-        return connectedSenders().contains(sender.getBuilding().pos());
+        return getConnectedSenders().contains(sender.getBuilding().pos());
     }
 
     @NotNull
@@ -65,7 +69,7 @@ public interface IDataReceiver extends IDataBuilding {
     }
 
     default int getSenderConnectionNumber() {
-        return connectedSenders().size;
+        return getConnectedSenders().size;
     }
 
     default boolean canHaveMoreSenderConnection() {
@@ -73,6 +77,6 @@ public interface IDataReceiver extends IDataBuilding {
         if (max == -1) {
             return true;
         }
-        return connectedSenders().size < max;
+        return getConnectedSenders().size < max;
     }
 }

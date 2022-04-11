@@ -17,15 +17,14 @@ import mindustry.world.Block
 import mindustry.world.Tile
 import mindustry.world.blocks.ItemSelection
 import mindustry.world.meta.BlockGroup
-import net.liplum.CalledBySync
 import net.liplum.ClientOnly
 import net.liplum.DebugOnly
+import net.liplum.api.cyber.*
+import net.liplum.blocks.AniedBlock
 import net.liplum.lib.animations.anis.AniState
 import net.liplum.lib.animations.anis.Draw
 import net.liplum.lib.animations.anis.DrawOn
 import net.liplum.lib.animations.anis.config
-import net.liplum.api.cyber.*
-import net.liplum.blocks.AniedBlock
 import net.liplum.lib.delegates.Delegate1
 import net.liplum.persistance.intSet
 import net.liplum.utils.TR
@@ -100,16 +99,7 @@ open class StreamClient(name: String) : AniedBlock<StreamClient, StreamClient.Cl
         @JvmField var onRequirementUpdated: Delegate1<IStreamClient> = Delegate1()
         override fun getOnRequirementUpdated() = onRequirementUpdated
         override fun getRequirements(): Array<Liquid>? = outputLiquid.req
-        @CalledBySync
-        override fun connect(host: IStreamHost) {
-            hosts.add(host.building.pos())
-        }
-        @CalledBySync
-        override fun disconnect(host: IStreamHost) {
-            hosts.remove(host.building.pos())
-        }
-
-        override fun connectedHosts(): ObjectSet<Int> = hosts
+        override fun getConnectedHosts(): ObjectSet<Int> = hosts
         override fun maxHostConnection() = maxConnection
         override fun getClientColor(): Color = outputLiquid.clientColor
         override fun updateTile() {

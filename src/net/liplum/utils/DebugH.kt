@@ -99,17 +99,17 @@ fun <T> BlockBars.addReceiverInfo() where T : Building, T : IDataSender {
         Bar(
             {
                 val connected = if (it.canMultipleConnect())
-                    it.connectedReceivers().size
+                    it.getConnectedReceivers().size
                 else
-                    if (it.connectedReceiver() != null) 1 else 0
+                    if (it.getConnectedReceiver() != null) 1 else 0
                 R.Bar.Receiver.bundle(connected)
             },
             { R.C.Receiver },
             {
                 val connected = if (it.canMultipleConnect())
-                    it.connectedReceivers().size
+                    it.getConnectedReceivers().size
                 else
-                    if (it.connectedReceiver() != null) 1 else 0
+                    if (it.getConnectedReceiver() != null) 1 else 0
                 var max = it.maxReceiverConnection()
                 if (max == -1) {
                     max = 10
@@ -125,14 +125,14 @@ fun <T> BlockBars.addSenderInfo() where T : Building, T : IDataReceiver {
         R.Bar.SenderN
     ) {
         Bar(
-            { R.Bar.Sender.bundle(it.connectedSenders().size) },
+            { R.Bar.Sender.bundle(it.getConnectedSenders().size) },
             { R.C.Sender },
             {
                 var max = it.maxSenderConnection()
                 if (max == -1) {
                     max = 10
                 }
-                it.connectedSenders().size.toFloat() / max
+                it.getConnectedSenders().size.toFloat() / max
             }
         )
     }
@@ -143,14 +143,14 @@ fun <T> BlockBars.addClientInfo() where T : Building, T : IStreamHost {
         R.Bar.ClientN
     ) {
         Bar(
-            { R.Bar.Client.bundle(it.connectedClients().size) },
+            { R.Bar.Client.bundle(it.getConnectedClients().size) },
             { R.C.Client },
             {
                 var max = it.maxClientConnection()
                 if (max == -1) {
                     max = 10
                 }
-                it.connectedClients().size.toFloat() / max
+                it.getConnectedClients().size.toFloat() / max
             }
         )
     }
@@ -161,14 +161,14 @@ fun <T> BlockBars.addHostInfo() where T : Building, T : IStreamClient {
         R.Bar.HostN
     ) {
         Bar(
-            { R.Bar.Host.bundle(it.connectedHosts().size) },
+            { R.Bar.Host.bundle(it.getConnectedHosts().size) },
             { R.C.Host },
             {
                 var max = it.maxHostConnection()
                 if (max == -1) {
                     max = 10
                 }
-                it.connectedHosts().size.toFloat() / max
+                it.getConnectedHosts().size.toFloat() / max
             }
         )
     }

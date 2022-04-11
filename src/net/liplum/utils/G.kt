@@ -43,6 +43,10 @@ object G {
         return a * Draw.scl * Draw.xscl
     }
     @JvmStatic
+    fun D(a: Int): Float {
+        return a * Draw.scl * Draw.xscl
+    }
+    @JvmStatic
     fun init() {
         sin = Mathf.absin(Time.time, 6f, 1f)
         tan = Mathf.tan(Time.time, 6f, 1f)
@@ -263,17 +267,17 @@ object G {
     )
     @JvmStatic
     @JvmOverloads
-    fun circles(
+    fun circle(
         x: Float, y: Float, rad: Float, color: Color,
-        alpha: Float? = null
+        alpha: Float? = null, storke: Float = 1f
     ) {
-        Lines.stroke(3f, Pal.gray)
+        Lines.stroke(storke + 2f, Pal.gray)
         if (alpha != null) {
             Draw.alpha(alpha)
         }
         Lines.circle(x, y, rad)
 
-        Lines.stroke(1f, color)
+        Lines.stroke(storke, color)
         if (alpha != null) {
             Draw.alpha(alpha)
         }
@@ -284,47 +288,47 @@ object G {
     @JvmOverloads
     fun drawSurroundingCircle(
         t: Tile, circleColor: Color,
-        alpha: Float? = null
-    ) = circles(
+        alpha: Float? = null, storke: Float = 1f
+    ) = circle(
         t.drawx(), t.drawy(),
         (t.block().size / 2f + 1) * Vars.tilesize + sin - 2f,
-        circleColor, alpha
+        circleColor, alpha, storke
     )
     @JvmStatic
     @JvmOverloads
     fun drawSurroundingCircle(
         b: Block, drawX: Float, drawY: Float, circleColor: Color,
-        alpha: Float? = null
-    ) = circles(
+        alpha: Float? = null, storke: Float = 1f
+    ) = circle(
         drawX, drawY,
         (b.size / 2f + 1) * Vars.tilesize + sin - 2f,
-        circleColor, alpha
+        circleColor, alpha, storke
     )
     @JvmStatic
     @JvmOverloads
     fun drawSurroundingCircle(
         b: Block, worldX: Int, worldY: Int,
         circleColor: Color,
-        alpha: Float? = null
-    ) = circles(
+        alpha: Float? = null, storke: Float = 1f
+    ) = circle(
         worldX.toDrawXY(b),
         worldY.toDrawXY(b),
         (b.size / 2f + 1) * Vars.tilesize + sin - 2f,
-        circleColor, alpha
+        circleColor, alpha, storke
     )
     @JvmStatic
     @JvmOverloads
     fun dashCircle(
         x: Float, y: Float, rad: Float, color: Color,
-        alpha: Float? = null
+        alpha: Float? = null, storke: Float = 1f
     ) {
-        Lines.stroke(3f, Pal.gray)
+        Lines.stroke(storke + 2f, Pal.gray)
         if (alpha != null) {
             Draw.alpha(alpha)
         }
         Lines.dashCircle(x, y, rad)
 
-        Lines.stroke(1f, color)
+        Lines.stroke(storke, color)
         if (alpha != null) {
             Draw.alpha(alpha)
         }
@@ -336,25 +340,25 @@ object G {
     fun drawDashCircle(
         build: Building,
         range: Float, color: Color,
-        alpha: Float? = null
-    ) = dashCircle(build.x, build.y, range + sin - 2, color, alpha)
+        alpha: Float? = null, storke: Float = 1f
+    ) = dashCircle(build.x, build.y, range + sin - 2, color, alpha, storke)
     @JvmStatic
     @JvmOverloads
     fun drawDashCircle(
         x: Float, y: Float,
         range: Float, color: Color,
-        alpha: Float? = null
-    ) = dashCircle(x, y, range + sin - 2, color, alpha)
+        alpha: Float? = null, storke: Float = 1f
+    ) = dashCircle(x, y, range + sin - 2, color, alpha, storke)
     @JvmStatic
     @JvmOverloads
     fun drawDashCircle(
         b: Block, blockX: Short, BlockY: Short,
         range: Float, color: Color,
-        alpha: Float? = null
+        alpha: Float? = null, storke: Float = 1f
     ) = dashCircle(
         blockX.toDrawXY(b),
         BlockY.toDrawXY(b),
-        range + sin - 2, color, alpha
+        range + sin - 2, color, alpha, storke
     )
     @JvmStatic
     @JvmOverloads
@@ -365,26 +369,35 @@ object G {
         )
     }
     @JvmStatic
-    fun drawMaterialIcon(b: Building, material: UnlockableContent) {
+    fun drawMaterialIcon(
+        b: Building, material: UnlockableContent,
+        alpha: Float = 1f
+    ) {
         val dx = b.x - b.block.size * Vars.tilesize / 2f
         val dy = b.y + b.block.size * Vars.tilesize / 2f
-        Draw.mixcol(Color.darkGray, 1f)
+        Draw.mixcol(Color.darkGray, alpha)
         Draw.rect(material.uiIcon, dx, dy - 1)
         Draw.reset()
+        Draw.alpha(alpha)
         Draw.rect(material.uiIcon, dx, dy)
     }
     @JvmStatic
-    fun drawMaterialIcons(b: Building, materials: Array<out UnlockableContent>) {
+    fun drawMaterialIcons(
+        b: Building, materials: Array<out UnlockableContent>,
+        alpha: Float = 1f, maxPerRow: Int = 4
+    ) {
         val dx = b.x - b.block.size * Vars.tilesize / 2f
         val dy = b.y + b.block.size * Vars.tilesize / 2f
         for (i in materials.indices) {
             val material = materials[i]
             val uiIcon = material.uiIcon
-            Draw.mixcol(Color.darkGray, 1f)
-            val x = dx + i * D(uiIcon.width.toFloat())
-            Draw.rect(uiIcon, x, dy - 1)
+            Draw.mixcol(Color.darkGray, alpha)
+            val x = dx + i % maxPerRow * D(uiIcon.width)
+            val y = dy - i / maxPerRow * D(uiIcon.height)
+            Draw.rect(uiIcon, x, y - 1)
             Draw.reset()
-            Draw.rect(uiIcon, x, dy)
+            Draw.alpha(alpha)
+            Draw.rect(uiIcon, x, y)
         }
     }
 }

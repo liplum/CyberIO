@@ -14,13 +14,13 @@ import mindustry.world.blocks.power.PowerBlock
 import mindustry.world.meta.BlockGroup
 import mindustry.world.modules.ItemModule
 import net.liplum.*
+import net.liplum.api.cyber.*
 import net.liplum.lib.animations.Floating
 import net.liplum.lib.animations.anims.Animation
 import net.liplum.lib.animations.anims.IFrameIndexer
 import net.liplum.lib.animations.anims.ixAuto
 import net.liplum.lib.animations.anis.*
 import net.liplum.lib.animations.blocks.*
-import net.liplum.api.cyber.*
 import net.liplum.lib.delegates.Delegate1
 import net.liplum.persistance.intSet
 import net.liplum.utils.*
@@ -189,14 +189,6 @@ open class Cloud(name: String) : PowerBlock(name) {
         override fun getRequirements(): Array<Item>? = null
         @ClientOnly
         override fun isBlocked() = false
-        @CalledBySync
-        override fun connect(sender: IDataSender) {
-            info.sendersPos.add(sender.building.pos())
-        }
-        @CalledBySync
-        override fun disconnect(sender: IDataSender) {
-            info.sendersPos.remove(sender.building.pos())
-        }
         @SendDataPack
         override fun connectSync(receiver: IDataReceiver) {
             val pos = receiver.building.pos()
@@ -270,16 +262,16 @@ open class Cloud(name: String) : PowerBlock(name) {
             this.drawReceivers(info.receiversPos)
         }
 
-        override fun connectedSenders(): ObjectSet<Int> =
+        override fun getConnectedSenders(): ObjectSet<Int> =
             info.sendersPos
 
-        override fun connectedReceiver(): Int? =
+        override fun getConnectedReceiver(): Int? =
             if (info.receiversPos.isEmpty)
                 null
             else
                 info.receiversPos.first()
 
-        override fun connectedReceivers(): OrderedSet<Int> =
+        override fun getConnectedReceivers(): OrderedSet<Int> =
             info.sendersPos
 
         override fun acceptConnection(sender: IDataSender): Boolean {

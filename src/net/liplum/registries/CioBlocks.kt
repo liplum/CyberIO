@@ -4,7 +4,7 @@ import arc.Events
 import arc.graphics.Color
 import arc.struct.Seq
 import mindustry.content.*
-import mindustry.game.EventType
+import mindustry.game.EventType.Trigger
 import mindustry.gen.Sounds
 import mindustry.graphics.CacheLayer
 import mindustry.type.Category
@@ -21,7 +21,6 @@ import mindustry.world.blocks.production.GenericCrafter
 import mindustry.world.blocks.production.LiquidConverter
 import mindustry.world.meta.BuildVisibility
 import net.liplum.*
-import net.liplum.lib.animations.ganim.globalAnim
 import net.liplum.api.virus.setUninfected
 import net.liplum.api.virus.setUninfectedFloor
 import net.liplum.blocks.cloud.Cloud
@@ -40,6 +39,7 @@ import net.liplum.blocks.prism.Prism
 import net.liplum.blocks.prism.PrismObelisk
 import net.liplum.blocks.rs.Receiver
 import net.liplum.blocks.rs.Sender
+import net.liplum.blocks.stealth.Stealth
 import net.liplum.blocks.stream.StreamClient
 import net.liplum.blocks.stream.StreamHost
 import net.liplum.blocks.stream.StreamServer
@@ -48,10 +48,14 @@ import net.liplum.blocks.tmtrainer.TMTRAINER
 import net.liplum.blocks.underdrive.UnderdriveProjector
 import net.liplum.blocks.virus.AntiVirus
 import net.liplum.blocks.virus.Virus
+import net.liplum.blocks.wireless.WirelessTower
+import net.liplum.bullets.RuvikBullet
+import net.liplum.bullets.STEM_VERSION
 import net.liplum.bullets.ShaderCLaser
 import net.liplum.holo.HoloPlan
 import net.liplum.holo.HoloProjector
 import net.liplum.holo.Requirement
+import net.liplum.lib.animations.ganim.globalAnim
 import net.liplum.lib.shaders.SD
 import net.liplum.seffects.StaticFx
 
@@ -82,6 +86,8 @@ object CioBlocks : ContentTable {
     @JvmStatic lateinit var cyberionMixer: LiquidConverter
     @JvmStatic lateinit var holoProjector: HoloProjector
     @JvmStatic lateinit var aquacyberion: Floor
+    @JvmStatic lateinit var stealth: Stealth
+    @JvmStatic lateinit var wirelessTower: WirelessTower
     override fun firstLoad() {
     }
 
@@ -206,8 +212,8 @@ object CioBlocks : ContentTable {
             requirements(
                 Category.effect, BuildVisibility.shown, arrayOf(
                     ItemStack(CioItems.ic, 1),
-                    ItemStack(Items.copper, 200),
-                    ItemStack(Items.coal, 100),
+                    ItemStack(Items.copper, 120),
+                    ItemStack(Items.coal, 80),
                     ItemStack(Items.metaglass, 75),
                 )
             )
@@ -302,7 +308,7 @@ object CioBlocks : ContentTable {
             cooldown = 0.1f
             recoilAmount = 5f
             reloadTime = 15f
-            powerUse = 2f
+            powerUse = 3f
             size = 3
             buildCostMultiplier = 1.5f
             extraLostHpBounce = 0.005f
@@ -365,7 +371,7 @@ object CioBlocks : ContentTable {
             health = 250 * size * size
             limitRange(20f)
             ClientOnly {
-                Events.run(EventType.Trigger.preDraw) {
+                Events.run(Trigger.preDraw) {
                     WhenRefresh {
                         TMTRAINER.localizedName = RandomName.one(8)
                         TMTRAINER.description = RandomName.one(25)
@@ -562,6 +568,38 @@ object CioBlocks : ContentTable {
                 emitLight = true
                 lightRadius = 30f
                 lightColor = R.C.Holo.cpy().a(0.19f)
+            }
+
+            stealth = Stealth("stealth").apply {
+                requirements(
+                    Category.turret, BuildVisibility.shown, arrayOf(
+                        ItemStack(CioItems.ic, 8),
+                        ItemStack(Items.copper, 200),
+                    )
+                )
+                size = 3
+                range = 320f
+                liquidCapacity = 40f
+                reloadTime = 20f
+                shootType = RuvikBullet(2f, 40f).apply {
+                    stemVersion = STEM_VERSION.STEM2
+                    width = 10f
+                    height = 10f
+                    hitSize = 10f
+                    lifetime = 240f
+                    frontColor = R.C.Holo
+                    backColor = R.C.HoloDark
+                }
+            }
+
+            wirelessTower = WirelessTower("wireless-tower").apply {
+                requirements(
+                    Category.power, BuildVisibility.shown, arrayOf(
+                        ItemStack(CioItems.ic, 5),
+                        ItemStack(Items.copper, 300),
+                    )
+                )
+                distributeSpeed = 5f
             }
         }
     }

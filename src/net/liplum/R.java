@@ -35,6 +35,7 @@ public class R {
 
     public static final class Bar {
         public static final String NeighborStateN = "neighbor-state";
+        public static final String PowerN = "power";
 
         @NotNull
         @Contract(pure = true)
@@ -230,6 +231,8 @@ public class R {
     public static final class Setting {
         public static final String LinkOpacity = Gen("connection-opacity");
         public static final String AlwaysShowLink = Gen("always-show-link");
+        public static final String ShowWelcome = Gen("show-welcome");
+        public static final String Version = Gen("version");
         public static final String AnimatedShields = "animatedshields";
     }
 }

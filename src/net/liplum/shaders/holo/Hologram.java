@@ -1,24 +1,23 @@
 package net.liplum.shaders.holo;
 
-import arc.graphics.Texture;
 import arc.graphics.gl.Shader;
-import arc.math.Mathf;
 import arc.util.Time;
 import mindustry.Vars;
 import net.liplum.R;
-import net.liplum.lib.shaders.ILoadResource;
 import net.liplum.lib.shaders.IReusable;
 
 import static mindustry.Vars.renderer;
 import static mindustry.graphics.Shaders.getShaderFi;
-import static net.liplum.utils.AtlasHKt.inCio;
 
-public class Hologram extends Shader implements ILoadResource, IReusable {
-    public static final float DefaultSpeed = 0.5f;
-    public Texture fringe;
-    public float randomRange = 0f;
+public class Hologram extends Shader implements IReusable {
+    public final float DefaultBlendHoloColorOpacity = 0.8f;
+    public final float DefaultBlendFormerColorOpacity = 0.6f;
+    public final float DefaultFlickering = 0.03f;
     public float alpha = 1f;
-    public float speed = DefaultSpeed;
+    public float opacityNoise = 0.2f;
+    public float blendHoloColorOpacity = DefaultBlendHoloColorOpacity;
+    public float blendFormerColorOpacity = DefaultBlendFormerColorOpacity;
+    public float flickering = DefaultFlickering;
 
     public Hologram(String fragName) {
         super(getShaderFi("default.vert"),
@@ -27,26 +26,22 @@ public class Hologram extends Shader implements ILoadResource, IReusable {
 
     @Override
     public void apply() {
-        setUniformf("u_time", Time.time + Mathf.range(randomRange));
+        setUniformf("u_time", Time.time / 60f);
         setUniformf("u_alpha", alpha);
-        setUniformf("u_speed", speed);
+        setUniformf("u_opacityNoise", opacityNoise);
+        setUniformf("u_flickering", flickering);
+        setUniformf("u_blendHoloColorOpacity", blendHoloColorOpacity);
+        setUniformf("u_blendFormerColorOpacity", blendFormerColorOpacity);
 
-        fringe.bind(1);
         renderer.effectBuffer.getTexture().bind(0);
-        setUniformi("u_hologram", 1);
-    }
-
-    @Override
-    public void loadResource() {
-        fringe = inCio("hologram").texture;
-        fringe.setFilter(Texture.TextureFilter.linear);
-        fringe.setWrap(Texture.TextureWrap.repeat);
     }
 
     @Override
     public void reset() {
         this.alpha = 1f;
-        this.randomRange = 0f;
-        this.speed = DefaultSpeed;
+        this.opacityNoise = 0.2f;
+        this.flickering = DefaultFlickering;
+        this.blendHoloColorOpacity = DefaultBlendHoloColorOpacity;
+        this.blendFormerColorOpacity = DefaultBlendFormerColorOpacity;
     }
 }

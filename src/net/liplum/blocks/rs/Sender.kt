@@ -14,11 +14,11 @@ import mindustry.world.Block
 import mindustry.world.Tile
 import mindustry.world.meta.BlockGroup
 import net.liplum.*
-import net.liplum.lib.animations.anims.Animation
-import net.liplum.lib.animations.anis.*
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
 import net.liplum.blocks.rs.Sender.SenderBuild
+import net.liplum.lib.animations.anims.Animation
+import net.liplum.lib.animations.anis.*
 import net.liplum.utils.*
 
 private typealias AniStateS = AniState<Sender, SenderBuild>
@@ -115,7 +115,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
             return super.toString() + "(receiverPackedPos:" + receiverPackedPos + ")"
         }
         @Nullable
-        override fun connectedReceiver(): Int? {
+        override fun getConnectedReceiver(): Int? {
             return if (receiverPackedPos == -1) null else receiverPackedPos
         }
 

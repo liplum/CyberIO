@@ -45,7 +45,7 @@ open class HoloForceField(
     override fun draw(unit: Unit) {
         if (unit.shield <= 0) return
         if (Core.settings.getBool(R.Setting.AnimatedShields)) {
-            SD.Hologram2.use(Layer.shields) {
+            SD.Hologram.use(Layer.shields) {
                 Fill.poly(unit.x, unit.y, 6, realRange(unit))
             }
         } else {

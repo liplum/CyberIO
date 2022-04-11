@@ -377,7 +377,7 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
             forEachTargetInRange {
                 G.drawSelected(it, color)
             }
-            Drawf.dashCircle(x, y, realRange, color)
+            G.dashCircle(x, y, realRange, color)
         }
 
         override fun draw() {

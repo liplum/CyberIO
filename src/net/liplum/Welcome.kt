@@ -1,5 +1,6 @@
 package net.liplum
 
+import arc.Core
 import arc.Events
 import arc.scene.ui.Label
 import arc.util.Time
@@ -7,13 +8,31 @@ import mindustry.game.EventType.Trigger
 import mindustry.ui.dialogs.BaseDialog
 import net.liplum.blocks.tmtrainer.RandomName
 import net.liplum.utils.inCio
+import net.liplum.utils.set
 
 object Welcome {
     @JvmStatic
     fun showWelcomeDialog() {
-        dialog.show()
+        checkLastVersion()
+        if (shouldShowWelcome) {
+            dialog.show()
+        }
     }
 
+    @JvmStatic
+    fun checkLastVersion() {
+        val lastVersion = Core.settings.getString(R.Setting.Version, Meta.Version)
+        if (lastVersion != Meta.Version) {
+            Core.settings.set(R.Setting.ShowWelcome, true)
+            Core.settings.set(R.Setting.Version, Meta.Version)
+        }
+    }
+
+    val shouldShowWelcome: Boolean
+        get() {
+            val showWelcome = Core.settings.getBool(R.Setting.ShowWelcome, true)
+            return showWelcome
+        }
     val dialog = BaseDialog(News.getTitle()).apply {
         cont.image("icon".inCio())
             .maxSize(200f).pad(20f).row()
