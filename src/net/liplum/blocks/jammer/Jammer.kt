@@ -6,8 +6,8 @@ import mindustry.gen.Groups
 import mindustry.graphics.Drawf
 import mindustry.graphics.Layer
 import mindustry.world.blocks.defense.turrets.LaserTurret
-import mindustry.world.blocks.logic.LogicBlock
 import mindustry.world.consumers.ConsumeType
+import mindustry.world.meta.BlockGroup
 import net.liplum.CalledBySync
 import net.liplum.ClientOnly
 import net.liplum.SendDataPack
@@ -21,7 +21,6 @@ open class Jammer(name: String) : LaserTurret(name) {
 
     init {
         outlineIcon = false
-        configurable = true
         consumes.remove(ConsumeType.liquid)
         config(Integer::class.java) { obj: JammerBuild, i ->
             if (i.toInt() == 1)
@@ -42,11 +41,12 @@ open class Jammer(name: String) : LaserTurret(name) {
         @CalledBySync
         open fun onJamming() {
             Groups.build.each {
-                if (it is LogicBlock.LogicBuild &&
+                if (
                     it.team != team &&
+                    it.block.group == BlockGroup.logic &&
                     it.dst(this) <= range() * 2
                 ) {
-                    it.updateCode("")
+                    it.destroyLogic()
                 }
             }
         }

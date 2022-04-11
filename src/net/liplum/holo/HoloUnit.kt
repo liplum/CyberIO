@@ -8,17 +8,15 @@ import arc.graphics.g2d.Lines
 import arc.math.Angles
 import arc.math.Mathf
 import arc.math.geom.Geometry
-import arc.math.geom.Vec2
 import arc.util.Structs
 import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.Vars
-import mindustry.entities.units.StatusEntry
 import mindustry.game.EventType.UnitDestroyEvent
 import mindustry.gen.UnitEntity
 import mindustry.graphics.Drawf
-import mindustry.graphics.Pal
+import mindustry.graphics.Layer
 import mindustry.logic.LAccess
 import mindustry.world.blocks.ConstructBlock
 import mindustry.world.blocks.ConstructBlock.ConstructBuild
@@ -103,13 +101,14 @@ open class HoloUnit : UnitEntity() {
         health -= amount
         if (health <= 0.0f && !dead) {
             if (hasShields) {
-                Time.run(30f) {
-                    (abilities.find {
-                        it is HoloForceField
-                    } as? HoloForceField)?.let {
+                (abilities.find {
+                    it is HoloForceField
+                } as? HoloForceField)?.let {
+                    val cacheRange = it.realRange(this)
+                    Time.run(30f) {
                         HoloFx.shieldBreak.at(
                             x, y,
-                            it.realRange(this),
+                            cacheRange,
                             R.C.Holo, this
                         )
                     }
@@ -120,89 +119,106 @@ open class HoloUnit : UnitEntity() {
     }
 
     override fun draw() {
-        val active = activelyBuilding()
-        if (active || lastActive != null) {
-            Draw.z(115.0f)
-            val plan = if (active) buildPlan() else lastActive
-            val tile = Vars.world.tile(plan.x, plan.y)
-            val core = team.core()
-            if (tile != null && this.within(plan, if (Vars.state.rules.infiniteResources) 3.4028235E38f else 220.0f)) {
-                if (core != null && active && !this.isLocal && tile.block() !is ConstructBlock) {
-                    Draw.z(84.0f)
-                    drawPlan(plan, 0.5f)
-                    drawPlanTop(plan, 0.5f)
-                    Draw.z(115.0f)
-                }
-                val size =
-                    if (plan.breaking)
-                        if (active)
-                            tile.block().size
-                        else
-                            lastSize
-                    else
-                        plan.block.size
-                val py = plan.drawx()
-                val ex = plan.drawy()
-                Lines.stroke(
-                    1.0f,
-                    if (plan.breaking)
-                        Pal.remove
-                    else
-                        Pal.accent
-                )
-                val ey = type.buildBeamOffset + Mathf.absin(Time.time, 3.0f, 0.6f)
-                val px = x + Angles.trnsx(rotation, ey)
-                val py2 = y + Angles.trnsy(rotation, ey)
-                val sz = (8 * size).toFloat() / 2.0f
-                val ang = this.angleTo(py2, ex)
-                vecs[0][py2 - sz] = ex - sz
-                vecs[1][py2 + sz] = ex - sz
-                vecs[2][py2 - sz] = ex + sz
-                vecs[3][py2 + sz] = ex + sz
-                Arrays.sort(vecs, Structs.comparingFloat {
-                    -Angles.angleDist(
-                        this.angleTo(it),
-                        ang
-                    )
-                })
-                val close = Geometry.findClosest(x, y, vecs) as Vec2
-                val x1 = vecs[0].x
-                val y1 = vecs[0].y
-                val x2 = close.x
-                val y2 = close.y
-                val x3 = vecs[1].x
-                val y3 = vecs[1].y
-                Draw.z(122.0f)
-                Draw.alpha(buildAlpha)
-                if (!active && tile.build !is ConstructBuild) {
-                    Fill.square(plan.drawx(), plan.drawy(), (size * 8).toFloat() / 2.0f)
-                }
-                if (Vars.renderer.animateShields) {
-                    if (close != vecs[0] && close != vecs[1]) {
-                        Draw.color(R.C.Holo)
-                        Fill.tri(px, py2, x1, y1, x2, y2)
-                        Fill.tri(px, py2, x3, y3, x2, y2)
-                    } else {
-                        Draw.color(R.C.Holo)
-                        Fill.tri(px, py2, x1, y1, x3, y3)
-                    }
-                } else {
-                    Draw.color(R.C.Holo)
-                    Lines.line(px, py2, x1, y1)
-                    Lines.line(px, py2, x3, y3)
-                }
-                Draw.color(R.C.Holo)
-                Fill.square(px, py2, 1.8f + Mathf.absin(Time.time, 2.2f, 1.1f), rotation + 45.0f)
-                Draw.reset()
-                Draw.z(115.0f)
-            }
-        }
+        drawBuilding()
         type.draw(this)
-        val var20: Iterator<*> = statuses.iterator()
-        while (var20.hasNext()) {
-            val e = var20.next() as StatusEntry
-            e.effect.draw(this, e.time)
+        drawStatusEffect()
+        drawMining()
+    }
+
+    open fun drawBuilding() {
+        val active = activelyBuilding()
+        if (!active && lastActive == null) return
+        Draw.z(Layer.flyingUnit)
+        val plan = if (active)
+            buildPlan()
+        else
+            lastActive
+        val tile = Vars.world.tile(plan.x, plan.y)
+        val core = team.core()
+        if (tile == null ||
+            !within(
+                plan,
+                if (Vars.state.rules.infiniteResources)
+                    Float.MAX_VALUE
+                else
+                    Vars.buildingRange
+            )
+        ) {
+            return
         }
+        if (core != null && active && !isLocal && tile.block() !is ConstructBlock) {
+            Draw.z(Layer.plans - 1.0f)
+            drawPlan(plan, 0.5f)
+            drawPlanTop(plan, 0.5f)
+            Draw.z(Layer.flyingUnit)
+        }
+        val size =
+            if (plan.breaking)
+                if (active)
+                    tile.block().size
+                else
+                    lastSize
+            else
+                plan.block.size
+        val tx = plan.drawx()
+        val ty = plan.drawy()
+        Lines.stroke(
+            1.0f, if (plan.breaking)
+                R.C.HoloDark
+            else
+                R.C.Holo
+        )
+        val focusLen = type.buildBeamOffset + Mathf.absin(Time.time, 3.0f, 0.6f)
+        val px = x + Angles.trnsx(rotation, focusLen)
+        val py = y + Angles.trnsy(rotation, focusLen)
+        val sz = Vars.tilesize * size / 2.0f
+        val ang = angleTo(tx, ty)
+        vecs[0][tx - sz] = ty - sz
+        vecs[1][tx + sz] = ty - sz
+        vecs[2][tx - sz] = ty + sz
+        vecs[3][tx + sz] = ty + sz
+        Arrays.sort(vecs, Structs.comparingFloat {
+            -Angles.angleDist(
+                angleTo(it),
+                ang
+            )
+        })
+        val close = Geometry.findClosest(x, y, vecs)
+        val x1 = vecs[0].x
+        val y1 = vecs[0].y
+        val x2 = close.x
+        val y2 = close.y
+        val x3 = vecs[1].x
+        val y3 = vecs[1].y
+        Draw.z(Layer.buildBeam)
+        Draw.color(R.C.Holo)
+        Draw.alpha(buildAlpha)
+        if (!active && tile.build !is ConstructBuild) {
+            Fill.square(plan.drawx(), plan.drawy(), size * Vars.tilesize / 2.0f)
+        }
+        if (Vars.renderer.animateShields) {
+            if (close != vecs[0] && close != vecs[1]) {
+                Fill.tri(px, py, x1, y1, x2, y2)
+                Fill.tri(px, py, x3, y3, x2, y2)
+            } else {
+                Fill.tri(px, py, x1, y1, x3, y3)
+            }
+        } else {
+            Lines.line(px, py, x1, y1)
+            Lines.line(px, py, x3, y3)
+        }
+        Fill.square(px, py, 1.8f + Mathf.absin(Time.time, 2.2f, 1.1f), rotation + 45)
+        Draw.reset()
+        Draw.z(Layer.flyingUnit)
+    }
+
+    open fun drawStatusEffect() {
+        for (entry in statuses) {
+            entry.effect.draw(this, entry.time)
+        }
+    }
+
+    open fun drawMining() {
         if (mining()) {
             val focusLen = hitSize / 2.0f + Mathf.absin(Time.time, 1.1f, 0.5f)
             val swingScl = 12.0f

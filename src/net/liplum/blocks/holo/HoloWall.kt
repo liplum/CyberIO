@@ -22,7 +22,7 @@ import net.liplum.ClientOnly
 import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.lib.animations.Floating
-import net.liplum.api.holo.IRegenerate
+import net.liplum.api.holo.IHoloEntity
 import net.liplum.lib.shaders.use
 import net.liplum.registries.CioShaders
 import net.liplum.seconds
@@ -91,11 +91,10 @@ open class HoloWall(name: String) : Wall(name) {
                     { it.lastDamagedTime / restoreReload }
                 )
             }
-            //bars.addSleepInfo()
         }
     }
 
-    open inner class HoloBuild : WallBuild(), IRegenerate {
+    open inner class HoloBuild : WallBuild(), IHoloEntity {
         var restoreCharge = restoreReload
         open val isProjecting: Boolean
             get() = health > maxHealth * minHealthProportion

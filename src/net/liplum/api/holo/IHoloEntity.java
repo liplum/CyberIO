@@ -1,5 +1,5 @@
 package net.liplum.api.holo;
 
-public interface IRegenerate {
+public interface IHoloEntity {
     void killThoroughly();
 }

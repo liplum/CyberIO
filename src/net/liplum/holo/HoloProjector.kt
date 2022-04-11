@@ -150,6 +150,7 @@ open class HoloProjector(name: String) : Block(name) {
                 }
             }
         }
+
         @CalledBySync
         open fun setPlan(plan: Int) {
             var order = plan
@@ -188,7 +189,7 @@ open class HoloProjector(name: String) : Block(name) {
         }
 
         override fun onConfigureTileTapped(other: Building): Boolean {
-            if (this === other) {
+            if (this == other) {
                 deselect()
                 configure(null)
                 return false
@@ -209,6 +210,11 @@ open class HoloProjector(name: String) : Block(name) {
                 return true
             }
             return false
+        }
+
+        override fun draw() {
+            super.draw()
+
         }
 
         override fun acceptLiquid(source: Building, liquid: Liquid) =

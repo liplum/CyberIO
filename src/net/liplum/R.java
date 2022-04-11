@@ -127,12 +127,14 @@ public class R {
     }
 
     public static final class C {
+        public static final Color RedAlert = Color.valueOf("#e53935");
+        public static final Color GreenSafe = Color.valueOf("#00e676");
         public static final Color LightBlue = Color.valueOf("#add8e6");
         public static final Color Holo = Color.valueOf("#42a5f5");//(0.2588,0.6471,0.9608)
         public static final Color HoloDark = Color.valueOf("#1e88e5");
         public static final Color HoloDark2 = Color.valueOf("##0c80df");
         public static final Color VirusBK = Color.valueOf("#cd44ff");
-        public static final Color IsAive = Color.green;
+        public static final Color IsAive = GreenSafe;
         public static final Color CoolDown = Color.gray;
         public static final Color Sender = Color.red,
                 Receiver = Pal.place;
@@ -141,6 +143,8 @@ public class R {
         public static final Color IcDark = Color.valueOf("#024202");
         public static final Color Shadow = new Color(0, 0, 0, 0.71f);
         public static final Color BlendShadow = Color.white.cpy().lerp(Color.black, Shadow.a);
+        public static final Color Power = Pal.power;
+
         public static final Color
                 PrismRedFG = Color.valueOf("#EF5350"), PrismRedBK = Color.valueOf("#E53935"),
                 PrismGreenFG = Color.valueOf("#76FF03"), PrismGreenBK = Color.valueOf("#00C853"),
@@ -156,7 +160,7 @@ public class R {
         public static final Color
                 prismClockwise = Pal.power,
                 prismAntiClockwise = Pal.lancerLaser;
-        public static final Color Stop = Color.red;/* Color.valueOf("#dd2c00");*/
+        public static final Color Stop = RedAlert;/* Color.valueOf("#dd2c00");*/
         public static final Color Unconnected = Color.white;
         public static final Color Host = Color.red,
                 Client = Pal.place;
@@ -233,6 +237,7 @@ public class R {
         public static final String AlwaysShowLink = Gen("always-show-link");
         public static final String ShowWelcome = Gen("show-welcome");
         public static final String Version = Gen("version");
+        public static final String ClickWelcomeTimes = Gen("welcome-click-times");
         public static final String AnimatedShields = "animatedshields";
     }
 }

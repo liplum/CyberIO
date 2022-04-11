@@ -1,22 +1,25 @@
 package net.liplum.blocks.wireless
 
+import arc.Core
 import arc.graphics.g2d.Draw
+import arc.math.Angles
 import arc.math.Interp
 import arc.math.Mathf
+import arc.math.geom.Vec2
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.Vars
 import mindustry.core.Renderer
 import mindustry.gen.Building
+import mindustry.graphics.Drawf
 import mindustry.graphics.Layer
-import mindustry.graphics.Pal
 import mindustry.world.blocks.power.ConditionalConsumePower
 import mindustry.world.blocks.power.PowerBlock
 import net.liplum.ClientOnly
+import net.liplum.R
 import net.liplum.WhenNotPaused
-import net.liplum.utils.G
-import net.liplum.utils.drawXY
-import net.liplum.utils.isZero
+import net.liplum.lib.animations.anis.Draw
+import net.liplum.utils.*
 import java.util.*
 import kotlin.math.min
 
@@ -30,6 +33,10 @@ open class WirelessTower(name: String) : PowerBlock(name) {
     @JvmField var dst2CostRate: WirelessTowerBuild.(Float) -> Float = {
         1f + it * 1.5f / realRange
     }
+    lateinit var BaseTR: TR
+    lateinit var CoilTR: TR
+    lateinit var CoreTR: TR
+    lateinit var SupportTR: TR
 
     init {
         hasPower = true
@@ -47,9 +54,28 @@ open class WirelessTower(name: String) : PowerBlock(name) {
         clipSize = range * 1.5f
     }
 
+    override fun load() {
+        super.load()
+        BaseTR = this.sub("base")
+        CoilTR = this.sub("coil")
+        CoreTR = this.sub("core")
+        SupportTR = this.sub("support")
+    }
+
+    override fun icons() = arrayOf(BaseTR, SupportTR, CoilTR)
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)
-        G.drawDashCircle(x.drawXY, y.drawXY, range, Pal.power)
+        G.drawDashCircle(x.drawXY, y.drawXY, range, R.C.Power)
+        Vars.indexer.eachBlock(
+            Vars.player.team(),
+            x.toDrawXY(this),
+            y.toDrawXY(this),
+            range,
+            {
+                it.block.hasPower && it.block.consumes.hasPower()
+            }) {
+            G.drawSelected(it, R.C.Power)
+        }
     }
 
     open inner class WirelessTowerBuild : Building() {
@@ -69,7 +95,7 @@ open class WirelessTower(name: String) : PowerBlock(name) {
             get() = radiationSpeed * Mathf.log(3f, timeScale + 2f)
 
         override fun updateTile() {
-            if (this.power.status.isNaN()) return
+            if(power.status <= 0.999f) return
             lastNeed = 0f
             forEachTargetInRange {
                 val powerCons = it.block.consumes.power
@@ -102,11 +128,40 @@ open class WirelessTower(name: String) : PowerBlock(name) {
         }
 
         override fun drawSelect() {
-            G.drawDashCircle(x, y, range, Pal.power, storke = realRange / 100f)
+            G.drawDashCircle(x, y, range, R.C.Power, storke = (realRange / 100f).coerceAtLeast(1f))
+            forEachTargetInRange {
+                G.drawSelected(it, R.C.Power)
+            }
         }
-
+        @ClientOnly
+        val viewVec = Vec2(0.8f, 0f)
         override fun draw() {
-            super.draw()
+            val viewX = Core.camera.position.x
+            val viewY = Core.camera.position.y
+            val newDegree = Angles.angle(
+                x, y,
+                viewX, viewY
+            )
+            viewVec.setAngle(
+                Angles.moveToward(
+                    viewVec.angle(),
+                    newDegree,
+                    3f
+                )
+            )
+            val offsetX = viewVec.x
+            val offsetY = viewVec.y
+            Draw.z(Layer.blockUnder)
+            BaseTR.Draw(x, y)
+            Drawf.shadow(SupportTR, x - 1f, y - 1f)
+            Draw.z(Layer.blockUnder + 0.1f)
+            SupportTR.Draw(x, y)
+            Draw.z(Layer.block + 1f)
+            Drawf.shadow(CoilTR, x + offsetX - 0.5f, y + offsetY - 0.5f)
+            CoilTR.Draw(x + offsetX, y + offsetY)
+            //Radiation
+            val selfPower = this.power.status
+            if (selfPower.isZero() || selfPower.isNaN()) return
             val realRange = realRange
             val step = realRadiationSpeed * realRange
             val iterator = radiations.iterator()
@@ -122,8 +177,8 @@ open class WirelessTower(name: String) : PowerBlock(name) {
                 G.circle(
                     x, y,
                     nonlinearProgress * realRange,
-                    Pal.power, Renderer.laserOpacity,
-                    realRange / 100f
+                    R.C.Power, Renderer.laserOpacity,
+                    (realRange / 100f).coerceAtLeast(1f)
                 )
             }
         }
@@ -131,7 +186,7 @@ open class WirelessTower(name: String) : PowerBlock(name) {
         open fun forEachTargetInRange(cons: (Building) -> Unit) {
             Vars.indexer.eachBlock(
                 this, range,
-                { it.block.hasPower && it.block.consumes.hasPower() && it != this },
+                { it.block.hasPower && it.block.consumes.hasPower() && it !is WirelessTowerBuild },
                 cons
             )
         }

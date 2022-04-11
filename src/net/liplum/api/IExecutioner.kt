@@ -1,7 +1,7 @@
 package net.liplum.api
 
 import mindustry.gen.Healthc
-import net.liplum.api.holo.IRegenerate
+import net.liplum.api.holo.IHoloEntity
 
 interface IExecutioner {
     var executeProportion: Float
@@ -16,7 +16,7 @@ interface IExecutioner {
         } else {
             entity.damagePierce(entity.maxHealth())
         }
-        if (entity is IRegenerate) {
+        if (entity is IHoloEntity) {
             entity.killThoroughly()
         }
     }

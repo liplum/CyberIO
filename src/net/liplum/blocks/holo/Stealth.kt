@@ -1,4 +1,4 @@
-package net.liplum.blocks.stealth
+package net.liplum.blocks.holo
 
 import arc.graphics.Color
 import arc.math.Mathf
@@ -15,24 +15,33 @@ import mindustry.world.Tile
 import mindustry.world.blocks.defense.turrets.Turret
 import mindustry.world.meta.Stat
 import mindustry.world.meta.StatValues
+import net.liplum.ClientOnly
 import net.liplum.api.cyber.IStreamClient
 import net.liplum.api.cyber.IStreamHost
 import net.liplum.api.cyber.req
+import net.liplum.api.holo.IHoloEntity
 import net.liplum.lib.delegates.Delegate1
 import net.liplum.persistance.intSet
 import net.liplum.registries.CioBulletTypes
 import net.liplum.registries.CioLiquids.cyberion
+import net.liplum.utils.TR
+import net.liplum.utils.sub
 
 open class Stealth(name: String) : Turret(name) {
     @JvmField var maxConnection = -1
     @JvmField var shootType: BulletType = CioBulletTypes.ruvik2
     @JvmField var activePower = 2.5f
     @JvmField var reactivePower = 0.5f
+    @ClientOnly lateinit var BaseTR: TR
+    @ClientOnly lateinit var ImageTR: TR
+    @ClientOnly lateinit var UnknownTR: TR
 
     init {
         hasLiquids = true
         hasPower = true
         update = true
+        acceptCoolant = false
+        acceptsItems = false
         consumes.consumesLiquid(cyberion)
     }
 
@@ -46,12 +55,20 @@ open class Stealth(name: String) : Turret(name) {
         super.init()
     }
 
-    override fun setStats() {
-        super.setStats()
-        stats.add(Stat.ammo, StatValues.ammo(ObjectMap.of(this, shootType)))
+    override fun load() {
+        super.load()
+        BaseTR = this.sub("base")
+        ImageTR = this.sub("image")
+        UnknownTR = this.sub("unknown")
     }
 
-    open inner class StealthBuild : TurretBuild(), IStreamClient {
+    override fun icons() = arrayOf(UnknownTR)
+    override fun setStats() {
+        super.setStats()
+        stats.add(Stat.ammo, StatValues.ammo(ObjectMap.of(cyberion, shootType)))
+    }
+
+    open inner class StealthBuild : TurretBuild(), IStreamClient, IHoloEntity {
         var hosts = OrderedSet<Int>()
         override fun bullet(type: BulletType, angle: Float) {
             val lifeScl = if (type.scaleVelocity)
@@ -68,6 +85,10 @@ open class Stealth(name: String) : Turret(name) {
                 this, team, x + tr.x, y + tr.y, angle, -1f,
                 1f + Mathf.range(velocityInaccuracy), lifeScl, nearestPlayer
             )
+        }
+
+        override fun killThoroughly() {
+            kill()
         }
 
         override fun useAmmo(): BulletType {

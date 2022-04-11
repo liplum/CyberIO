@@ -39,7 +39,7 @@ import net.liplum.blocks.prism.Prism
 import net.liplum.blocks.prism.PrismObelisk
 import net.liplum.blocks.rs.Receiver
 import net.liplum.blocks.rs.Sender
-import net.liplum.blocks.stealth.Stealth
+import net.liplum.blocks.holo.Stealth
 import net.liplum.blocks.stream.StreamClient
 import net.liplum.blocks.stream.StreamHost
 import net.liplum.blocks.stream.StreamServer
@@ -527,33 +527,34 @@ object CioBlocks : ContentTable {
                 plans = Seq.with(
                     HoloPlan(
                         CioUnitTypes.holoMiner,
-                        Requirement(70f),
-                        15 * 60f
+                        Requirement(80f),
+                        15f * 60f
                     ),
                     HoloPlan(
                         CioUnitTypes.holoFighter,
                         Requirement(50f),
-                        10 * 60f
+                        10f * 60f
                     ),
                     HoloPlan(
                         CioUnitTypes.holoGuardian,
                         Requirement(30f),
-                        8f * 60
+                        8f * 60f
                     ),
                     HoloPlan(
                         CioUnitTypes.holoArchitect,
-                        Requirement(80f),
-                        15f * 60
+                        Requirement(100f),
+                        15f * 60f
                     ),
                     HoloPlan(
                         CioUnitTypes.holoSupporter,
                         Requirement(50f),
-                        15f * 60
+                        15f * 60f
                     ),
                 )
                 size = 5
                 consumes.power(3f)
             }
+
             aquacyberion = Floor("aqua-cyberion").apply {
                 drownTime = 0f
                 status = StatusEffects.freezing
@@ -580,7 +581,7 @@ object CioBlocks : ContentTable {
                 size = 3
                 range = 320f
                 liquidCapacity = 40f
-                reloadTime = 20f
+                reloadTime = 15f
                 shootType = RuvikBullet(2f, 40f).apply {
                     stemVersion = STEM_VERSION.STEM2
                     width = 10f
@@ -600,6 +601,8 @@ object CioBlocks : ContentTable {
                     )
                 )
                 distributeSpeed = 5f
+                size = 2
+                range = 250f
             }
         }
     }

@@ -70,8 +70,8 @@ open class AntiVirus(name: String) : Block(name) {
     @JvmField var minPrepareTime = 30f
     @JvmField var heatRate = 0.1f
     @JvmField var shieldExpendMinInterval = ShieldExpandEffectDuration * 0.6f
-    @JvmField var uninfectedColor: Color = Color.green
-    @JvmField var infectedColor: Color = Color.red
+    @JvmField var uninfectedColor: Color = R.C.GreenSafe
+    @JvmField var infectedColor: Color = R.C.RedAlert
     lateinit var unenergizedTR: TR
     lateinit var shieldTR: TR
 
@@ -107,7 +107,7 @@ open class AntiVirus(name: String) : Block(name) {
     }
 
     override fun canReplace(other: Block) = super.canReplace(other) || other is Virus
-    override fun minimapColor(tile: Tile) = Color.green.rgba()
+    override fun minimapColor(tile: Tile) = R.C.GreenSafe.rgba()
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)
         G.drawDashCircle(this, x.toShort(), y.toShort(), range, uninfectedColor)
