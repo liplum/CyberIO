@@ -29,3 +29,19 @@ fun I18NBundle.loadMore(file: Fi) {
 fun I18NBundle.loadMore(reader: Reader) {
     PropertiesUtils.load(properties, reader)
 }
+/**
+ * Handle with the reference in bundle.
+ *
+ * To prevent stack overflow, this uses loop instead of recursion
+ * @param maxDepth to prevent infinite loop, please set an appropriate value.
+ */
+fun String.handleBundleRefer(maxDepth: Int = 16): String {
+    var curStr = this
+    for (i in 0 until maxDepth) {
+        if (curStr.startsWith('@'))
+            curStr = curStr.substring(1).bundle
+        else
+            break
+    }
+    return curStr
+}

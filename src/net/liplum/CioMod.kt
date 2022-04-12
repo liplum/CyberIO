@@ -32,6 +32,14 @@ class CioMod : Mod() {
         lateinit var Info: Mods.LoadedMod
     }
 
+    /**
+     * # Calling time node
+     * 1. constructor
+     * 2. FileTreeInitEvent
+     * 3. loadContent()
+     * 4. init()
+     * 5. ClientLoadEvent
+     */
     init {
         Log.info("Cyber IO mod loaded.")
         GL.handleCompatible()
@@ -44,6 +52,7 @@ class CioMod : Mod() {
             Core.app.post {
                 CioShaders.init()
                 Script.init()
+                Welcome.load()
                 Script.initInterpreter()
                 Script.loadStory("TestStory")
             }

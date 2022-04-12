@@ -20,7 +20,8 @@ plugins {
 var useKotlin = Boolean.parseBoolean(property("UseKotlin") as String)
 apply plugin: "java"
 sourceSets.main.java.srcDirs = ["src"]
-version '1.0'
+version '3'
+group 'net.liplum'
 if (useKotlin) {
     apply plugin: "kotlin"
     sourceSets.main.kotlin.srcDirs = ["src"]
@@ -50,8 +51,8 @@ dependencies {
     // annotationProcessor "com.github.Anuken:jabel:$jabelVersion"
 }
 
-compileKotlin{
-    kotlinOptions{
+compileKotlin {
+    kotlinOptions {
 
     }
 }
@@ -92,7 +93,7 @@ task downloadOpenGalPlumy(type: DownloadTask) {
 task compileGAL(dependsOn: classes, type: JavaExec) {
     dependsOn downloadOpenGalPlumy
     def plumy = new File("$rootDir/run/PlumyCompiler${plumyVersion}.jar")
-    main = "-jar"
+    mainClass.set("-jar")
     standardInput = System.in
     args = [
             plumy.path,
@@ -116,15 +117,15 @@ jar {
     from(rootDir) {
         // add something into your Jar
         include 'mod.hjson'
-        include 'icon.png'
+        include 'welcome-cyber-io.png'
     }
 
     from('assets/') {
         include '**'
     }
 
-    from('scripts/'){
-        include('ScriptInfo.json')
+    from('scripts/') {
+        include '*.json'
     }
 }
 
@@ -216,7 +217,7 @@ task runMod(dependsOn: classes, type: JavaExec) {
     dependsOn copyJar
     dependsOn downloadDesktop
     def gameFile = new File("$rootDir/run/Mindustry${mdtVersionNum}.jar")
-    main = "-jar"
+    mainClass.set("-jar")
     args = [gameFile.path]
 }
 
@@ -224,7 +225,7 @@ task runModServer(dependsOn: classes, type: JavaExec) {
     dependsOn copyJar
     dependsOn downloadServer
     def gameFile = new File("$rootDir/run/MindustryServer${mdtVersionNum}.jar")
-    main = "-jar"
+    mainClass.set("-jar")
     standardInput = System.in
     args = [gameFile.path]
 }

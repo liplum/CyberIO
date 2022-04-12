@@ -41,7 +41,9 @@ public class R {
         @Contract(pure = true)
         public static String Gen(String content) {
             return "bar." + Meta.ModID + "." + content;
-        }        public static final String GenerationN = "generation",
+        }
+
+        public static final String GenerationN = "generation",
                 Generation = Gen(GenerationN);
 
         public static final class Vanilla {
@@ -50,7 +52,9 @@ public class R {
             public static final String UnitsN = "units",
                     UnitCapacity = "bar.unitcap";
 
-        }        public static final String SlowDownN = "slow-down",
+        }
+
+        public static final String SlowDownN = "slow-down",
                 SlowDown = Gen(SlowDownN);
         public static final String EfficiencyAbsorptionN = "efficiency-absorption",
                 EfficiencyAbsorption = Gen(EfficiencyAbsorptionN);
@@ -106,9 +110,6 @@ public class R {
         public static final String RestLifeN = "rest-life",
                 RestLife = Gen(RestLifeN),
                 RestLifeFigure = Gen(RestLifeN + ".figure");
-
-
-
 
 
     }
@@ -191,6 +192,14 @@ public class R {
         public static String Gen(String name) {
             return "welcome." + Meta.ModID + "." + name;
         }
+
+        @NotNull
+        @Contract(pure = true)
+        public static String Atlas(String name) {
+            return Meta.ModID + "-welcome-" + name;
+        }
+
+        public static final String WelcomeVariants = "WelcomeVariants";
     }
 
     public static final class Sound {

@@ -580,6 +580,7 @@ object CioBlocks : ContentTable {
                 )
                 size = 3
                 range = 320f
+                health = 1000
                 liquidCapacity = 40f
                 reloadTime = 15f
                 shootType = RuvikBullet(2f, 40f).apply {
@@ -596,10 +597,12 @@ object CioBlocks : ContentTable {
             wirelessTower = WirelessTower("wireless-tower").apply {
                 requirements(
                     Category.power, BuildVisibility.shown, arrayOf(
-                        ItemStack(CioItems.ic, 5),
-                        ItemStack(Items.copper, 300),
+                        ItemStack(CioItems.ic, 3),
+                        ItemStack(Items.copper, 200),
+                        ItemStack(Items.graphite, 50),
                     )
                 )
+                health = 200
                 distributeSpeed = 5f
                 size = 2
                 range = 250f

@@ -1,6 +1,6 @@
 package net.liplum.utils
 
-import arc.Core
+import arc.Core.atlas
 import arc.graphics.g2d.TextureRegion
 import mindustry.Vars
 import mindustry.ctype.MappableContent
@@ -13,25 +13,28 @@ typealias TR = TextureRegion
  * @param subName the following name after a hyphen
  */
 fun MappableContent.sub(subName: String): TR =
-    Core.atlas.find("${this.name}-$subName")
+    atlas.find("${this.name}-$subName")
 
 fun MappableContent.inMod(name: String): TR =
-    Core.atlas.find("${this.minfo.mod.name}-$name")
+    atlas.find("${this.minfo.mod.name}-$name")
 
 fun String.inMod(): TR =
-    Core.atlas.find(Vars.content.transformName(this))
+    atlas.find(Vars.content.transformName(this))
 
 fun String.inCio(): TR =
-    Core.atlas.find("${Meta.ModID}-$this")
+    atlas.find("${Meta.ModID}-$this")
+
+fun String.atlas(): TR =
+    atlas.find(this)
 
 fun TR.orSubA(obj: MappableContent, subName: String): TR =
-    if (Core.atlas.isFound(this))
+    if (atlas.isFound(this))
         this
     else
         obj.sub(subName)
 
 infix fun TR.or(texture: TR): TR =
-    if (Core.atlas.isFound(this))
+    if (atlas.isFound(this))
         this
     else
         texture

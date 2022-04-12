@@ -37,6 +37,7 @@ open class WirelessTower(name: String) : PowerBlock(name) {
     lateinit var CoilTR: TR
     lateinit var CoreTR: TR
     lateinit var SupportTR: TR
+    @ClientOnly @JvmField var rotationRadius = 0.7f
 
     init {
         hasPower = true
@@ -50,8 +51,8 @@ open class WirelessTower(name: String) : PowerBlock(name) {
     }
 
     override fun init() {
-        super.init()
         clipSize = range * 1.5f
+        super.init()
     }
 
     override fun load() {
@@ -91,11 +92,13 @@ open class WirelessTower(name: String) : PowerBlock(name) {
             }
         }
         @ClientOnly
+        val viewVec = Vec2(rotationRadius, 0f)
+        @ClientOnly
         val realRadiationSpeed: Float
             get() = radiationSpeed * Mathf.log(3f, timeScale + 2f)
 
         override fun updateTile() {
-            if(power.status <= 0.999f) return
+            if (power.status <= 0.999f) return
             lastNeed = 0f
             forEachTargetInRange {
                 val powerCons = it.block.consumes.power
@@ -133,8 +136,7 @@ open class WirelessTower(name: String) : PowerBlock(name) {
                 G.drawSelected(it, R.C.Power)
             }
         }
-        @ClientOnly
-        val viewVec = Vec2(0.8f, 0f)
+
         override fun draw() {
             val viewX = Core.camera.position.x
             val viewY = Core.camera.position.y

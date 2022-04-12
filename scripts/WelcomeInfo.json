@@ -1,0 +1,14 @@
+{
+  "v2": {
+    "WelcomeVariants": 0
+  },
+  "v3": {
+    "WelcomeVariants": 2,
+    "1": {
+      "IconPath": "welcome-cyber-io"
+    },
+    "2": {
+      "IconPath": "welcome-cyber-io"
+    }
+  }
+}
