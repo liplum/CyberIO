@@ -248,6 +248,7 @@ public class R {
         public static final String ShowWelcome = Gen("show-welcome");
         public static final String Version = Gen("version");
         public static final String ClickWelcomeTimes = Gen("welcome-click-times");
+        public static final String LastWelcome = Gen("last-welcome");
         public static final String AnimatedShields = "animatedshields";
     }
 }

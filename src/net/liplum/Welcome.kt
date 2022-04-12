@@ -28,9 +28,13 @@ object Welcome {
         if (shouldShowWelcome) {
             val clickedTimes = settings.getInt(Setting.ClickWelcomeTimes, 0)
             // If it's the first time to play this version, let's show up the Zero Welcome.
-            // Otherwise, roll once
-            if (clickedTimes > 0)
-                welcomeEntity.randomize()
+            // Otherwise, roll until the result isn't as last one.
+            val lastOne = settings.getInt(Setting.LastWelcome, 0)
+            if (clickedTimes > 0) {
+                welcomeEntity.randomize(lastOne)
+                settings.put(Setting.LastWelcome, welcomeEntity.number)
+            }
+            welcomeEntity.genHead()
             dialog.show()
         }
     }
@@ -125,14 +129,21 @@ object Welcome {
     }
 
     class WelcomeEntity(val info: WelcomeInfo) {
+        var number = 0
         var head = ""
-        fun randomize() {
+        fun randomize(avoid: Int) {
             val variants = info.variants
-            val number = if (variants <= 0)
-                0
-            else
-                Mathf.random(0, variants)
-            head = "${Meta.Version}.$number"
+            if (variants <= 0) {
+                number = 0
+            } else {
+                do {
+                    number = Mathf.random(0, variants)
+                } while (number == avoid)
+            }
+        }
+
+        fun genHead() {
+            head = "${Meta.Version}-$number"
         }
 
         val title: String
