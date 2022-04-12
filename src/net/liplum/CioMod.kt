@@ -11,6 +11,7 @@ import mindustry.mod.Mod
 import mindustry.mod.Mods
 import net.liplum.api.cyber.DataCenter
 import net.liplum.api.cyber.StreamCenter
+import net.liplum.api.holo.IHoloEntity
 import net.liplum.blocks.cloud.LiplumCloud
 import net.liplum.blocks.cloud.SharedRoom
 import net.liplum.inputs.UnitTap
@@ -68,9 +69,9 @@ class CioMod : Mod() {
             10f
         else
             5f
-        JsonIO.json.addClassTag(SharedRoom::class.java.name, SharedRoom::class.java)
         // Cloud is developing
         DebugOnly {
+            JsonIO.json.addClassTag(SharedRoom::class.java.name, SharedRoom::class.java)
             Events.on(WorldLoadEvent::class.java) {
                 LiplumCloud.reset()
                 LiplumCloud.read()
@@ -111,6 +112,7 @@ class CioMod : Mod() {
         EntityRegistry.registerAll()
         CioCLs.load()
         ContentRegistry.loadContent()
+        IHoloEntity.registerHoloEntityInitHealth()
         PrismBlackList.load()
         CanGlobalAnimationPlay = true
         Log.info("Cyber IO mod's contents loaded.")

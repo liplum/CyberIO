@@ -14,6 +14,7 @@ import arc.util.Tmp
 import mindustry.Vars
 import mindustry.ai.types.LogicAI
 import mindustry.content.Blocks
+import mindustry.content.Fx
 import mindustry.gen.Iconc
 import mindustry.gen.Payloadc
 import mindustry.gen.Unit
@@ -44,7 +45,11 @@ open class HoloUnitType(name: String) : UnitType(name) {
         healColor = R.C.Holo
         engineColorInner = R.C.HoloDark
         mechLegColor = R.C.HoloDark
-
+        destructibleWreck = false
+        fallEffect = Fx.none
+        fallThrusterEffect = Fx.none
+        deathExplosionEffect = Fx.none
+        canDrown = false
         immunities.addAll(Vars.content.statusEffects())
     }
 

@@ -1,6 +1,5 @@
-package net.liplum.blocks.holo
+package net.liplum.holo
 
-import arc.Events
 import arc.graphics.Blending
 import arc.graphics.g2d.Draw
 import arc.graphics.g2d.Fill
@@ -10,7 +9,6 @@ import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.Vars
-import mindustry.game.EventType
 import mindustry.gen.Bullet
 import mindustry.gen.Call
 import mindustry.graphics.Drawf
@@ -21,8 +19,8 @@ import mindustry.world.blocks.defense.Wall
 import net.liplum.ClientOnly
 import net.liplum.DebugOnly
 import net.liplum.R
-import net.liplum.lib.animations.Floating
 import net.liplum.api.holo.IHoloEntity
+import net.liplum.lib.animations.Floating
 import net.liplum.lib.shaders.use
 import net.liplum.registries.CioShaders
 import net.liplum.seconds
@@ -103,6 +101,8 @@ open class HoloWall(name: String) : Wall(name) {
                 field = value.coerceAtLeast(0f)
             }
         open var lastDamagedTime = restoreReload
+        override val minHealthProportion: Float
+            get() = this@HoloWall.minHealthProportion
         @ClientOnly @JvmField
         var floating: Floating = Floating(FloatingRange).randomXY().changeRate(1)
         override fun collide(other: Bullet): Boolean {
@@ -170,6 +170,7 @@ open class HoloWall(name: String) : Wall(name) {
             }
             Draw.reset()
         }
+
         @ClientOnly
         open fun updateFloating() {
             val d = G.D(0.1f * FloatingRange * delta() * (2f - healthPct))
@@ -203,13 +204,6 @@ open class HoloWall(name: String) : Wall(name) {
                     restRestore = maxHealth
                 }
             }
-            /*if (!isRecovering &&
-                !canRestore &&
-                restoreCharge >= restoreReload &&
-                lastDamagedTime >= maxSleepyTime
-            ) {
-                sleep()
-            }*/
         }
 
         override fun drawCracks() {
@@ -231,21 +225,6 @@ open class HoloWall(name: String) : Wall(name) {
             restoreCharge = read.f()
             restRestore = read.f()
             lastDamagedTime = read.f()
-        }
-
-        val blockType: HoloWall
-            get() = this@HoloWall
-    }
-
-    companion object {
-        @JvmStatic
-        fun registerInitHealthHandler() {
-            Events.on(EventType.BlockBuildEndEvent::class.java) {
-                val hb = it.tile.build as? HoloBuild
-                if (hb != null) {
-                    hb.health = hb.maxHealth * hb.blockType.minHealthProportion * 0.9f
-                }
-            }
         }
     }
 }

@@ -132,8 +132,8 @@ public class R {
         public static final Color GreenSafe = Color.valueOf("#00e676");
         public static final Color LightBlue = Color.valueOf("#add8e6");
         public static final Color Holo = Color.valueOf("#42a5f5");//(0.2588,0.6471,0.9608)
-        public static final Color HoloDark = Color.valueOf("#1e88e5");
-        public static final Color HoloDark2 = Color.valueOf("##0c80df");
+        public static final Color HoloDark = Color.valueOf("#1e88e5");//(0.1176,0.5333,0.898)
+        public static final Color HoloDark2 = Color.valueOf("#0c80df");
         public static final Color VirusBK = Color.valueOf("#cd44ff");
         public static final Color IsAive = GreenSafe;
         public static final Color CoolDown = Color.gray;
@@ -200,6 +200,7 @@ public class R {
         }
 
         public static final String WelcomeVariants = "WelcomeVariants";
+        public static final String IconPath = "IconPath";
     }
 
     public static final class Sound {

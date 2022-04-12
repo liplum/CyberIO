@@ -1,3 +1,5 @@
+#define HIGHP
+
 #define PHI 1.61803398874989484820459
 uniform float u_time;
 varying vec2 v_texCoords;

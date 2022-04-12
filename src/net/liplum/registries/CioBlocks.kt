@@ -6,7 +6,6 @@ import arc.struct.Seq
 import mindustry.content.*
 import mindustry.game.EventType.Trigger
 import mindustry.gen.Sounds
-import mindustry.graphics.CacheLayer
 import mindustry.type.Category
 import mindustry.type.ItemStack
 import mindustry.type.LiquidStack
@@ -29,9 +28,10 @@ import net.liplum.blocks.debugonly.AdjustableOverdrive
 import net.liplum.blocks.deleter.Deleter
 import net.liplum.blocks.gadgets.SmartDistributor
 import net.liplum.blocks.gadgets.SmartUnloader
-import net.liplum.blocks.holo.HoloFloor
-import net.liplum.blocks.holo.HoloWall
-import net.liplum.blocks.holo.LandProjector
+import net.liplum.holo.HoloFloor
+import net.liplum.holo.HoloWall
+import net.liplum.holo.LandProjector
+import net.liplum.holo.Stealth
 import net.liplum.blocks.icmachine.ICMachine
 import net.liplum.blocks.icmachine.ICMachineS
 import net.liplum.blocks.jammer.Jammer
@@ -39,7 +39,6 @@ import net.liplum.blocks.prism.Prism
 import net.liplum.blocks.prism.PrismObelisk
 import net.liplum.blocks.rs.Receiver
 import net.liplum.blocks.rs.Sender
-import net.liplum.blocks.holo.Stealth
 import net.liplum.blocks.stream.StreamClient
 import net.liplum.blocks.stream.StreamHost
 import net.liplum.blocks.stream.StreamServer
@@ -48,7 +47,7 @@ import net.liplum.blocks.tmtrainer.TMTRAINER
 import net.liplum.blocks.underdrive.UnderdriveProjector
 import net.liplum.blocks.virus.AntiVirus
 import net.liplum.blocks.virus.Virus
-import net.liplum.blocks.wireless.WirelessTower
+import net.liplum.blocks.power.WirelessTower
 import net.liplum.bullets.RuvikBullet
 import net.liplum.bullets.STEM_VERSION
 import net.liplum.bullets.ShaderCLaser
@@ -331,7 +330,6 @@ object CioBlocks : ContentTable {
             health = 600
             buildCostMultiplier = 3.5f
         }
-        HoloWall.registerInitHealthHandler()
 
         holoWallLarge = HoloWall("holo-wall-large").apply {
             requirements(
@@ -564,8 +562,7 @@ object CioBlocks : ContentTable {
                 liquidDrop = CioLiquids.cyberion
                 liquidMultiplier = 0.1f
                 isLiquid = true
-                cacheLayer = CacheLayer.cryofluid
-
+                cacheLayer = CioCLs.cyberion
                 emitLight = true
                 lightRadius = 30f
                 lightColor = R.C.Holo.cpy().a(0.19f)

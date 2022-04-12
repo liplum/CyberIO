@@ -12,7 +12,7 @@ import static mindustry.Vars.renderer;
 import static mindustry.graphics.Shaders.getShaderFi;
 
 public class SurfaceShader extends Shader {
-
+    Texture noise;
     public SurfaceShader(String fragName) {
         super(getShaderFi("screenspace.vert"),
                 Vars.tree.get(R.S.GenFrag(fragName)));
@@ -38,7 +38,10 @@ public class SurfaceShader extends Shader {
         setUniformf("u_time", Time.time);
 
         if (hasUniform("u_noise")) {
-            Core.assets.get("sprites/noise.png", Texture.class).bind(1);
+            if(noise == null){
+                noise = Core.assets.get("sprites/noise.png", Texture.class);
+            }
+            noise.bind(1);
             renderer.effectBuffer.getTexture().bind(0);
 
             setUniformi("u_noise", 1);

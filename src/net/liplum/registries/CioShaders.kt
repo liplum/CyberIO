@@ -6,27 +6,26 @@ import net.liplum.ClientOnly
 import net.liplum.lib.shaders.ILoadResource
 import net.liplum.lib.shaders.ProgressShader
 import net.liplum.lib.shaders.TrShader
-import net.liplum.shaders.holo.HologramOld
+import net.liplum.shaders.SurfaceShader
 import net.liplum.shaders.holo.Hologram
+import net.liplum.shaders.holo.HologramOld
 import net.liplum.useCompatible
 import java.util.*
 
+@ClientOnly
 object CioShaders {
-    @ClientOnly lateinit var DynamicColor: TrShader
-    @ClientOnly lateinit var HologramOld: HologramOld
-    @ClientOnly lateinit var Hologram: Hologram
-    @ClientOnly lateinit var Monochrome: TrShader
-    @ClientOnly lateinit var InvertColor: TrShader
-    @ClientOnly lateinit var TvStatic: TrShader
-    @ClientOnly lateinit var Pulse: TrShader
-    @ClientOnly lateinit var InvertingColorRGB: ProgressShader
-    @ClientOnly lateinit var InvertingColorRbg2HsvInHsv: ProgressShader
-    @ClientOnly lateinit var InvertingColorRbg2HsvInRgb: ProgressShader
-    @ClientOnly lateinit var Monochromize: ProgressShader
-    @ClientOnly
-    private var AllShaders: LinkedList<Shader> = LinkedList()
-    private var AllLoadable: LinkedList<ILoadResource> = LinkedList()
-    private var isInited = false
+    lateinit var DynamicColor: TrShader
+    lateinit var HologramOld: HologramOld
+    lateinit var Hologram: Hologram
+    lateinit var Monochrome: TrShader
+    lateinit var InvertColor: TrShader
+    lateinit var TvStatic: TrShader
+    lateinit var Pulse: TrShader
+    lateinit var InvertingColorRGB: ProgressShader
+    lateinit var InvertingColorRbg2HsvInHsv: ProgressShader
+    lateinit var InvertingColorRbg2HsvInRgb: ProgressShader
+    lateinit var Monochromize: ProgressShader
+    var Cyberion: SurfaceShader? = null
     @JvmStatic
     fun init() {
         ClientOnly {
@@ -48,7 +47,7 @@ object CioShaders {
                 .register()
 
             Monochromize = ProgressShader("Monochromize".compatible).register()
-
+            Cyberion = SurfaceShader("Cyberion").register()
             isInited = true
         }
     }
@@ -81,6 +80,10 @@ object CioShaders {
         }
         return this
     }
+
+    private var AllShaders: LinkedList<Shader> = LinkedList()
+    private var AllLoadable: LinkedList<ILoadResource> = LinkedList()
+    private var isInited = false
 }
 
 val String.compatible: String

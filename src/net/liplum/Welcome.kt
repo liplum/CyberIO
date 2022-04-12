@@ -1,11 +1,11 @@
 package net.liplum
 
-import arc.Core
 import arc.Core.settings
 import arc.Events
 import arc.math.Mathf
 import arc.scene.ui.Label
 import arc.struct.ObjectMap
+import arc.util.I18NBundle
 import arc.util.Time
 import arc.util.serialization.JsonValue
 import mindustry.game.EventType.Trigger
@@ -18,13 +18,19 @@ import net.liplum.utils.*
 
 @ClientOnly
 object Welcome {
-    var welcomeInfo = WelcomeInfo()
-    var welcomeEntity = WelcomeEntity(welcomeInfo)
+    @JvmField val DefaultIconPath = R.Welcome.Atlas("cyber-io")
+    @JvmField var welcomeInfo = WelcomeInfo()
+    @JvmField var welcomeEntity = WelcomeEntity(welcomeInfo)
+    @JvmField var bundle: I18NBundle = createModBundle()
     @JvmStatic
     fun showWelcomeDialog() {
         checkLastVersion()
         if (shouldShowWelcome) {
-            welcomeEntity.randomize()
+            val clickedTimes = settings.getInt(Setting.ClickWelcomeTimes, 0)
+            // If it's the first time to play this version, let's show up the Zero Welcome.
+            // Otherwise, roll once
+            if (clickedTimes > 0)
+                welcomeEntity.randomize()
             dialog.show()
         }
     }
@@ -59,7 +65,7 @@ object Welcome {
             cont.add(welcomeLabel)
                 .growX()
                 .row()
-            val newsLabel = Label(welcomeEntity.news).apply {
+            val newsLabel = Label(welcomeEntity.content).apply {
                 setAlignment(0)
                 setWrap(true)
             }
@@ -89,16 +95,12 @@ object Welcome {
         loadBundle()
         loadInfo()
     }
-
+    @JvmStatic
     fun loadBundle() {
-        val locale = settings.getString("locale")
-        Res("welcomes/$locale.properties").tryLoad {
-            Core.bundle.loadMore(reader())
-        }.whenNotFound {
-            Core.bundle.loadMore(Res("welcomes/${Meta.DefaultLang}.properties").reader())
-        }
+        bundle.loadMoreFrom("welcomes")
     }
     @Suppress("UNCHECKED_CAST")
+    @JvmStatic
     fun loadInfo() {
         val json = Res("WelcomeInfo.json").readAllText()
         val jsonObj = JsonIO.json.fromJson(ObjectMap::class.java, json) as ObjectMap<String, JsonValue>
@@ -108,43 +110,40 @@ object Welcome {
         for (num in 1..variants) {
             welcomeInfo.number2Entry[num] = EntryWrapper(info.getChild(num.toString()))
         }
-    }
-}
-
-private val DefaultIconPath = R.Welcome.Atlas("cyber-io")
-
-class WelcomeInfo {
-    var iconPath = DefaultIconPath
-    var variants: Int = 0
-    var number2Entry: MutableMap<Int, EntryWrapper> = HashMap()
-}
-
-class EntryWrapper(val jValue: JsonValue) {
-    val iconPath: String
-        get() = jValue.getString("IconPath", DefaultIconPath)
-}
-
-class WelcomeEntity(val info: WelcomeInfo) {
-    var head = ""
-    fun randomize() {
-        val variants = info.variants
-        val number = if (variants <= 0)
-            0
-        else
-            Mathf.random(0, variants + 1)
-        head = "${R.Welcome.Gen(Meta.Version)}.$number"
+        welcomeInfo.iconPath = info.getString(R.Welcome.IconPath, DefaultIconPath)
     }
 
-    val title: String
-        get() = "$head.title".bundle.handleBundleRefer()
-    val content: String
-        get() = head.bundle.handleBundleRefer()
-    val read: String
-        get() = "$head.read".bundle.handleBundleRefer()
-    val icon: TR
-        get() = info.iconPath.atlas()
-    val welcome: String
-        get() = R.Welcome.Gen("welcome").bundle(Meta.Version)
-    val news: String
-        get() = R.Welcome.Gen("news").bundle(content)
+    class WelcomeInfo {
+        var iconPath = DefaultIconPath
+        var variants: Int = 0
+        var number2Entry: MutableMap<Int, EntryWrapper> = HashMap()
+    }
+
+    class EntryWrapper(val jValue: JsonValue) {
+        val iconPath: String
+            get() = jValue.getString("IconPath", DefaultIconPath)
+    }
+
+    class WelcomeEntity(val info: WelcomeInfo) {
+        var head = ""
+        fun randomize() {
+            val variants = info.variants
+            val number = if (variants <= 0)
+                0
+            else
+                Mathf.random(0, variants)
+            head = "${Meta.Version}.$number"
+        }
+
+        val title: String
+            get() = bundle["$head.title"].handleBundleRefer()
+        val content: String
+            get() = bundle[head].handleBundleRefer()
+        val read: String
+            get() = bundle["$head.read"].handleBundleRefer()
+        val icon: TR
+            get() = info.iconPath.atlas()
+        val welcome: String
+            get() = "welcome".bundle(bundle, Meta.Version)
+    }
 }

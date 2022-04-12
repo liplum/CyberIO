@@ -1,4 +1,4 @@
-package net.liplum.blocks.wireless
+package net.liplum.blocks.power
 
 import arc.Core
 import arc.graphics.g2d.Draw

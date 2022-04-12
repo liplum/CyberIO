@@ -20,7 +20,6 @@ import net.liplum.R
 import net.liplum.bullets.RuvikBullet
 import net.liplum.bullets.STEM_VERSION
 import net.liplum.holo.*
-import net.liplum.npc.NpcUnit
 import net.liplum.npc.NpcUnitType
 import net.liplum.utils.NewUnitType
 import net.liplum.utils.registerPayloadSource
@@ -42,6 +41,7 @@ object CioUnitTypes : ContentTable {
             defaultController = Prov { MinerAI() }
             lowAltitude = true
             flying = true
+            hovering = true
             mineSpeed = 10f
             mineTier = 5
             armor = 2f
@@ -62,6 +62,7 @@ object CioUnitTypes : ContentTable {
             drag = 0.016f
             buildSpeed = 1f
             flying = true
+            hovering = true
             hitSize = 9f
             targetAir = true
             rotateSpeed = 25f
@@ -103,6 +104,7 @@ object CioUnitTypes : ContentTable {
             HoloOpacity = 0.4f
             speed = 1.6f
             flying = true
+            hovering = true
             buildSpeed = 2.6f
             drag = 0.05f
             accel = 0.1f
@@ -112,36 +114,6 @@ object CioUnitTypes : ContentTable {
             hitSize = 15f
             armor = 5f
         }
-        val holoArchitectWeapon = HoloWeapon().apply {
-            x = 0f
-            y = 5f
-            top = false
-            reload = 30f
-            ejectEffect = Fx.none
-            recoil = 2f
-            shootSound = Sounds.missile
-            shots = 1
-            velocityRnd = 0.5f
-            inaccuracy = 15f
-            alternate = true
-            bullet = MissileBulletType(4f, 8f).apply {
-                homingPower = 0.08f
-                weaveMag = 4f
-                weaveScale = 4f
-                lifetime = 50f
-                keepVelocity = false
-                shootEffect = HoloFx.shootHeal
-                smokeEffect = HoloFx.hitLaser
-                despawnEffect = HoloFx.hitLaser
-                hitEffect = despawnEffect
-                frontColor = Color.white
-                hitSound = Sounds.none
-                healPercent = 5.5f
-                collidesTeam = true
-                backColor = R.C.Holo
-                trailColor = R.C.HoloDark
-            }
-        }
         holoArchitect = NewUnitType(R.Unit.HoloArchitect, ::HoloUnitType, ::HoloUnit).apply {
             AutoLife(maxHealth = 2500f, lose = 0.1f)
             defaultController = Prov { BuilderAI() }
@@ -149,6 +121,7 @@ object CioUnitTypes : ContentTable {
             HoloOpacity = 0.4f
             ColorOpacity = 0.05f
             flying = true
+            hovering = true
             drag = 0.06f
             accel = 0.12f
             lowAltitude = true
@@ -159,10 +132,36 @@ object CioUnitTypes : ContentTable {
             buildSpeed = 5f
             ammoType = PowerAmmoType(900f)
 
-            weapons.add(
-                holoArchitectWeapon,
-                holoArchitectWeapon.copy()
-            )
+            weapons.add(HoloWeapon().apply {
+                x = 0f
+                y = 5f
+                top = false
+                reload = 30f
+                ejectEffect = Fx.none
+                recoil = 2f
+                shots = 2
+                shootSound = Sounds.missile
+                velocityRnd = 0.5f
+                inaccuracy = 15f
+                alternate = true
+                bullet = MissileBulletType(4f, 8f).apply {
+                    homingPower = 0.08f
+                    weaveMag = 4f
+                    weaveScale = 4f
+                    lifetime = 50f
+                    keepVelocity = false
+                    shootEffect = HoloFx.shootHeal
+                    smokeEffect = HoloFx.hitLaser
+                    despawnEffect = HoloFx.hitLaser
+                    hitEffect = despawnEffect
+                    frontColor = Color.white
+                    hitSound = Sounds.none
+                    healPercent = 5.5f
+                    collidesTeam = true
+                    backColor = R.C.Holo
+                    trailColor = R.C.HoloDark
+                }
+            })
         }
 
         holoSupporter = NewUnitType(R.Unit.HoloSupporter, ::HoloUnitType, ::HoloUnit).apply {
@@ -175,6 +174,7 @@ object CioUnitTypes : ContentTable {
             )
             defaultController = Prov { RepairAI() }
             flying = true
+            hovering = true
             HoloOpacity = 0.4f
             ColorOpacity = 0.3f
             armor = 2f

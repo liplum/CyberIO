@@ -2,13 +2,15 @@ package net.liplum
 
 import arc.Core
 import arc.Events
+import arc.util.I18NBundle
 import arc.util.Log
 import mindustry.game.EventType.Trigger
 import net.liplum.lib.Res
 import net.liplum.lib.toLinkedString
 import net.liplum.npc.NpcSystem
 import net.liplum.utils.bundle
-import net.liplum.utils.loadMore
+import net.liplum.utils.createModBundle
+import net.liplum.utils.loadMoreFrom
 import opengal.core.Interpreter
 import opengal.core.NodeTree
 import opengal.nl.NodeLang
@@ -34,6 +36,7 @@ class Story {
 class StoryNotFoundException(msg: String) : RuntimeException(msg)
 @ClientOnly
 object Script {
+    val bundle: I18NBundle = createModBundle()
     val Engine = Interpreter()
     val Name2Story = HashMap<String, Story>()
     var CurStory = Story()
@@ -50,10 +53,8 @@ object Script {
     @JvmStatic
     @ClientOnly
     fun init() {
-        val storyStream = Res("/stories/en.properties").readAsStream()
+        bundle.loadMoreFrom("stories")
         val scriptStream = Res("/scripts/TestStory-0.node").readAsStream()
-        val storyReader = storyStream.reader()
-        Core.bundle.loadMore(storyReader)
         val TestStoryTree = NodeLang.Default.deserialize(DataInputStream(scriptStream))
         Story("TestStory").apply {
             storyTree = TestStoryTree
@@ -80,7 +81,7 @@ object Script {
 
         Engine.addAction("text") {
             Engine.blockExecution()
-            NpcSystem.curText = "story.${Meta.ModID}.${CurStory.name}.0.text-$textID".bundle
+            NpcSystem.curText = bundle["${CurStory.name}.0.text-$textID"]
             textID++
         }
 

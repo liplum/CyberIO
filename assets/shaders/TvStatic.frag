@@ -1,3 +1,5 @@
+#define HIGHP
+
 uniform float u_time;
 uniform vec2 u_resolution;
 uniform vec2 u_offset;

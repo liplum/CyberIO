@@ -1,10 +1,12 @@
 package net.liplum.registries
 
 import mindustry.graphics.CacheLayer
+import net.liplum.lib.shaders.SD
 
 object CioCLs {
     private var registered = false
-    private lateinit var allCacheLayers: ArrayList<CacheLayer>
+    private var allCacheLayers = ArrayList<CacheLayer>()
+    var cyberion = CacheLayer.ShaderLayer(SD.Cyberion).register()
     @JvmStatic
     fun load() {
         allCacheLayers = ArrayList()

@@ -1,4 +1,4 @@
-package net.liplum.blocks.holo
+package net.liplum.holo
 
 import arc.util.Time
 import mindustry.Vars

@@ -1,3 +1,5 @@
+#define HIGHP
+
 #define Density 1.3
 #define OpacityScanline .3
 #define Holo vec3(0.2588, 0.6471, 0.9608)
