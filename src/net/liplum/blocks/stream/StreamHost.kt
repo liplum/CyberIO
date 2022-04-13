@@ -146,7 +146,7 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
         }
 
         override fun acceptLiquid(source: Building, liquid: Liquid): Boolean {
-            return consValid() && liquids.current() === liquid || liquids.currentAmount() < 0.2f
+            return consValid() && liquids.current() == liquid || liquids.currentAmount() < 0.2f
         }
         @CalledBySync
         open fun setClient(pos: Int) {

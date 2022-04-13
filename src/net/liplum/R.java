@@ -246,6 +246,7 @@ public class R {
         public static final String LinkOpacity = Gen("connection-opacity");
         public static final String AlwaysShowLink = Gen("always-show-link");
         public static final String ShowWelcome = Gen("show-welcome");
+        public static final String ShowUpdate = Gen("show-update");
         public static final String Version = Gen("version");
         public static final String ClickWelcomeTimes = Gen("welcome-click-times");
         public static final String LastWelcome = Gen("last-welcome");

@@ -49,9 +49,7 @@ open class AniStateM<TBlock : Block, TBuild : Building>(
         RESET_CONTEXT()
     }
 
-    open fun curOverwriteBlock(): Boolean {
-        return curState.isOverwriteBlock
-    }
+    open fun curOverwriteBlock(): Boolean = curState.isOverwriteBlock
 
     open fun update() {
         onUpdate?.invoke()

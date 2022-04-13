@@ -162,9 +162,7 @@ open class Stealth(name: String) : Turret(name) {
             return shootType
         }
 
-        override fun hasAmmo(): Boolean {
-            return liquids[cyberion] >= 1f / shootType.ammoMultiplier
-        }
+        override fun hasAmmo(): Boolean = liquids[cyberion] >= 1f / shootType.ammoMultiplier
 
         override fun readStream(host: IStreamHost, liquid: Liquid, amount: Float) {
             if (this.isConnectedWith(host)) {

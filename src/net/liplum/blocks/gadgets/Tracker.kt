@@ -13,9 +13,7 @@ open class Tracker(val maxConnection: Int) {
                 value.absoluteValue % receivers.size)
         }
 
-    fun canAddMore(): Boolean {
-        return receivers.size <= maxConnection
-    }
+    fun canAddMore(): Boolean = receivers.size <= maxConnection
 
     fun add(receiver: IDataReceiver) {
         if (canAddMore()) {

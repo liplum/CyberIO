@@ -58,9 +58,7 @@ open class AdjustableOverdrive(name: String) : OverdriveProjector(name) {
     open inner class AOBuild : OverdriveBuild() {
         var curBoost = 0f
         var curGear = 0
-        override fun realBoost(): Float {
-            return curBoost
-        }
+        override fun realBoost(): Float = curBoost
 
         open fun setGear(gear: Int) {
             curGear = abs(gear)

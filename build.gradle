@@ -39,8 +39,7 @@ dependencies {
     compileOnly "com.github.Anuken.Arc:arc-core:$mdtVersion"
     compileOnly "com.github.Anuken.Mindustry:core:$mdtVersion"
     implementation 'com.github.liplum:OpenGAL:v0.3.1'
-    // Don't need coroutine
-    //implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0'
 
     testCompileOnly "com.github.Anuken.Arc:arc-core:$mdtVersion"
     testCompileOnly "com.github.Anuken.Mindustry:core:$mdtVersion"
@@ -102,7 +101,7 @@ task compileGAL(dependsOn: classes, type: JavaExec) {
             '-batch=folder',
             'scripts',
             '-t',
-            'assets/scripts'
+            'assets/plot-scripts'
     ]
 }
 jar {
@@ -117,7 +116,7 @@ jar {
     from(rootDir) {
         // add something into your Jar
         include 'mod.hjson'
-        include 'welcome-cyber-io.png'
+        include 'icon.png'
     }
 
     from('assets/') {

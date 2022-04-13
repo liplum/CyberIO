@@ -54,7 +54,7 @@ object Script {
     @ClientOnly
     fun init() {
         bundle.loadMoreFrom("stories")
-        val scriptStream = Res("/scripts/TestStory-0.node").readAsStream()
+        val scriptStream = Res("plot-scripts/TestStory-0.node").readAsStream()
         val TestStoryTree = NodeLang.Default.deserialize(DataInputStream(scriptStream))
         Story("TestStory").apply {
             storyTree = TestStoryTree

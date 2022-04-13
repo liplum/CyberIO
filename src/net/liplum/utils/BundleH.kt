@@ -9,20 +9,14 @@ import net.liplum.lib.Res
 import java.io.Reader
 import java.util.*
 
-fun String.bundle(vararg args: Any): String {
-    return Core.bundle.format(this, *args)
-}
+fun String.bundle(vararg args: Any): String = Core.bundle.format(this, *args)
 
-fun String.bundle(bundle: I18NBundle, vararg args: Any): String {
-    return bundle.format(this, *args)
-}
+fun String.bundle(bundle: I18NBundle, vararg args: Any): String = bundle.format(this, *args)
 
 val String.bundle: String
     get() = Core.bundle.format(this)
 
-fun String.bundle(bundle: I18NBundle): String {
-    return bundle[this]
-}
+fun String.bundle(bundle: I18NBundle): String = bundle[this]
 
 fun Boolean.yesNo(): String = Core.bundle.format(
     if (this)
@@ -45,9 +39,7 @@ fun I18NBundle.loadMore(reader: Reader) {
  * To prevent stack overflow, this uses loop instead of recursion
  * @param maxDepth to prevent infinite loop, please set an appropriate value.
  */
-fun String.handleBundleRefer(maxDepth: Int = 16): String {
-    return this.handleBundleRefer(Core.bundle, maxDepth)
-}
+fun String.handleBundleRefer(maxDepth: Int = 16): String = this.handleBundleRefer(Core.bundle, maxDepth)
 /**
  * Handle with the reference in specified bundle.
  *
@@ -87,8 +79,8 @@ fun createModBundle(): I18NBundle {
     val locale = ReflectU.get<Locale>(globalBundle, "locale")
     val formatter = ReflectU.get<Any>(globalBundle, "formatter")
     val parent = ReflectU.get<Any>(globalBundle, "parent")
-    bundle.set("locale", locale)
-    bundle.set("formatter", formatter)
-    bundle.set("parent", parent)
+    bundle.setF("locale", locale)
+    bundle.setF("formatter", formatter)
+    bundle.setF("parent", parent)
     return bundle
 }

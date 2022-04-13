@@ -20,6 +20,7 @@ import net.liplum.npc.NpcSystem
 import net.liplum.registries.*
 import net.liplum.render.LinkDrawer
 import net.liplum.ui.SettingsUI
+import net.liplum.update.Updater
 import net.liplum.utils.G
 
 class CioMod : Mod() {
@@ -32,7 +33,6 @@ class CioMod : Mod() {
         @JvmField var UpdateFrequency = 5f
         lateinit var Info: Mods.LoadedMod
     }
-
     /**
      * # Calling time node
      * 1. constructor
@@ -43,6 +43,7 @@ class CioMod : Mod() {
      */
     init {
         Log.info("Cyber IO mod loaded.")
+        Updater.check()
         GL.handleCompatible()
         //listen for game load event
         Events.on(ClientLoadEvent::class.java) {

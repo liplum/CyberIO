@@ -1,6 +1,5 @@
 package net.liplum
 
-import arc.Core.settings
 import arc.Events
 import arc.math.Mathf
 import arc.scene.ui.Label
@@ -11,9 +10,15 @@ import arc.util.serialization.JsonValue
 import mindustry.game.EventType.Trigger
 import mindustry.io.JsonIO
 import mindustry.ui.dialogs.BaseDialog
-import net.liplum.R.Setting
+import net.liplum.Settings.CioVersion
+import net.liplum.Settings.ClickWelcomeTimes
+import net.liplum.Settings.LastWelcome
+import net.liplum.Settings.ShouldShowWelcome
+import net.liplum.Settings.ShowUpdate
 import net.liplum.blocks.tmtrainer.RandomName
 import net.liplum.lib.Res
+import net.liplum.update.Updater
+import net.liplum.update.Version2
 import net.liplum.utils.*
 
 @ClientOnly
@@ -25,62 +30,82 @@ object Welcome {
     @JvmStatic
     fun showWelcomeDialog() {
         checkLastVersion()
-        if (shouldShowWelcome) {
-            val clickedTimes = settings.getInt(Setting.ClickWelcomeTimes, 0)
-            // If it's the first time to play this version, let's show up the Zero Welcome.
-            // Otherwise, roll until the result isn't as last one.
-            val lastOne = settings.getInt(Setting.LastWelcome, 0)
-            if (clickedTimes > 0) {
-                welcomeEntity.randomize(lastOne)
-                settings.put(Setting.LastWelcome, welcomeEntity.number)
+        if (ShowUpdate && Updater.requireUpdate) {
+            updateDialog.show()
+        } else {
+            if (ShouldShowWelcome) {
+                // If it's the first time to play this version, let's show up the Zero Welcome.
+                // Otherwise, roll until the result isn't as last one.
+                if (ClickWelcomeTimes > 0) {
+                    welcomeEntity.randomize(LastWelcome)
+                    LastWelcome = welcomeEntity.number
+                }
+                welcomeEntity.genHead()
+                dialog.show()
             }
-            welcomeEntity.genHead()
-            dialog.show()
         }
     }
     @JvmStatic
     fun checkLastVersion() {
-        val lastVersion = settings.getString(Setting.Version, Meta.Version)
+        val lastVersion = CioVersion
         if (lastVersion != Meta.Version) {
-            settings.put(Setting.ShowWelcome, true)
-            settings.put(Setting.Version, Meta.Version)
-            settings.put(Setting.ClickWelcomeTimes, 0)
+            ShouldShowWelcome = true
+            ClickWelcomeTimes = 0
+            ShowUpdate = true
+            CioVersion = Meta.Version
         }
     }
     @JvmStatic
     fun recordClick() {
-        val formerTimes = settings.getInt(Setting.ClickWelcomeTimes, 0)
-        settings.put(Setting.ClickWelcomeTimes, formerTimes + 1)
+        ClickWelcomeTimes += 1
     }
 
-    val shouldShowWelcome: Boolean
-        get() {
-            val showWelcome = settings.getBool(Setting.ShowWelcome, true)
-            return showWelcome
-        }
     val dialog: BaseDialog by lazy {
         BaseDialog(welcomeEntity.title).apply {
             cont.image(welcomeEntity.icon)
                 .maxSize(200f).pad(20f).row()
-            val welcomeLabel = Label(welcomeEntity.welcome).apply {
+            cont.add(Label(welcomeEntity.welcome).apply {
                 setAlignment(0)
                 setWrap(true)
-            }
-            cont.add(welcomeLabel)
-                .growX()
+            }).growX()
                 .row()
-            val newsLabel = Label(welcomeEntity.content).apply {
+            cont.add(Label(welcomeEntity.content).apply {
                 setAlignment(0)
                 setWrap(true)
-            }
-            cont.add(newsLabel)
-                .growX()
+            }).growX()
                 .row()
             cont.button(welcomeEntity.read) {
                 recordClick()
                 hide()
             }.size(200f, 50f)
-            layout()
+        }
+    }
+    val updateDialog: BaseDialog by lazy {
+        BaseDialog(welcomeEntity.updateTitle).apply {
+            cont.image(welcomeEntity.icon)
+                .maxSize(200f).pad(20f).row()
+            cont.add(Label(
+                welcomeEntity.genUpdate(
+                    Updater.latestVersion
+                )
+            ).apply {
+                setAlignment(0)
+                setWrap(true)
+            }).growX()
+                .row()
+            cont.table {
+                it.button(welcomeEntity.updateYes) {
+                    Updater.updateSelf()
+                    hide()
+                }.size(200f, 50f)
+                it.button(welcomeEntity.updateNo) {
+                    hide()
+                }.size(200f, 50f)
+                it.button(welcomeEntity.updateDontShow) {
+                    ShowUpdate = false
+                    hide()
+                }.size(200f, 50f)
+            }
         }
     }
     @JvmStatic
@@ -156,5 +181,19 @@ object Welcome {
             get() = info.iconPath.atlas()
         val welcome: String
             get() = "welcome".bundle(bundle, Meta.Version)
+        val updateHead: String
+            get() = "${Meta.Version}.update"
+
+        fun genUpdate(version: Version2): String =
+            bundle.format(updateHead, version)
+
+        val updateTitle: String
+            get() = bundle["$updateHead.title"]
+        val updateYes: String
+            get() = bundle["$updateHead.update"]
+        val updateNo: String
+            get() = bundle["$updateHead.no"]
+        val updateDontShow: String
+            get() = bundle["$updateHead.dont-show"]
     }
 }

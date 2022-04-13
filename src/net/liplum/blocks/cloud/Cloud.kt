@@ -175,9 +175,7 @@ open class Cloud(name: String) : PowerBlock(name) {
             }
         }
 
-        override fun acceptedAmount(sender: IDataSender, itme: Item): Int {
-            return -1
-        }
+        override fun acceptedAmount(sender: IDataSender, itme: Item): Int = -1
 
         override fun acceptItem(source: Building, item: Item) = false
         override fun handleItem(source: Building, item: Item) {
@@ -274,9 +272,7 @@ open class Cloud(name: String) : PowerBlock(name) {
         override fun getConnectedReceivers(): OrderedSet<Int> =
             info.sendersPos
 
-        override fun acceptConnection(sender: IDataSender): Boolean {
-            return true
-        }
+        override fun acceptConnection(sender: IDataSender): Boolean = true
 
         override fun write(write: Writes) {
             super.write(write)

@@ -12,9 +12,7 @@ fun MappableContent.autoAnim(
     subName: String? = null,
     frame: Int,
     totalDuration: Float
-): Animation {
-    return AutoAnimation(totalDuration, *this.anim(subName, true, frame))
-}
+): Animation = AutoAnimation(totalDuration, *this.anim(subName, true, frame))
 
 fun MappableContent.autoAnimInMod(
     name: String,

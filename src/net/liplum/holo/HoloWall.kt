@@ -3,7 +3,6 @@ package net.liplum.holo
 import arc.graphics.Blending
 import arc.graphics.g2d.Draw
 import arc.graphics.g2d.Fill
-import arc.graphics.g2d.TextureRegion
 import arc.math.Mathf
 import arc.util.Time
 import arc.util.io.Reads
@@ -54,10 +53,7 @@ open class HoloWall(name: String) : Wall(name) {
         DyedImageTR = this.sub("dyed-image") or ImageTR
     }
 
-    override fun icons(): Array<TextureRegion> {
-        return arrayOf(BaseTR, DyedImageTR)
-    }
-
+    override fun icons() = arrayOf(BaseTR, DyedImageTR)
     override fun setBars() {
         super.setBars()
         DebugOnly {
@@ -105,10 +101,7 @@ open class HoloWall(name: String) : Wall(name) {
             get() = this@HoloWall.minHealthProportion
         @ClientOnly @JvmField
         var floating: Floating = Floating(FloatingRange).randomXY().changeRate(1)
-        override fun collide(other: Bullet): Boolean {
-            return isProjecting
-        }
-
+        override fun collide(other: Bullet): Boolean = isProjecting
         open val canRestructure: Boolean
             get() = lastDamagedTime > restoreReload || !isProjecting
 
@@ -170,7 +163,6 @@ open class HoloWall(name: String) : Wall(name) {
             }
             Draw.reset()
         }
-
         @ClientOnly
         open fun updateFloating() {
             val d = G.D(0.1f * FloatingRange * delta() * (2f - healthPct))
@@ -209,10 +201,7 @@ open class HoloWall(name: String) : Wall(name) {
         override fun drawCracks() {
         }
 
-        override fun checkSolid(): Boolean {
-            return isProjecting
-        }
-
+        override fun checkSolid(): Boolean = isProjecting
         override fun write(write: Writes) {
             super.write(write)
             write.f(restoreCharge)

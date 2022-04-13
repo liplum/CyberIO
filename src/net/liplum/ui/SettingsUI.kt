@@ -37,6 +37,9 @@ object SettingsUI {
     fun addGameSettings() {
         val game = Vars.ui.settings.game
         game.insertCheckPrefLast(
+            R.Setting.ShowUpdate, true
+        )
+        game.insertCheckPrefLast(
             R.Setting.ShowWelcome, true
         )
     }

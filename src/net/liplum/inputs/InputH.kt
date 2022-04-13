@@ -50,11 +50,9 @@ object Screen {
         return Vars.world.tileWorld(vec.x, vec.y)
     }
     @JvmStatic
-    fun toWorld(cursorX: Float, cursorY: Float): Vec2 {
-        return Core.input.mouseWorld(cursorX, cursorY)
-    }
+    fun toWorld(cursorX: Float, cursorY: Float): Vec2 =
+        Core.input.mouseWorld(cursorX, cursorY)
     @JvmStatic
-    fun toWorld(cursorX: Int, cursorY: Int): Vec2 {
-        return Core.input.mouseWorld(cursorX.toFloat(), cursorY.toFloat())
-    }
+    fun toWorld(cursorX: Int, cursorY: Int): Vec2 =
+        Core.input.mouseWorld(cursorX.toFloat(), cursorY.toFloat())
 }

@@ -29,6 +29,32 @@ public class ReflectU {
         getEntry(clz).set(obj, name, value);
     }
 
+    public static <T> T call(Class<?> clz, Object obj, String name, Object[] args, Class<?>[] argClz) {
+        return getEntry(clz).call(obj, name, args, argClz);
+    }
+
+    public static <T> T call(Object obj, String name, Object[] args, Class<?>[] argClz) {
+        return getEntry(obj.getClass()).call(obj, name, args, argClz);
+    }
+
+    /**
+     * Dynamically call a method.
+     *
+     * @param obj  the object
+     * @param name method name.
+     * @param args the args and will decide the argument's types.
+     * @param <T>  return type
+     * @return return value. If the method returns void, null will be returned instead.
+     */
+    public static <T> T call(Object obj, String name, Object... args) {
+        return getEntry(obj.getClass()).call(obj, name, args,
+                Arrays.stream(args).map(Object::getClass).toArray(Class[]::new)
+        );
+    }
+
+    public static Method getMethod(Class<?> clz, String name, Class<?>... argClz) {
+        return getEntry(clz).getMethod(name, argClz);
+    }
 
     public static <TFrom, TTO extends TFrom> void copyFields(TFrom from, TTO to) {
         Class<?> fromClz = from.getClass();
@@ -99,7 +125,7 @@ public class ReflectU {
             return name.hashCode() ^ Arrays.hashCode(args);
         }
 
-        private Method getMethod(String name, Class<?>... classes) {
+        public Method getMethod(String name, Class<?>[] classes) {
             return methods.computeIfAbsent(getKey(name, classes), n -> {
                 try {
                     Method method = clz.getDeclaredMethod(name, classes);
@@ -109,6 +135,15 @@ public class ReflectU {
                     throw new RuntimeException(e);
                 }
             });
+        }
+
+        public <T> T call(Object obj, String name, Object[] args, Class<?>[] clz) {
+            Method method = getMethod(name, clz);
+            try {
+                return (T) method.invoke(obj, args);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
 
         public <T> T get(Object obj, String name) {
