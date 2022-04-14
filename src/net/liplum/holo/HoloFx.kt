@@ -1,10 +1,10 @@
 package net.liplum.holo
 
-import arc.Core
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
 import arc.graphics.g2d.Fill
 import arc.graphics.g2d.Lines
+import mindustry.Vars
 import mindustry.entities.Effect
 import mindustry.graphics.Drawf
 import mindustry.graphics.Layer
@@ -36,7 +36,7 @@ object HoloFx {
         Drawf.tri(it.x, it.y, w, 4f * it.fout(), it.rotation + 180f)
     }
     val shieldBreak: Effect = Effect(60f) {
-        if (Core.settings.getBool(R.Setting.AnimatedShields)) {
+        if (Vars.renderer.animateShields) {
             SD.Hologram.on(Layer.shields) {
                 Fill.poly(it.x, it.y, 6, it.rotation * it.fout())
                 Draw.reset()

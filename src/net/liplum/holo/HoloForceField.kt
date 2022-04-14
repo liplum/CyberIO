@@ -1,6 +1,5 @@
 package net.liplum.holo
 
-import arc.Core
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
 import arc.graphics.g2d.Fill
@@ -8,6 +7,7 @@ import arc.graphics.g2d.Lines
 import arc.math.geom.Intersector
 import arc.scene.ui.layout.Table
 import arc.util.Time
+import mindustry.Vars
 import mindustry.content.Fx
 import mindustry.entities.abilities.Ability
 import mindustry.gen.Bullet
@@ -44,7 +44,7 @@ open class HoloForceField(
 
     override fun draw(unit: Unit) {
         if (unit.shield <= 0) return
-        if (Core.settings.getBool(R.Setting.AnimatedShields)) {
+        if (Vars.renderer.animateShields) {
             SD.Hologram.use(Layer.shields) {
                 Fill.poly(unit.x, unit.y, 6, realRange(unit))
             }

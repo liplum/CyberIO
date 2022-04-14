@@ -73,7 +73,6 @@ open class HoloUnit : UnitEntity() {
 
     override fun destroy() {
         if (this.isAdded) {
-            type.deathSound.at(this)
             Events.fire(UnitDestroyEvent(this))
             for (mount in mounts) {
                 if (mount.weapon.shootOnDeath && (!mount.weapon.bullet.killShooter || !mount.shoot)) {
@@ -173,10 +172,10 @@ open class HoloUnit : UnitEntity() {
         val py = y + Angles.trnsy(rotation, focusLen)
         val sz = Vars.tilesize * size / 2.0f
         val ang = angleTo(tx, ty)
-        vecs[0][tx - sz] = ty - sz
-        vecs[1][tx + sz] = ty - sz
-        vecs[2][tx - sz] = ty + sz
-        vecs[3][tx + sz] = ty + sz
+        vecs[0].set(tx - sz, ty - sz)
+        vecs[1].set(tx + sz, ty - sz)
+        vecs[2].set(tx - sz, ty + sz)
+        vecs[3].set(tx + sz, ty + sz)
         Arrays.sort(vecs, Structs.comparingFloat {
             -Angles.angleDist(
                 angleTo(it),

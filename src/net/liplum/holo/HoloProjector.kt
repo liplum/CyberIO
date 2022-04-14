@@ -2,13 +2,22 @@ package net.liplum.holo
 
 import arc.func.Floatf
 import arc.graphics.Color
+import arc.graphics.g2d.Draw
+import arc.graphics.g2d.Fill
+import arc.graphics.g2d.Lines
+import arc.math.Angles
+import arc.math.Mathf
+import arc.math.geom.Vec2
 import arc.scene.ui.layout.Table
 import arc.struct.Seq
 import arc.util.Structs
+import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
+import mindustry.Vars
 import mindustry.gen.Building
 import mindustry.gen.Iconc
+import mindustry.graphics.Layer
 import mindustry.graphics.Pal
 import mindustry.logic.LAccess
 import mindustry.type.Item
@@ -20,11 +29,14 @@ import mindustry.world.Block
 import mindustry.world.consumers.ConsumeItemDynamic
 import mindustry.world.meta.BlockGroup
 import net.liplum.*
+import net.liplum.lib.animations.anis.Draw
+import net.liplum.lib.shaders.SD
+import net.liplum.lib.shaders.use
+import net.liplum.lib.ui.addItemSelectorDefault
 import net.liplum.lib.ui.bars.AddBar
 import net.liplum.lib.ui.bars.removeItems
 import net.liplum.liquidCons.DynamicLiquidCons
 import net.liplum.registries.CioLiquids.cyberion
-import net.liplum.lib.ui.addItemSelectorDefault
 import net.liplum.utils.ID
 import net.liplum.utils.ItemTypeAmount
 import net.liplum.utils.bundle
@@ -36,6 +48,8 @@ open class HoloProjector(name: String) : Block(name) {
     @JvmField var itemCapabilities: IntArray = IntArray(0)
     @JvmField var cyberionCapacity: Float = 0f
     @JvmField var holoUnitCapacity = 8
+    @ClientOnly @JvmField var projectorShrink = 5f
+    @ClientOnly @JvmField var projectorCenterRate = 3f
 
     init {
         solid = true
@@ -150,7 +164,6 @@ open class HoloProjector(name: String) : Block(name) {
                 }
             }
         }
-
         @CalledBySync
         open fun setPlan(plan: Int) {
             var order = plan
@@ -211,10 +224,82 @@ open class HoloProjector(name: String) : Block(name) {
             }
             return false
         }
-
+        /**
+         * For vertices of plan
+         */
+        @ClientOnly
+        val vecs = arrayOf(Vec2(), Vec2(), Vec2(), Vec2())
+        @ClientOnly
+        var alpha = 1f
+            set(value) {
+                field = value.coerceIn(0f, 1f)
+            }
+        @ClientOnly
+        var lastPlan: HoloPlan? = curPlan
         override fun draw() {
             super.draw()
-
+            val curPlan = curPlan
+            val delta = if (consValid() && curPlan != null)
+                0.015f
+            else
+                -0.015f
+            alpha += delta * Time.delta
+            val planDraw = curPlan ?: lastPlan
+            if (lastPlan != curPlan)
+                lastPlan = curPlan
+            if (alpha <= 0.01f) return
+            if (planDraw != null) {
+                SD.Hologram.use {
+                    val type = planDraw.unitType
+                    it.alpha = (progress * 1.2f * alpha).coerceAtMost(1f)
+                    it.flickering = it.DefaultFlickering - (1f - progress) * 0.4f
+                    if (type.ColorOpacity > 0f)
+                        it.blendFormerColorOpacity = type.ColorOpacity
+                    if (type.HoloOpacity > 0f) {
+                        it.blendHoloColorOpacity = type.HoloOpacity
+                    }
+                    type.uiIcon.Draw(x, y)
+                }
+            }
+            val rotation = Time.time
+            val size = block.size * Vars.tilesize / projectorCenterRate
+            // tx and ty control the position of bottom edge
+            val tx = x
+            val ty = y
+            Lines.stroke(1.0f)
+            Draw.color(R.C.HoloDark)
+            Draw.alpha(alpha)
+            // the floating of center
+            val focusLen = 3.8f + Mathf.absin(Time.time, 3.0f, 0.6f)
+            val px = x + Angles.trnsx(rotation, focusLen)
+            val py = y + Angles.trnsy(rotation, focusLen)
+            val shrink = projectorShrink
+            // the vertices
+            vecs[0].set(tx - size, ty - size) // left-bottom
+            vecs[1].set(tx + size, ty - size) // right-bottom
+            vecs[2].set(tx - size, ty + size) // left-top
+            vecs[3].set(tx + size, ty + size) // right-top
+            Draw.z(Layer.buildBeam)
+            if (Vars.renderer.animateShields) {
+                Fill.tri(px, py, vecs[0].x + shrink, vecs[0].y, vecs[1].x - shrink, vecs[1].y) // bottom
+                Fill.tri(px, py, vecs[2].x + shrink, vecs[2].y, vecs[3].x - shrink, vecs[3].y) // up
+                Fill.tri(px, py, vecs[0].x, vecs[0].y + shrink, vecs[2].x, vecs[2].y - shrink) // left
+                Fill.tri(px, py, vecs[1].x, vecs[1].y + shrink, vecs[3].x, vecs[3].y - shrink) // right
+            } else {
+                // bottom
+                Lines.line(px, py, vecs[0].x + shrink, vecs[0].y)
+                Lines.line(px, py, vecs[1].x - shrink, vecs[1].y)
+                // up
+                Lines.line(px, py, vecs[2].x + shrink, vecs[2].y)
+                Lines.line(px, py, vecs[3].x - shrink, vecs[3].y)
+                // left
+                Lines.line(px, py, vecs[0].x, vecs[0].y + shrink)
+                Lines.line(px, py, vecs[2].x, vecs[3].y - shrink)
+                // right
+                Lines.line(px, py, vecs[1].x, vecs[1].y + shrink)
+                Lines.line(px, py, vecs[3].x, vecs[3].y - shrink)
+            }
+            Draw.reset()
         }
 
         override fun acceptLiquid(source: Building, liquid: Liquid) =

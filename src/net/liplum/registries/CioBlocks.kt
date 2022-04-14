@@ -28,13 +28,10 @@ import net.liplum.blocks.debugonly.AdjustableOverdrive
 import net.liplum.blocks.deleter.Deleter
 import net.liplum.blocks.gadgets.SmartDistributor
 import net.liplum.blocks.gadgets.SmartUnloader
-import net.liplum.holo.HoloFloor
-import net.liplum.holo.HoloWall
-import net.liplum.holo.LandProjector
-import net.liplum.holo.Stealth
 import net.liplum.blocks.icmachine.ICMachine
 import net.liplum.blocks.icmachine.ICMachineS
 import net.liplum.blocks.jammer.Jammer
+import net.liplum.blocks.power.WirelessTower
 import net.liplum.blocks.prism.Prism
 import net.liplum.blocks.prism.PrismObelisk
 import net.liplum.blocks.rs.Receiver
@@ -47,13 +44,10 @@ import net.liplum.blocks.tmtrainer.TMTRAINER
 import net.liplum.blocks.underdrive.UnderdriveProjector
 import net.liplum.blocks.virus.AntiVirus
 import net.liplum.blocks.virus.Virus
-import net.liplum.blocks.power.WirelessTower
 import net.liplum.bullets.RuvikBullet
 import net.liplum.bullets.STEM_VERSION
 import net.liplum.bullets.ShaderCLaser
-import net.liplum.holo.HoloPlan
-import net.liplum.holo.HoloProjector
-import net.liplum.holo.Requirement
+import net.liplum.holo.*
 import net.liplum.lib.animations.ganim.globalAnim
 import net.liplum.lib.shaders.SD
 import net.liplum.seffects.StaticFx
@@ -241,7 +235,11 @@ object CioBlocks : ContentTable {
 
         cloud = Cloud("cloud").apply {
             requirements(
-                Category.logic, BuildVisibility.sandboxOnly, arrayOf(
+                Category.logic,
+                if (CioMod.DebugMode)
+                    BuildVisibility.sandboxOnly
+                else
+                    BuildVisibility.hidden, arrayOf(
                     ItemStack(CioItems.ic, 10),
                     ItemStack(Items.titanium, 1000),
                     ItemStack(Items.thorium, 1000),

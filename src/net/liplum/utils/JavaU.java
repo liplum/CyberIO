@@ -15,6 +15,10 @@ public class JavaU {
         return (T[]) EmptyArrays.computeIfAbsent(clz, (k) -> (T[]) Array.newInstance(clz, 0));
     }
 
+    public static <T> T[] newArray(Class<T> clz, int size) {
+        return (T[]) Array.newInstance(clz, size);
+    }
+
     public static boolean equals(Object a, Object b) {
         if (a == b) {
             return true;

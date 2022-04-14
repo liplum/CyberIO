@@ -39,3 +39,23 @@ infix fun Any?.NullOr(planB: Any?): Any? =
 
 inline infix fun <reified T> T?.Or(other: () -> T?): T? =
     this ?: other()
+
+fun <T> Array<T>.swap(from: Int, to: Int) {
+    val temp: T = this[from]
+    this[from] = this[to]
+    this[to] = temp
+}
+
+fun <T> Class<T>.newArray(size: Int): Array<T> {
+    return JavaU.newArray(this, size)
+}
+
+inline fun <reified T> Array<T>.sortManually(vararg indices: Int): Array<T> {
+    assert(indices.size == this.size)
+    val clz = T::class.java
+    val res = clz.newArray(this.size)
+    for ((i, index) in indices.withIndex()) {
+        res[i] = this[index]
+    }
+    return res
+}

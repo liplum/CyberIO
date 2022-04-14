@@ -20,9 +20,7 @@ import mindustry.world.Tile
 import mindustry.world.blocks.defense.turrets.Turret
 import mindustry.world.meta.Stat
 import mindustry.world.meta.StatValues
-import net.liplum.ClientOnly
-import net.liplum.DebugOnly
-import net.liplum.R
+import net.liplum.*
 import net.liplum.api.cyber.IStreamClient
 import net.liplum.api.cyber.IStreamHost
 import net.liplum.api.cyber.req
@@ -34,8 +32,10 @@ import net.liplum.persistance.intSet
 import net.liplum.registries.CioBulletTypes
 import net.liplum.registries.CioLiquids.cyberion
 import net.liplum.registries.CioShaders
-import net.liplum.seconds
-import net.liplum.utils.*
+import net.liplum.utils.TR
+import net.liplum.utils.bundle
+import net.liplum.utils.healthPct
+import net.liplum.utils.sub
 
 open class Stealth(name: String) : Turret(name) {
     @JvmField var restoreReload = 10 * 60f
@@ -78,10 +78,9 @@ open class Stealth(name: String) : Turret(name) {
         super.load()
         BaseTR = this.sub("base")
         ImageTR = this.sub("image")
-        UnknownTR = this.sub("unknown")
+        UnknownTR = region
     }
 
-    override fun icons() = arrayOf(UnknownTR)
     override fun setStats() {
         super.setStats()
         stats.add(Stat.ammo, StatValues.ammo(ObjectMap.of(cyberion, shootType)))
@@ -136,6 +135,7 @@ open class Stealth(name: String) : Turret(name) {
             Drawf.shadow(x, y, 10f)
             Draw.z(Layer.block)
             Draw.rect(BaseTR, x, y)
+            tr2.trns(rotation, -recoil)
             CioShaders.Hologram.use(Layer.power) {
                 val healthPct = healthPct
                 it.alpha = healthPct / 4f * 3f
@@ -143,7 +143,7 @@ open class Stealth(name: String) : Turret(name) {
                 it.flickering = it.DefaultFlickering + (1f - healthPct)
                 it.blendHoloColorOpacity = 0f
                 Draw.color(R.C.Holo)
-                ImageTR.Draw(x, y)
+                ImageTR.Draw(x + tr2.x, y + tr2.y, rotation.draw)
                 Draw.reset()
             }
             Draw.reset()
@@ -163,7 +163,6 @@ open class Stealth(name: String) : Turret(name) {
         }
 
         override fun hasAmmo(): Boolean = liquids[cyberion] >= 1f / shootType.ammoMultiplier
-
         override fun readStream(host: IStreamHost, liquid: Liquid, amount: Float) {
             if (this.isConnectedWith(host)) {
                 liquids.add(liquid, amount)
@@ -221,6 +220,7 @@ open class Stealth(name: String) : Turret(name) {
             lastDamagedTime = read.f()
         }
     }
+
     override fun setBars() {
         super.setBars()
         DebugOnly {
