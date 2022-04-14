@@ -94,6 +94,7 @@ infix fun StringBuilder.addRight(str: String): StringBuilder {
 }
 
 fun Array<out Any>.toLinkedString(): String {
+    if (this.isEmpty()) return ""
     val s = StringBuilder()
     for (e in this) {
         s.append(e)

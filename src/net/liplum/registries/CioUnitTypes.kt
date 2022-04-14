@@ -20,7 +20,7 @@ import net.liplum.R
 import net.liplum.bullets.RuvikBullet
 import net.liplum.bullets.STEM_VERSION
 import net.liplum.holo.*
-import net.liplum.npc.NpcUnitType
+import net.liplum.scripts.NpcUnitType
 import net.liplum.utils.NewUnitType
 import net.liplum.utils.registerPayloadSource
 

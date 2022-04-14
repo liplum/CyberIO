@@ -1,7 +1,6 @@
 package net.liplum.lib
 
 import java.io.Closeable
-import java.io.File
 import java.io.InputStream
 import java.io.Reader
 import java.nio.charset.Charset
@@ -30,11 +29,11 @@ class Res(
                 pos
 
     infix fun sub(subPos: String): Res =
-        Res(locator, "$pos${File.separatorChar}$subPos", inJar)
+        Res(locator, "$pos/$subPos", inJar)
 
     fun enter(subPos: String): Res =
         this.apply {
-            pos = "$pos${File.separatorChar}$subPos"
+            pos = "$pos/$subPos"
         }
 
     operator fun plusAssign(subPos: String) {

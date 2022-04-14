@@ -35,7 +35,8 @@ object Updater : CoroutineScope {
             ) {
                 val url = URL(GitHub)
                 val bytes = url.readBytes()
-                val versionInfo = String(bytes)
+                val updateInfo = String(bytes)
+                val versionInfo = updateInfo.split('\n')[0]
                 latestVersion = runCatching {
                     Version2.valueOf(versionInfo)
                 }.getOrDefault(Meta.DetailedVersion)

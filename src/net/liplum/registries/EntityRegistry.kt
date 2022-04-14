@@ -10,7 +10,7 @@ import net.liplum.Meta
 import net.liplum.OnlyDebug
 import net.liplum.OnlyServer
 import net.liplum.holo.HoloUnit
-import net.liplum.npc.NpcUnit
+import net.liplum.scripts.NpcUnit
 
 object EntityRegistry {
     private val Clz2Entry = ObjectMap<Class<*>, ProvEntry>()

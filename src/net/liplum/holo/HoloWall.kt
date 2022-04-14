@@ -31,7 +31,6 @@ open class HoloWall(name: String) : Wall(name) {
     @ClientOnly lateinit var ImageTR: TR
     @ClientOnly lateinit var DyedImageTR: TR
     @JvmField var minHealthProportion = 0.05f
-    //@JvmField var maxSleepyTime = 30 * 60f
     @ClientOnly @JvmField var FloatingRange = 0.6f
 
     init {

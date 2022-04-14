@@ -101,7 +101,7 @@ task compileGAL(dependsOn: classes, type: JavaExec) {
             '-batch=folder',
             'scripts',
             '-t',
-            'assets/plot-scripts'
+            'assets/script'
     ]
 }
 jar {

@@ -1,4 +1,4 @@
-package net.liplum.npc
+package net.liplum.scripts
 
 import net.liplum.ClientOnly
 

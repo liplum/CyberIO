@@ -16,9 +16,10 @@ import net.liplum.blocks.cloud.LiplumCloud
 import net.liplum.blocks.cloud.SharedRoom
 import net.liplum.inputs.UnitTap
 import net.liplum.lib.animations.ganim.GlobalAnimation.Companion.loadAllResources
-import net.liplum.npc.NpcSystem
+import net.liplum.scripts.NpcSystem
 import net.liplum.registries.*
 import net.liplum.render.LinkDrawer
+import net.liplum.scripts.Script
 import net.liplum.ui.SettingsUI
 import net.liplum.update.Updater
 import net.liplum.utils.G
@@ -42,7 +43,7 @@ class CioMod : Mod() {
      * 5. ClientLoadEvent
      */
     init {
-        Log.info("Cyber IO mod loaded.")
+        Log.info("Cyber IO mod loading started.")
         Updater.check()
         GL.handleCompatible()
         //listen for game load event
@@ -56,7 +57,7 @@ class CioMod : Mod() {
                 Script.init()
                 Welcome.load()
                 Script.initInterpreter()
-                Script.loadStory("TestStory")
+                Script.loadStory("OnTheShip.Captain.Introduction")
             }
         }
         Events.on(DisposeEvent::class.java) {
