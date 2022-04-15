@@ -120,6 +120,7 @@ object Welcome {
         }
     }
     @JvmStatic
+    @ClientOnly
     fun load() {
         loadBundle()
         loadInfo()

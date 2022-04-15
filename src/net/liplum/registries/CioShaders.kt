@@ -27,48 +27,44 @@ object CioShaders {
     lateinit var Monochromize: ProgressShader
     var Cyberion: SurfaceShader? = null
     @JvmStatic
+    @ClientOnly
     fun init() {
-        ClientOnly {
-            DynamicColor = TrShader("DynamicColor").register()
+        DynamicColor = TrShader("DynamicColor").register()
 
-            HologramOld = HologramOld("HologramOld").register()
-            Hologram = Hologram("Hologram").register()
+        HologramOld = HologramOld("HologramOld").register()
+        Hologram = Hologram("Hologram").register()
 
-            Monochrome = TrShader("Monochrome").register()
-            InvertColor = TrShader("InvertColor").register()
-            TvStatic = TrShader("TvStatic".compatible).register()
-            Pulse = TrShader("Pulse").register()
+        Monochrome = TrShader("Monochrome").register()
+        InvertColor = TrShader("InvertColor").register()
+        TvStatic = TrShader("TvStatic".compatible).register()
+        Pulse = TrShader("Pulse").register()
 
-            InvertingColorRGB = ProgressShader("InvertingColorRgb".compatible)
-                .register()
-            InvertingColorRbg2HsvInHsv = ProgressShader("InvertingColorRgb2HsvInHsv")
-                .register()
-            InvertingColorRbg2HsvInRgb = ProgressShader("InvertingColorRgb2HsvInRgb")
-                .register()
+        InvertingColorRGB = ProgressShader("InvertingColorRgb".compatible)
+            .register()
+        InvertingColorRbg2HsvInHsv = ProgressShader("InvertingColorRgb2HsvInHsv")
+            .register()
+        InvertingColorRbg2HsvInRgb = ProgressShader("InvertingColorRgb2HsvInRgb")
+            .register()
 
-            Monochromize = ProgressShader("Monochromize".compatible).register()
-            Cyberion = SurfaceShader("Cyberion").register()
-            isInited = true
-        }
+        Monochromize = ProgressShader("Monochromize".compatible).register()
+        Cyberion = SurfaceShader("Cyberion").register()
+        isInited = true
     }
     @JvmStatic
+    @ClientOnly
     fun loadResource() {
-        ClientOnly {
-            if (isInited) {
-                for (loadable in AllLoadable) {
-                    loadable.loadResource()
-                }
+        if (isInited) {
+            for (loadable in AllLoadable) {
+                loadable.loadResource()
             }
         }
     }
     @ClientOnly
     @JvmStatic
     fun dispose() {
-        ClientOnly {
-            if (isInited) {
-                for (shader in AllShaders) {
-                    shader.dispose()
-                }
+        if (isInited) {
+            for (shader in AllShaders) {
+                shader.dispose()
             }
         }
     }

@@ -60,6 +60,7 @@ object Script {
         }
     }
     @JvmStatic
+    @ClientOnly
     fun init() {
         bundle.loadMoreFrom("stories")
         ScriptLoader.root = Res("script")

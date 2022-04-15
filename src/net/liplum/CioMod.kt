@@ -15,10 +15,10 @@ import net.liplum.api.holo.IHoloEntity
 import net.liplum.blocks.cloud.LiplumCloud
 import net.liplum.blocks.cloud.SharedRoom
 import net.liplum.inputs.UnitTap
-import net.liplum.lib.animations.ganim.GlobalAnimation.Companion.loadAllResources
-import net.liplum.scripts.NpcSystem
+import net.liplum.lib.animations.ganim.GlobalAnimation
 import net.liplum.registries.*
 import net.liplum.render.LinkDrawer
+import net.liplum.scripts.NpcSystem
 import net.liplum.scripts.Script
 import net.liplum.ui.SettingsUI
 import net.liplum.update.Updater
@@ -52,21 +52,27 @@ class CioMod : Mod() {
             Time.runTask(10f) { Welcome.showWelcomeDialog() }
         }
         Events.on(FileTreeInitEvent::class.java) {
-            Core.app.post {
-                CioShaders.init()
-                Script.init()
-                Welcome.load()
-                Script.initInterpreter()
-                Script.loadStory("OnTheShip.Captain.Introduction")
+            ClientOnly {
+                Core.app.post {
+                    CioShaders.init()
+                    Script.init()
+                    Welcome.load()
+                    Script.initInterpreter()
+                    Script.loadStory("OnTheShip.Captain.Introduction")
+                }
             }
         }
         Events.on(DisposeEvent::class.java) {
-            CioShaders.dispose()
+            ClientOnly {
+                CioShaders.dispose()
+            }
         }
     }
 
     override fun init() {
-        Welcome.modifierModInfo()
+        ClientOnly {
+            Welcome.modifierModInfo()
+        }
         UpdateFrequency = if (Vars.mobile || Vars.testMobile)
             10f
         else
@@ -95,16 +101,18 @@ class CioMod : Mod() {
         }
         DataCenter.initData()
         StreamCenter.initAndLoad()
-        CioShaders.loadResource()
-        loadAllResources()
-        Events.run(Trigger.preDraw) {
-            G.init()
+        ClientOnly {
+            SettingsUI.appendSettings()
+            CioShaders.loadResource()
+            GlobalAnimation.loadAllResources()
+            Events.run(Trigger.preDraw) {
+                G.init()
+            }
+            LinkDrawer.register()
+            NpcSystem.register()
+            Core.input.addProcessor(UnitTap)
         }
-        SettingsUI.appendSettings()
         Settings.updateSettings()
-        LinkDrawer.register()
-        NpcSystem.register()
-        Core.input.addProcessor(UnitTap)
         Log.info("Cyber IO initialized.")
     }
 
