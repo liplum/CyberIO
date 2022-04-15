@@ -18,6 +18,7 @@ import mindustry.world.blocks.payloads.PayloadMassDriver
 import mindustry.world.blocks.payloads.PayloadUnloader
 import mindustry.world.blocks.production.GenericCrafter
 import mindustry.world.blocks.production.LiquidConverter
+import mindustry.world.consumers.ConsumePower
 import mindustry.world.meta.BuildVisibility
 import net.liplum.*
 import net.liplum.api.virus.setUninfected
@@ -517,7 +518,7 @@ object CioBlocks : ContentTable {
             holoProjector = HoloProjector("holo-projector").apply {
                 requirements(
                     Category.units, BuildVisibility.shown, arrayOf(
-                        ItemStack(CioItems.ic, 10),
+                        ItemStack(CioItems.ic, 14),
                         ItemStack(Items.silicon, 200),
                         ItemStack(Items.graphite, 60),
                         ItemStack(Items.thorium, 500),
@@ -531,8 +532,8 @@ object CioBlocks : ContentTable {
                     ),
                     HoloPlan(
                         CioUnitTypes.holoFighter,
-                        Requirement(50f),
-                        10f * 60f
+                        Requirement(60f),
+                        11.5f * 60f
                     ),
                     HoloPlan(
                         CioUnitTypes.holoGuardian,
@@ -574,8 +575,8 @@ object CioBlocks : ContentTable {
             stealth = Stealth("stealth").apply {
                 requirements(
                     Category.turret, BuildVisibility.shown, arrayOf(
-                        ItemStack(CioItems.ic, 8),
-                        ItemStack(Items.copper, 200),
+                        ItemStack(CioItems.ic, 6),
+                        ItemStack(Items.titanium, 150),
                     )
                 )
                 size = 3
@@ -611,12 +612,15 @@ object CioBlocks : ContentTable {
 
             heimdall = Heimdall("heimdall").apply {
                 requirements(
-                    Category.power, BuildVisibility.shown, arrayOf(
+                    Category.turret, BuildVisibility.shown, arrayOf(
                         ItemStack(CioItems.ic, 5),
                         ItemStack(Items.sporePod, 50),
                     )
                 )
                 size = 4
+                consumes.add(
+                    ConsumePower(2f, 240f, false)
+                )
             }
         }
     }

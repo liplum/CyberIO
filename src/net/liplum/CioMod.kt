@@ -44,8 +44,10 @@ class CioMod : Mod() {
      */
     init {
         Log.info("Cyber IO mod loading started.")
-        Updater.check()
-        GL.handleCompatible()
+        ClientOnly {
+            Updater.check()
+            GL.handleCompatible()
+        }
         //listen for game load event
         Events.on(ClientLoadEvent::class.java) {
             //show welcome dialog upon startup

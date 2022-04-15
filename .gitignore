@@ -162,3 +162,6 @@ cache
 
 #OpenGAL
 *.node
+
+#Python
+__pycache__/

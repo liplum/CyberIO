@@ -215,6 +215,7 @@ open class Stealth(name: String) : Turret(name) {
         }
 
         override fun drawSelect() {
+            G.dashCircle(x, y, range, R.C.HoloDark)
             whenNotConfiguringHost {
                 this.drawStreamGraphic()
             }
@@ -256,8 +257,12 @@ open class Stealth(name: String) : Turret(name) {
                     range / type.range()
                 )
             else 1f
-            val nearestPlayer = Groups.player.find {
-                it.team() == this.team && it.dst(this) <= range
+            val nearestPlayer = if (isControlled) {
+                unit().findPlayer()
+            } else {
+                Groups.player.find {
+                    it.team() == team && it.dst(this) <= range
+                }
             }
             type.create(
                 this, team, x + tr.x, y + tr.y, angle, -1f,

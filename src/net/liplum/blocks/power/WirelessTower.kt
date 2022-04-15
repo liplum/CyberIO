@@ -18,12 +18,11 @@ import mindustry.world.blocks.power.PowerBlock
 import net.liplum.ClientOnly
 import net.liplum.R
 import net.liplum.WhenNotPaused
+import net.liplum.api.Radiations
 import net.liplum.lib.animations.anis.Draw
 import net.liplum.utils.*
-import java.util.*
 import kotlin.math.min
 
-data class Radiation(var range: Float)
 open class WirelessTower(name: String) : PowerBlock(name) {
     @JvmField var range = 300f
     @JvmField var distributeSpeed = 5f
@@ -86,10 +85,8 @@ open class WirelessTower(name: String) : PowerBlock(name) {
         val realSpeed: Float
             get() = distributeSpeed * edelta()
         @ClientOnly @JvmField
-        var radiations = LinkedList<Radiation>().apply {
-            for (i in 0 until maxRadiation) {
-                add(Radiation(range * i / maxRadiation))
-            }
+        var radiations = Radiations(maxRadiation) { i, r ->
+            r.range = range * i / maxRadiation
         }
         @ClientOnly
         val viewVec = Vec2(rotationRadius, 0f)
@@ -166,15 +163,13 @@ open class WirelessTower(name: String) : PowerBlock(name) {
             if (selfPower.isZero || selfPower.isNaN()) return
             val realRange = realRange
             val step = realRadiationSpeed * realRange
-            val iterator = radiations.iterator()
-            while (iterator.hasNext()) {
-                val cur = iterator.next()
+            radiations.forEach {
                 WhenNotPaused {
-                    cur.range += step
-                    cur.range %= realRange
+                    it.range += step
+                    it.range %= realRange
                 }
                 Draw.z(Layer.power + 1f)
-                val progress = cur.range / realRange
+                val progress = it.range / realRange
                 val nonlinearProgress = Interp.pow2Out.apply(progress)
                 G.circle(
                     x, y,

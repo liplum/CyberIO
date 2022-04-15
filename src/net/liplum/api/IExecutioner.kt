@@ -4,7 +4,7 @@ import mindustry.gen.Healthc
 import net.liplum.api.holo.IHoloEntity
 
 interface IExecutioner {
-    var executeProportion: Float
+    val executeProportion: Float
     val Healthc.executeLine: Float
         get() = this.maxHealth() * executeProportion
     val Healthc.canBeExecuted: Boolean

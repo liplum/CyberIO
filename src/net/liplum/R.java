@@ -33,7 +33,7 @@ public class R {
                 HoloSupporter = "holo-supporter";
     }
 
-    public static final class Bundle{
+    public static final class Bundle {
         public static final String UnitSeconds = "unit.seconds";
 
         @NotNull
@@ -41,6 +41,7 @@ public class R {
         public static String Gen(String content) {
             return Meta.ModID + "." + content;
         }
+
         public static final String CyberionReq = Gen("cyberion-req");
     }
 
@@ -155,6 +156,7 @@ public class R {
         public static final Color Shadow = new Color(0, 0, 0, 0.71f);
         public static final Color BlendShadow = Color.white.cpy().lerp(Color.black, Shadow.a);
         public static final Color Power = Pal.power;
+        public static final Color BrainWave = Color.valueOf("#be61ab");
 
         public static final Color
                 PrismRedFG = Color.valueOf("#EF5350"), PrismRedBK = Color.valueOf("#E53935"),

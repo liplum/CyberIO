@@ -35,7 +35,7 @@ object NpcSystem {
         npcDialog.build(hudGroup)
         Events.on(UnitTapEvent::class.java) {
             if (it.unit == it.player.unit()) {
-                showDialog()
+                //showDialog()
             }
         }
     }
