@@ -12,8 +12,6 @@ import mindustry.Vars
 import mindustry.entities.units.BuildPlan
 import mindustry.gen.Building
 import mindustry.type.Item
-import mindustry.world.Block
-import mindustry.world.Tile
 import mindustry.world.blocks.ItemSelection
 import mindustry.world.meta.BlockGroup
 import net.liplum.ClientOnly
@@ -206,9 +204,6 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
         }
         override fun getConnectedSenders() = senders
         override fun maxSenderConnection() = maxConnection
-        override fun getBuilding(): Building = this
-        override fun getTile(): Tile = tile()
-        override fun getBlock(): Block = block()
     }
 
     @ClientOnly lateinit var DownloadAni: AniStateR

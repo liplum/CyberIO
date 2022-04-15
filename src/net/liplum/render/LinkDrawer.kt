@@ -14,13 +14,12 @@ object LinkDrawer {
     @JvmStatic
     fun register() {
         Events.run(EventType.Trigger.postDraw) {
-            if (Settings.AlwaysShowLink) {
-                draw()
-            }
+            draw()
         }
     }
     @JvmStatic
     fun draw() {
+        if (!Settings.AlwaysShowLink) return
         val curTeam = Vars.player.team()
         Groups.build.each {
             if (it.team != curTeam) return@each

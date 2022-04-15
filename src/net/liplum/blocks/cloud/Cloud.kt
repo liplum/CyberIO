@@ -8,8 +8,6 @@ import arc.util.io.Writes
 import mindustry.gen.Building
 import mindustry.gen.Teamc
 import mindustry.type.Item
-import mindustry.world.Block
-import mindustry.world.Tile
 import mindustry.world.blocks.power.PowerBlock
 import mindustry.world.meta.BlockGroup
 import mindustry.world.modules.ItemModule
@@ -176,7 +174,6 @@ open class Cloud(name: String) : PowerBlock(name) {
         }
 
         override fun acceptedAmount(sender: IDataSender, itme: Item): Int = -1
-
         override fun acceptItem(source: Building, item: Item) = false
         override fun handleItem(source: Building, item: Item) {
         }
@@ -273,7 +270,6 @@ open class Cloud(name: String) : PowerBlock(name) {
             info.sendersPos
 
         override fun acceptConnection(sender: IDataSender): Boolean = true
-
         override fun write(write: Writes) {
             super.write(write)
             write.intSet(info.sendersPos)
@@ -289,14 +285,11 @@ open class Cloud(name: String) : PowerBlock(name) {
             items = itemModule
         }
 
-        override fun getBuilding() = this
         override fun getSharedInfo(): CloudInfo = info
         override fun setSharedInfo(info: CloudInfo) {
             this.info = info
         }
 
-        override fun getTile(): Tile = tile
-        override fun getBlock(): Block = block
         override fun maxSenderConnection() = -1
         override fun maxReceiverConnection() = -1
     }
@@ -304,14 +297,14 @@ open class Cloud(name: String) : PowerBlock(name) {
     open fun genAnimState() {
         CloudIdleAni = AniState("Idle") {
             cloud.Draw(
-                x + floating.xOffset,
-                y + floating.yOffset
+                x + floating.dx,
+                y + floating.dy
             )
         }
         CloudNoPowerAni = AniState("NoPower") {
             NoPowerTR.DrawSize(
-                x + floating.xOffset,
-                y + floating.yOffset,
+                x + floating.dx,
+                y + floating.dy,
                 1f / 7f * this@Cloud.size
             )
         }
@@ -342,8 +335,8 @@ open class Cloud(name: String) : PowerBlock(name) {
         }
 
         override fun drawBuild() {
-            xOffset = build.floating.xOffset
-            yOffset = build.floating.yOffset
+            xOffset = build.floating.dx
+            yOffset = build.floating.dy
             cloudAniSM.drawBuilding()
         }
     }

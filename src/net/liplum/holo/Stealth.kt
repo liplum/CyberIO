@@ -8,23 +8,25 @@ import arc.struct.ObjectSet
 import arc.struct.OrderedSet
 import arc.util.io.Reads
 import arc.util.io.Writes
+import mindustry.Vars
 import mindustry.entities.bullet.BulletType
 import mindustry.gen.Building
+import mindustry.gen.Bullet
+import mindustry.gen.Call
 import mindustry.gen.Groups
 import mindustry.graphics.Drawf
 import mindustry.graphics.Layer
 import mindustry.graphics.Pal
 import mindustry.type.Liquid
 import mindustry.ui.Bar
-import mindustry.world.Tile
 import mindustry.world.blocks.defense.turrets.Turret
 import mindustry.world.meta.Stat
 import mindustry.world.meta.StatValues
 import net.liplum.*
-import net.liplum.api.cyber.IStreamClient
-import net.liplum.api.cyber.IStreamHost
-import net.liplum.api.cyber.req
+import net.liplum.api.cyber.*
 import net.liplum.api.holo.IHoloEntity
+import net.liplum.api.holo.IHoloEntity.Companion.minHealth
+import net.liplum.lib.animations.Floating
 import net.liplum.lib.animations.anis.Draw
 import net.liplum.lib.delegates.Delegate1
 import net.liplum.lib.shaders.use
@@ -32,10 +34,7 @@ import net.liplum.persistance.intSet
 import net.liplum.registries.CioBulletTypes
 import net.liplum.registries.CioLiquids.cyberion
 import net.liplum.registries.CioShaders
-import net.liplum.utils.TR
-import net.liplum.utils.bundle
-import net.liplum.utils.healthPct
-import net.liplum.utils.sub
+import net.liplum.utils.*
 
 open class Stealth(name: String) : Turret(name) {
     @JvmField var restoreReload = 10 * 60f
@@ -47,6 +46,8 @@ open class Stealth(name: String) : Turret(name) {
     @ClientOnly lateinit var ImageTR: TR
     @ClientOnly lateinit var UnknownTR: TR
     @JvmField var minHealthProportion = 0.05f
+    @ClientOnly @JvmField var FloatingRange = 0.6f
+    @JvmField var restoreReq = 30f
 
     init {
         update = true
@@ -86,10 +87,15 @@ open class Stealth(name: String) : Turret(name) {
         stats.add(Stat.ammo, StatValues.ammo(ObjectMap.of(cyberion, shootType)))
     }
 
+    override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
+        super.drawPlace(x, y, rotation, valid)
+        this.drawLinkedLineToClientWhenConfiguring(x, y)
+    }
+
     open inner class StealthBuild : TurretBuild(), IStreamClient, IHoloEntity {
         // Hologram
         var restoreCharge = restoreReload
-        open var restRestore = 0f
+        override var restRestore = 0f
             set(value) {
                 field = value.coerceAtLeast(0f)
             }
@@ -102,6 +108,15 @@ open class Stealth(name: String) : Turret(name) {
             get() = health < maxHealth
         open val isRecovering: Boolean
             get() = restRestore > 0.5f
+        open val isProjecting: Boolean
+            get() = health > minHealth
+        open val curCyberionReq: Float
+            get() = lostHpPct * restoreReq
+
+        override fun collide(other: Bullet): Boolean =
+            isProjecting ||
+                    // Or isn't projecting but has not enough cyberion
+                    (!isProjecting && liquids[cyberion] < curCyberionReq)
         // Turret
         var hosts = OrderedSet<Int>()
         override fun updateTile() {
@@ -116,37 +131,94 @@ open class Stealth(name: String) : Turret(name) {
                 else
                     restRestore * delta() * 0.01f
                 health = health.coerceAtLeast(0f)
-                heal(restored)
-                restRestore -= restored
-            }
-
-            if (canRestore && restoreCharge >= restoreReload) {
-                restoreCharge = 0f
-                if (health != maxHealth) {
-                    dead = false
-                    restRestore = maxHealth
+                if (restored > 0.001f) {
+                    heal(restored)
+                    restRestore -= restored
                 }
             }
-            super.updateTile()
+            if (canRestore && restoreCharge >= restoreReload) {
+                val restoreReq = curCyberionReq
+                if (liquids[cyberion] >= curCyberionReq) {
+                    restoreCharge = 0f
+                    if (health != maxHealth) {
+                        dead = false
+                        restRestore = maxHealth
+                        liquids.remove(cyberion, restoreReq)
+                    }
+                }
+            }
+            if (isProjecting) {
+                super.updateTile()
+            }
         }
 
+        override fun canControl() =
+            playerControllable && isProjecting
+
+        override fun damage(damage: Float) {
+            if (!this.dead()) {
+                val dm = Vars.state.rules.blockHealth(team)
+                var d = damage
+                if (dm.isZero) {
+                    d = this.health + 1.0f
+                } else {
+                    d /= dm
+                }
+                d = handleDamage(d)
+                val restHealth = health - d
+                lastDamagedTime = 0f
+                // Check whether it has enough cyberion
+                if (liquids[cyberion] >= curCyberionReq) {
+                    Call.tileDamage(this, restHealth.coerceAtLeast(minHealth))
+                } else {
+                    Call.tileDamage(this, restHealth)
+
+                    if (this.health <= 0.0f) {
+                        Call.tileDestroyed(this)
+                    }
+                }
+            }
+        }
+        @ClientOnly
+        open fun updateFloating() {
+            val d = G.D(0.1f * FloatingRange * delta() * (2f - healthPct))
+            floating.move(d)
+        }
+        @ClientOnly @JvmField
+        var floating: Floating = Floating(FloatingRange).randomXY().changeRate(1)
         override fun draw() {
+            updateFloating()
             Draw.z(Layer.blockUnder)
             Drawf.shadow(x, y, 10f)
             Draw.z(Layer.block)
             Draw.rect(BaseTR, x, y)
             tr2.trns(rotation, -recoil)
-            CioShaders.Hologram.use(Layer.power) {
-                val healthPct = healthPct
-                it.alpha = healthPct / 4f * 3f
-                it.opacityNoise *= 2f - healthPct
-                it.flickering = it.DefaultFlickering + (1f - healthPct)
-                it.blendHoloColorOpacity = 0f
-                Draw.color(R.C.Holo)
-                ImageTR.Draw(x + tr2.x, y + tr2.y, rotation.draw)
-                Draw.reset()
+            val tr2x = tr2.x
+            val tr2y = tr2.y
+            if (isProjecting) {
+                CioShaders.Hologram.use(Layer.power) {
+                    val healthPct = healthPct
+                    it.alpha = healthPct / 4f * 3f
+                    it.opacityNoise *= 2f - healthPct
+                    it.flickering = it.DefaultFlickering + (1f - healthPct)
+                    it.blendHoloColorOpacity = 0f
+                    Draw.color(R.C.Holo)
+                    ImageTR.Draw(
+                        x + tr2x + floating.dx,
+                        y + tr2y + floating.dy,
+                        rotation.draw
+                    )
+                    Draw.reset()
+                }
             }
             Draw.reset()
+        }
+
+        override fun drawSelect() {
+            whenNotConfiguringHost {
+                this.drawStreamGraphic()
+            }
+            this.drawRequirements()
         }
 
         override fun killThoroughly() {
@@ -201,9 +273,6 @@ open class Stealth(name: String) : Turret(name) {
         override fun getConnectedHosts(): ObjectSet<Int> = hosts
         override fun getClientColor(): Color = cyberion.color
         override fun maxHostConnection() = maxConnection
-        override fun getBuilding() = this
-        override fun getTile(): Tile = tile
-        override fun getBlock() = this@Stealth
         override fun write(write: Writes) {
             super.write(write)
             write.intSet(hosts)

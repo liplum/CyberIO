@@ -195,6 +195,8 @@ object G {
         density: Float, arrowColor: Color,
         alpha: Float? = null
     ) {
+        if (density.isZero)
+            return
         val T = Tmp.v2.set(endDrawX, endDrawY).sub(startDrawX, startDrawY)
         val length = T.len()
         val count = Mathf.ceil(length / density)
@@ -375,11 +377,14 @@ object G {
     ) {
         val dx = b.x - b.block.size * Vars.tilesize / 2f
         val dy = b.y + b.block.size * Vars.tilesize / 2f
-        Draw.mixcol(Color.darkGray, alpha)
-        Draw.rect(material.uiIcon, dx, dy - 1)
+        val size = Vars.iconSmall / 4f
+        val icon = material.fullIcon
+        Draw.mixcol(Color.darkGray, 1f)
+        Draw.alpha(alpha)
+        Draw.rect(icon, dx, dy - 1, size, size)
         Draw.reset()
         Draw.alpha(alpha)
-        Draw.rect(material.uiIcon, dx, dy)
+        Draw.rect(icon, dx, dy, size, size)
     }
     @JvmStatic
     fun drawMaterialIcons(
@@ -388,16 +393,18 @@ object G {
     ) {
         val dx = b.x - b.block.size * Vars.tilesize / 2f
         val dy = b.y + b.block.size * Vars.tilesize / 2f
+        val size = Vars.iconSmall / 4f
         for (i in materials.indices) {
             val material = materials[i]
-            val uiIcon = material.uiIcon
-            Draw.mixcol(Color.darkGray, alpha)
-            val x = dx + i % maxPerRow * D(uiIcon.width)
-            val y = dy - i / maxPerRow * D(uiIcon.height)
-            Draw.rect(uiIcon, x, y - 1)
+            val icon = material.fullIcon
+            Draw.mixcol(Color.darkGray, 1f)
+            Draw.alpha(alpha)
+            val x = dx + i % maxPerRow * D(icon.width / 2f)
+            val y = dy - i / maxPerRow * D(icon.height / 2f)
+            Draw.rect(icon, x, y - 1, size, size)
             Draw.reset()
             Draw.alpha(alpha)
-            Draw.rect(uiIcon, x, y)
+            Draw.rect(icon, x, y, size, size)
         }
     }
 }

@@ -4,6 +4,7 @@ import arc.Core.settings
 
 object Settings {
     @ClientOnly @JvmField var LinkOpacity = 1f
+    @ClientOnly @JvmField var LinkArrowDensity = 15f
     @ClientOnly @JvmField var AlwaysShowLink = false
     @JvmStatic
     fun updateSettings() {

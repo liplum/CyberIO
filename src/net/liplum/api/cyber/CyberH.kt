@@ -144,7 +144,7 @@ fun Float.isAccepted() =
 @JvmOverloads
 fun IDataSender.drawDataNetGraphic(showSelfWhenNoLink: Boolean = true) {
     if (receiverConnectionNumber > 0 || showSelfWhenNoLink) {
-        G.drawSurroundingCircle(tile, R.C.Sender)
+        G.drawSurroundingCircle(tile, R.C.Sender, alpha = Settings.LinkOpacity)
     }
     if (canMultipleConnect()) {
         this.drawReceivers(connectedReceivers)
@@ -155,7 +155,7 @@ fun IDataSender.drawDataNetGraphic(showSelfWhenNoLink: Boolean = true) {
 @JvmOverloads
 fun IDataReceiver.drawDataNetGraphic(showSelfWhenNoLink: Boolean = true) {
     if (senderConnectionNumber > 0 || showSelfWhenNoLink) {
-        G.drawSurroundingCircle(tile, R.C.Receiver)
+        G.drawSurroundingCircle(tile, R.C.Receiver, alpha = Settings.LinkOpacity)
     }
     this.drawSenders(connectedSenders)
 }
@@ -197,14 +197,14 @@ inline fun whenNotConfiguringSender(func: () -> Unit) {
 
 fun IStreamHost.drawStreamGraphic(showSelfWhenNoLink: Boolean = true) {
     if (clientConnectionNumber > 0 || showSelfWhenNoLink) {
-        G.drawSurroundingCircle(tile, hostColor)
+        G.drawSurroundingCircle(tile, hostColor, alpha = Settings.LinkOpacity)
     }
     this.drawClients(connectedClients)
 }
 
 fun IStreamClient.drawStreamGraphic(showSelfWhenNoLink: Boolean = true) {
     if (hostConnectionNumber > 0 || showSelfWhenNoLink) {
-        G.drawSurroundingCircle(tile, clientColor)
+        G.drawSurroundingCircle(tile, clientColor, alpha = Settings.LinkOpacity)
     }
     this.drawHosts(connectedHosts)
 }
@@ -245,7 +245,8 @@ inline fun whenNotConfiguringHost(func: () -> Unit) {
     }
 }
 
-var ArrowDensity = 15f
+val ArrowDensity : Float
+    get() = Settings.LinkArrowDensity
 /**
  * Called in Receiver block
  */
@@ -260,7 +261,7 @@ fun IDataReceiver.drawSender(sender: Int?) {
         G.drawSurroundingCircle(senderT, R.C.Sender, alpha = opacity)
         G.drawArrowLine(sb, this.building, ArrowDensity, R.C.Receiver, alpha = opacity)
     }
-    /* TODO: For payload
+    /* deprecated for payload
     else {
         if (sb is PayloadConveyor.PayloadConveyorBuild) {
             if ((sb.payload as? BuildPayload)?.build is IDataSender) {
@@ -299,7 +300,7 @@ fun IDataSender.drawReceiver(receiver: Int?) {
         G.drawArrowLine(this.building, rb, ArrowDensity, R.C.Sender, alpha = opacity)
         rb.drawRequirements()
     }
-    /* TODO: For payload
+    /* deprecated for payload
     else if (rb is PayloadConveyor.PayloadConveyorBuild) {
         val dr = (rb.payload as? BuildPayload)?.build as? IDataReceiver
         if (dr != null) {

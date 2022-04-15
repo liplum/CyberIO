@@ -1,10 +1,6 @@
 package net.liplum.holo
 
-import arc.graphics.Blending
 import arc.graphics.g2d.Draw
-import arc.graphics.g2d.Fill
-import arc.math.Mathf
-import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.Vars
@@ -19,6 +15,7 @@ import net.liplum.ClientOnly
 import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.api.holo.IHoloEntity
+import net.liplum.api.holo.IHoloEntity.Companion.minHealth
 import net.liplum.lib.animations.Floating
 import net.liplum.lib.shaders.use
 import net.liplum.registries.CioShaders
@@ -90,8 +87,8 @@ open class HoloWall(name: String) : Wall(name) {
     open inner class HoloBuild : WallBuild(), IHoloEntity {
         var restoreCharge = restoreReload
         open val isProjecting: Boolean
-            get() = health > maxHealth * minHealthProportion
-        open var restRestore = 0f
+            get() = health > minHealth
+        override var restRestore = 0f
             set(value) {
                 field = value.coerceAtLeast(0f)
             }
@@ -100,19 +97,18 @@ open class HoloWall(name: String) : Wall(name) {
             get() = this@HoloWall.minHealthProportion
         @ClientOnly @JvmField
         var floating: Floating = Floating(FloatingRange).randomXY().changeRate(1)
-        override fun collide(other: Bullet): Boolean = isProjecting
         open val canRestructure: Boolean
             get() = lastDamagedTime > restoreReload || !isProjecting
-
-        override fun killThoroughly() {
-            kill()
-        }
+        open val canRestore: Boolean
+            get() = !isProjecting || health < maxHealth
+        open val isRecovering: Boolean
+            get() = restRestore > 0.5f
 
         override fun damage(damage: Float) {
             if (!this.dead()) {
                 val dm = Vars.state.rules.blockHealth(team)
                 var d = damage
-                if (dm.isZero()) {
+                if (dm.isZero) {
                     d = this.health + 1.0f
                 } else {
                     d /= dm
@@ -121,16 +117,15 @@ open class HoloWall(name: String) : Wall(name) {
                 val restHealth = (health - d).coerceAtLeast(maxHealth * minHealthProportion)
                 Call.tileDamage(this, restHealth)
                 lastDamagedTime = 0f
-                //noSleep()
             }
         }
 
         override fun draw() {
+            updateFloating()
             Draw.z(Layer.blockUnder)
             Drawf.shadow(x, y, 10f)
             Draw.z(Layer.block)
             Draw.rect(BaseTR, x, y)
-            updateFloating()
             if (isProjecting) {
                 CioShaders.Hologram.use(Layer.power) {
                     val healthPct = healthPct
@@ -141,23 +136,10 @@ open class HoloWall(name: String) : Wall(name) {
                     Draw.color(R.C.Holo)
                     Draw.rect(
                         ImageTR,
-                        x + floating.xOffset,
-                        y + floating.yOffset
+                        x + floating.dx,
+                        y + floating.dy
                     )
                     Draw.reset()
-                }
-
-                if (flashHit) {
-                    if (hit < 0.0001f) return
-                    Draw.color(flashColor)
-                    Draw.alpha(hit * 0.5f * healthPct)
-                    Draw.blend(Blending.additive)
-                    Fill.rect(x, y, (Vars.tilesize * size).toFloat(), (Vars.tilesize * size).toFloat())
-                    Draw.blend()
-                    Draw.reset()
-                    if (!Vars.state.isPaused) {
-                        hit = Mathf.clamp(hit - Time.delta / 10f)
-                    }
                 }
             }
             Draw.reset()
@@ -167,11 +149,6 @@ open class HoloWall(name: String) : Wall(name) {
             val d = G.D(0.1f * FloatingRange * delta() * (2f - healthPct))
             floating.move(d)
         }
-
-        open val canRestore: Boolean
-            get() = !isProjecting || health < maxHealth
-        open val isRecovering: Boolean
-            get() = restRestore > 0.5f
 
         override fun updateTile() {
             lastDamagedTime += delta()
@@ -184,8 +161,10 @@ open class HoloWall(name: String) : Wall(name) {
                 else
                     restRestore * delta() * 0.01f
                 health = health.coerceAtLeast(0f)
-                heal(restored)
-                restRestore -= restored
+                if (restored > 0.001f) {
+                    heal(restored)
+                    restRestore -= restored
+                }
             }
 
             if (canRestore && restoreCharge >= restoreReload) {
@@ -197,6 +176,11 @@ open class HoloWall(name: String) : Wall(name) {
             }
         }
 
+        override fun killThoroughly() {
+            kill()
+        }
+
+        override fun collide(other: Bullet): Boolean = isProjecting
         override fun drawCracks() {
         }
 

@@ -106,7 +106,7 @@ open class WirelessTower(name: String) : PowerBlock(name) {
                 val originalStatus = power.status
                 var request = powerCons.requestedPower(it)
                 if (powerCons.buffered) {
-                    if (!request.isZero() && powerCons.capacity > 0) {
+                    if (!request.isZero && powerCons.capacity > 0) {
                         val provided = min(request, realSpeed)
                         power.status = Mathf.clamp(
                             originalStatus + provided / powerCons.capacity
@@ -115,11 +115,11 @@ open class WirelessTower(name: String) : PowerBlock(name) {
                     }
                 } else {
                     if (powerCons is ConditionalConsumePower)
-                        request = if (request.isZero())
+                        request = if (request.isZero)
                             powerCons.usage
                         else
                             request
-                    if (request.isZero()) return@forEachTargetInRange
+                    if (request.isZero) return@forEachTargetInRange
                     val rest = (1f - originalStatus) * request
                     val provided = min(rest, realSpeed)
                     power.status = Mathf.clamp(
@@ -163,7 +163,7 @@ open class WirelessTower(name: String) : PowerBlock(name) {
             CoilTR.Draw(x + offsetX, y + offsetY)
             //Radiation
             val selfPower = this.power.status
-            if (selfPower.isZero() || selfPower.isNaN()) return
+            if (selfPower.isZero || selfPower.isNaN()) return
             val realRange = realRange
             val step = realRadiationSpeed * realRange
             val iterator = radiations.iterator()

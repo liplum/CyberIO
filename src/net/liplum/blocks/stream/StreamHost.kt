@@ -10,17 +10,15 @@ import mindustry.gen.Building
 import mindustry.graphics.Drawf
 import mindustry.logic.LAccess
 import mindustry.type.Liquid
-import mindustry.world.Block
-import mindustry.world.Tile
 import mindustry.world.meta.BlockGroup
 import net.liplum.CalledBySync
 import net.liplum.ClientOnly
 import net.liplum.DebugOnly
 import net.liplum.SendDataPack
-import net.liplum.lib.animations.Floating
-import net.liplum.lib.animations.anis.*
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
+import net.liplum.lib.animations.Floating
+import net.liplum.lib.animations.anis.*
 import net.liplum.persistance.intSet
 import net.liplum.utils.*
 
@@ -113,8 +111,7 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
             var per = restNeedPumped / clients.size
             var resetClient = clients.size
             for (client in SharedClientSeq) {
-                @Suppress("UNCHECKED_CAST")
-                if (liquid.match(client.requirements as Array<Liquid>)) {
+                if (liquid.match(client.requirements)) {
                     val rest = streaming(client, liquid, per)
                     restNeedPumped -= (per - rest)
                 }
@@ -224,10 +221,6 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
         override fun drawSelect() {
             this.drawStreamGraphic()
         }
-
-        override fun getBuilding(): Building = this
-        override fun getTile(): Tile = tile
-        override fun getBlock(): Block = this@StreamHost
         @SendDataPack
         override fun connectSync(client: IStreamClient) {
             if (client.building.pos() !in clients) {
@@ -292,8 +285,8 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
         NoPowerAni = addAniState("NoPower") {
             SetAlpha(0.8f)
             NoPowerTR.DrawSize(
-                x + floating.xOffset,
-                y + floating.yOffset,
+                x + floating.dx,
+                y + floating.dy,
                 1f / 7f * this@StreamHost.size
             )
         }

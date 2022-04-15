@@ -103,10 +103,10 @@ open class ICMachineS(name: String) : AniedCrafter<ICMachineS, ICMachineS.ICMach
         config {
             transition(None)
             From(IdleState) To WorkingState When {
-                !progress.isZero() && !power.status.isZero()
+                !progress.isZero && !power.status.isZero
             }
             From(WorkingState) To IdleState When {
-                progress.isZero() || power.status.isZero()
+                progress.isZero || power.status.isZero
             }
         }
     }

@@ -10,8 +10,6 @@ import mindustry.graphics.Pal
 import mindustry.logic.LAccess
 import mindustry.type.Item
 import mindustry.ui.Bar
-import mindustry.world.Block
-import mindustry.world.Tile
 import mindustry.world.meta.BlockGroup
 import net.liplum.*
 import net.liplum.api.cyber.*
@@ -202,9 +200,6 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
             receiverPackedPos = read.i()
         }
 
-        override fun getBuilding(): Building = this
-        override fun getTile(): Tile = tile
-        override fun getBlock(): Block = this@Sender
         @SendDataPack
         override fun connectSync(receiver: IDataReceiver) {
             val pos = receiver.building.pos()

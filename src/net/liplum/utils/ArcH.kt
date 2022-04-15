@@ -15,7 +15,9 @@ fun <T> Seq<T>.removeT(element: T) {
 fun <T> emptySeq(): Seq<T> = ArcU.emptySeq()
 fun <T> emptyOrderedSet(): OrderedSet<T> = ArcU.emptySet()
 fun <TK, TV> emptyOrderedMap(): OrderedMap<TK, TV> = ArcU.emptyMap()
-fun Float.isZero() = Mathf.zero(this)
+val Float.isZero: Boolean
+    get() = Mathf.zero(this)
+
 operator fun <T> Cons<T>.invoke(t: T) {
     this.get(t)
 }

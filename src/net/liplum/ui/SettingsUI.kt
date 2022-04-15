@@ -1,11 +1,13 @@
 package net.liplum.ui
 
 import arc.Core.settings
+import arc.math.Interp
 import mindustry.Vars
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.CheckSetting
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.SliderSetting
 import net.liplum.R
 import net.liplum.Settings
+import net.liplum.utils.invoke
 
 object SettingsUI {
     @JvmStatic
@@ -20,6 +22,17 @@ object SettingsUI {
             R.Setting.LinkOpacity,
             100, 0, 100, 5, InsertPos.After, { "$it%" }, {
                 Settings.LinkOpacity = settings.getInt(R.Setting.LinkOpacity) / 100f
+            }) {
+            it !is SliderSetting
+        }
+        // input [0,100] -> output [0,30]
+        val pct2Density: (Int) -> Float = {
+            Interp.pow2Out(it / 100f) * 30f
+        }
+        graphics.insertSliderPref(
+            R.Setting.LinkArrowDensity,
+            15, 0, 100, 5, InsertPos.After, { "$it%" }, {
+                Settings.LinkArrowDensity = pct2Density(settings.getInt(R.Setting.LinkArrowDensity))
             }) {
             it !is SliderSetting
         }

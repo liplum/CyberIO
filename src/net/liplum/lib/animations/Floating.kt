@@ -8,11 +8,11 @@ open class Floating {
     val maxX: Float
     val maxY: Float
     var changeRate = 0
-    var xOffset = 0f
+    var dx = 0f
         set(value) {
             field = value.coerceIn(minX, maxX)
         }
-    var yOffset = 0f
+    var dy = 0f
         set(value) {
             field = value.coerceIn(minY, maxY)
         }
@@ -39,8 +39,8 @@ open class Floating {
     }
 
     open fun set(xOffset: Float, yOffset: Float): Floating {
-        this.xOffset = xOffset
-        this.yOffset = yOffset
+        this.dx = xOffset
+        this.dy = yOffset
         return this
     }
 
@@ -50,15 +50,15 @@ open class Floating {
     }
 
     open fun randomXY(): Floating {
-        this.xOffset = Mathf.random(minX, maxX)
-        this.yOffset = Mathf.random(minY, maxY)
+        this.dx = Mathf.random(minX, maxX)
+        this.dy = Mathf.random(minY, maxY)
         this.xAdding = Mathf.randomBoolean()
         this.yAdding = Mathf.randomBoolean()
         return this
     }
 
     open fun tryFlipX() {
-        val x = xOffset
+        val x = dx
         if (x <= minX || x >= maxX ||
             (changeRate > 0 && Mathf.random(99) < changeRate)
         ) {
@@ -67,7 +67,7 @@ open class Floating {
     }
 
     open fun tryFlipY() {
-        val x = yOffset
+        val x = dy
         if (x <= minY || x >= maxY ||
             (changeRate > 0 && Mathf.random(99) < changeRate)
         ) {
@@ -77,30 +77,30 @@ open class Floating {
 
     open fun move(d: Float) {
         if (xAdding)
-            xOffset += d
+            dx += d
         else
-            xOffset -= d
+            dx -= d
         if (yAdding)
-            yOffset += d
+            dy += d
         else
-            yOffset -= d
+            dy -= d
         tryFlipX()
         tryFlipY()
     }
 
     open fun moveX(dx: Float) {
         if (xAdding)
-            xOffset += dx
+            this.dx += dx
         else
-            xOffset -= dx
+            this.dx -= dx
         tryFlipX()
     }
 
     open fun moveY(dy: Float) {
         if (yAdding)
-            yOffset += dy
+            this.dy += dy
         else
-            yOffset -= dy
+            this.dy -= dy
         tryFlipY()
     }
 }

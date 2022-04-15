@@ -64,10 +64,10 @@ open class ICMachine(name: String) : AniedCrafter<ICMachine, ICMachine.ICMachine
     override fun genAniConfig() {
         config {
             From(IdleState) To WorkingState When {
-                !progress.isZero() && !power.status.isZero()
+                !progress.isZero && !power.status.isZero
             }
             From(WorkingState) To IdleState When {
-                progress.isZero() || power.status.isZero()
+                progress.isZero || power.status.isZero
             }
         }
     }

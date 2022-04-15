@@ -10,6 +10,7 @@ import arc.math.Mathf
 import arc.math.geom.Vec2
 import arc.scene.ui.layout.Table
 import arc.struct.Seq
+import arc.util.Strings.autoFixed
 import arc.util.Structs
 import arc.util.Time
 import arc.util.io.Reads
@@ -28,6 +29,7 @@ import mindustry.ui.Styles
 import mindustry.world.Block
 import mindustry.world.consumers.ConsumeItemDynamic
 import mindustry.world.meta.BlockGroup
+import mindustry.world.meta.Stat
 import net.liplum.*
 import net.liplum.lib.animations.anis.Draw
 import net.liplum.lib.shaders.SD
@@ -354,6 +356,28 @@ open class HoloProjector(name: String) : Block(name) {
             return when (sensor) {
                 LAccess.progress -> progress.toDouble()
                 else -> super.sense(sensor)
+            }
+        }
+    }
+
+    override fun setStats() {
+        super.setStats()
+        stats.remove(Stat.itemCapacity)
+
+        stats.add(Stat.output) {
+            val p: Seq<HoloPlan> = plans.select { plan ->
+                plan.unitType.unlockedNow()
+            }
+            it.row()
+            for (plan in p) {
+                val type = plan.unitType
+                it.image(type.uiIcon).size((8 * 3).toFloat()).padRight(2f).right()
+                it.add(type.localizedName).left()
+                it.add("${autoFixed(plan.time / 60f, 1)} ${R.Bundle.UnitSeconds.bundle}")
+                    .color(Color.lightGray).padLeft(12f).left()
+                it.add("${autoFixed(plan.req.cyberionReq, 1)} ${R.Bundle.CyberionReq.bundle}")
+                    .color(Color.lightGray).padLeft(12f).left()
+                it.row()
             }
         }
     }

@@ -44,6 +44,7 @@ import net.liplum.blocks.tmtrainer.TMTRAINER
 import net.liplum.blocks.underdrive.UnderdriveProjector
 import net.liplum.blocks.virus.AntiVirus
 import net.liplum.blocks.virus.Virus
+import net.liplum.brains.Heimdall
 import net.liplum.bullets.RuvikBullet
 import net.liplum.bullets.STEM_VERSION
 import net.liplum.bullets.ShaderCLaser
@@ -51,6 +52,7 @@ import net.liplum.holo.*
 import net.liplum.lib.animations.ganim.globalAnim
 import net.liplum.lib.shaders.SD
 import net.liplum.seffects.StaticFx
+import net.liplum.utils.otherConsumersAreValid
 
 object CioBlocks : ContentTable {
     @JvmStatic lateinit var icMachine: GenericCrafter
@@ -81,6 +83,7 @@ object CioBlocks : ContentTable {
     @JvmStatic lateinit var aquacyberion: Floor
     @JvmStatic lateinit var stealth: Stealth
     @JvmStatic lateinit var wirelessTower: WirelessTower
+    @JvmStatic lateinit var heimdall: Heimdall
     override fun firstLoad() {
     }
 
@@ -437,8 +440,8 @@ object CioBlocks : ContentTable {
         streamServer = StreamServer("stream-server").apply {
             requirements(
                 Category.liquid, BuildVisibility.shown, arrayOf(
-                    ItemStack(CioItems.ic, 10),
-                    ItemStack(Items.metaglass, 300),
+                    ItemStack(CioItems.ic, 12),
+                    ItemStack(Items.metaglass, 350),
                     ItemStack(Items.silicon, 100),
                     ItemStack(Items.thorium, 500),
                 )
@@ -454,7 +457,7 @@ object CioBlocks : ContentTable {
         jammer = Jammer("jammer").apply {
             requirements(
                 Category.turret, BuildVisibility.shown, arrayOf(
-                    ItemStack(CioItems.ic, 12),
+                    ItemStack(CioItems.ic, 10),
                     ItemStack(Items.lead, 350),
                     ItemStack(Items.thorium, 200),
                     ItemStack(Items.surgeAlloy, 200),
@@ -515,9 +518,9 @@ object CioBlocks : ContentTable {
                 requirements(
                     Category.units, BuildVisibility.shown, arrayOf(
                         ItemStack(CioItems.ic, 10),
-                        ItemStack(Items.silicon, 80),
+                        ItemStack(Items.silicon, 200),
                         ItemStack(Items.graphite, 60),
-                        ItemStack(Items.thorium, 100),
+                        ItemStack(Items.thorium, 500),
                     )
                 )
                 plans = Seq.with(
@@ -548,7 +551,9 @@ object CioBlocks : ContentTable {
                     ),
                 )
                 size = 5
-                consumes.power(3f)
+                consumes.powerCond(3f) { it: HoloProjector.HoloPBuild ->
+                    it.curPlan != null && it.otherConsumersAreValid(consumes.power)
+                }
             }
 
             aquacyberion = Floor("aqua-cyberion").apply {
@@ -574,11 +579,12 @@ object CioBlocks : ContentTable {
                     )
                 )
                 size = 3
+                recoilAmount = 3f
                 range = 320f
-                health = 1000
-                liquidCapacity = 40f
+                health = 1500
+                liquidCapacity = 60f
                 reloadTime = 15f
-                shootType = RuvikBullet(2f, 40f).apply {
+                shootType = RuvikBullet(2f, 44f).apply {
                     stemVersion = STEM_VERSION.STEM2
                     width = 10f
                     height = 10f
@@ -601,6 +607,16 @@ object CioBlocks : ContentTable {
                 distributeSpeed = 5f
                 size = 2
                 range = 250f
+            }
+
+            heimdall = Heimdall("heimdall").apply {
+                requirements(
+                    Category.power, BuildVisibility.shown, arrayOf(
+                        ItemStack(CioItems.ic, 5),
+                        ItemStack(Items.sporePod, 50),
+                    )
+                )
+                size = 4
             }
         }
     }

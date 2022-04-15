@@ -2,6 +2,7 @@ package net.liplum.blocks.gadgets
 
 import arc.graphics.g2d.Draw
 import arc.math.Mathf
+import arc.scene.ui.Label
 import arc.struct.OrderedSet
 import arc.util.Time
 import arc.util.io.Reads
@@ -10,14 +11,12 @@ import mindustry.gen.Building
 import mindustry.graphics.Pal
 import mindustry.type.Item
 import mindustry.type.ItemStack
-import mindustry.world.Tile
 import mindustry.world.consumers.Consume
 import mindustry.world.consumers.ConsumeItemDynamic
 import mindustry.world.consumers.ConsumeItems
 import mindustry.world.consumers.ConsumeType
 import mindustry.world.meta.BlockGroup
 import mindustry.world.meta.Stat
-import mindustry.world.meta.StatUnit
 import net.liplum.ClientOnly
 import net.liplum.DebugOnly
 import net.liplum.UndebugOnly
@@ -89,7 +88,11 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
 
     override fun setStats() {
         super.setStats()
-        stats.add(Stat.powerUse, powerUsageBasic * 60f, StatUnit.powerSecond)
+        stats.remove(Stat.powerUse)
+        stats.add(Stat.powerUse) {
+            val l = Label("$contentType.$name.stats.power-use".bundle)
+            it.add(l)
+        }
     }
 
     override fun setBars() {
@@ -300,18 +303,15 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
 
         override fun getConnectedSenders() = senders
         override fun maxSenderConnection() = maxConnection
-        override fun getBuilding(): SmartDISBuild = this
-        override fun getTile(): Tile = this.tile
-        override fun getBlock() = this@SmartDistributor
     }
 
     override fun genAniConfig() {
         config {
             From(NoPowerAni) To DistributingAni When {
-                !power.status.isZero()
+                !power.status.isZero
             }
             From(DistributingAni) To NoPowerAni When {
-                power.status.isZero()
+                power.status.isZero
             }
         }
     }

@@ -1,6 +1,7 @@
 package net.liplum.blocks.gadgets
 
 import arc.math.Mathf
+import arc.scene.ui.Label
 import arc.struct.OrderedSet
 import arc.struct.Seq
 import arc.util.Time
@@ -11,18 +12,16 @@ import mindustry.graphics.Pal
 import mindustry.logic.LAccess
 import mindustry.type.Item
 import mindustry.ui.Bar
-import mindustry.world.Tile
 import mindustry.world.meta.BlockGroup
 import mindustry.world.meta.Stat
-import mindustry.world.meta.StatUnit
 import net.liplum.*
+import net.liplum.api.cyber.*
+import net.liplum.blocks.AniedBlock
 import net.liplum.lib.animations.anims.Animation
 import net.liplum.lib.animations.anims.AnimationObj
 import net.liplum.lib.animations.anis.AniState
 import net.liplum.lib.animations.anis.Draw
 import net.liplum.lib.animations.anis.config
-import net.liplum.api.cyber.*
-import net.liplum.blocks.AniedBlock
 import net.liplum.lib.ui.bars.removeItems
 import net.liplum.persistance.intSet
 import net.liplum.utils.*
@@ -92,16 +91,20 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
         super.init()
     }
 
-    override fun setStats() {
-        super.setStats()
-        stats.add(Stat.powerUse, powerUsageBasic * 60f, StatUnit.powerSecond)
-    }
-
     override fun load() {
         super.load()
         NoPowerTR = this.inMod("rs-no-power")
         ShrinkingAnim = this.autoAnim("shrink", ShrinkingAnimFrames, ShrinkingAnimDuration)
         CoverTR = this.sub("cover")
+    }
+
+    override fun setStats() {
+        super.setStats()
+        stats.remove(Stat.powerUse)
+        stats.add(Stat.powerUse) {
+            val l = Label("$contentType.$name.stats.power-use".bundle)
+            it.add(l)
+        }
     }
 
     override fun setBars() {
@@ -425,9 +428,6 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
         override fun maxReceiverConnection() = maxConnection
         override fun acceptItem(source: Building, item: Item) = false
         override fun getConnectedReceivers(): OrderedSet<Int> = receivers
-        override fun getBuilding() = this
-        override fun getTile(): Tile = tile
-        override fun getBlock() = this@SmartUnloader
         override fun read(read: Reads, revision: Byte) {
             super.read(read, revision)
             receivers = read.intSet()

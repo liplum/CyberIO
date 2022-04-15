@@ -1,17 +1,14 @@
 package net.liplum.blocks.cloud;
 
-import mindustry.gen.Building;
 import mindustry.world.modules.ItemModule;
+import net.liplum.api.cyber.ICyberEntity;
 import org.jetbrains.annotations.NotNull;
 
-public interface IShared {
+public interface IShared extends ICyberEntity {
     @NotNull
     ItemModule getSharedItems();
 
     void setSharedItems(@NotNull ItemModule itemModule);
-
-    @NotNull
-    Building getBuilding();
 
     @NotNull
     CloudInfo getSharedInfo();

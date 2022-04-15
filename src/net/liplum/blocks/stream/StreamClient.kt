@@ -13,8 +13,6 @@ import mindustry.entities.units.BuildPlan
 import mindustry.gen.Building
 import mindustry.graphics.Drawf
 import mindustry.type.Liquid
-import mindustry.world.Block
-import mindustry.world.Tile
 import mindustry.world.blocks.ItemSelection
 import mindustry.world.meta.BlockGroup
 import net.liplum.ClientOnly
@@ -125,6 +123,7 @@ open class StreamClient(name: String) : AniedBlock<StreamClient, StreamClient.Cl
 
         override fun acceptedAmount(host: IStreamHost, liquid: Liquid): Float {
             if (!consValid()) return 0f
+            if (!isConnectedWith(host)) return 0f
             return if (liquid == outputLiquid)
                 liquidCapacity - liquids[outputLiquid]
             else
@@ -154,7 +153,7 @@ open class StreamClient(name: String) : AniedBlock<StreamClient, StreamClient.Cl
         }
 
         override fun onConfigureTileTapped(other: Building): Boolean {
-            if (this === other) {
+            if (this == other) {
                 deselect()
                 configure(null)
                 return false
@@ -185,10 +184,6 @@ open class StreamClient(name: String) : AniedBlock<StreamClient, StreamClient.Cl
             )
             TopTR.DrawOn(this)
         }
-
-        override fun getBuilding(): Building = this
-        override fun getTile(): Tile = tile
-        override fun getBlock(): Block = this@StreamClient
     }
 
     @ClientOnly lateinit var NormalAni: AniStateC

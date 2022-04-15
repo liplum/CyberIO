@@ -48,7 +48,7 @@ open class AdjustableOverdrive(name: String) : OverdriveProjector(name) {
     override fun init() {
         super.init()
         adjustBase = abs(adjustBase)
-        if (adjustBase.isZero()) {
+        if (adjustBase.isZero) {
             adjustBase = 1f
         }
         val (func, rfunc) = ExpLogGen(adjustBase)

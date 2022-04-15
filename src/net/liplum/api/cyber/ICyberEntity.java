@@ -7,11 +7,17 @@ import org.jetbrains.annotations.NotNull;
 
 public interface ICyberEntity {
     @NotNull
-    Building getBuilding();
+    default Building getBuilding(){
+        return (Building) this;
+    }
 
     @NotNull
-    Tile getTile();
+    default Tile getTile(){
+        return getBuilding().tile;
+    }
 
     @NotNull
-    Block getBlock();
+    default Block getBlock(){
+        return getBuilding().block;
+    }
 }

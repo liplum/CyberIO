@@ -33,6 +33,17 @@ public class R {
                 HoloSupporter = "holo-supporter";
     }
 
+    public static final class Bundle{
+        public static final String UnitSeconds = "unit.seconds";
+
+        @NotNull
+        @Contract(pure = true)
+        public static String Gen(String content) {
+            return Meta.ModID + "." + content;
+        }
+        public static final String CyberionReq = Gen("cyberion-req");
+    }
+
     public static final class Bar {
         public static final String NeighborStateN = "neighbor-state";
         public static final String PowerN = "power";
@@ -51,7 +62,6 @@ public class R {
                     BuildProgress = "bar.progress";
             public static final String UnitsN = "units",
                     UnitCapacity = "bar.unitcap";
-
         }
 
         public static final String SlowDownN = "slow-down",
@@ -110,8 +120,8 @@ public class R {
         public static final String RestLifeN = "rest-life",
                 RestLife = Gen(RestLifeN),
                 RestLifeFigure = Gen(RestLifeN + ".figure");
-
-
+        public static final String RestResurrectN = "rest-resurrect",
+                RestResurrect = Gen(RestResurrectN);
     }
 
     public static final class Ctrl {
@@ -244,6 +254,7 @@ public class R {
 
     public static final class Setting {
         public static final String LinkOpacity = Gen("connection-opacity");
+        public static final String LinkArrowDensity = Gen("connection-density");
         public static final String AlwaysShowLink = Gen("always-show-link");
         public static final String ShowWelcome = Gen("show-welcome");
         public static final String ShowUpdate = Gen("show-update");

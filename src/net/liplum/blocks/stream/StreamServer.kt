@@ -1,7 +1,11 @@
 package net.liplum.blocks.stream
 
 import arc.graphics.Color
+import arc.struct.ObjectSet
+import arc.struct.OrderedSet
 import arc.util.Time
+import arc.util.io.Reads
+import arc.util.io.Writes
 import mindustry.Vars
 import mindustry.entities.Fires
 import mindustry.gen.Building
@@ -10,13 +14,18 @@ import mindustry.logic.LAccess
 import mindustry.type.Liquid
 import net.liplum.ClientOnly
 import net.liplum.R
+import net.liplum.api.cyber.*
 import net.liplum.lib.animations.anis.DrawOn
 import net.liplum.lib.animations.anis.DrawRotateOn
-import net.liplum.api.cyber.IStreamClient
-import net.liplum.api.cyber.sc
+import net.liplum.lib.delegates.Delegate1
+import net.liplum.persistance.intSet
 import net.liplum.utils.ForProximity
 import net.liplum.utils.buildAt
 
+/**
+ * ### Since 1
+ * Steam server is also a [IStreamClient].
+ */
 open class StreamServer(name: String) : StreamHost(name) {
     @JvmField var fireproof = false
 
@@ -24,7 +33,13 @@ open class StreamServer(name: String) : StreamHost(name) {
         callDefaultBlockDraw = false
     }
 
-    open inner class ServerBuild : HostBuild() {
+    override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
+        super.drawPlace(x, y, rotation, valid)
+        this.drawLinkedLineToClientWhenConfiguring(x, y)
+    }
+
+    open inner class ServerBuild : HostBuild(), IStreamClient {
+        override fun version(): Byte = 1
         @ClientOnly @JvmField var mixedLiquidColor: Color = Color.white.cpy()
         @ClientOnly @JvmField var _hostColor: Color = R.C.Host.cpy()
         @ClientOnly
@@ -144,6 +159,13 @@ open class StreamServer(name: String) : StreamHost(name) {
             drawTeamTop()
         }
 
+        override fun drawSelect() {
+            super.drawSelect()
+            whenNotConfiguringHost {
+                (this as IStreamClient).drawStreamGraphic()
+            }
+            this.drawRequirements()
+        }
         override fun control(type: LAccess, p1: Any?, p2: Double, p3: Double, p4: Double) {
             when (type) {
                 LAccess.shoot ->
@@ -161,5 +183,40 @@ open class StreamServer(name: String) : StreamHost(name) {
                 else -> super.control(type, p1, p2, p3, p4)
             }
         }
+
+        var hosts = OrderedSet<Int>()
+        override fun readStream(host: IStreamHost, liquid: Liquid, amount: Float) {
+            if (this.isConnectedWith(host)) {
+                liquids.add(liquid, amount)
+                ClientOnly {
+                    liquidFlow += amount
+                }
+            }
+        }
+
+        override fun acceptedAmount(host: IStreamHost, liquid: Liquid): Float {
+            if (!consValid()) return 0f
+            if (!isConnectedWith(host)) return 0f
+            return liquidCapacity - liquids[liquid]
+        }
+
+        override fun read(read: Reads, revision: Byte) {
+            super.read(read, revision)
+            if (revision.toInt() > 0) {
+                hosts = read.intSet()
+            }
+        }
+
+        override fun write(write: Writes) {
+            super.write(write)
+            write.intSet(hosts)
+        }
+
+        @JvmField var onRequirementUpdated: Delegate1<IStreamClient> = Delegate1()
+        override fun getOnRequirementUpdated() = onRequirementUpdated
+        override fun getRequirements(): Array<Liquid>? = null
+        override fun getConnectedHosts(): ObjectSet<Int> = hosts
+        override fun maxHostConnection() = maxConnection
+        override fun getClientColor(): Color = mixedLiquidColor
     }
 }
