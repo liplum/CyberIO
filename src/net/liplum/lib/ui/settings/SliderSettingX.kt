@@ -1,4 +1,4 @@
-package net.liplum.ui
+package net.liplum.lib.ui.settings
 
 import arc.Core
 import arc.scene.event.Touchable

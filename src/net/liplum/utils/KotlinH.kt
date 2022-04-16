@@ -59,3 +59,6 @@ inline fun <reified T> Array<T>.sortManually(vararg indices: Int): Array<T> {
     }
     return res
 }
+
+fun Boolean.toInt(): Int = if (this) 1 else 0
+fun Boolean.toFloat(): Float = if (this) 1f else 0f

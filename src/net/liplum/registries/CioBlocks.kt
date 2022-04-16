@@ -4,8 +4,10 @@ import arc.Events
 import arc.graphics.Color
 import arc.struct.Seq
 import mindustry.content.*
+import mindustry.entities.bullet.LaserBulletType
 import mindustry.game.EventType.Trigger
 import mindustry.gen.Sounds
+import mindustry.graphics.Pal
 import mindustry.type.Category
 import mindustry.type.ItemStack
 import mindustry.type.LiquidStack
@@ -45,6 +47,7 @@ import net.liplum.blocks.tmtrainer.TMTRAINER
 import net.liplum.blocks.underdrive.UnderdriveProjector
 import net.liplum.blocks.virus.AntiVirus
 import net.liplum.blocks.virus.Virus
+import net.liplum.brains.Eye
 import net.liplum.brains.Heimdall
 import net.liplum.bullets.RuvikBullet
 import net.liplum.bullets.STEM_VERSION
@@ -85,6 +88,7 @@ object CioBlocks : ContentTable {
     @JvmStatic lateinit var stealth: Stealth
     @JvmStatic lateinit var wirelessTower: WirelessTower
     @JvmStatic lateinit var heimdall: Heimdall
+    @JvmStatic lateinit var eye: Eye
     override fun firstLoad() {
     }
 
@@ -621,6 +625,35 @@ object CioBlocks : ContentTable {
                 consumes.add(
                     ConsumePower(2f, 240f, false)
                 )
+            }
+            eye = Eye("heimdall-eye").apply {
+                requirements(
+                    Category.turret, BuildVisibility.shown, arrayOf(
+                        ItemStack(CioItems.ic, 5),
+                        ItemStack(Items.sporePod, 50),
+                    )
+                )
+                size = 2
+                normalBullet = LaserBulletType(140f).apply {
+                    colors = arrayOf(Pal.lancerLaser.cpy().a(0.4f), Pal.lancerLaser, Color.white)
+                    hitEffect = Fx.hitLancer
+                    hitSize = 4f
+                    lifetime = 16f
+                    drawSize = 400f
+                    collidesAir = false
+                    length = 173f
+                    ammoMultiplier = 1f
+                }
+                improvedBullet = LaserBulletType(250f).apply {
+                    colors = arrayOf(Pal.lancerLaser.cpy().a(0.4f), Pal.lancerLaser, Color.white)
+                    hitEffect = Fx.hitLancer
+                    hitSize = 10f
+                    lifetime = 24f
+                    drawSize = 1500f
+                    collidesAir = true
+                    length = 280f
+                    ammoMultiplier = 1.5f
+                }
             }
         }
     }

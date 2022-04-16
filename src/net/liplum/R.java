@@ -254,14 +254,25 @@ public class R {
         }
     }
 
+    public static final class UI {
+        public static String Gen(String name) {
+            return "ui." + Meta.ModID + "." + name;
+        }
+
+        public static final String
+            MousePositionTile = Gen("mouse-position.tile"),
+            MousePositionBuild = Gen("mouse-position.build");
+    }
+
     public static final class Setting {
-        public static final String LinkOpacity = Gen("connection-opacity");
-        public static final String LinkArrowDensity = Gen("connection-density");
-        public static final String AlwaysShowLink = Gen("always-show-link");
-        public static final String ShowWelcome = Gen("show-welcome");
-        public static final String ShowUpdate = Gen("show-update");
-        public static final String Version = Gen("version");
-        public static final String ClickWelcomeTimes = Gen("welcome-click-times");
-        public static final String LastWelcome = Gen("last-welcome");
+        public static final String
+                LinkOpacity = Gen("connection-opacity"),
+                LinkArrowDensity = Gen("connection-density"),
+                AlwaysShowLink = Gen("always-show-link"),
+                ShowWelcome = Gen("show-welcome"),
+                ShowUpdate = Gen("show-update"),
+                Version = Gen("version"),
+                ClickWelcomeTimes = Gen("welcome-click-times"),
+                LastWelcome = Gen("last-welcome");
     }
 }

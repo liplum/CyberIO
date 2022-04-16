@@ -30,6 +30,23 @@ fun Int.dsOrPayload(): IDataSender? =
 val IDataBuilding?.exists: Boolean
     get() = this != null && this.building.exists
 
+val ICyberEntity.bottomLeftX: Int
+    get() = building.bottomLeftX
+val ICyberEntity.bottomLeftY: Int
+    get() = building.bottomLeftY
+val ICyberEntity.bottomRightX: Int
+    get() = building.bottomRightX
+val ICyberEntity.bottomRightY: Int
+    get() = building.bottomRightY
+val ICyberEntity.topLeftX: Int
+    get() = building.topLeftX
+val ICyberEntity.topLeftY: Int
+    get() = building.topLeftY
+val ICyberEntity.topRightX: Int
+    get() = building.topRightX
+val ICyberEntity.topRightY: Int
+    get() = building.topRightY
+
 typealias SingleItemArray = Array<Item>
 
 object DataCenter {

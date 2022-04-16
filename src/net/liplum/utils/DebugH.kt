@@ -11,11 +11,12 @@ import mindustry.ui.Bar
 import mindustry.world.blocks.production.GenericCrafter
 import mindustry.world.meta.BlockBars
 import net.liplum.R
-import net.liplum.lib.animations.anis.IAniSMedBuild
+import net.liplum.api.brain.IUpgradeComponent
 import net.liplum.api.cyber.IDataReceiver
 import net.liplum.api.cyber.IDataSender
 import net.liplum.api.cyber.IStreamClient
 import net.liplum.api.cyber.IStreamHost
+import net.liplum.lib.animations.anis.IAniSMedBuild
 
 annotation class CioDebugOnly
 
@@ -99,17 +100,17 @@ fun <T> BlockBars.addReceiverInfo() where T : Building, T : IDataSender {
         Bar(
             {
                 val connected = if (it.canMultipleConnect())
-                    it.getConnectedReceivers().size
+                    it.connectedReceivers.size
                 else
-                    if (it.getConnectedReceiver() != null) 1 else 0
+                    if (it.connectedReceiver != null) 1 else 0
                 R.Bar.Receiver.bundle(connected)
             },
             { R.C.Receiver },
             {
                 val connected = if (it.canMultipleConnect())
-                    it.getConnectedReceivers().size
+                    it.connectedReceivers.size
                 else
-                    if (it.getConnectedReceiver() != null) 1 else 0
+                    if (it.connectedReceiver != null) 1 else 0
                 var max = it.maxReceiverConnection()
                 if (max == -1) {
                     max = 10
@@ -125,14 +126,14 @@ fun <T> BlockBars.addSenderInfo() where T : Building, T : IDataReceiver {
         R.Bar.SenderN
     ) {
         Bar(
-            { R.Bar.Sender.bundle(it.getConnectedSenders().size) },
+            { R.Bar.Sender.bundle(it.connectedSenders.size) },
             { R.C.Sender },
             {
                 var max = it.maxSenderConnection()
                 if (max == -1) {
                     max = 10
                 }
-                it.getConnectedSenders().size.toFloat() / max
+                it.connectedSenders.size.toFloat() / max
             }
         )
     }
@@ -143,14 +144,14 @@ fun <T> BlockBars.addClientInfo() where T : Building, T : IStreamHost {
         R.Bar.ClientN
     ) {
         Bar(
-            { R.Bar.Client.bundle(it.getConnectedClients().size) },
+            { R.Bar.Client.bundle(it.connectedClients.size) },
             { R.C.Client },
             {
                 var max = it.maxClientConnection()
                 if (max == -1) {
                     max = 10
                 }
-                it.getConnectedClients().size.toFloat() / max
+                it.connectedClients.size.toFloat() / max
             }
         )
     }
@@ -161,15 +162,27 @@ fun <T> BlockBars.addHostInfo() where T : Building, T : IStreamClient {
         R.Bar.HostN
     ) {
         Bar(
-            { R.Bar.Host.bundle(it.getConnectedHosts().size) },
+            { R.Bar.Host.bundle(it.connectedHosts.size) },
             { R.C.Host },
             {
                 var max = it.maxHostConnection()
                 if (max == -1) {
                     max = 10
                 }
-                it.getConnectedHosts().size.toFloat() / max
+                it.connectedHosts.size.toFloat() / max
             }
+        )
+    }
+}
+
+fun <T> BlockBars.addBrainInfo() where T : Building, T : IUpgradeComponent {
+    this.add<T>(
+        R.Bar.LinkedN
+    ) {
+        Bar(
+            { R.Bar.Linked.bundle(it.isLinkedBrain) },
+            { R.C.Host },
+            { it.isLinkedBrain.toFloat() }
         )
     }
 }

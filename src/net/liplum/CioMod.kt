@@ -20,6 +20,7 @@ import net.liplum.registries.*
 import net.liplum.render.LinkDrawer
 import net.liplum.scripts.NpcSystem
 import net.liplum.scripts.Script
+import net.liplum.ui.DebugUI
 import net.liplum.ui.SettingsUI
 import net.liplum.update.Updater
 import net.liplum.utils.G
@@ -105,6 +106,9 @@ class CioMod : Mod() {
         StreamCenter.initAndLoad()
         ClientOnly {
             SettingsUI.appendSettings()
+            DebugOnly {
+                DebugUI.appendUI()
+            }
             CioShaders.loadResource()
             GlobalAnimation.loadAllResources()
             Events.run(Trigger.preDraw) {

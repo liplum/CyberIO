@@ -1,7 +1,8 @@
 package net.liplum.persistance;
 
 import arc.util.io.Reads;
+import org.jetbrains.annotations.NotNull;
 
 public interface IHowToRead<T> {
-    T read(Reads reads);
+    T read(@NotNull Reads reads);
 }

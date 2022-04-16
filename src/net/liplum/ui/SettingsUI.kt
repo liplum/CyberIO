@@ -7,6 +7,10 @@ import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.CheckSetting
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.SliderSetting
 import net.liplum.R
 import net.liplum.Settings
+import net.liplum.lib.ui.settings.InsertPos
+import net.liplum.lib.ui.settings.insertCheckPref
+import net.liplum.lib.ui.settings.insertCheckPrefLast
+import net.liplum.lib.ui.settings.insertSliderPref
 import net.liplum.utils.invoke
 
 object SettingsUI {

@@ -3,6 +3,10 @@ package net.liplum.brains
 import arc.graphics.g2d.Draw
 import arc.graphics.g2d.Lines
 import arc.math.Interp
+import arc.util.Log
+import arc.util.io.Reads
+import arc.util.io.Writes
+import mindustry.ai.types.HugAI
 import mindustry.content.UnitTypes
 import mindustry.gen.BlockUnitc
 import mindustry.gen.Building
@@ -15,17 +19,19 @@ import net.liplum.R
 import net.liplum.api.IExecutioner
 import net.liplum.api.Radiation
 import net.liplum.api.RadiationQueue
+import net.liplum.api.brain.IBrain
+import net.liplum.api.brain.IUpgradeComponent
+import net.liplum.api.brain.Side
 import net.liplum.utils.G
-import net.liplum.utils.healthPct
 import net.liplum.utils.invoke
 
-open class Heimdall(name: String) : Block(name), IExecutioner {
+open class Heimdall(name: String) : Block(name) {
     @JvmField var range = 150f
     @JvmField var reloadTime = 10f
     @JvmField var waveSpeed = 2f
     @JvmField var waveWidth = 8f
     @JvmField var damage = 8f
-    override var executeProportion: Float = 0.1f
+    @JvmField var controlProportion: Float = 0.1f
 
     init {
         solid = true
@@ -33,7 +39,23 @@ open class Heimdall(name: String) : Block(name), IExecutioner {
         hasPower = true
     }
 
-    open inner class HeimdallBuild : Building(), ControlBlock, IExecutioner by this@Heimdall {
+    override fun init() {
+        clipSize = range * 1.5f
+        if (size != 4) {
+            Log.warn("Block $name's size isn't 4 but $size, so it was set as 4 automatically.")
+            size = 4
+        }
+        super.init()
+    }
+
+    open inner class HeimdallBuild : Building(),
+        ControlBlock, IExecutioner, IBrain {
+        override val sides: Array<Side> = Array(4) {
+            Side(this, 2)
+        }
+        override var components: MutableSet<IUpgradeComponent> = HashSet()
+        override val executeProportion: Float
+            get() = controlProportion
         val brainWaves = RadiationQueue()
         var logicControlTime: Float = -1f
         val logicControlled: Boolean
@@ -75,11 +97,39 @@ open class Heimdall(name: String) : Block(name), IExecutioner {
                         val dst = unit.dst(this)
                         if (dst in it.range - halfWidth..it.range + halfWidth) {
                             unit.damageContinuous(damage)
-                            if (unit.healthPct <= executeProportion) {
+                            if (unit.canBeExecuted) {
                                 unit.team = team
+                                unit.controller(HugAI())
                                 unit.heal()
                             }
                         }
+                    }
+                }
+            }
+        }
+
+        override fun remove() {
+            super.remove()
+            clear()
+        }
+
+        override fun onProximityRemoved() {
+            super.onProximityRemoved()
+            clear()
+        }
+
+        override fun onProximityUpdate() {
+            super.onProximityUpdate()
+            clear()
+            for (build in proximity) {
+                if (build is IUpgradeComponent && build.canLinked(this)) {
+                    val dire = this.sideOn(build)
+                    if (dire.isClinging) {
+                        if (dire.onPart0)
+                            dire.sideObj[0] = build
+                        if (dire.onPart1)
+                            dire.sideObj[1] = build
+                        build.linkBrain(this, dire)
                     }
                 }
             }
@@ -120,6 +170,16 @@ open class Heimdall(name: String) : Block(name), IExecutioner {
             unit.tile(this)
             unit.team(team)
             return (unit as Unit)
+        }
+
+        override fun read(read: Reads, revision: Byte) {
+            super.read(read, revision)
+            brainWaves.read(read)
+        }
+
+        override fun write(write: Writes) {
+            super.write(write)
+            brainWaves.write(write)
         }
     }
 }
