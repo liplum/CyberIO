@@ -5,6 +5,8 @@ package net.liplum.utils
 import arc.math.Angles
 import arc.math.Mathf
 import arc.math.geom.Vec2
+import net.liplum.draw
+import net.liplum.math.Polar
 import kotlin.math.*
 
 typealias FUNC = (Float) -> Float
@@ -116,13 +118,68 @@ fun distance(x1: Float, y1: Float, x2: Float, y2: Float): Float {
     val y = y1 - y2
     return Mathf.sqrt(x * x + y * y)
 }
-
+/**
+ * @return this
+ */
 fun Vec2.normal(): Vec2 {
     this.set(y, -x)
     return this
 }
-
+/**
+ * @return this
+ */
 fun Vec2.normal(factor: Float): Vec2 {
     this.set(factor * y, -factor * x)
+    return this
+}
+/**
+ * @param targe degree of target angle
+ * @param speed the rotation speed
+ * @return this
+ */
+fun Vec2.approachAngle(targe: Float, speed: Float): Vec2 =
+    setAngle(
+        Angles.moveToward(
+            angle(),
+            targe,
+            speed
+        )
+    )
+/**
+ * @param targeX X of target position
+ * @param targeY Y of target position
+ * @param speed the rotation speed
+ * @return this
+ */
+fun Vec2.approachAngle(targeX: Float, targeY: Float, speed: Float): Vec2 =
+    setAngle(
+        Angles.moveToward(
+            angle(),
+            Angles.angle(x, y, targeX, targeY),
+            speed
+        )
+    )
+
+fun Vec2.approachLen(targetLen: Float, speed: Float): Vec2 =
+    setLength(
+        Mathf.approach(len(), targetLen, speed)
+    )
+
+fun Polar.approachR(targetR: Float, speed: Float): Polar {
+    r = Mathf.approach(r, targetR, speed)
+    return this
+}
+/**
+ * @param targetDegree an angle in degree
+ */
+fun Polar.approachADegree(targetDegree: Float, speed: Float): Polar {
+    a = Angles.moveToward(a.degree, targetDegree, speed).radian
+    return this
+}
+/**
+ * @param targetRadian an angle in radian
+ */
+fun Polar.approachA(targetRadian: Float, speed: Float): Polar {
+    a = Angles.moveToward(a.degree, targetRadian.draw, speed).radian
     return this
 }

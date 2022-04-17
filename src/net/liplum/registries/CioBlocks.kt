@@ -5,9 +5,9 @@ import arc.graphics.Color
 import arc.struct.Seq
 import mindustry.content.*
 import mindustry.entities.bullet.LaserBulletType
+import mindustry.entities.bullet.LightningBulletType
 import mindustry.game.EventType.Trigger
 import mindustry.gen.Sounds
-import mindustry.graphics.Pal
 import mindustry.type.Category
 import mindustry.type.ItemStack
 import mindustry.type.LiquidStack
@@ -618,10 +618,12 @@ object CioBlocks : ContentTable {
                 requirements(
                     Category.turret, BuildVisibility.shown, arrayOf(
                         ItemStack(CioItems.ic, 5),
-                        ItemStack(Items.sporePod, 50),
+                        ItemStack(Items.sporePod, 80),
+                        ItemStack(Items.thorium, 300),
                     )
                 )
                 size = 4
+                health = 400 * size * size
                 consumes.add(
                     ConsumePower(2f, 240f, false)
                 )
@@ -633,26 +635,26 @@ object CioBlocks : ContentTable {
                         ItemStack(Items.sporePod, 50),
                     )
                 )
+                range = 165f
+                health = 300 * size * size
                 size = 2
-                normalBullet = LaserBulletType(140f).apply {
-                    colors = arrayOf(Pal.lancerLaser.cpy().a(0.4f), Pal.lancerLaser, Color.white)
+                recoilAmount = 2f
+                normalBullet = LightningBulletType().apply {
+                    damage = 60f
+                    lightningLength = 25
+                    collidesAir = false
+                    ammoMultiplier = 1f
+                    lightningColor = R.C.RedAlert
+                }
+                improvedBullet = LaserBulletType(250f).apply {
+                    colors = arrayOf(R.C.RedAlert.cpy().a(0.4f), R.C.RedAlert, R.C.RedAlertDark)
                     hitEffect = Fx.hitLancer
                     hitSize = 4f
                     lifetime = 16f
-                    drawSize = 400f
+                    drawSize = 200f
                     collidesAir = false
                     length = 173f
                     ammoMultiplier = 1f
-                }
-                improvedBullet = LaserBulletType(250f).apply {
-                    colors = arrayOf(Pal.lancerLaser.cpy().a(0.4f), Pal.lancerLaser, Color.white)
-                    hitEffect = Fx.hitLancer
-                    hitSize = 10f
-                    lifetime = 24f
-                    drawSize = 1500f
-                    collidesAir = true
-                    length = 280f
-                    ammoMultiplier = 1.5f
                 }
             }
         }

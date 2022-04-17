@@ -7,7 +7,7 @@ import arc.struct.Seq;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.gen.Building;
-import net.liplum.math.PolarPos;
+import net.liplum.math.Polar;
 import org.jetbrains.annotations.NotNull;
 
 public class RWU {
@@ -86,14 +86,14 @@ public class RWU {
         return byteObjectSet;
     }
 
-    public static void writePolarPos(Writes writes, PolarPos pos) {
+    public static void writePolarPos(Writes writes, Polar pos) {
         writes.f(pos.r);
         writes.f(pos.a);
     }
 
     @NotNull
-    public static PolarPos readPolarPos(Reads reads) {
-        return new PolarPos(reads.f(), reads.f());
+    public static Polar readPolarPos(Reads reads) {
+        return new Polar(reads.f(), reads.f());
     }
 
     public static <T> void writeSeq(Writes writes, Seq<T> seq, IHowToWrite<T> howToWrite) {

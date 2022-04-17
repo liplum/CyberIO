@@ -23,7 +23,12 @@ fun tintedRGB(b: BulletType): List<BulletType> {
         is FireBulletType -> b.tinted
         is LiquidBulletType -> b.tinted
         is MassDriverBolt -> b.tinted
-        else -> b.tintRedGeneral
+        else -> {
+            if (b.lightningType != null)
+                b.tintedLighting
+            else
+                b.tintGeneral
+        }
     }
 }
 
@@ -161,6 +166,17 @@ val MassDriverBolt.tinted: List<MassDriverBolt>
             }
         }
     }
+val LightingBullets: HashMap<BulletType, List<BulletType>> = HashMap()
+val BulletType.tintedLighting: List<BulletType>
+    get() = LightingBullets.getOrPut(this) {
+        RgbList {
+            this.copy().apply {
+                lightningType = this.lightningType.copy().apply {
+                    lightningColor = R.C.PrismRgbBK[it]
+                }
+            }
+        }
+    }
 val Registry: HashMap<BulletType, List<BulletType>> = HashMap()
 fun <T : BulletType> T.registerRGB(register: T.() -> Triple<T, T, T>) {
     val (r, g, b) = register()
@@ -186,7 +202,7 @@ fun getRegistered(b: BulletType): List<BulletType>? =
     Registry[b]
 
 val GeneralBullets: HashMap<BulletType, List<BulletType>> = HashMap()
-val BulletType.tintRedGeneral: List<BulletType>
+val BulletType.tintGeneral: List<BulletType>
     get() = GeneralBullets.getOrPut(this) {
         RgbList {
             (this.copy() as BulletType).apply {

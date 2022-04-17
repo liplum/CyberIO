@@ -23,7 +23,7 @@ import net.liplum.utils.*
 
 @ClientOnly
 object Welcome {
-    @JvmField val DefaultIconPath = R.Welcome.Atlas("cyber-io")
+    const val DefaultIconPath = "welcome-cyber-io"
     @JvmField var welcomeInfo = WelcomeInfo()
     @JvmField var welcomeEntity = WelcomeEntity(welcomeInfo)
     @JvmField var bundle: I18NBundle = createModBundle()
@@ -137,21 +137,21 @@ object Welcome {
         val info = jsonObj.get(Meta.Version)
         val variants = info.getInt(R.Welcome.WelcomeVariants, 0)
         welcomeInfo.variants = variants.coerceAtLeast(0)
-        for (num in 1..variants) {
-            welcomeInfo.number2Entry[num] = EntryWrapper(info.getChild(num.toString()))
+        for (num in 0..variants) {
+            welcomeInfo.number2Entry[num] = EntryWrapper(info.getChild("$num")?.parent)
         }
-        welcomeInfo.iconPath = info.getString(R.Welcome.IconPath, DefaultIconPath)
     }
 
     class WelcomeInfo {
-        var iconPath = DefaultIconPath
         var variants: Int = 0
         var number2Entry: MutableMap<Int, EntryWrapper> = HashMap()
+        operator fun get(index: Int): EntryWrapper =
+            number2Entry[index]!!
     }
 
-    class EntryWrapper(val jValue: JsonValue) {
+    class EntryWrapper(val jValue: JsonValue?) {
         val iconPath: String
-            get() = jValue.getString("IconPath", DefaultIconPath)
+            get() = jValue?.getString(R.Welcome.IconPath, DefaultIconPath) ?: DefaultIconPath
     }
 
     class WelcomeEntity(val info: WelcomeInfo) {
@@ -179,7 +179,7 @@ object Welcome {
         val read: String
             get() = bundle["$head.read"].handleBundleRefer()
         val icon: TR
-            get() = info.iconPath.atlas()
+            get() = info[number].iconPath.Cio.atlas()
         val welcome: String
             get() = "welcome".bundle(bundle, Meta.Version)
         val updateHead: String

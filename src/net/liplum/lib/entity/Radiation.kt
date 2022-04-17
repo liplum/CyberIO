@@ -1,4 +1,4 @@
-package net.liplum.api
+package net.liplum.lib.entity
 
 import arc.util.io.Reads
 import arc.util.io.Writes

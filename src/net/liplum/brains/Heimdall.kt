@@ -17,8 +17,8 @@ import mindustry.world.Block
 import mindustry.world.blocks.ControlBlock
 import net.liplum.R
 import net.liplum.api.IExecutioner
-import net.liplum.api.Radiation
-import net.liplum.api.RadiationQueue
+import net.liplum.lib.entity.Radiation
+import net.liplum.lib.entity.RadiationQueue
 import net.liplum.api.brain.IBrain
 import net.liplum.api.brain.IUpgradeComponent
 import net.liplum.api.brain.Side

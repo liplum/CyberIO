@@ -18,7 +18,7 @@ import mindustry.world.blocks.power.PowerBlock
 import net.liplum.ClientOnly
 import net.liplum.R
 import net.liplum.WhenNotPaused
-import net.liplum.api.Radiations
+import net.liplum.lib.entity.Radiations
 import net.liplum.lib.animations.anis.Draw
 import net.liplum.utils.*
 import kotlin.math.min

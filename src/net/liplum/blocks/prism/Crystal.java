@@ -4,7 +4,7 @@ import arc.graphics.g2d.TextureRegion;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import net.liplum.ClientOnly;
-import net.liplum.math.PolarPos;
+import net.liplum.math.Polar;
 import net.liplum.persistance.RWU;
 import net.liplum.utils.ByteU;
 
@@ -17,8 +17,8 @@ public class Crystal {
     private static final int Pos6 = 5;
     private static final int Pos7 = 6;
     private static final int Pos8 = 7;
-    public PolarPos revolution;
-    public PolarPos rotation;
+    public Polar revolution;
+    public Polar rotation;
     @ClientOnly
     public TextureRegion img;
     public int orbitPos = 0;

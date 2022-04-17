@@ -12,8 +12,6 @@ public class Animation implements IAnimated {
     @Nullable
     public IFrameIndexer indexer;
 
-    public boolean reversed = false;
-
     public float duration;
 
     /**
@@ -70,9 +68,6 @@ public class Animation implements IAnimated {
         if (index < 0 || index >= length) {
             return null;
         }
-        if (reversed) {
-            index = length - 1 - index;
-        }
         return allFrames[index];
     }
 
@@ -102,9 +97,6 @@ public class Animation implements IAnimated {
         }
         if (index < 0 || index >= length) {
             return null;
-        }
-        if (reversed) {
-            index = length - 1 - index;
         }
         return allFrames[index];
     }

@@ -29,7 +29,7 @@ import net.liplum.R
 import net.liplum.blocks.prism.CrystalManager.Companion.read
 import net.liplum.blocks.prism.CrystalManager.Companion.write
 import net.liplum.draw
-import net.liplum.math.PolarPos
+import net.liplum.math.Polar
 import net.liplum.utils.*
 import kotlin.math.abs
 import kotlin.math.log2
@@ -157,8 +157,8 @@ open class Prism(name: String) : Block(name) {
                 }
             }
             addCrystalCallback = {
-                revolution = PolarPos(0f, 0f)
-                rotation = PolarPos(prismRange, 0f)
+                revolution = Polar(0f, 0f)
+                rotation = Polar(prismRange, 0f)
                 isClockwise = orbitPos % 2 != 0
             }
             for (i in 0 until initCrystalCount) {
@@ -220,7 +220,7 @@ open class Prism(name: String) : Block(name) {
                 curPerRelv = perRevl / ip1 * 0.8f
                 curPerRota = perRota * ip1 * 0.8f
                 if (isControlled) {
-                    val ta = PolarPos.toA(unit.aimX() - x, unit.aimY() - y)
+                    val ta = Polar.toA(unit.aimX() - x, unit.aimY() - y)
                     revolution.a =
                         Angles.moveToward(
                             revolution.a.degree, ta.degree,
@@ -240,10 +240,10 @@ open class Prism(name: String) : Block(name) {
                 val totalLen = Agl + (prismRange * 2 * orbitPos)
                 if (isRemoved) {
                     perRevlR = PSA(perRevlR, revlR, 0f, totalLen)
-                    revlR -= perRevlR
+                    revlR -= perRevlR * delta()
                 } else {
                     perRevlR = PSA(perRevlR, revlR, totalLen, totalLen)
-                    revlR += perRevlR
+                    revlR += perRevlR * delta()
                 }
                 revlR = revlR.coerceIn(0f, totalLen)
                 revolution.r = revlR
@@ -260,8 +260,8 @@ open class Prism(name: String) : Block(name) {
                 realRangeX2
             ) {
                 cm.update {
-                    priselX = revolution.toX() + x
-                    priselY = revolution.toY() + y
+                    priselX = revolution.getX() + x
+                    priselY = revolution.getY() + y
                     if (it.team == team &&
                         !it.data.isDuplicate &&
                         it.dst(priselX, priselY) <= prismRange
@@ -321,8 +321,8 @@ open class Prism(name: String) : Block(name) {
             var priselX: Float
             var priselY: Float
             cm.render {
-                priselX = revolution.toX() + x
-                priselY = revolution.toY() + y
+                priselX = revolution.getX() + x
+                priselY = revolution.getY() + y
                 Draw.z(Layer.blockOver)
                 Drawf.shadow(
                     img,

@@ -147,7 +147,7 @@ object G {
     fun drawArrowPointingThis(
         pointedBlock: Block, pointedBlockX: Short, pointedBlockY: Short,
         degrees: Float,
-        arrowColor: Color,
+        arrowColor: Color = Pal.power,
         alpha: Float? = null
     ) {
         val pointedDrawX = pointedBlockX.toDrawXY(pointedBlock)
@@ -166,7 +166,7 @@ object G {
     fun arrow(
         x: Float, y: Float, x2: Float, y2: Float,
         length: Float, radius: Float,
-        color: Color,
+        color: Color = Pal.power,
         alpha: Float? = null
     ) {
         val angle = Angles.angle(x, y, x2, y2)
@@ -192,7 +192,7 @@ object G {
         startDrawX: Float, startDrawY: Float,
         endDrawX: Float, endDrawY: Float,
         blockSize: Int,
-        density: Float, arrowColor: Color,
+        density: Float, arrowColor: Color = Pal.power,
         alpha: Float? = null
     ) {
         if (density.isZero)
@@ -222,7 +222,7 @@ object G {
     fun drawArrowLine(
         startBlockX: Short, startBlockY: Short,
         endBlockX: Short, endBlockY: Short,
-        density: Float, arrowColor: Color,
+        density: Float, arrowColor: Color = Pal.power,
         alpha: Float? = null
     ) {
         drawArrowLine(
@@ -241,7 +241,7 @@ object G {
         startBlockX: Short, startBlockY: Short,
         endBlock: Block,
         endBlockX: Short, endBlockY: Short,
-        density: Float, arrowColor: Color,
+        density: Float, arrowColor: Color = Pal.power,
         alpha: Float? = null
     ) {
         drawArrowLine(
@@ -259,7 +259,7 @@ object G {
         start: Building,
         end: Building,
         density: Float,
-        arrowColor: Color,
+        arrowColor: Color = Pal.power,
         alpha: Float? = null
     ) = drawArrowLine(
         start.x, start.y,
@@ -270,7 +270,7 @@ object G {
     @JvmStatic
     @JvmOverloads
     fun circle(
-        x: Float, y: Float, rad: Float, color: Color,
+        x: Float, y: Float, rad: Float, color: Color = Pal.power,
         alpha: Float? = null, storke: Float = 1f
     ) {
         Lines.stroke(storke + 2f, Pal.gray)
@@ -289,7 +289,7 @@ object G {
     @JvmStatic
     @JvmOverloads
     fun drawSurroundingCircle(
-        t: Tile, circleColor: Color,
+        t: Tile, circleColor: Color = Pal.power,
         alpha: Float? = null, storke: Float = 1f
     ) = circle(
         t.drawx(), t.drawy(),
@@ -299,7 +299,7 @@ object G {
     @JvmStatic
     @JvmOverloads
     fun drawSurroundingCircle(
-        b: Block, drawX: Float, drawY: Float, circleColor: Color,
+        b: Block, drawX: Float, drawY: Float, circleColor: Color = Pal.power,
         alpha: Float? = null, storke: Float = 1f
     ) = circle(
         drawX, drawY,
@@ -310,7 +310,7 @@ object G {
     @JvmOverloads
     fun drawSurroundingCircle(
         b: Block, worldX: Int, worldY: Int,
-        circleColor: Color,
+        circleColor: Color = Pal.power,
         alpha: Float? = null, storke: Float = 1f
     ) = circle(
         worldX.toDrawXY(b),
@@ -321,7 +321,7 @@ object G {
     @JvmStatic
     @JvmOverloads
     fun dashCircle(
-        x: Float, y: Float, rad: Float, color: Color,
+        x: Float, y: Float, rad: Float, color: Color = Pal.power,
         alpha: Float? = null, storke: Float = 1f
     ) {
         Lines.stroke(storke + 2f, Pal.gray)
@@ -341,21 +341,21 @@ object G {
     @JvmOverloads
     fun drawDashCircle(
         build: Building,
-        range: Float, color: Color,
+        range: Float, color: Color = Pal.power,
         alpha: Float? = null, storke: Float = 1f
     ) = dashCircle(build.x, build.y, range + sin - 2, color, alpha, storke)
     @JvmStatic
     @JvmOverloads
     fun drawDashCircle(
         x: Float, y: Float,
-        range: Float, color: Color,
+        range: Float, color: Color = Pal.power,
         alpha: Float? = null, storke: Float = 1f
     ) = dashCircle(x, y, range + sin - 2, color, alpha, storke)
     @JvmStatic
     @JvmOverloads
     fun drawDashCircle(
         b: Block, blockX: Short, BlockY: Short,
-        range: Float, color: Color,
+        range: Float, color: Color = Pal.power,
         alpha: Float? = null, storke: Float = 1f
     ) = dashCircle(
         blockX.toDrawXY(b),
@@ -364,7 +364,7 @@ object G {
     )
     @JvmStatic
     @JvmOverloads
-    fun drawSelected(other: Building, color: Color, temp: Color = Tmp.c1) {
+    fun drawSelected(other: Building, color: Color = Pal.power, temp: Color = Tmp.c1) {
         Drawf.selected(
             other,
             temp.set(color).a(Mathf.absin(4f, 1f))

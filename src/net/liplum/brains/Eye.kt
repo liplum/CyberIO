@@ -2,22 +2,25 @@ package net.liplum.brains
 
 import arc.graphics.g2d.Draw
 import arc.math.Angles
-import arc.math.geom.Vec2
+import arc.math.Interp
+import arc.util.Time
 import mindustry.Vars
 import mindustry.entities.bullet.BulletType
 import mindustry.graphics.Drawf
 import mindustry.graphics.Layer
 import mindustry.world.blocks.defense.turrets.PowerTurret
 import net.liplum.ClientOnly
+import net.liplum.DebugOnly
+import net.liplum.WhenNotPaused
 import net.liplum.api.brain.Direction4
 import net.liplum.api.brain.IBrain
 import net.liplum.api.brain.IUpgradeComponent
 import net.liplum.draw
+import net.liplum.lib.animations.anims.Anime
+import net.liplum.lib.animations.anims.genFramesBy
 import net.liplum.lib.animations.anis.Draw
-import net.liplum.utils.TR
-import net.liplum.utils.addBrainInfo
-import net.liplum.utils.sheet
-import net.liplum.utils.sub
+import net.liplum.math.Polar
+import net.liplum.utils.*
 
 open class Eye(name: String) : PowerTurret(name) {
     lateinit var normalBullet: BulletType
@@ -27,7 +30,14 @@ open class Eye(name: String) : PowerTurret(name) {
     @ClientOnly lateinit var EyelidTR: TR
     @ClientOnly lateinit var PupilTR: TR
     @ClientOnly lateinit var PupilOutsideTR: TR
-    @ClientOnly lateinit var HemorrhageTR: Array<TR>
+    @ClientOnly lateinit var HemorrhageTRs: Array<TR>
+    @ClientOnly lateinit var BlinkTRs: Array<TR>
+    @ClientOnly @JvmField var BlinkDuration = 50f
+    @ClientOnly @JvmField var BlinkFrameNum = 9
+    @ClientOnly @JvmField var radiusSpeed = 0.1f
+    @ClientOnly @JvmField var PupilMax = 5f
+    @ClientOnly @JvmField var PupilMin = 1.2f
+    @ClientOnly @JvmField var outOfCompactTime = 240f
     override fun init() {
         // To prevent accessing a null
         shootType = normalBullet
@@ -39,13 +49,14 @@ open class Eye(name: String) : PowerTurret(name) {
         BaseTR = this.sub("base")
         EyeBallTR = this.sub("eyeball")
         EyelidTR = this.sub("eyelid")
+        BlinkTRs = this.sheet("blink", BlinkFrameNum)
         PupilTR = this.sub("pupil")
         PupilOutsideTR = this.sub("pupil-outside")
-        HemorrhageTR = this.sheet("hemorrhage", 3)
+        HemorrhageTRs = this.sheet("hemorrhage", 3)
     }
 
     override fun icons() = arrayOf(
-        BaseTR, EyeBallTR
+        BaseTR, EyelidTR
     )
 
     override fun setBars() {
@@ -56,6 +67,30 @@ open class Eye(name: String) : PowerTurret(name) {
     open inner class EyeBuild : PowerTurretBuild(), IUpgradeComponent {
         override var directionInfo: Direction4 = Direction4.Empty
         override var brain: IBrain? = null
+        @ClientOnly
+        lateinit var blinkAnime: Anime
+
+        init {
+            ClientOnly {
+                blinkAnime = Anime(
+                    BlinkTRs.genFramesBy(BlinkDuration) {
+                        Interp.pow2In.apply(it)
+                    }
+                ).apply {
+                    var forward = true
+                    isForward = {
+                        forward || isShooting
+                    }
+                    onEnd = {
+                        if (!isShooting) {
+                            forward = !forward
+                            isEnd = false
+                        }
+                    }
+                }
+            }
+        }
+
         override fun onProximityRemoved() {
             super.onProximityRemoved()
             clear()
@@ -66,34 +101,61 @@ open class Eye(name: String) : PowerTurret(name) {
             clear()
         }
         @ClientOnly
-        val sight = Vec2(1.2f, 0f)
+        val stareAtScreenRadius: Float
+            get() = size * Vars.tilesize * 2f
+        @ClientOnly
+        val sight = Polar(0f, 0f)
+        @ClientOnly
+        var lastInCombatTime = 0f
+        @ClientOnly
+        val isOutOfCombat: Boolean
+            get() = lastInCombatTime > outOfCompactTime
+
         override fun draw() {
+            WhenNotPaused {
+                blinkAnime.spend(Time.delta)
+                lastInCombatTime += Time.delta
+            }
             BaseTR.Draw(x, y)
             Draw.color()
 
             Draw.z(Layer.turret)
-
-            tr2.trns(rotation, -recoil)
-            val rotation = rotation.draw
-            Drawf.shadow(EyeBallTR, x - elevation, y - elevation, rotation)
-            EyeBallTR.Draw(x, y, rotation)
+            val rotationDraw = rotation.draw
+            Drawf.shadow(EyeBallTR, x - elevation, y - elevation)
+            EyeBallTR.Draw(x, y)
+            val radiusSpeed = radiusSpeed * Time.delta
             if (isShooting) {
-                PupilTR.Draw(x - tr2.x, y - tr2.y, rotation)
+                sight.approachR(PupilMax, radiusSpeed * 3f)
             } else {
-                val player = Vars.player.unit()
-                sight.setAngle(
-                    Angles.angle(
-                        x, y,
-                        player.x, player.y
-                    )
-                )
-                PupilTR.Draw(
-                    x - tr2.x + sight.x,
-                    y - tr2.y + sight.y,
-                    rotation
-                )
+                sight.approachR(PupilMin, radiusSpeed)
             }
+            DebugOnly {
+                G.dashCircle(x, y, stareAtScreenRadius)
+            }
+            WhenNotPaused {
+                if (isShooting || isControlled || target != null || !isOutOfCombat) {
+                    sight.a = rotation.radian
+                } else {
+                    val player = Vars.player.unit()
+                    if (player.dst(this) > stareAtScreenRadius) {
+                        val targetAngle = Angles.angle(x, y, player.x, player.y)
+                        sight.a = targetAngle.radian
+                    } else {
+                        sight.approachR(0f, radiusSpeed * 3f)
+                    }
+                }
+            }
+            val pupil = if (isShooting) PupilOutsideTR else PupilTR
+            var pupilX = x + sight.x
+            var pupilY = y + sight.y
+            if (isLinkedBrain) {
+                tr2.trns(rotation, -recoil)
+                pupilX += tr2.x
+                pupilY += tr2.y
+            }
+            pupil.Draw(pupilX, pupilY, rotationDraw)
             drawHemorrhage()
+            blinkAnime.draw(x, y)
         }
 
         open fun drawHemorrhage() {
@@ -102,17 +164,21 @@ open class Eye(name: String) : PowerTurret(name) {
                 in 1.01f..2.499f -> 1
                 else -> 2
             }
-            val hemorrhage = HemorrhageTR[index]
-            Draw.alpha(heat)
-            hemorrhage.Draw(x, y, rotation.draw)
+            val hemorrhage = HemorrhageTRs[index]
+            Draw.alpha(heat * 1.2f)
+            hemorrhage.Draw(x, y)
             Draw.color()
         }
 
         override fun hasAmmo() = true
-        override fun useAmmo() =
-            if (isLinkedBrain) improvedBullet else normalBullet
+        override fun useAmmo(): BulletType {
+            ClientOnly {
+                lastInCombatTime = 0f
+            }
+            return if (isLinkedBrain) improvedBullet else normalBullet
+        }
 
-        override fun peekAmmo() =
+        override fun peekAmmo(): BulletType =
             if (isLinkedBrain) improvedBullet else normalBullet
     }
 }

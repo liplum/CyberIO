@@ -2,10 +2,11 @@ package net.liplum.lib.animations.anims;
 
 import arc.graphics.Color;
 import arc.graphics.g2d.TextureRegion;
+import net.liplum.lib.ITimer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class AnimationObj implements IAnimated {
+public class AnimationObj implements IAnimated, ITimer {
     @NotNull
     public final Animation meta;
     public float curTime;
@@ -53,6 +54,7 @@ public class AnimationObj implements IAnimated {
      *
      * @param time spent time
      */
+    @Override
     public void spend(float time) {
         if (!isAsleep) {
             curTime += Math.max(0f, getRealSpent(time));

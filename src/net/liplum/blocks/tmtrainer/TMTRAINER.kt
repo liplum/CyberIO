@@ -12,7 +12,7 @@ import net.liplum.lib.animations.anims.Animation
 import net.liplum.lib.animations.anims.AnimationObj
 import net.liplum.lib.animations.anims.ITimeModifier
 import net.liplum.draw
-import net.liplum.math.PolarPos
+import net.liplum.math.Polar
 import net.liplum.utils.*
 
 open class TMTRAINER(name: String) : ItemTurret(name) {
@@ -44,7 +44,8 @@ open class TMTRAINER(name: String) : ItemTurret(name) {
     open inner class TMTRAINERBUILD : ItemTurretBuild() {
         @ClientOnly lateinit var coreAnimObj: AnimationObj
         @ClientOnly lateinit var emptyCoreAnimObj: AnimationObj
-        @ClientOnly var targetPol: PolarPos = PolarPos(headMax, 0f)
+        @ClientOnly var targetPol: Polar =
+            Polar(headMax, 0f)
         open var virusCharge = 0f
             set(value) {
                 field = value.coerceIn(0f, 60f)
@@ -92,8 +93,8 @@ open class TMTRAINER(name: String) : ItemTurret(name) {
             val drawY = y + tr2.y
             Draw.rect(
                 HeadTR,
-                drawX + targetPol.toX(),
-                drawY + targetPol.toY(),
+                drawX + targetPol.getX(),
+                drawY + targetPol.getY(),
                 drawRotation
             )
 

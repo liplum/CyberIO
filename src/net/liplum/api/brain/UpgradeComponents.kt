@@ -113,6 +113,7 @@ interface IBrain : ICyberEntity, Iterable<IUpgradeComponent> {
     fun clear() {
         for (side in sides)
             side.clear()
+        components.clear()
     }
     /**
      * ## Contract
