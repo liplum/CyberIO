@@ -6,7 +6,7 @@ import net.liplum.ClientOnly
 import net.liplum.lib.animations.anims.Animation
 import net.liplum.lib.animations.anims.AnimationObj
 import net.liplum.lib.animations.anis.AniState
-import net.liplum.lib.animations.anis.SetAlpha
+import net.liplum.lib.SetAlpha
 import net.liplum.lib.animations.anis.config
 import net.liplum.blocks.AniedCrafter
 import net.liplum.utils.FUNC

@@ -1,6 +1,6 @@
 @file:JvmName("DrawT")
 
-package net.liplum.lib.animations.anis
+package net.liplum.lib
 
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
@@ -88,8 +88,7 @@ fun TR.Draw(x: Float, y: Float, rotation: Float) {
     DrawTR(this, x, y, rotation)
 }
 
-fun TR.DrawCuttingWidth(x: Float, y: Float,width: Float) {
-
+fun TR.DrawCuttingWidth(x: Float, y: Float, width: Float) {
 }
 
 fun ResetColor() {
@@ -98,4 +97,34 @@ fun ResetColor() {
 
 fun Reset() {
     Draw.reset()
+}
+
+class Anchor {
+    @JvmField var dx = 0f
+    @JvmField var dy = 0f
+    @JvmField var rotation = 0f
+    /**
+     * [dx] and [dy] will move the same length.
+     */
+    fun offset(d: Float): Anchor {
+        dx += d
+        dy += d
+        return this
+    }
+
+    fun rotate(degree: Float = 90f): Anchor {
+        rotation += degree
+        return this
+    }
+
+    fun rotate90(times: Int): Anchor {
+        rotation += times * 90f
+        return this
+    }
+
+    fun reset() {
+        dx = 0f
+        dy = 0f
+        rotation = 0f
+    }
 }

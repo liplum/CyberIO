@@ -23,6 +23,8 @@ import mindustry.world.blocks.production.LiquidConverter
 import mindustry.world.consumers.ConsumePower
 import mindustry.world.meta.BuildVisibility
 import net.liplum.*
+import net.liplum.api.brain.Upgrade
+import net.liplum.api.brain.UpgradeType
 import net.liplum.api.virus.setUninfected
 import net.liplum.api.virus.setUninfectedFloor
 import net.liplum.blocks.cloud.Cloud
@@ -47,6 +49,7 @@ import net.liplum.blocks.tmtrainer.TMTRAINER
 import net.liplum.blocks.underdrive.UnderdriveProjector
 import net.liplum.blocks.virus.AntiVirus
 import net.liplum.blocks.virus.Virus
+import net.liplum.brains.Ear
 import net.liplum.brains.Eye
 import net.liplum.brains.Heimdall
 import net.liplum.bullets.RuvikBullet
@@ -89,6 +92,7 @@ object CioBlocks : ContentTable {
     @JvmStatic lateinit var wirelessTower: WirelessTower
     @JvmStatic lateinit var heimdall: Heimdall
     @JvmStatic lateinit var eye: Eye
+    @JvmStatic lateinit var ear: Ear
     override fun firstLoad() {
     }
 
@@ -303,7 +307,7 @@ object CioBlocks : ContentTable {
         deleter = Deleter("deleter").apply {
             requirements(
                 Category.turret, BuildVisibility.shown, arrayOf(
-                    ItemStack(CioItems.ic, 10),
+                    ItemStack(CioItems.ic, 12),
                     ItemStack(Items.graphite, 100),
                     ItemStack(Items.silicon, 60),
                     ItemStack(Items.thorium, 250),
@@ -399,7 +403,7 @@ object CioBlocks : ContentTable {
         smartUnloader = SmartUnloader("smart-unloader").apply {
             requirements(
                 Category.distribution, BuildVisibility.shown, arrayOf(
-                    ItemStack(CioItems.ic, 8),
+                    ItemStack(CioItems.ic, 10),
                     ItemStack(Items.metaglass, 80),
                     ItemStack(Items.silicon, 150),
                     ItemStack(Items.phaseFabric, 80),
@@ -462,7 +466,7 @@ object CioBlocks : ContentTable {
         jammer = Jammer("jammer").apply {
             requirements(
                 Category.turret, BuildVisibility.shown, arrayOf(
-                    ItemStack(CioItems.ic, 10),
+                    ItemStack(CioItems.ic, 6),
                     ItemStack(Items.lead, 350),
                     ItemStack(Items.thorium, 200),
                     ItemStack(Items.surgeAlloy, 200),
@@ -579,7 +583,7 @@ object CioBlocks : ContentTable {
             stealth = Stealth("stealth").apply {
                 requirements(
                     Category.turret, BuildVisibility.shown, arrayOf(
-                        ItemStack(CioItems.ic, 6),
+                        ItemStack(CioItems.ic, 5),
                         ItemStack(Items.titanium, 150),
                     )
                 )
@@ -617,7 +621,7 @@ object CioBlocks : ContentTable {
             heimdall = Heimdall("heimdall").apply {
                 requirements(
                     Category.turret, BuildVisibility.shown, arrayOf(
-                        ItemStack(CioItems.ic, 5),
+                        ItemStack(CioItems.ic, 10),
                         ItemStack(Items.sporePod, 80),
                         ItemStack(Items.thorium, 300),
                     )
@@ -632,18 +636,27 @@ object CioBlocks : ContentTable {
                 requirements(
                     Category.turret, BuildVisibility.shown, arrayOf(
                         ItemStack(CioItems.ic, 5),
-                        ItemStack(Items.sporePod, 50),
+                        ItemStack(Items.metaglass, 80),
+                        ItemStack(Items.silicon, 30),
+                        ItemStack(Items.lead, 120),
                     )
                 )
                 range = 165f
                 health = 300 * size * size
                 size = 2
-                recoilAmount = 2f
+                chargeTime = 30f
+                addUpgrade(
+                    Upgrade(UpgradeType.Damage, false, 0.1f),
+                    Upgrade(UpgradeType.ReloadTime, true, -4f),
+                )
                 normalBullet = LightningBulletType().apply {
                     damage = 60f
                     lightningLength = 25
                     collidesAir = false
                     ammoMultiplier = 1f
+                    recoil = 3f
+                    shootCone = 3f
+                    accurateDelay = true
                     lightningColor = R.C.RedAlert
                 }
                 improvedBullet = LaserBulletType(250f).apply {
@@ -651,11 +664,32 @@ object CioBlocks : ContentTable {
                     hitEffect = Fx.hitLancer
                     hitSize = 4f
                     lifetime = 16f
+                    recoil = 1.5f
                     drawSize = 200f
-                    collidesAir = false
+                    shootCone = 3f
                     length = 173f
+                    accurateDelay = true
                     ammoMultiplier = 1f
                 }
+            }
+            ear = Ear("heimdall-ear").apply {
+                requirements(
+                    Category.turret, BuildVisibility.shown, arrayOf(
+                        ItemStack(CioItems.ic, 5),
+                        ItemStack(Items.copper, 80),
+                        ItemStack(Items.silicon, 40),
+                        ItemStack(Items.phaseFabric, 20),
+                    )
+                )
+                addUpgrade(
+                    Upgrade(UpgradeType.Damage, false, 0.05f),
+                    Upgrade(UpgradeType.Range, false, 0.14f),
+                    Upgrade(UpgradeType.WaveSpeed, true, 0.08f),
+                    Upgrade(UpgradeType.WaveWidth, true, 0.4f),
+                )
+                range = 200f
+                size = 2
+                health = 300 * size * size
             }
         }
     }

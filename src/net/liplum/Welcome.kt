@@ -84,11 +84,7 @@ object Welcome {
         BaseDialog(welcomeEntity.updateTitle).apply {
             cont.image(welcomeEntity.icon)
                 .maxSize(200f).pad(20f).row()
-            cont.add(Label(
-                welcomeEntity.genUpdate(
-                    Updater.latestVersion
-                )
-            ).apply {
+            cont.add(Label(welcomeEntity.genUpdate(Updater.latestVersion)).apply {
                 setAlignment(0)
                 setWrap(true)
             }).growX()
@@ -97,15 +93,16 @@ object Welcome {
                 it.button(welcomeEntity.updateYes) {
                     Updater.updateSelf()
                     hide()
-                }.size(200f, 50f)
+                }.size(150f, 50f)
                 it.button(welcomeEntity.updateNo) {
                     hide()
-                }.size(200f, 50f)
+                }.size(150f, 50f)
                 it.button(welcomeEntity.updateDontShow) {
                     ShowUpdate = false
                     hide()
-                }.size(200f, 50f)
-            }
+                }.size(150f, 50f)
+            }.growX()
+                .row()
         }
     }
     @JvmStatic

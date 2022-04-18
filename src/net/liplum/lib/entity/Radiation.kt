@@ -3,9 +3,10 @@ package net.liplum.lib.entity
 import arc.util.io.Reads
 import arc.util.io.Writes
 import net.liplum.persistance.IRWable
+import net.liplum.utils.ArrayList
 import java.util.*
 
-data class Radiation(var range: Float = 0f) : IRWable {
+open class Radiation(var range: Float = 0f) : IRWable {
     override fun read(reader: Reads) {
         range = reader.f()
     }
@@ -15,10 +16,37 @@ data class Radiation(var range: Float = 0f) : IRWable {
     }
 }
 
-class Radiations(val size: Int = 1) : Iterable<Radiation> {
-    val list: Array<Radiation> = Array(size) { Radiation() }
+class PosRadiation(
+    range: Float = 0f,
+    var x: Float = 0f,
+    var y: Float = 0f
+) : Radiation(range) {
+    override fun read(reader: Reads) {
+        super.read(reader)
+        x = reader.f()
+        y = reader.f()
+    }
 
-    constructor(size: Int = 1, init: (Int, Radiation) -> Unit) : this(size) {
+    override fun write(writer: Writes) {
+        super.write(writer)
+        writer.f(x)
+        writer.f(y)
+    }
+}
+
+class Radiations<T : Radiation>(
+    val size: Int = 1,
+    val creator: () -> T
+) : Iterable<T> {
+    val list: ArrayList<T> = ArrayList(size) {
+        creator()
+    }
+
+    constructor(
+        size: Int = 1,
+        creator: () -> T,
+        init: (Int, T) -> Unit
+    ) : this(size, creator) {
         for ((i, r) in list.withIndex()) {
             init(i, r)
         }
@@ -38,8 +66,20 @@ class Radiations(val size: Int = 1) : Iterable<Radiation> {
     }
 }
 
-class RadiationQueue(val size: Int = 1) : Iterable<Radiation>, IRWable {
-    val list: LinkedList<Radiation> = LinkedList()
+fun RadiationArray(size: Int = 1) =
+    Radiations(size, ::Radiation)
+
+fun PosRadiationArray(size: Int = 1) =
+    Radiations(size, ::PosRadiation)
+
+fun RadiationArray(size: Int = 1, init: (Int, Radiation) -> Unit) =
+    Radiations(size, ::Radiation, init)
+
+fun PosRadiationArray(size: Int = 1, init: (Int, PosRadiation) -> Unit) =
+    Radiations(size, ::PosRadiation, init)
+
+class RadiationQueue<T : Radiation>(var size: Int = 1, val creator: () -> T) : Iterable<T>, IRWable {
+    val list: LinkedList<T> = LinkedList()
     val canAdd: Boolean
         get() = list.size < size
 
@@ -47,13 +87,17 @@ class RadiationQueue(val size: Int = 1) : Iterable<Radiation>, IRWable {
     /**
      * Remove the first-added
      */
-    fun poll(): Radiation? {
+    fun poll(): T? {
         return list.pollFirst()
+    }
+
+    inline fun RemoveAllWhen(crossinline predicate: (T) -> Boolean): Boolean {
+        return list.removeIf { predicate(it) }
     }
     /**
      * Remove the first-added if it meets the [predicate].
      */
-    inline fun pollWhen(predicate: (Radiation) -> Boolean): Radiation? {
+    inline fun pollWhen(predicate: (T) -> Boolean): T? {
         if (list.size > 0 && predicate(list.first)) {
             return list.pollFirst()
         }
@@ -62,13 +106,13 @@ class RadiationQueue(val size: Int = 1) : Iterable<Radiation>, IRWable {
     /**
      * Remove the last-added.
      */
-    fun pop(): Radiation? {
+    fun pop(): T? {
         return list.pollLast()
     }
     /**
      * Remove the last-added if it meets the [predicate].
      */
-    inline fun popWhen(predicate: (Radiation) -> Boolean): Radiation? {
+    inline fun popWhen(predicate: (T) -> Boolean): T? {
         if (list.size > 0 && predicate(list.last)) {
             return list.pollLast()
         }
@@ -77,13 +121,13 @@ class RadiationQueue(val size: Int = 1) : Iterable<Radiation>, IRWable {
     /**
      * Add a new radiation at end.
      */
-    fun append(radiation: Radiation) {
+    fun append(radiation: T) {
         return list.addLast(radiation)
     }
     /**
      * Add a new radiation at start.
      */
-    fun push(radiation: Radiation) {
+    fun push(radiation: T) {
         list.addFirst(radiation)
     }
 
@@ -98,7 +142,7 @@ class RadiationQueue(val size: Int = 1) : Iterable<Radiation>, IRWable {
             for (r in list)
                 r.read(reader)
             for (i in 0 until rest)
-                list.addLast(Radiation().apply {
+                list.addLast(creator().apply {
                     read(reader)
                 })
         } else { // size > targetLen
@@ -121,3 +165,9 @@ class RadiationQueue(val size: Int = 1) : Iterable<Radiation>, IRWable {
             r.write(writer)
     }
 }
+
+fun RadiationQueue(size: Int = 1) =
+    RadiationQueue(size, ::Radiation)
+
+fun PosRadiationQueue(size: Int = 1) =
+    RadiationQueue(size, ::PosRadiation)

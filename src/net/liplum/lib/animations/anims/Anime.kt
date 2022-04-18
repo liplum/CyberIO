@@ -1,10 +1,11 @@
 package net.liplum.lib.animations.anims
 
 import arc.graphics.Color
+import arc.math.Mathf
 import net.liplum.lib.ITimer
-import net.liplum.lib.animations.anis.Draw
-import net.liplum.lib.animations.anis.Reset
-import net.liplum.lib.animations.anis.SetColor
+import net.liplum.lib.Draw
+import net.liplum.lib.Reset
+import net.liplum.lib.SetColor
 import net.liplum.utils.TR
 
 data class Frame(
@@ -30,13 +31,11 @@ class Anime(
         set(value) {
             field = value.coerceIn(0, frames.size - 1)
         }
-    /*set(value) {
-        field = if (value >= 0)
-            value % frames.size
-        else
-            value % frames.size + frames.size
-    }*/
     var curTime = 0f
+    fun randomCurTime() {
+        curTime = Mathf.random(curDuration)
+    }
+
     var isForward = { true }
     val curDuration: Float
         get() = frames[index].duration
@@ -44,6 +43,17 @@ class Anime(
         get() = frames[index].image
     var onEnd = {}
     var isEnd: Boolean = false
+    fun restart() {
+        if (isForward()) {
+            index = 0
+            curTime = 0f
+        } else {
+            index = frames.size - 1
+            curTime = curDuration
+        }
+        isEnd = false
+    }
+
     override fun spend(time: Float) {
         if (isEnd) {
             onEnd()

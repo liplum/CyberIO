@@ -18,8 +18,8 @@ import mindustry.world.blocks.power.PowerBlock
 import net.liplum.ClientOnly
 import net.liplum.R
 import net.liplum.WhenNotPaused
-import net.liplum.lib.entity.Radiations
-import net.liplum.lib.animations.anis.Draw
+import net.liplum.lib.Draw
+import net.liplum.lib.entity.RadiationArray
 import net.liplum.utils.*
 import kotlin.math.min
 
@@ -85,7 +85,7 @@ open class WirelessTower(name: String) : PowerBlock(name) {
         val realSpeed: Float
             get() = distributeSpeed * edelta()
         @ClientOnly @JvmField
-        var radiations = Radiations(maxRadiation) { i, r ->
+        var radiations = RadiationArray(maxRadiation) { i, r ->
             r.range = range * i / maxRadiation
         }
         @ClientOnly

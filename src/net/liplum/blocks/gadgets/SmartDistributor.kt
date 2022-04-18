@@ -25,7 +25,7 @@ import net.liplum.blocks.AniedBlock
 import net.liplum.lib.animations.anims.Animation
 import net.liplum.lib.animations.anims.AnimationObj
 import net.liplum.lib.animations.anis.AniState
-import net.liplum.lib.animations.anis.Draw
+import net.liplum.lib.Draw
 import net.liplum.lib.animations.anis.config
 import net.liplum.lib.delegates.Delegate1
 import net.liplum.lib.ui.bars.addBar

@@ -15,8 +15,8 @@ import mindustry.type.Liquid
 import net.liplum.ClientOnly
 import net.liplum.R
 import net.liplum.api.cyber.*
-import net.liplum.lib.animations.anis.DrawOn
-import net.liplum.lib.animations.anis.DrawRotateOn
+import net.liplum.lib.DrawOn
+import net.liplum.lib.DrawRotateOn
 import net.liplum.lib.delegates.Delegate1
 import net.liplum.persistance.intSet
 import net.liplum.utils.ForProximity

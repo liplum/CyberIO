@@ -4,6 +4,7 @@ package net.liplum.lib.animations.anis
 
 import arc.math.Interp
 import arc.math.Mathf
+import net.liplum.lib.ALPHA
 import net.liplum.utils.invoke
 
 val None: TransitionEffect = { _, _, cur ->

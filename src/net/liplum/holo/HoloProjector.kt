@@ -31,7 +31,7 @@ import mindustry.world.consumers.ConsumeItemDynamic
 import mindustry.world.meta.BlockGroup
 import mindustry.world.meta.Stat
 import net.liplum.*
-import net.liplum.lib.animations.anis.Draw
+import net.liplum.lib.Draw
 import net.liplum.lib.shaders.SD
 import net.liplum.lib.shaders.use
 import net.liplum.lib.ui.addItemSelectorDefault
@@ -232,7 +232,7 @@ open class HoloProjector(name: String) : Block(name) {
         @ClientOnly
         val vecs = arrayOf(Vec2(), Vec2(), Vec2(), Vec2())
         @ClientOnly
-        var alpha = 1f
+        var alpha = 0f
             set(value) {
                 field = value.coerceIn(0f, 1f)
             }

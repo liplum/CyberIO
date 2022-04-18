@@ -158,6 +158,7 @@ public class R {
         public static final Color BlendShadow = Color.white.cpy().lerp(Color.black, Shadow.a);
         public static final Color Power = Pal.power;
         public static final Color BrainWave = Color.valueOf("#be61ab");
+        public static final Color SonicWave = Color.valueOf("#b0bec5");
 
         public static final Color
                 PrismRedFG = Color.valueOf("#EF5350"), PrismRedBK = Color.valueOf("#E53935"),

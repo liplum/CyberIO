@@ -1,5 +1,6 @@
 package net.liplum.blocks.prism
 
+import arc.math.Mathf
 import arc.struct.EnumSet
 import arc.util.io.Reads
 import arc.util.io.Writes
@@ -11,10 +12,10 @@ import mindustry.world.meta.BlockGroup
 import net.liplum.ClientOnly
 import net.liplum.R
 import net.liplum.WhenNotPaused
+import net.liplum.blocks.prism.Prism.PrismBuild
 import net.liplum.lib.animations.anims.Animation
 import net.liplum.lib.animations.anims.AnimationObj
 import net.liplum.lib.animations.anims.pingPong
-import net.liplum.blocks.prism.Prism.PrismBuild
 import net.liplum.utils.TE
 import net.liplum.utils.autoAnim
 import net.liplum.utils.bundle
@@ -100,7 +101,7 @@ open class PrismObelisk(name: String) : Block(name) {
                         obj.sleep()
                     } else
                         obj.wakeUp()
-                    obj.spend(d)
+                    obj.spend(d + Mathf.random())
                     obj.draw(x, y, i * 90f)
                 }
             }

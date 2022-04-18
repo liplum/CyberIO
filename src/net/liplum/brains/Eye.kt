@@ -1,28 +1,25 @@
 package net.liplum.brains
 
+import arc.graphics.Color
 import arc.graphics.g2d.Draw
 import arc.math.Angles
 import arc.math.Interp
+import arc.math.Mathf
 import arc.util.Time
 import mindustry.Vars
 import mindustry.entities.bullet.BulletType
 import mindustry.graphics.Drawf
 import mindustry.graphics.Layer
 import mindustry.world.blocks.defense.turrets.PowerTurret
-import net.liplum.ClientOnly
-import net.liplum.DebugOnly
-import net.liplum.WhenNotPaused
-import net.liplum.api.brain.Direction4
-import net.liplum.api.brain.IBrain
-import net.liplum.api.brain.IUpgradeComponent
-import net.liplum.draw
+import net.liplum.*
+import net.liplum.api.brain.*
+import net.liplum.lib.Draw
 import net.liplum.lib.animations.anims.Anime
 import net.liplum.lib.animations.anims.genFramesBy
-import net.liplum.lib.animations.anis.Draw
 import net.liplum.math.Polar
 import net.liplum.utils.*
 
-open class Eye(name: String) : PowerTurret(name) {
+open class Eye(name: String) : PowerTurret(name), IComponentBlock {
     lateinit var normalBullet: BulletType
     lateinit var improvedBullet: BulletType
     @ClientOnly lateinit var BaseTR: TR
@@ -35,12 +32,14 @@ open class Eye(name: String) : PowerTurret(name) {
     @ClientOnly @JvmField var BlinkDuration = 50f
     @ClientOnly @JvmField var BlinkFrameNum = 9
     @ClientOnly @JvmField var radiusSpeed = 0.1f
-    @ClientOnly @JvmField var PupilMax = 5f
+    @ClientOnly @JvmField var PupilMax = 4.3f
     @ClientOnly @JvmField var PupilMin = 1.2f
     @ClientOnly @JvmField var outOfCompactTime = 240f
+    override val upgrades: MutableMap<UpgradeType, Upgrade> = HashMap()
     override fun init() {
         // To prevent accessing a null
         shootType = normalBullet
+        checkInit()
         super.init()
     }
 
@@ -65,10 +64,12 @@ open class Eye(name: String) : PowerTurret(name) {
     }
 
     open inner class EyeBuild : PowerTurretBuild(), IUpgradeComponent {
-        override var directionInfo: Direction4 = Direction4.Empty
+        override var directionInfo: Direction2 = Direction2.Empty
         override var brain: IBrain? = null
         @ClientOnly
         lateinit var blinkAnime: Anime
+        override val upgrades: Map<UpgradeType, Upgrade>
+            get() = this@Eye.upgrades
 
         init {
             ClientOnly {
@@ -88,6 +89,7 @@ open class Eye(name: String) : PowerTurret(name) {
                         }
                     }
                 }
+                blinkAnime.randomCurTime()
             }
         }
 
@@ -106,14 +108,14 @@ open class Eye(name: String) : PowerTurret(name) {
         @ClientOnly
         val sight = Polar(0f, 0f)
         @ClientOnly
-        var lastInCombatTime = 0f
+        var lastInCombatTime = outOfCompactTime
         @ClientOnly
         val isOutOfCombat: Boolean
-            get() = lastInCombatTime > outOfCompactTime
-
+            get() = lastInCombatTime >= outOfCompactTime
+        val eyeColor: Color = R.C.RedAlert
         override fun draw() {
             WhenNotPaused {
-                blinkAnime.spend(Time.delta)
+                blinkAnime.spend(Time.delta + Mathf.random())
                 lastInCombatTime += Time.delta
             }
             BaseTR.Draw(x, y)
@@ -124,16 +126,18 @@ open class Eye(name: String) : PowerTurret(name) {
             Drawf.shadow(EyeBallTR, x - elevation, y - elevation)
             EyeBallTR.Draw(x, y)
             val radiusSpeed = radiusSpeed * Time.delta
-            if (isShooting) {
+            val consValid = consValid()
+
+            if (consValid && (isShooting || lastInCombatTime < 40f)) {
                 sight.approachR(PupilMax, radiusSpeed * 3f)
             } else {
                 sight.approachR(PupilMin, radiusSpeed)
             }
             DebugOnly {
-                G.dashCircle(x, y, stareAtScreenRadius)
+                G.dashCircle(x, y, stareAtScreenRadius, alpha = 0.2f)
             }
             WhenNotPaused {
-                if (isShooting || isControlled || target != null || !isOutOfCombat) {
+                if (consValid && (isShooting || isControlled || target != null || !isOutOfCombat)) {
                     sight.a = rotation.radian
                 } else {
                     val player = Vars.player.unit()
@@ -145,7 +149,7 @@ open class Eye(name: String) : PowerTurret(name) {
                     }
                 }
             }
-            val pupil = if (isShooting) PupilOutsideTR else PupilTR
+            val pupil = if (consValid && isShooting || sight.r > PupilMin * 1.5f) PupilOutsideTR else PupilTR
             var pupilX = x + sight.x
             var pupilY = y + sight.y
             if (isLinkedBrain) {
@@ -153,7 +157,9 @@ open class Eye(name: String) : PowerTurret(name) {
                 pupilX += tr2.x
                 pupilY += tr2.y
             }
+            Draw.mixcol(eyeColor, heat)
             pupil.Draw(pupilX, pupilY, rotationDraw)
+            Draw.reset()
             drawHemorrhage()
             blinkAnime.draw(x, y)
         }
