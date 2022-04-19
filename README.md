@@ -29,3 +29,8 @@ ___
 **Programmer:** Liplum
 
 **Painter:** sudoudou233
+
+## Licence
+The codes of CyberIO are open source in GNU General Public License v3.0(GPL 3.0).
+
+To learn about the resources of CyberIO, please check the [Copyright file](Copyright.md).

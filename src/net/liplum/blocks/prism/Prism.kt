@@ -371,6 +371,16 @@ open class Prism(name: String) : Block(name) {
             super.control(type, p1, p2, p3, p4)
         }
 
+        override fun control(type: LAccess, p1: Any?, p2: Double, p3: Double, p4: Double) {
+            if (type == LAccess.shootp && !unit.isPlayer) {
+                if (p1 is Posc) {
+                    logicControlTime = 60f
+                    logicAngle = toAngle(x, y, p1.x, p1.y)
+                }
+            }
+            super.control(type, p1, p2, p3, p4)
+        }
+
         open fun findNearestTurret(): Vec2? {
             var pos: Vec2? = null
             Groups.build.each {
@@ -380,16 +390,6 @@ open class Prism(name: String) : Block(name) {
                 }
             }
             return pos
-        }
-
-        override fun control(type: LAccess, p1: Any?, p2: Double, p3: Double, p4: Double) {
-            if (type == LAccess.shootp && !unit.isPlayer) {
-                if (p1 is Posc) {
-                    logicControlTime = 60f
-                    logicAngle = toAngle(x, y, p1.x, p1.y)
-                }
-            }
-            super.control(type, p1, p2, p3, p4)
         }
 
         override fun read(read: Reads, revision: Byte) {

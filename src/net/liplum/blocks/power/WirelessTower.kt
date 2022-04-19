@@ -95,8 +95,8 @@ open class WirelessTower(name: String) : PowerBlock(name) {
             get() = radiationSpeed * Mathf.log(3f, timeScale + 2f)
 
         override fun updateTile() {
-            if (power.status <= 0.999f) return
             lastNeed = 0f
+            if (power.status <= 0.999f) return
             forEachTargetInRange {
                 val powerCons = it.block.consumes.power
                 val power = it.power
@@ -128,7 +128,7 @@ open class WirelessTower(name: String) : PowerBlock(name) {
         }
 
         override fun drawSelect() {
-            G.drawDashCircle(x, y, range, R.C.Power, storke = (realRange / 100f).coerceAtLeast(1f))
+            G.drawDashCircle(x, y, realRange, R.C.Power, storke = (realRange / 100f).coerceAtLeast(1f))
             forEachTargetInRange {
                 G.drawSelected(it, R.C.Power)
             }

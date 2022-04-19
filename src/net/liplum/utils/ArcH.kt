@@ -45,3 +45,6 @@ fun <T> Seq<T>.insertBefore(e: T, whenTrue: (T) -> Boolean) {
         }
     }
 }
+
+fun <T> Array<T>.random(): T =
+    this[Mathf.random(size - 1).coerceAtLeast(0)]

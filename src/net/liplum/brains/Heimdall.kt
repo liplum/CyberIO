@@ -1,5 +1,6 @@
 package net.liplum.brains
 
+import arc.audio.Sound
 import arc.graphics.g2d.Draw
 import arc.graphics.g2d.Lines
 import arc.math.Interp
@@ -10,10 +11,9 @@ import arc.util.io.Writes
 import mindustry.Vars
 import mindustry.ai.types.SuicideAI
 import mindustry.content.UnitTypes
-import mindustry.gen.BlockUnitc
-import mindustry.gen.Building
-import mindustry.gen.Groups
+import mindustry.gen.*
 import mindustry.graphics.Layer
+import mindustry.logic.LAccess
 import mindustry.logic.Ranged
 import mindustry.world.Block
 import mindustry.world.blocks.ControlBlock
@@ -44,6 +44,7 @@ open class Heimdall(name: String) : Block(name) {
     @ClientOnly lateinit var BuckleTRs: Array<TR>
     @ClientOnly @JvmField var BuckleDuration = 20f
     @ClientOnly @JvmField var BuckleFrameNum = 5
+    @JvmField var connectedSound: Sound = Sounds.none
 
     init {
         solid = true
@@ -181,6 +182,7 @@ open class Heimdall(name: String) : Block(name) {
                         val dire = this.sideOn(build)
                         val succeed = linkComponent(build, dire)
                         if (succeed) {
+                            connectedSound.at(tile)
                             ClientOnly {
                                 linkAnime.restart()
                             }
@@ -275,6 +277,22 @@ open class Heimdall(name: String) : Block(name) {
         override fun write(write: Writes) {
             super.write(write)
             brainWaves.write(write)
+        }
+
+        override fun control(type: LAccess, p1: Double, p2: Double, p3: Double, p4: Double) {
+            if (type == LAccess.shoot && !unit.isPlayer) {
+                logicControlTime = 60f
+            }
+            super.control(type, p1, p2, p3, p4)
+        }
+
+        override fun control(type: LAccess, p1: Any?, p2: Double, p3: Double, p4: Double) {
+            if (type == LAccess.shootp && !unit.isPlayer) {
+                if (p1 is Posc) {
+                    logicControlTime = 60f
+                }
+            }
+            super.control(type, p1, p2, p3, p4)
         }
 
         protected val deltaUpgradePropMap = HashMap<UpgradeType, MutableList<Upgrade>>(properties.size + 1)

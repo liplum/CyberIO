@@ -49,6 +49,7 @@ import net.liplum.blocks.tmtrainer.TMTRAINER
 import net.liplum.blocks.underdrive.UnderdriveProjector
 import net.liplum.blocks.virus.AntiVirus
 import net.liplum.blocks.virus.Virus
+import net.liplum.brains.BrainFx
 import net.liplum.brains.Ear
 import net.liplum.brains.Eye
 import net.liplum.brains.Heimdall
@@ -108,15 +109,15 @@ object CioBlocks : ContentTable {
             )
             health = 2000
             outputItem = ItemStack(CioItems.ic, 1)
-            craftTime = 450f
+            craftTime = 240f
             size = 3
-            buildCostMultiplier = 3f
+            buildCostMultiplier = 1.5f
             craftEffect = Fx.smelt
-            itemCapacity = 200
-            consumes.items( //Total:200
-                ItemStack(Items.silicon, 40),  //20%
-                ItemStack(Items.copper, 100),  //50%
-                ItemStack(Items.metaglass, 60) //30%
+            itemCapacity = 100
+            consumes.items( //Total:100
+                ItemStack(Items.silicon, 20),  //20%
+                ItemStack(Items.copper, 50),  //50%
+                ItemStack(Items.metaglass, 30) //30%
             )
             consumes.power(10f)
         }
@@ -307,7 +308,7 @@ object CioBlocks : ContentTable {
         deleter = Deleter("deleter").apply {
             requirements(
                 Category.turret, BuildVisibility.shown, arrayOf(
-                    ItemStack(CioItems.ic, 12),
+                    ItemStack(CioItems.ic, 9),
                     ItemStack(Items.graphite, 100),
                     ItemStack(Items.silicon, 60),
                     ItemStack(Items.thorium, 250),
@@ -390,7 +391,7 @@ object CioBlocks : ContentTable {
         smartDistributor = SmartDistributor("smart-distributor").apply {
             requirements(
                 Category.distribution, BuildVisibility.shown, arrayOf(
-                    ItemStack(CioItems.ic, 15),
+                    ItemStack(CioItems.ic, 13),
                     ItemStack(Items.surgeAlloy, 50),
                     ItemStack(Items.thorium, 300),
                     ItemStack(Items.phaseFabric, 100),
@@ -449,7 +450,7 @@ object CioBlocks : ContentTable {
         streamServer = StreamServer("stream-server").apply {
             requirements(
                 Category.liquid, BuildVisibility.shown, arrayOf(
-                    ItemStack(CioItems.ic, 12),
+                    ItemStack(CioItems.ic, 10),
                     ItemStack(Items.metaglass, 350),
                     ItemStack(Items.silicon, 100),
                     ItemStack(Items.thorium, 500),
@@ -527,9 +528,9 @@ object CioBlocks : ContentTable {
                 requirements(
                     Category.units, BuildVisibility.shown, arrayOf(
                         ItemStack(CioItems.ic, 14),
-                        ItemStack(Items.silicon, 200),
-                        ItemStack(Items.graphite, 60),
-                        ItemStack(Items.thorium, 500),
+                        ItemStack(Items.silicon, 220),
+                        ItemStack(Items.graphite, 120),
+                        ItemStack(Items.thorium, 1000),
                     )
                 )
                 plans = Seq.with(
@@ -540,26 +541,27 @@ object CioBlocks : ContentTable {
                     ),
                     HoloPlan(
                         CioUnitTypes.holoFighter,
-                        Requirement(60f),
-                        11.5f * 60f
+                        Requirement(80f),
+                        15f * 60f
                     ),
                     HoloPlan(
                         CioUnitTypes.holoGuardian,
                         Requirement(30f),
-                        8f * 60f
+                        7.5f * 60f
                     ),
                     HoloPlan(
                         CioUnitTypes.holoArchitect,
-                        Requirement(100f),
-                        15f * 60f
+                        Requirement(150f),
+                        30f * 60f
                     ),
                     HoloPlan(
                         CioUnitTypes.holoSupporter,
-                        Requirement(50f),
-                        15f * 60f
+                        Requirement(45f),
+                        12f * 60f
                     ),
                 )
                 size = 5
+                buildCostMultiplier = 2f
                 consumes.powerCond(3f) { it: HoloProjector.HoloPBuild ->
                     it.curPlan != null && it.otherConsumersAreValid(consumes.power)
                 }
@@ -608,26 +610,29 @@ object CioBlocks : ContentTable {
                 requirements(
                     Category.power, BuildVisibility.shown, arrayOf(
                         ItemStack(CioItems.ic, 3),
-                        ItemStack(Items.copper, 200),
+                        ItemStack(Items.copper, 300),
                         ItemStack(Items.graphite, 50),
+                        ItemStack(Items.silicon, 10),
                     )
                 )
-                health = 200
-                distributeSpeed = 5f
+                health = 600
+                distributeSpeed = 10f
                 size = 2
-                range = 250f
+                range = 300f
             }
 
             heimdall = Heimdall("heimdall").apply {
                 requirements(
                     Category.turret, BuildVisibility.shown, arrayOf(
-                        ItemStack(CioItems.ic, 10),
-                        ItemStack(Items.sporePod, 80),
+                        ItemStack(CioItems.ic, 8),
+                        ItemStack(Items.sporePod, 90),
                         ItemStack(Items.thorium, 300),
                     )
                 )
                 size = 4
+                range = 175f
                 health = 400 * size * size
+                connectedSound = CioSounds.connected
                 consumes.add(
                     ConsumePower(2f, 240f, false)
                 )
@@ -644,11 +649,16 @@ object CioBlocks : ContentTable {
                 range = 165f
                 health = 300 * size * size
                 size = 2
-                chargeTime = 30f
+                chargeTime = 60f
+                shootEffect = BrainFx.eyeShoot
+                smokeEffect = Fx.none
+                chargeEffect = BrainFx.eyeCharge
+                chargeBeginEffect = BrainFx.eyeChargeBegin
                 addUpgrade(
                     Upgrade(UpgradeType.Damage, false, 0.1f),
                     Upgrade(UpgradeType.ReloadTime, true, -4f),
                 )
+                normalSounds = CioSounds.laserWeak
                 normalBullet = LightningBulletType().apply {
                     damage = 60f
                     lightningLength = 25
@@ -659,6 +669,7 @@ object CioBlocks : ContentTable {
                     accurateDelay = true
                     lightningColor = R.C.RedAlert
                 }
+                improvedSounds = CioSounds.laser
                 improvedBullet = LaserBulletType(250f).apply {
                     colors = arrayOf(R.C.RedAlert.cpy().a(0.4f), R.C.RedAlert, R.C.RedAlertDark)
                     hitEffect = Fx.hitLancer
@@ -678,7 +689,7 @@ object CioBlocks : ContentTable {
                         ItemStack(CioItems.ic, 5),
                         ItemStack(Items.copper, 80),
                         ItemStack(Items.silicon, 40),
-                        ItemStack(Items.phaseFabric, 20),
+                        ItemStack(Items.phaseFabric, 40),
                     )
                 )
                 addUpgrade(
@@ -687,7 +698,7 @@ object CioBlocks : ContentTable {
                     Upgrade(UpgradeType.WaveSpeed, true, 0.08f),
                     Upgrade(UpgradeType.WaveWidth, true, 0.4f),
                 )
-                range = 200f
+                range = 145f
                 size = 2
                 health = 300 * size * size
             }

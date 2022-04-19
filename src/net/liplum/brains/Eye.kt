@@ -1,5 +1,6 @@
 package net.liplum.brains
 
+import arc.audio.Sound
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
 import arc.math.Angles
@@ -7,6 +8,8 @@ import arc.math.Interp
 import arc.math.Mathf
 import arc.util.Time
 import mindustry.Vars
+import mindustry.content.Fx
+import mindustry.entities.Effect
 import mindustry.entities.bullet.BulletType
 import mindustry.graphics.Drawf
 import mindustry.graphics.Layer
@@ -17,11 +20,14 @@ import net.liplum.lib.Draw
 import net.liplum.lib.animations.anims.Anime
 import net.liplum.lib.animations.anims.genFramesBy
 import net.liplum.math.Polar
+import net.liplum.registries.CioSounds
 import net.liplum.utils.*
 
 open class Eye(name: String) : PowerTurret(name), IComponentBlock {
     lateinit var normalBullet: BulletType
     lateinit var improvedBullet: BulletType
+    var normalSounds: Array<Sound> = CioSounds.EmptySounds
+    var improvedSounds: Array<Sound> = CioSounds.EmptySounds
     @ClientOnly lateinit var BaseTR: TR
     @ClientOnly lateinit var EyeBallTR: TR
     @ClientOnly lateinit var EyelidTR: TR
@@ -174,6 +180,25 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
             Draw.alpha(heat * 1.2f)
             hemorrhage.Draw(x, y)
             Draw.color()
+        }
+
+        override fun effects() {
+            val type = peekAmmo()
+            val fshootEffect = if (shootEffect == Fx.none) type.shootEffect else shootEffect
+            val fsmokeEffect = if (smokeEffect == Fx.none) type.smokeEffect else smokeEffect
+
+            fshootEffect.at(x + tr.x, y + tr.y, rotation, liquids.current().color)
+            fsmokeEffect.at(x + tr.x, y + tr.y, rotation, liquids.current().color)
+            if (isLinkedBrain)
+                improvedSounds.random().at(tile)
+            else
+                normalSounds.random().at(tile)
+
+            if (shootShake > 0) {
+                Effect.shake(shootShake, shootShake, tile.build)
+            }
+
+            recoil = recoilAmount
         }
 
         override fun hasAmmo() = true

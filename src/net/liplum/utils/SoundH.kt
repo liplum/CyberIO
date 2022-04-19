@@ -38,6 +38,11 @@ fun loadAuto(name: String): Sound {
 fun String.LoadSound(): Sound =
     loadAuto(this)
 
+fun String.LoadSounds(number: Int): Array<Sound> =
+    Array(number) {
+        loadAuto(this + it)
+    }
+
 fun loadSound(path: String): Sound {
     ClientOnly {
         val sound = Sound()

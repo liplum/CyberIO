@@ -11,6 +11,7 @@ import mindustry.world.meta.BlockGroup
 import net.liplum.CalledBySync
 import net.liplum.ClientOnly
 import net.liplum.SendDataPack
+import net.liplum.lib.Draw
 import net.liplum.lib.Observer
 import net.liplum.utils.TR
 import net.liplum.utils.invoke
@@ -18,6 +19,7 @@ import net.liplum.utils.sub
 
 open class Jammer(name: String) : LaserTurret(name) {
     @ClientOnly lateinit var TurretTR: TR
+    @ClientOnly lateinit var StereoTR: TR
 
     init {
         outlineIcon = false
@@ -31,6 +33,7 @@ open class Jammer(name: String) : LaserTurret(name) {
     override fun load() {
         super.load()
         TurretTR = this.sub("turret")
+        StereoTR = this.sub("stereo")
     }
 
     open inner class JammerBuild : LaserTurretBuild() {
@@ -57,7 +60,7 @@ open class Jammer(name: String) : LaserTurret(name) {
         }
 
         override fun draw() {
-            Draw.rect(baseRegion, x, y)
+            baseRegion.Draw(x, y)
             Draw.color()
 
             Draw.z(Layer.turret)
@@ -65,11 +68,13 @@ open class Jammer(name: String) : LaserTurret(name) {
             tr2.trns(rotation, -recoil)
 
             Drawf.shadow(TurretTR, x + tr2.x - elevation, y + tr2.y - elevation, rotation - 90)
-            Draw.rect(TurretTR, x + tr2.x, y + tr2.y, rotation - 90)
+            TurretTR.Draw(x + tr2.x, y + tr2.y, rotation - 90)
 
             if (Core.atlas.isFound(heatRegion)) {
                 heatDrawer(this)
             }
+            //TODO: Draw Stereos
+            //StereoTR.Draw(x, y)
         }
     }
 }

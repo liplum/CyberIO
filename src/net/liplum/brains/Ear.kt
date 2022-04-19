@@ -9,11 +9,10 @@ import arc.util.io.Writes
 import mindustry.content.UnitTypes
 import mindustry.entities.UnitSorts
 import mindustry.entities.Units
-import mindustry.gen.BlockUnitc
-import mindustry.gen.Building
-import mindustry.gen.Groups
+import mindustry.gen.*
 import mindustry.gen.Unit
 import mindustry.graphics.Layer
+import mindustry.logic.LAccess
 import mindustry.world.Block
 import mindustry.world.blocks.ControlBlock
 import net.liplum.ClientOnly
@@ -29,7 +28,7 @@ open class Ear(name: String) : Block(name), IComponentBlock {
     @ClientOnly lateinit var BaseTR: TR
     @ClientOnly lateinit var EarTR: TR
     @JvmField var range = 150f
-    @JvmField var reloadTime = 30f
+    @JvmField var reloadTime = 60f
     @JvmField var waveSpeed = 5f
     @JvmField var waveWidth = 5f
     @JvmField var damage = 8f
@@ -43,6 +42,7 @@ open class Ear(name: String) : Block(name), IComponentBlock {
     @JvmField var damageI = 1f
     @JvmField var radiusI = 0.4f
     @JvmField var widthI = 0.3f
+    @JvmField var sensitivity = 0.3f
     override val upgrades: MutableMap<UpgradeType, Upgrade> = HashMap()
 
     init {
@@ -109,7 +109,7 @@ open class Ear(name: String) : Block(name), IComponentBlock {
                 if (sonicWaves.canAdd) {
                     val result = Units.bestTarget(
                         team, x, y, realRange,
-                        { !it.dead() && it.moving() },
+                        { !it.dead() && it.isSensed },
                         { false },
                         UnitSorts.weakest
                     )
@@ -145,6 +145,9 @@ open class Ear(name: String) : Block(name), IComponentBlock {
                 }
             }
         }
+
+        val MdtUnit.isSensed: Boolean
+            get() = this.vel.len2() > sensitivity
 
         override fun draw() {
             BaseTR.Draw(x, y)
@@ -185,6 +188,22 @@ open class Ear(name: String) : Block(name), IComponentBlock {
         override fun onProximityRemoved() {
             super.onProximityRemoved()
             clear()
+        }
+
+        override fun control(type: LAccess, p1: Double, p2: Double, p3: Double, p4: Double) {
+            if (type == LAccess.shoot && !unit.isPlayer) {
+                logicControlTime = 60f
+            }
+            super.control(type, p1, p2, p3, p4)
+        }
+
+        override fun control(type: LAccess, p1: Any?, p2: Double, p3: Double, p4: Double) {
+            if (type == LAccess.shootp && !unit.isPlayer) {
+                if (p1 is Posc) {
+                    logicControlTime = 60f
+                }
+            }
+            super.control(type, p1, p2, p3, p4)
         }
 
         override fun read(read: Reads, revision: Byte) {

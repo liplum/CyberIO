@@ -17,7 +17,7 @@ public class AtlasU {
             identity = content.name;
         }
         for (int i = start; i < end; i++) {
-            fms[i - start] = Core.atlas.find(identity + "-" + i);
+            fms[i - start] = Core.atlas.find(identity + i);
         }
         return fms;
     }

@@ -56,7 +56,7 @@ object CioUnitTypes : ContentTable {
         }
 
         holoFighter = NewUnitType(R.Unit.HoloFighter, ::HoloUnitType, ::HoloUnit).apply {
-            AutoLife(maxHealth = 3000f, lose = 0.3f)
+            AutoLife(maxHealth = 2500f, lose = 0.35f)
             speed = 4f
             accel = 0.08f
             drag = 0.016f
@@ -81,12 +81,12 @@ object CioUnitTypes : ContentTable {
                 reload = 11f
                 recoil = 1f
                 ejectEffect = Fx.none
-                bullet = RuvikBullet(1.6f, 40f).apply {
+                bullet = RuvikBullet(1.6f, 35f).apply {
                     stemVersion = STEM_VERSION.STEM1
                     width = 10f
                     height = 10f
                     hitSize = 10f
-                    lifetime = 240f
+                    lifetime = 180f
                     frontColor = R.C.Holo
                     backColor = R.C.HoloDark
                 }
@@ -94,7 +94,7 @@ object CioUnitTypes : ContentTable {
         }
 
         holoGuardian = NewUnitType(R.Unit.HoloGuardian, ::HoloUnitType, ::HoloUnit).apply {
-            AutoLife(maxHealth = 5000f, lose = 0.5f)
+            AutoLife(maxHealth = 5000f, lose = 0.3f)
             abilities.add(
                 HoloForceField(
                     60f, 4f, 2000f, 60f * 8
@@ -115,7 +115,7 @@ object CioUnitTypes : ContentTable {
             armor = 5f
         }
         holoArchitect = NewUnitType(R.Unit.HoloArchitect, ::HoloUnitType, ::HoloUnit).apply {
-            AutoLife(maxHealth = 2500f, lose = 0.1f)
+            AutoLife(maxHealth = 2000f, lose = 0.15f)
             defaultController = Prov { BuilderAI() }
             speed = 3.5f
             HoloOpacity = 0.4f
@@ -129,7 +129,7 @@ object CioUnitTypes : ContentTable {
             engineOffset = 3.7f
             hitSize = 15f
             armor = 5f
-            buildSpeed = 5f
+            buildSpeed = 4.6f
             ammoType = PowerAmmoType(900f)
 
             weapons.add(HoloWeapon().apply {

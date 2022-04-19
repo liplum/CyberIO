@@ -39,7 +39,7 @@ infix fun TR.or(texture: TR): TR =
     else
         texture
 /**
- * Gets an array of Texture Region from a list of images named in pattern "sprites/{this}-{subName}-{number}" or "sprites/{this}-{number}" if subName is null.
+ * Gets an array of Texture Region from a list of images named in pattern "sprites/{this}-{subName}{number}" or "sprites/{this}{number}" if subName is null.
  * @param subName the following name after a hyphen. If it's null, use the {this}-{number} name
  * @param number the amount of frames in that image. Splits it by row.
  * @param start the start number of these images

@@ -141,6 +141,7 @@ public class R {
     public static final class C {
         public static final Color RedAlert = Color.valueOf("#e53935");
         public static final Color RedAlertDark = Color.valueOf("#d50000");
+        public static final Color RedDark = Color.valueOf("#7d0000");
         public static final Color GreenSafe = Color.valueOf("#00e676");
         public static final Color LightBlue = Color.valueOf("#add8e6");
         public static final Color Holo = Color.valueOf("#42a5f5");//(0.2588,0.6471,0.9608)
