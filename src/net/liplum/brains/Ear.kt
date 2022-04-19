@@ -29,11 +29,11 @@ open class Ear(name: String) : Block(name), IComponentBlock {
     @ClientOnly lateinit var EarTR: TR
     @JvmField var range = 150f
     @JvmField var reloadTime = 60f
-    @JvmField var waveSpeed = 5f
+    @JvmField var waveSpeed = 2.5f
     @JvmField var waveWidth = 5f
-    @JvmField var damage = 8f
+    @JvmField var damage = 3.5f
     @JvmField var maxSonicWaveNum = 3
-    @JvmField var sonicMaxRadius = 50f
+    @JvmField var sonicMaxRadius = 40f
     @ClientOnly @JvmField var maxScale = 0.3f
     @ClientOnly @JvmField var scaleTime = 30f
     @JvmField var powerUse = 2f
@@ -101,7 +101,7 @@ open class Ear(name: String) : Block(name), IComponentBlock {
                 it.range += waveSpeed * delta()
             }
             sonicWaves.pollWhen {
-                it.range >= realRange
+                it.range >= realSonicRadius
             }
             reload += efficiency()
             if (reload >= realReloadTime) {
@@ -159,12 +159,10 @@ open class Ear(name: String) : Block(name), IComponentBlock {
             }
             EarTR.DrawSize(x, y, scale)
             Draw.z(Layer.power)
-            val realRange = realRange
             for (wave in sonicWaves) {
-                val dst = realRange - wave.range
-                val alpha = Interp.pow2Out(dst / realRange)
+                val alpha = Interp.pow2Out(wave.range / realSonicRadius)
                 Lines.stroke(waveWidth, R.C.SonicWave)
-                Draw.alpha(alpha)
+                Draw.alpha(1f - alpha)
                 Lines.circle(wave.x, wave.y, wave.range)
             }
         }

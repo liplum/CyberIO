@@ -22,6 +22,7 @@ value class UpgradeType(val type: Int) {
          * To prevent radiating too many waves, it doesn't mean the absolute value will be used.
          */
         val MaxBrainWaveNum = UpgradeType(5)
+        val ControlLine = UpgradeType(6)
     }
 }
 
@@ -74,7 +75,12 @@ interface IComponentBlock {
     }
 }
 /**
- * For 2 part: 0 and 1
+ * For 2 part: 0 and 1.
+ * It should be used as an array to represent 4 sides.
+ * - 0 is right
+ * - 1 is top
+ * - 2 is left
+ * - 3 is bottom
  */
 class Side2(val brain: IBrain) : Iterable<IUpgradeComponent> {
     val components: Array<IUpgradeComponent?> = arrayOfNulls(2)
@@ -125,9 +131,9 @@ class Side2(val brain: IBrain) : Iterable<IUpgradeComponent> {
         components.fill(null)
     }
 
-    fun unlink(){
-       for (com in components)
-           com?.unlinkBrain()
+    fun unlinkAll() {
+        for (com in components)
+            com?.unlinkBrain()
     }
 }
 /**
@@ -162,6 +168,18 @@ value class Direction2(val value: Int = -1) {
         get() = onPart0 && onPart1
 }
 
+internal val Array<Side2>.right:Side2
+    get() = this[0]
+
+internal val Array<Side2>.top:Side2
+    get() = this[1]
+
+internal val Array<Side2>.left:Side2
+    get() = this[2]
+
+internal val Array<Side2>.bottom:Side2
+    get() = this[3]
+
 interface IBrain : ICyberEntity, Iterable<IUpgradeComponent> {
     /**
      * 4 sides of this brain block.
@@ -190,9 +208,9 @@ interface IBrain : ICyberEntity, Iterable<IUpgradeComponent> {
         components.clear()
     }
 
-    fun unlinkAll(){
+    fun unlinkAll() {
         for (side in sides)
-            side.unlink()
+            side.unlinkAll()
     }
     /**
      * ## Contract

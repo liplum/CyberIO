@@ -86,10 +86,10 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
                 ).apply {
                     var forward = true
                     isForward = {
-                        forward || isShooting
+                        forward || isShooting || charging
                     }
                     onEnd = {
-                        if (!isShooting) {
+                        if (!isShooting && !charging) {
                             forward = !forward
                             isEnd = false
                         }
@@ -134,7 +134,7 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
             val radiusSpeed = radiusSpeed * Time.delta
             val consValid = consValid()
 
-            if (consValid && (isShooting || lastInCombatTime < 40f)) {
+            if (consValid && (isShooting || lastInCombatTime < 40f || charging)) {
                 sight.approachR(PupilMax, radiusSpeed * 3f)
             } else {
                 sight.approachR(PupilMin, radiusSpeed)

@@ -35,7 +35,7 @@ object CioUnitTypes : ContentTable {
         NpcUnitType::class.java.registerPayloadSource()
 
         holoMiner = NewUnitType(R.Unit.HoloMiner, ::HoloUnitType, ::HoloUnit).apply {
-            AutoLife(maxHealth = 2000f, lose = 0.08f)
+            AutoLife(maxHealth = 1600f, lose = 0.08f)
             health = 2000f
             speed = 2f
             defaultController = Prov { MinerAI() }
@@ -56,7 +56,7 @@ object CioUnitTypes : ContentTable {
         }
 
         holoFighter = NewUnitType(R.Unit.HoloFighter, ::HoloUnitType, ::HoloUnit).apply {
-            AutoLife(maxHealth = 2500f, lose = 0.35f)
+            AutoLife(maxHealth = 2200f, lose = 0.35f)
             speed = 4f
             accel = 0.08f
             drag = 0.016f
@@ -115,7 +115,7 @@ object CioUnitTypes : ContentTable {
             armor = 5f
         }
         holoArchitect = NewUnitType(R.Unit.HoloArchitect, ::HoloUnitType, ::HoloUnit).apply {
-            AutoLife(maxHealth = 2000f, lose = 0.15f)
+            AutoLife(maxHealth = 1600f, lose = 0.15f)
             defaultController = Prov { BuilderAI() }
             speed = 3.5f
             HoloOpacity = 0.4f

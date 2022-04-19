@@ -8,6 +8,6 @@ public class Meta {
     public static final String Name = "Cyber IO";
     public static final String Version = "v3";
     public static final String DefaultLang = "en";
-    public static final Version2 DetailedVersion = new Version2(2, 0);
+    public static final Version2 DetailedVersion = new Version2(3, 0);
     public static final String Repo = "liplum/CyberIO";
 }

@@ -28,7 +28,7 @@ import net.liplum.utils.G
 class CioMod : Mod() {
     companion object {
         @JvmField val IsClient = !Vars.headless
-        @JvmField var DebugMode = true
+        @JvmField var DebugMode = false
         @JvmField var TestGlCompatibility = false
         @JvmField var ExperimentalMode = false
         @JvmField var CanGlobalAnimationPlay = false
@@ -58,10 +58,12 @@ class CioMod : Mod() {
             ClientOnly {
                 Core.app.post {
                     CioShaders.init()
-                    Script.init()
                     Welcome.load()
-                    Script.initInterpreter()
-                    Script.loadStory("OnTheShip.Captain.Introduction")
+                    DebugOnly {
+                        Script.init()
+                        Script.initInterpreter()
+                        Script.loadStory("OnTheShip.Captain.Introduction")
+                    }
                 }
             }
         }

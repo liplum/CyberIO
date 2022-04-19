@@ -49,10 +49,7 @@ import net.liplum.blocks.tmtrainer.TMTRAINER
 import net.liplum.blocks.underdrive.UnderdriveProjector
 import net.liplum.blocks.virus.AntiVirus
 import net.liplum.blocks.virus.Virus
-import net.liplum.brains.BrainFx
-import net.liplum.brains.Ear
-import net.liplum.brains.Eye
-import net.liplum.brains.Heimdall
+import net.liplum.brains.*
 import net.liplum.bullets.RuvikBullet
 import net.liplum.bullets.STEM_VERSION
 import net.liplum.bullets.ShaderCLaser
@@ -479,10 +476,11 @@ object CioBlocks : ContentTable {
             shootCone = 40f
             recoilAmount = 4f
             shootShake = 2f
+            shootDuration = 150f
             range = 150f
             cooldown = 10f
             reloadTime = 40f
-            firingMoveFract = 0.25f
+            firingMoveFract = 1f
             shootDuration = 180f
             shootSound = CioSounds.jammerPreShoot
             loopSound = CioSounds.tvStatic
@@ -506,202 +504,204 @@ object CioBlocks : ContentTable {
                 }
             }
         }
-        DebugOnly {
-            cyberionMixer = LiquidConverter("cyberion-mixer").apply {
-                requirements(
-                    Category.crafting, BuildVisibility.shown, arrayOf(
-                        ItemStack(CioItems.ic, 2),
-                        ItemStack(Items.lead, 100),
-                        ItemStack(Items.titanium, 100),
-                    )
+        cyberionMixer = LiquidConverter("cyberion-mixer").apply {
+            requirements(
+                Category.crafting, BuildVisibility.shown, arrayOf(
+                    ItemStack(CioItems.ic, 2),
+                    ItemStack(Items.lead, 100),
+                    ItemStack(Items.titanium, 100),
                 )
-                drawer = CyberionMixerDrawer(R.C.Holo, R.C.HoloDark)
-                outputLiquid = LiquidStack(CioLiquids.cyberion, 0.3f)
-                craftTime = 100f
-                size = 3
-                consumes.power(1.5f)
-                consumes.item(Items.thorium, 1)
-                consumes.liquid(Liquids.cryofluid, 0.3f)
-            }
+            )
+            drawer = CyberionMixerDrawer(R.C.Holo, R.C.HoloDark)
+            outputLiquid = LiquidStack(CioLiquids.cyberion, 0.3f)
+            craftTime = 100f
+            size = 3
+            consumes.power(1.5f)
+            consumes.item(Items.thorium, 1)
+            consumes.liquid(Liquids.cryofluid, 0.3f)
+        }
 
-            holoProjector = HoloProjector("holo-projector").apply {
-                requirements(
-                    Category.units, BuildVisibility.shown, arrayOf(
-                        ItemStack(CioItems.ic, 14),
-                        ItemStack(Items.silicon, 220),
-                        ItemStack(Items.graphite, 120),
-                        ItemStack(Items.thorium, 1000),
-                    )
+        holoProjector = HoloProjector("holo-projector").apply {
+            requirements(
+                Category.units, BuildVisibility.shown, arrayOf(
+                    ItemStack(CioItems.ic, 14),
+                    ItemStack(Items.silicon, 220),
+                    ItemStack(Items.graphite, 120),
+                    ItemStack(Items.thorium, 1000),
                 )
-                plans = Seq.with(
-                    HoloPlan(
-                        CioUnitTypes.holoMiner,
-                        Requirement(80f),
-                        15f * 60f
-                    ),
-                    HoloPlan(
-                        CioUnitTypes.holoFighter,
-                        Requirement(80f),
-                        15f * 60f
-                    ),
-                    HoloPlan(
-                        CioUnitTypes.holoGuardian,
-                        Requirement(30f),
-                        7.5f * 60f
-                    ),
-                    HoloPlan(
-                        CioUnitTypes.holoArchitect,
-                        Requirement(150f),
-                        30f * 60f
-                    ),
-                    HoloPlan(
-                        CioUnitTypes.holoSupporter,
-                        Requirement(45f),
-                        12f * 60f
-                    ),
-                )
-                size = 5
-                buildCostMultiplier = 2f
-                consumes.powerCond(3f) { it: HoloProjector.HoloPBuild ->
-                    it.curPlan != null && it.otherConsumersAreValid(consumes.power)
-                }
+            )
+            plans = Seq.with(
+                HoloPlan(
+                    CioUnitTypes.holoMiner,
+                    Requirement(80f),
+                    15f * 60f
+                ),
+                HoloPlan(
+                    CioUnitTypes.holoFighter,
+                    Requirement(80f),
+                    15f * 60f
+                ),
+                HoloPlan(
+                    CioUnitTypes.holoGuardian,
+                    Requirement(30f),
+                    7.5f * 60f
+                ),
+                HoloPlan(
+                    CioUnitTypes.holoArchitect,
+                    Requirement(150f),
+                    30f * 60f
+                ),
+                HoloPlan(
+                    CioUnitTypes.holoSupporter,
+                    Requirement(45f),
+                    12f * 60f
+                ),
+            )
+            size = 5
+            buildCostMultiplier = 2f
+            consumes.powerCond(3f) { it: HoloProjector.HoloPBuild ->
+                it.curPlan != null && it.otherConsumersAreValid(consumes.power)
             }
+        }
 
-            aquacyberion = Floor("aqua-cyberion").apply {
-                drownTime = 0f
-                status = StatusEffects.freezing
-                statusDuration = 240f
-                speedMultiplier = 0.1f
-                variants = 0
-                liquidDrop = CioLiquids.cyberion
-                liquidMultiplier = 0.1f
-                isLiquid = true
-                cacheLayer = CioCLs.cyberion
-                emitLight = true
-                lightRadius = 30f
-                lightColor = R.C.Holo.cpy().a(0.19f)
-            }
+        aquacyberion = Floor("aqua-cyberion").apply {
+            drownTime = 0f
+            status = StatusEffects.freezing
+            statusDuration = 240f
+            speedMultiplier = 0.1f
+            variants = 0
+            liquidDrop = CioLiquids.cyberion
+            liquidMultiplier = 0.1f
+            isLiquid = true
+            cacheLayer = CioCLs.cyberion
+            emitLight = true
+            lightRadius = 30f
+            lightColor = R.C.Holo.cpy().a(0.19f)
+        }
 
-            stealth = Stealth("stealth").apply {
-                requirements(
-                    Category.turret, BuildVisibility.shown, arrayOf(
-                        ItemStack(CioItems.ic, 5),
-                        ItemStack(Items.titanium, 150),
-                    )
+        stealth = Stealth("stealth").apply {
+            requirements(
+                Category.turret, BuildVisibility.shown, arrayOf(
+                    ItemStack(CioItems.ic, 5),
+                    ItemStack(Items.titanium, 150),
                 )
-                size = 3
-                recoilAmount = 3f
-                range = 320f
-                health = 1500
-                liquidCapacity = 60f
-                reloadTime = 15f
-                shootType = RuvikBullet(2f, 44f).apply {
-                    stemVersion = STEM_VERSION.STEM2
-                    width = 10f
-                    height = 10f
-                    hitSize = 10f
-                    lifetime = 240f
-                    frontColor = R.C.Holo
-                    backColor = R.C.HoloDark
-                }
+            )
+            size = 3
+            recoilAmount = 3f
+            range = 320f
+            health = 1500
+            liquidCapacity = 60f
+            reloadTime = 15f
+            shootType = RuvikBullet(2f, 44f).apply {
+                stemVersion = STEM_VERSION.STEM2
+                width = 10f
+                height = 10f
+                hitSize = 10f
+                lifetime = 240f
+                frontColor = R.C.Holo
+                backColor = R.C.HoloDark
             }
+        }
 
-            wirelessTower = WirelessTower("wireless-tower").apply {
-                requirements(
-                    Category.power, BuildVisibility.shown, arrayOf(
-                        ItemStack(CioItems.ic, 3),
-                        ItemStack(Items.copper, 300),
-                        ItemStack(Items.graphite, 50),
-                        ItemStack(Items.silicon, 10),
-                    )
+        wirelessTower = WirelessTower("wireless-tower").apply {
+            requirements(
+                Category.power, BuildVisibility.shown, arrayOf(
+                    ItemStack(CioItems.ic, 3),
+                    ItemStack(Items.copper, 300),
+                    ItemStack(Items.graphite, 50),
+                    ItemStack(Items.silicon, 10),
                 )
-                health = 600
-                distributeSpeed = 10f
-                size = 2
-                range = 300f
-            }
+            )
+            health = 600
+            distributeSpeed = 10f
+            size = 2
+            range = 300f
+        }
 
-            heimdall = Heimdall("heimdall").apply {
-                requirements(
-                    Category.turret, BuildVisibility.shown, arrayOf(
-                        ItemStack(CioItems.ic, 8),
-                        ItemStack(Items.sporePod, 90),
-                        ItemStack(Items.thorium, 300),
-                    )
+        heimdall = Heimdall("heimdall").apply {
+            requirements(
+                Category.turret, BuildVisibility.shown, arrayOf(
+                    ItemStack(CioItems.ic, 8),
+                    ItemStack(Items.sporePod, 90),
+                    ItemStack(Items.thorium, 300),
                 )
-                size = 4
-                range = 175f
-                health = 400 * size * size
-                connectedSound = CioSounds.connected
-                consumes.add(
-                    ConsumePower(2f, 240f, false)
+            )
+            size = 4
+            range = 175f
+            health = 400 * size * size
+            connectedSound = CioSounds.connected
+            consumes.add(
+                ConsumePower(2f, 240f, false)
+            )
+            addFormationPatterns(
+                FaceFE
+            )
+        }
+        eye = Eye("heimdall-eye").apply {
+            requirements(
+                Category.turret, BuildVisibility.shown, arrayOf(
+                    ItemStack(CioItems.ic, 5),
+                    ItemStack(Items.metaglass, 80),
+                    ItemStack(Items.silicon, 30),
+                    ItemStack(Items.lead, 120),
                 )
+            )
+            range = 165f
+            health = 300 * size * size
+            size = 2
+            chargeTime = 60f
+            shootEffect = BrainFx.eyeShoot
+            smokeEffect = Fx.none
+            chargeEffect = BrainFx.eyeCharge
+            chargeBeginEffect = BrainFx.eyeChargeBegin
+            addUpgrade(
+                Upgrade(UpgradeType.Damage, false, 0.1f),
+                Upgrade(UpgradeType.ReloadTime, true, -4f),
+                Upgrade(UpgradeType.ControlLine, true, 0.01f),
+            )
+            normalSounds = CioSounds.laserWeak
+            normalBullet = LightningBulletType().apply {
+                damage = 90f
+                lightningLength = 25
+                collidesAir = false
+                ammoMultiplier = 1f
+                recoil = 3f
+                shootCone = 3f
+                accurateDelay = true
+                lightningColor = R.C.RedAlert
             }
-            eye = Eye("heimdall-eye").apply {
-                requirements(
-                    Category.turret, BuildVisibility.shown, arrayOf(
-                        ItemStack(CioItems.ic, 5),
-                        ItemStack(Items.metaglass, 80),
-                        ItemStack(Items.silicon, 30),
-                        ItemStack(Items.lead, 120),
-                    )
-                )
-                range = 165f
-                health = 300 * size * size
-                size = 2
-                chargeTime = 60f
-                shootEffect = BrainFx.eyeShoot
-                smokeEffect = Fx.none
-                chargeEffect = BrainFx.eyeCharge
-                chargeBeginEffect = BrainFx.eyeChargeBegin
-                addUpgrade(
-                    Upgrade(UpgradeType.Damage, false, 0.1f),
-                    Upgrade(UpgradeType.ReloadTime, true, -4f),
-                )
-                normalSounds = CioSounds.laserWeak
-                normalBullet = LightningBulletType().apply {
-                    damage = 60f
-                    lightningLength = 25
-                    collidesAir = false
-                    ammoMultiplier = 1f
-                    recoil = 3f
-                    shootCone = 3f
-                    accurateDelay = true
-                    lightningColor = R.C.RedAlert
-                }
-                improvedSounds = CioSounds.laser
-                improvedBullet = LaserBulletType(250f).apply {
-                    colors = arrayOf(R.C.RedAlert.cpy().a(0.4f), R.C.RedAlert, R.C.RedAlertDark)
-                    hitEffect = Fx.hitLancer
-                    hitSize = 4f
-                    lifetime = 16f
-                    recoil = 1.5f
-                    drawSize = 200f
-                    shootCone = 3f
-                    length = 173f
-                    accurateDelay = true
-                    ammoMultiplier = 1f
-                }
+            improvedSounds = CioSounds.laser
+            improvedBullet = LaserBulletType(250f).apply {
+                colors = arrayOf(R.C.RedAlert.cpy().a(0.4f), R.C.RedAlert, R.C.RedAlertDark)
+                hitEffect = Fx.hitLancer
+                hitSize = 4f
+                lifetime = 16f
+                recoil = 1.5f
+                drawSize = 200f
+                shootCone = 3f
+                length = 173f
+                accurateDelay = true
+                ammoMultiplier = 1f
             }
-            ear = Ear("heimdall-ear").apply {
-                requirements(
-                    Category.turret, BuildVisibility.shown, arrayOf(
-                        ItemStack(CioItems.ic, 5),
-                        ItemStack(Items.copper, 80),
-                        ItemStack(Items.silicon, 40),
-                        ItemStack(Items.phaseFabric, 40),
-                    )
+        }
+        ear = Ear("heimdall-ear").apply {
+            requirements(
+                Category.turret, BuildVisibility.shown, arrayOf(
+                    ItemStack(CioItems.ic, 5),
+                    ItemStack(Items.copper, 80),
+                    ItemStack(Items.silicon, 40),
+                    ItemStack(Items.phaseFabric, 40),
                 )
-                addUpgrade(
-                    Upgrade(UpgradeType.Damage, false, 0.05f),
-                    Upgrade(UpgradeType.Range, false, 0.14f),
-                    Upgrade(UpgradeType.WaveSpeed, true, 0.08f),
-                    Upgrade(UpgradeType.WaveWidth, true, 0.4f),
-                )
-                range = 145f
-                size = 2
-                health = 300 * size * size
-            }
+            )
+            addUpgrade(
+                Upgrade(UpgradeType.Range, false, 0.14f),
+                Upgrade(UpgradeType.WaveSpeed, true, 0.08f),
+                Upgrade(UpgradeType.WaveWidth, true, 0.4f),
+                Upgrade(UpgradeType.ControlLine, true, 0.01f),
+            )
+            range = 145f
+            size = 2
+            health = 300 * size * size
         }
     }
 

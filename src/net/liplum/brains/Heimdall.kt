@@ -39,12 +39,13 @@ open class Heimdall(name: String) : Block(name) {
     @JvmField var waveSpeed = 2f
     @JvmField var waveWidth = 8f
     @JvmField var damage = 8f
-    @JvmField var controlProportion: Float = 0.1f
+    @JvmField var controlLine: Float = 0.05f
     @JvmField var maxBrainWaveNum = 3
     @ClientOnly lateinit var BuckleTRs: Array<TR>
     @ClientOnly @JvmField var BuckleDuration = 20f
     @ClientOnly @JvmField var BuckleFrameNum = 5
     @JvmField var connectedSound: Sound = Sounds.none
+    @JvmField var formationPatterns: MutableSet<IFormationPattern> = HashSet()
 
     init {
         solid = true
@@ -67,6 +68,11 @@ open class Heimdall(name: String) : Block(name) {
         BuckleTRs = this.sheet("buckle", BuckleFrameNum)
     }
 
+    fun addFormationPatterns(vararg patterns: IFormationPattern) {
+        for (pattern in patterns)
+            formationPatterns.add(pattern)
+    }
+
     open inner class HeimdallBuild : Building(),
         ControlBlock, IExecutioner, IBrain, Ranged {
         override val sides: Array<Side2> = Array(4) {
@@ -78,14 +84,13 @@ open class Heimdall(name: String) : Block(name) {
             UpgradeType.WaveSpeed to Prop(waveSpeed, this::realWaveSpeed::get, this::realWaveSpeed::set),
             UpgradeType.WaveWidth to Prop(waveWidth, this::realWaveWidth::get, this::realWaveWidth::set),
             UpgradeType.ReloadTime to Prop(reloadTime, this::realReloadTime::get, this::realReloadTime::set),
+            UpgradeType.ControlLine to Prop(controlLine, this::executeProportion::get, this::executeProportion::set),
         )
 
         override fun range(): Float = realRange
         override val onComponentChanged: Delegate = Delegate()
         override var components: MutableSet<IUpgradeComponent> = HashSet()
-        override val executeProportion: Float
-            get() = controlProportion
-        val brainWaves = RadiationQueue(maxBrainWaveNum)
+        val brainWaves = RadiationQueue { realMaxBrainWaveNum }
         var logicControlTime: Float = -1f
         val logicControlled: Boolean
             get() = logicControlTime > 0
@@ -97,7 +102,9 @@ open class Heimdall(name: String) : Block(name) {
         var realReloadTime: Float = reloadTime
         var realDamage: Float = damage
         var realWaveWidth: Float = waveWidth
+        override var executeProportion: Float = controlLine
         @ClientOnly lateinit var linkAnime: Anime
+        var formationEffect: IFormationEffect? = null
 
         init {
             ClientOnly {
@@ -106,7 +113,6 @@ open class Heimdall(name: String) : Block(name) {
         }
 
         override fun updateTile() {
-            brainWaves.size = realMaxBrainWaveNum
             reload += edelta()
             brainWaves.forEach {
                 it.range += waveSpeed * delta()
@@ -145,6 +151,7 @@ open class Heimdall(name: String) : Block(name) {
                     }
                 }
             }
+            formationEffect?.update(sides)
         }
 
         override fun remove() {
@@ -193,6 +200,17 @@ open class Heimdall(name: String) : Block(name) {
                 }
             }
             recacheUpgrade()
+            checkFormation()
+        }
+
+        open fun checkFormation() {
+            var res: IFormationEffect? = null
+            for (pattern in formationPatterns) {
+                res = pattern.match(sides)
+                if (res != null)
+                    break
+            }
+            formationEffect = res
         }
 
         override fun draw() {
@@ -243,6 +261,7 @@ open class Heimdall(name: String) : Block(name) {
                 Draw.alpha(alpha)
                 Lines.circle(x, y, wave.range)
             }
+            formationEffect?.draw(sides)
         }
 
         open fun enemyNearby(): Boolean {
