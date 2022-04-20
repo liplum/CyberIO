@@ -79,13 +79,13 @@ object CioUnitTypes : ContentTable {
             weapons.add(HoloWeapon("holo-fighter-gun".Cio).apply {
                 top = false
                 shootSound = Sounds.flame
-                maxRange = ruvikTipRange + 20f
                 shootY = 2f
                 reload = 11f
                 recoil = 1f
                 ejectEffect = Fx.none
                 bullet = RuvikBullet(1.6f, 35f).apply {
                     stemVersion = STEM_VERSION.STEM1
+                    maxRange = ruvikTipRange
                     width = 10f
                     height = 10f
                     hitSize = 10f
