@@ -19,6 +19,8 @@ enum class STEM_VERSION {
 
 open class RuvikBullet : BasicBulletType {
     @JvmField var stemVersion: STEM_VERSION = STEM_VERSION.STEM1
+    @JvmField var maxRange = 120f
+    @JvmField var maxRange2 = 120f * 120f
 
     constructor(speed: Float, damage: Float) : super(speed, damage)
     constructor() : super()
@@ -43,26 +45,36 @@ open class RuvikBullet : BasicBulletType {
         }
     }
 
+    override fun init() {
+        super.init()
+        maxRange2 = maxRange * maxRange
+    }
+
     @JvmField var STEMSystem = STEM()
     open fun ControlBySTEM1(b: Bullet) {
         val data = b.data
         if (data is Unitc) {
             val player = data.player
             if (player != null) {
-                val aimX = player.unit().aimX
-                val aimY = player.unit().aimY
+                val unit = player.unit()
+                val aimX = unit.aimX
+                val aimY = unit.aimY
+                if (checkOverMaxRange(b, unit.x, unit.y)) return
                 STEMSystem.control(b.angleTo(aimX, aimY) /*b.dst(aimX, aimY)*/)
             } else {
+                if (checkOverMaxRange(b, data.x, data.y)) return
                 val aimX = data.aimX()
                 val aimY = data.aimY()
                 STEMSystem.control(b.angleTo(aimX, aimY) /*b.dst(aimX, aimY)*/)
             }
         } else if (data is ControlBlock && data.isControlled) {
             val player = data.unit()
+            if (checkOverMaxRange(b, player.x, player.y)) return
             val aimX = player.aimX
             val aimY = player.aimY
             STEMSystem.control(b.angleTo(aimX, aimY) /*b.dst(aimX, aimY)*/)
         } else if (data is BaseTurret.BaseTurretBuild) {
+            if (checkOverMaxRange(b, data.x, data.y)) return
             STEMSystem.control(data.rotation)
         }
     }
@@ -71,12 +83,22 @@ open class RuvikBullet : BasicBulletType {
         val data = b.data
         if (data is Player) {
             val unit = data.unit()
+            if (checkOverMaxRange(b, unit.x, unit.y)) return
             val aimX = unit.aimX()
             val aimY = unit.aimY()
             STEMSystem.control(b.angleTo(aimX, aimY) /*b.dst(aimX, aimY)*/)
         } else {
             ControlBySTEM1(b)
         }
+    }
+
+    open fun checkOverMaxRange(b: Bullet, unitX: Float, unitY: Float): Boolean {
+        if (b.dst2(unitX, unitY) >= maxRange2) {
+            b.data = null
+            b.vel.scl(0.5f)
+            return true
+        }
+        return false
     }
 
     open fun CONTROL(b: Bullet) {

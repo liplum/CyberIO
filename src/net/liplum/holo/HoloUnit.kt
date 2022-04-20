@@ -20,9 +20,11 @@ import mindustry.graphics.Layer
 import mindustry.logic.LAccess
 import mindustry.world.blocks.ConstructBlock
 import mindustry.world.blocks.ConstructBlock.ConstructBuild
+import net.liplum.ClientOnly
 import net.liplum.R
 import net.liplum.holo.HoloProjector.HoloPBuild
 import net.liplum.registries.EntityRegistry
+import net.liplum.utils.G
 import net.liplum.utils.build
 import net.liplum.utils.exists
 import net.liplum.utils.hasShields
@@ -122,6 +124,7 @@ open class HoloUnit : UnitEntity() {
         type.draw(this)
         drawStatusEffect()
         drawMining()
+        drawRuvikTip()
     }
 
     open fun drawBuilding() {
@@ -240,6 +243,25 @@ open class HoloUnit : UnitEntity() {
                 Lines.poly(mineTile.worldx(), mineTile.worldy(), 4, 4.0f * Mathf.sqrt2, Time.time)
             }
             Draw.color()
+        }
+    }
+    @ClientOnly
+    var ruvikTipAlpha = 0f
+        set(value) {
+            field = value.coerceIn(0f, 1f)
+        }
+
+    open fun drawRuvikTip() {
+        val holoType = HoloType
+        if (holoType.enableRuvikTip && isLocal) {
+            if (isShooting) {
+                ruvikTipAlpha += 2f / holoType.ruvikShootingTipTime
+            } else {
+                ruvikTipAlpha -= 0.5f / holoType.ruvikShootingTipTime
+            }
+            if (ruvikTipAlpha > 0f) {
+                G.drawDashCircle(x, y, holoType.ruvikTipRange, color = R.C.Holo, alpha = ruvikTipAlpha)
+            }
         }
     }
 

@@ -205,7 +205,7 @@ open class Heimdall(name: String) : Block(name) {
                 fieldExist &&
                 shieldAmount < forceFieldMax
             ) {
-                shieldAmount += realForceFieldRegen
+                shieldAmount += realForceFieldRegen * power.status
             }
             if (fieldExist && shieldAmount > 0) {
                 val curFieldRadius = curFieldRadius

@@ -37,6 +37,9 @@ open class HoloUnitType(name: String) : UnitType(name) {
     @JvmField var loseMultiplierWhereMissing = 12f
     @JvmField var lifespan = 120 * 60f
     @JvmField var overageDmgFactor = 0.5f
+    @ClientOnly @JvmField var ruvikShootingTipTime = 30f
+    @ClientOnly @JvmField var ruvikTipRange = 100f
+    @ClientOnly @JvmField var enableRuvikTip = false
 
     init {
         //outlineColor = R.C.HoloDark
@@ -158,7 +161,6 @@ open class HoloUnitType(name: String) : UnitType(name) {
                 a.draw(unit)
             }
         }
-
         Draw.reset()
     }
 

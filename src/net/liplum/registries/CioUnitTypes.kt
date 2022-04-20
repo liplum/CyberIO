@@ -74,9 +74,12 @@ object CioUnitTypes : ContentTable {
             commandLimit = 5
             circleTarget = true
             ammoType = ItemAmmoType(Items.plastanium)
+            enableRuvikTip = true
+            ruvikTipRange = 220f
             weapons.add(HoloWeapon("holo-fighter-gun".Cio).apply {
                 top = false
                 shootSound = Sounds.flame
+                maxRange = ruvikTipRange + 20f
                 shootY = 2f
                 reload = 11f
                 recoil = 1f
@@ -86,7 +89,7 @@ object CioUnitTypes : ContentTable {
                     width = 10f
                     height = 10f
                     hitSize = 10f
-                    lifetime = 180f
+                    lifetime = 240f
                     frontColor = R.C.Holo
                     backColor = R.C.HoloDark
                 }

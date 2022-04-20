@@ -440,9 +440,10 @@ object CioBlocks : ContentTable {
             health = 400
             size = 2
             consumes.power(0.7f)
-            networkSpeed = 2.5f
+            networkSpeed = 3f
             liquidCapacity = 800f
             replaceable = false
+            maxConnection = 3
         }
 
         streamServer = StreamServer("stream-server").apply {
@@ -478,7 +479,7 @@ object CioBlocks : ContentTable {
             recoilAmount = 4f
             shootShake = 2f
             shootDuration = 150f
-            range = 150f
+            range = 195f
             cooldown = 10f
             reloadTime = 40f
             firingMoveFract = 1f
@@ -528,33 +529,34 @@ object CioBlocks : ContentTable {
                     ItemStack(CioItems.ic, 14),
                     ItemStack(Items.silicon, 220),
                     ItemStack(Items.graphite, 120),
+                    ItemStack(Items.metaglass, 100),
                     ItemStack(Items.thorium, 1000),
                 )
             )
             plans = Seq.with(
                 HoloPlan(
                     CioUnitTypes.holoMiner,
-                    Requirement(600f),
+                    Requirement(300f),
                     15f * 60f
                 ),
                 HoloPlan(
                     CioUnitTypes.holoFighter,
-                    Requirement(600f),
+                    Requirement(300f),
                     15f * 60f
                 ),
                 HoloPlan(
                     CioUnitTypes.holoGuardian,
-                    Requirement(225f),
+                    Requirement(155f),
                     7.5f * 60f
                 ),
                 HoloPlan(
                     CioUnitTypes.holoArchitect,
-                    Requirement(1000f),
-                    30f * 60f
+                    Requirement(600f),
+                    25f * 60f
                 ),
                 HoloPlan(
                     CioUnitTypes.holoSupporter,
-                    Requirement(380f),
+                    Requirement(250f),
                     12f * 60f
                 ),
             )
@@ -585,20 +587,22 @@ object CioBlocks : ContentTable {
                 Category.turret, BuildVisibility.shown, arrayOf(
                     ItemStack(CioItems.ic, 5),
                     ItemStack(Items.titanium, 150),
+                    ItemStack(Items.plastanium, 30),
                 )
             )
             size = 3
             recoilAmount = 3f
-            range = 320f
+            range = 260f
             health = 1500
             liquidCapacity = 60f
             reloadTime = 15f
-            shootType = RuvikBullet(2f, 44f).apply {
+            shootType = RuvikBullet(2f, 70f).apply {
                 stemVersion = STEM_VERSION.STEM2
                 width = 10f
                 height = 10f
                 hitSize = 10f
                 lifetime = 240f
+                maxRange = range
                 frontColor = R.C.Holo
                 backColor = R.C.HoloDark
             }
@@ -622,7 +626,7 @@ object CioBlocks : ContentTable {
         heimdall = Heimdall("heimdall").apply {
             requirements(
                 Category.turret, BuildVisibility.shown, arrayOf(
-                    ItemStack(CioItems.ic, 8),
+                    ItemStack(CioItems.ic, 10),
                     ItemStack(Items.sporePod, 10),
                     ItemStack(Items.thorium, 300),
                     ItemStack(Items.metaglass, 30),
@@ -660,6 +664,7 @@ object CioBlocks : ContentTable {
                 Upgrade(UpgradeType.Damage, false, 0.1f),
                 Upgrade(UpgradeType.ReloadTime, true, -4f),
                 Upgrade(UpgradeType.ControlLine, true, 0.01f),
+                Upgrade(UpgradeType.ForceFieldRegen, true, 1.5f),
             )
             normalSounds = CioSounds.laserWeak
             normalBullet = LightningBulletType().apply {
@@ -700,6 +705,8 @@ object CioBlocks : ContentTable {
                 Upgrade(UpgradeType.WaveSpeed, true, 0.08f),
                 Upgrade(UpgradeType.WaveWidth, true, 0.4f),
                 Upgrade(UpgradeType.ControlLine, true, 0.01f),
+                Upgrade(UpgradeType.ForceFieldRadius, true, 5f),
+                Upgrade(UpgradeType.ForceFieldMax, false, 0.08f),
             )
             range = 145f
             size = 2

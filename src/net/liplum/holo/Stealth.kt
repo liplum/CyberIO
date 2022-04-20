@@ -26,8 +26,9 @@ import net.liplum.*
 import net.liplum.api.cyber.*
 import net.liplum.api.holo.IHoloEntity
 import net.liplum.api.holo.IHoloEntity.Companion.minHealth
-import net.liplum.lib.animations.Floating
+import net.liplum.bullets.RuvikBullet
 import net.liplum.lib.Draw
+import net.liplum.lib.animations.Floating
 import net.liplum.lib.delegates.Delegate1
 import net.liplum.lib.shaders.use
 import net.liplum.persistance.intSet
@@ -48,6 +49,7 @@ open class Stealth(name: String) : Turret(name) {
     @JvmField var minHealthProportion = 0.05f
     @ClientOnly @JvmField var FloatingRange = 0.6f
     @JvmField var restoreReq = 30f
+    @ClientOnly @JvmField var ruvikShootingTipTime = 60f
 
     init {
         update = true
@@ -184,10 +186,17 @@ open class Stealth(name: String) : Turret(name) {
             val d = G.D(0.1f * FloatingRange * delta() * (2f - healthPct))
             floating.move(d)
         }
+        @ClientOnly
+        var ruvikTipAlpha = 0f
+            set(value) {
+                field = value.coerceIn(0f, 1f)
+            }
         @ClientOnly @JvmField
         var floating: Floating = Floating(FloatingRange).randomXY().changeRate(1)
         override fun draw() {
-            updateFloating()
+            WhenNotPaused {
+                updateFloating()
+            }
             Draw.z(Layer.blockUnder)
             Drawf.shadow(x, y, 10f)
             Draw.z(Layer.block)
@@ -212,6 +221,16 @@ open class Stealth(name: String) : Turret(name) {
                 }
             }
             Draw.reset()
+            if (unit.isLocal && shootType is RuvikBullet) {
+                if (isShooting) {
+                    ruvikTipAlpha += 2f / ruvikShootingTipTime
+                } else {
+                    ruvikTipAlpha -= 0.5f / ruvikShootingTipTime
+                }
+                if (ruvikTipAlpha > 0f) {
+                    G.drawDashCircle(x, y, range, color = R.C.Holo, alpha = ruvikTipAlpha)
+                }
+            }
         }
 
         override fun drawSelect() {

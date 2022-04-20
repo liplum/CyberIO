@@ -66,7 +66,9 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
 
     override fun setBars() {
         super.setBars()
-        bars.addBrainInfo<EyeBuild>()
+        DebugOnly {
+            bars.addBrainInfo<EyeBuild>()
+        }
     }
 
     open inner class EyeBuild : PowerTurretBuild(), IUpgradeComponent {

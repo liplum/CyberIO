@@ -9,10 +9,10 @@
 {
   "displayName": "[#42a5f5[]]Cyber IO[[]]",
   "name": "cyber-io",
-  "author": "[#891213[]]Liplum[[]]",
+  "author": "[#42a5f5[]]Liplum[[]]",
   "main": "net.liplum.CioMod",
   "description": "Provides lots of cybernetic things!!!",
-  "version": 2,
+  "version": 3,
   "minGameVersion": 135,
   "dependencies": [],
   "hidden": false,

@@ -16,6 +16,7 @@ import mindustry.logic.LAccess
 import mindustry.world.Block
 import mindustry.world.blocks.ControlBlock
 import net.liplum.ClientOnly
+import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.api.brain.*
 import net.liplum.lib.Draw
@@ -70,7 +71,9 @@ open class Ear(name: String) : Block(name), IComponentBlock {
     override fun icons() = arrayOf(BaseTR, EarTR)
     override fun setBars() {
         super.setBars()
-        bars.addBrainInfo<EarBuild>()
+        DebugOnly {
+            bars.addBrainInfo<EarBuild>()
+        }
     }
 
     open inner class EarBuild : Building(), IUpgradeComponent, ControlBlock {

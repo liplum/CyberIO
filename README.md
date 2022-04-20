@@ -3,22 +3,18 @@
 ___
 A Mindustry mod.
 
-## IC Machine
+## How To Play
+### IC Machine
 ___
-![IC Machine](GFX/IC_Machine.gif)
+![IC Machine](GFX/ProducingIC.gif)
 
-## Sender&Receiver
+### Sender & Receiver
 ___
-Sender
-![Sender](GFX/Sender.gif)
-___
-Receiver
-![Receiver](GFX/Receiver.gif)
+![Sender](GFX/Sender&Receiver.gif)
 
-## How to play
-How to connect them together
+### Holo Projector
 ___
-![How to connect](GFX/How_to_connect.gif)
+![Holo Projector](GFX/Holo-projecting.gif)
 
 ## Author
 ___
