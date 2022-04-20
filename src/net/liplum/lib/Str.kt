@@ -102,3 +102,12 @@ fun Array<out Any>.toLinkedString(): String {
     }
     return s.toString()
 }
+fun Collection<Any>.toLinkedString(): String {
+    if (this.isEmpty()) return ""
+    val s = StringBuilder()
+    for (e in this) {
+        s.append(e)
+        s.append(' ')
+    }
+    return s.toString()
+}

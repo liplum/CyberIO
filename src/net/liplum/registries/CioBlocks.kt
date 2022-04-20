@@ -323,6 +323,7 @@ object CioBlocks : ContentTable {
             shootSound = Sounds.lasershoot
             configBullet {
                 damage = 0.5f
+                pierceCap = 3
             }
         }
 
@@ -388,10 +389,10 @@ object CioBlocks : ContentTable {
         smartDistributor = SmartDistributor("smart-distributor").apply {
             requirements(
                 Category.distribution, BuildVisibility.shown, arrayOf(
-                    ItemStack(CioItems.ic, 13),
-                    ItemStack(Items.surgeAlloy, 50),
+                    ItemStack(CioItems.ic, 12),
                     ItemStack(Items.thorium, 300),
                     ItemStack(Items.phaseFabric, 100),
+                    ItemStack(Items.surgeAlloy, 125),
                 )
             )
             health = 1000
@@ -456,7 +457,7 @@ object CioBlocks : ContentTable {
             health = 2000
             size = 3
             consumes.power(2f)
-            networkSpeed = 7f
+            networkSpeed = 15f
             liquidCapacity = 2000f
             replaceable = false
         }
@@ -533,27 +534,27 @@ object CioBlocks : ContentTable {
             plans = Seq.with(
                 HoloPlan(
                     CioUnitTypes.holoMiner,
-                    Requirement(80f),
+                    Requirement(600f),
                     15f * 60f
                 ),
                 HoloPlan(
                     CioUnitTypes.holoFighter,
-                    Requirement(80f),
+                    Requirement(600f),
                     15f * 60f
                 ),
                 HoloPlan(
                     CioUnitTypes.holoGuardian,
-                    Requirement(30f),
+                    Requirement(225f),
                     7.5f * 60f
                 ),
                 HoloPlan(
                     CioUnitTypes.holoArchitect,
-                    Requirement(150f),
+                    Requirement(1000f),
                     30f * 60f
                 ),
                 HoloPlan(
                     CioUnitTypes.holoSupporter,
-                    Requirement(45f),
+                    Requirement(380f),
                     12f * 60f
                 ),
             )
@@ -622,8 +623,9 @@ object CioBlocks : ContentTable {
             requirements(
                 Category.turret, BuildVisibility.shown, arrayOf(
                     ItemStack(CioItems.ic, 8),
-                    ItemStack(Items.sporePod, 90),
+                    ItemStack(Items.sporePod, 10),
                     ItemStack(Items.thorium, 300),
+                    ItemStack(Items.metaglass, 30),
                 )
             )
             size = 4
@@ -634,7 +636,7 @@ object CioBlocks : ContentTable {
                 ConsumePower(2f, 240f, false)
             )
             addFormationPatterns(
-                FaceFE
+                FaceFE, FunnyFaceFE, ForceFieldFE
             )
         }
         eye = Eye("heimdall-eye").apply {

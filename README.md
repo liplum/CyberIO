@@ -8,13 +8,11 @@ ___
 ![IC Machine](GFX/IC_Machine.gif)
 
 ## Sender&Receiver
-
+___
 Sender
-___
 ![Sender](GFX/Sender.gif)
-
-Receiver
 ___
+Receiver
 ![Receiver](GFX/Receiver.gif)
 
 ## How to play
@@ -22,15 +20,24 @@ How to connect them together
 ___
 ![How to connect](GFX/How_to_connect.gif)
 
-## Credit
+## Author
 ___
-**Author:** Liplum, sudoudou233
-
 **Programmer:** Liplum
 
 **Painter:** sudoudou233
 
+## Acknowledge
+___
+**IN NO ORDER**
+
+The friendly people on Mindustry Discord#java whoever ever helped me.
+
+Anyone that commits the issue on GitHub.
+
+Anyone that likes CyberIO. 
+
 ## Licence
+___
 The codes of CyberIO are open source in GNU General Public License v3.0(GPL 3.0).
 
 To learn about the resources of CyberIO, please check the [Copyright file](Copyright.md).

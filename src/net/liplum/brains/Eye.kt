@@ -119,9 +119,10 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
         val isOutOfCombat: Boolean
             get() = lastInCombatTime >= outOfCompactTime
         val eyeColor: Color = R.C.RedAlert
+        var blinkFactor = 1f
         override fun draw() {
             WhenNotPaused {
-                blinkAnime.spend(Time.delta + Mathf.random())
+                blinkAnime.spend((Time.delta + Mathf.random()) * blinkFactor)
                 lastInCombatTime += Time.delta
             }
             BaseTR.Draw(x, y)
@@ -168,6 +169,7 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
             Draw.reset()
             drawHemorrhage()
             blinkAnime.draw(x, y)
+            blinkFactor = 1f
         }
 
         open fun drawHemorrhage() {

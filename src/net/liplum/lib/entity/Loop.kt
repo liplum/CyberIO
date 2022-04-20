@@ -4,10 +4,10 @@ import arc.util.io.Reads
 import arc.util.io.Writes
 import net.liplum.persistance.IRWable
 
-class Loop(progress: Float = 0f) : IRWable {
-    var progress: Float = progress
+open class Progress(progress: Float = 0f) : IRWable {
+    open var progress: Float = progress
         set(value) {
-            field = value % 1f
+            field = value.coerceIn(0f, 1f)
         }
 
     override fun read(reader: Reads) {
@@ -17,4 +17,13 @@ class Loop(progress: Float = 0f) : IRWable {
     override fun write(writer: Writes) {
         writer.f(progress)
     }
+
+    override fun toString() = "$progress%"
+}
+
+class Loop(progress: Float = 0f) : Progress(progress) {
+    override var progress: Float = progress
+        set(value) {
+            field = value % 1f
+        }
 }

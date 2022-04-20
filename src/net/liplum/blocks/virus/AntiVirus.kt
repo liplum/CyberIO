@@ -176,7 +176,7 @@ open class AntiVirus(name: String) : Block(name) {
                     realRange2,
                     realRange2
                 ) {
-                    if (absorbBullet(it, this)) {
+                    if (absorbBullet(it)) {
                         eliminated = true
                         heat()
                     }
@@ -219,14 +219,11 @@ open class AntiVirus(name: String) : Block(name) {
             super.write(write)
             write.f(coolDown)
         }
-    }
 
-    companion object {
-        @JvmStatic
-        fun absorbBullet(bullet: Bullet, build: AntiVirusBuild): Boolean {
-            if (bullet.team !== build.team &&
+        fun absorbBullet(bullet: Bullet): Boolean {
+            if (bullet.team != team &&
                 bullet.type.absorbable &&
-                bullet.dst(build) <= build.realRange
+                bullet.dst(this) <= realRange
             ) {
                 bullet.absorb()
                 Fx.absorb.at(bullet)

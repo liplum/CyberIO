@@ -97,7 +97,7 @@ object CioUnitTypes : ContentTable {
             AutoLife(maxHealth = 5000f, lose = 0.3f)
             abilities.add(
                 HoloForceField(
-                    60f, 4f, 2000f, 60f * 8
+                    60f, 4f, 2200f, 60f * 8
                 )
             )
             defaultController = Prov { DefenderAI() }

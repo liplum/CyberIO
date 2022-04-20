@@ -51,7 +51,7 @@ open class HoloForceField(
         } else {
             val forcePct = forcePct(unit)
             Draw.z(Layer.shields)
-            Draw.color(color, Color.white, forcePct.coerceIn(0f, 1f))
+            Draw.color(color, Color.white, forcePct.coerceIn(0f, 1f) * 0.5f)
             Lines.stroke(1.5f)
             Draw.alpha(0.09f)
             Fill.poly(unit.x, unit.y, 6, radius * forcePct)
@@ -77,9 +77,9 @@ open class HoloForceField(
         val realRange = realRange(unit)
         if (
             bullet.type.absorbable &&
-            bullet.team !== unit.team &&
+            bullet.team != unit.team &&
             unit.shield > 0 &&
-            Intersector.isInsideHexagon(unit.x, unit.y, realRange * 2f, bullet.x(), bullet.y())
+            Intersector.isInsideHexagon(unit.x, unit.y, realRange * 2f, bullet.x, bullet.y)
         ) {
             bullet.absorb()
             Fx.absorb.at(bullet)

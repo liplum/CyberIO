@@ -1,23 +1,29 @@
 package net.liplum.brains
 
 import arc.audio.Sound
+import arc.graphics.Color
 import arc.graphics.g2d.Draw
+import arc.graphics.g2d.Fill
 import arc.graphics.g2d.Lines
 import arc.math.Interp
+import arc.math.geom.Intersector
 import arc.util.Log
 import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.Vars
 import mindustry.ai.types.SuicideAI
+import mindustry.content.Fx
 import mindustry.content.UnitTypes
 import mindustry.gen.*
 import mindustry.graphics.Layer
 import mindustry.logic.LAccess
 import mindustry.logic.Ranged
+import mindustry.ui.Bar
 import mindustry.world.Block
 import mindustry.world.blocks.ControlBlock
 import net.liplum.ClientOnly
+import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.WhenNotPaused
 import net.liplum.api.IExecutioner
@@ -39,8 +45,12 @@ open class Heimdall(name: String) : Block(name) {
     @JvmField var waveSpeed = 2f
     @JvmField var waveWidth = 8f
     @JvmField var damage = 8f
-    @JvmField var controlLine: Float = 0.05f
+    @JvmField var controlLine = 0.05f
     @JvmField var maxBrainWaveNum = 3
+    @JvmField var forceFieldRegen = 5f
+    @JvmField var forceFieldMax = 2000f
+    @JvmField var forceFieldRadius = 50f
+    @JvmField var forceFieldCoolDown = 240f
     @ClientOnly lateinit var BuckleTRs: Array<TR>
     @ClientOnly @JvmField var BuckleDuration = 20f
     @ClientOnly @JvmField var BuckleFrameNum = 5
@@ -73,18 +83,35 @@ open class Heimdall(name: String) : Block(name) {
             formationPatterns.add(pattern)
     }
 
+    override fun setBars() {
+        super.setBars()
+        DebugOnly {
+            bars.add<HeimdallBuild>(R.Bar.FormationN) {
+                Bar(
+                    { "${it.formationEffects}" },
+                    { R.C.BrainWave },
+                    { if (it.formationEffects.isNotEmpty) 1f else 0f }
+                )
+            }
+        }
+    }
+
     open inner class HeimdallBuild : Building(),
         ControlBlock, IExecutioner, IBrain, Ranged {
         override val sides: Array<Side2> = Array(4) {
             Side2(this)
         }
         val properties: Map<UpgradeType, Prop> = mapOf(
-            UpgradeType.Damage to Prop(damage, this::realDamage::get, this::realDamage::set),
-            UpgradeType.Range to Prop(range, this::realRange::get, this::realRange::set),
-            UpgradeType.WaveSpeed to Prop(waveSpeed, this::realWaveSpeed::get, this::realWaveSpeed::set),
-            UpgradeType.WaveWidth to Prop(waveWidth, this::realWaveWidth::get, this::realWaveWidth::set),
-            UpgradeType.ReloadTime to Prop(reloadTime, this::realReloadTime::get, this::realReloadTime::set),
-            UpgradeType.ControlLine to Prop(controlLine, this::executeProportion::get, this::executeProportion::set),
+            UpgradeType.Damage to Prop(damage, ::realDamage::get, ::realDamage::set),
+            UpgradeType.Range to Prop(range, ::realRange::get, ::realRange::set),
+            UpgradeType.WaveSpeed to Prop(waveSpeed, ::realWaveSpeed::get, ::realWaveSpeed::set),
+            UpgradeType.WaveWidth to Prop(waveWidth, ::realWaveWidth::get, ::realWaveWidth::set),
+            UpgradeType.ReloadTime to Prop(reloadTime, ::realReloadTime::get, ::realReloadTime::set),
+            UpgradeType.ControlLine to Prop(controlLine, ::executeProportion::get, ::executeProportion::set),
+            UpgradeType.ForceFieldMax to Prop(forceFieldMax, ::realForceFieldMax::get, ::realForceFieldMax::set),
+            UpgradeType.ForceFieldRegen to Prop(forceFieldRegen, ::realForceFieldRegen::get, ::realForceFieldRegen::set),
+            UpgradeType.ForceFieldRadius to Prop(forceFieldRadius, ::realForceFieldRadius::get, ::realForceFieldRadius::set),
+            UpgradeType.ForceFieldCoolDown to Prop(forceFieldCoolDown, ::realForceFieldCoolDown::get, ::realForceFieldCoolDown::set),
         )
 
         override fun range(): Float = realRange
@@ -102,9 +129,25 @@ open class Heimdall(name: String) : Block(name) {
         var realReloadTime: Float = reloadTime
         var realDamage: Float = damage
         var realWaveWidth: Float = waveWidth
+        var realForceFieldRegen: Float = forceFieldRegen
+        var realForceFieldMax: Float = forceFieldMax
+        var realForceFieldRadius: Float = forceFieldRadius
+        var realForceFieldCoolDown: Float = forceFieldCoolDown
+        var shieldCoolDown: Float = 0f
+            set(value) {
+                field = value.coerceAtLeast(0f)
+            }
         override var executeProportion: Float = controlLine
         @ClientOnly lateinit var linkAnime: Anime
-        var formationEffect: IFormationEffect? = null
+        override var formationEffects: FormationEffects = FormationEffects.Empty
+        override var shieldAmount: Float = 0f
+            set(value) {
+                field = value.coerceAtLeast(0f)
+            }
+        val forcePct: Float
+            get() = shieldAmount / realForceFieldMax
+        val curFieldRadius: Float
+            get() = realForceFieldRadius * forcePct
 
         init {
             ClientOnly {
@@ -113,6 +156,7 @@ open class Heimdall(name: String) : Block(name) {
         }
 
         override fun updateTile() {
+            // Brain waves
             reload += edelta()
             brainWaves.forEach {
                 it.range += waveSpeed * delta()
@@ -151,13 +195,39 @@ open class Heimdall(name: String) : Block(name) {
                     }
                 }
             }
-            formationEffect?.update(sides)
+            // Force field
+            shieldCoolDown -= delta()
+            if (!formationEffects.enableShield) {
+                shieldAmount -= realForceFieldRegen * 2f
+            }
+            val fieldExist = shieldCoolDown <= 0f
+            if (formationEffects.enableShield &&
+                fieldExist &&
+                shieldAmount < forceFieldMax
+            ) {
+                shieldAmount += realForceFieldRegen
+            }
+            if (fieldExist && shieldAmount > 0) {
+                val curFieldRadius = curFieldRadius
+                Groups.bullet.intersect(
+                    unit.x - curFieldRadius,
+                    unit.y - curFieldRadius,
+                    curFieldRadius * 2f,
+                    curFieldRadius * 2f,
+                ) {
+                    absorbBullet(it)
+                }
+                if (shieldAmount <= 0) {
+                    shieldCoolDown = realForceFieldCoolDown
+                }
+            }
+            // Formation
+            formationEffects.update(this)
         }
 
         override fun remove() {
             super.remove()
             unlinkAll()
-            clear()
         }
 
         override fun onProximityRemoved() {
@@ -204,13 +274,13 @@ open class Heimdall(name: String) : Block(name) {
         }
 
         open fun checkFormation() {
-            var res: IFormationEffect? = null
+            val res: HashSet<IFormationEffect> = HashSet()
             for (pattern in formationPatterns) {
-                res = pattern.match(sides)
-                if (res != null)
-                    break
+                val effect = pattern.match(this)
+                if (effect != null)
+                    res.add(effect)
             }
-            formationEffect = res
+            formationEffects = FormationEffects(res)
         }
 
         override fun draw() {
@@ -251,6 +321,7 @@ open class Heimdall(name: String) : Block(name) {
                     }
                 }
             }
+            Draw.reset()
             // brain waves
             Draw.z(Layer.power)
             val realRange = realRange
@@ -261,7 +332,25 @@ open class Heimdall(name: String) : Block(name) {
                 Draw.alpha(alpha)
                 Lines.circle(x, y, wave.range)
             }
-            formationEffect?.draw(sides)
+            Draw.reset()
+            // Force field
+            val curFieldRadius = curFieldRadius
+            if (shieldAmount > 0) {
+                Draw.z(Layer.shields)
+                if (Vars.renderer.animateShields) {
+                    Draw.color(R.C.BrainWave)
+                    Fill.poly(x, y, 6, curFieldRadius)
+                } else {
+                    Draw.color(R.C.BrainWave, Color.white, forcePct.coerceIn(0f, 1f) * 0.5f)
+                    Lines.stroke(1.5f)
+                    Draw.alpha(0.09f)
+                    Fill.poly(x, y, 6, curFieldRadius)
+                    Draw.alpha(1f)
+                    Lines.poly(x, y, 6, curFieldRadius)
+                }
+            }
+            Draw.reset()
+            formationEffects.draw(this)
         }
 
         open fun enemyNearby(): Boolean {
@@ -291,11 +380,17 @@ open class Heimdall(name: String) : Block(name) {
         override fun read(read: Reads, revision: Byte) {
             super.read(read, revision)
             brainWaves.read(read)
+            reload = read.f()
+            shieldAmount = read.f()
+            shieldCoolDown = read.f()
         }
 
         override fun write(write: Writes) {
             super.write(write)
             brainWaves.write(write)
+            write.f(reload)
+            write.f(shieldAmount)
+            write.f(shieldCoolDown)
         }
 
         override fun control(type: LAccess, p1: Double, p2: Double, p3: Double, p4: Double) {
@@ -366,6 +461,20 @@ open class Heimdall(name: String) : Block(name) {
          * - [realMaxBrainWaveNum]
          */
         open fun recacheSpecial() {
+        }
+
+        fun absorbBullet(bullet: Bullet): Boolean {
+            if (bullet.team != team &&
+                bullet.type.absorbable &&
+                bullet.dst(this) <= realRange &&
+                Intersector.isInsideHexagon(x, y, realRange * 2f, bullet.x, bullet.y)
+            ) {
+                bullet.absorb()
+                Fx.absorb.at(bullet)
+                shieldAmount -= bullet.damage
+                return true
+            }
+            return false
         }
     }
 }

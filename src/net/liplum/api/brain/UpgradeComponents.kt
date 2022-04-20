@@ -7,6 +7,7 @@ import net.liplum.ClientOnly
 import net.liplum.api.brain.Direction2.Companion.Part0Pos
 import net.liplum.api.brain.Direction2.Companion.Part1Pos
 import net.liplum.api.cyber.*
+import net.liplum.brains.FormationEffects
 import net.liplum.lib.delegates.Delegate
 import net.liplum.utils.*
 
@@ -23,6 +24,10 @@ value class UpgradeType(val type: Int) {
          */
         val MaxBrainWaveNum = UpgradeType(5)
         val ControlLine = UpgradeType(6)
+        val ForceFieldMax = UpgradeType(7)
+        val ForceFieldRegen = UpgradeType(8)
+        val ForceFieldRadius = UpgradeType(9)
+        val ForceFieldCoolDown = UpgradeType(10)
     }
 }
 
@@ -168,16 +173,13 @@ value class Direction2(val value: Int = -1) {
         get() = onPart0 && onPart1
 }
 
-internal val Array<Side2>.right:Side2
+internal val Array<Side2>.right: Side2
     get() = this[0]
-
-internal val Array<Side2>.top:Side2
+internal val Array<Side2>.top: Side2
     get() = this[1]
-
-internal val Array<Side2>.left:Side2
+internal val Array<Side2>.left: Side2
     get() = this[2]
-
-internal val Array<Side2>.bottom:Side2
+internal val Array<Side2>.bottom: Side2
     get() = this[3]
 
 interface IBrain : ICyberEntity, Iterable<IUpgradeComponent> {
@@ -201,7 +203,8 @@ interface IBrain : ICyberEntity, Iterable<IUpgradeComponent> {
         get() = sides[3]
     val Direction2.sideObj: Side2
         get() = sides[this.side]
-
+    var formationEffects: FormationEffects
+    var shieldAmount: Float
     fun clear() {
         for (side in sides)
             side.clear()
