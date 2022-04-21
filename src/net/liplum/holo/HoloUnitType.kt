@@ -22,6 +22,7 @@ import mindustry.graphics.Layer
 import mindustry.graphics.Pal
 import mindustry.type.UnitType
 import mindustry.ui.Bar
+import mindustry.world.meta.Stat
 import net.liplum.*
 import net.liplum.lib.shaders.SD
 import net.liplum.lib.shaders.use
@@ -162,6 +163,14 @@ open class HoloUnitType(name: String) : UnitType(name) {
             }
         }
         Draw.reset()
+    }
+    override fun setStats() {
+        super.setStats()
+        stats.add(Stat.health){
+            it.row()
+            it.add("$lifespan ${R.Bundle.UnitSeconds.bundle}")
+            it.row()
+        }
     }
 
     open fun setBars(unit: Unit, bars: Table) {

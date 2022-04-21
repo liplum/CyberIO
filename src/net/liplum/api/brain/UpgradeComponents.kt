@@ -27,7 +27,7 @@ value class UpgradeType(val type: Int) {
         val ForceFieldMax = UpgradeType(7)
         val ForceFieldRegen = UpgradeType(8)
         val ForceFieldRadius = UpgradeType(9)
-        val ForceFieldCoolDown = UpgradeType(10)
+        val ForceFieldRestoreTime = UpgradeType(10)
     }
 }
 

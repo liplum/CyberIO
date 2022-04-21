@@ -11,15 +11,12 @@ import mindustry.graphics.Layer
 import mindustry.graphics.Pal
 import mindustry.ui.Bar
 import mindustry.world.blocks.defense.Wall
-import net.liplum.ClientOnly
-import net.liplum.DebugOnly
-import net.liplum.R
+import net.liplum.*
 import net.liplum.api.holo.IHoloEntity
 import net.liplum.api.holo.IHoloEntity.Companion.minHealth
 import net.liplum.lib.animations.Floating
 import net.liplum.lib.shaders.use
 import net.liplum.registries.CioShaders
-import net.liplum.seconds
 import net.liplum.utils.*
 
 open class HoloWall(name: String) : Wall(name) {
@@ -121,7 +118,9 @@ open class HoloWall(name: String) : Wall(name) {
         }
 
         override fun draw() {
-            updateFloating()
+            WhenNotPaused {
+                updateFloating()
+            }
             Draw.z(Layer.blockUnder)
             Drawf.shadow(x, y, 10f)
             Draw.z(Layer.block)

@@ -661,10 +661,10 @@ object CioBlocks : ContentTable {
             chargeEffect = BrainFx.eyeCharge
             chargeBeginEffect = BrainFx.eyeChargeBegin
             addUpgrade(
-                Upgrade(UpgradeType.Damage, false, 0.1f),
+                Upgrade(UpgradeType.Damage, false, 0.05f),
                 Upgrade(UpgradeType.ReloadTime, true, -4f),
                 Upgrade(UpgradeType.ControlLine, true, 0.01f),
-                Upgrade(UpgradeType.ForceFieldRegen, true, 1.5f),
+                Upgrade(UpgradeType.ForceFieldRegen, false, 0.2f),
             )
             normalSounds = CioSounds.laserWeak
             normalBullet = LightningBulletType().apply {
@@ -704,7 +704,6 @@ object CioBlocks : ContentTable {
                 Upgrade(UpgradeType.Range, false, 0.14f),
                 Upgrade(UpgradeType.WaveSpeed, true, 0.08f),
                 Upgrade(UpgradeType.WaveWidth, true, 0.4f),
-                Upgrade(UpgradeType.ControlLine, true, 0.01f),
                 Upgrade(UpgradeType.ForceFieldRadius, true, 5f),
                 Upgrade(UpgradeType.ForceFieldMax, false, 0.08f),
             )

@@ -47,10 +47,10 @@ open class Heimdall(name: String) : Block(name) {
     @JvmField var damage = 8f
     @JvmField var controlLine = 0.05f
     @JvmField var maxBrainWaveNum = 3
-    @JvmField var forceFieldRegen = 5f
+    @JvmField var forceFieldRegen = 3f
     @JvmField var forceFieldMax = 2000f
     @JvmField var forceFieldRadius = 50f
-    @JvmField var forceFieldCoolDown = 240f
+    @JvmField var forceFieldRestoreTime = 200f
     @ClientOnly lateinit var BuckleTRs: Array<TR>
     @ClientOnly @JvmField var BuckleDuration = 20f
     @ClientOnly @JvmField var BuckleFrameNum = 5
@@ -93,6 +93,20 @@ open class Heimdall(name: String) : Block(name) {
                     { if (it.formationEffects.isNotEmpty) 1f else 0f }
                 )
             }
+            bars.add<HeimdallBuild>("shield") {
+                Bar(
+                    { "${it.shieldAmount.toInt()}" },
+                    { R.C.BrainWave },
+                    { it.shieldAmount / it.realForceFieldMax }
+                )
+            }
+            bars.add<HeimdallBuild>("last-damage-time") {
+                Bar(
+                    { it.lastShieldDamageTime.format(1) },
+                    { R.C.BrainWave },
+                    { it.lastShieldDamageTime / it.realForceFieldRestoreTime }
+                )
+            }
         }
     }
 
@@ -111,7 +125,11 @@ open class Heimdall(name: String) : Block(name) {
             UpgradeType.ForceFieldMax to Prop(forceFieldMax, ::realForceFieldMax::get, ::realForceFieldMax::set),
             UpgradeType.ForceFieldRegen to Prop(forceFieldRegen, ::realForceFieldRegen::get, ::realForceFieldRegen::set),
             UpgradeType.ForceFieldRadius to Prop(forceFieldRadius, ::realForceFieldRadius::get, ::realForceFieldRadius::set),
-            UpgradeType.ForceFieldCoolDown to Prop(forceFieldCoolDown, ::realForceFieldCoolDown::get, ::realForceFieldCoolDown::set),
+            UpgradeType.ForceFieldRestoreTime to Prop(
+                forceFieldRestoreTime,
+                ::realForceFieldRestoreTime::get,
+                ::realForceFieldRestoreTime::set
+            ),
         )
 
         override fun range(): Float = realRange
@@ -132,8 +150,8 @@ open class Heimdall(name: String) : Block(name) {
         var realForceFieldRegen: Float = forceFieldRegen
         var realForceFieldMax: Float = forceFieldMax
         var realForceFieldRadius: Float = forceFieldRadius
-        var realForceFieldCoolDown: Float = forceFieldCoolDown
-        var shieldCoolDown: Float = 0f
+        var realForceFieldRestoreTime: Float = forceFieldRestoreTime
+        var lastShieldDamageTime: Float = 0f
             set(value) {
                 field = value.coerceAtLeast(0f)
             }
@@ -195,30 +213,28 @@ open class Heimdall(name: String) : Block(name) {
                     }
                 }
             }
+            lastShieldDamageTime += Time.delta
             // Force field
-            shieldCoolDown -= delta()
-            if (!formationEffects.enableShield) {
+            if (formationEffects.enableShield) {
+                if (shieldAmount < realForceFieldMax) {
+                    val factor = if (lastShieldDamageTime > realForceFieldRestoreTime)
+                        1f else 0.25f
+                    shieldAmount += realForceFieldRegen * power.status * factor
+                }
+            } else {
                 shieldAmount -= realForceFieldRegen * 2f
             }
-            val fieldExist = shieldCoolDown <= 0f
-            if (formationEffects.enableShield &&
-                fieldExist &&
-                shieldAmount < forceFieldMax
-            ) {
-                shieldAmount += realForceFieldRegen * power.status
-            }
-            if (fieldExist && shieldAmount > 0) {
+            if (shieldAmount > 0f) {
                 val curFieldRadius = curFieldRadius
                 Groups.bullet.intersect(
-                    unit.x - curFieldRadius,
-                    unit.y - curFieldRadius,
+                    x - curFieldRadius,
+                    y - curFieldRadius,
                     curFieldRadius * 2f,
                     curFieldRadius * 2f,
                 ) {
-                    absorbBullet(it)
-                }
-                if (shieldAmount <= 0) {
-                    shieldCoolDown = realForceFieldCoolDown
+                    if (absorbBullet(it, curFieldRadius)) {
+                        lastShieldDamageTime = 0f
+                    }
                 }
             }
             // Formation
@@ -382,7 +398,7 @@ open class Heimdall(name: String) : Block(name) {
             brainWaves.read(read)
             reload = read.f()
             shieldAmount = read.f()
-            shieldCoolDown = read.f()
+            lastShieldDamageTime = read.f()
         }
 
         override fun write(write: Writes) {
@@ -390,7 +406,7 @@ open class Heimdall(name: String) : Block(name) {
             brainWaves.write(write)
             write.f(reload)
             write.f(shieldAmount)
-            write.f(shieldCoolDown)
+            write.f(lastShieldDamageTime)
         }
 
         override fun control(type: LAccess, p1: Double, p2: Double, p3: Double, p4: Double) {
@@ -463,11 +479,11 @@ open class Heimdall(name: String) : Block(name) {
         open fun recacheSpecial() {
         }
 
-        fun absorbBullet(bullet: Bullet): Boolean {
+        fun absorbBullet(bullet: Bullet, range: Float): Boolean {
             if (bullet.team != team &&
                 bullet.type.absorbable &&
-                bullet.dst(this) <= realRange &&
-                Intersector.isInsideHexagon(x, y, realRange * 2f, bullet.x, bullet.y)
+                bullet.dst(this) <= range &&
+                Intersector.isInsideHexagon(x, y, range * 2f, bullet.x, bullet.y)
             ) {
                 bullet.absorb()
                 Fx.absorb.at(bullet)
