@@ -46,12 +46,16 @@ open class StreamServer(name: String) : StreamHost(name) {
         override fun getHostColor() = _hostColor
         @ClientOnly
         fun updateHostColor() {
-            ClientOnly {
-                _hostColor = R.C.Host.cpy()
-                clients.forEach { pos ->
-                    pos.sc()?.let {
-                        if (it.clientColor != R.C.Client) {
-                            _hostColor.lerp(it.clientColor, liquidColorLerp)
+            _hostColor = R.C.Host.cpy()
+            when (clients.size) {
+                0 -> _hostColor = R.C.Host
+                1 -> _hostColor = clients.first().sc()?.clientColor ?: R.C.Host
+                else -> {
+                    clients.forEach { pos ->
+                        pos.sc()?.let {
+                            if (it.clientColor != R.C.Client) {
+                                _hostColor.lerp(it.clientColor, liquidColorLerp)
+                            }
                         }
                     }
                 }
@@ -60,12 +64,16 @@ open class StreamServer(name: String) : StreamHost(name) {
 
         override fun onClientRequirementsUpdated(client: IStreamClient) {
             super.onClientRequirementsUpdated(client)
-            updateHostColor()
+            ClientOnly {
+                updateHostColor()
+            }
         }
 
         override fun onClientsChanged() {
             super.onClientsChanged()
-            updateHostColor()
+            ClientOnly {
+                updateHostColor()
+            }
         }
 
         override fun updateTile() {
@@ -166,6 +174,7 @@ open class StreamServer(name: String) : StreamHost(name) {
             }
             this.drawRequirements()
         }
+
         override fun control(type: LAccess, p1: Any?, p2: Double, p3: Double, p4: Double) {
             when (type) {
                 LAccess.shoot ->

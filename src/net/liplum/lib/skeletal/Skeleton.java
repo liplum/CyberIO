@@ -9,15 +9,6 @@ import static java.lang.Math.abs;
 
 public class Skeleton {
     /**
-     * If a force's length is less than this, it will be ignored.
-     */
-    public float minForceAmount = 0.000001f;
-    /**
-     * If a velocity's length is less than this, it will be ignored.
-     */
-    public float minVelAmount = 0.000001f;
-
-    /**
      * The root joint.
      */
     public Bone root;
@@ -67,7 +58,7 @@ public class Skeleton {
             float f = abs(cur.u * cur.w);
             cur.a -= Mathf.sign(cur.w) * f / cur.mass * delta;
             cur.update(delta);
-            cur = cur.next;
+            cur = cur.next.isEmpty() ? null : cur.next.get(0);
             i++;
         }
     }
@@ -81,7 +72,7 @@ public class Skeleton {
         vx.set(relativeX, relativeY);
         while (cur != null && i < maxUpdateDepth) {
             cur.draw(vx, vx2, rotation);
-            cur = cur.next;
+            cur = cur.next.isEmpty() ? null : cur.next.get(0);
             vx.set(vx2);
             i++;
         }
@@ -94,12 +85,12 @@ public class Skeleton {
 
             @Override
             public boolean hasNext() {
-                return cur.next != null && i < maxUpdateDepth;
+                return !cur.next.isEmpty() && i < maxUpdateDepth;
             }
 
             @Override
             public Bone next() {
-                Bone next = cur.next;
+                Bone next = cur.next.get(0);
                 cur = next;
                 i++;
                 return next;

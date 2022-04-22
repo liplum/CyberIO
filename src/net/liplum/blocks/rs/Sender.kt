@@ -19,7 +19,8 @@ import net.liplum.lib.Draw
 import net.liplum.lib.ResetColor
 import net.liplum.lib.SetColor
 import net.liplum.lib.animations.anims.Animation
-import net.liplum.lib.animations.anis.*
+import net.liplum.lib.animations.anis.AniState
+import net.liplum.lib.animations.anis.config
 import net.liplum.utils.*
 
 private typealias AniStateS = AniState<Sender, SenderBuild>
@@ -140,6 +141,17 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
                 receiverPackedPos.dr()
             else
                 null
+
+        override fun getSenderColor(): Color {
+            val receiver = receiver
+            if (receiver != null)
+                return if (receiver.isDefaultColor)
+                    super.getSenderColor()
+                else
+                    receiver.receiverColor
+            return super.getSenderColor()
+        }
+
         @ClientOnly
         override fun drawConfigure() {
             super.drawConfigure()
@@ -151,7 +163,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
         }
         @ClientOnly
         override fun onConfigureTileTapped(other: Building): Boolean {
-            if (this === other) {
+            if (this == other) {
                 deselect()
                 configure(null)
                 return false
@@ -202,7 +214,6 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
             super.read(read, revision)
             receiverPackedPos = read.i()
         }
-
         @SendDataPack
         override fun connectSync(receiver: IDataReceiver) {
             val pos = receiver.building.pos()

@@ -1,7 +1,10 @@
 package net.liplum.api.cyber;
 
+import arc.graphics.Color;
 import arc.struct.ObjectSet;
 import mindustry.type.Item;
+import net.liplum.ClientOnly;
+import net.liplum.R;
 import net.liplum.SendDataPack;
 import net.liplum.utils.ArcU;
 import org.jetbrains.annotations.NotNull;
@@ -103,5 +106,11 @@ public interface IDataSender extends IDataBuilding {
     @NotNull
     default ObjectSet<Integer> getConnectedReceivers() {
         return ArcU.emptySet();
+    }
+
+    @NotNull
+    @ClientOnly
+    default Color getSenderColor() {
+        return R.C.Sender;
     }
 }

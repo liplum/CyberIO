@@ -21,10 +21,10 @@ import net.liplum.UndebugOnly
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
 import net.liplum.blocks.rs.Receiver.ReceiverBuild
-import net.liplum.lib.animations.anims.Animation
-import net.liplum.lib.animations.anis.AniState
 import net.liplum.lib.Draw
 import net.liplum.lib.SetColor
+import net.liplum.lib.animations.anims.Animation
+import net.liplum.lib.animations.anis.AniState
 import net.liplum.lib.animations.anis.config
 import net.liplum.lib.delegates.Delegate1
 import net.liplum.lib.ui.bars.removeItems
@@ -105,6 +105,8 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
                     onRequirementUpdated(this)
                 }
             }
+
+        override fun getReceiverColor(): Color = outputItem?.color ?: R.C.Receiver
         @ClientOnly
         var lastOutputDelta = 0f
         @ClientOnly
@@ -202,6 +204,7 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
             outputItem = Vars.content.item(read.s().toInt())
             senders = read.intSet()
         }
+
         override fun getConnectedSenders() = senders
         override fun maxSenderConnection() = maxConnection
     }

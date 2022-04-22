@@ -151,7 +151,7 @@ public class R {
         public static final Color VirusBK = Color.valueOf("#cd44ff");
         public static final Color IsAive = GreenSafe;
         public static final Color CoolDown = Color.gray;
-        public static final Color Sender = Color.red,
+        public static final Color Sender = RedAlert,
                 Receiver = Pal.place;
         public static final Color Cloud = Color.white;
         public static final Color IcLight = Color.valueOf("#047b04");
@@ -179,7 +179,7 @@ public class R {
                 prismAntiClockwise = Pal.lancerLaser;
         public static final Color Stop = RedAlert;/* Color.valueOf("#dd2c00");*/
         public static final Color Unconnected = Color.white;
-        public static final Color Host = Color.red,
+        public static final Color Host = RedAlert,
                 Client = Pal.place;
         public static Color[] LiquidColors;
         public static Color[] HostLiquidColors;
@@ -264,8 +264,8 @@ public class R {
         }
 
         public static final String
-            MousePositionTile = Gen("mouse-position.tile"),
-            MousePositionBuild = Gen("mouse-position.build");
+                MousePositionTile = Gen("mouse-position.tile"),
+                MousePositionBuild = Gen("mouse-position.build");
     }
 
     public static final class Setting {

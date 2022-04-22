@@ -1,5 +1,6 @@
 package net.liplum.blocks.gadgets
 
+import arc.graphics.Color
 import arc.graphics.g2d.Draw
 import arc.math.Mathf
 import arc.scene.ui.Label
@@ -19,13 +20,14 @@ import mindustry.world.meta.BlockGroup
 import mindustry.world.meta.Stat
 import net.liplum.ClientOnly
 import net.liplum.DebugOnly
+import net.liplum.R
 import net.liplum.UndebugOnly
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
+import net.liplum.lib.Draw
 import net.liplum.lib.animations.anims.Animation
 import net.liplum.lib.animations.anims.AnimationObj
 import net.liplum.lib.animations.anis.AniState
-import net.liplum.lib.Draw
 import net.liplum.lib.animations.anis.config
 import net.liplum.lib.delegates.Delegate1
 import net.liplum.lib.ui.bars.addBar
@@ -133,6 +135,10 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
         var hasDynamicRequirements: Boolean = false
         var dynamicReqUpdateTimer = 0f
         var disIndex = 0
+        @ClientOnly
+        var color: Color = R.C.Receiver
+        @ClientOnly
+        override fun getReceiverColor(): Color = color
 
         init {
             ClientOnly {
@@ -172,6 +178,17 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
                 _requirements = newReqs
                 DebugOnly {
                     requirementsText = genRequirementsText()
+                }
+                ClientOnly {
+                    val c = when (newReqs.size) {
+                        0 -> R.C.Receiver
+                        1 -> newReqs[0].color
+                        else -> Color.white.cpy()
+                    }
+                    for (req in newReqs) {
+                        c.lerp(req.color, 0.5f)
+                    }
+                    color = c
                 }
                 _onRequirementUpdated(this)
             }

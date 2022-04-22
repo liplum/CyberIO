@@ -1,9 +1,11 @@
 package net.liplum.api.cyber;
 
+import arc.graphics.Color;
 import arc.struct.ObjectSet;
 import mindustry.type.Item;
 import net.liplum.CalledBySync;
 import net.liplum.ClientOnly;
+import net.liplum.R;
 import net.liplum.lib.delegates.Delegate1;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -31,6 +33,16 @@ public interface IDataReceiver extends IDataBuilding {
      */
     @Nullable
     Item[] getRequirements();
+
+    @NotNull
+    @ClientOnly
+    default Color getReceiverColor() {
+        return R.C.Receiver;
+    }
+
+    default boolean isDefaultColor() {
+        return getReceiverColor() == R.C.Receiver;
+    }
 
     @ClientOnly
     boolean isBlocked();

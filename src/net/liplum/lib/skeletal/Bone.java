@@ -3,7 +3,9 @@ package net.liplum.lib.skeletal;
 import arc.math.geom.Vec2;
 import net.liplum.utils.MathH;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Bone {
     public Skeleton sk;
@@ -33,8 +35,8 @@ public class Bone {
      */
     public float u = 0.1f;
 
-    @Nullable
-    public Bone pre, next;
+    public List<Bone> pre = new ArrayList<>();
+    public List<Bone> next = new ArrayList<>();
 
     public Bone(@NotNull Skeleton sk) {
         this.sk = sk;
@@ -72,17 +74,13 @@ public class Bone {
         skin.drawRad(relative.x + pos.x, relative.y + pos.y, angle + rotation);
     }
 
-    public void setNext(Bone bone) {
-        next = bone;
-        if (bone != null) {
-            bone.pre = this;
-        }
+    public void addNext(@NotNull Bone bone) {
+        next.add(bone);
+        bone.pre.add(this);
     }
 
-    public void setPre(Bone bone) {
-        pre = bone;
-        if (bone != null) {
-            bone.next = this;
-        }
+    public void addPre(@NotNull Bone bone) {
+        pre.add(bone);
+        bone.next.add(this);
     }
 }

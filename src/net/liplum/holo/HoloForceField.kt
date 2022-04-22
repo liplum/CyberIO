@@ -20,6 +20,7 @@ import net.liplum.R
 import net.liplum.abilites.localized
 import net.liplum.lib.shaders.SD
 import net.liplum.lib.shaders.use
+import net.liplum.utils.healthPct
 
 open class HoloForceField(
     val radius: Float, val regen: Float, val max: Float, val cooldown: Float,
@@ -45,7 +46,10 @@ open class HoloForceField(
     override fun draw(unit: Unit) {
         if (unit.shield <= 0) return
         if (Vars.renderer.animateShields) {
+            val healthPct = unit.healthPct
             SD.Hologram.use(Layer.shields) {
+                it.opacityNoise *= 2f - healthPct
+                it.flickering = it.DefaultFlickering + (1f - healthPct)
                 Fill.poly(unit.x, unit.y, 6, realRange(unit))
             }
         } else {

@@ -51,12 +51,12 @@ open class Hand(name: String) : Block(name), IComponentBlock {
                 // bone 1
                 skin = boneSkin
                 length = 16f
-                setNext(Bone(sk).apply {
+                addNext(Bone(sk).apply {
                     // bone 2
                     skin = boneSkin
                     length = 16f
                     bone2 = this
-                    setNext(Bone(sk).apply {
+                    addNext(Bone(sk).apply {
                         // bone 3
                         bone3 = this
                         skin = boneSkin

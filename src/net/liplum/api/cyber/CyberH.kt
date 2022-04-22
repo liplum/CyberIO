@@ -29,7 +29,6 @@ fun Int.dsOrPayload(): IDataSender? =
 
 val IDataBuilding?.exists: Boolean
     get() = this != null && this.building.exists
-
 val ICyberEntity.bottomLeftX: Int
     get() = building.bottomLeftX
 val ICyberEntity.bottomLeftY: Int
@@ -262,7 +261,7 @@ inline fun whenNotConfiguringHost(func: () -> Unit) {
     }
 }
 
-val ArrowDensity : Float
+val ArrowDensity: Float
     get() = Settings.LinkArrowDensity
 /**
  * Called in Receiver block
@@ -275,8 +274,8 @@ fun IDataReceiver.drawSender(sender: Int?) {
     val opacity = Settings.LinkOpacity
     if (sb is IDataSender) {
         val senderT = sb.tile()
-        G.drawSurroundingCircle(senderT, R.C.Sender, alpha = opacity)
-        G.drawArrowLine(sb, this.building, ArrowDensity, R.C.Receiver, alpha = opacity)
+        G.drawSurroundingCircle(senderT, sb.senderColor, alpha = opacity)
+        G.drawArrowLine(sb, this.building, ArrowDensity, this.receiverColor, alpha = opacity)
     }
     /* deprecated for payload
     else {
@@ -297,8 +296,8 @@ fun IDataReceiver.drawSenders(senders: Iterable<Int>) {
         val sb = Vars.world.build(sender)
         if (sb is IDataSender) {
             val senderT = sb.tile()
-            G.drawSurroundingCircle(senderT, R.C.Sender, alpha = opacity)
-            G.drawArrowLine(sb, this.building, ArrowDensity, R.C.Receiver, alpha = opacity)
+            G.drawSurroundingCircle(senderT, sb.senderColor, alpha = opacity)
+            G.drawArrowLine(sb, this.building, ArrowDensity, this.receiverColor, alpha = opacity)
         }
     }
 }
@@ -313,8 +312,8 @@ fun IDataSender.drawReceiver(receiver: Int?) {
     val rb = Vars.world.build(receiver)
     if (rb is IDataReceiver) {
         val receiverT = rb.tile()
-        G.drawSurroundingCircle(receiverT, R.C.Receiver, alpha = opacity)
-        G.drawArrowLine(this.building, rb, ArrowDensity, R.C.Sender, alpha = opacity)
+        G.drawSurroundingCircle(receiverT, rb.receiverColor, alpha = opacity)
+        G.drawArrowLine(this.building, rb, ArrowDensity, this.senderColor, alpha = opacity)
         rb.drawRequirements()
     }
     /* deprecated for payload
@@ -338,8 +337,8 @@ fun IDataSender.drawReceivers(receivers: Iterable<Int>) {
         if (rb is IDataReceiver) {
             val receiverT = rb.tile()
             Draw.z(original)
-            G.drawSurroundingCircle(receiverT, R.C.Receiver, alpha = opacity)
-            G.drawArrowLine(this.building, rb, ArrowDensity, R.C.Sender, alpha = opacity)
+            G.drawSurroundingCircle(receiverT, rb.receiverColor, alpha = opacity)
+            G.drawArrowLine(this.building, rb, ArrowDensity, this.senderColor, alpha = opacity)
             rb.drawRequirements()
         }
     }
