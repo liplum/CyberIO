@@ -55,4 +55,7 @@ object Screen {
     @JvmStatic
     fun toWorld(cursorX: Int, cursorY: Int): Vec2 =
         Core.input.mouseWorld(cursorX.toFloat(), cursorY.toFloat())
+    @JvmStatic
+    fun worldOnMouse(): Vec2 =
+        Core.input.mouseWorld()
 }

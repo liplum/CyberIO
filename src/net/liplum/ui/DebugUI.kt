@@ -30,6 +30,11 @@ object DebugUI {
                     R.UI.MousePositionBuild.bundle("X", "X")
             }.touchable(Touchable.disabled).name("mouse-position-build")
             row()
+            label {
+                val pos = Screen.worldOnMouse()
+                R.UI.MousePositionTile.bundle(pos.x.toInt(), pos.y.toInt())
+            }.touchable(Touchable.disabled).name("mouse-position-world")
+            row()
         }
     }
 }

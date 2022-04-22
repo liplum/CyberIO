@@ -1,9 +1,10 @@
 package net.liplum.lib;
 
 import arc.graphics.g2d.TextureRegion;
+import org.jetbrains.annotations.NotNull;
 
 public class Tx {
-    public Tx(TextureRegion tr) {
+    public Tx(@NotNull TextureRegion tr) {
         this.tr = tr;
     }
 
@@ -16,7 +17,12 @@ public class Tx {
      */
     public float dr;
 
+    @NotNull
     public TextureRegion tr;
+
+    public void draw(float x, float y, float rotation) {
+        DrawT.Draw(tr, getX(x), getY(y), getRotation(rotation));
+    }
 
     public float getX() {
         return dx;
@@ -33,6 +39,7 @@ public class Tx {
     public float getY(float relative) {
         return relative + dy;
     }
+
     public float getRotation() {
         return dr;
     }

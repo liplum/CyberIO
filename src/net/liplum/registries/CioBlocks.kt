@@ -91,6 +91,7 @@ object CioBlocks : ContentTable {
     @JvmStatic lateinit var heimdall: Heimdall
     @JvmStatic lateinit var eye: Eye
     @JvmStatic lateinit var ear: Ear
+    @JvmStatic lateinit var hand: Hand
     override fun firstLoad() {
     }
 
@@ -710,6 +711,19 @@ object CioBlocks : ContentTable {
             range = 145f
             size = 2
             health = 300 * size * size
+        }
+
+        DebugOnly {
+            hand = Hand("heimdall-hand").apply {
+                requirements(
+                    Category.turret, BuildVisibility.shown, arrayOf(
+                        ItemStack(CioItems.ic, 5),
+                        ItemStack(Items.copper, 80),
+                        ItemStack(Items.silicon, 40),
+                        ItemStack(Items.phaseFabric, 40),
+                    )
+                )
+            }
         }
     }
 
