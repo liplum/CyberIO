@@ -1,5 +1,5 @@
 # Cyber IO
-[![Discord](https://img.shields.io/discord/937228972041842718?color=%23529b69&label=Discord&style=flat-square)](https://discord.gg/Qkc3Gdj2M6)
+[![Discord](https://img.shields.io/discord/937228972041842718?color=%23529b69&label=Discord&style=flat-square)](https://discord.gg/PDwyxM3waw)
 ___
 A Mindustry mod provides lots of cybernetic things!!!
 

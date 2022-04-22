@@ -1,6 +1,7 @@
 package net.liplum.brains
 
 import arc.util.Time
+import arc.util.Tmp
 import mindustry.content.UnitTypes
 import mindustry.gen.BlockUnitc
 import mindustry.gen.Building
@@ -10,7 +11,6 @@ import net.liplum.ClientOnly
 import net.liplum.api.brain.*
 import net.liplum.lib.Tx
 import net.liplum.lib.skeletal.Bone
-import net.liplum.lib.skeletal.Joint
 import net.liplum.lib.skeletal.Skeleton
 import net.liplum.lib.skeletal.Skin
 import net.liplum.utils.MdtUnit
@@ -39,46 +39,39 @@ open class Hand(name: String) : Block(name), IComponentBlock {
         override var brain: IBrain? = null
         override val upgrades: Map<UpgradeType, Upgrade> = this@Hand.upgrades
         var unit = UnitTypes.block.create(team) as BlockUnitc
-        var lastJoint: Joint
+        val bone2: Bone
+        val bone3: Bone
         val skeleton = Skeleton().apply {
             val jointSkin = Skin(JointTx)
-            val boneSkin = Skin(BoneTx)
+            val boneSkin = Skin(BoneTx).apply {
+                texture.dr = -90f
+            }
             val sk = this
-            root = Joint(sk).apply {
-                // ja 1
-                skin = jointSkin
-                pos.set(0f, 0f)
-                setNextBone(Bone(sk).apply {
-                    // bone 1
+            root = Bone(sk).apply {
+                // bone 1
+                skin = boneSkin
+                length = 16f
+                setNext(Bone(sk).apply {
+                    // bone 2
                     skin = boneSkin
                     length = 16f
-                    setJb(Joint(sk).apply {
-                        // jb 1
-                        skin = jointSkin
-                        pos.set(0f, 16f)
-                        setNextBone(Bone(sk).apply {
-                            // bone 2
-                            skin = boneSkin
-                            length = 64f
-                            setJb(Joint(sk).apply {
-                                // jb 2
-                                skin = jointSkin
-                                lastJoint = this
-                                pos.set(0f, 16f + 16f)
-                            })
-                        })
+                    bone2 = this
+                    setNext(Bone(sk).apply {
+                        // bone 3
+                        bone3 = this
+                        skin = boneSkin
+                        length = 16f
                     })
                 })
             }
         }
-        var reload = 0f
+
         override fun updateTile() {
-            reload += Time.delta
-            if (reload > reloadTime && isControlled && unit.isShooting) {
-                reload = 0f
-                lastJoint.applyForce(0.1f, 0f)
+            bone2.applyForce(Tmp.v1.set(0f, 0.01f))
+            if (isControlled && unit.isShooting) {
+                bone3.applyForce(Tmp.v1.set(0f, 0.04f))
             }
-            skeleton.update(Time.delta * 0.1f)
+            skeleton.update(Time.delta)
         }
 
         override fun draw() {

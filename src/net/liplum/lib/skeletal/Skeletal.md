@@ -1,5 +1,9 @@
 ## Mechanics
 
+### Skeleton
+
+1. A skeleton can't be circular but linear or tree.
+
 ### Joint
 
 1. A joint is between two bones, in other words, joins them.
@@ -7,34 +11,48 @@
    bone.
 3. It has a rotation only for rendering.
 4. It can be applied a force.
-
-`
-*For perspective of joint*
+5. It has a position relative to its previous joint.
+```
+For perspective of joint:
 pre? J1 next ---B1--- pre J2 next ---B2--- pre J3 next?
-*For perspective of bone*
+For perspective of bone:
 j1a ---B1--- jb2 --- B2 --- ja3 So that:
 J1.next == B1.ja J2.pre == B1.jb
-`
+```
 
 ### Bone
 
 1. A bone is connected with two joints.
-2. It is a rigid body so has a fixed length.
-3. Its rotation is computed by the positions of its two joints.
-4. It has mass.
+2. It is a rigid body, so it's of a fixed length and density, which can decides its mass.
+   ```
+   let density is p, length is l and mass is m 
+   m = p * l
+   ```
+3. Its rotation decides the next joint
 
+
+### Acceleration
+1. The acceleration of angular velocity is only of value and rotational direction.
+2. It can increase the angular velocity.
+   ```
+   let accleration is a
+   w += a * t
+   ```
 ### Force
 
-1. A force is only applied on a joint and doesn't spread joint by joint.
-2. If a joint will become longer/shorter, it will apply an attenuating/pulling force to its proximate joints on the
-   direction of bone.
-    ```
-    let the distance will be stretched is D, the mass of bone is m and the force to be applied is F.
-    F += sign * k * sqrt(D) / m 
-    F += sign * k * sqrt(D)       // If no mass in the implemetation
-    P.S.: Whether it's an attenuating force or pulling force decides the sign -- negative or positive.
+1. Force isn't real in skeleton, however, it can change the acceleration.
    ```
-3. Force is disposable between update unless there is a constant force.
+   let the force is F.
+   |a| = |F| / m
+   direction of a is decided by the angle bettween proximate bone's direction and F.
+   ```
+2. [Optional] A force is only applied on a joint and can spread joint by joint.
+   ```
+   let the accleartion of proximate joint is a' and the mass of it is m' 
+   |a'| = |a| / m'
+   ```
+3. Force is disposable between two updates unless there is a constant force.
+
 
 ### Velocity
 
@@ -42,12 +60,12 @@ J1.next == B1.ja J2.pre == B1.jb
 2. A force can increase the velocity.
     ```
     let the velocity is v and the force is F.  
-    v += F * delta
+    v += F * t
     ```
 3. Velocity will increase the position
     ```
     let the position is p.
-    p += v * delta
+    p += v * t
     ```
 
 ### Position
@@ -67,9 +85,6 @@ J1.next == B1.ja J2.pre == B1.jb
 
 Once update should do the following things in order.
 
-1. Apply the force on velocity.
-2. Clear the force.
-3. Apply the velocity on position.
-4. Calculate the distance between two joints after/before the *step 3*
-5. Calculate how much more/less distance there is between two joints.
-6. Apply the attenuating/pulling force on proximate joints.
+1. Apply the acceleration on angular velocity.
+2. Clear acceleration.
+3. Apply the angular velocity on position.
