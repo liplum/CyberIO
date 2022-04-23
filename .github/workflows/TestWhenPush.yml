@@ -1,0 +1,23 @@
+name: Push Changes Testing
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up JDK 8
+        uses: actions/setup-java@v2
+        with:
+          java-version: '8'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Get short commit hash
+        run: echo "SHORT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
+      - name: Test OpenGAL
+        run: |
+          chmod +x gradlew
+          ./gradlew test

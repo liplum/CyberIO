@@ -32,7 +32,7 @@ object DebugUI {
             row()
             label {
                 val pos = Screen.worldOnMouse()
-                R.UI.MousePositionTile.bundle(pos.x.toInt(), pos.y.toInt())
+                R.UI.MousePositionWorld.bundle(pos.x.toInt(), pos.y.toInt())
             }.touchable(Touchable.disabled).name("mouse-position-world")
             row()
         }

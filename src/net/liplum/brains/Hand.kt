@@ -19,7 +19,7 @@ import net.liplum.utils.inMod
 open class Hand(name: String) : Block(name), IComponentBlock {
     override val upgrades: MutableMap<UpgradeType, Upgrade> = HashMap()
     @ClientOnly lateinit var BoneTx: Tx
-    @ClientOnly lateinit var JointTx: Tx
+    @ClientOnly lateinit var HandTx: Tx
     var reloadTime = 60f
 
     init {
@@ -29,8 +29,16 @@ open class Hand(name: String) : Block(name), IComponentBlock {
 
     override fun load() {
         super.load()
-        BoneTx = Tx(this.inMod("bone"))
-        JointTx = Tx(this.inMod("joint"))
+        BoneTx = Tx(this.inMod("bone")).apply {
+            dr = -90f
+            scale = 0.5f
+        }
+        HandTx = Tx(this.inMod("hand")).apply {
+            dr = 90f
+            dx = -3f
+            dy = -1f
+            scale = 0.5f
+        }
     }
 
     open inner class HandBuild : Building(),
@@ -39,44 +47,54 @@ open class Hand(name: String) : Block(name), IComponentBlock {
         override var brain: IBrain? = null
         override val upgrades: Map<UpgradeType, Upgrade> = this@Hand.upgrades
         var unit = UnitTypes.block.create(team) as BlockUnitc
-        val bone2: Bone
-        val bone3: Bone
+        val forearm: Bone
         val skeleton = Skeleton().apply {
-            val jointSkin = Skin(JointTx)
-            val boneSkin = Skin(BoneTx).apply {
-                texture.dr = -90f
-            }
+            isLinear = false
+            val handSkin = Skin(HandTx)
+            val boneSkin = Skin(BoneTx)
             val sk = this
             root = Bone(sk).apply {
-                // bone 1
+                name = "UpperArm"
                 skin = boneSkin
                 length = 16f
+                id = curID++
                 addNext(Bone(sk).apply {
-                    // bone 2
+                    name = "Forearm"
                     skin = boneSkin
                     length = 16f
-                    bone2 = this
+                    forearm = this
+                    id = curID++
                     addNext(Bone(sk).apply {
-                        // bone 3
-                        bone3 = this
-                        skin = boneSkin
+                        name = "Hand"
+                        skin = handSkin
                         length = 16f
+                        mass = 5f
+                        id = curID++
                     })
                 })
             }
         }
 
         override fun updateTile() {
-            bone2.applyForce(Tmp.v1.set(0f, 0.01f))
+            skeleton.findFirstByName("UpperArm")?.apply {
+                applyForce(Tmp.v1.set(0f, -0.001f))
+            }
+            forearm.applyForce(Tmp.v1.set(0f, 0.001f))
             if (isControlled && unit.isShooting) {
-                bone3.applyForce(Tmp.v1.set(0f, 0.04f))
+                forearm.next.forEach {
+                    it.applyForce(Tmp.v1.set(0f, 0.005f))
+                }
             }
             skeleton.update(Time.delta)
         }
 
         override fun draw() {
             super.draw()
-            skeleton.drawLinear(x, y, 0f)
+            skeleton.findFirstByName("Hand")?.skin?.texture?.apply {
+                dx = -1.5f
+                dy = -0.5f
+            }
+            skeleton.draw(x, y, 0f)
         }
 
         override fun unit(): MdtUnit {

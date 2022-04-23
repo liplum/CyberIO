@@ -21,7 +21,8 @@ import net.liplum.lib.DrawOn
 import net.liplum.lib.DrawSize
 import net.liplum.lib.SetAlpha
 import net.liplum.lib.animations.Floating
-import net.liplum.lib.animations.anis.*
+import net.liplum.lib.animations.anis.AniState
+import net.liplum.lib.animations.anis.config
 import net.liplum.persistance.intSet
 import net.liplum.utils.*
 
@@ -239,14 +240,14 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
 
         override fun maxClientConnection() = maxConnection
         override fun getConnectedClients(): OrderedSet<Int> = clients
-        override fun read(read: Reads, revision: Byte) {
-            super.read(read, revision)
-            clients = read.intSet()
-        }
-
         override fun beforeDraw() {
             val d = G.D(0.1f * IconFloatingRange * delta())
             floating.move(d)
+        }
+
+        override fun read(read: Reads, revision: Byte) {
+            super.read(read, revision)
+            clients = read.intSet()
         }
 
         override fun write(write: Writes) {

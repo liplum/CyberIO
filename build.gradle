@@ -20,6 +20,7 @@ plugins {
 var useKotlin = Boolean.parseBoolean(property("UseKotlin") as String)
 apply plugin: "java"
 sourceSets.main.java.srcDirs = ["src"]
+sourceSets.test.java.srcDirs = ["test"]
 version '3'
 group 'net.liplum'
 if (useKotlin) {
@@ -45,9 +46,22 @@ dependencies {
     testCompileOnly "com.github.Anuken.Mindustry:core:$mdtVersion"
     testImplementation "com.github.Anuken.Mindustry:desktop:$mdtVersion"
     testImplementation "com.github.Anuken.Mindustry:server:$mdtVersion"
-
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+    testImplementation 'com.github.liplum:TestUtils:v0.1'
     // implementation "com.google.guava:guava:31.1-jre"
     // annotationProcessor "com.github.Anuken:jabel:$jabelVersion"
+}
+
+test {
+    useJUnitPlatform {
+        includeTags 'fast'
+        excludeTags 'slow'
+    }
+    testLogging {
+        showStandardStreams = true
+        testLogging.exceptionFormat = 'full'
+    }
 }
 
 compileKotlin {

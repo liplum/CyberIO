@@ -265,7 +265,8 @@ public class R {
 
         public static final String
                 MousePositionTile = Gen("mouse-position.tile"),
-                MousePositionBuild = Gen("mouse-position.build");
+                MousePositionBuild = Gen("mouse-position.build"),
+                MousePositionWorld = Gen("mouse-position.world");
     }
 
     public static final class Setting {

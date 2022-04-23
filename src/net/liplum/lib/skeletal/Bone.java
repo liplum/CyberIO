@@ -10,6 +10,8 @@ import java.util.List;
 public class Bone {
     public Skeleton sk;
     public Skin skin;
+    public int id = 0;
+    public String name = "";
     /**
      * Mustn't be zero. It's 1.0 as default.
      */
@@ -34,8 +36,9 @@ public class Bone {
      * frictional coefficient.
      */
     public float u = 0.1f;
-
+    @NotNull
     public List<Bone> pre = new ArrayList<>();
+    @NotNull
     public List<Bone> next = new ArrayList<>();
 
     public Bone(@NotNull Skeleton sk) {
@@ -43,6 +46,10 @@ public class Bone {
     }
 
     public Bone() {
+    }
+
+    public boolean hasNext() {
+        return !next.isEmpty();
     }
 
     public void applyForce(Vec2 F) {
@@ -77,10 +84,43 @@ public class Bone {
     public void addNext(@NotNull Bone bone) {
         next.add(bone);
         bone.pre.add(this);
+        if (next.size() > 1) {
+            sk.isLinear = false;
+        }
     }
 
     public void addPre(@NotNull Bone bone) {
         pre.add(bone);
         bone.next.add(this);
+        if (next.size() > 1) {
+            sk.isLinear = false;
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "Name:" +
+                name +
+                ',' +
+                "ID:" +
+                id +
+                ',' +
+                "mass:" +
+                mass +
+                ',' +
+                "length:" +
+                length +
+                ',' +
+                "w:" +
+                w +
+                ',' +
+                "a:" +
+                a +
+                ',' +
+                "angle:" +
+                angle +
+                ',' +
+                "u:" +
+                u;
     }
 }

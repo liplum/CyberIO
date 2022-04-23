@@ -16,7 +16,6 @@ import net.liplum.ClientOnly
 import net.liplum.R
 import net.liplum.api.cyber.*
 import net.liplum.lib.DrawOn
-import net.liplum.lib.DrawRotateOn
 import net.liplum.lib.delegates.Delegate1
 import net.liplum.persistance.intSet
 import net.liplum.utils.ForProximity
@@ -76,7 +75,14 @@ open class StreamServer(name: String) : StreamHost(name) {
             }
         }
 
+        @JvmField protected var restored = true
         override fun updateTile() {
+            if (restored) {
+                ClientOnly {
+                    updateHostColor()
+                }
+                restored = false
+            }
             // Check connection every second
             if (Time.time % 60f < 1) {
                 checkClientsPos()
@@ -163,7 +169,7 @@ open class StreamServer(name: String) : StreamHost(name) {
                 mixedLiquidColor,
                 (rotation - 90).toFloat()
             )
-            TopTR.DrawRotateOn(this, liquidFlow)
+            TopTR.DrawOn(this, liquidFlow)
             drawTeamTop()
         }
 
@@ -214,6 +220,7 @@ open class StreamServer(name: String) : StreamHost(name) {
             if (revision.toInt() > 0) {
                 hosts = read.intSet()
             }
+            restored = true
         }
 
         override fun write(write: Writes) {

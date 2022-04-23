@@ -2,8 +2,11 @@ package net.liplum.lib.skeletal;
 
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Iterator;
+import java.util.LinkedList;
 
 import static java.lang.Math.abs;
 
@@ -12,6 +15,8 @@ public class Skeleton {
      * The root joint.
      */
     public Bone root;
+
+    public int curID = 0;
 
     /**
      * If using a circular skeleton, it can prevent endless iteration.
@@ -44,6 +49,34 @@ public class Skeleton {
             updateLinear(delta);
         else
             updateTree(delta);
+    }
+
+    public void draw(float relativeX, float relativeY, float rotation) {
+        if (isLinear)
+            drawLinear(relativeX, relativeY, rotation);
+        else
+            drawTree(relativeX, relativeY, rotation);
+    }
+
+    @Nullable
+    public Bone findBoneIn(@NotNull Bone cur, @NotNull String name) {
+        if (cur.name.equals(name))
+            return cur;
+        for (Bone nextBone : cur.next) {
+            return findBoneIn(nextBone, name);
+        }
+        return null;
+    }
+
+    /**
+     * Using recursive to find a bone.
+     *
+     * @param name the name of bone sought
+     * @return the bone found of null
+     */
+    @Nullable
+    public Bone findFirstByName(@NotNull String name) {
+        return findBoneIn(root, name);
     }
 
     /**
@@ -98,11 +131,154 @@ public class Skeleton {
         };
     }
 
+    public static final class UFrame {
+        /**
+         * It has some branches.
+         */
+        public Bone bone;
+        /**
+         * The current index of {@link Bone#next}.
+         */
+        public int curIndex = -1;
+
+        public UFrame(Bone bone) {
+            this.bone = bone;
+        }
+
+    }
+
+    public LinkedList<UFrame> stack = new LinkedList<>();
+
+    public void updateRecursiveIn(Bone cur, float delta) {
+
+    }
+
+    public void updateRecursive(float delta) {
+        updateRecursiveIn(root, delta);
+    }
+
+    private void update(Bone cur, float delta) {
+        float f = abs(cur.u * cur.w);
+        cur.a -= Mathf.sign(cur.w) * f / cur.mass * delta;
+        cur.update(delta);
+    }
+
     /**
      * For tree and linear skeleton.
+     * It uses pre-it
      *
      * @param delta the time spent
      */
     public void updateTree(float delta) {
+        // the stack is used to store branches.
+        stack.clear();
+        stack.add(new UFrame(root));
+        while (!stack.isEmpty()) {
+            UFrame curFrame = stack.peek();
+            int curIndex = curFrame.curIndex;
+            Bone cur = curFrame.bone;
+            if (curFrame.curIndex < cur.next.size()) {
+                update(cur, delta);
+
+                int nextBoneNumber = cur.next.size();
+                if (nextBoneNumber == 0) {
+                    curFrame.curIndex++;
+                } else if (nextBoneNumber == 1) {
+                    // Don't need to create a new frame, just replace the bone.
+                    curFrame.bone = cur.next.get(0);
+                    curFrame.curIndex = -1;
+                } else {
+                    // current bone starts a new branch.
+                    curFrame.curIndex++;
+                    if (curFrame.curIndex < cur.next.size()) {
+                        stack.push(new UFrame(cur.next.get(curFrame.curIndex)));
+                    }
+                }
+            } else {
+                // It means the iteration arrives at end of current branch.
+                stack.pop();
+            }
+        }
+    }
+
+    public static final class RFrame {
+        /**
+         * It has some branches.
+         */
+        public Bone bone;
+        /**
+         * The current index of {@link Bone#next}.
+         */
+        public int curIndex = -1;
+
+        /**
+         * Relative x,y
+         */
+        public float rx, ry;
+
+        public RFrame(Bone bone, float rx, float ry) {
+            this.bone = bone;
+            this.rx = rx;
+            this.ry = ry;
+        }
+    }
+
+    /**
+     * Contract:
+     * <p>
+     * Input
+     * <ul>
+     *     <li>{@linkplain Skeleton#vx}</li>
+     * </ul>
+     * Output
+     * <ul>
+     *     <li>{@linkplain Skeleton#vx2}</li>
+     * </ul>
+     * </p>
+     */
+    private void draw(Bone cur, float rotation) {
+        cur.draw(vx, vx2, rotation);
+    }
+
+    public LinkedList<RFrame> rstack = new LinkedList<>();
+
+    /**
+     * For tree and linear skeleton.
+     * It uses pre-it
+     */
+    public void drawTree(float relativeX, float relativeY, float rotation) {
+        // the stack is used to store branches.
+        rstack.clear();
+        rstack.add(new RFrame(root, relativeX, relativeY));
+        while (!rstack.isEmpty()) {
+            RFrame curFrame = rstack.peek();
+            int curIndex = curFrame.curIndex;
+            Bone cur = curFrame.bone;
+            if (curFrame.curIndex < cur.next.size()) {
+                //draw this
+                vx.set(curFrame.rx, curFrame.ry);
+                draw(cur, rotation);
+
+                int nextBoneNumber = cur.next.size();
+                if (nextBoneNumber == 0) {
+                    curFrame.curIndex++;
+                } else if (nextBoneNumber == 1) {
+                    // Don't need to create a new frame, just replace the bone.
+                    curFrame.bone = cur.next.get(0);
+                    curFrame.curIndex = -1;
+                    curFrame.rx = vx2.x;
+                    curFrame.ry = vx2.y;
+                } else {
+                    // current bone starts a new branch.
+                    curFrame.curIndex++;
+                    if (curFrame.curIndex < cur.next.size()) {
+                        rstack.push(new RFrame(cur.next.get(curFrame.curIndex), vx2.x, vx2.y));
+                    }
+                }
+            } else {
+                // It means the iteration arrives at end of current branch.
+                rstack.pop();
+            }
+        }
     }
 }

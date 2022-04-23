@@ -1,5 +1,5 @@
 ## Mechanics
-
+**Note:This has been suspended indefinitely.**
 ### Skeleton
 
 1. A skeleton can't be circular but linear or tree.

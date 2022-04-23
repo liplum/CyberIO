@@ -24,71 +24,33 @@ fun SetColor(color: Color) {
 fun SetAlpha(alpha: Float) {
     Draw.alpha(alpha)
 }
-
-fun DrawTR(tr: TR, x: Float, y: Float) {
+@JvmOverloads
+fun TR.DrawSize(
+    x: Float, y: Float, size: Float,
+    rotation: Float = 0f
+) {
     Draw.alpha(Draw.getColor().a * ALPHA)
-    Draw.rect(tr, x, y)
-}
-
-fun DrawTrSize(tr: TR, x: Float, y: Float, size: Float) {
-    Draw.alpha(Draw.getColor().a * ALPHA)
-    Draw.rect(tr, x, y, G.Dw(tr) * size, G.Dh(tr) * size)
-}
-
-fun TR.DrawSize(x: Float, y: Float, size: Float) {
-    Draw.alpha(Draw.getColor().a * ALPHA)
-    Draw.rect(this, x, y, G.Dw(this) * size, G.Dh(this) * size)
-}
-
-fun DrawTrSizeOn(tr: TR, build: Building, size: Float) {
-    Draw.alpha(Draw.getColor().a * ALPHA)
-    Draw.rect(tr, build.x, build.y, G.Dw(tr) * size, G.Dh(tr) * size)
-}
-
-fun TR.DrawSizeOn(build: Building, size: Float) {
-    DrawTrSizeOn(this, build, size)
-}
-
-fun DrawTrWH(tr: TR, x: Float, y: Float, width: Float, height: Float) {
-    Draw.alpha(Draw.getColor().a * ALPHA)
-    Draw.rect(tr, x, y, width, height)
-}
-
-fun TR.Draw(x: Float, y: Float) {
-    DrawTR(this, x, y)
+    Draw.rect(this, x, y, G.Dw(this) * size, G.Dh(this) * size, rotation)
 }
 @JvmOverloads
-fun DrawTrOn(tr: TR, build: Building, rotate: Boolean = false) {
-    Draw.alpha(Draw.getColor().a * ALPHA)
-    if (rotate) {
-        Draw.rect(tr, build.x, build.y, build.rotation - 90f)
-    } else {
-        Draw.rect(tr, build.x, build.y)
-    }
+fun TR.DrawOn(build: Building, rotation: Float = 0f) {
+    this.Draw(build.x, build.y, rotation)
 }
 @JvmOverloads
-fun TR.DrawOn(build: Building, rotate: Boolean = false) {
-    DrawTrOn(this, build, rotate)
-}
-
-fun DrawRotatedTr(tr: TR, build: Building, rotation: Float) {
-    DrawTR(tr, build.x, build.y, rotation)
-}
-
-fun TR.DrawRotateOn(build: Building, rotation: Float) {
-    DrawRotatedTr(this, build, rotation)
-}
-
-fun DrawTR(tr: TR, x: Float, y: Float, rotation: Float) {
+fun TR.Draw(
+    x: Float, y: Float, rotation: Float = 0f
+) {
     Draw.alpha(Draw.getColor().a * ALPHA)
-    Draw.rect(tr, x, y, rotation)
+    Draw.rect(this, x, y, rotation)
 }
-
-fun TR.Draw(x: Float, y: Float, rotation: Float) {
-    DrawTR(this, x, y, rotation)
-}
-
-fun TR.DrawCuttingWidth(x: Float, y: Float, width: Float) {
+@JvmOverloads
+fun TR.DrawAny(
+    x: Float, y: Float,
+    width: Float = G.Dw(this), height: Float = G.Dh(this),
+    rotation: Float = 0f
+) {
+    Draw.alpha(Draw.getColor().a * ALPHA)
+    Draw.rect(this, x, y, width, height, rotation)
 }
 
 fun ResetColor() {
@@ -97,34 +59,4 @@ fun ResetColor() {
 
 fun Reset() {
     Draw.reset()
-}
-
-class Anchor {
-    @JvmField var dx = 0f
-    @JvmField var dy = 0f
-    @JvmField var rotation = 0f
-    /**
-     * [dx] and [dy] will move the same length.
-     */
-    fun offset(d: Float): Anchor {
-        dx += d
-        dy += d
-        return this
-    }
-
-    fun rotate(degree: Float = 90f): Anchor {
-        rotation += degree
-        return this
-    }
-
-    fun rotate90(times: Int): Anchor {
-        rotation += times * 90f
-        return this
-    }
-
-    fun reset() {
-        dx = 0f
-        dy = 0f
-        rotation = 0f
-    }
 }

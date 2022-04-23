@@ -3,8 +3,10 @@ package net.liplum.lib.skeletal;
 import arc.math.Mathf;
 import net.liplum.lib.Tx;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class Skin {
+    @Nullable
     public Tx texture;
 
     public Skin(@NotNull Tx texture) {
@@ -15,9 +17,12 @@ public class Skin {
     }
 
     public void draw(float x, float y, float rotation) {
-        texture.draw(x, y, rotation);
+        if (texture != null)
+            texture.draw(x, y, rotation);
     }
+
     public void drawRad(float x, float y, float radian) {
-        texture.draw(x, y, Mathf.radiansToDegrees * radian);
+        if (texture != null)
+            texture.draw(x, y, Mathf.radiansToDegrees * radian);
     }
 }
