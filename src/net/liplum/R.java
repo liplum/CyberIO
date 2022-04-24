@@ -283,6 +283,8 @@ public class R {
                 LinkOpacity = Gen("connection-opacity"),
                 LinkArrowDensity = Gen("connection-density"),
                 AlwaysShowLink = Gen("always-show-link"),
+                ShowLinkCircle = Gen("show-link-circle"),
+                LinkSize = Gen("connection-size"),
                 ShowWelcome = Gen("show-welcome"),
                 ShowUpdate = Gen("show-update"),
                 Version = Gen("version"),

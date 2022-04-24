@@ -158,22 +158,24 @@ val Liquid?.clientColor: Color
 fun Float.isAccepted() =
     this <= -1f || this > 0f
 @JvmOverloads
-fun IDataSender.drawDataNetGraphic(showSelfWhenNoLink: Boolean = true) {
-    if (receiverConnectionNumber > 0 || showSelfWhenNoLink) {
+fun IDataSender.drawDataNetGraphic(showCircle: Boolean = true) {
+    if (receiverConnectionNumber <= 0) return
+    if (showCircle) {
         G.drawSurroundingCircle(tile, R.C.Sender, alpha = Settings.LinkOpacity)
     }
     if (canMultipleConnect()) {
-        this.drawReceivers(connectedReceivers)
+        this.drawReceivers(connectedReceivers, showCircle)
     } else {
-        this.drawReceiver(connectedReceiver)
+        this.drawReceiver(connectedReceiver, showCircle)
     }
 }
 @JvmOverloads
-fun IDataReceiver.drawDataNetGraphic(showSelfWhenNoLink: Boolean = true) {
-    if (senderConnectionNumber > 0 || showSelfWhenNoLink) {
+fun IDataReceiver.drawDataNetGraphic(showCircle: Boolean = true) {
+    if (senderConnectionNumber <= 0) return
+    if (showCircle) {
         G.drawSurroundingCircle(tile, R.C.Receiver, alpha = Settings.LinkOpacity)
     }
-    this.drawSenders(connectedSenders)
+    this.drawSenders(connectedSenders, showCircle)
 }
 
 fun IDataReceiver.drawRequirements() {
@@ -201,7 +203,7 @@ fun Block.drawLinkedLineToReceiverWhenConfiguring(x: Int, y: Int) {
         selected.block,
         selectedTile.x, selectedTile.y,
         this, x.toShort(), y.toShort(),
-        ArrowDensity, R.C.Receiver, alpha = opacity
+        ArrowDensity, R.C.Receiver, alpha = opacity, size = Settings.LinkSize
     )
 }
 
@@ -211,18 +213,20 @@ inline fun whenNotConfiguringSender(func: () -> Unit) {
     }
 }
 
-fun IStreamHost.drawStreamGraphic(showSelfWhenNoLink: Boolean = true) {
-    if (clientConnectionNumber > 0 || showSelfWhenNoLink) {
+fun IStreamHost.drawStreamGraphic(showCircle: Boolean = true) {
+    if (clientConnectionNumber <= 0) return
+    if (showCircle) {
         G.drawSurroundingCircle(tile, hostColor, alpha = Settings.LinkOpacity)
     }
-    this.drawClients(connectedClients)
+    this.drawClients(connectedClients, showCircle)
 }
 
-fun IStreamClient.drawStreamGraphic(showSelfWhenNoLink: Boolean = true) {
-    if (hostConnectionNumber > 0 || showSelfWhenNoLink) {
+fun IStreamClient.drawStreamGraphic(showCircle: Boolean = true) {
+    if (hostConnectionNumber <= 0) return
+    if (showCircle) {
         G.drawSurroundingCircle(tile, clientColor, alpha = Settings.LinkOpacity)
     }
-    this.drawHosts(connectedHosts)
+    this.drawHosts(connectedHosts, showCircle)
 }
 
 fun IStreamClient.drawRequirements() {
@@ -251,7 +255,8 @@ fun Block.drawLinkedLineToClientWhenConfiguring(x: Int, y: Int) {
         selected.block,
         selectedTile.x, selectedTile.y,
         this, x.toShort(), y.toShort(),
-        ArrowDensity, host.hostColor, alpha = opacity
+        ArrowDensity, host.hostColor,
+        alpha = opacity, size = Settings.LinkSize
     )
 }
 
@@ -266,7 +271,7 @@ val ArrowDensity: Float
 /**
  * Called in Receiver block
  */
-fun IDataReceiver.drawSender(sender: Int?) {
+fun IDataReceiver.drawSender(sender: Int?, showCircle: Boolean = true) {
     if (sender == null) {
         return
     }
@@ -274,8 +279,13 @@ fun IDataReceiver.drawSender(sender: Int?) {
     val opacity = Settings.LinkOpacity
     if (sb is IDataSender) {
         val senderT = sb.tile()
-        G.drawSurroundingCircle(senderT, sb.senderColor, alpha = opacity)
-        G.drawArrowLine(sb, this.building, ArrowDensity, this.receiverColor, alpha = opacity)
+        if (showCircle) {
+            G.drawSurroundingCircle(senderT, sb.senderColor, alpha = opacity)
+        }
+        G.drawArrowLine(
+            sb, this.building, ArrowDensity, this.receiverColor,
+            alpha = opacity, size = Settings.LinkSize
+        )
     }
     /* deprecated for payload
     else {
@@ -290,21 +300,26 @@ fun IDataReceiver.drawSender(sender: Int?) {
 /**
  * Called in Receiver block
  */
-fun IDataReceiver.drawSenders(senders: Iterable<Int>) {
+fun IDataReceiver.drawSenders(senders: Iterable<Int>, showCircle: Boolean = true) {
     val opacity = Settings.LinkOpacity
     for (sender in senders) {
         val sb = Vars.world.build(sender)
         if (sb is IDataSender) {
             val senderT = sb.tile()
-            G.drawSurroundingCircle(senderT, sb.senderColor, alpha = opacity)
-            G.drawArrowLine(sb, this.building, ArrowDensity, this.receiverColor, alpha = opacity)
+            if (showCircle) {
+                G.drawSurroundingCircle(senderT, sb.senderColor, alpha = opacity)
+            }
+            G.drawArrowLine(
+                sb, this.building, ArrowDensity, this.receiverColor,
+                alpha = opacity, size = Settings.LinkSize
+            )
         }
     }
 }
 /**
  * Called in Sender block
  */
-fun IDataSender.drawReceiver(receiver: Int?) {
+fun IDataSender.drawReceiver(receiver: Int?, showCircle: Boolean = true) {
     if (receiver == null) {
         return
     }
@@ -312,8 +327,13 @@ fun IDataSender.drawReceiver(receiver: Int?) {
     val rb = Vars.world.build(receiver)
     if (rb is IDataReceiver) {
         val receiverT = rb.tile()
-        G.drawSurroundingCircle(receiverT, rb.receiverColor, alpha = opacity)
-        G.drawArrowLine(this.building, rb, ArrowDensity, this.senderColor, alpha = opacity)
+        if (showCircle) {
+            G.drawSurroundingCircle(receiverT, rb.receiverColor, alpha = opacity)
+        }
+        G.drawArrowLine(
+            this.building, rb, ArrowDensity, this.senderColor,
+            alpha = opacity, size = Settings.LinkSize
+        )
         rb.drawRequirements()
     }
     /* deprecated for payload
@@ -329,7 +349,7 @@ fun IDataSender.drawReceiver(receiver: Int?) {
 /**
  * Called in Sender block
  */
-fun IDataSender.drawReceivers(receivers: Iterable<Int>) {
+fun IDataSender.drawReceivers(receivers: Iterable<Int>, showCircle: Boolean = true) {
     val original = Draw.z()
     val opacity = Settings.LinkOpacity
     for (receiver in receivers) {
@@ -337,8 +357,13 @@ fun IDataSender.drawReceivers(receivers: Iterable<Int>) {
         if (rb is IDataReceiver) {
             val receiverT = rb.tile()
             Draw.z(original)
-            G.drawSurroundingCircle(receiverT, rb.receiverColor, alpha = opacity)
-            G.drawArrowLine(this.building, rb, ArrowDensity, this.senderColor, alpha = opacity)
+            if (showCircle) {
+                G.drawSurroundingCircle(receiverT, rb.receiverColor, alpha = opacity)
+            }
+            G.drawArrowLine(
+                this.building, rb, ArrowDensity, this.senderColor,
+                alpha = opacity, size = Settings.LinkSize
+            )
             rb.drawRequirements()
         }
     }
@@ -352,28 +377,38 @@ fun isConfiguringSender(): Boolean {
 /**
  * Called in Client block
  */
-fun IStreamClient.drawHosts(hosts: Iterable<Int>) {
+fun IStreamClient.drawHosts(hosts: Iterable<Int>, showCircle: Boolean = true) {
     val opacity = Settings.LinkOpacity
     for (host in hosts) {
         val hostB = Vars.world.build(host)
         if (hostB is IStreamHost) {
             val hostT = hostB.tile()
-            G.drawSurroundingCircle(hostT, hostB.hostColor, alpha = opacity)
-            G.drawArrowLine(hostB, this.building, ArrowDensity, this.clientColor, alpha = opacity)
+            if (showCircle) {
+                G.drawSurroundingCircle(hostT, hostB.hostColor, alpha = opacity)
+            }
+            G.drawArrowLine(
+                hostB, this.building, ArrowDensity, this.clientColor,
+                alpha = opacity, size = Settings.LinkSize
+            )
         }
     }
 }
 /**
  * Called in Host block
  */
-fun IStreamHost.drawClients(clients: Iterable<Int>) {
+fun IStreamHost.drawClients(clients: Iterable<Int>, showCircle: Boolean = true) {
     val opacity = Settings.LinkOpacity
     for (client in clients) {
         val clientB = Vars.world.build(client)
         if (clientB is IStreamClient) {
             val clientT = clientB.tile()
-            G.drawSurroundingCircle(clientT, clientB.clientColor, alpha = opacity)
-            G.drawArrowLine(this.building, clientB, ArrowDensity, this.hostColor, alpha = opacity)
+            if (showCircle) {
+                G.drawSurroundingCircle(clientT, clientB.clientColor, alpha = opacity)
+            }
+            G.drawArrowLine(
+                this.building, clientB, ArrowDensity, this.hostColor,
+                alpha = opacity, size = Settings.LinkSize
+            )
             clientB.drawRequirements()
         }
     }

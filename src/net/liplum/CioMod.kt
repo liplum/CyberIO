@@ -24,6 +24,8 @@ import net.liplum.ui.DebugUI
 import net.liplum.ui.SettingsUI
 import net.liplum.update.Updater
 import net.liplum.utils.G
+import net.liplum.welcome.Welcome
+import net.liplum.welcome.WelcomeList
 
 class CioMod : Mod() {
     companion object {
@@ -52,12 +54,13 @@ class CioMod : Mod() {
         //listen for game load event
         Events.on(ClientLoadEvent::class.java) {
             //show welcome dialog upon startup
-            Time.runTask(10f) { Welcome.showWelcomeDialog() }
+            Time.runTask(15f) { Welcome.showWelcomeDialog() }
         }
         Events.on(FileTreeInitEvent::class.java) {
             ClientOnly {
                 Core.app.post {
                     CioShaders.init()
+                    WelcomeList.loadList()
                     Welcome.load()
                     DebugOnly {
                         Script.init()

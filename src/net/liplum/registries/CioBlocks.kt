@@ -529,11 +529,12 @@ object CioBlocks : ContentTable {
                 Category.units, BuildVisibility.shown, arrayOf(
                     ItemStack(CioItems.ic, 14),
                     ItemStack(Items.silicon, 220),
-                    ItemStack(Items.graphite, 120),
-                    ItemStack(Items.metaglass, 100),
-                    ItemStack(Items.thorium, 1000),
+                    ItemStack(Items.graphite, 300),
+                    ItemStack(Items.metaglass, 500),
+                    ItemStack(Items.thorium, 1200),
                 )
             )
+            health = 3500
             plans = Seq.with(
                 HoloPlan(
                     CioUnitTypes.holoMiner,

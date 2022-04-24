@@ -33,6 +33,7 @@ Anyone who commits the issue on GitHub.
 
 Anyone who likes CyberIO. 
 
+Chinese support: [@woodjecket](https://github.com/woodjecket)
 ## Licence
 ___
 The codes of CyberIO are open source in GNU General Public License v3.0 (GPL 3.0).

@@ -192,8 +192,10 @@ object G {
         startDrawX: Float, startDrawY: Float,
         endDrawX: Float, endDrawY: Float,
         blockSize: Int,
-        density: Float, arrowColor: Color = Pal.power,
-        alpha: Float? = null
+        density: Float,
+        arrowColor: Color = Pal.power,
+        alpha: Float? = null,
+        size: Float = 4f,
     ) {
         if (density.isZero)
             return
@@ -210,7 +212,7 @@ object G {
                 curX + per.x,
                 curY + per.y,
                 blockSize * Vars.tilesize + sin,
-                4f + sin,
+                size + sin,
                 arrowColor, alpha
             )
             curX += per.x
@@ -222,16 +224,21 @@ object G {
     fun drawArrowLine(
         startBlockX: Short, startBlockY: Short,
         endBlockX: Short, endBlockY: Short,
-        density: Float, arrowColor: Color = Pal.power,
-        alpha: Float? = null
+        density: Float,
+        arrowColor: Color = Pal.power,
+        alpha: Float? = null,
+        size: Float = 4f,
     ) {
         drawArrowLine(
             startBlockX.toDrawXY,
             startBlockY.toDrawXY,
             endBlockX.toDrawXY,
             endBlockY.toDrawXY,
-            2, density, arrowColor,
-            alpha
+            2,
+            density,
+            arrowColor,
+            alpha,
+            size
         )
     }
     @JvmStatic
@@ -241,16 +248,21 @@ object G {
         startBlockX: Short, startBlockY: Short,
         endBlock: Block,
         endBlockX: Short, endBlockY: Short,
-        density: Float, arrowColor: Color = Pal.power,
-        alpha: Float? = null
+        density: Float,
+        arrowColor: Color = Pal.power,
+        alpha: Float? = null,
+        size: Float = 4f,
     ) {
         drawArrowLine(
             startBlockX.toDrawXY(startBlock),
             startBlockY.toDrawXY(startBlock),
             endBlockX.toDrawXY(endBlock),
             endBlockY.toDrawXY(endBlock),
-            startBlock.size, density, arrowColor,
-            alpha
+            startBlock.size,
+            density,
+            arrowColor,
+            alpha,
+            size
         )
     }
     @JvmStatic
@@ -260,12 +272,15 @@ object G {
         end: Building,
         density: Float,
         arrowColor: Color = Pal.power,
-        alpha: Float? = null
+        alpha: Float? = null,
+        size: Float = 4f,
     ) = drawArrowLine(
         start.x, start.y,
         end.x, end.y,
-        start.block.size, density, arrowColor,
-        alpha
+        start.block.size,
+        density, arrowColor,
+        alpha,
+        size,
     )
     @JvmStatic
     @JvmOverloads

@@ -1,17 +1,23 @@
 {
   "v2": {
-    "WelcomeVariants": 0
+    "Default": "EmploymentVerification",
+    "Update": "UpdateECHO",
+    "Community": "Discord",
+    "Scene": [
+      "EmploymentVerification",
+      "UpdateECHO"
+    ]
   },
   "v3": {
-    "WelcomeVariants": 3,
-    "1": {
-      "IconPath": "welcome-cyber-io"
-    },
-    "2": {
-      "IconPath": "welcome-cyber-io"
-    },
-    "3": {
-      "IconPath": "heimdall"
-    }
+    "Default": "ResearchProject",
+    "Update": "UpdateECHO",
+    "Community": "Discord",
+    "Scene": [
+      "ResearchProject",
+      "TheSHIP",
+      "ECHO",
+      "NewBrains",
+      "Discord"
+    ]
   }
 }

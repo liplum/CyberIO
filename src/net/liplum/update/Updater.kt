@@ -47,6 +47,7 @@ object Updater : CoroutineScope {
     @JvmStatic
     fun updateSelf() {
         val modsDialog = Vars.ui.mods
+        modsDialog.show()
         modsDialog.ImportMod(Meta.Repo, true)
     }
 
