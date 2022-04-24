@@ -14,6 +14,7 @@ import mindustry.entities.bullet.BulletType
 import mindustry.graphics.Drawf
 import mindustry.graphics.Layer
 import mindustry.world.blocks.defense.turrets.PowerTurret
+import mindustry.world.meta.Stat
 import net.liplum.*
 import net.liplum.api.brain.*
 import net.liplum.lib.Draw
@@ -42,9 +43,11 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
     @ClientOnly @JvmField var PupilMin = 1.2f
     @ClientOnly @JvmField var outOfCompactTime = 240f
     override val upgrades: MutableMap<UpgradeType, Upgrade> = HashMap()
+
     init {
         canOverdrive = false
     }
+
     override fun init() {
         // To prevent accessing a null
         shootType = normalBullet
@@ -73,10 +76,14 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
             bars.addBrainInfo<EyeBuild>()
         }
     }
+
     override fun setStats() {
         super.setStats()
+        stats.remove(Stat.ammo)
+        stats.add(Stat.ammo, eyeAmmo(Pair(this, normalBullet), Pair(this, improvedBullet)))
         this.addUpgradeComponentStats()
     }
+
     open inner class EyeBuild : PowerTurretBuild(), IUpgradeComponent {
         override var directionInfo: Direction2 = Direction2.Empty
         override var brain: IBrain? = null

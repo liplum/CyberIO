@@ -34,9 +34,9 @@ fun Int.time(coerceMinute: Boolean = false): String {
 @JvmOverloads
 fun Float.percent(digit: Int = 2) =
     if (this >= 0f) {
-        R.Bundle.PercentPlus.bundle(this.absoluteValue.format(digit))
+        R.Bundle.PercentPlus.bundle((this * 100f).absoluteValue.format(digit))
     } else {
-        R.Bundle.PercentMinus.bundle(this.absoluteValue.format(digit))
+        R.Bundle.PercentMinus.bundle((this * 100f).absoluteValue.format(digit))
     }
 
 fun Int.percent() =

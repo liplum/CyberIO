@@ -42,7 +42,7 @@ import java.util.*
 
 /**
  * ### Since 1
- *
+ * - Heimdall's force field has stored current radius.
  */
 open class Heimdall(name: String) : Block(name) {
     @JvmField var range = 150f

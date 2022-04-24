@@ -364,21 +364,23 @@ open class HoloProjector(name: String) : Block(name) {
         super.setStats()
         stats.remove(Stat.itemCapacity)
 
-        stats.add(Stat.output) {
+        stats.add(Stat.output) { stat ->
             val p: Seq<HoloPlan> = plans.select { plan ->
                 plan.unitType.unlockedNow()
             }
-            it.row()
+            stat.row()
             for (plan in p) {
                 val type = plan.unitType
-                it.image(type.uiIcon).size((8 * 3).toFloat()).padRight(2f).right()
-                it.add(type.localizedName).left()
-                it.add("${autoFixed(plan.time / 60f, 1)} ${R.Bundle.CostSecond.bundle}")
-                    .color(Color.lightGray).padLeft(12f).left()
-                it.add(autoFixed(plan.req.cyberionReq, 1))
-                    .color(Color.lightGray).padLeft(12f).left()
-                it.image(cyberion.uiIcon).size((8 * 3).toFloat()).padRight(2f).right()
-                it.row()
+                stat.image(type.uiIcon).size((8 * 3).toFloat()).padRight(2f).right()
+                stat.add(type.localizedName).left()
+                stat.table {
+                    it.add("${autoFixed(plan.time / 60f, 1)} ${R.Bundle.CostSecond.bundle}")
+                        .color(Color.lightGray).padLeft(12f).left()
+                    it.add(autoFixed(plan.req.cyberionReq, 1))
+                        .color(Color.lightGray).padLeft(12f).left()
+                    it.image(cyberion.uiIcon).size((8 * 3).toFloat()).padRight(2f).right()
+                }
+                stat.row()
             }
         }
     }

@@ -21,6 +21,7 @@ import mindustry.type.Liquid
 import mindustry.ui.Bar
 import mindustry.world.blocks.defense.turrets.Turret
 import mindustry.world.meta.Stat
+import mindustry.world.meta.StatUnit
 import mindustry.world.meta.StatValues
 import net.liplum.*
 import net.liplum.api.cyber.*
@@ -87,6 +88,10 @@ open class Stealth(name: String) : Turret(name) {
     override fun setStats() {
         super.setStats()
         stats.add(Stat.ammo, StatValues.ammo(ObjectMap.of(cyberion, shootType)))
+        stats.remove(Stat.powerUse)
+        stats.add(Stat.powerUse) {
+            it.add("${(reactivePower * 60f).toInt()} + ${(activePower * 60f).toInt()} ${StatUnit.powerSecond.localized()}")
+        }
     }
 
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {

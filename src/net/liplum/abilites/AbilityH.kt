@@ -7,7 +7,7 @@ import mindustry.Vars
 import mindustry.entities.abilities.Ability
 import java.util.*
 
-fun <T : Ability> Class<T>.localized(): String {
+fun <T : Ability> Class<T>.localized(modID: String): String {
     var name: String = this.simpleName.replace("Ability", "")
     val sb = StringBuilder()
     for (i in name.indices) {
@@ -19,5 +19,5 @@ fun <T : Ability> Class<T>.localized(): String {
     }
     name = sb.toString().lowercase(Locale.getDefault())
     name = Vars.content.transformName(name)
-    return Core.bundle["ability.$name"]
+    return Core.bundle["ability.$modID-$name"]
 }
