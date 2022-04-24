@@ -28,6 +28,7 @@ import net.liplum.lib.shaders.SD
 import net.liplum.lib.shaders.use
 import net.liplum.utils.bundle
 import net.liplum.utils.healthPct
+import net.liplum.utils.time
 import kotlin.math.min
 
 open class HoloUnitType(name: String) : UnitType(name) {
@@ -167,8 +168,7 @@ open class HoloUnitType(name: String) : UnitType(name) {
     override fun setStats() {
         super.setStats()
         stats.add(Stat.health){
-            it.row()
-            it.add("${lifespan.seconds} ${R.Bundle.UnitSeconds.bundle}")
+            it.add(lifespan.seconds.time())
             it.row()
         }
     }

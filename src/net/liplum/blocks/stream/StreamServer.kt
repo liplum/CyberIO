@@ -218,6 +218,7 @@ open class StreamServer(name: String) : StreamHost(name) {
         override fun read(read: Reads, revision: Byte) {
             super.read(read, revision)
             if (revision.toInt() > 0) {
+                // Since 1
                 hosts = read.intSet()
             }
             restored = true
@@ -225,6 +226,7 @@ open class StreamServer(name: String) : StreamHost(name) {
 
         override fun write(write: Writes) {
             super.write(write)
+            // Since 1
             write.intSet(hosts)
         }
 

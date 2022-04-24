@@ -43,6 +43,15 @@ public class R {
         }
 
         public static final String CyberionReq = Gen("cyberion-req");
+        public static final String
+                CostSecond = Gen("cost.second"),
+                CostMinute = Gen("cost.minute");
+        public static final String
+                PercentPlus = Gen("percent.plus"),
+                PercentMinus = Gen("percent.minus"),
+                ValuePlus = Gen("value.plus"),
+                ValueMinus = Gen("value.minus");
+
     }
 
     public static final class Bar {

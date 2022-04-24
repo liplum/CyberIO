@@ -666,6 +666,9 @@ object CioBlocks : ContentTable {
                 Upgrade(UpgradeType.ReloadTime, true, -4f),
                 Upgrade(UpgradeType.ControlLine, true, 0.01f),
                 Upgrade(UpgradeType.ForceFieldRegen, false, 0.2f),
+                Upgrade(UpgradeType.Range, false, -0.05f),
+                Upgrade(UpgradeType.ForceFieldRadius, true, -3f),
+                Upgrade(UpgradeType.WaveWidth, true, -0.1f),
             )
             normalSounds = CioSounds.laserWeak
             normalBullet = LightningBulletType().apply {
@@ -702,11 +705,12 @@ object CioBlocks : ContentTable {
                 )
             )
             addUpgrade(
-                Upgrade(UpgradeType.Range, false, 0.14f),
+                Upgrade(UpgradeType.Damage, false, -0.02f),
+                Upgrade(UpgradeType.Range, false, 0.1f),
                 Upgrade(UpgradeType.WaveSpeed, true, 0.08f),
                 Upgrade(UpgradeType.WaveWidth, true, 0.4f),
                 Upgrade(UpgradeType.ForceFieldRadius, true, 5f),
-                Upgrade(UpgradeType.ForceFieldMax, false, 0.08f),
+                Upgrade(UpgradeType.ForceFieldMax, false, 0.2f),
             )
             range = 145f
             size = 2

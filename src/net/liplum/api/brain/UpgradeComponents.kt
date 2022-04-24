@@ -28,6 +28,19 @@ value class UpgradeType(val type: Int) {
         val ForceFieldRegen = UpgradeType(8)
         val ForceFieldRadius = UpgradeType(9)
         val ForceFieldRestoreTime = UpgradeType(10)
+        val Names = arrayOf(
+            "damage",
+            "range",
+            "wave-speed",
+            "wave-width",
+            "reload-time",
+            "max-brain-wave-num",
+            "control-line",
+            "force-field-max",
+            "force-field-regen",
+            "force-field-radius",
+            "force-field-restore-time",
+        )
     }
 }
 
