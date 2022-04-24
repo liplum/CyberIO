@@ -15,6 +15,7 @@ import net.liplum.lib.skeletal.Skeleton
 import net.liplum.lib.skeletal.Skin
 import net.liplum.utils.MdtUnit
 import net.liplum.utils.inMod
+import net.liplum.utils.radian
 
 open class Hand(name: String) : Block(name), IComponentBlock {
     override val upgrades: MutableMap<UpgradeType, Upgrade> = HashMap()
@@ -35,8 +36,6 @@ open class Hand(name: String) : Block(name), IComponentBlock {
         }
         HandTx = Tx(this.inMod("hand")).apply {
             dr = 90f
-            dx = -3f
-            dy = -1f
             scale = 0.5f
         }
     }
@@ -77,12 +76,16 @@ open class Hand(name: String) : Block(name), IComponentBlock {
 
         override fun updateTile() {
             skeleton.findFirstByName("UpperArm")?.apply {
-                applyForce(Tmp.v1.set(0f, -0.001f))
+                //applyForce(Tmp.v1.set(0f, -0.001f))
             }
             forearm.applyForce(Tmp.v1.set(0f, 0.001f))
             if (isControlled && unit.isShooting) {
-                forearm.next.forEach {
-                    it.applyForce(Tmp.v1.set(0f, 0.005f))
+                skeleton.findFirstByName("Hand")?.apply {
+                    limitAngle = true
+                    minAngle = (-30f).radian
+                    maxAngle = 30f.radian
+                    relative = true
+                    applyForce(Tmp.v1.set(0f, 0.005f))
                 }
             }
             skeleton.update(Time.delta)
@@ -90,7 +93,7 @@ open class Hand(name: String) : Block(name), IComponentBlock {
 
         override fun draw() {
             super.draw()
-            skeleton.findFirstByName("Hand")?.skin?.texture?.apply {
+            skeleton.findFirstByName("Hand")?.skin?.apply {
                 dx = -1.5f
                 dy = -0.5f
             }

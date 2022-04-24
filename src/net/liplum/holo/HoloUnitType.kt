@@ -167,7 +167,6 @@ open class HoloUnitType(name: String) : UnitType(name) {
     override fun setStats() {
         super.setStats()
         stats.add(Stat.health){
-            it.row()
             it.add("${lifespan.seconds} ${R.Bundle.UnitSeconds.bundle}")
             it.row()
         }

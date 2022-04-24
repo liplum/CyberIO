@@ -8,6 +8,7 @@ import org.jetbrains.annotations.Nullable;
 public class Skin {
     @Nullable
     public Tx texture;
+    public float dx, dy;
 
     public Skin(@NotNull Tx texture) {
         this.texture = texture;
@@ -18,11 +19,11 @@ public class Skin {
 
     public void draw(float x, float y, float rotation) {
         if (texture != null)
-            texture.draw(x, y, rotation);
+            texture.draw(x + dx, y + dx, rotation);
     }
 
     public void drawRad(float x, float y, float radian) {
         if (texture != null)
-            texture.draw(x, y, Mathf.radiansToDegrees * radian);
+            texture.draw(x + dx, y + dx, Mathf.radiansToDegrees * radian);
     }
 }

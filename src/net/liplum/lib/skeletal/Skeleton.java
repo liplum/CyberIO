@@ -31,6 +31,7 @@ public class Skeleton {
      */
     public float u = 0.2f;
     public boolean isLinear = true;
+    public boolean enableTransfer = true;
 
     public Vec2 v1 = new Vec2();
     public Vec2 v2 = new Vec2();

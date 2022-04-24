@@ -1,76 +1,59 @@
 ## Mechanics
+
 **Note:This has been suspended indefinitely.**
+
 ### Skeleton
 
 1. A skeleton can't be circular but linear or tree.
 
-### Joint
-
-1. A joint is between two bones, in other words, joins them.
-2. It has two bones, one for previous bone and another for next bone, but if it's a leaf joint, there isn't any next
-   bone.
-3. It has a rotation only for rendering.
-4. It can be applied a force.
-5. It has a position relative to its previous joint.
-```
-For perspective of joint:
-pre? J1 next ---B1--- pre J2 next ---B2--- pre J3 next?
-For perspective of bone:
-j1a ---B1--- jb2 --- B2 --- ja3 So that:
-J1.next == B1.ja J2.pre == B1.jb
-```
-
 ### Bone
 
-1. A bone is connected with two joints.
-2. It is a rigid body, so it's of a fixed length and density, which can decides its mass.
-   ```
-   let density is p, length is l and mass is m 
-   m = p * l
-   ```
-3. Its rotation decides the next joint
-
+1. A bone has an angle, angular velocity and angular acceleration.
+2. It is a rigid body, so it's of a fixed length and mass
 
 ### Acceleration
-1. The acceleration of angular velocity is only of value and rotational direction.
+
+1. The acceleration of angular velocity is only of value and rotational direction, so it's a scalar.
 2. It can increase the angular velocity.
    ```
    let accleration is a
    w += a * t
    ```
+
 ### Force
 
 1. Force isn't real in skeleton, however, it can change the acceleration.
    ```
-   let the force is F.
-   |a| = |F| / m
+   let the force is F and the the unit vector with angle is D.
+   let N = normalize(D)
+   a += ( N ⋅ F ) / m
    direction of a is decided by the angle bettween proximate bone's direction and F.
    ```
-2. [Optional] A force is only applied on a joint and can spread joint by joint.
+2. [Optional] A force is only applied on a bone and can spread bone by bone.
    ```
-   let the accleartion of proximate joint is a' and the mass of it is m' 
-   |a'| = |a| / m'
+   let the distance between two bone is d.
+   let R = (D + F) / d ^ 2
+   proximity.applyForce(R)
    ```
 3. Force is disposable between two updates unless there is a constant force.
 
-
 ### Velocity
 
-1. Only joint has velocity.
+1. Velocity is a scalar.
 2. A force can increase the velocity.
     ```
     let the velocity is v and the force is F.  
     v += F * t
     ```
-3. Velocity will increase the position
+3. Velocity will increase the angle
     ```
-    let the position is p.
-    p += v * t
+    let the position is angle.
+    angle += v * t
     ```
 
 ### Position
 
-1. It represents the location of a joint.
+1. It represents the rotation of a bone relative to its parent.
 
 ### Friction
 
@@ -78,7 +61,7 @@ J1.next == B1.ja J2.pre == B1.jb
 2. The greater its velocity, the greater the friction it receives.
    ```
    let the friction value is f and its maxinum value is fmax.
-   f = min(u * |v|,fmax)
+   f = u * w
    ```
 
 ### Update
