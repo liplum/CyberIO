@@ -4,6 +4,7 @@ import arc.util.Log
 import kotlinx.coroutines.*
 import mindustry.Vars
 import mindustry.ui.dialogs.ModsDialog
+import net.liplum.HeadlessOnly
 import net.liplum.Meta
 import net.liplum.Settings
 import net.liplum.utils.getMethodBy
@@ -36,11 +37,17 @@ object Updater : CoroutineScope {
                 val url = URL(GitHub)
                 val bytes = url.readBytes()
                 val updateInfo = String(bytes)
-                val versionInfo = updateInfo.split('\n')[0]
+                val allInfos = updateInfo.split('\n')
+                val versionInfo = allInfos[0]
                 latestVersion = runCatching {
                     Version2.valueOf(versionInfo)
                 }.getOrDefault(Meta.DetailedVersion)
-                Log.info("The latest CyberIo version is $latestVersion")
+                Log.info("The latest CyberIO version is $latestVersion")
+                HeadlessOnly {
+                    if (requireUpdate) {
+                        Log.info("Current CyberIO is ${Meta.DetailedVersion} and need to be updated to $latestVersion.")
+                    }
+                }
             }
         }
     }

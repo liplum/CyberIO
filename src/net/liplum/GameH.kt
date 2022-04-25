@@ -21,6 +21,12 @@ annotation class ClientOnly
 @Inherited
 annotation class ServerOnly
 /**
+ * It indicates this should be called or accessed only on Physical Server
+ */
+@Retention(AnnotationRetention.SOURCE)
+@Inherited
+annotation class HeadlessOnly
+/**
  * It indicates this will send data packet to synchronize no matter which Server/Client
  */
 @Retention(AnnotationRetention.SOURCE)
@@ -95,6 +101,25 @@ inline fun <reified T> T.ServerOnlyOn(func: T.() -> Unit): T {
 fun IsServer(): Boolean {
     val net = Vars.net
     return net.server() || !net.active()
+}
+/**
+ * Runs codes only on Physical Server
+ */
+inline fun HeadlessOnly(func: () -> Unit): Boolean {
+    if (Vars.headless) {
+        func()
+    }
+    return false
+}
+
+/**
+ * Runs codes only on Physical Server
+ */
+inline fun <reified T> T.HeadlessOnlyOn(func: T.() -> Unit): Boolean {
+    if (Vars.headless) {
+        func()
+    }
+    return false
 }
 
 inline fun WhenCanGlobalAnimationPlay(func: () -> Unit): Boolean {
