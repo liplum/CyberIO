@@ -6,6 +6,7 @@ import arc.math.Angles
 import arc.math.Interp
 import arc.math.Mathf
 import arc.math.geom.Vec2
+import arc.scene.ui.Label
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.Vars
@@ -15,6 +16,7 @@ import mindustry.graphics.Drawf
 import mindustry.graphics.Layer
 import mindustry.world.blocks.power.ConditionalConsumePower
 import mindustry.world.blocks.power.PowerBlock
+import mindustry.world.meta.Stat
 import net.liplum.ClientOnly
 import net.liplum.R
 import net.liplum.WhenNotPaused
@@ -62,6 +64,14 @@ open class WirelessTower(name: String) : PowerBlock(name) {
         SupportTR = this.sub("support")
     }
 
+    override fun setStats() {
+        super.setStats()
+        stats.remove(Stat.powerUse)
+        stats.add(Stat.powerUse) {
+            val l = Label("$contentType.$name.stats.power-use".bundle)
+            it.add(l)
+        }
+    }
     override fun icons() = arrayOf(BaseTR, SupportTR, CoilTR)
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)

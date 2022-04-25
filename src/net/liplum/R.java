@@ -43,6 +43,15 @@ public class R {
         }
 
         public static final String CyberionReq = Gen("cyberion-req");
+        public static final String
+                CostSecond = Gen("cost.second"),
+                CostMinute = Gen("cost.minute");
+        public static final String
+                PercentPlus = Gen("percent.plus"),
+                PercentMinus = Gen("percent.minus"),
+                ValuePlus = Gen("value.plus"),
+                ValueMinus = Gen("value.minus");
+        public static final String AdjustableOverdriveSpeedBound = Gen("adjustable-overdrive.speed-increase");
     }
 
     public static final class Bar {
@@ -130,7 +139,9 @@ public class R {
         public static final String
                 Yes = Gen("yes"),
                 No = Gen("no"),
-                OK = Gen("ok");
+                OK = Gen("ok"),
+                UpdateModSuccess = Gen("update-mod.success"),
+                UpdateModFailed = Gen("update-mod.failed");
 
         @NotNull
         @Contract(pure = true)
@@ -274,6 +285,8 @@ public class R {
                 LinkOpacity = Gen("connection-opacity"),
                 LinkArrowDensity = Gen("connection-density"),
                 AlwaysShowLink = Gen("always-show-link"),
+                ShowLinkCircle = Gen("show-link-circle"),
+                LinkSize = Gen("connection-size"),
                 ShowWelcome = Gen("show-welcome"),
                 ShowUpdate = Gen("show-update"),
                 Version = Gen("version"),

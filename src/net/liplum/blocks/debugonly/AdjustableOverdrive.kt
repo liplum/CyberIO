@@ -9,6 +9,8 @@ import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.ui.Bar
 import mindustry.world.blocks.defense.OverdriveProjector
+import mindustry.world.meta.Stat
+import net.liplum.R
 import net.liplum.utils.*
 import kotlin.math.abs
 
@@ -45,6 +47,14 @@ open class AdjustableOverdrive(name: String) : OverdriveProjector(name) {
         }
     }
 
+    override fun setStats() {
+        super.setStats()
+        stats.remove(Stat.speedIncrease)
+        stats.add(Stat.speedIncrease) {
+            it.add(R.Bundle.AdjustableOverdriveSpeedBound.bundle(minBoost * 100f, maxBoost * 100f))
+        }
+    }
+
     override fun init() {
         super.init()
         adjustBase = abs(adjustBase)
@@ -59,7 +69,6 @@ open class AdjustableOverdrive(name: String) : OverdriveProjector(name) {
         var curBoost = 0f
         var curGear = 0
         override fun realBoost(): Float = curBoost
-
         open fun setGear(gear: Int) {
             curGear = abs(gear)
             curBoost = adjustDomainFunc(curGear.toFloat() / maxGear)

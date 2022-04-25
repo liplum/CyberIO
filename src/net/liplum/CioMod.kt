@@ -24,16 +24,22 @@ import net.liplum.ui.DebugUI
 import net.liplum.ui.SettingsUI
 import net.liplum.update.Updater
 import net.liplum.utils.G
+import net.liplum.welcome.Welcome
+import net.liplum.welcome.WelcomeList
+import java.io.File
 
 class CioMod : Mod() {
     companion object {
         @JvmField val IsClient = !Vars.headless
-        @JvmField var DebugMode = true
+        @JvmField var DebugMode = false
         @JvmField var TestGlCompatibility = false
         @JvmField var ExperimentalMode = false
         @JvmField var CanGlobalAnimationPlay = false
         @JvmField var UpdateFrequency = 5f
         lateinit var Info: Mods.LoadedMod
+        @JvmField val jarFile = CioMod::class.java.protectionDomain?.let {
+            File(CioMod::class.java.protectionDomain.codeSource.location.toURI().path)
+        }
     }
     /**
      * # Calling time node
@@ -44,20 +50,25 @@ class CioMod : Mod() {
      * 5. ClientLoadEvent
      */
     init {
-        Log.info("Cyber IO mod loading started.")
+        Log.info("Cyber IO mod ${Meta.DetailedVersion} loading started.")
+        Updater.fetchLatestVersion()
+        HeadlessOnly {
+            Config.load()
+            Updater.checkHeadlessUpdate()
+        }
         ClientOnly {
-            Updater.check()
             GL.handleCompatible()
         }
         //listen for game load event
         Events.on(ClientLoadEvent::class.java) {
             //show welcome dialog upon startup
-            Time.runTask(10f) { Welcome.showWelcomeDialog() }
+            Time.runTask(15f) { Welcome.showWelcomeDialog() }
         }
         Events.on(FileTreeInitEvent::class.java) {
             ClientOnly {
                 Core.app.post {
                     CioShaders.init()
+                    WelcomeList.loadList()
                     Welcome.load()
                     DebugOnly {
                         Script.init()
@@ -121,7 +132,7 @@ class CioMod : Mod() {
             Core.input.addProcessor(UnitTap)
         }
         Settings.updateSettings()
-        Log.info("Cyber IO initialized.")
+        Log.info("Cyber IO ${Meta.DetailedVersion} initialized.")
     }
 
     override fun loadContent() {
@@ -133,6 +144,6 @@ class CioMod : Mod() {
         IHoloEntity.registerHoloEntityInitHealth()
         PrismBlackList.load()
         CanGlobalAnimationPlay = true
-        Log.info("Cyber IO mod's contents loaded.")
+        Log.info("Cyber IO ${Meta.DetailedVersion} mod's contents loaded.")
     }
 }

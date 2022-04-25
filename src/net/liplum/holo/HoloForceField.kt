@@ -16,6 +16,7 @@ import mindustry.gen.Unit
 import mindustry.graphics.Layer
 import mindustry.graphics.Pal
 import mindustry.ui.Bar
+import net.liplum.Meta
 import net.liplum.R
 import net.liplum.abilites.localized
 import net.liplum.lib.shaders.SD
@@ -75,7 +76,7 @@ open class HoloForceField(
         radius * forcePct(unit)
 
     override fun localized() =
-        this.javaClass.localized()
+        this.javaClass.localized(Meta.ModID)
 
     fun absorbBullet(bullet: Bullet, unit: Unit): Boolean {
         val realRange = realRange(unit)

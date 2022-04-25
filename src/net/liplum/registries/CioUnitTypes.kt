@@ -56,7 +56,7 @@ object CioUnitTypes : ContentTable {
         }
 
         holoFighter = NewUnitType(R.Unit.HoloFighter, ::HoloUnitType, ::HoloUnit).apply {
-            AutoLife(maxHealth = 2200f, lose = 0.35f)
+            AutoLife(maxHealth = 2200f, lose = 0.2f)
             speed = 4f
             accel = 0.08f
             drag = 0.016f

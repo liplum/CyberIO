@@ -51,6 +51,7 @@ open class Ear(name: String) : Block(name), IComponentBlock {
         update = true
         hasPower = true
         sync = true
+        canOverdrive = false
     }
 
     override fun init() {
@@ -74,6 +75,10 @@ open class Ear(name: String) : Block(name), IComponentBlock {
         DebugOnly {
             bars.addBrainInfo<EarBuild>()
         }
+    }
+    override fun setStats() {
+        super.setStats()
+        this.addUpgradeComponentStats()
     }
 
     open inner class EarBuild : Building(), IUpgradeComponent, ControlBlock {

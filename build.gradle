@@ -40,10 +40,10 @@ dependencies {
     compileOnly "com.github.Anuken.Arc:arc-core:$mdtVersion"
     compileOnly "com.github.Anuken.Mindustry:core:$mdtVersion"
     implementation 'com.github.liplum:OpenGAL:v0.3.1'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1'
 
-    testCompileOnly "com.github.Anuken.Arc:arc-core:$mdtVersion"
-    testCompileOnly "com.github.Anuken.Mindustry:core:$mdtVersion"
+    testImplementation "com.github.Anuken.Arc:arc-core:$mdtVersion"
+    testImplementation "com.github.Anuken.Mindustry:core:$mdtVersion"
     testImplementation "com.github.Anuken.Mindustry:desktop:$mdtVersion"
     testImplementation "com.github.Anuken.Mindustry:server:$mdtVersion"
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
@@ -151,20 +151,36 @@ def copyJarFile(jarFile, modsFolder) {
     }
 }
 
+def getOutputJar() {
+    var jarFile = new File("$buildDir/libs/${project.archivesBaseName}Desktop.jar")
+    if (!jarFile.exists()) {
+        logger.lifecycle("Jar cannot be found at ${jarFile.path}")
+        return null
+    }
+    return jarFile
+}
+
 task copyJar {
     dependsOn jar
     doLast {
-        var jarFile = new File("$buildDir/libs/${project.archivesBaseName}Desktop.jar")
-        if (!jarFile.exists()) {
-            logger.lifecycle("Jar cannot be found at ${jarFile.path}")
-            return
-        }
+        var jarFile = getOutputJar()
+        if(jarFile == null) return
         if (Os.isFamily(Os.FAMILY_WINDOWS)) {
             var APPDATA = System.getenv("APPDATA")
             var modsFolder = APPDATA + '/Mindustry/mods'
             mkdir modsFolder
             copyJarFile(jarFile, modsFolder)
         }
+    }
+}
+
+task copyJarServer {
+    dependsOn jar
+    doLast {
+        var jarFile = getOutputJar()
+        if(jarFile == null) return
+        var modsFolder = new File("$rootDir/config/mods")
+        copyJarFile(jarFile, modsFolder)
     }
 }
 
@@ -235,7 +251,7 @@ task runMod(dependsOn: classes, type: JavaExec) {
 }
 
 task runModServer(dependsOn: classes, type: JavaExec) {
-    dependsOn copyJar
+    dependsOn copyJarServer
     dependsOn downloadServer
     def gameFile = new File("$rootDir/run/MindustryServer${mdtVersionNum}.jar")
     mainClass.set("-jar")
