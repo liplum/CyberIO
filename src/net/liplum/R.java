@@ -139,7 +139,9 @@ public class R {
         public static final String
                 Yes = Gen("yes"),
                 No = Gen("no"),
-                OK = Gen("ok");
+                OK = Gen("ok"),
+                UpdateModSuccess = Gen("update-mod.success"),
+                UpdateModFailed = Gen("update-mod.failed");
 
         @NotNull
         @Contract(pure = true)

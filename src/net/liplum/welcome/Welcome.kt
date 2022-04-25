@@ -3,11 +3,14 @@ package net.liplum.welcome
 import arc.Core
 import arc.Events
 import arc.math.Mathf
+import arc.scene.ui.Dialog
 import arc.scene.ui.Label
 import arc.struct.ObjectMap
+import arc.util.Align
 import arc.util.I18NBundle
 import arc.util.Time
 import arc.util.serialization.JsonValue
+import mindustry.Vars
 import mindustry.game.EventType.Trigger
 import mindustry.io.JsonIO
 import mindustry.ui.dialogs.BaseDialog
@@ -135,7 +138,40 @@ object Welcome {
                 .row()
             cont.table {
                 it.button(Entity.yes) {
-                    Updater.updateSelf()
+                    if (CioMod.jarFile != null) {
+                        var progress = 0f
+                        val loading = Vars.ui.loadfrag
+                        loading.show("@downloading")
+                        loading.setProgress { progress }
+                        // Cache tips because the update will replace codes and cause class not found exception.
+                        val successTip = R.Ctrl.UpdateModSuccess.bundle(Updater.latestVersion)
+                        Updater.updateSelfByReplace(onProgress = { p ->
+                            progress = p
+                        }, onSuccess = {
+                            loading.hide()
+                            Time.run(10f) {
+                                Vars.ui.showInfoOnHidden(successTip) {
+                                    Core.app.exit()
+                                }
+                            }
+                        }, onFailed = { error ->
+                            Core.app.post {
+                                loading.hide()
+                                Dialog("").apply {
+                                    getCell(cont).growX()
+                                    cont.margin(15f).add(
+                                        R.Ctrl.UpdateModFailed.bundle(Updater.latestVersion, error)
+                                    ).width(400f).wrap().get().setAlignment(Align.center, Align.center)
+                                    buttons.button("@ok") {
+                                        this.hide()
+                                    }.size(110f, 50f).pad(4f)
+                                    closeOnBack()
+                                }.show()
+                            }
+                        })
+                    } else {
+                        Updater.updateSelfByBuiltIn()
+                    }
                     hide()
                 }.size(150f, 50f)
                 it.button(Entity.no) {

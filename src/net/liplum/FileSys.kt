@@ -6,9 +6,11 @@ object FileSys {
     val RuntimeRoot: Dir by lazy {
         Dir(File(System.getProperty("user.dir"))).getOrCreate()
     }
-    const val configFolderName = "config"
     val ConfigFolder: Dir by lazy {
-        RuntimeRoot.subDir(configFolderName).getOrCreate()
+        RuntimeRoot.subDir("config").getOrCreate()
+    }
+    val CyberIoFolder: Dir by lazy {
+        ConfigFolder.subDir("cyberio").getOrCreate()
     }
 }
 @JvmInline
@@ -22,6 +24,24 @@ value class F(val file: File) {
         dir.tryCreate()
         if (!file.exists())
             file.createNewFile()
+        return this
+    }
+
+    fun getOrCreate(init: String): F {
+        dir.tryCreate()
+        if (!file.exists()) {
+            file.createNewFile()
+            file.writeText(init)
+        }
+        return this
+    }
+
+    fun getOrCreate(init: ByteArray): F {
+        dir.tryCreate()
+        if (!file.exists()) {
+            file.createNewFile()
+            file.writeBytes(init)
+        }
         return this
     }
 

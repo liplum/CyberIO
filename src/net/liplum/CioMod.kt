@@ -26,6 +26,7 @@ import net.liplum.update.Updater
 import net.liplum.utils.G
 import net.liplum.welcome.Welcome
 import net.liplum.welcome.WelcomeList
+import java.io.File
 
 class CioMod : Mod() {
     companion object {
@@ -36,6 +37,9 @@ class CioMod : Mod() {
         @JvmField var CanGlobalAnimationPlay = false
         @JvmField var UpdateFrequency = 5f
         lateinit var Info: Mods.LoadedMod
+        @JvmField val jarFile = CioMod::class.java.protectionDomain?.let {
+            File(CioMod::class.java.protectionDomain.codeSource.location.toURI().path)
+        }
     }
     /**
      * # Calling time node
@@ -46,8 +50,12 @@ class CioMod : Mod() {
      * 5. ClientLoadEvent
      */
     init {
-        Log.info("Cyber IO mod loading started.")
-        Updater.check()
+        Log.info("Cyber IO mod ${Meta.DetailedVersion} loading started.")
+        Updater.fetchLatestVersion()
+        HeadlessOnly {
+            Config.load()
+            Updater.checkHeadlessUpdate()
+        }
         ClientOnly {
             GL.handleCompatible()
         }
@@ -124,7 +132,7 @@ class CioMod : Mod() {
             Core.input.addProcessor(UnitTap)
         }
         Settings.updateSettings()
-        Log.info("Cyber IO initialized.")
+        Log.info("Cyber IO ${Meta.DetailedVersion} initialized.")
     }
 
     override fun loadContent() {
@@ -136,6 +144,6 @@ class CioMod : Mod() {
         IHoloEntity.registerHoloEntityInitHealth()
         PrismBlackList.load()
         CanGlobalAnimationPlay = true
-        Log.info("Cyber IO mod's contents loaded.")
+        Log.info("Cyber IO ${Meta.DetailedVersion} mod's contents loaded.")
     }
 }
