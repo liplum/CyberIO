@@ -1,4 +1,4 @@
-# Cyber IO
+# Cyber IO [![Discord](GFX/Discord.png)](https://discord.gg/PDwyxM3waw)
 [![Discord](https://img.shields.io/discord/937228972041842718?color=%23529b69&label=Discord&style=flat-square)](https://discord.gg/PDwyxM3waw)
 ___
 A Mindustry mod provides lots of cybernetic things!!!
@@ -27,12 +27,13 @@ ___
 ___
 **IN NO ORDER**
 
-The friendly people on Mindustry Discord#java whoever have ever helped me.
+* The friendly people on Discord whoever have ever helped me.
 
-Anyone who commits the issue on GitHub.
+* Anyone who committed the issue or made pull request on GitHub.
 
-Anyone who likes CyberIO. 
+* Anyone who likes CyberIO. 
 
+* Chinese support: [@woodjecket](https://github.com/woodjecket)
 ## Licence
 ___
 The codes of CyberIO are open source in GNU General Public License v3.0 (GPL 3.0).

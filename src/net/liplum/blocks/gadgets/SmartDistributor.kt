@@ -231,15 +231,13 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
             if (proximity.isEmpty) return false
             disIndex %= proximity.size
             val b = proximity[disIndex]
-            if (b.team == team) {
-                val consumes = b.block.consumes
-                if (consumes.has(ConsumeType.item)) {
-                    val reqs: Consume = consumes[ConsumeType.item]
-                    if (reqs is ConsumeItems) {
-                        dised = distributeTo(b, reqs.items)
-                    } else if (reqs is ConsumeItemDynamic) {
-                        dised = distributeTo(b, reqs.items.get(b))
-                    }
+            val consumes = b.block.consumes
+            if (consumes.has(ConsumeType.item)) {
+                val reqs: Consume = consumes[ConsumeType.item]
+                if (reqs is ConsumeItems) {
+                    dised = distributeTo(b, reqs.items)
+                } else if (reqs is ConsumeItemDynamic) {
+                    dised = distributeTo(b, reqs.items.get(b))
                 }
             }
             disIndex++

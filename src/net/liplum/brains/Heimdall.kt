@@ -6,6 +6,7 @@ import arc.graphics.g2d.Draw
 import arc.graphics.g2d.Fill
 import arc.graphics.g2d.Lines
 import arc.math.Interp
+import arc.math.Mathf
 import arc.math.geom.Intersector
 import arc.util.Log
 import arc.util.Time
@@ -39,6 +40,10 @@ import net.liplum.lib.entity.RadiationQueue
 import net.liplum.utils.*
 import java.util.*
 
+/**
+ * ### Since 1
+ * - Heimdall's force field has stored current radius.
+ */
 open class Heimdall(name: String) : Block(name) {
     @JvmField var range = 150f
     @JvmField var reloadTime = 60f
@@ -56,12 +61,24 @@ open class Heimdall(name: String) : Block(name) {
     @ClientOnly @JvmField var BuckleFrameNum = 5
     @JvmField var connectedSound: Sound = Sounds.none
     @JvmField var formationPatterns: MutableSet<IFormationPattern> = HashSet()
-
+    @JvmField var properties = mapOf(
+        UpgradeType.Damage to damage,
+        UpgradeType.Range to range,
+        UpgradeType.WaveSpeed to waveSpeed,
+        UpgradeType.WaveWidth to waveWidth,
+        UpgradeType.ReloadTime to reloadTime,
+        UpgradeType.ControlLine to controlLine,
+        UpgradeType.ForceFieldMax to forceFieldMax,
+        UpgradeType.ForceFieldRegen to forceFieldRegen,
+        UpgradeType.ForceFieldRadius to forceFieldRadius,
+        UpgradeType.ForceFieldRestoreTime to forceFieldRestoreTime,
+    )
     init {
         solid = true
         update = true
         hasPower = true
         sync = true
+        canOverdrive = false
     }
 
     override fun init() {
@@ -83,6 +100,10 @@ open class Heimdall(name: String) : Block(name) {
             formationPatterns.add(pattern)
     }
 
+    override fun setStats() {
+        super.setStats()
+        stats.addHeimdallProperties(properties)
+    }
     override fun setBars() {
         super.setBars()
         DebugOnly {
@@ -112,6 +133,7 @@ open class Heimdall(name: String) : Block(name) {
 
     open inner class HeimdallBuild : Building(),
         ControlBlock, IExecutioner, IBrain, Ranged {
+        override fun version(): Byte = 1
         override val sides: Array<Side2> = Array(4) {
             Side2(this)
         }
@@ -164,8 +186,12 @@ open class Heimdall(name: String) : Block(name) {
             }
         val forcePct: Float
             get() = shieldAmount / realForceFieldMax
-        val curFieldRadius: Float
+        val targetFieldRadius: Float
             get() = realForceFieldRadius * forcePct
+        var curFieldRadius = 0f
+            set(value) {
+                field = value.coerceAtLeast(0f)
+            }
 
         init {
             ClientOnly {
@@ -219,13 +245,14 @@ open class Heimdall(name: String) : Block(name) {
                 if (shieldAmount < realForceFieldMax) {
                     val factor = if (lastShieldDamageTime > realForceFieldRestoreTime)
                         1f else 0.25f
-                    shieldAmount += realForceFieldRegen * power.status * factor
+                    shieldAmount += realForceFieldRegen * Time.delta * power.status * factor
                 }
+                curFieldRadius = Mathf.approach(curFieldRadius, targetFieldRadius, power.status * Time.delta * 0.1f)
             } else {
                 shieldAmount -= realForceFieldRegen * 2f
+                curFieldRadius -= 2f
             }
             if (shieldAmount > 0f) {
-                val curFieldRadius = curFieldRadius
                 Groups.bullet.intersect(
                     x - curFieldRadius,
                     y - curFieldRadius,
@@ -350,7 +377,6 @@ open class Heimdall(name: String) : Block(name) {
             }
             Draw.reset()
             // Force field
-            val curFieldRadius = curFieldRadius
             if (shieldAmount > 0) {
                 Draw.z(Layer.shields)
                 if (Vars.renderer.animateShields) {
@@ -399,6 +425,10 @@ open class Heimdall(name: String) : Block(name) {
             reload = read.f()
             shieldAmount = read.f()
             lastShieldDamageTime = read.f()
+            if (revision.toInt() > 0) {
+                // Since 1
+                curFieldRadius = read.f()
+            }
         }
 
         override fun write(write: Writes) {
@@ -407,6 +437,8 @@ open class Heimdall(name: String) : Block(name) {
             write.f(reload)
             write.f(shieldAmount)
             write.f(lastShieldDamageTime)
+            // Since 1
+            write.f(curFieldRadius)
         }
 
         override fun control(type: LAccess, p1: Double, p2: Double, p3: Double, p4: Double) {
@@ -469,7 +501,7 @@ open class Heimdall(name: String) : Block(name) {
                 }
                 val res = sum * (1f + rate)
                 if (res != prop.default)
-                    prop.setter(res)
+                    prop.setter(res.coerceAtLeast(0f))
             }
         }
         /**

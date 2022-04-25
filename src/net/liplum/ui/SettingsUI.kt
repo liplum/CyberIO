@@ -36,7 +36,7 @@ object SettingsUI {
         graphics.insertSliderPref(
             R.Setting.LinkArrowDensity,
             15, 0, 100, 5, InsertPos.After, { "$it%" }, {
-                Settings.LinkArrowDensity = pct2Density(settings.getInt(R.Setting.LinkArrowDensity))
+                Settings.LinkArrowDensity = pct2Density(settings.getInt(R.Setting.LinkArrowDensity, 15))
             }) {
             it !is SliderSetting
         }
@@ -44,7 +44,22 @@ object SettingsUI {
         graphics.insertCheckPref(
             R.Setting.AlwaysShowLink,
             alwaysShowLinkDefault, InsertPos.Before, {
-                Settings.AlwaysShowLink = settings.getBool(R.Setting.AlwaysShowLink)
+                Settings.AlwaysShowLink = settings.getBool(R.Setting.AlwaysShowLink, alwaysShowLinkDefault)
+            }
+        ) {
+            it is CheckSetting
+        }
+        graphics.insertSliderPref(
+            R.Setting.LinkSize,
+            100, 0, 100, 5, InsertPos.After, { "$it%" }, {
+                Settings.LinkSize = settings.getInt(R.Setting.LinkSize, 100) / 100f * 4f
+            }) {
+            it !is SliderSetting
+        }
+        graphics.insertCheckPref(
+            R.Setting.ShowLinkCircle,
+            alwaysShowLinkDefault, InsertPos.Before, {
+                Settings.ShowLinkCircle = settings.getBool(R.Setting.ShowLinkCircle, true)
             }
         ) {
             it is CheckSetting

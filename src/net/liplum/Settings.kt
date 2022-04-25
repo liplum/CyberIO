@@ -6,10 +6,14 @@ object Settings {
     @ClientOnly @JvmField var LinkOpacity = 1f
     @ClientOnly @JvmField var LinkArrowDensity = 15f
     @ClientOnly @JvmField var AlwaysShowLink = false
+    @ClientOnly @JvmField var ShowLinkCircle = false
+    @ClientOnly @JvmField var LinkSize = 4f
     @JvmStatic
     fun updateSettings() {
-        LinkOpacity = settings.getInt(R.Setting.LinkOpacity) / 100f
+        LinkOpacity = settings.getInt(R.Setting.LinkOpacity, 100) / 100f
         AlwaysShowLink = settings.getBool(R.Setting.AlwaysShowLink)
+        LinkSize = settings.getInt(R.Setting.LinkSize, 100) / 100f * 4f
+        ShowLinkCircle = settings.getBool(R.Setting.ShowLinkCircle)
     }
 
     var ShouldShowWelcome: Boolean

@@ -24,9 +24,9 @@ object LinkDrawer {
         Groups.build.each {
             if (it.team != curTeam) return@each
             if (it is IDataSender) {
-                it.drawDataNetGraphic(false)
+                it.drawDataNetGraphic(showCircle = Settings.ShowLinkCircle)
             } else if (it is IStreamHost) {
-                it.drawStreamGraphic(false)
+                it.drawStreamGraphic(showCircle = Settings.ShowLinkCircle)
             }
         }
     }

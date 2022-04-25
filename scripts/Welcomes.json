@@ -1,0 +1,34 @@
+[
+  {
+    "ID": "Default",
+    "IconPath": "welcome-cyber-io"
+  },
+  {
+    "ID": "EmploymentVerification",
+    "IconPath": "welcome-cyber-io"
+  },
+  {
+    "ID": "Discord",
+    "IconPath": "discord"
+  },
+  {
+    "ID": "UpdateECHO",
+    "IconPath": "welcome-cyber-io"
+  },
+  {
+    "ID": "ResearchProject",
+    "IconPath": "welcome-holo-project"
+  },
+  {
+    "ID": "TheSHIP",
+    "IconPath": "welcome-cyber-io"
+  },
+  {
+    "ID": "ECHO",
+    "IconPath": "welcome-cyber-io"
+  },
+  {
+    "ID": "NewBrains",
+    "IconPath": "heimdall"
+  }
+]
