@@ -57,6 +57,7 @@ public class Bone {
 
     public Bone(@NotNull Skeleton sk) {
         this.sk = sk;
+        this.id = sk.curID++;
     }
 
     public Bone() {
@@ -67,61 +68,20 @@ public class Bone {
     }
 
     /**
-     * Directly applied force without transfering force.
+     * Directly applied force without transferring force.
      *
      * @param F the force
      */
-    public void applyForceDirectly(Vec2 F) {
-        float f = MathH.normal(sk.v1.set(1f, 0f).setAngleRad(a)).dot(F);
+    public void applyForceDirectly(@Invariant @NotNull Vec2 F) {
+        float f = MathH.normal(sk.v1.set(1f, 0f).setAngleRad(a)).inv().dot(F);
         a += f / mass;
     }
 
-    private void applyForceProximity(Vec2 F) {
-        applyForceDirectly(F);
-        if (sk.enableTransfer) {
-            float fx = F.x;
-            float fy = F.y;
-            sk.v1.set(1f, 0f).setAngleRad(a).add(sk.v2.set(fx, fy)).scl(1f / (length * length));
-            float nx = sk.v1.x;
-            float ny = sk.v1.y;
-            for (Bone next : next) {
-                next.applyForceFromPre(sk.v2.set(nx, ny));
-            }
-            sk.v1.set(1f, 0f).setAngleRad(a).inv().add(sk.v2.set(fx, fy)).scl(1f / (length * length));
-            float px = sk.v1.x;
-            float py = sk.v1.y;
-            if (pre != null) {
-                pre.applyForceFromNext(sk.v2.set(px, py));
-            }
-        }
+    public void applyAngularForceDirectly(float F) {
+        a += F / mass;
     }
 
-    private void applyForceFromPre(Vec2 F) {
-        applyForceDirectly(F);
-        if (sk.enableTransfer) {
-            sk.v1.set(1f, 0f).setAngleRad(a).add(F).scl(1f / (length * length));
-            float x = sk.v1.x;
-            float y = sk.v1.y;
-            for (Bone next : next) {
-                next.applyForceFromPre(sk.v2.set(x, y));
-            }
-        }
-    }
-
-
-    private void applyForceFromNext(Vec2 F) {
-        applyForceDirectly(F);
-        if (sk.enableTransfer) {
-            sk.v1.set(1f, 0f).setAngleRad(a).inv().add(F).scl(1f / (length * length));
-            float x = sk.v1.x;
-            float y = sk.v1.y;
-            if (pre != null) {
-                pre.applyForceFromNext(sk.v2.set(x, y));
-            }
-        }
-    }
-
-    public void applyForce(Vec2 F) {
+    public void applyForce(@Invariant @NotNull Vec2 F) {
         applyForceDirectly(F);
         if (sk.enableTransfer) {
             float fx = F.x;
@@ -141,8 +101,35 @@ public class Bone {
         }
     }
 
-    public void getEndPos(Vec2 head, Vec2 end) {
+    public void applyAngularForce(float F) {
+        applyAngularForceDirectly(F);
+        if (sk.enableTransfer) {
+            for (Bone next : next) {
+                next.applyAngularForceDirectly(F);
+            }
+            if (pre != null) {
+                pre.applyAngularForceDirectly(F);
+            }
+        }
+    }
+
+    /**
+     * @param head the based coordinate
+     * @param end  the result
+     */
+    @UseVec("v1")
+    public void getEndPos(@Invariant @NotNull Vec2 head, @Changed @NotNull Vec2 end) {
         end.setZero().add(sk.v1.set(length, 0f).setAngleRad(getRealAngle())).add(head);
+    }
+
+    /**
+     * Get the coordinate based on {@code root}
+     */
+    @UseVec({"v1",})
+    public void getEndPos(@Changed @NotNull Vec2 root) {
+        root.add(
+                sk.v1.set(length, 0f).setAngleRad(getRealAngle())
+        );
     }
 
     public void update(float delta) {
@@ -154,7 +141,10 @@ public class Bone {
         a = 0f;
     }
 
-    public void draw(Vec2 relative, Vec2 endPos) {
+    public void draw(
+            @Invariant @NotNull Vec2 relative,
+            @Changed @NotNull Vec2 endPos
+    ) {
         this.draw(relative, endPos, 0f);
     }
 
@@ -162,7 +152,12 @@ public class Bone {
      * @param relative the xy coordinate relative to parent bone.
      * @param rotation relative rotation (Unit: radian)
      */
-    public void draw(Vec2 relative, Vec2 endPos, float rotation) {
+    @UseVec({"v1", "v2",})
+    public void draw(
+            @Invariant @NotNull Vec2 relative,
+            @Changed @NotNull Vec2 endPos,
+            float rotation
+    ) {
         getEndPos(relative, endPos);
         Vec2 pos = sk.v2.set(endPos).minus(relative).scl(0.5f);
         skin.drawRad(relative.x + pos.x, relative.y + pos.y, getRealAngle() + rotation);

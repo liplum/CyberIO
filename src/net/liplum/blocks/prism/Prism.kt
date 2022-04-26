@@ -2,7 +2,6 @@ package net.liplum.blocks.prism
 
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
-import arc.math.Angles
 import arc.math.Mathf
 import arc.math.geom.Vec2
 import arc.struct.EnumSet
@@ -221,17 +220,15 @@ open class Prism(name: String) : Block(name) {
                 curPerRota = perRota * ip1 * 0.8f
                 if (isControlled) {
                     val ta = Polar.toA(unit.aimX() - x, unit.aimY() - y)
-                    revolution.a =
-                        Angles.moveToward(
-                            revolution.a.degree, ta.degree,
-                            curPerRelv * 100 * delta()
-                        ).radian
+                    revolution.a = MathU.moveTowardRad(
+                        revolution.a, ta,
+                        curPerRelv * 1.8f * delta()
+                    )
                 } else if (controlByLogic) {
-                    revolution.a =
-                        Angles.moveToward(
-                            revolution.a.degree, logicAngle,
-                            curPerRelv * 100 * delta()
-                        ).radian
+                    revolution.a = MathU.moveTowardRad(
+                        revolution.a, logicAngle,
+                        curPerRelv * 1.8f * delta()
+                    )
                 } else {
                     revolution.a += if (isClockwise) -curPerRelv else curPerRelv
                 }

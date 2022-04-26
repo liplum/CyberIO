@@ -44,6 +44,7 @@ public class Skeleton {
      * Only for skeleton.
      */
     public Vec2 vx2 = new Vec2();
+    public Vec2 returned = new Vec2();
 
     public void update(float delta) {
         if (isLinear)
@@ -78,6 +79,20 @@ public class Skeleton {
     @Nullable
     public Bone findFirstByName(@NotNull String name) {
         return findBoneIn(root, name);
+    }
+
+    /**
+     * Get a coordinate of the bone given relative to the root
+     */
+    @NotNull
+    public Vec2 getRelativePos(@NotNull Bone bone) {
+        Vec2 start = returned.setZero();
+        Bone cur = bone;
+        while (cur != null) {
+            bone.getEndPos(start);
+            cur = cur.pre;
+        }
+        return returned;
     }
 
     /**
@@ -151,7 +166,9 @@ public class Skeleton {
     public LinkedList<UFrame> stack = new LinkedList<>();
 
     public void updateRecursiveIn(Bone cur, float delta) {
-
+        cur.update(delta);
+        for (Bone next : cur.next)
+            updateRecursiveIn(cur, delta);
     }
 
     public void updateRecursive(float delta) {
