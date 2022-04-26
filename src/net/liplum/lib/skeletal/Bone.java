@@ -86,13 +86,13 @@ public class Bone {
         if (sk.enableTransfer) {
             float fx = F.x;
             float fy = F.y;
-            sk.v1.set(1f, 0f).setAngleRad(a);
+            sk.v1.set(1f, 0f).setAngleRad(a).scl(1f / length);
             float nx = sk.v1.x;
             float ny = sk.v1.y;
             for (Bone next : next) {
                 next.applyForceDirectly(sk.v2.set(nx, ny));
             }
-            sk.v1.set(1f, 0f).setAngleRad(a).inv();
+            sk.v1.set(1f, 0f).setAngleRad(a).scl(1f / length).inv();
             float px = sk.v1.x;
             float py = sk.v1.y;
             if (pre != null) {

@@ -67,17 +67,19 @@ open class Hand(name: String) : Block(name), IComponentBlock {
                 skin = boneSkin
                 upperArm = this
                 length = 16f
+                mass = 150f
                 addNext(Bone(sk).apply {
                     name = "Forearm"
                     skin = boneSkin
                     forearm = this
                     length = 16f
+                    mass = 100f
                     addNext(Bone(sk).apply {
                         name = "Hand"
                         skin = handSkin
                         hand = this
                         length = 16f
-                        mass = 5f
+                        mass = 20f
                         relative = true
                         limitAngle = true
                         minAngle = (-30f).radian
@@ -88,28 +90,23 @@ open class Hand(name: String) : Block(name), IComponentBlock {
         }
 
         override fun updateTile() {
-            val p = Vars.player.unit()
-            val px = p.x
-            val py = p.y
-            /*
-            val angle = Angles.angleRad(forearmPos.x, forearmPos.y, px, py)
-            val blockPlayerAngle = Angles.angleRad(px, py, x, y)
-            val direction = MathU.towardRad(angle, blockPlayerAngle)
-            val delta = MathU.angleDistRad(angle, blockPlayerAngle)
-            val F = delta * 0.0005f
-            forearm.applyAngularForce(F * direction)*/
-            val forearmPos = forearm.getAbsPos(Tmp.v1.set(x, y))
-            val F = Tmp.v1.set(px, py).minus(forearmPos).limit(0.008f)
-            if (F.len() >= 0.0001f) {
-                forearm.applyForce(F)
-            }
-            val handPos = hand.getAbsPos(Tmp.v1.set(x, y))
-            val handF = Tmp.v1.set(px, py).minus(handPos).limit(0.08f)
-            if (F.len() >= 0.0001f) {
+            if (Time.delta % 60 < 1f) {
+                val p = Vars.player.unit()
+                val px = p.x
+                val py = p.y
+                /*
+                val angle = Angles.angleRad(forearmPos.x, forearmPos.y, px, py)
+                val blockPlayerAngle = Angles.angleRad(px, py, x, y)
+                val direction = MathU.towardRad(angle, blockPlayerAngle)
+                val delta = MathU.angleDistRad(angle, blockPlayerAngle)
+                val F = delta * 0.0005f
+                forearm.applyAngularForce(F * direction)*/
+                val handF = Tmp.v1.set(px, py).minus(Tmp.v2.set(x, y))
+                handF.setLength(0.01f)
                 hand.applyForce(handF)
-            }
-            if (isControlled && unit.isShooting) {
-                hand.applyForce(Tmp.v1.set(0f, 0.05f))
+                if (isControlled && unit.isShooting) {
+                    hand.applyForce(Tmp.v1.set(0f, 0.05f))
+                }
             }
             skeleton.update(Time.delta)
         }
