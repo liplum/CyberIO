@@ -1,19 +1,13 @@
 package net.liplum.welcome
 
-import arc.Core
 import arc.Events
 import arc.math.Mathf
-import arc.scene.ui.Dialog
-import arc.scene.ui.Label
 import arc.struct.ObjectMap
-import arc.util.Align
-import arc.util.I18NBundle
 import arc.util.Time
 import arc.util.serialization.JsonValue
 import mindustry.Vars
 import mindustry.game.EventType.Trigger
 import mindustry.io.JsonIO
-import mindustry.ui.dialogs.BaseDialog
 import net.liplum.*
 import net.liplum.Settings.CioVersion
 import net.liplum.Settings.ClickWelcomeTimes
@@ -23,37 +17,33 @@ import net.liplum.Settings.ShowUpdate
 import net.liplum.blocks.tmtrainer.RandomName
 import net.liplum.lib.Res
 import net.liplum.update.Updater
-import net.liplum.update.Version2
-import net.liplum.utils.*
+import net.liplum.utils.ReferBundleWrapper
+import net.liplum.utils.TR
+import net.liplum.utils.atlas
 
 @ClientOnly
 object Welcome {
-    const val DefaultIconPath = "welcome-cyber-io"
-    @JvmField var bundle: I18NBundle = createModBundle()
+    var bundle: ReferBundleWrapper = ReferBundleWrapper.create()
+    private var info = Info()
+    private var entity = Entity(bundle, info)
     @JvmStatic
     fun showWelcomeDialog() {
         checkLastVersion()
-        if (ShowUpdate && Updater.requireUpdate) {
-            Entity.sp = Entity.sp.setUpdate()
-            updateDialog.show()
-        } else {
-            if (ShouldShowWelcome) {
-                // If it's the first time to play this version, let's show up the Zero Welcome.
-                // Otherwise, roll until the result isn't as last one.
-                if (ClickWelcomeTimes > 0) {
-                    Entity.randomize(LastWelcome)
-                    LastWelcome = Entity.number
-                }
-                handleDialogShow()
+        if (!Vars.steam && ShowUpdate && Updater.requireUpdate) {
+            entity.tip = WelcomeList[info.update]
+        } else if (ShouldShowWelcome) {
+            // If it's the first time to play this version, let's show up the Zero Welcome.
+            // Otherwise, roll until the result isn't as last one.
+            if (ClickWelcomeTimes > 0) {
+                entity.randomize(LastWelcome)
+                LastWelcome = entity.number
+            } else {
+                entity.tip = WelcomeList[info.default]
             }
         }
-    }
-
-    fun handleDialogShow() {
-        when (Info[Entity.number]) {
-            Info.community -> communityDialog.show()
-            else -> dialog.show()
-        }
+        val template = entity.tip.template
+        val dialog = template.gen(entity)
+        dialog.show()
     }
     @JvmStatic
     fun modifierModInfo() {
@@ -74,7 +64,6 @@ object Welcome {
             ClickWelcomeTimes = 0
             ShowUpdate = true
             CioVersion = Meta.Version
-            Entity.sp = Entity.sp.setInitial()
         }
     }
     @JvmStatic
@@ -86,132 +75,47 @@ object Welcome {
     fun load() {
         loadBundle()
         loadInfo()
+        //To load all templates
+        Templates
     }
     @JvmStatic
     fun loadBundle() {
         bundle.loadMoreFrom("welcomes")
     }
+
+    lateinit var infoJson: ObjectMap<String, JsonValue>
     @Suppress("UNCHECKED_CAST")
     @JvmStatic
     fun loadInfo() {
         val json = Res("WelcomeInfo.json").readAllText()
-        val jsonObj = JsonIO.json.fromJson(ObjectMap::class.java, json) as ObjectMap<String, JsonValue>
-        val info = jsonObj.get(Meta.Version)
-        val default = info.get("Default").asString()
-        val scenes = info.get("Scene").asStringArray()
-        val update = info.get("Update").asString()
-        val community = info.get("Community").asString()
-        Info.default = default
-        Info.scenes = scenes
-        Info.update = update
-        Info.community = community
+        infoJson = JsonIO.json.fromJson(ObjectMap::class.java, json) as ObjectMap<String, JsonValue>
+        val curInfo = infoJson.get(Meta.Version)
+        val default = curInfo.get("Default")?.asString() ?: "Default"
+        val update = curInfo.get("Update")?.asString() ?: "Default"
+        val scenes = curInfo.get("Scene").asStringArray()
+        val parent: String? = curInfo.get("Parent")?.asString()
+        info.default = default
+        info.update = update
+        val allScenes = HashSet<String>()
+        allScenes.addAll(scenes)
+        fun loadParent(parent: String) {
+            val parentInfo = infoJson.get(parent)
+            val parentScenes = parentInfo.get("Scene").asStringArray()
+            val parentParent: String? = parentInfo.get("Parent")?.asString()
+            allScenes.addAll(parentScenes)
+            if (parentParent != null)
+                loadParent(parentParent)
+        }
+        if (parent != null) {
+            loadParent(parent)
+        }
+        info.scenes.addAll(allScenes)
     }
 
-    val dialog: BaseDialog by lazy {
-        BaseDialog(Entity.title).apply {
-            cont.image(Entity.icon)
-                .maxSize(200f).pad(20f).row()
-            cont.add(Label(Entity.welcome).apply {
-                setAlignment(0)
-                setWrap(true)
-            }).growX()
-                .row()
-            cont.add(Label(Entity.content).apply {
-                setAlignment(0)
-                setWrap(true)
-            }).growX()
-                .row()
-            cont.button(Entity.read) {
-                recordClick()
-                hide()
-            }.size(200f, 50f)
-        }
-    }
-    val updateDialog: BaseDialog by lazy {
-        BaseDialog(Entity.title).apply {
-            cont.image(Entity.icon)
-                .maxSize(200f).pad(20f).row()
-            cont.add(Label(Entity.genUpdate(Updater.latestVersion)).apply {
-                setAlignment(0)
-                setWrap(true)
-            }).growX()
-                .row()
-            cont.table {
-                it.button(Entity.yes) {
-                    if (CioMod.jarFile != null) {
-                        var progress = 0f
-                        val loading = Vars.ui.loadfrag
-                        loading.show("@downloading")
-                        loading.setProgress { progress }
-                        // Cache tips because the update will replace codes and cause class not found exception.
-                        val successTip = R.Ctrl.UpdateModSuccess.bundle(Updater.latestVersion)
-                        Updater.updateSelfByReplace(onProgress = { p ->
-                            progress = p
-                        }, onSuccess = {
-                            loading.hide()
-                            Time.run(10f) {
-                                Vars.ui.showInfoOnHidden(successTip) {
-                                    Core.app.exit()
-                                }
-                            }
-                        }, onFailed = { error ->
-                            Core.app.post {
-                                loading.hide()
-                                Dialog("").apply {
-                                    getCell(cont).growX()
-                                    cont.margin(15f).add(
-                                        R.Ctrl.UpdateModFailed.bundle(Updater.latestVersion, error)
-                                    ).width(400f).wrap().get().setAlignment(Align.center, Align.center)
-                                    buttons.button("@ok") {
-                                        this.hide()
-                                    }.size(110f, 50f).pad(4f)
-                                    closeOnBack()
-                                }.show()
-                            }
-                        })
-                    } else {
-                        Updater.updateSelfByBuiltIn()
-                    }
-                    hide()
-                }.size(150f, 50f)
-                it.button(Entity.no) {
-                    hide()
-                }.size(150f, 50f)
-                it.button(Entity.dontShow) {
-                    ShowUpdate = false
-                    hide()
-                }.size(150f, 50f)
-            }.growX()
-                .row()
-        }
-    }
-    val communityDialog: BaseDialog by lazy {
-        BaseDialog(Entity.title).apply {
-            cont.image(Entity.icon)
-                .maxSize(200f).pad(20f).row()
-            cont.add(Label(Entity.content).apply {
-                setAlignment(0)
-                setWrap(true)
-            }).growX()
-                .row()
-            cont.table {
-                it.button(Entity.yes) {
-                    Core.app.openURI(Entity.link)
-                    hide()
-                }.size(200f, 50f)
-                it.button(Entity.no) {
-                    hide()
-                }.size(200f, 50f)
-            }.growX()
-                .row()
-        }
-    }
-
-    object Info {
+    class Info {
         var default = "Default"
         var update = "Default"
-        var community = "Default"
-        var scenes: Array<String> = emptyArray()
+        var scenes: MutableList<String> = ArrayList()
         val sceneSize: Int
             get() = scenes.size
 
@@ -221,64 +125,35 @@ object Welcome {
             else
                 scenes[index]
     }
-    @JvmInline
-    value class EntitySp(val value: Int = 0) {
-        val isInitial: Boolean
-            get() = value isOn 0
-        val isUpdate: Boolean
-            get() = value isOn 1
-        val isCommunity: Boolean
-            get() = value isOn 2
 
-        fun setInitial() = EntitySp(value on 0)
-        fun setUpdate() = EntitySp(value on 1)
-        fun setCommunity() = EntitySp(value on 2)
-    }
+    class Entity(
+        val bundle: ReferBundleWrapper,
+        val info: Info,
+    ) {
+        var tip: WelcomeTip = WelcomeTip.Default
+        var number: Int = 0
+            private set
 
-    object Entity {
-        var number = -1
-        var sp = EntitySp()
         fun randomize(avoid: Int) {
-            val variants = Info.sceneSize
+            val variants = info.sceneSize
             if (variants <= 0) {
+                number = -1
+            } else if (variants == 1) {
                 number = 0
             } else {
                 do {
                     number = Mathf.random(0, variants - 1)
                 } while (number == avoid)
             }
+            tip = WelcomeList[info[number]]
         }
 
-        val tip: WelcomeTip
-            get() = if (sp.isUpdate) {
-                WelcomeList[Info.update]
-            } else if (sp.isInitial) {
-                WelcomeList[Info.default]
-            } else {
-                WelcomeList[Info[number]]
-            }
-        val title: String
-            get() = bundle["$tip.title"].handleBundleRefer()
+        operator fun get(key: String) =
+            bundle["$tip.$key"]
+
         val content: String
-            get() = bundle["$tip"].handleBundleRefer()
-        val read: String
-            get() = bundle["$tip.read"].handleBundleRefer()
+            get() = bundle["$tip"]
         val icon: TR
             get() = tip.iconPath.Cio.atlas()
-        val welcome: String
-            get() = "welcome".bundle(bundle, Meta.Version)
-        // For update
-        fun genUpdate(version: Version2): String =
-            bundle.format("$tip", version)
-
-        val yes: String
-            get() = bundle["$tip.yes"]
-        val no: String
-            get() = bundle["$tip.no"]
-        val dontShow: String
-            get() = bundle["$tip.dont-show"]
-        // For community
-        val link: String
-            get() = bundle["$tip.link"]
     }
 }

@@ -1,23 +1,25 @@
 {
+  "common": {
+    "Scene": [
+      "TheSHIP",
+      "ECHO",
+      "NewBrains",
+      "Discord"
+    ]
+  },
   "v2": {
     "Default": "EmploymentVerification",
     "Update": "UpdateECHO",
-    "Community": "Discord",
     "Scene": [
-      "EmploymentVerification",
-      "UpdateECHO"
+      "EmploymentVerification"
     ]
   },
   "v3": {
     "Default": "ResearchProject",
     "Update": "UpdateECHO",
-    "Community": "Discord",
+    "Parent": "common",
     "Scene": [
-      "ResearchProject",
-      "TheSHIP",
-      "ECHO",
-      "NewBrains",
-      "Discord"
+      "ResearchProject"
     ]
   }
 }

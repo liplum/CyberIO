@@ -30,7 +30,6 @@ fun Int.time(coerceMinute: Boolean = false): String {
     else
         "$sec ${R.Bundle.CostSecond.bundle}"
 }
-
 @JvmOverloads
 fun Float.percent(digit: Int = 2) =
     if (this >= 0f) {
@@ -45,7 +44,6 @@ fun Int.percent() =
     } else {
         R.Bundle.PercentMinus.bundle(this.absoluteValue)
     }
-
 @JvmOverloads
 fun Float.value(digit: Int = 2) =
     if (this >= 0f) {
@@ -118,4 +116,32 @@ fun createModBundle(): I18NBundle {
     bundle.setF("formatter", formatter)
     bundle.setF("parent", parent)
     return bundle
+}
+@JvmInline
+value class ReferBundleWrapper(
+    val bundle: I18NBundle,
+) {
+    operator fun get(key: String): String =
+        bundle[key].handleBundleRefer(bundle)
+
+    operator fun get(key: String, default: String): String =
+        bundle[key, default].handleBundleRefer(bundle)
+
+    fun has(key: String) =
+        bundle.has(key)
+
+    operator fun contains(key: String) =
+        bundle.has(key)
+
+    fun format(key: String, vararg args: Any?): String =
+        bundle.format(key, *args)
+
+    fun loadMoreFrom(folder: String, defaultLocale: String = "en") {
+        bundle.loadMoreFrom(folder, defaultLocale)
+    }
+
+    companion object {
+        fun create(): ReferBundleWrapper =
+            ReferBundleWrapper(createModBundle())
+    }
 }
