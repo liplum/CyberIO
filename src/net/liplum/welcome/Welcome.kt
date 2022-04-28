@@ -23,7 +23,6 @@ import net.liplum.utils.atlas
 
 @ClientOnly
 object Welcome {
-    const val DefaultIconPath = "welcome-cyber-io"
     var bundle: ReferBundleWrapper = ReferBundleWrapper.create()
     private var info = Info()
     private var entity = Entity(bundle, info)
@@ -76,30 +75,47 @@ object Welcome {
     fun load() {
         loadBundle()
         loadInfo()
-        Templates.load()
+        //To load all templates
+        Templates
     }
     @JvmStatic
     fun loadBundle() {
         bundle.loadMoreFrom("welcomes")
     }
+
+    lateinit var infoJson: ObjectMap<String, JsonValue>
     @Suppress("UNCHECKED_CAST")
     @JvmStatic
     fun loadInfo() {
         val json = Res("WelcomeInfo.json").readAllText()
-        val jsonObj = JsonIO.json.fromJson(ObjectMap::class.java, json) as ObjectMap<String, JsonValue>
-        val infoMap = jsonObj.get(Meta.Version)
-        val default = infoMap.get("Default").asString()
-        val update = infoMap.get("Update").asString()
-        val scenes = infoMap.get("Scene").asStringArray()
+        infoJson = JsonIO.json.fromJson(ObjectMap::class.java, json) as ObjectMap<String, JsonValue>
+        val curInfo = infoJson.get(Meta.Version)
+        val default = curInfo.get("Default")?.asString() ?: "Default"
+        val update = curInfo.get("Update")?.asString() ?: "Default"
+        val scenes = curInfo.get("Scene").asStringArray()
+        val parent: String? = curInfo.get("Parent")?.asString()
         info.default = default
         info.update = update
-        info.scenes = scenes
+        val allScenes = HashSet<String>()
+        allScenes.addAll(scenes)
+        fun loadParent(parent: String) {
+            val parentInfo = infoJson.get(parent)
+            val parentScenes = parentInfo.get("Scene").asStringArray()
+            val parentParent: String? = parentInfo.get("Parent")?.asString()
+            allScenes.addAll(parentScenes)
+            if (parentParent != null)
+                loadParent(parentParent)
+        }
+        if (parent != null) {
+            loadParent(parent)
+        }
+        info.scenes.addAll(allScenes)
     }
 
     class Info {
         var default = "Default"
         var update = "Default"
-        var scenes: Array<String> = emptyArray()
+        var scenes: MutableList<String> = ArrayList()
         val sceneSize: Int
             get() = scenes.size
 

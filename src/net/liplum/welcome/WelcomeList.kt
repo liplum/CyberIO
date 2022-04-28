@@ -15,12 +15,12 @@ object WelcomeList {
         val all = HashMap<String, WelcomeTip>()
         for (entry in array) {
             val id = entry.get("ID").asString()
-            val iconPath = entry.get("IconPath").asString()
-            val template = entry.get("Template").asString()
+            val iconPath: String? = entry.get("IconPath")?.asString()
+            val template: String? = entry.get("Template")?.asString()
             all[id] = WelcomeTip().apply {
                 this.id = id
-                this.iconPath = iconPath
-                this.templateID = template
+                iconPath?.let { this.iconPath = it }
+                template?.let { this.templateID = it }
             }
         }
         list = all
@@ -30,14 +30,17 @@ object WelcomeList {
 }
 
 class WelcomeTip {
-    @JvmField var id: String = "Default"
-    @JvmField var templateID: String = "Default"
-    @JvmField var iconPath: String = "welcome-cyber-io"
+    @JvmField var id: String = DefaultID
+    @JvmField var templateID: String = DefaultTemplateID
+    @JvmField var iconPath: String = DefaultIconPath
     override fun toString() = id
     val template: WelcomeTemplate
         get() = TemplateRegistry[templateID]
 
     companion object {
         val Default = WelcomeTip()
+        const val DefaultID = "Default"
+        const val DefaultTemplateID = "Story"
+        const val DefaultIconPath = "welcome-cyber-io"
     }
 }

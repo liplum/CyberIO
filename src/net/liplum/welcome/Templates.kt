@@ -121,7 +121,4 @@ object Templates {
                     .row()
             }
     }.register()
-    @JvmStatic
-    fun load() {
-    }
 }
