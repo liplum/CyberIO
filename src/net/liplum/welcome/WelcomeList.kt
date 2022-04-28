@@ -16,9 +16,11 @@ object WelcomeList {
         for (entry in array) {
             val id = entry.get("ID").asString()
             val iconPath = entry.get("IconPath").asString()
+            val template = entry.get("Template").asString()
             all[id] = WelcomeTip().apply {
                 this.id = id
                 this.iconPath = iconPath
+                this.templateID = template
             }
         }
         list = all
@@ -29,8 +31,11 @@ object WelcomeList {
 
 class WelcomeTip {
     @JvmField var id: String = "Default"
+    @JvmField var templateID: String = "Default"
     @JvmField var iconPath: String = "welcome-cyber-io"
     override fun toString() = id
+    val template: WelcomeTemplate
+        get() = TemplateRegistry[templateID]
 
     companion object {
         val Default = WelcomeTip()

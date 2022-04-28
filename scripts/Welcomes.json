@@ -1,34 +1,42 @@
 [
   {
     "ID": "Default",
+    "Template": "Story",
     "IconPath": "welcome-cyber-io"
   },
   {
     "ID": "EmploymentVerification",
+    "Template": "Story",
     "IconPath": "welcome-cyber-io"
   },
   {
     "ID": "Discord",
+    "Template": "OpenLink",
     "IconPath": "discord"
   },
   {
     "ID": "UpdateECHO",
+    "Template": "Update",
     "IconPath": "welcome-cyber-io"
   },
   {
     "ID": "ResearchProject",
+    "Template": "Story",
     "IconPath": "welcome-holo-project"
   },
   {
     "ID": "TheSHIP",
+    "Template": "Story",
     "IconPath": "welcome-cyber-io"
   },
   {
     "ID": "ECHO",
+    "Template": "Story",
     "IconPath": "welcome-cyber-io"
   },
   {
     "ID": "NewBrains",
+    "Template": "Story",
     "IconPath": "heimdall"
   }
 ]
