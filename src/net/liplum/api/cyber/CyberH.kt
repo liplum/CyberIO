@@ -111,7 +111,16 @@ object StreamCenter {
     fun loadLiquidsColor() {
         val liquids = Vars.content.liquids()
         R.C.LiquidColors = Array(liquids.size) {
-            liquids[it].color
+            val liquid = liquids[it]
+            val color = liquid.color
+            // To prevent crash with the adaptor of liquid because their Liquid#color is null. @Discord Normalperson666#2826
+            // So I just cause a crash when loading and provide more details for handling with it.
+            assert(color != null){
+                "${liquid.localizedName}(${liquid.name} of ${liquid.javaClass.name}) in ${liquid.minfo?.mod} has a nullable color." +
+                        "This message is only for notifying that you might be on a extreme condition about mods or some mods doesn't obey the rules of Mindustry." +
+                        "Try again after uninstalling some unnecessary mods."
+            }
+            color
         }
     }
     @JvmStatic

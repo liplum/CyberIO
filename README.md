@@ -7,7 +7,7 @@ A Mindustry mod provides lots of cybernetic things!!!
 To learn about playing Cyber IO, you can check the [wiki](https://github.com/liplum/CyberIO/wiki/Game-Guide).
 ### IC Machine
 ___
-![IC Machine](GFX/ProducingIC.gif)
+![IC Machine](GFX/ProducingIC2.gif)
 
 ### Sender & Receiver
 ___
