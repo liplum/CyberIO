@@ -5,6 +5,7 @@ import net.liplum.blocks.prism.banInWeapon
 import net.liplum.blocks.prism.banInWeapons
 
 object PrismBlackList {
+    //TODO: ban progressed.entities.bullet.physical.MagnetBulletType
     @JvmStatic
     fun load() {
         UnitTypes.arkyid.banInWeapon("spiroct-weapon")
