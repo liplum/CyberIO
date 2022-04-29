@@ -62,6 +62,36 @@ inline fun ClientOnly(func: () -> Unit): Boolean {
     return false
 }
 
+inline fun DesktopOnly(func: () -> Unit): Boolean {
+    if (!Vars.mobile) {
+        func()
+        return true
+    }
+    return false
+}
+
+inline fun MobileOnly(func: () -> Unit): Boolean {
+    if (Vars.mobile) {
+        func()
+        return true
+    }
+    return false
+}
+
+inline fun <reified T> T.DesktopOnlyOn(func: T.() -> Unit): T {
+    if (!Vars.mobile) {
+        func()
+    }
+    return this
+}
+
+inline fun <reified T> T.MobileOnlyOn(func: T.() -> Unit): T {
+    if (Vars.mobile) {
+        func()
+    }
+    return this
+}
+
 val OnlyClient = Condition {
     !Vars.headless
 }
@@ -111,7 +141,6 @@ inline fun HeadlessOnly(func: () -> Unit): Boolean {
     }
     return false
 }
-
 /**
  * Runs codes only on Physical Server
  */

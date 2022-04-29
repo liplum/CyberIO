@@ -10,6 +10,7 @@ import arc.scene.ui.layout.Table
 import arc.scene.utils.Elem
 import arc.util.Scaling
 import mindustry.ui.dialogs.BaseDialog
+import net.liplum.DesktopOnly
 import net.liplum.Meta
 import net.liplum.update.Updater
 import net.liplum.utils.TR
@@ -26,7 +27,10 @@ object Templates {
         add(Label(text).apply {
             setAlignment(0)
             setWrap(true)
-            setFontScale(1.1f)
+            DesktopOnly {
+                // On the high resolution screen, the text looks too small.
+                setFontScale(1.1f)
+            }
         }).growX()
             .row()
     }
@@ -100,6 +104,7 @@ object Templates {
                         for (b in buttons)
                             it.add(b).size(200f, 50f)
                     }
+
                     val yes = createCloseButton(entity["yes"]) {
                         yesAction(entity)
                     }
