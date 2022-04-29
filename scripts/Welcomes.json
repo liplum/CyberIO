@@ -8,12 +8,20 @@
   },
   {
     "ID": "Discord",
-    "Template": "OpenLink",
+    "Template": "DoAction",
+    "Data": {
+      "YesAction": "OpenLink",
+      "Link": "@link"
+    },
     "IconPath": "discord"
   },
   {
     "ID": "UpdateECHO",
-    "Template": "Update"
+    "Template": "YesNoDontShow",
+    "Data": {
+      "YesAction": "UpdateCyberIO",
+      "DontShowAction": "StopCheckUpdate"
+    }
   },
   {
     "ID": "ResearchProject",
@@ -28,5 +36,14 @@
   {
     "ID": "NewBrains",
     "IconPath": "heimdall"
+  },
+  {
+    "ID": "AdBlock",
+    "Template": "DoAction",
+    "IconPath": "ad-block",
+    "Data": {
+      "YesAction": "StopReceiveWelcome",
+      "Order": "NoYes"
+    }
   }
 ]

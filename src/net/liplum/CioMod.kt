@@ -31,14 +31,14 @@ import java.io.File
 class CioMod : Mod() {
     companion object {
         @JvmField val IsClient = !Vars.headless
-        @JvmField var DebugMode = false
+        @JvmField var DebugMode = true
         @JvmField var TestGlCompatibility = false
         @JvmField var ExperimentalMode = false
         @JvmField var CanGlobalAnimationPlay = false
         @JvmField var UpdateFrequency = 5f
         lateinit var Info: Mods.LoadedMod
         @JvmField val jarFile = CioMod::class.java.protectionDomain?.let {
-            File(CioMod::class.java.protectionDomain.codeSource.location.toURI().path)
+            File(it.codeSource.location.toURI().path)
         }
     }
     /**

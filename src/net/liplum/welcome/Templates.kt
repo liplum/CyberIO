@@ -1,122 +1,115 @@
 package net.liplum.welcome
 
-import arc.Core
+import arc.graphics.Texture
+import arc.scene.ui.Button
 import arc.scene.ui.Dialog
 import arc.scene.ui.Label
-import arc.util.Align
-import arc.util.Time
-import mindustry.Vars
+import arc.scene.ui.TextButton
+import arc.scene.ui.layout.Cell
+import arc.scene.ui.layout.Table
+import arc.scene.utils.Elem
+import arc.util.Scaling
 import mindustry.ui.dialogs.BaseDialog
-import net.liplum.CioMod
 import net.liplum.Meta
-import net.liplum.R
-import net.liplum.Settings
 import net.liplum.update.Updater
-import net.liplum.utils.bundle
+import net.liplum.utils.TR
 import net.liplum.welcome.TemplateRegistry.register
 import net.liplum.welcome.Welcome.Entity
 
 object Templates {
+    private fun Table.addPoster(icon: TR) {
+        icon.texture.setFilter(Texture.TextureFilter.nearest)
+        image(icon).minSize(200f).scaling(Scaling.fill).row()
+    }
+
+    private fun Table.addCenterText(text: String) {
+        add(Label(text).apply {
+            setAlignment(0)
+            setWrap(true)
+            setFontScale(1.1f)
+        }).growX()
+            .row()
+    }
+
+    private inline fun Table.addCloseButton(
+        dialog: Dialog,
+        text: String,
+        crossinline task: () -> Unit = {},
+    ): Cell<TextButton> {
+        return button(text) {
+            Welcome.recordClick()
+            task()
+            dialog.hide()
+        }.size(200f, 50f)
+    }
+
+    private inline fun Dialog.createCloseButton(
+        text: String,
+        crossinline task: () -> Unit = {},
+    ): TextButton {
+        return Elem.newButton(text) {
+            Welcome.recordClick()
+            task()
+            hide()
+        }
+    }
+
     val Story = object : WelcomeTemplate("Story") {
         override fun gen(entity: Entity) =
             BaseDialog(entity["title"]).apply {
-                cont.image(entity.icon)
-                    .maxSize(200f).pad(20f).row()
-                cont.add(Label(entity.bundle.format(
-                    "welcome", Meta.DetailedVersion
-                )).apply {
-                    setAlignment(0)
-                    setWrap(true)
-                }).growX()
-                    .row()
-                cont.add(Label(entity.content).apply {
-                    setAlignment(0)
-                    setWrap(true)
-                }).growX()
-                    .row()
-                cont.button(entity["read"]) {
-                    Welcome.recordClick()
-                    hide()
-                }.size(200f, 50f)
+                cont.addPoster(entity.icon)
+                cont.addCenterText(entity.bundle.format("welcome", Meta.DetailedVersion))
+                cont.addCenterText(entity.content)
+                cont.addCloseButton(this, entity["read"])
             }
     }.register()
-    val Update = object : WelcomeTemplate("Update") {
+    val YesNoDontShow = object : WelcomeTemplate("YesNoDontShow") {
         override fun gen(entity: Entity) =
             BaseDialog(entity["title"]).apply {
-                cont.image(entity.icon)
-                    .maxSize(200f).pad(20f).row()
-                cont.add(Label(entity.content.format(Updater.latestVersion)).apply {
-                    setAlignment(0)
-                    setWrap(true)
-                }).growX()
-                    .row()
+                val data = entity.tip.data
+                val yesAction = ActionRegistry[data["YesAction"]]
+                val noAction = ActionRegistry[data["NoAction"]]
+                val dontShowAction = ActionRegistry[data["DontShowAction"]]
+                cont.addPoster(entity.icon)
+                cont.addCenterText(entity.content(Updater.latestVersion))
                 cont.table {
-                    it.button(entity["yes"]) {
-                        if (CioMod.jarFile != null) {
-                            var progress = 0f
-                            val loading = Vars.ui.loadfrag
-                            loading.show("@downloading")
-                            loading.setProgress { progress }
-                            // Cache tips because updating successfully will replace codes and cause class not found exception.
-                            val successTip = R.Ctrl.UpdateModSuccess.bundle(Updater.latestVersion)
-                            Updater.updateSelfByReplace(onProgress = { p ->
-                                progress = p
-                            }, onSuccess = {
-                                loading.hide()
-                                Time.run(10f) {
-                                    Vars.ui.showInfoOnHidden(successTip) {
-                                        Core.app.exit()
-                                    }
-                                }
-                            }, onFailed = { error ->
-                                Core.app.post {
-                                    loading.hide()
-                                    Dialog("").apply {
-                                        getCell(cont).growX()
-                                        cont.margin(15f).add(
-                                            R.Ctrl.UpdateModFailed.bundle(Updater.latestVersion, error)
-                                        ).width(400f).wrap().get().setAlignment(Align.center, Align.center)
-                                        buttons.button("@ok") {
-                                            this.hide()
-                                        }.size(110f, 50f).pad(4f)
-                                        closeOnBack()
-                                    }.show()
-                                }
-                            })
-                        } else {
-                            Updater.updateSelfByBuiltIn()
-                        }
-                        hide()
+                    it.addCloseButton(this, entity["yes"]) {
+                        yesAction(entity)
                     }.size(150f, 50f)
-                    it.button(entity["no"]) {
-                        hide()
+                    it.addCloseButton(this, entity["no"]) {
+                        noAction(entity)
                     }.size(150f, 50f)
-                    it.button(entity["dont-show"]) {
-                        Settings.ShowUpdate = false
-                        hide()
+                    it.addCloseButton(this, entity["dont-show"]) {
+                        dontShowAction(entity)
                     }.size(150f, 50f)
                 }.growX()
                     .row()
             }
     }.register()
-    val OpenLink = object : WelcomeTemplate("OpenLink") {
+    val DoAction = object : WelcomeTemplate("DoAction") {
         override fun gen(entity: Entity) =
             BaseDialog(entity["title"]).apply {
-                cont.image(entity.icon)
-                    .maxSize(200f).pad(20f).row()
-                cont.add(Label(entity.content).apply {
-                    setAlignment(0)
-                    setWrap(true)
-                }).growX()
-                    .row()
+                val data = entity.tip.data
+                val yesAction = ActionRegistry[data["YesAction"]]
+                val noAction = ActionRegistry[data["NoAction"]]
+                cont.addPoster(entity.icon)
+                cont.addCenterText(entity.content)
+                val order = data["Order"] as? String ?: "YesNo"
                 cont.table {
-                    it.button(entity["yes"]) {
-                        Core.app.openURI(entity["link"])
-                        hide()
-                    }.size(200f, 50f)
-                    it.button(entity["no"]) {
-                        hide()
-                    }.size(200f, 50f)
+                    fun addButton(vararg buttons: Button) {
+                        for (b in buttons)
+                            it.add(b).size(200f, 50f)
+                    }
+                    val yes = createCloseButton(entity["yes"]) {
+                        yesAction(entity)
+                    }
+                    val no = createCloseButton(entity["no"]) {
+                        noAction(entity)
+                    }
+                    if (order == "NoYes")
+                        addButton(no, yes)
+                    else
+                        addButton(yes, no)
                 }.growX()
                     .row()
             }

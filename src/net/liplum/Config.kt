@@ -42,13 +42,21 @@ object Config : CoroutineScope {
             runCatching {
                 tryLoad()
             }.onFailure {
-                Log.err("Can't load configuration of CyberIO.", it)
+                Log.err(
+                    "Can't load configuration of CyberIO because ${it.message}. Please check the format at ${configFile.file.path}. Or you can delete it directly and next time start up, it will be regenerated.",
+                    it
+                )
             }
         }
     }
+
+    val configFile: F
+        get() = FileSys.CyberIoFolder.subF(configName)
     @Suppress("UNCHECKED_CAST")
     private fun tryLoad() {
-        val config = FileSys.CyberIoFolder.subF(configName).getOrCreate(Default)
+        val config = configFile.getOrCreate(Default) {
+            Log.info("${configFile.file.path} has created with initial config.")
+        }
         val text = config.file.readText()
         val map = JsonIO.json.fromJson(ObjectMap::class.java, text) as ObjectMap<String, Any>
         val loaded = HashMap<String, Any>()

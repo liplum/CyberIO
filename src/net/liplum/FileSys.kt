@@ -36,6 +36,16 @@ value class F(val file: File) {
         return this
     }
 
+    inline fun getOrCreate(init: String, onCreated: () -> Unit): F {
+        dir.tryCreate()
+        if (!file.exists()) {
+            file.createNewFile()
+            file.writeText(init)
+            onCreated()
+        }
+        return this
+    }
+
     fun getOrCreate(init: ByteArray): F {
         dir.tryCreate()
         if (!file.exists()) {
