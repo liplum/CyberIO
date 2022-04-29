@@ -113,12 +113,14 @@ object Updater : CoroutineScope {
         if (CioMod.jarFile != null) {
             val length = req.contentLength
             val bytes = ByteArrayOutputStream()
+            Log.info("CyberIO $latestVersion is downloading.")
             Streams.copyProgress(
                 req.resultAsStream,
                 bytes,
                 length, Streams.defaultBufferSize,
                 onProgress
             )
+            Log.info("CyberIO $latestVersion downloaded successfully, replacing file.")
             Streams.copy(
                 bytes.toByteArray().inputStream(),
                 CioMod.jarFile.outputStream()

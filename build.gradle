@@ -250,8 +250,23 @@ task runMod(dependsOn: classes, type: JavaExec) {
     args = [gameFile.path]
 }
 
+task runGame(dependsOn: classes, type: JavaExec) {
+    dependsOn downloadDesktop
+    def gameFile = new File("$rootDir/run/Mindustry${mdtVersionNum}.jar")
+    mainClass.set("-jar")
+    args = [gameFile.path]
+}
+
 task runModServer(dependsOn: classes, type: JavaExec) {
     dependsOn copyJarServer
+    dependsOn downloadServer
+    def gameFile = new File("$rootDir/run/MindustryServer${mdtVersionNum}.jar")
+    mainClass.set("-jar")
+    standardInput = System.in
+    args = [gameFile.path]
+}
+
+task runServer(dependsOn: classes, type: JavaExec) {
     dependsOn downloadServer
     def gameFile = new File("$rootDir/run/MindustryServer${mdtVersionNum}.jar")
     mainClass.set("-jar")

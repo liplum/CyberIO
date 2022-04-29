@@ -5,8 +5,8 @@ import arc.graphics.g2d.Draw
 import arc.math.Angles
 import arc.math.Interp
 import arc.math.Mathf
-import arc.math.geom.Vec2
 import arc.scene.ui.Label
+import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.Vars
@@ -18,10 +18,12 @@ import mindustry.world.blocks.power.ConditionalConsumePower
 import mindustry.world.blocks.power.PowerBlock
 import mindustry.world.meta.Stat
 import net.liplum.ClientOnly
+import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.WhenNotPaused
 import net.liplum.lib.Draw
 import net.liplum.lib.entity.RadiationArray
+import net.liplum.math.Polar
 import net.liplum.utils.*
 import kotlin.math.min
 
@@ -72,6 +74,7 @@ open class WirelessTower(name: String) : PowerBlock(name) {
             it.add(l)
         }
     }
+
     override fun icons() = arrayOf(BaseTR, SupportTR, CoilTR)
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)
@@ -98,8 +101,6 @@ open class WirelessTower(name: String) : PowerBlock(name) {
         var radiations = RadiationArray(maxRadiation) { i, r ->
             r.range = range * i / maxRadiation
         }
-        @ClientOnly
-        val viewVec = Vec2(rotationRadius, 0f)
         @ClientOnly
         val realRadiationSpeed: Float
             get() = radiationSpeed * Mathf.log(3f, timeScale + 2f)
@@ -143,23 +144,35 @@ open class WirelessTower(name: String) : PowerBlock(name) {
                 G.drawSelected(it, R.C.Power)
             }
         }
+        @ClientOnly
+        val centerRadius: Float
+            get() = size * Vars.tilesize * 2f
+        @ClientOnly
+        val orientation = Polar(0f, 0f)
+        @ClientOnly
+        val rotationRadiusSpeed: Float
+            get() = rotationRadius / 25f
 
         override fun draw() {
             val viewX = Core.camera.position.x
             val viewY = Core.camera.position.y
-            val newDegree = Angles.angle(
+            val targetRad = Angles.angle(
                 x, y,
                 viewX, viewY
-            )
-            viewVec.setAngle(
-                Angles.moveToward(
-                    viewVec.angle(),
-                    newDegree,
-                    3f
-                )
-            )
-            val offsetX = viewVec.x
-            val offsetY = viewVec.y
+            ).radian
+            DebugOnly {
+                G.dashCircle(x, y, centerRadius, alpha = 0.2f)
+            }
+            WhenNotPaused {
+                if (Core.camera.position.dst(x, y) > centerRadius) {
+                    orientation.a = targetRad
+                    orientation.approachR(rotationRadius, rotationRadiusSpeed * Time.delta)
+                } else {
+                    orientation.approachR(0f, rotationRadiusSpeed * Time.delta)
+                }
+            }
+            val offsetX = orientation.x
+            val offsetY = orientation.y
             Draw.z(Layer.blockUnder)
             BaseTR.Draw(x, y)
             Drawf.shadow(SupportTR, x - 1f, y - 1f)
@@ -168,7 +181,7 @@ open class WirelessTower(name: String) : PowerBlock(name) {
             Draw.z(Layer.block + 1f)
             Drawf.shadow(CoilTR, x + offsetX - 0.5f, y + offsetY - 0.5f)
             CoilTR.Draw(x + offsetX, y + offsetY)
-            //Radiation
+            // Render radiations
             val selfPower = this.power.status
             if (selfPower.isZero || selfPower.isNaN()) return
             val realRange = realRange

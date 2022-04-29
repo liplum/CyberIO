@@ -26,9 +26,12 @@ object Settings {
         get() = settings.getInt(R.Setting.LastWelcome, 0)
         set(value) = settings.put(R.Setting.LastWelcome, value)
     var CioVersion: String
-        get() = settings.getString(R.Setting.Version, Meta.Version)
+        get() = settings.getString(R.Setting.Version, "v0")
         set(value) = settings.put(R.Setting.Version, value)
     var ShowUpdate: Boolean
         get() = settings.getBool(R.Setting.ShowUpdate, true)
         set(value) = settings.put(R.Setting.ShowUpdate, value)
+    var FirstInstallationTime: Long
+        get() = settings.getLong(R.Setting.FirstInstallationTime, -1)
+        set(value) = settings.put(R.Setting.FirstInstallationTime, value)
 }

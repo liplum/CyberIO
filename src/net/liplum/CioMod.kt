@@ -2,6 +2,7 @@ package net.liplum
 
 import arc.Core
 import arc.Events
+import arc.util.CommandHandler
 import arc.util.Log
 import arc.util.Time
 import mindustry.Vars
@@ -24,6 +25,7 @@ import net.liplum.ui.DebugUI
 import net.liplum.ui.SettingsUI
 import net.liplum.update.Updater
 import net.liplum.utils.G
+import net.liplum.welcome.FirstLoaded
 import net.liplum.welcome.Welcome
 import net.liplum.welcome.WelcomeList
 import java.io.File
@@ -31,14 +33,23 @@ import java.io.File
 class CioMod : Mod() {
     companion object {
         @JvmField val IsClient = !Vars.headless
-        @JvmField var DebugMode = false
+        @JvmField var DebugMode = true
         @JvmField var TestGlCompatibility = false
         @JvmField var ExperimentalMode = false
         @JvmField var CanGlobalAnimationPlay = false
         @JvmField var UpdateFrequency = 5f
         lateinit var Info: Mods.LoadedMod
         @JvmField val jarFile = CioMod::class.java.protectionDomain?.let {
-            File(CioMod::class.java.protectionDomain.codeSource.location.toURI().path)
+            File(it.codeSource.location.toURI().path)
+        }
+        @JvmField var objCreated = false
+
+        init {
+            if (IsClient && Vars.clientLoaded && !objCreated) {
+                FirstLoaded.tryRecord()
+                FirstLoaded.load()
+                FirstLoaded.showDialog()
+            }
         }
     }
     /**
@@ -50,6 +61,7 @@ class CioMod : Mod() {
      * 5. ClientLoadEvent
      */
     init {
+        objCreated = true
         Log.info("Cyber IO mod ${Meta.DetailedVersion} loading started.")
         Updater.fetchLatestVersion()
         HeadlessOnly {
@@ -62,7 +74,9 @@ class CioMod : Mod() {
         //listen for game load event
         Events.on(ClientLoadEvent::class.java) {
             //show welcome dialog upon startup
-            Time.runTask(15f) { Welcome.showWelcomeDialog() }
+            Time.runTask(15f) {
+                Welcome.showWelcomeDialog()
+            }
         }
         Events.on(FileTreeInitEvent::class.java) {
             ClientOnly {
@@ -145,5 +159,9 @@ class CioMod : Mod() {
         PrismBlackList.load()
         CanGlobalAnimationPlay = true
         Log.info("Cyber IO ${Meta.DetailedVersion} mod's contents loaded.")
+    }
+    @HeadlessOnly
+    override fun registerServerCommands(handler: CommandHandler) {
+        ServerCommands.register(handler)
     }
 }

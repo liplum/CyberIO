@@ -1,5 +1,6 @@
 package net.liplum.welcome
 
+import arc.Core
 import arc.Events
 import arc.math.Mathf
 import arc.struct.ObjectMap
@@ -23,14 +24,16 @@ import net.liplum.utils.atlas
 
 @ClientOnly
 object Welcome {
-    var bundle: ReferBundleWrapper = ReferBundleWrapper.create()
+    var bundle = ReferBundleWrapper.create()
     private var info = Info()
     private var entity = Entity(bundle, info)
     @JvmStatic
     fun showWelcomeDialog() {
         checkLastVersion()
+        var showWelcome = false
         if (!Vars.steam && ShowUpdate && Updater.requireUpdate) {
             entity.tip = WelcomeList[info.update]
+            showWelcome = true
         } else if (ShouldShowWelcome) {
             // If it's the first time to play this version, let's show up the Zero Welcome.
             // Otherwise, roll until the result isn't as last one.
@@ -39,18 +42,22 @@ object Welcome {
                 LastWelcome = entity.number
             } else {
                 entity.tip = WelcomeList[info.default]
+                LastWelcome = info.scenes.indexOf(info.default)
             }
+            showWelcome = true
         }
-        val template = entity.tip.template
-        val dialog = template.gen(entity)
-        dialog.show()
+        if (showWelcome) {
+            val template = entity.tip.template
+            val dialog = template.gen(entity)
+            dialog.show()
+        }
     }
     @JvmStatic
     fun modifierModInfo() {
         val meta = CioMod.Info.meta
         meta.displayName = "[#${R.C.Holo}]${meta.displayName}[]"
         Events.run(Trigger.update) {
-            if (Time.time % 30 < 1f) {
+            if (Time.time % 60 < 1f) {
                 val color = RandomName.oneColor()
                 meta.author = "$color${Meta.Author}[]"
             }
@@ -63,8 +70,8 @@ object Welcome {
             ShouldShowWelcome = true
             ClickWelcomeTimes = 0
             ShowUpdate = true
-            CioVersion = Meta.Version
         }
+        CioVersion = Meta.Version
     }
     @JvmStatic
     fun recordClick() {
@@ -75,12 +82,16 @@ object Welcome {
     fun load() {
         loadBundle()
         loadInfo()
-        //To load all templates
+        //To load all templates and actions
         Templates
+        Actions
     }
     @JvmStatic
     fun loadBundle() {
         bundle.loadMoreFrom("welcomes")
+        if (Core.settings.getString("locale") != "en") {
+            bundle.linkParent("welcomes")
+        }
     }
 
     lateinit var infoJson: ObjectMap<String, JsonValue>
@@ -90,9 +101,10 @@ object Welcome {
         val json = Res("WelcomeInfo.json").readAllText()
         infoJson = JsonIO.json.fromJson(ObjectMap::class.java, json) as ObjectMap<String, JsonValue>
         val curInfo = infoJson.get(Meta.Version)
+        assert(curInfo != null) { "The welcome words information of Cyber IO ${Meta.Version} not found." }
         val default = curInfo.get("Default")?.asString() ?: "Default"
         val update = curInfo.get("Update")?.asString() ?: "Default"
-        val scenes = curInfo.get("Scene").asStringArray()
+        val scenes = curInfo.get("Scene")?.asStringArray() ?: emptyArray()
         val parent: String? = curInfo.get("Parent")?.asString()
         info.default = default
         info.update = update
@@ -153,6 +165,10 @@ object Welcome {
 
         val content: String
             get() = bundle["$tip"]
+
+        fun content(vararg args: Any): String =
+            bundle.format("$tip", *args)
+
         val icon: TR
             get() = tip.iconPath.Cio.atlas()
     }

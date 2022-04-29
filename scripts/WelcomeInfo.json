@@ -4,9 +4,11 @@
       "TheSHIP",
       "ECHO",
       "NewBrains",
-      "Discord"
+      "Discord",
+      "AdBlock"
     ]
   },
+  "v0": {},
   "v2": {
     "Default": "EmploymentVerification",
     "Update": "UpdateECHO",

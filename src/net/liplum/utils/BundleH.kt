@@ -105,6 +105,15 @@ fun I18NBundle.loadMoreFrom(folder: String, defaultLocale: String = "en"): I18NB
     }
     return this
 }
+/**
+ * Link the parent bundle which supports a child bundle to get default text from it.
+ */
+fun I18NBundle.linkParent(folder: String, parent: String = "en"): I18NBundle {
+    val parentBundle = createModBundle()
+    parentBundle.loadMoreFrom(folder, parent)
+    this.setF("parent", parentBundle)
+    return parentBundle
+}
 
 fun createModBundle(): I18NBundle {
     val bundle = I18NBundle.createEmptyBundle()
@@ -138,6 +147,10 @@ value class ReferBundleWrapper(
 
     fun loadMoreFrom(folder: String, defaultLocale: String = "en") {
         bundle.loadMoreFrom(folder, defaultLocale)
+    }
+
+    fun linkParent(folder: String, parent: String = "en"): I18NBundle {
+        return bundle.loadMoreFrom(folder, parent)
     }
 
     companion object {

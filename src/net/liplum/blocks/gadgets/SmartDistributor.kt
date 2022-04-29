@@ -157,6 +157,7 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
                 val consumes = build.block.consumes
                 if (consumes.has(ConsumeType.item)) {
                     val reqs: Consume = consumes[ConsumeType.item]
+                    //TODO: Support ItemTurret consumer
                     if (reqs is ConsumeItems) {
                         for (req in reqs.items) {
                             all.add(req.item)
