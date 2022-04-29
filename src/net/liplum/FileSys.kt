@@ -46,6 +46,11 @@ value class F(val file: File) {
         return this
     }
 
+    fun delete(): F {
+        file.delete()
+        return this
+    }
+
     fun getOrCreate(init: ByteArray): F {
         dir.tryCreate()
         if (!file.exists()) {

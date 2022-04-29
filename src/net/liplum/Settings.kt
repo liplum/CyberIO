@@ -31,4 +31,7 @@ object Settings {
     var ShowUpdate: Boolean
         get() = settings.getBool(R.Setting.ShowUpdate, true)
         set(value) = settings.put(R.Setting.ShowUpdate, value)
+    var FirstInstallationTime: Long
+        get() = settings.getLong(R.Setting.FirstInstallationTime, -1)
+        set(value) = settings.put(R.Setting.FirstInstallationTime, value)
 }

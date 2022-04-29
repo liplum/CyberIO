@@ -24,7 +24,7 @@ import net.liplum.utils.atlas
 
 @ClientOnly
 object Welcome {
-    var bundle: ReferBundleWrapper = ReferBundleWrapper.create()
+    var bundle = ReferBundleWrapper.create()
     private var info = Info()
     private var entity = Entity(bundle, info)
     @JvmStatic

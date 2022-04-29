@@ -21,6 +21,9 @@ class Res(
     fun readAsStream(): InputStream =
         load(locator, truePos)
 
+    fun tryReadAsStream(): InputStream? =
+        loadNullable(locator, truePos)
+
     val truePos: String
         get() =
             if (inJar && !(pos.startsWith('/')))
@@ -69,6 +72,7 @@ class Res(
     ): R = reader(charset).use {
         use(it)
     }
+
     /**
      * Read all text from this resource location with UTF-8 charset.
      */

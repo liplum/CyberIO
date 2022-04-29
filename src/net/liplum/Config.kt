@@ -52,6 +52,12 @@ object Config : CoroutineScope {
 
     val configFile: F
         get() = FileSys.CyberIoFolder.subF(configName)
+    @JvmStatic
+    fun resetConfigFile() {
+        configFile.delete().getOrCreate(Default) {
+            Log.info("${configFile.file.path} has created with initial config.")
+        }
+    }
     @Suppress("UNCHECKED_CAST")
     private fun tryLoad() {
         val config = configFile.getOrCreate(Default) {

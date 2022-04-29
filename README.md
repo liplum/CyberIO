@@ -5,39 +5,50 @@
 [![Discord](https://img.shields.io/discord/937228972041842718?color=%23529b69&label=Discord&logo=Discord&style=for-the-badge)](https://discord.gg/PDwyxM3waw)
 [![TotalDownloads](https://img.shields.io/github/downloads/liplum/CyberIO/total?color=674ea7&label=Donwload&logo=docusign&logoColor=white&style=for-the-badge)](https://github.com/liplum/CyberIO/releases)
 
-A Mindustry mod provides lots of cybernetic things!!!
+A Mindustry v7 mod provides lots of cybernetic things!!!
 ___
 </div>
 
-### How To Play
+#### How To Play
 
-To learn about playing Cyber IO, you can check the [wiki](https://github.com/liplum/CyberIO/wiki/Game-Guide).
+To learn about playing Cyber IO, you can check the [wiki of Cyber IO](https://github.com/liplum/CyberIO/wiki/Game-Guide)
+.
+
+#### Mod Compatibility
+
+If you'd like to play the mod pack, [there is rough test](SafelyWorkWith.md) of inter-mod compatibility as a reference
+for you.
+*Note: Every mod could update and might break the result, please think and test on your own.*
+
+#### For Server
+
+Please [check this file](ForServer.md) to learn more about running Cyber IO on a server.
+___
 
 ### IC Machine
 
-___
 ![IC Machine](GFX/ProducingIC2.gif)
+___
 
 ### Sender & Receiver
 
-___
 ![Sender](GFX/Sender&Receiver.gif)
-
-### Holo Projector
-
 ___
+
+### Hologram Projector
+
 ![Holo Projector](GFX/Holo-projecting.gif)
+___
 
 ## Author
 
-___
 **Programmer:** Liplum
 
 **Painter:** sudoudou233
+___
 
 ## Acknowledgement
 
-___
 **IN NO ORDER**
 
 * The friendly people on Discord whoever have ever helped me.
@@ -48,9 +59,10 @@ ___
 
 * Chinese support: [@woodjecket](https://github.com/woodjecket)
 
+___
+
 ## Licence
 
-___
 The codes of CyberIO are open source in GNU General Public License v3.0 (GPL 3.0).
 
 To learn about the resources of CyberIO, please check the [Copyright File](Copyright.md).
