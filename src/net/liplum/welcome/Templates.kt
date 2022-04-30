@@ -4,7 +4,6 @@ import arc.scene.ui.Button
 import mindustry.ui.dialogs.BaseDialog
 import net.liplum.Meta
 import net.liplum.update.Updater
-import net.liplum.welcome.TemplateRegistry.register
 import net.liplum.welcome.Welcome.Entity
 
 object Templates {
@@ -16,7 +15,7 @@ object Templates {
                 cont.addCenterText(entity.content)
                 cont.addCloseButton(this, entity["read"])
             }
-    }.register()
+    }
     val ButtonABC = object : WelcomeTemplate("ButtonABC") {
         override fun gen(entity: Entity) =
             BaseDialog(entity["title"]).apply {
@@ -39,7 +38,7 @@ object Templates {
                 }.growX()
                     .row()
             }
-    }.register()
+    }
     val DoAction = object : WelcomeTemplate("DoAction") {
         override fun gen(entity: Entity) =
             BaseDialog(entity["title"]).apply {
@@ -68,5 +67,5 @@ object Templates {
                 }.growX()
                     .row()
             }
-    }.register()
+    }
 }

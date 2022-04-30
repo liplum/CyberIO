@@ -43,6 +43,7 @@ class CioMod : Mod() {
             File(it.codeSource.location.toURI().path)
         }
         @JvmField var objCreated = false
+        @JvmField var lastPlayTime: Long = -1
 
         init {
             if (IsClient && Vars.clientLoaded && !objCreated) {
@@ -62,6 +63,7 @@ class CioMod : Mod() {
      */
     init {
         objCreated = true
+        lastPlayTime = Settings.LastPlayTime
         Log.info("Cyber IO mod ${Meta.DetailedVersion} loading started.")
         Updater.fetchLatestVersion()
         HeadlessOnly {
@@ -147,6 +149,7 @@ class CioMod : Mod() {
         }
         Settings.updateSettings()
         Log.info("Cyber IO ${Meta.DetailedVersion} initialized.")
+        Settings.LastPlayTime = System.currentTimeMillis()
     }
 
     override fun loadContent() {

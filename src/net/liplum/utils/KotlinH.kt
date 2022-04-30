@@ -62,3 +62,47 @@ inline fun <reified T> Array<T>.sortManually(vararg indices: Int): Array<T> {
 
 fun Boolean.toInt(): Int = if (this) 1 else 0
 fun Boolean.toFloat(): Float = if (this) 1f else 0f
+/**
+ * Roll an element from a collection.
+ * @return the result that doesn't equal to [exception].
+ * Otherwise, null will be returned.
+ */
+fun <T> Collection<T>.randomExcept(exception: T): T? {
+    when (size) {
+        0 -> return null
+        1 -> return if (first() != exception)
+            first()
+        else null
+    }
+    while (true) {
+        val res = this.random()
+        if (res != exception)
+            return res
+    }
+}
+/**
+ * Roll an element from a collection.
+ * @return the result that isn't inclining in this collection.
+ * Otherwise, null will be returned.
+ */
+inline fun <T> Collection<T>.randomExcept(
+    maxTry: Int = this.size,
+    isInclude: T.() -> Boolean,
+): T? {
+    when (size) {
+        0 -> return null
+        1 -> {
+            val first = first()
+            return if (first.isInclude())
+                null
+            else
+                first
+        }
+    }
+    for (i in 0 until maxTry) {
+        val res = this.random()
+        if (!res.isInclude())
+            return res
+    }
+    return null
+}

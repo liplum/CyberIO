@@ -1,5 +1,7 @@
 package net.liplum.welcome
 
+import net.liplum.welcome.ActionRegistry.register
+
 object ActionRegistry {
     val actions: MutableMap<String, Action> = HashMap()
     operator fun get(id: String) =
@@ -21,6 +23,10 @@ object ActionRegistry {
 abstract class Action(
     val id: String,
 ) {
+    init {
+        this.register()
+    }
+
     abstract fun doAction(entity: Welcome.Entity)
     operator fun invoke(entity: Welcome.Entity) {
         doAction(entity)

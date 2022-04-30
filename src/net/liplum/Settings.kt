@@ -22,9 +22,13 @@ object Settings {
     var ClickWelcomeTimes: Int
         get() = settings.getInt(R.Setting.ClickWelcomeTimes, 0)
         set(value) = settings.put(R.Setting.ClickWelcomeTimes, value)
+    @Deprecated("Use Settings.LastWelcomeID instead", level = DeprecationLevel.ERROR)
     var LastWelcome: Int
         get() = settings.getInt(R.Setting.LastWelcome, 0)
         set(value) = settings.put(R.Setting.LastWelcome, value)
+    var LastWelcomeID: String
+        get() = settings.getString(R.Setting.LastWelcomeID, "")
+        set(value) = settings.put(R.Setting.LastWelcomeID, value)
     var CioVersion: String
         get() = settings.getString(R.Setting.Version, "v0")
         set(value) = settings.put(R.Setting.Version, value)
@@ -34,4 +38,11 @@ object Settings {
     var FirstInstallationTime: Long
         get() = settings.getLong(R.Setting.FirstInstallationTime, -1)
         set(value) = settings.put(R.Setting.FirstInstallationTime, value)
+    /**
+     * It will be updated when [CioMod.init] call ends.
+     * So if you want to get the real last play time, please check [CioMod.lastPlayTime].
+     */
+    var LastPlayTime: Long
+        get() = settings.getLong(R.Setting.LastPlayTime, -1)
+        set(value) = settings.put(R.Setting.LastPlayTime, value)
 }

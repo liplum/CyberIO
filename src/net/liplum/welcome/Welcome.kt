@@ -2,22 +2,18 @@ package net.liplum.welcome
 
 import arc.Core
 import arc.Events
-import arc.math.Mathf
 import arc.struct.ObjectMap
 import arc.util.Time
 import arc.util.serialization.JsonValue
-import mindustry.Vars
 import mindustry.game.EventType.Trigger
 import mindustry.io.JsonIO
 import net.liplum.*
 import net.liplum.Settings.CioVersion
 import net.liplum.Settings.ClickWelcomeTimes
-import net.liplum.Settings.LastWelcome
 import net.liplum.Settings.ShouldShowWelcome
 import net.liplum.Settings.ShowUpdate
 import net.liplum.blocks.tmtrainer.RandomName
 import net.liplum.lib.Res
-import net.liplum.update.Updater
 import net.liplum.utils.ReferBundleWrapper
 import net.liplum.utils.TR
 import net.liplum.utils.atlas
@@ -27,29 +23,28 @@ object Welcome {
     var bundle = ReferBundleWrapper.create()
     private var info = Info()
     private var entity = Entity(bundle, info)
+    private var showWelcome = false
     @JvmStatic
     fun showWelcomeDialog() {
         checkLastVersion()
-        var showWelcome = false
-        if (!Vars.steam && ShowUpdate && Updater.requireUpdate) {
-            entity.tip = WelcomeList[info.update]
-            showWelcome = true
-        } else if (ShouldShowWelcome) {
-            // If it's the first time to play this version, let's show up the Zero Welcome.
-            // Otherwise, roll until the result isn't as last one.
-            if (ClickWelcomeTimes > 0) {
-                entity.randomize(LastWelcome)
-                LastWelcome = entity.number
-            } else {
-                entity.tip = WelcomeList[info.default]
-                LastWelcome = info.scenes.indexOf(info.default)
-            }
-            showWelcome = true
-        }
+        judgeWelcome()
         if (showWelcome) {
             val template = entity.tip.template
             val dialog = template.gen(entity)
             dialog.show()
+        }
+    }
+    @JvmStatic
+    fun judgeWelcome() {
+        val allTips = info.scenes.map { WelcomeList[it] }.distinct().toList()
+        val groups = allTips.groupBy { ConditionRegistry[it.conditionID] }
+        val conditionCanShow = groups.keys.filter { it.canShow() }.maxByOrNull { it.priority }
+        conditionCanShow?.let {
+            val matches = groups[it]
+            if (matches != null && matches.isNotEmpty()) {
+                it.applyShow(entity, matches)
+                showWelcome = true
+            }
         }
     }
     @JvmStatic
@@ -85,6 +80,7 @@ object Welcome {
         //To load all templates and actions
         Templates
         Actions
+        Conditions
     }
     @JvmStatic
     fun loadBundle() {
@@ -103,11 +99,9 @@ object Welcome {
         val curInfo = infoJson.get(Meta.Version)
         assert(curInfo != null) { "The welcome words information of Cyber IO ${Meta.Version} not found." }
         val default = curInfo.get("Default")?.asString() ?: "Default"
-        val update = curInfo.get("Update")?.asString() ?: "Default"
         val scenes = curInfo.get("Scene")?.asStringArray() ?: emptyArray()
         val parent: String? = curInfo.get("Parent")?.asString()
         info.default = default
-        info.update = update
         val allScenes = HashSet<String>()
         allScenes.addAll(scenes)
         fun loadParent(parent: String) {
@@ -121,21 +115,26 @@ object Welcome {
         if (parent != null) {
             loadParent(parent)
         }
-        info.scenes.addAll(allScenes)
+        info.scenes = allScenes.toList()
     }
 
     class Info {
         var default = "Default"
-        var update = "Default"
-        var scenes: MutableList<String> = ArrayList()
+        var scenes: List<String> = emptyList()
         val sceneSize: Int
             get() = scenes.size
 
         operator fun get(index: Int) =
-            if (index < 0)
+            if (index !in scenes.indices)
                 default
             else
                 scenes[index]
+
+        fun indexOf(tipID: String): Int =
+            scenes.indexOf(tipID)
+
+        val defaultIndex: Int
+            get() = indexOf(default)
     }
 
     class Entity(
@@ -143,23 +142,6 @@ object Welcome {
         val info: Info,
     ) {
         var tip: WelcomeTip = WelcomeTip.Default
-        var number: Int = 0
-            private set
-
-        fun randomize(avoid: Int) {
-            val variants = info.sceneSize
-            if (variants <= 0) {
-                number = -1
-            } else if (variants == 1) {
-                number = 0
-            } else {
-                do {
-                    number = Mathf.random(0, variants - 1)
-                } while (number == avoid)
-            }
-            tip = WelcomeList[info[number]]
-        }
-
         operator fun get(key: String) =
             bundle["$tip.$key"]
 
