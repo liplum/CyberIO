@@ -183,3 +183,18 @@ fun Polar.approachA(targetRadian: Float, speed: Float): Polar {
     a = Angles.moveToward(a.degree, targetRadian.draw, speed).radian
     return this
 }
+/**
+ * Roll a number belongs to `[0,this)`
+ * @return the result that doesn't equal to [exception]. Otherwise, -1 will be returned.
+ */
+fun Int.randomExcept(exception: Int): Int {
+    var res: Int
+    when (val len = this.coerceAtLeast(0)) {
+        0 -> res = -1
+        1 -> res = 0
+        else -> do {
+            res = Mathf.random(0, len - 1)
+        } while (res == exception)
+    }
+    return res
+}

@@ -2,6 +2,7 @@ package net.liplum.welcome
 
 import arc.scene.ui.Dialog
 import mindustry.ui.dialogs.BaseDialog
+import net.liplum.welcome.TemplateRegistry.register
 
 object TemplateRegistry {
     val templates: MutableMap<String, WelcomeTemplate> = HashMap()
@@ -21,6 +22,10 @@ object TemplateRegistry {
 abstract class WelcomeTemplate(
     val id: String,
 ) {
+    init {
+        this.register()
+    }
+
     abstract fun gen(entity: Welcome.Entity): Dialog
 
     companion object {

@@ -292,6 +292,8 @@ public class R {
                 Version = Gen("version"),
                 ClickWelcomeTimes = Gen("welcome-click-times"),
                 LastWelcome = Gen("last-welcome"),
-                FirstInstallationTime = Gen("first-install-time");
+                LastWelcomeID = Gen("last-welcome-id"),
+                FirstInstallationTime = Gen("first-install-time"),
+                LastPlayTime = Gen("last-play-time");
     }
 }

@@ -21,7 +21,8 @@
     "Data": {
       "ActionA": "UpdateCyberIO",
       "ActionC": "StopCheckUpdate"
-    }
+    },
+    "Condition": "CheckUpdate"
   },
   {
     "ID": "ResearchProject",

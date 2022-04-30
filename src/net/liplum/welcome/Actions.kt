@@ -10,7 +10,6 @@ import net.liplum.R
 import net.liplum.Settings
 import net.liplum.update.Updater
 import net.liplum.utils.bundle
-import net.liplum.welcome.ActionRegistry.register
 
 object Actions {
     val OpenLink = object : Action("OpenLink") {
@@ -25,17 +24,17 @@ object Actions {
                 Core.app.openURI(link)
             }
         }
-    }.register()
+    }
     val CloseReceiveWelcome = object : Action("StopReceiveWelcome") {
         override fun doAction(entity: Welcome.Entity) {
             Settings.ShouldShowWelcome = false
         }
-    }.register()
-    val StopCheckUpdate = object :Action("StopCheckUpdate"){
+    }
+    val StopCheckUpdate = object : Action("StopCheckUpdate") {
         override fun doAction(entity: Welcome.Entity) {
             Settings.ShowUpdate = false
         }
-    }.register()
+    }
     val UpdateCyberIO = object : Action("UpdateCyberIO") {
         override fun doAction(entity: Welcome.Entity) {
             if (CioMod.jarFile != null) {
@@ -73,5 +72,5 @@ object Actions {
                 Updater.updateSelfByBuiltIn()
             }
         }
-    }.register()
+    }
 }
