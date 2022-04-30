@@ -17,10 +17,10 @@
   },
   {
     "ID": "UpdateECHO",
-    "Template": "YesNoDontShow",
+    "Template": "ButtonABC",
     "Data": {
-      "YesAction": "UpdateCyberIO",
-      "DontShowAction": "StopCheckUpdate"
+      "ActionA": "UpdateCyberIO",
+      "ActionC": "StopCheckUpdate"
     }
   },
   {

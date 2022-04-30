@@ -3,7 +3,7 @@
 # Cyber IO [![Discord](GFX/Discord.png)](https://discord.gg/PDwyxM3waw)
 
 [![Discord](https://img.shields.io/discord/937228972041842718?color=%23529b69&label=Discord&logo=Discord&style=for-the-badge)](https://discord.gg/PDwyxM3waw)
-[![TotalDownloads](https://img.shields.io/github/downloads/liplum/CyberIO/total?color=674ea7&label=Donwload&logo=docusign&logoColor=white&style=for-the-badge)](https://github.com/liplum/CyberIO/releases)
+[![TotalDownloads](https://img.shields.io/github/downloads/liplum/CyberIO/total?color=674ea7&label=Download&logo=docusign&logoColor=white&style=for-the-badge)](https://github.com/liplum/CyberIO/releases)
 
 A Mindustry v7 mod provides lots of cybernetic things!!!
 ___
@@ -11,12 +11,12 @@ ___
 
 #### How To Play
 
-To learn about playing Cyber IO, you can check the [wiki of Cyber IO](https://github.com/liplum/CyberIO/wiki/Game-Guide)
+To learn about playing Cyber IO, you can check [the wiki of Cyber IO](https://github.com/liplum/CyberIO/wiki/Game-Guide)
 .
 
 #### Mod Compatibility
 
-If you'd like to play the mod pack, [there is rough test](SafelyWorkWith.md) of inter-mod compatibility as a reference
+If you'd like to play a mod pack, [there is a rough test](SafelyWorkWith.md) of inter-mod compatibility as a reference
 for you.
 *Note: Every mod could update and might break the result, please think and test on your own.*
 

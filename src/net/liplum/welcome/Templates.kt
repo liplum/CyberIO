@@ -17,23 +17,23 @@ object Templates {
                 cont.addCloseButton(this, entity["read"])
             }
     }.register()
-    val YesNoDontShow = object : WelcomeTemplate("YesNoDontShow") {
+    val ButtonABC = object : WelcomeTemplate("ButtonABC") {
         override fun gen(entity: Entity) =
             BaseDialog(entity["title"]).apply {
                 val data = entity.tip.data
-                val yesAction = ActionRegistry[data["YesAction"]]
-                val noAction = ActionRegistry[data["NoAction"]]
-                val dontShowAction = ActionRegistry[data["DontShowAction"]]
+                val yesAction = ActionRegistry[data["ActionA"]]
+                val noAction = ActionRegistry[data["ActionB"]]
+                val dontShowAction = ActionRegistry[data["ActionC"]]
                 cont.addPoster(entity.icon)
                 cont.addCenterText(entity.content(Updater.latestVersion))
                 cont.table {
-                    it.addCloseButton(this, entity["yes"]) {
+                    it.addCloseButton(this, entity["button-a"]) {
                         yesAction(entity)
                     }.size(150f, 50f)
-                    it.addCloseButton(this, entity["no"]) {
+                    it.addCloseButton(this, entity["button-b"]) {
                         noAction(entity)
                     }.size(150f, 50f)
-                    it.addCloseButton(this, entity["dont-show"]) {
+                    it.addCloseButton(this, entity["button-c"]) {
                         dontShowAction(entity)
                     }.size(150f, 50f)
                 }.growX()
