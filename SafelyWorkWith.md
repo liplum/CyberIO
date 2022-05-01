@@ -1,10 +1,12 @@
 # Cyber IO can work with X safely
-This page is only about tests and doesn't guarantee the accuracy.
-Thus, it has only referenced value.
+The tests on this page has **only** referenced value and doesn't guarantee the accuracy.
 
-All tests only considered Cyber IO works with a single mod once.
+All tests **only** considered Cyber IO works with a single mod once.
+And the list below is **only** used to record the result on a specific version. Thus, they have timeliness and should be tested again soon.
 
-The below list is only used to record the result of tests on that version. Thus, there have timeliness and can test repeatedly.  
+Therefore, if any result is outdated or wrong, please new an issue.
+
+Tip: Using **Ctrl-F** to search for the mod you want is an easy way.
 ### Test List
 - BetaMindy(betamindy) v1.08
 - [x] OK, sk7725.
