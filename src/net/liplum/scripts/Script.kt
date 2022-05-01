@@ -2,11 +2,11 @@ package net.liplum.scripts
 
 import arc.Events
 import arc.util.I18NBundle
-import arc.util.Log
 import mindustry.Vars
 import mindustry.core.GameState.State
 import mindustry.game.EventType.Trigger
 import net.liplum.ClientOnly
+import net.liplum.Clog
 import net.liplum.lib.Res
 import net.liplum.lib.toLinkedString
 import net.liplum.scripts.ScriptLoader.load
@@ -71,11 +71,11 @@ object Script {
     @ClientOnly
     fun initInterpreter() {
         Engine.addAction("log") {
-            Log.info("[CIO]OpeGAL:${it.toLinkedString()}")
+            Clog.info("[CIO]OpeGAL:${it.toLinkedString()}")
         }
 
         Engine.addAction("scriptLoaded") {
-            Log.info("[CIO]OpeGAL:${it.toLinkedString()} Loaded.")
+            Clog.info("[CIO]OpeGAL:${it.toLinkedString()} Loaded.")
         }
 
         Engine.addAction("text") {

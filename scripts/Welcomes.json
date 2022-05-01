@@ -17,6 +17,7 @@
   },
   {
     "ID": "UpdateECHO",
+    "IconPath": "update-icon",
     "Template": "ButtonABC",
     "Data": {
       "ActionA": "UpdateCyberIO",

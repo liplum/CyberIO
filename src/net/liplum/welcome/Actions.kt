@@ -3,6 +3,7 @@ package net.liplum.welcome
 import arc.Core
 import arc.scene.ui.Dialog
 import arc.util.Align
+import arc.util.Log
 import arc.util.Time
 import mindustry.Vars
 import net.liplum.CioMod
@@ -54,9 +55,10 @@ object Actions {
                         }
                     }
                 }, onFailed = { error ->
+                    Log.err(error)
                     Core.app.post {
                         loading.hide()
-                        Dialog("").apply {
+                        Dialog().apply {
                             getCell(cont).growX()
                             cont.margin(15f).add(
                                 R.Ctrl.UpdateModFailed.bundle(Updater.latestVersion, error)

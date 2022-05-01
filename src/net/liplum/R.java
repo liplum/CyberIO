@@ -296,4 +296,11 @@ public class R {
                 FirstInstallationTime = Gen("first-install-time"),
                 LastPlayTime = Gen("last-play-time");
     }
+
+    public static final class CMD {
+        public static final String
+                ResetConfig = "cio-reset-config",
+                ReloadConfig = "cio-reload-config",
+                CheckUpdate = "cio-check-update";
+    }
 }

@@ -28,12 +28,12 @@ abstract class Condition(
         this.register()
     }
 
-    abstract fun canShow(): Boolean
+    abstract fun canShow(tip:WelcomeTip): Boolean
     abstract fun applyShow(entity: Welcome.Entity, matches: List<WelcomeTip>)
 
     companion object {
         val Default = object : Condition("Default", Int.MIN_VALUE) {
-            override fun canShow(): Boolean {
+            override fun canShow(tip:WelcomeTip): Boolean {
                 return false
             }
 

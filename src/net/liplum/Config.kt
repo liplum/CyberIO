@@ -1,52 +1,49 @@
 package net.liplum
 
 import arc.struct.ObjectMap
-import arc.util.Log
 import arc.util.serialization.JsonValue
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 import mindustry.io.JsonIO
 import net.liplum.scripts.KeyNotFoundException
 import net.liplum.utils.component1
 import net.liplum.utils.component2
-import kotlin.coroutines.CoroutineContext
 
-object Config : CoroutineScope {
+@HeadlessOnly
+object Config {
     val Default = """
     {
-        "AutoUpdate": false
+        "AutoUpdate": false,
+        "CheckUpdateInfoURL": null
     }
     """.trimIndent()
     var metas: Map<String, ConfigEntry<*>> = mapOf(
         "AutoUpdate" to ConfigEntry(false),
+        "CheckUpdateInfoURL" to ConfigEntry(null, String::class.java),
     )
     val AutoUpdate: Boolean
-        get() = Config["AutoUpdate"]
+        get() = Config["AutoUpdate"] ?: false
+    val CheckUpdateInfoURL: String
+        get() = Config["CheckUpdateInfoURL"] ?: Meta.UpdateInfoURL
     const val configName = "config.json"
-    var pairs: Map<String, Any> = emptyMap()
+    var pairs: Map<String, Any?> = emptyMap()
     @Suppress("UNCHECKED_CAST")
-    operator fun <T> get(key: String): T {
-        val inPairs = pairs[key]
-        if (inPairs != null)
-            return inPairs as T
-        val inMetas = metas[key]?.default
-        if (inMetas != null)
-            return inMetas as T
+    operator fun <T> get(key: String): T? {
+        if (key in pairs) {
+            return pairs[key] as T?
+        }
+        if (key in metas) {
+            return metas[key]?.default as T?
+        }
         throw KeyNotFoundException(key)
     }
     @JvmStatic
     fun load() {
-        loadConfigJob = launch {
-            runCatching {
-                tryLoad()
-            }.onFailure {
-                Log.err(
-                    "Can't load configuration of CyberIO because ${it.message}. Please check the format at ${configFile.file.path}. Or you can delete it directly and next time start up, it will be regenerated.",
-                    it
-                )
-            }
+        runCatching {
+            tryLoad()
+        }.onFailure {
+            Clog.err(
+                "Can't load config because ${it.message}. Please check the format at ${configFile.file.path}. Or you can delete it directly and it will be regenerated next time starting up.",
+                it
+            )
         }
     }
 
@@ -55,34 +52,40 @@ object Config : CoroutineScope {
     @JvmStatic
     fun resetConfigFile() {
         configFile.delete().getOrCreate(Default) {
-            Log.info("${configFile.file.path} has created with initial config.")
+            Clog.info("${configFile.file.path} has created with initial config.")
         }
     }
     @Suppress("UNCHECKED_CAST")
     private fun tryLoad() {
         val config = configFile.getOrCreate(Default) {
-            Log.info("${configFile.file.path} has created with initial config.")
+            Clog.info("${configFile.file.path} has created with initial config.")
         }
         val text = config.file.readText()
-        val map = JsonIO.json.fromJson(ObjectMap::class.java, text) as ObjectMap<String, Any>
-        val loaded = HashMap<String, Any>()
+        val map = JsonIO.json.fromJson(ObjectMap::class.java, text) as ObjectMap<String, Any?>
+        val loaded = HashMap<String, Any?>()
         for ((name, v) in map) {
-            metas[name]?.let {
-                if (v is JsonValue)
-                    loaded[name] = it.convert(v)
-                else if (it.matchClz(v))
-                    loaded[name] = v
+            val meta = metas[name]
+            if (meta != null) {
+                if (v == null) {
+                    if (meta.allowNull)
+                        loaded[name] = null
+                    else
+                        continue
+                } else {
+                    if (v is JsonValue)
+                        loaded[name] = meta.convert(v)
+                    else if (meta.matchClz(v))
+                        loaded[name] = v
+                }
+            } else {
+                Clog.info("Can't recognize $name=$v in config.")
             }
         }
         pairs = loaded
     }
-
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.IO
-    var loadConfigJob: Job? = null
 }
 
-class ConfigEntry<T : Any>(val default: T, val clz: Class<T>) {
+class ConfigEntry<T : Any>(val default: T?, val clz: Class<T>, val allowNull: Boolean = true) {
     constructor(default: T) : this(default, clz = default.javaClass)
     @Suppress("UNCHECKED_CAST")
     fun convert(value: JsonValue): T {

@@ -1,6 +1,7 @@
 package net.liplum
 
 import arc.Core.settings
+import mindustry.Vars
 
 object Settings {
     @ClientOnly @JvmField var LinkOpacity = 1f
@@ -33,7 +34,7 @@ object Settings {
         get() = settings.getString(R.Setting.Version, "v0")
         set(value) = settings.put(R.Setting.Version, value)
     var ShowUpdate: Boolean
-        get() = settings.getBool(R.Setting.ShowUpdate, true)
+        get() = settings.getBool(R.Setting.ShowUpdate, !Vars.steam)
         set(value) = settings.put(R.Setting.ShowUpdate, value)
     var FirstInstallationTime: Long
         get() = settings.getLong(R.Setting.FirstInstallationTime, -1)

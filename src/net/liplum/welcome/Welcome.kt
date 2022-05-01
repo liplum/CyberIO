@@ -38,11 +38,22 @@ object Welcome {
     fun judgeWelcome() {
         val allTips = info.scenes.map { WelcomeList[it] }.distinct().toList()
         val groups = allTips.groupBy { ConditionRegistry[it.conditionID] }
-        val conditionCanShow = groups.keys.filter { it.canShow() }.maxByOrNull { it.priority }
+        val cond2Welcome = HashMap<Condition, ArrayList<WelcomeTip>>()
+        for ((cond, tips) in groups.entries) {
+            for (tip in tips) {
+                if (cond.canShow(tip))
+                    cond2Welcome.computeIfAbsent(cond) {
+                        ArrayList()
+                    }.add(tip)
+            }
+        }
+        val conditionCanShow = cond2Welcome.maxByOrNull {
+            it.key.priority
+        }
         conditionCanShow?.let {
-            val matches = groups[it]
-            if (matches != null && matches.isNotEmpty()) {
-                it.applyShow(entity, matches)
+            val matches = it.value
+            if (matches.isNotEmpty()) {
+                it.key.applyShow(entity, matches)
                 showWelcome = true
             }
         }
