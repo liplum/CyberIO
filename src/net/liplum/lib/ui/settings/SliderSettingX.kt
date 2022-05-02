@@ -16,8 +16,8 @@ operator fun StringProcessor.invoke(i: Int): String =
 class SliderSettingX(
     name: String,
     def: Int, val min: Int, val max: Int, val step: Int,
+    val str: StringProcessor = StringProcessor { it.toString() },
     val onChanged: () -> Unit = {},
-    val str: StringProcessor = StringProcessor { it.toString() }
 ) : SliderSetting(name, def, min, max, step, str) {
     override fun add(table: SettingsTable) {
         val slider = Slider(min.toFloat(), max.toFloat(), step.toFloat(), false)
@@ -45,5 +45,18 @@ class SliderSettingX(
                 .padTop(4f).get()
         )
         table.row()
+    }
+
+    companion object {
+        fun SettingsTable.addSliderSettingX(
+            name: String,
+            def: Int, min: Int, max: Int, step: Int,
+            str: StringProcessor = StringProcessor { it.toString() },
+            onChanged: () -> Unit = {},
+        ): SliderSettingX = SliderSettingX(name, def, min, max, step, str, onChanged).apply {
+            settings.add(this)
+            Core.settings.defaults(name, def)
+            rebuild()
+        }
     }
 }
