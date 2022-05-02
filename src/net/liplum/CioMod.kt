@@ -68,7 +68,7 @@ class CioMod : Mod() {
         objCreated = true
         lastPlayTime = Settings.LastPlayTime
         Clog.info("v${Meta.DetailedVersion} loading started.")
-        ClientOnly {
+        (OnlyClient and NotSteam) {
             Updater.fetchLatestVersion(Meta.UpdateInfoURL)
         }
         HeadlessOnly {

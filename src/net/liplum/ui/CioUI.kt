@@ -1,9 +1,12 @@
 package net.liplum.ui
 
 import arc.Core
+import arc.Events
 import arc.math.Interp
+import arc.scene.ui.TextButton
 import arc.scene.ui.layout.Table
 import mindustry.Vars
+import mindustry.game.EventType.Trigger
 import mindustry.ui.Styles
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.CheckSetting
@@ -25,18 +28,30 @@ object CioUI {
     }
     @JvmStatic
     fun addCyberIOSettingMenu() {
-        val settings = Vars.ui.settings
-        val menu = settings.getF<Table>("menu")
-        val prefs = settings.getF<Table>("prefs")
-        settings.shown {
-            menu.row()
-            menu.button(Meta.Name, Styles.cleart) {
-                prefs.clearChildren()
-                prefs.add(this.settings)
+        val uiSettings = Vars.ui.settings
+        val menu = uiSettings.getF<Table>("menu")
+        val prefs = uiSettings.getF<Table>("prefs")
+        uiSettings.resized {
+            settings.rebuild()
+            uiSettings.updateScrollFocus()
+        }
+        Events.run(Trigger.update) {
+            if (Vars.ui.settings.isShown) {
+                val cioSettings = menu.find<TextButton>(SettingButtonName)
+                if (cioSettings == null) {
+                    menu.row()
+                    menu.button(Meta.Name, Styles.cleart) {
+                        prefs.clearChildren()
+                        prefs.add(settings)
+                    }.get().apply {
+                        name = SettingButtonName
+                    }
+                }
             }
         }
     }
 
+    const val SettingButtonName = "cyber-io-settings-button"
     val settings = SettingsTable().apply {
         addSliderSettingX(R.Setting.LinkOpacity,
             100, 0, 100, 5, { "$it%" }
