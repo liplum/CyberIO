@@ -153,6 +153,12 @@ value class ReferBundleWrapper(
         return bundle.loadMoreFrom(folder, parent)
     }
 
+    fun handleRefer(text: String): String =
+        if (has(text))
+            bundle[text]
+        else
+            text
+
     companion object {
         fun create(): ReferBundleWrapper =
             ReferBundleWrapper(createModBundle())

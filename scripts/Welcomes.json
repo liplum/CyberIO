@@ -47,5 +47,13 @@
       "YesAction": "StopReceiveWelcome",
       "Order": "NoYes"
     }
+  },
+  {
+    "ID": "404NotFound",
+    "Template": "PlainText",
+    "Data": {
+      "FontSize": 1.2,
+      "ShowPoliteWelcome": false
+    }
   }
 ]

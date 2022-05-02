@@ -10,8 +10,11 @@ object Templates {
     val Story = object : WelcomeTemplate("Story") {
         override fun gen(entity: Entity) =
             BaseDialog(entity["title"]).apply {
+                val data = entity.tip.data
                 addPoster(entity.icon)
-                addCenterText(entity.bundle.format("welcome", Meta.DetailedVersion))
+                val showPoliteWelcome = data["ShowPoliteWelcome"] as? Boolean ?: true
+                if (showPoliteWelcome)
+                    addCenterText(entity.bundle.format("welcome", Meta.DetailedVersion))
                 addCenterText(entity.content)
                 addCloseButton(entity["read"])
             }
@@ -66,6 +69,37 @@ object Templates {
                         addButton(yes, no)
                 }.growX()
                     .row()
+            }
+    }
+    val TextIcon = object : WelcomeTemplate("TextIcon") {
+        override fun gen(entity: Entity) =
+            BaseDialog(entity["title"]).apply {
+                val data = entity.tip.data
+                val text = data["Text"] as? String ?: ""
+                val fontSize = data["FontSize"] as? Float ?: 1f
+                val resText = entity.bundle.handleRefer(text)
+                addCenterText(resText).get().apply {
+                    this.setFontScale(fontSize)
+                }
+                val showPoliteWelcome = data["ShowPoliteWelcome"] as? Boolean ?: true
+                if (showPoliteWelcome)
+                    addCenterText(entity.bundle.format("welcome", Meta.DetailedVersion))
+                addCenterText(entity.content)
+                addCloseButton(entity["read"])
+            }
+    }
+    val PlainText = object : WelcomeTemplate("PlainText") {
+        override fun gen(entity: Entity) =
+            BaseDialog(entity["title"]).apply {
+                val data = entity.tip.data
+                val showPoliteWelcome = data["ShowPoliteWelcome"] as? Boolean ?: true
+                if (showPoliteWelcome)
+                    addCenterText(entity.bundle.format("welcome", Meta.DetailedVersion))
+                val fontSize = data["FontSize"] as? Float ?: 1f
+                addCenterText(entity.content).pad(40f).get().apply {
+                    this.setFontScale(fontSize)
+                }
+                addCloseButton(entity["read"])
             }
     }
 }

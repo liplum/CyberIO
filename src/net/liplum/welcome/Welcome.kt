@@ -57,6 +57,7 @@ object Welcome {
                 showWelcome = true
             }
         }
+        entity.tip = WelcomeList["404NotFound"]
     }
     @JvmStatic
     fun modifierModInfo() {

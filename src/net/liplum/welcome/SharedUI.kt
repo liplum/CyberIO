@@ -15,7 +15,7 @@ import net.liplum.utils.TR
 internal fun Dialog.addPoster(
     icon: TR,
     table: Table = this.cont
-) {
+): Image {
     val tx = icon.texture
     val magFilter = tx.magFilter
     val minFilter = tx.minFilter
@@ -29,21 +29,23 @@ internal fun Dialog.addPoster(
             tx.setFilter(magFilter, minFilter)
     }
     table.add(img).minSize(200f).scaling(Scaling.fill).row()
+    return img
 }
 
 internal fun Dialog.addCenterText(
     text: String,
     table: Table = this.cont
-) {
-    table.add(Label(text).apply {
+): Cell<Label> {
+    val cell = table.add(Label(text).apply {
         setAlignment(0)
         setWrap(true)
         DesktopOnly {
             // On the high resolution screen, the text looks too small.
             setFontScale(1.1f)
         }
-    }).growX()
-        .row()
+    })
+    cell.growX().row()
+    return cell
 }
 
 internal inline fun Dialog.addCloseButton(

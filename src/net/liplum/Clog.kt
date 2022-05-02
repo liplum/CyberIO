@@ -43,7 +43,7 @@ object Clog {
     }
     @JvmStatic
     @JvmOverloads
-    fun <TK, TV> Map<TK, TV>.log(
+    inline fun <TK, TV> Map<TK, TV>.log(
         title: String,
         length: Int = 25,
         level: LogLevel = LogLevel.info,
@@ -51,13 +51,15 @@ object Clog {
     ) {
         val infoHead = title.buildCenterFillUntil('=', length) addLeft "//" addRight "\\\\"
         Log.log(level, infoHead.toString())
-        this.forEach(howToLog)
+        this.forEach {
+            howToLog(it.key, it.value)
+        }
         val infoTail = buildFill('=', length) addLeft "\\\\" addRight "//"
         Log.log(level, infoTail.toString())
     }
     @JvmStatic
     @JvmOverloads
-    fun <TK, TV> ObjectMap<TK, TV>.log(
+    inline fun <TK, TV> ObjectMap<TK, TV>.log(
         title: String,
         length: Int = 25,
         level: LogLevel = LogLevel.info,
@@ -65,7 +67,9 @@ object Clog {
     ) {
         val infoHead = title.buildCenterFillUntil('=', length) addLeft "//" addRight "\\\\"
         Log.log(level, infoHead.toString())
-        this.each(howToLog)
+        for (entry in entries()) {
+            howToLog(entry.key, entry.value)
+        }
         val infoTail = buildFill('=', length) addLeft "\\\\" addRight "//"
         Log.log(level, infoTail.toString())
     }
