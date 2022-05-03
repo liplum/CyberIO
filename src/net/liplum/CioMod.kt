@@ -22,8 +22,8 @@ import net.liplum.registries.ServerCommands.registerCioCmds
 import net.liplum.render.LinkDrawer
 import net.liplum.scripts.NpcSystem
 import net.liplum.scripts.Script
-import net.liplum.ui.DebugUI
 import net.liplum.ui.CioUI
+import net.liplum.ui.DebugUI
 import net.liplum.update.Updater
 import net.liplum.utils.G
 import net.liplum.welcome.FirstLoaded
@@ -52,7 +52,9 @@ class CioMod : Mod() {
             if (IsClient && Vars.clientLoaded && !objCreated) {
                 FirstLoaded.tryRecord()
                 FirstLoaded.load()
-                FirstLoaded.showDialog()
+                Time.run(5f) {
+                    FirstLoaded.showDialog()
+                }
             }
         }
     }

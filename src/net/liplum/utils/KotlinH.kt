@@ -106,3 +106,62 @@ inline fun <T> Collection<T>.randomExcept(
     }
     return null
 }
+/**
+ * Roll an element from a collection.
+ * @return the result that isn't inclining in this collection.
+ * Otherwise, null will be returned.
+ */
+inline fun <C,T> C.randomExcept(
+    maxTry: Int = this.size,
+    random: C.() -> T,
+    isInclude: T.() -> Boolean,
+): T? where C:Collection<T>{
+    when (size) {
+        0 -> return null
+        1 -> {
+            val first = first()
+            return if (first.isInclude())
+                null
+            else
+                first
+        }
+    }
+    for (i in 0 until maxTry) {
+        val res = this.random()
+        if (!res.isInclude())
+            return res
+    }
+    return null
+}
+/**
+ * Returns the all elements yielding the largest value of the given function or empty list if there are no elements.
+ */
+inline fun <T, R : Comparable<R>> Iterable<T>.allMaxBy(selector: (T) -> R): List<T> {
+    val iterator = iterator()
+    if (!iterator.hasNext()) return emptyList()
+    var maxElem = iterator.next()
+    if (!iterator.hasNext()) return listOf(maxElem)
+    var maxValue = selector(maxElem)
+    val res = ArrayList<T>().apply {
+        add(maxElem)
+    }
+    do {
+        val e = iterator.next()
+        val v = selector(e)
+        if (maxValue < v) {
+            maxElem = e
+            maxValue = v
+            res.clear()
+            res.add(e)
+        } else if (maxValue == v) {
+            res.add(e)
+        }
+    } while (iterator.hasNext())
+    return res
+}
+
+inline fun <K, V, R : Comparable<R>> Map<out K, V>.allMaxBy(
+    selector: (Map.Entry<K, V>) -> R
+): List<Map.Entry<K, V>> {
+    return entries.allMaxBy(selector)
+}

@@ -4,7 +4,8 @@
     "Template": "Story"
   },
   {
-    "ID": "EmploymentVerification"
+    "ID": "EmploymentVerification",
+    "Template": "SpecialDishes"
   },
   {
     "ID": "Discord",
@@ -27,6 +28,7 @@
   },
   {
     "ID": "ResearchProject",
+    "Condition": "SpecialDishes",
     "IconPath": "welcome-holo-project"
   },
   {
@@ -46,14 +48,18 @@
     "Data": {
       "YesAction": "StopReceiveWelcome",
       "Order": "NoYes"
-    }
+    },
+    "Chance": 250
   },
   {
     "ID": "404NotFound",
     "Template": "PlainText",
+    "Condition": "SettingsReq",
     "Data": {
       "FontSize": 1.2,
-      "ShowPoliteWelcome": false
-    }
+      "ShowPoliteWelcome": false,
+      "CExpression": "@ClickWelcomeTimes > 3"
+    },
+    "Chance": 200
   }
 ]
