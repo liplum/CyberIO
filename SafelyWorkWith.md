@@ -1,13 +1,29 @@
 # Cyber IO can work with X safely
+
 The tests on this page has **only** referenced value and doesn't guarantee the accuracy.
 
-All tests **only** considered Cyber IO works with a single mod once.
-And the list below is **only** used to record the result on a specific version. Thus, they have timeliness and should be tested again soon.
+And the list below is **only** used to record the result on a specific version. Thus, they have timeliness and should be
+tested again soon.
 
 Therefore, if any result is outdated or wrong, please new an issue.
 
 Tip: Using **Ctrl-F** to search for the mod you want is an easy way.
+___
+
+### Mod Pack
+- Diamond Ore Mod v2.6.0 + New Horizon v1.11.0.6.1 + Spore Biomechs v1.3.5
+- [x] Fine.
+- Sapphirium v13.0 + DiverseTech v0.2.2 + Mindustry-Extended v1.09 + Opore Mod v69 + Missing Category Units v0.2.2 + Substructure v0.1.1 + United Network of Industries vaplha v1.0
+- Exotic Mod v0.7 Alpha + Progressed Materials v23.7 + Unlimited Armament Works v0.7.8.1 + Exogenesis v1.4 + Sharustry v0.2v
+- [x] Fine.
+- Exotic Mod v0.7 Alpha + Progressed Materials v23.7 + Unlimited Armament Works v0.7.8.1
+- [x] Fine.
+
+___
+All tests **only** considered Cyber IO works with a single mod once.
+
 ### Test List
+
 - BetaMindy(betamindy) v1.08
 - [x] OK, sk7725.
 - Singularity
@@ -15,7 +31,7 @@ Tip: Using **Ctrl-F** to search for the mod you want is an easy way.
 - MoreDefences(more-defences-ivgx) v1.0
 - [X] OK.
 - Project Eclipse(mindus) v0.1.0.3
-- [x] Bliz's bullets through over Prism may make problems. 
+- [x] Bliz's bullets through over Prism may make problems.
 - Spore Biomechs(sporepod) v1.3
 - [x] OK.
 - Dimension Shard(dimension-shard) v0.24.2
@@ -75,14 +91,14 @@ Tip: Using **Ctrl-F** to search for the mod you want is an easy way.
 - PicToLogic
 - [x] Multiplayer Compatible
 - Gold Mod(goldmod) v2.0 alpha b19
-- [X] OK. 
+- [X] OK.
 - Pixelcraft: The endless rust(pixelcraft) v0.9.85
 - [x] Carefully use Prism,in CyberIO, with Shade, Panic or others that can shoot a lots of bullets.
 - Diamond Ore Mod(diamond-ore) v2.6.0
 - [x] OK
 - Hackustry v4\
 - [X] Server plugin. Ignored.
-- Exotic Mod(exotic-mod) v0.7 Alpha\ 
-- [x] OK 
+- Exotic Mod(exotic-mod) v0.7 Alpha\
+- [x] OK
 - New Horizon(new-horizon) v1.11.0.6.1\
 - [x] You should notice the memery usage.

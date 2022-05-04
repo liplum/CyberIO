@@ -38,14 +38,16 @@ object Actions {
     }
     val UpdateCyberIO = object : Action("UpdateCyberIO") {
         override fun doAction(entity: Welcome.Entity) {
-            if (CioMod.jarFile != null) {
+            if (CioMod.jarFile == null) {
+                Updater.updateSelfByBuiltIn()
+            } else {
                 var progress = 0f
                 val loading = Vars.ui.loadfrag
                 loading.show("@downloading")
                 loading.setProgress { progress }
                 // Cache tips because updating successfully will replace codes and cause class not found exception.
                 val successTip = R.Ctrl.UpdateModSuccess.bundle(Updater.latestVersion)
-                Updater.updateSelfByReplace(onProgress = { p ->
+                Updater.updateSelfByReplace(Updater.DownloadURL, onProgress = { p ->
                     progress = p
                 }, onSuccess = {
                     loading.hide()
@@ -70,8 +72,6 @@ object Actions {
                         }.show()
                     }
                 })
-            } else {
-                Updater.updateSelfByBuiltIn()
             }
         }
     }

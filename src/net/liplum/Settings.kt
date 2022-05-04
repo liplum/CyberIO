@@ -47,6 +47,9 @@ object Settings {
     var LastPlayTime: Long
         get() = settings.getLong(R.Setting.LastPlayTime, -1)
         set(value) = settings.put(R.Setting.LastPlayTime, value)
+    var GitHubMirrorUrl: String
+        get() = settings.getString(R.Setting.GitHubMirrorUrl, Meta.GitHubMirrorUrl)
+        set(value) = settings.put(R.Setting.GitHubMirrorUrl, value)
     val settingsMap = mapOf(
         "LinkOpacity" to Pair(R.Setting.LinkOpacity, 100),
         "AlwaysShowLink" to Pair(R.Setting.AlwaysShowLink, Vars.mobile),
@@ -59,6 +62,7 @@ object Settings {
         "ShowUpdate" to Pair(R.Setting.ShowUpdate, !Vars.steam),
         "FirstInstallationTime" to Pair(R.Setting.FirstInstallationTime, -1),
         "LastPlayTime" to Pair(R.Setting.LastPlayTime, -1),
+        "GitHubMirrorUrl" to Pair(R.Setting.LastPlayTime, GitHubMirrorUrl),
     )
     @Suppress("UNCHECKED_CAST")
     operator fun <T> get(key: String): T =

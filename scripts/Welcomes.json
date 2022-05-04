@@ -14,7 +14,8 @@
       "YesAction": "OpenLink",
       "Link": "@link"
     },
-    "IconPath": "discord"
+    "IconPath": "discord",
+    "Chance": 750
   },
   {
     "ID": "UpdateECHO",
@@ -49,7 +50,7 @@
       "YesAction": "StopReceiveWelcome",
       "Order": "NoYes"
     },
-    "Chance": 250
+    "Chance": 300
   },
   {
     "ID": "404NotFound",

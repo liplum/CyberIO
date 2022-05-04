@@ -1,5 +1,6 @@
 package net.liplum
 
+import arc.util.io.Streams
 import java.io.File
 
 object FileSys {
@@ -86,4 +87,13 @@ value class Dir(val folder: File) {
         if (!folder.exists())
             folder.mkdirs()
     }
+}
+
+fun File.replaceByteBy(
+    bytes: ByteArray,
+) {
+    Streams.copy(
+        bytes.inputStream(),
+        this.outputStream()
+    )
 }

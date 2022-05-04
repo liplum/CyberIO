@@ -45,6 +45,7 @@ object Welcome {
             chance
         }
         val res = allCandidates.randomExcept(
+            atLeastOne =  true,
             random = {
                 this.randomByWeights(weights, sumChance)
             }

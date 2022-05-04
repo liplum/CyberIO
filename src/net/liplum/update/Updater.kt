@@ -9,6 +9,7 @@ import mindustry.Vars
 import mindustry.ui.dialogs.ModsDialog
 import net.liplum.*
 import net.liplum.utils.getMethodBy
+import net.liplum.utils.useFakeHeader
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.lang.reflect.Method
@@ -48,8 +49,12 @@ object Updater : CoroutineScope {
                 val allInfos = info.split('\n')
                 /*
                     Removed since 3.3
-                    val versionInfo = allInfos[0]
                 */
+                val versionInfo = allInfos[0]
+                latestVersion = runCatching {
+                    Version2.valueOf(versionInfo)
+                }.getOrDefault(Meta.DetailedVersion)
+
                 ClientOnly {
                     val clientV = allInfos[1]// Client
                     val client = ClientVersionRegex.find(clientV)
@@ -79,7 +84,7 @@ object Updater : CoroutineScope {
             if (requireUpdate) {
                 if (Config.AutoUpdate || shouldUpdateOverride) {
                     Clog.info("[Auto-Update ON] Now updating...")
-                    updateSelfByReplace(
+                    updateSelfByReplaceFinding(
                         onFailed = { error ->
                             Clog.err(error)
                         },
@@ -95,6 +100,9 @@ object Updater : CoroutineScope {
             }
         }
     }
+    @ClientOnly
+    val DownloadURL: String
+        get() = "${Settings.GitHubMirrorUrl}/${Meta.Repo}${Meta.GitHubJarDownloadFragment}"
     @JvmStatic
     fun updateSelfByBuiltIn() {
         val modsDialog = Vars.ui.mods
@@ -102,10 +110,10 @@ object Updater : CoroutineScope {
         modsDialog.ImportMod(Meta.Repo, true)
     }
     @JvmStatic
-    fun updateSelfByReplace(
+    fun updateSelfByReplaceFinding(
         onProgress: (Float) -> Unit = {},
         onSuccess: () -> Unit = {},
-        onFailed: (String) -> Unit = {}
+        onFailed: (String) -> Unit = {},
     ) {
         Http.get(Meta.LatestRelease, {
             val json = Jval.read(it.resultAsString)
@@ -114,11 +122,7 @@ object Updater : CoroutineScope {
             if (asset != null) {
                 //grab actual file
                 val url = asset.getString("browser_download_url")
-                Http.get(url, { res ->
-                    downloadLatest(res, onProgress, onSuccess, onFailed)
-                }) { e ->
-                    onFailed("Can't update the latest version$latestVersion $e")
-                }
+                updateSelfByReplace(url, onProgress, onSuccess, onFailed)
             } else {
                 onFailed("Jar file wasn't found at this release.")
             }
@@ -127,11 +131,24 @@ object Updater : CoroutineScope {
         }
     }
     @JvmStatic
-    fun downloadLatest(
+    fun updateSelfByReplace(
+        jarUrl: String,
+        onProgress: (Float) -> Unit = {},
+        onSuccess: () -> Unit = {},
+        onFailed: (String) -> Unit = {},
+    ) {
+        Http.get(jarUrl).useFakeHeader().error { e ->
+            onFailed("Can't update the latest version$latestVersion $e")
+        }.submit { res ->
+            downloadAndReplaceLatest(res, onProgress, onSuccess, onFailed)
+        }
+    }
+    @JvmStatic
+    fun downloadAndReplaceLatest(
         req: Http.HttpResponse,
         onProgress: (Float) -> Unit = {},
         onSuccess: () -> Unit = {},
-        onFailed: (String) -> Unit = {}
+        onFailed: (String) -> Unit = {},
     ) {
         if (CioMod.jarFile != null) {
             val length = req.contentLength
@@ -144,10 +161,7 @@ object Updater : CoroutineScope {
                 onProgress
             )
             Clog.info("v$latestVersion downloaded successfully, replacing file.")
-            Streams.copy(
-                bytes.toByteArray().inputStream(),
-                CioMod.jarFile.outputStream()
-            )
+            CioMod.jarFile.replaceByteBy(bytes.toByteArray())
             Clog.info("Updated successfully.")
             onSuccess()
         } else {

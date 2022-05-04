@@ -294,7 +294,8 @@ public class R {
                 LastWelcome = Gen("last-welcome"),
                 LastWelcomeID = Gen("last-welcome-id"),
                 FirstInstallationTime = Gen("first-install-time"),
-                LastPlayTime = Gen("last-play-time");
+                LastPlayTime = Gen("last-play-time"),
+                GitHubMirrorUrl = Gen("github-mirror");
     }
 
     public static final class CMD {

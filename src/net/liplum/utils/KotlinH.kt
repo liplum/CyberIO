@@ -67,10 +67,13 @@ fun Boolean.toFloat(): Float = if (this) 1f else 0f
  * @return the result that doesn't equal to [exception].
  * Otherwise, null will be returned.
  */
-fun <T> Collection<T>.randomExcept(exception: T): T? {
+fun <T> Collection<T>.randomExcept(
+    atLeast: Boolean = false,
+    exception: T
+): T? {
     when (size) {
         0 -> return null
-        1 -> return if (first() != exception)
+        1 -> return if (first() != exception  && !atLeast)
             first()
         else null
     }
@@ -87,13 +90,14 @@ fun <T> Collection<T>.randomExcept(exception: T): T? {
  */
 inline fun <T> Collection<T>.randomExcept(
     maxTry: Int = this.size,
+    atLeastOne: Boolean = false,
     isInclude: T.() -> Boolean,
 ): T? {
     when (size) {
         0 -> return null
         1 -> {
             val first = first()
-            return if (first.isInclude())
+            return if (first.isInclude() && !atLeastOne)
                 null
             else
                 first
@@ -104,23 +108,27 @@ inline fun <T> Collection<T>.randomExcept(
         if (!res.isInclude())
             return res
     }
-    return null
+    return if(atLeastOne)
+        this.random()
+    else
+        null
 }
 /**
  * Roll an element from a collection.
  * @return the result that isn't inclining in this collection.
  * Otherwise, null will be returned.
  */
-inline fun <C,T> C.randomExcept(
+inline fun <C, T> C.randomExcept(
     maxTry: Int = this.size,
+    atLeastOne: Boolean = false,
     random: C.() -> T,
     isInclude: T.() -> Boolean,
-): T? where C:Collection<T>{
+): T? where C : Collection<T> {
     when (size) {
         0 -> return null
         1 -> {
             val first = first()
-            return if (first.isInclude())
+            return if (first.isInclude() && !atLeastOne)
                 null
             else
                 first
@@ -131,7 +139,10 @@ inline fun <C,T> C.randomExcept(
         if (!res.isInclude())
             return res
     }
-    return null
+    return if(atLeastOne)
+        this.random()
+    else
+        null
 }
 /**
  * Returns the all elements yielding the largest value of the given function or empty list if there are no elements.
@@ -161,7 +172,7 @@ inline fun <T, R : Comparable<R>> Iterable<T>.allMaxBy(selector: (T) -> R): List
 }
 
 inline fun <K, V, R : Comparable<R>> Map<out K, V>.allMaxBy(
-    selector: (Map.Entry<K, V>) -> R
+    selector: (Map.Entry<K, V>) -> R,
 ): List<Map.Entry<K, V>> {
     return entries.allMaxBy(selector)
 }
