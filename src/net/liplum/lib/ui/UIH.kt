@@ -14,7 +14,10 @@ inline fun ShowTextDialog(
     crossinline text: () -> String = { "" },
 ): BaseDialog {
     return BaseDialog("").apply {
-        cont.label { text() }
+        cont.add(Label { text() }.apply {
+            setWrap(true)
+            setAlignment(0)
+        }).growX()
         addCloseButton()
         show()
     }
@@ -24,7 +27,10 @@ fun ShowTextDialog(
     text: String,
 ): BaseDialog {
     return BaseDialog("").apply {
-        cont.add(text)
+        cont.add(Label(text).apply {
+            setWrap(true)
+            setAlignment(0)
+        }).growX()
         addCloseButton()
         show()
     }

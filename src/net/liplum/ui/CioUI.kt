@@ -12,7 +12,8 @@ import mindustry.Vars
 import mindustry.game.EventType.Trigger
 import mindustry.ui.Styles
 import mindustry.ui.dialogs.BaseDialog
-import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable
+import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.CheckSetting
+import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.SliderSetting
 import net.liplum.Meta
 import net.liplum.R
 import net.liplum.Settings
@@ -57,7 +58,10 @@ object CioUI {
     }
 
     const val SettingButtonName = "cyber-io-settings-button"
-    val settings = SettingsTable().apply {
+    val settings = SettingsTableX().apply {
+        genHeader = {
+            it.add("${Meta.Name} v${Meta.DetailedVersion}").row()
+        }
         addSliderSettingX(R.Setting.LinkOpacity,
             100, 0, 100, 5, { "$it%" }
         ) {
@@ -104,6 +108,10 @@ object CioUI {
                         val field = TextField(
                             Settings.GitHubMirrorUrl, Styles.defaultField
                         ).addTrackTooltip(bundle("field-tooltip"))
+                        onSettingsReset {
+                            Settings.GitHubMirrorUrl = Meta.GitHubMirrorUrl
+                            field.text = Meta.GitHubMirrorUrl
+                        }
                         cont.add(field).width((Core.graphics.width / 1.2f).coerceAtMost(460f)).row()
                         cont.table { t ->
                             fun onFailed(error: String) {
@@ -130,7 +138,7 @@ object CioUI {
                                     } else {
                                         isDisabled = true
                                         Http.get(field.text).useFakeHeader().error { e ->
-                                            onFailed(e.message ?: "No Info")
+                                            onFailed("${e.javaClass.name} ${e.message}")
                                             isDisabled = false
                                         }.submit { rep ->
                                             Core.app.post {
@@ -158,16 +166,17 @@ object CioUI {
                     dialog.show()
                 }.addTrackTooltip(bundle("button-tooltip"))
                 it.add(button).fillX()
-                it.row()
             }
         }
-
-        sort(
-            mapOf(
-                SliderSettingX::class.java to 0,
-                CheckSettingX::class.java to 1,
-                AnySetting::class.java to 2,
-            )
-        )
+        sortBy {
+            when (it) {
+                is SliderSetting -> 0
+                is SliderSettingX -> 1
+                is CheckSetting -> 2
+                is CheckSettingX -> 3
+                is AnySetting -> 4
+                else -> Int.MAX_VALUE
+            }
+        }
     }
 }

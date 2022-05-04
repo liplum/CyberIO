@@ -111,6 +111,20 @@ fun SettingsTable.sort(priority: Map<Class<out Setting>, Int>) {
     rebuild()
 }
 
+fun SettingsTable.sortByClz(priority: (Class<out Setting>) -> Int) {
+    settings.sortComparing {
+        priority(it.javaClass)
+    }
+    rebuild()
+}
+
+fun SettingsTable.sortBy(priority: (Setting) -> Int) {
+    settings.sortComparing {
+        priority(it)
+    }
+    rebuild()
+}
+
 fun SettingsTable.addAny(
     ctor: AnySetting.(SettingsTable) -> Unit,
 ): AnySetting {

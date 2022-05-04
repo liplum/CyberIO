@@ -12,6 +12,7 @@ public class Meta {
     public static final String DefaultLang = "en";
     public static final Version2 DetailedVersion = new Version2(3, 3);
     public static final String Repo = "liplum/CyberIO";
+    public static final String RepoInSettingsKey = "mod-" + ModID + "-repo";
     public static final String Discord = "https://discord.gg/PDwyxM3waw";
     public static final String LatestRelease = "https://api.github.com/repos/" + Repo + "/releases/latest";
     public static final String UpdateInfoURL = "https://raw.githubusercontent.com/liplum/CyberIO/master/update";

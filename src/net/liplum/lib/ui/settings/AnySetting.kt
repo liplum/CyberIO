@@ -8,5 +8,6 @@ class AnySetting(
 ) : Setting(null) {
     override fun add(table: SettingsTable) {
         this.ctor(table)
+        table.row()
     }
 }
