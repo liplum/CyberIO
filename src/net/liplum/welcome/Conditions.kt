@@ -3,47 +3,49 @@ package net.liplum.welcome
 import mindustry.Vars
 import net.liplum.Settings
 import net.liplum.update.Updater
-import net.liplum.utils.randomExcept
+import opengal.core.IExpressionReceiver
+import opengal.experssion.ExpressionParser
 
 object Conditions {
-    val ShowWelcome = object : Condition("ShowWelcome", 0) {
-        override fun canShow(tip:WelcomeTip): Boolean {
+    val ShowWelcome = object : Condition("ShowWelcome") {
+        override fun canShow(tip: WelcomeTip): Boolean {
             return Settings.ShouldShowWelcome
         }
-        /**
-         * If it's the first time to play this version, let's show up the Zero Welcome.
-         *
-         * Otherwise, roll until the result isn't as last one.
-         */
-        override fun applyShow(entity: Welcome.Entity, matches: List<WelcomeTip>) {
-            val info = entity.info
-            val defaultTipID = info.default
-            if (Settings.ClickWelcomeTimes > 0) {
-                val lastWelcomeID = Settings.LastWelcomeID
-                val curTip = matches.randomExcept {
-                    id == lastWelcomeID
-                }
-                if (curTip != null) {
-                    val tip = curTip
-                    entity.tip = tip
-                    Settings.LastWelcomeID = curTip.id
-                } else {
-                    entity.tip = WelcomeList[defaultTipID]
-                    Settings.LastWelcomeID = defaultTipID
-                }
-            } else {
-                entity.tip = WelcomeList[defaultTipID]
-                Settings.LastWelcomeID = defaultTipID
-            }
-        }
+
+        override fun priority(tip: WelcomeTip) = 0
     }
-    val CheckUpdate = object : Condition("CheckUpdate", 10) {
-        override fun canShow(tip:WelcomeTip): Boolean {
+    val CheckUpdate = object : Condition("CheckUpdate") {
+        override fun canShow(tip: WelcomeTip): Boolean {
             return !Vars.steam && Settings.ShowUpdate && Updater.requireUpdate
         }
 
-        override fun applyShow(entity: Welcome.Entity, matches: List<WelcomeTip>) {
-            entity.tip = matches.random()
+        override fun priority(tip: WelcomeTip) = 10
+    }
+    val SpecialDishes = object : Condition("SpecialDishes") {
+        override fun canShow(tip: WelcomeTip): Boolean {
+            return Settings.ShouldShowWelcome
         }
+
+        override fun priority(tip: WelcomeTip) =
+            if (Settings.ClickWelcomeTimes == 0) 5 else 0
+    }
+    val SettingsReq = object : Condition("SettingsReq") {
+        override fun canShow(tip: WelcomeTip): Boolean {
+            val data = tip.data
+            val exprRaw = data["CExpression"] as? String ?: ""
+            val expr = ExpressionParser.by(exprRaw).parse<Boolean>()
+            val res = expr.calculate(ExprSettingsWrapper)
+            return res
+        }
+
+        override fun priority(tip: WelcomeTip) = 0
+    }
+
+    object ExprSettingsWrapper : IExpressionReceiver {
+        override fun set(name: String, value: Any) =
+            throw NotImplementedError("Can't set $name as $value")
+
+        override fun <T : Any> get(name: String): T =
+            Settings[name]
     }
 }

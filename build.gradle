@@ -36,7 +36,7 @@ repositories {
 dependencies {
     compileOnly "com.github.Anuken.Arc:arc-core:$mdtVersion"
     compileOnly "com.github.Anuken.Mindustry:core:$mdtVersion"
-    implementation 'com.github.liplum:OpenGAL:v0.3.1'
+    implementation 'com.github.liplum:OpenGAL:v0.4.1'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1'
 
     testImplementation "com.github.Anuken.Arc:arc-core:$mdtVersion"
@@ -121,7 +121,12 @@ jar {
     archiveFileName = "${project.archivesBaseName}Desktop.jar"
 
     from {
-        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+        configurations.runtimeClasspath.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+    processResources {
+        exclude('**/*.java')
     }
 
     from(rootDir) {

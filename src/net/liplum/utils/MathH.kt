@@ -198,3 +198,22 @@ fun Int.randomExcept(exception: Int): Int {
     }
     return res
 }
+/**
+ * Random select an element by its weight
+ * @param weights it.size == list.size.
+ */
+fun <T> List<T>.randomByWeights(
+    weights: Array<Int>,
+    maxWeight: Int = weights.last()
+): T {
+    assert(weights.size == size) { "Weights' size(${weights.size}) don't match receiver's size($size)" }
+    var pos = Mathf.random(maxWeight - 1)
+    for (i in indices) {
+        val weight = weights[i]
+        if (pos < weight) {
+            return this[i]
+        }
+        pos -= weights[i]
+    }
+    throw ArithmeticException("Random weight($pos) is over than maximum($maxWeight)")
+}

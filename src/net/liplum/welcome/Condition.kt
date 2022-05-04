@@ -21,25 +21,22 @@ object ConditionRegistry {
 }
 
 abstract class Condition(
-    val id: String,
-    val priority: Int
+    val id: String
 ) {
     init {
         this.register()
     }
 
-    abstract fun canShow(tip:WelcomeTip): Boolean
-    abstract fun applyShow(entity: Welcome.Entity, matches: List<WelcomeTip>)
+    abstract fun canShow(tip: WelcomeTip): Boolean
+    abstract fun priority(tip: WelcomeTip): Int
 
     companion object {
-        val Default = object : Condition("Default", Int.MIN_VALUE) {
-            override fun canShow(tip:WelcomeTip): Boolean {
+        val Default = object : Condition("Default") {
+            override fun canShow(tip: WelcomeTip): Boolean {
                 return false
             }
 
-            override fun applyShow(entity: Welcome.Entity, matches: List<WelcomeTip>) {
-                return
-            }
+            override fun priority(tip: WelcomeTip) = Int.MIN_VALUE
         }
     }
 }

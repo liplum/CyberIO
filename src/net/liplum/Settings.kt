@@ -2,6 +2,7 @@ package net.liplum
 
 import arc.Core.settings
 import mindustry.Vars
+import net.liplum.scripts.KeyNotFoundException
 
 object Settings {
     @ClientOnly @JvmField var LinkOpacity = 1f
@@ -46,4 +47,22 @@ object Settings {
     var LastPlayTime: Long
         get() = settings.getLong(R.Setting.LastPlayTime, -1)
         set(value) = settings.put(R.Setting.LastPlayTime, value)
+    val settingsMap = mapOf(
+        "LinkOpacity" to Pair(R.Setting.LinkOpacity, 100),
+        "AlwaysShowLink" to Pair(R.Setting.AlwaysShowLink, Vars.mobile),
+        "LinkSize" to Pair(R.Setting.LinkSize, 100),
+        "ShowLinkCircle" to Pair(R.Setting.ShowLinkCircle, Vars.mobile),
+        "ShouldShowWelcome" to Pair(R.Setting.ShowWelcome, true),
+        "ClickWelcomeTimes" to Pair(R.Setting.ClickWelcomeTimes, 0),
+        "LastWelcomeID" to Pair(R.Setting.LastWelcomeID, ""),
+        "CioVersion" to Pair(R.Setting.Version, "v0"),
+        "ShowUpdate" to Pair(R.Setting.ShowUpdate, !Vars.steam),
+        "FirstInstallationTime" to Pair(R.Setting.FirstInstallationTime, -1),
+        "LastPlayTime" to Pair(R.Setting.LastPlayTime, -1),
+    )
+    @Suppress("UNCHECKED_CAST")
+    operator fun <T> get(key: String): T =
+        settingsMap[key]?.let {
+            settings.get(it.first, it.second) as T
+        } ?: throw KeyNotFoundException("Can't find $key in Cyber IO settings.")
 }
