@@ -28,7 +28,7 @@ operator fun <T> Prov<T>.invoke(): T =
 operator fun Interp.invoke(x: Float): Float =
     this.apply(x)
 
-fun <T> Seq<T>.insertAfter(e: T, whenTrue: (T) -> Boolean) {
+inline fun <T> Seq<T>.insertAfter(e: T, whenTrue: (T) -> Boolean) {
     for ((i, v) in this.withIndex()) {
         if (whenTrue(v)) {
             this.insert(i, e)
@@ -37,7 +37,7 @@ fun <T> Seq<T>.insertAfter(e: T, whenTrue: (T) -> Boolean) {
     }
 }
 
-fun <T> Seq<T>.insertBefore(e: T, whenTrue: (T) -> Boolean) {
+inline fun <T> Seq<T>.insertBefore(e: T, whenTrue: (T) -> Boolean) {
     for ((i, v) in this.withIndex()) {
         if (whenTrue(v)) {
             this.insert(i - 1, e)

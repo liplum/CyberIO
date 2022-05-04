@@ -10,10 +10,13 @@ object Templates {
     val Story = object : WelcomeTemplate("Story") {
         override fun gen(entity: Entity) =
             BaseDialog(entity["title"]).apply {
-                cont.addPoster(entity.icon)
-                cont.addCenterText(entity.bundle.format("welcome", Meta.DetailedVersion))
-                cont.addCenterText(entity.content)
-                cont.addCloseButton(this, entity["read"])
+                val data = entity.tip.data
+                addPoster(entity.icon)
+                val showPoliteWelcome = data["ShowPoliteWelcome"] as? Boolean ?: true
+                if (showPoliteWelcome)
+                    addCenterText(entity.bundle.format("welcome", Meta.DetailedVersion))
+                addCenterText(entity.content)
+                addCloseButton(entity["read"])
             }
     }
     val ButtonABC = object : WelcomeTemplate("ButtonABC") {
@@ -23,16 +26,16 @@ object Templates {
                 val yesAction = ActionRegistry[data["ActionA"]]
                 val noAction = ActionRegistry[data["ActionB"]]
                 val dontShowAction = ActionRegistry[data["ActionC"]]
-                cont.addPoster(entity.icon)
-                cont.addCenterText(entity.content(Updater.latestVersion))
+                addPoster(entity.icon)
+                addCenterText(entity.content(Updater.latestVersion))
                 cont.table {
-                    it.addCloseButton(this, entity["button-a"]) {
+                    addCloseButton(entity["button-a"], it) {
                         yesAction(entity)
                     }.size(150f, 50f)
-                    it.addCloseButton(this, entity["button-b"]) {
+                    addCloseButton(entity["button-b"], it) {
                         noAction(entity)
                     }.size(150f, 50f)
-                    it.addCloseButton(this, entity["button-c"]) {
+                    addCloseButton(entity["button-c"], it) {
                         dontShowAction(entity)
                     }.size(150f, 50f)
                 }.growX()
@@ -45,8 +48,8 @@ object Templates {
                 val data = entity.tip.data
                 val yesAction = ActionRegistry[data["YesAction"]]
                 val noAction = ActionRegistry[data["NoAction"]]
-                cont.addPoster(entity.icon)
-                cont.addCenterText(entity.content)
+                addPoster(entity.icon)
+                addCenterText(entity.content)
                 val order = data["Order"] as? String ?: "YesNo"
                 cont.table {
                     fun addButton(vararg buttons: Button) {
@@ -66,6 +69,37 @@ object Templates {
                         addButton(yes, no)
                 }.growX()
                     .row()
+            }
+    }
+    val TextIcon = object : WelcomeTemplate("TextIcon") {
+        override fun gen(entity: Entity) =
+            BaseDialog(entity["title"]).apply {
+                val data = entity.tip.data
+                val text = data["Text"] as? String ?: ""
+                val fontSize = data["FontSize"] as? Float ?: 1f
+                val resText = entity.bundle.handleRefer(text)
+                addCenterText(resText).get().apply {
+                    this.setFontScale(fontSize)
+                }
+                val showPoliteWelcome = data["ShowPoliteWelcome"] as? Boolean ?: true
+                if (showPoliteWelcome)
+                    addCenterText(entity.bundle.format("welcome", Meta.DetailedVersion))
+                addCenterText(entity.content)
+                addCloseButton(entity["read"])
+            }
+    }
+    val PlainText = object : WelcomeTemplate("PlainText") {
+        override fun gen(entity: Entity) =
+            BaseDialog(entity["title"]).apply {
+                val data = entity.tip.data
+                val showPoliteWelcome = data["ShowPoliteWelcome"] as? Boolean ?: true
+                if (showPoliteWelcome)
+                    addCenterText(entity.bundle.format("welcome", Meta.DetailedVersion))
+                val fontSize = data["FontSize"] as? Float ?: 1f
+                addCenterText(entity.content).pad(40f).get().apply {
+                    this.setFontScale(fontSize)
+                }
+                addCloseButton(entity["read"])
             }
     }
 }

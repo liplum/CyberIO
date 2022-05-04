@@ -44,7 +44,7 @@ object EntityRegistry {
         keys.forEach { register(it) }
         (OnlyDebug or OnlyServer){
             Clz2Id.log("${Meta.Name} Unit") { clz, i ->
-                Log.info("$i|${clz.simpleName}")
+                Log.info("${i}|${clz.simpleName}")
             }
         }
     }

@@ -57,8 +57,11 @@ ___
 
 * Anyone who likes CyberIO.
 
-* Chinese support: [@woodjecket](https://github.com/woodjecket)
+### For Contributors
 
+Everyone is welcome to contribute Cyber IO.
+
+If you want to translate or programme cooperatively. Please [check this file](ForContributors.md) to learn how to join us.
 ___
 
 ## Licence

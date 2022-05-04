@@ -102,7 +102,10 @@ val OnlyServer = Condition {
 val OnlyDebug = Condition {
     CioMod.DebugMode
 }
-
+val OnlySteam = Condition {
+    Vars.steam
+}
+val NotSteam = !OnlySteam
 inline fun <reified T> T.ClientOnlyOn(func: T.() -> Unit): T {
     if (!Vars.headless) {
         func()
@@ -176,11 +179,27 @@ inline fun ExperimentalOnly(func: () -> Unit): Boolean {
 }
 
 inline fun UndebugOnly(func: () -> Unit): Boolean {
-    if (CioMod.DebugMode) {
-        return false
+    if (!CioMod.DebugMode) {
+        func()
+        return true
     }
-    func()
-    return true
+    return false
+}
+
+inline fun SteamOnly(func: () -> Unit): Boolean {
+    if (Vars.steam) {
+        func()
+        return true
+    }
+    return false
+}
+
+inline fun UnsteamOnly(func: () -> Unit): Boolean {
+    if (!Vars.steam) {
+        func()
+        return true
+    }
+    return false
 }
 
 inline fun <reified T> T.DebugOnlyOn(func: T.() -> Unit): T {

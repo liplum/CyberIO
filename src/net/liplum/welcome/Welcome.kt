@@ -10,13 +10,12 @@ import mindustry.io.JsonIO
 import net.liplum.*
 import net.liplum.Settings.CioVersion
 import net.liplum.Settings.ClickWelcomeTimes
+import net.liplum.Settings.LastWelcomeID
 import net.liplum.Settings.ShouldShowWelcome
 import net.liplum.Settings.ShowUpdate
 import net.liplum.blocks.tmtrainer.RandomName
 import net.liplum.lib.Res
-import net.liplum.utils.ReferBundleWrapper
-import net.liplum.utils.TR
-import net.liplum.utils.atlas
+import net.liplum.utils.*
 
 @ClientOnly
 object Welcome {
@@ -37,14 +36,26 @@ object Welcome {
     @JvmStatic
     fun judgeWelcome() {
         val allTips = info.scenes.map { WelcomeList[it] }.distinct().toList()
-        val groups = allTips.groupBy { ConditionRegistry[it.conditionID] }
-        val conditionCanShow = groups.keys.filter { it.canShow() }.maxByOrNull { it.priority }
-        conditionCanShow?.let {
-            val matches = groups[it]
-            if (matches != null && matches.isNotEmpty()) {
-                it.applyShow(entity, matches)
-                showWelcome = true
+        val tipsCanShow = allTips.filter { it.condition.canShow(it) }
+        val allCandidates = tipsCanShow.allMaxBy { it.condition.priority(it) }
+        var sumChance = 0
+        val weights = Array(allCandidates.size) {
+            val chance = allCandidates[it].chance
+            sumChance += chance
+            chance
+        }
+        val res = allCandidates.randomExcept(
+            atLeastOne =  true,
+            random = {
+                this.randomByWeights(weights, sumChance)
             }
+        ) {
+            id == LastWelcomeID
+        }
+        if (res != null) {
+            LastWelcomeID = res.id
+            entity.tip = res
+            showWelcome = true
         }
     }
     @JvmStatic
@@ -65,6 +76,7 @@ object Welcome {
             ShouldShowWelcome = true
             ClickWelcomeTimes = 0
             ShowUpdate = true
+            LastWelcomeID = ""
         }
         CioVersion = Meta.Version
     }

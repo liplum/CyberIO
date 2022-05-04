@@ -11,12 +11,14 @@ fun Fill(c: Char, number: Int): String {
     return sb.toString()
 }
 
-fun buildFill(c: Char, number: Int): StringBuilder {
-    val sb = StringBuilder()
+fun buildFill(c: Char, number: Int): StringBuilder =
+    StringBuilder().buildFill(c, number)
+
+fun StringBuilder.buildFill(c: Char, number: Int): StringBuilder {
     for (i in 0 until number) {
-        sb.append(c)
+        append(c)
     }
-    return sb
+    return this
 }
 @Contract(pure = true)
 fun String.CenterFill(c: Char, number: Int): String {
@@ -33,38 +35,27 @@ fun String.CenterFill(c: Char, number: Int): String {
 }
 @Contract(pure = true)
 @JvmOverloads
-fun String.CenterFillUntil(c: Char, totalChar: Int, leftAlign: Boolean = true): String {
-    if (totalChar <= 0) return ""
-    val len = this.length
-    val rest = totalChar - len
-    if (rest == 0) return this
-    if (rest < 0) return this.substring(0, totalChar)
-    val sb = StringBuilder()
-    var leftChar = rest / 2
-    var rightChar = rest / 2
-    if (rest.isOdd) {
-        if (leftAlign)
-            rightChar++
-        else
-            leftChar++
-    }
-    for (i in 0 until leftChar) {
-        sb.append(c)
-    }
-    sb.append(this)
-    for (i in 0 until rightChar) {
-        sb.append(c)
-    }
-    return sb.toString()
-}
+fun String.CenterFillUntil(c: Char, totalChar: Int, leftAlign: Boolean = true): String =
+    this.buildCenterFillUntil(c, totalChar, leftAlign).toString()
 @JvmOverloads
-fun String.buildCenterFillUntil(c: Char, totalChar: Int, leftAlign: Boolean = true): StringBuilder {
+fun String.buildCenterFillUntil(
+    c: Char,
+    totalChar: Int,
+    leftAlign: Boolean = true
+): StringBuilder =
+    StringBuilder().buildCenterFillUntil(this, c, totalChar, leftAlign)
+@JvmOverloads
+fun StringBuilder.buildCenterFillUntil(
+    title: String,
+    c: Char,
+    totalChar: Int,
+    leftAlign: Boolean = true
+): StringBuilder {
     if (totalChar <= 0) return StringBuilder()
-    val len = this.length
+    val len = title.length
     val rest = totalChar - len
-    if (rest == 0) return StringBuilder(this)
-    if (rest < 0) return StringBuilder(this.substring(0, totalChar))
-    val sb = StringBuilder()
+    if (rest == 0) return StringBuilder(title)
+    if (rest < 0) return StringBuilder(title.substring(0, totalChar))
     var leftChar = rest / 2
     var rightChar = rest / 2
     if (rest.isOdd) {
@@ -74,13 +65,13 @@ fun String.buildCenterFillUntil(c: Char, totalChar: Int, leftAlign: Boolean = tr
             leftChar++
     }
     for (i in 0 until leftChar) {
-        sb.append(c)
+        append(c)
     }
-    sb.append(this)
+    append(title)
     for (i in 0 until rightChar) {
-        sb.append(c)
+        append(c)
     }
-    return sb
+    return this
 }
 
 infix fun StringBuilder.addLeft(str: String): StringBuilder {
@@ -102,6 +93,7 @@ fun Array<out Any>.toLinkedString(): String {
     }
     return s.toString()
 }
+
 fun Collection<Any>.toLinkedString(): String {
     if (this.isEmpty()) return ""
     val s = StringBuilder()

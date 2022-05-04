@@ -6,6 +6,7 @@ import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.CheckSetting
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.Setting
 import mindustry.ui.dialogs.SettingsMenuDialog.StringProcessor
+import net.liplum.scripts.KeyNotFoundException
 import net.liplum.utils.insertAfter
 import net.liplum.utils.insertBefore
 
@@ -13,14 +14,14 @@ enum class InsertPos {
     After, Before
 }
 
-fun SettingsTable.insertSliderPref(
+inline fun SettingsTable.insertSliderPref(
     name: String, def: Int, min: Int, max: Int, step: Int,
     insertPos: InsertPos = InsertPos.After,
     s: StringProcessor = StringProcessor { it.toString() },
-    onChanged: () -> Unit = {},
-    whenTrue: (Setting) -> Boolean
+    noinline onChanged: () -> Unit = {},
+    whenTrue: (Setting) -> Boolean,
 ): SliderSettingX {
-    val res = SliderSettingX(name, def, min, max, step, onChanged, s)
+    val res = SliderSettingX(name, def, min, max, step, s, onChanged)
     if (insertPos == InsertPos.After) {
         settings.insertAfter(res, whenTrue)
     } else {
@@ -36,7 +37,7 @@ fun SettingsTable.insertSliderPrefLast(
     s: StringProcessor = StringProcessor { it.toString() },
     onChanged: () -> Unit = {},
 ): SliderSettingX {
-    val res = SliderSettingX(name, def, min, max, step, onChanged, s)
+    val res = SliderSettingX(name, def, min, max, step, s, onChanged)
     settings.add(res)
     Core.settings.defaults(name, def)
     rebuild()
@@ -48,18 +49,18 @@ fun SettingsTable.insertSliderPrefFirst(
     s: StringProcessor = StringProcessor { it.toString() },
     onChanged: () -> Unit = {},
 ): SliderSettingX {
-    val res = SliderSettingX(name, def, min, max, step, onChanged, s)
+    val res = SliderSettingX(name, def, min, max, step, s, onChanged)
     settings.insert(0, res)
     Core.settings.defaults(name, def)
     rebuild()
     return res
 }
 
-fun SettingsTable.insertCheckPref(
+inline fun SettingsTable.insertCheckPref(
     name: String, def: Boolean,
     insertPos: InsertPos = InsertPos.After,
     onChanged: Boolc = Boolc {},
-    whenTrue: (Setting) -> Boolean
+    whenTrue: (Setting) -> Boolean,
 ): CheckSetting {
     val res = CheckSetting(name, def, onChanged)
     if (insertPos == InsertPos.After) {
@@ -74,18 +75,17 @@ fun SettingsTable.insertCheckPref(
 
 fun SettingsTable.insertCheckPrefLast(
     name: String, def: Boolean,
-    onChanged: Boolc = Boolc {}
-): CheckSetting {
-    val res = CheckSetting(name, def, onChanged)
-    settings.add(res)
-    Core.settings.defaults(name, def)
-    rebuild()
-    return res
-}
+    onChanged: Boolc = Boolc {},
+): CheckSetting =
+    CheckSetting(name, def, onChanged).apply {
+        settings.add(this)
+        Core.settings.defaults(name, def)
+        rebuild()
+    }
 
 fun SettingsTable.insertCheckPrefFirst(
     name: String, def: Boolean,
-    onChanged: Boolc = Boolc {}
+    onChanged: Boolc = Boolc {},
 ): CheckSetting {
     val res = CheckSetting(name, def, onChanged)
     settings.insert(0, res)
@@ -94,3 +94,28 @@ fun SettingsTable.insertCheckPrefFirst(
     return res
 }
 
+fun SettingsTable.addCheckPref(
+    name: String, def: Boolean,
+    onChanged: (Boolean) -> Unit = {},
+): CheckSettingX =
+    CheckSettingX(name, def, onChanged).apply {
+        settings.add(this)
+        Core.settings.defaults(name, def)
+        rebuild()
+    }
+
+fun SettingsTable.sort(priority: Map<Class<out Setting>, Int>) {
+    settings.sortComparing {
+        priority[it.javaClass] ?: throw KeyNotFoundException("${it.javaClass}")
+    }
+    rebuild()
+}
+
+fun SettingsTable.addAny(
+    ctor: AnySetting.(SettingsTable) -> Unit,
+): AnySetting {
+    val res = AnySetting(ctor)
+    settings.add(res)
+    rebuild()
+    return res
+}

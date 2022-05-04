@@ -17,16 +17,13 @@ buildscript {
 plugins {
     id 'application'
 }
-var useKotlin = Boolean.parseBoolean(property("UseKotlin") as String)
 apply plugin: "java"
+apply plugin: "kotlin"
 sourceSets.main.java.srcDirs = ["src"]
 sourceSets.test.java.srcDirs = ["test"]
+sourceSets.main.kotlin.srcDirs = ["src"]
 version '3'
 group 'net.liplum'
-if (useKotlin) {
-    apply plugin: "kotlin"
-    sourceSets.main.kotlin.srcDirs = ["src"]
-}
 
 targetCompatibility = 8
 sourceCompatibility = 8
@@ -39,7 +36,7 @@ repositories {
 dependencies {
     compileOnly "com.github.Anuken.Arc:arc-core:$mdtVersion"
     compileOnly "com.github.Anuken.Mindustry:core:$mdtVersion"
-    implementation 'com.github.liplum:OpenGAL:v0.3.1'
+    implementation 'com.github.liplum:OpenGAL:v0.4.1'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1'
 
     testImplementation "com.github.Anuken.Arc:arc-core:$mdtVersion"
@@ -124,7 +121,12 @@ jar {
     archiveFileName = "${project.archivesBaseName}Desktop.jar"
 
     from {
-        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+        configurations.runtimeClasspath.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+    processResources {
+        exclude('**/*.java')
     }
 
     from(rootDir) {
@@ -164,7 +166,7 @@ task copyJar {
     dependsOn jar
     doLast {
         var jarFile = getOutputJar()
-        if(jarFile == null) return
+        if (jarFile == null) return
         if (Os.isFamily(Os.FAMILY_WINDOWS)) {
             var APPDATA = System.getenv("APPDATA")
             var modsFolder = APPDATA + '/Mindustry/mods'
@@ -178,7 +180,7 @@ task copyJarServer {
     dependsOn jar
     doLast {
         var jarFile = getOutputJar()
-        if(jarFile == null) return
+        if (jarFile == null) return
         var modsFolder = new File("$rootDir/config/mods")
         copyJarFile(jarFile, modsFolder)
     }

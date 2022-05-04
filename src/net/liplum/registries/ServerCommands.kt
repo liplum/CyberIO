@@ -3,15 +3,31 @@ package net.liplum.registries
 import arc.util.CommandHandler
 import net.liplum.Config
 import net.liplum.HeadlessOnly
+import net.liplum.R
+import net.liplum.update.Updater
 
 object ServerCommands {
     @HeadlessOnly
-    fun register(handler: CommandHandler) {
-        handler.register("cio-reload-config", "Reload config file of CyberIO.") {
+    @JvmStatic
+    fun CommandHandler.registerCioCmds() {
+        register(
+            R.CMD.ReloadConfig,
+            "Reload config file of CyberIO."
+        ) {
             Config.load()
         }
-        handler.register("cio-reset-config", "Regenerate config file of CyberIO.") {
+        register(
+            R.CMD.ResetConfig,
+            "Regenerate config file of CyberIO."
+        ) {
             Config.resetConfigFile()
+        }
+        register(
+            R.CMD.CheckUpdate,
+            "Check update of CyberIO."
+        ) {
+            Updater.fetchLatestVersion(Config.CheckUpdateInfoURL)
+            Updater.checkHeadlessUpdate(shouldUpdateOverride = true)
         }
     }
 }

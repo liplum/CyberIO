@@ -18,11 +18,12 @@ import net.liplum.blocks.cloud.SharedRoom
 import net.liplum.inputs.UnitTap
 import net.liplum.lib.animations.ganim.GlobalAnimation
 import net.liplum.registries.*
+import net.liplum.registries.ServerCommands.registerCioCmds
 import net.liplum.render.LinkDrawer
 import net.liplum.scripts.NpcSystem
 import net.liplum.scripts.Script
+import net.liplum.ui.CioUI
 import net.liplum.ui.DebugUI
-import net.liplum.ui.SettingsUI
 import net.liplum.update.Updater
 import net.liplum.utils.G
 import net.liplum.welcome.FirstLoaded
@@ -40,7 +41,9 @@ class CioMod : Mod() {
         @JvmField var UpdateFrequency = 5f
         lateinit var Info: Mods.LoadedMod
         @JvmField val jarFile = CioMod::class.java.protectionDomain?.let {
-            File(it.codeSource.location.toURI().path)
+            File(it.codeSource.location.toURI().path).let { f ->
+                if (f.isFile) f else null
+            }
         }
         @JvmField var objCreated = false
         @JvmField var lastPlayTime: Long = -1
@@ -49,7 +52,9 @@ class CioMod : Mod() {
             if (IsClient && Vars.clientLoaded && !objCreated) {
                 FirstLoaded.tryRecord()
                 FirstLoaded.load()
-                FirstLoaded.showDialog()
+                Time.run(5f) {
+                    FirstLoaded.showDialog()
+                }
             }
         }
     }
@@ -64,10 +69,13 @@ class CioMod : Mod() {
     init {
         objCreated = true
         lastPlayTime = Settings.LastPlayTime
-        Log.info("Cyber IO mod ${Meta.DetailedVersion} loading started.")
-        Updater.fetchLatestVersion()
+        Clog.info("v${Meta.DetailedVersion} loading started.")
+        (OnlyClient and NotSteam) {
+            Updater.fetchLatestVersion(Meta.UpdateInfoURL)
+        }
         HeadlessOnly {
             Config.load()
+            Updater.fetchLatestVersion(Config.CheckUpdateInfoURL)
             Updater.checkHeadlessUpdate()
         }
         ClientOnly {
@@ -134,7 +142,7 @@ class CioMod : Mod() {
         DataCenter.initData()
         StreamCenter.initAndLoad()
         ClientOnly {
-            SettingsUI.appendSettings()
+            CioUI.appendSettings()
             DebugOnly {
                 DebugUI.appendUI()
             }
@@ -148,7 +156,7 @@ class CioMod : Mod() {
             Core.input.addProcessor(UnitTap)
         }
         Settings.updateSettings()
-        Log.info("Cyber IO ${Meta.DetailedVersion} initialized.")
+        Clog.info("v${Meta.DetailedVersion} initialized.")
         Settings.LastPlayTime = System.currentTimeMillis()
     }
 
@@ -161,10 +169,10 @@ class CioMod : Mod() {
         IHoloEntity.registerHoloEntityInitHealth()
         PrismBlackList.load()
         CanGlobalAnimationPlay = true
-        Log.info("Cyber IO ${Meta.DetailedVersion} mod's contents loaded.")
+        Log.info("v${Meta.DetailedVersion} mod's contents loaded.")
     }
     @HeadlessOnly
     override fun registerServerCommands(handler: CommandHandler) {
-        ServerCommands.register(handler)
+        handler.registerCioCmds()
     }
 }

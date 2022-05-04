@@ -3,6 +3,7 @@ package net.liplum.welcome
 import arc.Core
 import arc.scene.ui.Dialog
 import arc.util.Align
+import arc.util.Log
 import arc.util.Time
 import mindustry.Vars
 import net.liplum.CioMod
@@ -37,14 +38,16 @@ object Actions {
     }
     val UpdateCyberIO = object : Action("UpdateCyberIO") {
         override fun doAction(entity: Welcome.Entity) {
-            if (CioMod.jarFile != null) {
+            if (CioMod.jarFile == null) {
+                Updater.updateSelfByBuiltIn()
+            } else {
                 var progress = 0f
                 val loading = Vars.ui.loadfrag
                 loading.show("@downloading")
                 loading.setProgress { progress }
                 // Cache tips because updating successfully will replace codes and cause class not found exception.
                 val successTip = R.Ctrl.UpdateModSuccess.bundle(Updater.latestVersion)
-                Updater.updateSelfByReplace(onProgress = { p ->
+                Updater.updateSelfByReplace(Updater.DownloadURL, onProgress = { p ->
                     progress = p
                 }, onSuccess = {
                     loading.hide()
@@ -54,9 +57,10 @@ object Actions {
                         }
                     }
                 }, onFailed = { error ->
+                    Log.err(error)
                     Core.app.post {
                         loading.hide()
-                        Dialog("").apply {
+                        Dialog().apply {
                             getCell(cont).growX()
                             cont.margin(15f).add(
                                 R.Ctrl.UpdateModFailed.bundle(Updater.latestVersion, error)
@@ -68,8 +72,6 @@ object Actions {
                         }.show()
                     }
                 })
-            } else {
-                Updater.updateSelfByBuiltIn()
             }
         }
     }

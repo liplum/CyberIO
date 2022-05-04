@@ -2,7 +2,6 @@ package net.liplum.update
 
 import arc.Core
 import arc.util.Http
-import arc.util.Log
 import arc.util.io.Streams
 import arc.util.serialization.Jval
 import kotlinx.coroutines.*
@@ -10,7 +9,9 @@ import mindustry.Vars
 import mindustry.ui.dialogs.ModsDialog
 import net.liplum.*
 import net.liplum.utils.getMethodBy
+import net.liplum.utils.useFakeHeader
 import java.io.ByteArrayOutputStream
+import java.io.File
 import java.lang.reflect.Method
 import java.net.URL
 import kotlin.coroutines.CoroutineContext
@@ -28,47 +29,80 @@ object Updater : CoroutineScope {
     var accessJob: Job? = null
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO
-
-    fun fetchLatestVersion() {
+    val ClientVersionRegex = "(?<=Client:).*".toRegex()
+    val ServerVersionRegex = "(?<=Server:).*".toRegex()
+    fun fetchLatestVersion(updateInfoFileURL: String) {
         if (Vars.headless || Settings.ShowUpdate) {
-            Log.info("CyberIO update checking...")
+            Clog.info("Update checking...")
             accessJob = launch(
                 CoroutineExceptionHandler { _, e ->
-                    Log.err("Can't fetch the latest version of CyberIO because of ${e.javaClass} ${e.message}.")
+                    Clog.err("Can't fetch the latest version because of ${e.javaClass} ${e.message}.")
                 }
             ) {
-                val url = URL(Meta.UpdateInfo)
-                val bytes = url.readBytes()
-                val updateInfo = String(bytes)
-                val allInfos = updateInfo.split('\n')
+                val info: String
+                val testFile = File(updateInfoFileURL)
+                info = if (testFile.isFile && testFile.exists()) {
+                    testFile.readText()
+                } else {
+                    URL(updateInfoFileURL).readText()
+                }
+                val allInfos = info.split('\n')
+                /*
+                    Removed since 3.3
+                */
                 val versionInfo = allInfos[0]
                 latestVersion = runCatching {
                     Version2.valueOf(versionInfo)
                 }.getOrDefault(Meta.DetailedVersion)
-                Log.info("The latest CyberIO version is $latestVersion")
+
+                ClientOnly {
+                    val clientV = allInfos[1]// Client
+                    val client = ClientVersionRegex.find(clientV)
+                    if (client != null)
+                        latestVersion = runCatching {
+                            Version2.valueOf(client.value)
+                        }.getOrDefault(Meta.DetailedVersion)
+                }
+                HeadlessOnly {
+                    val serverV = allInfos[2]// Server
+                    val server = ServerVersionRegex.find(serverV)
+                    if (server != null)
+                        latestVersion = runCatching {
+                            Version2.valueOf(server.value)
+                        }.getOrDefault(Meta.DetailedVersion)
+                }
+
+                Clog.info("The latest version is $latestVersion")
             }
         }
     }
     @HeadlessOnly
-    fun checkHeadlessUpdate() {
+    @JvmOverloads
+    fun checkHeadlessUpdate(shouldUpdateOverride: Boolean = false) {
         launch {
             accessJob?.join()
-            Config.loadConfigJob?.join()
             if (requireUpdate) {
-                if (Config.AutoUpdate) {
-                    Log.info("[Auto-Update ON] Now updating...")
-                    updateSelfByReplace(onSuccess = {
-                        Core.app.post {
-                            Log.info("The game will close soon to reload CyberIO.")
-                            Core.app.exit()
-                        }
-                    })
+                if (Config.AutoUpdate || shouldUpdateOverride) {
+                    Clog.info("[Auto-Update ON] Now updating...")
+                    updateSelfByReplaceFinding(
+                        onFailed = { error ->
+                            Clog.err(error)
+                        },
+                        onSuccess = {
+                            Core.app.post {
+                                Clog.info("The game will close soon to reload CyberIO.")
+                                Core.app.exit()
+                            }
+                        })
                 } else {
-                    Log.info("[Auto-Update OFF] Current CyberIO is ${Meta.DetailedVersion} and need to be updated to $latestVersion manually.")
+                    Clog.info("[Auto-Update OFF] Current version is ${Meta.DetailedVersion} and need to be updated to $latestVersion manually.")
                 }
             }
         }
     }
+    @ClientOnly
+    val DownloadURL: String
+        get() = "${Settings.GitHubMirrorUrl}/${Meta.Repo}${Meta.GitHubJarDownloadFragment}"
     @JvmStatic
     fun updateSelfByBuiltIn() {
         val modsDialog = Vars.ui.mods
@@ -76,10 +110,10 @@ object Updater : CoroutineScope {
         modsDialog.ImportMod(Meta.Repo, true)
     }
     @JvmStatic
-    fun updateSelfByReplace(
+    fun updateSelfByReplaceFinding(
         onProgress: (Float) -> Unit = {},
         onSuccess: () -> Unit = {},
-        onFailed: (String) -> Unit = {}
+        onFailed: (String) -> Unit = {},
     ) {
         Http.get(Meta.LatestRelease, {
             val json = Jval.read(it.resultAsString)
@@ -88,48 +122,50 @@ object Updater : CoroutineScope {
             if (asset != null) {
                 //grab actual file
                 val url = asset.getString("browser_download_url")
-                Http.get(url, { res ->
-                    downloadLatest(res, onProgress, onSuccess, onFailed)
-                }) { e ->
-                    Log.err("Can't update CyberIO's latest version$latestVersion", e)
-                    onFailed("${e.javaClass.name} ${e.message}")
-                }
+                updateSelfByReplace(url, onProgress, onSuccess, onFailed)
             } else {
-                Log.err("CyberIO has no jar file at this release.")
-                onFailed("CyberIO has no jar file at this release.")
+                onFailed("Jar file wasn't found at this release.")
             }
         }) {
-            Log.err("Can't acquire CyberIO info", it)
-            onFailed("Can't acquire CyberIO info ${it.message}")
+            onFailed("Can't acquire update info $it")
         }
     }
     @JvmStatic
-    fun downloadLatest(
+    fun updateSelfByReplace(
+        jarUrl: String,
+        onProgress: (Float) -> Unit = {},
+        onSuccess: () -> Unit = {},
+        onFailed: (String) -> Unit = {},
+    ) {
+        Http.get(jarUrl).useFakeHeader().error { e ->
+            onFailed("Can't update the latest version$latestVersion $e")
+        }.submit { res ->
+            downloadAndReplaceLatest(res, onProgress, onSuccess, onFailed)
+        }
+    }
+    @JvmStatic
+    fun downloadAndReplaceLatest(
         req: Http.HttpResponse,
         onProgress: (Float) -> Unit = {},
         onSuccess: () -> Unit = {},
-        onFailed: (String) -> Unit = {}
+        onFailed: (String) -> Unit = {},
     ) {
         if (CioMod.jarFile != null) {
             val length = req.contentLength
             val bytes = ByteArrayOutputStream()
-            Log.info("CyberIO $latestVersion is downloading.")
+            Clog.info("v$latestVersion is downloading.")
             Streams.copyProgress(
                 req.resultAsStream,
                 bytes,
                 length, Streams.defaultBufferSize,
                 onProgress
             )
-            Log.info("CyberIO $latestVersion downloaded successfully, replacing file.")
-            Streams.copy(
-                bytes.toByteArray().inputStream(),
-                CioMod.jarFile.outputStream()
-            )
-            Log.info("CyberIO updated successfully.")
+            Clog.info("v$latestVersion downloaded successfully, replacing file.")
+            CioMod.jarFile.replaceByteBy(bytes.toByteArray())
+            Clog.info("Updated successfully.")
             onSuccess()
         } else {
-            Log.err("CyberIO's jar file can't be found.")
-            onFailed("CyberIO's jar file can't be found.")
+            onFailed("Jar file not found.")
         }
     }
 

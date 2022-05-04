@@ -384,8 +384,8 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
             super.draw()
             //Draw shadows
             val realRange = buildingProgress * realRange
-            Draw.z(Layer.blockUnder)
-            Drawf.shadow(x, y, realRange * 2f)
+            Draw.z(Layer.weather)
+            Drawf.shadow(x, y, realRange * (2f + realSlowDown), 1f + realSlowDown)
             // Draw waves
             Draw.z(Layer.block)
             val f = 1f - Time.time / 100f % 1f

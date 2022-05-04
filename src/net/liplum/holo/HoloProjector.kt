@@ -238,6 +238,8 @@ open class HoloProjector(name: String) : Block(name) {
             }
         @ClientOnly
         var lastPlan: HoloPlan? = curPlan
+        @ClientOnly
+        var projecting = 0f
         override fun draw() {
             super.draw()
             val curPlan = curPlan
@@ -263,7 +265,12 @@ open class HoloProjector(name: String) : Block(name) {
                     type.uiIcon.Draw(x, y)
                 }
             }
-            val rotation = Time.time
+            WhenNotPaused {
+                if (progress < 1f) {
+                    projecting += delta()
+                }
+            }
+            val rotation = projecting
             val size = block.size * Vars.tilesize / projectorCenterRate
             // tx and ty control the position of bottom edge
             val tx = x
@@ -272,7 +279,7 @@ open class HoloProjector(name: String) : Block(name) {
             Draw.color(R.C.HoloDark)
             Draw.alpha(alpha)
             // the floating of center
-            val focusLen = 3.8f + Mathf.absin(Time.time, 3.0f, 0.6f)
+            val focusLen = 3.8f + Mathf.absin(projecting, 3.0f, 0.6f)
             val px = x + Angles.trnsx(rotation, focusLen)
             val py = y + Angles.trnsy(rotation, focusLen)
             val shrink = projectorShrink
