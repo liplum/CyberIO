@@ -31,49 +31,51 @@ object Updater : CoroutineScope {
         get() = Dispatchers.IO
     val ClientVersionRegex = "(?<=Client:).*".toRegex()
     val ServerVersionRegex = "(?<=Server:).*".toRegex()
-    fun fetchLatestVersion(updateInfoFileURL: String) {
-        if (Vars.headless || Settings.ShowUpdate) {
-            Clog.info("Update checking...")
-            accessJob = launch(
-                CoroutineExceptionHandler { _, e ->
-                    Clog.err("Can't fetch the latest version because of ${e.javaClass} ${e.message}.")
-                }
-            ) {
-                val info: String
-                val testFile = File(updateInfoFileURL)
-                info = if (testFile.isFile && testFile.exists()) {
-                    testFile.readText()
-                } else {
-                    URL(updateInfoFileURL).readText()
-                }
-                val allInfos = info.split('\n')
-                /*
-                    Removed since 3.3
-                val versionInfo = allInfos[0]
-                latestVersion = runCatching {
-                    Version2.valueOf(versionInfo)
-                }.getOrDefault(Meta.DetailedVersion)
-                */
-
-                ClientOnly {
-                    val clientV = allInfos[1]// Client
-                    val client = ClientVersionRegex.find(clientV)
-                    if (client != null)
-                        latestVersion = runCatching {
-                            Version2.valueOf(client.value)
-                        }.getOrDefault(Meta.DetailedVersion)
-                }
-                HeadlessOnly {
-                    val serverV = allInfos[2]// Server
-                    val server = ServerVersionRegex.find(serverV)
-                    if (server != null)
-                        latestVersion = runCatching {
-                            Version2.valueOf(server.value)
-                        }.getOrDefault(Meta.DetailedVersion)
-                }
-
-                Clog.info("The latest version is $latestVersion")
+    inline fun fetchLatestVersion(
+        updateInfoFileURL: String = Meta.UpdateInfoURL,
+        crossinline onFailed: (String) -> Unit = {},
+    ) {
+        Clog.info("Update checking...")
+        accessJob = launch(
+            CoroutineExceptionHandler { _, e ->
+                Clog.err("Can't fetch the latest version because of ${e.javaClass} ${e.message}.")
+                onFailed("${e.javaClass} ${e.message}")
             }
+        ) {
+            val info: String
+            val testFile = File(updateInfoFileURL)
+            info = if (testFile.isFile && testFile.exists()) {
+                testFile.readText()
+            } else {
+                URL(updateInfoFileURL).readText()
+            }
+            val allInfos = info.split('\n')
+            /*
+                Removed since 3.3
+            val versionInfo = allInfos[0]
+            latestVersion = runCatching {
+                Version2.valueOf(versionInfo)
+            }.getOrDefault(Meta.DetailedVersion)
+            */
+
+            ClientOnly {
+                val clientV = allInfos[1]// Client
+                val client = ClientVersionRegex.find(clientV)
+                if (client != null)
+                    latestVersion = runCatching {
+                        Version2.valueOf(client.value)
+                    }.getOrDefault(Meta.DetailedVersion)
+            }
+            HeadlessOnly {
+                val serverV = allInfos[2]// Server
+                val server = ServerVersionRegex.find(serverV)
+                if (server != null)
+                    latestVersion = runCatching {
+                        Version2.valueOf(server.value)
+                    }.getOrDefault(Meta.DetailedVersion)
+            }
+
+            Clog.info("The latest version is $latestVersion")
         }
     }
     @HeadlessOnly

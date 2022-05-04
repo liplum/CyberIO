@@ -6,6 +6,7 @@ import net.liplum.HeadlessOnly
 import net.liplum.R
 import net.liplum.update.Updater
 
+@HeadlessOnly
 object ServerCommands {
     @HeadlessOnly
     @JvmStatic

@@ -69,11 +69,11 @@ fun Boolean.toFloat(): Float = if (this) 1f else 0f
  */
 fun <T> Collection<T>.randomExcept(
     atLeast: Boolean = false,
-    exception: T
+    exception: T,
 ): T? {
     when (size) {
         0 -> return null
-        1 -> return if (first() != exception  && !atLeast)
+        1 -> return if (first() != exception && !atLeast)
             first()
         else null
     }
@@ -88,7 +88,7 @@ fun <T> Collection<T>.randomExcept(
  * @return the result that isn't inclining in this collection.
  * Otherwise, null will be returned.
  */
-inline fun <T> Collection<T>.randomExcept(
+inline fun <reified T> Collection<T>.randomExcept(
     maxTry: Int = this.size,
     atLeastOne: Boolean = false,
     isInclude: T.() -> Boolean,
@@ -108,7 +108,7 @@ inline fun <T> Collection<T>.randomExcept(
         if (!res.isInclude())
             return res
     }
-    return if(atLeastOne)
+    return if (atLeastOne)
         this.random()
     else
         null
@@ -118,7 +118,7 @@ inline fun <T> Collection<T>.randomExcept(
  * @return the result that isn't inclining in this collection.
  * Otherwise, null will be returned.
  */
-inline fun <C, T> C.randomExcept(
+inline fun <reified C, reified T> C.randomExcept(
     maxTry: Int = this.size,
     atLeastOne: Boolean = false,
     random: C.() -> T,
@@ -139,7 +139,7 @@ inline fun <C, T> C.randomExcept(
         if (!res.isInclude())
             return res
     }
-    return if(atLeastOne)
+    return if (atLeastOne)
         this.random()
     else
         null
@@ -147,7 +147,7 @@ inline fun <C, T> C.randomExcept(
 /**
  * Returns the all elements yielding the largest value of the given function or empty list if there are no elements.
  */
-inline fun <T, R : Comparable<R>> Iterable<T>.allMaxBy(selector: (T) -> R): List<T> {
+inline fun <reified T, reified R : Comparable<R>> Iterable<T>.allMaxBy(selector: (T) -> R): List<T> {
     val iterator = iterator()
     if (!iterator.hasNext()) return emptyList()
     var maxElem = iterator.next()
@@ -171,7 +171,7 @@ inline fun <T, R : Comparable<R>> Iterable<T>.allMaxBy(selector: (T) -> R): List
     return res
 }
 
-inline fun <K, V, R : Comparable<R>> Map<out K, V>.allMaxBy(
+inline fun <reified K, reified V, reified R : Comparable<R>> Map<out K, V>.allMaxBy(
     selector: (Map.Entry<K, V>) -> R,
 ): List<Map.Entry<K, V>> {
     return entries.allMaxBy(selector)

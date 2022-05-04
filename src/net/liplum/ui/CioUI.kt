@@ -3,11 +3,14 @@ package net.liplum.ui
 import arc.Core
 import arc.Events
 import arc.math.Interp
+import arc.scene.ui.Dialog
 import arc.scene.ui.TextButton
 import arc.scene.ui.TextField
 import arc.scene.ui.layout.Table
 import arc.scene.utils.Elem
+import arc.util.Align
 import arc.util.Http
+import kotlinx.coroutines.launch
 import mindustry.Vars
 import mindustry.game.EventType.Trigger
 import mindustry.ui.Styles
@@ -18,14 +21,16 @@ import net.liplum.Meta
 import net.liplum.R
 import net.liplum.Settings
 import net.liplum.UnsteamOnly
+import net.liplum.lib.ing
 import net.liplum.lib.ui.ShowTextDialog
 import net.liplum.lib.ui.addTrackTooltip
 import net.liplum.lib.ui.settings.*
 import net.liplum.lib.ui.settings.SliderSettingX.Companion.addSliderSettingX
-import net.liplum.utils.bundle
-import net.liplum.utils.getF
-import net.liplum.utils.invoke
-import net.liplum.utils.useFakeHeader
+import net.liplum.update.Updater
+import net.liplum.utils.*
+import net.liplum.welcome.Conditions
+import net.liplum.welcome.Welcome
+import net.liplum.welcome.WelcomeList
 
 object CioUI {
     @JvmStatic
@@ -132,6 +137,9 @@ object CioUI {
                             }
 
                             val saveButton = TextButton("@save").apply {
+                                update {
+                                    label.setText(if (isDisabled) R.Ctrl.Validate.bundle.ing else "@save")
+                                }
                                 changed {
                                     if (field.text.isEmpty()) {
                                         onResetDefault()
@@ -167,6 +175,52 @@ object CioUI {
                 }.addTrackTooltip(bundle("button-tooltip"))
                 it.add(button).fillX()
             }
+            addAny {
+                fun bundle(key: String) = "setting.${R.Setting.CheckUpdate}.$key".bundle
+                val buttonI18n = bundle("button")
+                val button = TextButton(buttonI18n).apply {
+                    update {
+                        label.setText(if (isDisabled) buttonI18n.ing else buttonI18n)
+                    }
+                    changed {
+                        var failed: String? = null
+                        Updater.fetchLatestVersion(onFailed = { e ->
+                            failed = e
+                        })
+                        isDisabled = true
+                        Updater.launch {
+                            Updater.accessJob?.join()
+                            val errorInfo = failed
+                            if (errorInfo != null) {
+                                showUpdateFailed(errorInfo)
+                            } else {
+                                if (Updater.requireUpdate) {
+                                    val updateTips = WelcomeList.findAll { tip ->
+                                        tip.condition == Conditions.CheckUpdate
+                                    }
+                                    if (updateTips.isEmpty()) {
+                                        ShowTextDialog(bundle("not-support"))
+                                    } else {
+                                        val updateTip = updateTips.randomExcept(atLeastOne = true) {
+                                            id != Settings.LastWelcomeID
+                                        }
+                                        if (updateTip != null)
+                                            Welcome.genEntity().apply {
+                                                tip = updateTip
+                                            }.showTip()
+                                        else
+                                            ShowTextDialog(bundle("not-support"))
+                                    }
+                                } else {
+                                    ShowTextDialog(bundle("already-latest"))
+                                }
+                            }
+                            isDisabled = false
+                        }
+                    }
+                }
+                it.add(button).fillX()
+            }
         }
         sortBy {
             when (it) {
@@ -178,5 +232,18 @@ object CioUI {
                 else -> Int.MAX_VALUE
             }
         }
+    }
+
+    fun showUpdateFailed(error: String) {
+        Dialog().apply {
+            getCell(cont).growX()
+            cont.margin(15f).add(
+                R.Ctrl.UpdateModFailed.bundle(error)
+            ).width(400f).wrap().get().setAlignment(Align.center, Align.center)
+            buttons.button("@ok") {
+                this.hide()
+            }.size(110f, 50f).pad(4f)
+            closeOnBack()
+        }.show()
     }
 }
