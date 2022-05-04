@@ -12,6 +12,8 @@ import arc.util.Align
 import arc.util.Http
 import kotlinx.coroutines.launch
 import mindustry.Vars
+import mindustry.core.GameState.State.menu
+import mindustry.game.EventType
 import mindustry.game.EventType.Trigger
 import mindustry.ui.Styles
 import mindustry.ui.dialogs.BaseDialog
@@ -25,6 +27,8 @@ import net.liplum.lib.ing
 import net.liplum.lib.ui.ShowTextDialog
 import net.liplum.lib.ui.addTrackTooltip
 import net.liplum.lib.ui.settings.*
+import net.liplum.lib.ui.settings.AnySetting.Companion.addAny
+import net.liplum.lib.ui.settings.CheckSettingX.Companion.addCheckPref
 import net.liplum.lib.ui.settings.SliderSettingX.Companion.addSliderSettingX
 import net.liplum.update.Updater
 import net.liplum.utils.*
@@ -64,6 +68,7 @@ object CioUI {
 
     const val SettingButtonName = "cyber-io-settings-button"
     val settings = SettingsTableX().apply {
+        var isMenu = true
         genHeader = {
             it.add("${Meta.Name} v${Meta.DetailedVersion}").row()
         }
@@ -96,11 +101,15 @@ object CioUI {
         UnsteamOnly {
             addCheckPref(
                 R.Setting.ShowUpdate, !Vars.steam
-            )
+            ).apply {
+                canShow = { isMenu }
+            }
         }
         addCheckPref(
             R.Setting.ShowWelcome, true
-        )
+        ).apply {
+            canShow = { isMenu }
+        }
         UnsteamOnly {
             addAny {
                 val prefix = "setting.${R.Setting.GitHubMirrorUrl}"
@@ -172,8 +181,11 @@ object CioUI {
                         addCloseListener()
                     }
                     dialog.show()
-                }.addTrackTooltip(bundle("button-tooltip"))
+                }.addTrackTooltip(bundle("button-tooltip")).apply {
+                }
                 it.add(button).fillX()
+            }.apply {
+                canShow = { isMenu }
             }
             addAny {
                 fun bundle(key: String) = "setting.${R.Setting.CheckUpdate}.$key".bundle
@@ -220,6 +232,8 @@ object CioUI {
                     }
                 }
                 it.add(button).fillX()
+            }.apply {
+                canShow = { isMenu }
             }
         }
         sortBy {
@@ -230,6 +244,13 @@ object CioUI {
                 is CheckSettingX -> 3
                 is AnySetting -> 4
                 else -> Int.MAX_VALUE
+            }
+        }
+        Events.on(EventType.StateChangeEvent::class.java) {
+            val lastIsMenu = isMenu
+            isMenu = it.to == menu
+            if (lastIsMenu != isMenu) {
+                rebuild()
             }
         }
     }

@@ -94,16 +94,6 @@ fun SettingsTable.insertCheckPrefFirst(
     return res
 }
 
-fun SettingsTable.addCheckPref(
-    name: String, def: Boolean,
-    onChanged: (Boolean) -> Unit = {},
-): CheckSettingX =
-    CheckSettingX(name, def, onChanged).apply {
-        settings.add(this)
-        Core.settings.defaults(name, def)
-        rebuild()
-    }
-
 fun SettingsTable.sort(priority: Map<Class<out Setting>, Int>) {
     settings.sortComparing {
         priority[it.javaClass] ?: throw KeyNotFoundException("${it.javaClass}")
@@ -125,11 +115,3 @@ fun SettingsTable.sortBy(priority: (Setting) -> Int) {
     rebuild()
 }
 
-fun SettingsTable.addAny(
-    ctor: AnySetting.(SettingsTable) -> Unit,
-): AnySetting {
-    val res = AnySetting(ctor)
-    settings.add(res)
-    rebuild()
-    return res
-}

@@ -11,7 +11,8 @@ class CheckSettingX(
     name: String,
     val def: Boolean,
     val onChanged: (Boolean) -> Unit,
-) : Setting(name) {
+) : Setting(name), ISettingCondition {
+    var canShow: () -> Boolean = { true }
     override fun add(table: SettingsTable) {
         val box = CheckBox(title)
         box.update {
@@ -25,8 +26,24 @@ class CheckSettingX(
         addDesc(table.add(box).left().padTop(3f).get())
         table.row()
     }
+
     override fun addDesc(elem: Element) {
         if (description == null) return
         elem.addTrackTooltip(description)
+    }
+
+    override fun canShow(): Boolean =
+        this.canShow.invoke()
+
+    companion object {
+        fun SettingsTable.addCheckPref(
+            name: String, def: Boolean,
+            onChanged: (Boolean) -> Unit = {},
+        ): CheckSettingX =
+            CheckSettingX(name, def, onChanged).apply {
+                settings.add(this)
+                Core.settings.defaults(name, def)
+                rebuild()
+            }
     }
 }

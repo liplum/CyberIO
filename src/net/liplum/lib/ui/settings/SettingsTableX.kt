@@ -16,11 +16,13 @@ class SettingsTableX : SettingsTable() {
             field = value
             rebuild()
         }
+
     override fun rebuild() {
         clearChildren()
 
         genHeader(this)
         for (setting in list) {
+            if (setting is ISettingCondition && !setting.canShow()) continue
             setting.add(this)
         }
         button("settings.reset".bundle("Reset to Defaults")) {

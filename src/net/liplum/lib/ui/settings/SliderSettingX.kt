@@ -20,7 +20,11 @@ class SliderSettingX(
     val def: Int, val min: Int, val max: Int, val step: Int,
     val str: StringProcessor = StringProcessor { it.toString() },
     val onChanged: () -> Unit = {},
-) : Setting(name) {
+) : Setting(name), ISettingCondition {
+    var canShow: () -> Boolean = { true }
+    override fun canShow(): Boolean =
+        this.canShow.invoke()
+
     override fun add(table: SettingsTable) {
         val slider = Slider(min.toFloat(), max.toFloat(), step.toFloat(), false)
         slider.value = Core.settings.getInt(name).toFloat()
