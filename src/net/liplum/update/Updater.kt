@@ -49,11 +49,11 @@ object Updater : CoroutineScope {
                 val allInfos = info.split('\n')
                 /*
                     Removed since 3.3
-                */
                 val versionInfo = allInfos[0]
                 latestVersion = runCatching {
                     Version2.valueOf(versionInfo)
                 }.getOrDefault(Meta.DetailedVersion)
+                */
 
                 ClientOnly {
                     val clientV = allInfos[1]// Client
