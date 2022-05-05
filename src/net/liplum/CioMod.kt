@@ -49,6 +49,8 @@ class CioMod : Mod() {
         @JvmField var lastPlayTime: Long = -1
 
         init {
+            if (!Core.settings.has(Meta.RepoInSettingsKey))
+                Core.settings.put(Meta.RepoInSettingsKey, Meta.Repo)
             if (IsClient && Vars.clientLoaded && !objCreated) {
                 FirstLoaded.tryRecord()
                 FirstLoaded.load()

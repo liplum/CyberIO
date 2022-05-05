@@ -1,24 +1,30 @@
 package net.liplum.lib.ui.settings
 
 import arc.Core
+import arc.scene.Element
 import arc.scene.event.Touchable
 import arc.scene.ui.Label
 import arc.scene.ui.Slider
 import arc.scene.ui.layout.Table
 import mindustry.ui.Styles
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable
-import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.SliderSetting
+import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.Setting
 import mindustry.ui.dialogs.SettingsMenuDialog.StringProcessor
+import net.liplum.lib.ui.addTrackTooltip
 
 operator fun StringProcessor.invoke(i: Int): String =
     this.get(i)
 
 class SliderSettingX(
     name: String,
-    def: Int, val min: Int, val max: Int, val step: Int,
+    val def: Int, val min: Int, val max: Int, val step: Int,
     val str: StringProcessor = StringProcessor { it.toString() },
     val onChanged: () -> Unit = {},
-) : SliderSetting(name, def, min, max, step, str) {
+) : Setting(name), ISettingCondition {
+    var canShow: () -> Boolean = { true }
+    override fun canShow(): Boolean =
+        this.canShow.invoke()
+
     override fun add(table: SettingsTable) {
         val slider = Slider(min.toFloat(), max.toFloat(), step.toFloat(), false)
         slider.value = Core.settings.getInt(name).toFloat()
@@ -45,6 +51,11 @@ class SliderSettingX(
                 .padTop(4f).get()
         )
         table.row()
+    }
+
+    override fun addDesc(elem: Element) {
+        if (description == null) return
+        elem.addTrackTooltip(description)
     }
 
     companion object {

@@ -141,6 +141,7 @@ public class R {
                 Yes = Gen("yes"),
                 No = Gen("no"),
                 OK = Gen("ok"),
+                Validate = Gen("validate"),
                 UpdateModSuccess = Gen("update-mod.success"),
                 UpdateModFailed = Gen("update-mod.failed");
 
@@ -295,7 +296,9 @@ public class R {
                 LastWelcome = Gen("last-welcome"),
                 LastWelcomeID = Gen("last-welcome-id"),
                 FirstInstallationTime = Gen("first-install-time"),
-                LastPlayTime = Gen("last-play-time");
+                LastPlayTime = Gen("last-play-time"),
+                GitHubMirrorUrl = Gen("github-mirror"),
+                CheckUpdate = Gen("check-update");
     }
 
     public static final class CMD {

@@ -1,14 +1,13 @@
 package net.liplum.welcome
 
 import arc.Core
-import arc.scene.ui.Dialog
-import arc.util.Align
 import arc.util.Log
 import arc.util.Time
 import mindustry.Vars
 import net.liplum.CioMod
 import net.liplum.R
 import net.liplum.Settings
+import net.liplum.ui.CioUI
 import net.liplum.update.Updater
 import net.liplum.utils.bundle
 
@@ -38,14 +37,16 @@ object Actions {
     }
     val UpdateCyberIO = object : Action("UpdateCyberIO") {
         override fun doAction(entity: Welcome.Entity) {
-            if (CioMod.jarFile != null) {
+            if (CioMod.jarFile == null) {
+                Updater.updateSelfByBuiltIn()
+            } else {
                 var progress = 0f
                 val loading = Vars.ui.loadfrag
                 loading.show("@downloading")
                 loading.setProgress { progress }
                 // Cache tips because updating successfully will replace codes and cause class not found exception.
                 val successTip = R.Ctrl.UpdateModSuccess.bundle(Updater.latestVersion)
-                Updater.updateSelfByReplace(onProgress = { p ->
+                Updater.updateSelfByReplace(Updater.DownloadURL, onProgress = { p ->
                     progress = p
                 }, onSuccess = {
                     loading.hide()
@@ -58,20 +59,9 @@ object Actions {
                     Log.err(error)
                     Core.app.post {
                         loading.hide()
-                        Dialog().apply {
-                            getCell(cont).growX()
-                            cont.margin(15f).add(
-                                R.Ctrl.UpdateModFailed.bundle(Updater.latestVersion, error)
-                            ).width(400f).wrap().get().setAlignment(Align.center, Align.center)
-                            buttons.button("@ok") {
-                                this.hide()
-                            }.size(110f, 50f).pad(4f)
-                            closeOnBack()
-                        }.show()
+                        CioUI.showUpdateFailed(error)
                     }
                 })
-            } else {
-                Updater.updateSelfByBuiltIn()
             }
         }
     }

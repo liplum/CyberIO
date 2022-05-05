@@ -19,7 +19,7 @@ inline fun SettingsTable.insertSliderPref(
     insertPos: InsertPos = InsertPos.After,
     s: StringProcessor = StringProcessor { it.toString() },
     noinline onChanged: () -> Unit = {},
-    whenTrue: (Setting) -> Boolean
+    whenTrue: (Setting) -> Boolean,
 ): SliderSettingX {
     val res = SliderSettingX(name, def, min, max, step, s, onChanged)
     if (insertPos == InsertPos.After) {
@@ -60,7 +60,7 @@ inline fun SettingsTable.insertCheckPref(
     name: String, def: Boolean,
     insertPos: InsertPos = InsertPos.After,
     onChanged: Boolc = Boolc {},
-    whenTrue: (Setting) -> Boolean
+    whenTrue: (Setting) -> Boolean,
 ): CheckSetting {
     val res = CheckSetting(name, def, onChanged)
     if (insertPos == InsertPos.After) {
@@ -75,7 +75,7 @@ inline fun SettingsTable.insertCheckPref(
 
 fun SettingsTable.insertCheckPrefLast(
     name: String, def: Boolean,
-    onChanged: Boolc = Boolc {}
+    onChanged: Boolc = Boolc {},
 ): CheckSetting =
     CheckSetting(name, def, onChanged).apply {
         settings.add(this)
@@ -85,7 +85,7 @@ fun SettingsTable.insertCheckPrefLast(
 
 fun SettingsTable.insertCheckPrefFirst(
     name: String, def: Boolean,
-    onChanged: Boolc = Boolc {}
+    onChanged: Boolc = Boolc {},
 ): CheckSetting {
     val res = CheckSetting(name, def, onChanged)
     settings.insert(0, res)
@@ -94,15 +94,24 @@ fun SettingsTable.insertCheckPrefFirst(
     return res
 }
 
-fun SettingsTable.addCheckPref(
-    name: String, def: Boolean,
-    onChanged: Boolc = Boolc {}
-): CheckSetting =
-    insertCheckPrefLast(name, def, onChanged)
-
 fun SettingsTable.sort(priority: Map<Class<out Setting>, Int>) {
     settings.sortComparing {
         priority[it.javaClass] ?: throw KeyNotFoundException("${it.javaClass}")
     }
     rebuild()
 }
+
+fun SettingsTable.sortByClz(priority: (Class<out Setting>) -> Int) {
+    settings.sortComparing {
+        priority(it.javaClass)
+    }
+    rebuild()
+}
+
+fun SettingsTable.sortBy(priority: (Setting) -> Int) {
+    settings.sortComparing {
+        priority(it)
+    }
+    rebuild()
+}
+

@@ -245,6 +245,7 @@ task downloadServer(type: DownloadTask) {
 
 
 task runMod(dependsOn: classes, type: JavaExec) {
+    dependsOn jar
     dependsOn copyJar
     dependsOn downloadDesktop
     def gameFile = new File("$rootDir/run/Mindustry${mdtVersionNum}.jar")
@@ -260,6 +261,7 @@ task runGame(dependsOn: classes, type: JavaExec) {
 }
 
 task runModServer(dependsOn: classes, type: JavaExec) {
+    dependsOn jar
     dependsOn copyJarServer
     dependsOn downloadServer
     def gameFile = new File("$rootDir/run/MindustryServer${mdtVersionNum}.jar")

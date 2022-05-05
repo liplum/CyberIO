@@ -36,6 +36,12 @@ object WelcomeList {
     }
 
     operator fun get(id: String) = list[id] ?: WelcomeTip.Default
+    inline fun find(filter: (WelcomeTip) -> Boolean): WelcomeTip? {
+        return list.values.find(filter)
+    }
+    inline fun findAll(filter: (WelcomeTip) -> Boolean): List<WelcomeTip> {
+        return list.values.filter(filter)
+    }
 }
 
 class WelcomeTip {

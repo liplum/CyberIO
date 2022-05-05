@@ -21,16 +21,15 @@ import net.liplum.utils.*
 object Welcome {
     var bundle = ReferBundleWrapper.create()
     private var info = Info()
-    private var entity = Entity(bundle, info)
+    fun genEntity() = Entity(bundle, info)
+    private var entity = genEntity()
     private var showWelcome = false
     @JvmStatic
     fun showWelcomeDialog() {
         checkLastVersion()
         judgeWelcome()
         if (showWelcome) {
-            val template = entity.tip.template
-            val dialog = template.gen(entity)
-            dialog.show()
+            entity.showTip()
         }
     }
     @JvmStatic
@@ -45,6 +44,7 @@ object Welcome {
             chance
         }
         val res = allCandidates.randomExcept(
+            atLeastOne = true,
             random = {
                 this.randomByWeights(weights, sumChance)
             }
@@ -164,5 +164,9 @@ object Welcome {
 
         val icon: TR
             get() = tip.iconPath.Cio.atlas()
+
+        fun showTip() {
+            tip.template.gen(this).show()
+        }
     }
 }

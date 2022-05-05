@@ -1,5 +1,7 @@
 package net.liplum.lib
 
+import arc.util.Strings
+import arc.util.Time
 import net.liplum.utils.isOdd
 import org.jetbrains.annotations.Contract
 
@@ -41,7 +43,7 @@ fun String.CenterFillUntil(c: Char, totalChar: Int, leftAlign: Boolean = true): 
 fun String.buildCenterFillUntil(
     c: Char,
     totalChar: Int,
-    leftAlign: Boolean = true
+    leftAlign: Boolean = true,
 ): StringBuilder =
     StringBuilder().buildCenterFillUntil(this, c, totalChar, leftAlign)
 @JvmOverloads
@@ -49,7 +51,7 @@ fun StringBuilder.buildCenterFillUntil(
     title: String,
     c: Char,
     totalChar: Int,
-    leftAlign: Boolean = true
+    leftAlign: Boolean = true,
 ): StringBuilder {
     if (totalChar <= 0) return StringBuilder()
     val len = title.length
@@ -103,3 +105,6 @@ fun Collection<Any>.toLinkedString(): String {
     }
     return s.toString()
 }
+
+val String.ing: String
+    get() = this + Strings.animated(Time.time, 4, 11f, ".")
