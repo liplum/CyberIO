@@ -2,10 +2,12 @@
 
 package net.liplum.utils
 
+import arc.Core
 import arc.math.Mathf
 import mindustry.Vars
 import mindustry.content.Blocks
 import mindustry.ctype.Content
+import mindustry.ctype.UnlockableContent
 import mindustry.entities.Units
 import mindustry.game.Team
 import mindustry.gen.Building
@@ -127,5 +129,24 @@ fun <T> Class<T>.registerPayloadSource() where T : UnitType {
             build.payload = null
             build.scl = 0f
         }
+    }
+}
+
+fun UnlockableContent.lock(): UnlockableContent {
+    Core.settings.put("$name-unlocked", false)
+    setFIn(UnlockableContent::class.java, "unlocked", false)
+    Vars.state.rules.researched.remove(name)
+    return this
+}
+
+inline fun ForEachContent(func: (Content) -> Unit) {
+    Vars.content.contentMap.flatMap { it.toList() }.forEach {
+        func(it)
+    }
+}
+
+inline fun ForEachUnlockableContent(func: (UnlockableContent) -> Unit) {
+    Vars.content.contentMap.flatMap { it.toList() }.forEach {
+        if (it is UnlockableContent) func(it)
     }
 }

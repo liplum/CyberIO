@@ -21,6 +21,7 @@ object ContentRegistry {
         ContentTables.forEach {
             it.lastLoad()
         }
+        CioTechTree.loadSerpulo()
     }
     @JvmStatic
     fun ContentTable.add(): ContentTable {

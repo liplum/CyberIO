@@ -21,6 +21,10 @@ public class ReflectU {
         return getEntry(clz).get(obj, name);
     }
 
+    public static <T> T get(Class<?> clz, String name) {
+        return getEntry(clz).get(null, name);
+    }
+
     public static void set(Object obj, String name, Object value) {
         set(obj.getClass(), obj, name, value);
     }
@@ -116,7 +120,7 @@ public class ReflectU {
                     field.setAccessible(true);
                     return field;
                 } catch (Exception e) {
-                    throw new RuntimeException(e);
+                    throw new RuntimeException(name + "doesn't exist in " + clz.getName(), e);
                 }
             });
         }
@@ -132,7 +136,7 @@ public class ReflectU {
                     method.setAccessible(true);
                     return method;
                 } catch (Exception e) {
-                    throw new RuntimeException(e);
+                    throw new RuntimeException(name + "doesn't exist in " + clz.getName(), e);
                 }
             });
         }

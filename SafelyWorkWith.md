@@ -23,7 +23,8 @@ ___
 All tests **only** considered Cyber IO works with a single mod once.
 
 ### Test List
-
+- Progressed Materials(Java) (prog-mats) v24.0
+- [x] Fixed the unlimited duplicate magnet bullet.
 - BetaMindy(betamindy) v1.08
 - [x] OK, sk7725.
 - Singularity
