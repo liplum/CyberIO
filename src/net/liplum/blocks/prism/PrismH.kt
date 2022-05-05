@@ -17,12 +17,17 @@ fun Bullet.setDuplicate() {
     }
 }
 
-val PrismDispersionBlockList: HashSet<BulletType> = HashSet()
-val BulletType.canDispersion: Boolean
-    get() = this !in PrismDispersionBlockList
+val PrismBlockList: HashSet<BulletType> = HashSet()
+val PrismClzNameBlockList: HashSet<String> = HashSet()
+val BulletType.canDisperse: Boolean
+    get() = this !in PrismBlockList && this.javaClass.name !in PrismClzNameBlockList
+
+fun String.banNameInPrism() {
+    PrismClzNameBlockList.add(this)
+}
 
 fun BulletType.banInPrism() {
-    PrismDispersionBlockList.add(this)
+    PrismBlockList.add(this)
 }
 
 fun UnitType.banInWeapon(weaponName: String) {

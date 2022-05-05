@@ -9,9 +9,11 @@ import mindustry.ai.types.RepairAI
 import mindustry.content.Fx
 import mindustry.content.Items
 import mindustry.entities.abilities.RepairFieldAbility
+import mindustry.entities.bullet.BasicBulletType
 import mindustry.entities.bullet.LaserBoltBulletType
 import mindustry.entities.bullet.MissileBulletType
 import mindustry.gen.Sounds
+import mindustry.type.Weapon
 import mindustry.type.ammo.ItemAmmoType
 import mindustry.type.ammo.PowerAmmoType
 import mindustry.world.meta.BlockFlag
@@ -19,10 +21,12 @@ import net.liplum.Cio
 import net.liplum.R
 import net.liplum.bullets.RuvikBullet
 import net.liplum.bullets.STEM_VERSION
+import net.liplum.flesh.BrainUnitType
 import net.liplum.holo.*
 import net.liplum.scripts.NpcUnitType
 import net.liplum.utils.NewUnitType
 import net.liplum.utils.registerPayloadSource
+import net.liplum.utils.registerUnitType
 
 object CioUnitTypes : ContentTable {
     @JvmStatic lateinit var holoMiner: HoloUnitType
@@ -30,8 +34,10 @@ object CioUnitTypes : ContentTable {
     @JvmStatic lateinit var holoGuardian: HoloUnitType
     @JvmStatic lateinit var holoArchitect: HoloUnitType
     @JvmStatic lateinit var holoSupporter: HoloUnitType
+    @JvmStatic lateinit var brain: BrainUnitType
     override fun firstLoad() {
         HoloUnitType::class.java.registerPayloadSource()
+        BrainUnitType::class.java.registerPayloadSource()
         NpcUnitType::class.java.registerPayloadSource()
 
         holoMiner = NewUnitType(R.Unit.HoloMiner, ::HoloUnitType, ::HoloUnit).apply {
@@ -83,6 +89,7 @@ object CioUnitTypes : ContentTable {
                 reload = 11f
                 recoil = 1f
                 ejectEffect = Fx.none
+                shootCost = 15f
                 bullet = RuvikBullet(1.6f, 35f).apply {
                     stemVersion = STEM_VERSION.STEM1
                     maxRange = ruvikTipRange
@@ -147,6 +154,7 @@ object CioUnitTypes : ContentTable {
                 velocityRnd = 0.5f
                 inaccuracy = 15f
                 alternate = true
+                shootCost = 3f
                 bullet = MissileBulletType(4f, 8f).apply {
                     homingPower = 0.08f
                     weaveMag = 4f
@@ -195,6 +203,7 @@ object CioUnitTypes : ContentTable {
                 x = 4f
                 y = 5f
                 rotate = true
+                shootCost = 20f
                 bullet = LaserBoltBulletType(5.2f, 15f).apply {
                     lifetime = 35f
                     healPercent = 8f
@@ -205,6 +214,52 @@ object CioUnitTypes : ContentTable {
                     hitEffect = HoloFx.hitLaser
                     despawnEffect = HoloFx.hitLaser
                     lightColor = R.C.Holo
+                }
+            })
+        }
+        registerUnitType(R.Unit.Brain)
+        brain = BrainUnitType(R.Unit.Brain).apply {
+            flying = true
+            drag = 0.06f
+            accel = 0.12f
+            speed = 1.5f
+            health = 100f
+            engineSize = 1.8f
+            engineOffset = 5.7f
+            range = 50f
+            isCounted = false
+
+            ammoType = PowerAmmoType(500f)
+            weapons.add(Weapon("${R.Unit.Brain}-hand".Cio).apply {
+                x = 8f
+                y = 8f
+                recoil = -10f
+                reload = 7f
+                bullet = BasicBulletType(10f, 1f).apply {
+                    recoil = -0.7f
+                }
+            })
+        }
+        registerUnitType(R.Unit.Brain)
+        brain = BrainUnitType(R.Unit.Brain).apply {
+            flying = true
+            drag = 0.06f
+            accel = 0.12f
+            speed = 1.5f
+            health = 100f
+            engineSize = 1.8f
+            engineOffset = 5.7f
+            range = 50f
+            isCounted = false
+
+            ammoType = PowerAmmoType(500f)
+            weapons.add(Weapon("${R.Unit.Brain}-hand".Cio).apply {
+                x = 8f
+                y = 8f
+                recoil = -10f
+                reload = 7f
+                bullet = BasicBulletType(10f, 1f).apply {
+                    recoil = -0.7f
                 }
             })
         }

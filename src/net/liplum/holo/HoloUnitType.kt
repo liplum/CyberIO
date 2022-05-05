@@ -165,6 +165,7 @@ open class HoloUnitType(name: String) : UnitType(name) {
         }
         Draw.reset()
     }
+
     override fun setStats() {
         super.setStats()
         stats.add(Stat.health){

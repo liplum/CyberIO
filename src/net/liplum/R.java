@@ -30,7 +30,8 @@ public class R {
                 HoloFighter = "holo-fighter",
                 HoloGuardian = "holo-guardian",
                 HoloArchitect = "holo-architect",
-                HoloSupporter = "holo-supporter";
+                HoloSupporter = "holo-supporter",
+                Brain = "brain";
     }
 
     public static final class Bundle {
