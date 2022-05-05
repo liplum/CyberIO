@@ -1,8 +1,5 @@
-<div align="center">
-
 # Cyber IO
 
-</div>
 # Plum Star Inc.
 
 Your company, Plum Star Inc., mainly develops holographic technology and cross-space data transmission.
