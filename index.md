@@ -1,4 +1,6 @@
 # Cyber IO
+Cyber IO is a Mindustry v7 mod and provides lots of cybernetic things!
+The repository on GitHub: https://github.com/liplum/CyberIO
 
 # Plum Star Inc.
 
