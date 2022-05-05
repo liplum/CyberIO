@@ -1,37 +1,46 @@
-## Welcome to GitHub Pages
+## Cyber IO
 
-You can use the [editor on GitHub](https://github.com/liplum/CyberIO/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+### Plum Star Inc.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+Your company, Plum Star Inc., mainly develops holographic technology and cross-space data transmission.
 
-### Markdown
+#### Data Transimission
+##### Sender & Receiver
+![Sender&Receiver](PlumStarInc/Sender&Receiver.gif)
+Sender&Receiver can be connected each other thanks to the Internet of Things(IoT). Of course, they still need electricity like other gadgets.
+Because Sender&Receiver use peer to peer(P2P), one sender can only connects with one receiver, while one receiver could establish more connections.
+They will automatically detect whether there is any data flowed and display the state on its screen.
+##### Streaming
+![Streaming](PlumStarInc/Stream.png)
+Plum Star Inc. built the universe's largest streaming server. That supports you startup server on your own, as the server you built is just a (Content delivery network)CDN server of it.
+##### Intelligent Logistics
+![IntelligentLogistics](PlumStarInc/Smart.gif)
+Smart unloader will detect the requirement of a receiver, or a smart distributor in this case, then unload the surrounding containers and send corresponding data to the target.
+Smart distributor only allows the data that factorys nearby need.
+Therefore, combining them appropriately could boost the productivity of your industries.
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+#### Holographic Projection
+##### Holograpgic Projector
+![HolograpgicProjector](PlumStarInc/Holo-projecting.gif)
+Holographic projector consumes cyberion, a liquid, and projects countless holographic units.
+There are many different kinds of holo-units, such as holo-miner and holo-fighter, who can perform various arduous tasks for you.
+When it comes to the little one, they ~~are cute~~ can do many dirt works, but unfortunately, they are disposable, because cyberion will be consumed over time.
+Nevertheless, they are cheap and it's the best choice to assist you.
 
-```markdown
-Syntax highlighted code block
+More holographic units are still in development, please continue following the progress of Plum Star Inc.
 
-# Header 1
-## Header 2
-### Header 3
+### New Brains Crop.
 
-- Bulleted
-- List
+The counterpart of Plum Star Inc. has the leading position of biotech, medicine and brain science.
 
-1. Numbered
-2. List
+#### Heimdall Project
+![Heimdall](NewBrainsCrop/Heimdall.png)
+To build a modular person, Heimdall Project was launched.
+By extracorporeal life support, New Brains Crop. made every Physical Component can survival standalone.
+With the brain-computer interface, The brain, main part, can be improved by other upgrade componets and gains more abilities if the combination or formation is right.
+Some studys mentioned that Heimdall Project might have the ability to control people's mind, but New Brains Crop. denied this.
 
-**Bold** and _Italic_ and `Code` text
+More upgrade componets are still in development.
 
-[Link](url) and ![Image](src)
-```
-
-For more details see [Basic writing and formatting syntax](https://docs.github.com/en/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/liplum/CyberIO/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+#### ???
+New Brains Crop. is yet to provide more at present. Please wait for any infomation revealed.
