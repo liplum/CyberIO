@@ -368,7 +368,7 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
                 ).apply {
                     value = curGear.toFloat() - 1
                     moved { configure(Mathf.round(it + 1)) }
-                })
+                }).width(180f).growX()
             }
         }
 
