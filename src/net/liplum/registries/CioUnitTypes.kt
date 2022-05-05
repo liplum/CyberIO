@@ -83,6 +83,7 @@ object CioUnitTypes : ContentTable {
                 reload = 11f
                 recoil = 1f
                 ejectEffect = Fx.none
+                shootCost = 15f
                 bullet = RuvikBullet(1.6f, 35f).apply {
                     stemVersion = STEM_VERSION.STEM1
                     maxRange = ruvikTipRange
@@ -147,6 +148,7 @@ object CioUnitTypes : ContentTable {
                 velocityRnd = 0.5f
                 inaccuracy = 15f
                 alternate = true
+                shootCost = 3f
                 bullet = MissileBulletType(4f, 8f).apply {
                     homingPower = 0.08f
                     weaveMag = 4f
@@ -195,6 +197,7 @@ object CioUnitTypes : ContentTable {
                 x = 4f
                 y = 5f
                 rotate = true
+                shootCost = 20f
                 bullet = LaserBoltBulletType(5.2f, 15f).apply {
                     lifetime = 35f
                     healPercent = 8f
