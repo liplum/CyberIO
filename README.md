@@ -1,6 +1,6 @@
 <div align="center">
 
-# Cyber IO [![Discord](GFX/Discord.png)](https://discord.gg/PDwyxM3waw)
+# [Cyber IO](https://liplum.github.io/CyberIO) [![Discord](GFX/Discord.png)](https://discord.gg/PDwyxM3waw)
 
 [![Discord](https://img.shields.io/discord/937228972041842718?color=%23529b69&label=Discord&logo=Discord&style=for-the-badge)](https://discord.gg/PDwyxM3waw)
 [![TotalDownloads](https://img.shields.io/github/downloads/liplum/CyberIO/total?color=674ea7&label=Download&logo=docusign&logoColor=white&style=for-the-badge)](https://github.com/liplum/CyberIO/releases)
@@ -11,13 +11,15 @@ ___
 
 #### How To Play
 
-To learn about playing Cyber IO, you can check [the wiki of Cyber IO](https://github.com/liplum/CyberIO/wiki/Game-Guide)
-.
+The official website of Cyber IO is [liplum.github.io/CyberIO](https://liplum.github.io/CyberIO).
+
+To learn about playing Cyber IO, you can check [the wiki](https://github.com/liplum/CyberIO/wiki/Game-Guide).
 
 #### Mod Compatibility
 
 If you'd like to play a mod pack, [there is a rough test](SafelyWorkWith.md) of inter-mod compatibility as a reference
 for you.
+
 *Note: Every mod could update and might break the result, please think and test on your own.*
 
 #### For Server
@@ -44,7 +46,7 @@ ___
 
 **Programmer:** Liplum
 
-**Painter:** sudoudou233
+**Painter:** sudoudou233 (tudou#3923)
 ___
 
 ## Acknowledgement
@@ -61,7 +63,8 @@ ___
 
 Everyone is welcome to contribute Cyber IO.
 
-If you want to translate or programme cooperatively. Please [check this file](ForContributors.md) to learn how to join us.
+If you want to translate or programme cooperatively. Please [check this file](ForContributors.md) to learn how to join
+us.
 ___
 
 ## Licence
