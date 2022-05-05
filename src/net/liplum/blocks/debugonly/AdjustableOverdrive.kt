@@ -78,7 +78,7 @@ open class AdjustableOverdrive(name: String) : OverdriveProjector(name) {
             table.add(Slider(0f, maxGear.toFloat(), 1f, false).apply {
                 value = curGear.toFloat()
                 moved { configure(Mathf.round(it)) }
-            })
+            }).width(180f).growX()
         }
 
         override fun read(read: Reads, revision: Byte) {
