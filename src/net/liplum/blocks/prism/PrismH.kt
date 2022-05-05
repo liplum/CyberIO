@@ -3,6 +3,7 @@ package net.liplum.blocks.prism
 import mindustry.entities.bullet.BulletType
 import mindustry.gen.Bullet
 import mindustry.type.UnitType
+import net.liplum.utils.directSuperClz
 
 enum class PrismData {
     Duplicate
@@ -20,11 +21,13 @@ fun Bullet.setDuplicate() {
 val PrismBlockList: HashSet<BulletType> = HashSet()
 val PrismClzNameBlockList: HashSet<String> = HashSet()
 val BulletType.canDisperse: Boolean
-    get() = this !in PrismBlockList && this.javaClass.name !in PrismClzNameBlockList
+    get() = this !in PrismBlockList &&
+            this.directSuperClz.name !in PrismClzNameBlockList
 
 fun String.banNameInPrism() {
     PrismClzNameBlockList.add(this)
 }
+
 fun BulletType.banInPrism() {
     PrismBlockList.add(this)
 }
