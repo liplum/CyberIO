@@ -86,7 +86,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
         consumes.powerDynamic<SmartULDBuild> {
             (powerUsageBasic
                     + powerUsagePerItem * it.needUnloadItems.size
-                    + powerUsagePerConnection * it.getConnectedReceivers().size)
+                    + powerUsagePerConnection * it.connectedReceivers.size)
         }
         super.init()
     }
