@@ -8,98 +8,204 @@ tested again soon.
 Therefore, if any result is outdated or wrong, please new an issue.
 
 Tip: Using **Ctrl-F** to search for the mod you want is an easy way.
-___
 
-### Mod Pack
-- Diamond Ore Mod v2.6.0 + New Horizon v1.11.0.6.1 + Spore Biomechs v1.3.5
-- [x] Fine.
-- Sapphirium v13.0 + DiverseTech v0.2.2 + Mindustry-Extended v1.09 + Opore Mod v69 + Missing Category Units v0.2.2 + Substructure v0.1.1 + United Network of Industries vaplha v1.0
-- Exotic Mod v0.7 Alpha + Progressed Materials v23.7 + Unlimited Armament Works v0.7.8.1 + Exogenesis v1.4 + Sharustry v0.2v
-- [x] Fine.
-- Exotic Mod v0.7 Alpha + Progressed Materials v23.7 + Unlimited Armament Works v0.7.8.1
-- [x] Fine.
+---
 
-___
+### Single Test
+
 All tests **only** considered Cyber IO works with a single mod once.
 
+
+| Mod Name             | Version | Safe | Mod ID    | Note                                                                |
+|----------------------|---------|------|-----------|---------------------------------------------------------------------|
+| Progressed Mindustry | v24     | Y    | prog-mats | Fixed CritBulletType and RiftBulletType with Prism will crash game. |
+|                      |         |      |           |                                                                     |
+
+---
+
+### Mod Pack
+
+- Diamond Ore Mod v2.6.0 + New Horizon v1.11.0.6.1 + Spore Biomechs v1.3.5
+
+- [X]  Fine.
+
+- Sapphirium v13.0 + DiverseTech v0.2.2 + Mindustry-Extended v1.09 + Opore Mod v69 + Missing Category Units v0.2.2 +
+  Substructure v0.1.1 + United Network of Industries vaplha v1.0
+- Exotic Mod v0.7 Alpha + Progressed Materials v23.7 + Unlimited Armament Works v0.7.8.1 + Exogenesis v1.4 + Sharustry
+  v0.2v
+
+- [X]  Fine.
+
+- Exotic Mod v0.7 Alpha + Progressed Materials v23.7 + Unlimited Armament Works v0.7.8.1
+
+- [X]  Fine.
+
+---
+
 ### Test List
+
+All tests **only** considered Cyber IO works with a single mod once.
+
+- Progressed Mindustry (prog-mats) v24.0
+
+- [X]  Fixed CritBulletType and RiftBulletType
+
 - Progressed Materials(Java) (prog-mats) v24.0
-- [x] Fixed the unlimited duplicate magnet bullet.
+
+- [X]  Fixed the unlimited duplicate magnet bullet.
+
 - BetaMindy(betamindy) v1.08
-- [x] OK, sk7725.
+
+- [X]  OK, sk7725.
+
 - Singularity
-- [ ] Can't download it.
+
+- [ ]  Can't download it.
+
 - MoreDefences(more-defences-ivgx) v1.0
-- [X] OK.
+
+- [X]  OK.
+
 - Project Eclipse(mindus) v0.1.0.3
-- [x] Bliz's bullets through over Prism may make problems.
+
+- [X]  Bliz's bullets through over Prism may make problems.
+
 - Spore Biomechs(sporepod) v1.3
-- [x] OK.
+
+- [X]  OK.
+
 - Dimension Shard(dimension-shard) v0.24.2
-- [x] This mod can't be played and might be WIP.
+
+- [X]  This mod can't be played and might be WIP.
+
 - Unit Factory v2.5.0
-- [x] Multiplayer Compatible
+
+- [X]  Multiplayer Compatible
+
 - Mindustry Classicified
-- [x] A texture pack is always ok.
+
+- [X]  A texture pack is always ok.
+
 - Inverted machines(inverted-machines) v1.4
-- [x] SmartDistributor accepts those inverted machines.
+
+- [X]  SmartDistributor accepts those inverted machines.
+
 - Schematics Pack
-- [x] I'm afraid it may destroy my saves, so just skip it.
+
+- [X]  I'm afraid it may destroy my saves, so just skip it.
+
 - Real Life Mod(real-life-mindustry-mod) v2.0
-- [x] No war.
+
+- [X]  No war.
+
 - UNI
-- [ ] Authors, Qwaka and plolq, will consume me. Just RUN AWAY from v135.
+
+- [ ]  Authors, Qwaka and plolq, will consume me. Just RUN AWAY from v135.
+
 - oxynoe v1
-- [x] oxynoe
+
+- [X]  oxynoe
+
 - Animalia(animalia) v0.1.2
-- [x] It's hard to test. I guess it's ok.
+
+- [X]  It's hard to test. I guess it's ok.
+
 - Substructure (substructure) v0.1.1
-- [ ] Can't work on v135
+
+- [ ]  Can't work on v135
+
 - Sapphirium(adc) v13.0
-- [x] OK
+
+- [X]  OK
+
 - Opore Mod(opore-mod) v69
-- [x] OK.
+
+- [X]  OK.
+
 - Mindustry-Extended(me) v1.09
-- [x] Sprinkler with Prism may make troubles.
+
+- [X]  Sprinkler with Prism may make troubles.
+
 - GRavillaso
-- [ ] It uses Java 16, but I use Java 8. Can't test it.
+
+- [ ]  It uses Java 16, but I use Java 8. Can't test it.
+
 - Developer Mode v2.3.2
-- [x] That's ok for me:)
+
+- [X]  That's ok for me:)
+
 - Multi Lib
-- [x] Maybe it can work, but Cyber IO has SmartDistributor.
+
+- [X]  Maybe it can work, but Cyber IO has SmartDistributor.
+
 - Esoterum(esoterum) v2.11-119
-- [x] I like music.
+
+- [X]  I like music.
+
 - (v6)Invincible Cheat(invincible-cheat-mod-v6)
-- [x] OK
+
+- [X]  OK
+
 - Endless Rusting Demo
-- [ ] WIP mod. Skip.
+
+- [ ]  WIP mod. Skip.
+
 - Portal
-- [ ] Can't download mod.
+
+- [ ]  Can't download mod.
+
 - Progressed Materials(Java) (prog-mats) v23.7
-- [x] Attraction's bullets through over Prism will **CAUSE CRASH**
+
+- [X]  Attraction's bullets through over Prism will **CAUSE CRASH**
+
 - Example Mod(testmod) v1.4.9
-- [x] OK
+
+- [X]  OK
+
 - Lead Industries(lead_ind) v1.5.1
-- [x] Enjoy banana!
+
+- [X]  Enjoy banana!
+
 - Unlimited Armament Works(uaw) v0.7.8.1
-- [x] Be careful playing Buckshoot or StrikeForce with Prism
+
+- [X]  Be careful playing Buckshoot or StrikeForce with Prism
+
 - RTFM v2.15.0
-- [x] Multiplayer Compatible
+
+- [X]  Multiplayer Compatible
+
 - routorio(routorio) v2.36.4
-- [x] Router!
+
+- [X]  Router!
+
 - UI Lib(ui-lib)
-- [x] Multiplayer Compatible
+
+- [X]  Multiplayer Compatible
+
 - PicToLogic
-- [x] Multiplayer Compatible
+
+- [X]  Multiplayer Compatible
+
 - Gold Mod(goldmod) v2.0 alpha b19
-- [X] OK.
+
+- [X]  OK.
+
 - Pixelcraft: The endless rust(pixelcraft) v0.9.85
-- [x] Carefully use Prism,in CyberIO, with Shade, Panic or others that can shoot a lots of bullets.
+
+- [X]  Carefully use Prism,in CyberIO, with Shade, Panic or others that can shoot a lots of bullets.
+
 - Diamond Ore Mod(diamond-ore) v2.6.0
-- [x] OK
+
+- [X]  OK
+
 - Hackustry v4\
-- [X] Server plugin. Ignored.
+
+- [X]  Server plugin. Ignored.
+
 - Exotic Mod(exotic-mod) v0.7 Alpha\
-- [x] OK
+
+- [X]  OK
+
 - New Horizon(new-horizon) v1.11.0.6.1\
-- [x] You should notice the memery usage.
+
+- [X]  You should notice the memery usage.

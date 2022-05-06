@@ -17,6 +17,8 @@ fun <T> emptyOrderedSet(): OrderedSet<T> = ArcU.emptySet()
 fun <TK, TV> emptyOrderedMap(): OrderedMap<TK, TV> = ArcU.emptyMap()
 val Float.isZero: Boolean
     get() = Mathf.zero(this)
+val Double.isZero: Boolean
+    get() = Mathf.zero(this)
 
 operator fun <T> Cons<T>.invoke(t: T) {
     this.get(t)
