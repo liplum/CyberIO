@@ -259,8 +259,8 @@ open class Prism(name: String) : Block(name) {
                 realRangeX2
             ) {
                 cm.update {
-                    priselX = revolution.getX() + x
-                    priselY = revolution.getY() + y
+                    priselX = revolution.x + x
+                    priselY = revolution.y + y
                     if (it.team == team &&
                         !it.data.isDuplicate &&
                         it.dst(priselX, priselY) <= prismRange
@@ -320,8 +320,8 @@ open class Prism(name: String) : Block(name) {
             var priselX: Float
             var priselY: Float
             cm.render {
-                priselX = revolution.getX() + x
-                priselY = revolution.getY() + y
+                priselX = revolution.x + x
+                priselY = revolution.y + y
                 Draw.z(Layer.blockOver)
                 Drawf.shadow(
                     img,
