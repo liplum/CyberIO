@@ -114,11 +114,17 @@ open class Virus(name: String) : Block(name) {
 
     override fun minimapColor(tile: Tile) = R.C.VirusBK.rgba()
     open inner class VirusBuild : Building(), IVirusBuilding {
+        @Serialized
         var neighborState: Int = 0
+        @Serialized
         var curGeneration: Int = 0
+        @Serialized
         var curChildrenNumber: Int = 0
+        @Serialized
         var curVarianceNumber: Int = 0
+        @Serialized
         var isAlive: Boolean = true
+        @Serialized
         var raceColor: Color? = null
         override fun onProximityUpdate() {
             refreshNeighborState()

@@ -17,10 +17,7 @@ import mindustry.graphics.Layer
 import mindustry.world.blocks.power.ConditionalConsumePower
 import mindustry.world.blocks.power.PowerBlock
 import mindustry.world.meta.Stat
-import net.liplum.ClientOnly
-import net.liplum.DebugOnly
-import net.liplum.R
-import net.liplum.WhenNotPaused
+import net.liplum.*
 import net.liplum.lib.Draw
 import net.liplum.lib.entity.RadiationArray
 import net.liplum.math.Polar
@@ -92,6 +89,7 @@ open class WirelessTower(name: String) : PowerBlock(name) {
     }
 
     open inner class WirelessTowerBuild : Building() {
+        @Serialized
         @JvmField var lastNeed = 0f
         val realRange: Float
             get() = range * Mathf.log(2f, timeScale + 1f)

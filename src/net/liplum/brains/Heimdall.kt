@@ -8,25 +8,24 @@ import arc.graphics.g2d.Lines
 import arc.math.Interp
 import arc.math.Mathf
 import arc.math.geom.Intersector
+import arc.scene.ui.Label
 import arc.util.Log
 import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.Vars
-import mindustry.ai.types.SuicideAI
 import mindustry.content.Fx
 import mindustry.content.UnitTypes
 import mindustry.gen.*
 import mindustry.graphics.Layer
+import mindustry.graphics.Pal
 import mindustry.logic.LAccess
 import mindustry.logic.Ranged
 import mindustry.ui.Bar
 import mindustry.world.Block
 import mindustry.world.blocks.ControlBlock
-import net.liplum.ClientOnly
-import net.liplum.DebugOnly
-import net.liplum.R
-import net.liplum.WhenNotPaused
+import mindustry.world.meta.Stat
+import net.liplum.*
 import net.liplum.api.IExecutioner
 import net.liplum.api.brain.*
 import net.liplum.api.brain.IBrain.Companion.Mirror
@@ -38,7 +37,6 @@ import net.liplum.lib.delegates.Delegate
 import net.liplum.lib.entity.Radiation
 import net.liplum.lib.entity.RadiationQueue
 import net.liplum.utils.*
-import java.util.*
 
 /**
  * ### Since 1
@@ -55,24 +53,29 @@ open class Heimdall(name: String) : Block(name) {
     @JvmField var forceFieldRegen = 3f
     @JvmField var forceFieldMax = 2000f
     @JvmField var forceFieldRadius = 50f
+    @JvmField var forceFieldRadiusSpeed = 0.1f
     @JvmField var forceFieldRestoreTime = 200f
+    @JvmField var powerUse = 2f
     @ClientOnly lateinit var BuckleTRs: Array<TR>
     @ClientOnly @JvmField var BuckleDuration = 20f
     @ClientOnly @JvmField var BuckleFrameNum = 5
     @JvmField var connectedSound: Sound = Sounds.none
     @JvmField var formationPatterns: MutableSet<IFormationPattern> = HashSet()
     @JvmField var properties = mapOf(
-        UpgradeType.Damage to damage,
-        UpgradeType.Range to range,
-        UpgradeType.WaveSpeed to waveSpeed,
-        UpgradeType.WaveWidth to waveWidth,
-        UpgradeType.ReloadTime to reloadTime,
-        UpgradeType.ControlLine to controlLine,
-        UpgradeType.ForceFieldMax to forceFieldMax,
-        UpgradeType.ForceFieldRegen to forceFieldRegen,
-        UpgradeType.ForceFieldRadius to forceFieldRadius,
-        UpgradeType.ForceFieldRestoreTime to forceFieldRestoreTime,
+        UT.Damage to damage,
+        UT.Range to range,
+        UT.WaveSpeed to waveSpeed,
+        UT.WaveWidth to waveWidth,
+        UT.ReloadTime to reloadTime,
+        UT.ControlLine to controlLine,
+        UT.ForceFieldMax to forceFieldMax,
+        UT.ForceFieldRegen to forceFieldRegen,
+        UT.ForceFieldRadius to forceFieldRadius,
+        UT.ForceFieldRestoreTime to forceFieldRestoreTime,
+        UT.PowerUse to powerUse,
+        UT.MaxBrainWaveNum to maxBrainWaveNum.toFloat(),
     )
+
     init {
         solid = true
         update = true
@@ -86,6 +89,9 @@ open class Heimdall(name: String) : Block(name) {
         if (size != 4) {
             Log.warn("Block $name's size isn't 4 but $size, so it was set as 4 automatically.")
             size = 4
+        }
+        consumes.powerDynamic<HeimdallBuild> {
+            it.realPowerUse
         }
         super.init()
     }
@@ -103,7 +109,15 @@ open class Heimdall(name: String) : Block(name) {
     override fun setStats() {
         super.setStats()
         stats.addHeimdallProperties(properties)
+        stats.remove(Stat.powerUse)
+        stats.add(Stat.powerUse) {
+            val l = Label("$contentType.$name.stats.power-use".bundle)
+            it.add(l)
+        }
     }
+    @ClientOnly
+    @DebugOnly
+    var maxPowerUse = powerUse
     override fun setBars() {
         super.setBars()
         DebugOnly {
@@ -128,6 +142,24 @@ open class Heimdall(name: String) : Block(name) {
                     { it.lastShieldDamageTime / it.realForceFieldRestoreTime }
                 )
             }
+
+            bars.add<HeimdallBuild>("power-use") {
+                Bar(
+                    { "PowerUse:${(it.realPowerUse * 60).toInt()}" },
+                    { Pal.power },
+                    {
+                        maxPowerUse = maxPowerUse.coerceAtLeast(it.realPowerUse + 2f)
+                        it.realPowerUse / maxPowerUse
+                    }
+                )
+            }
+            bars.add<HeimdallBuild>("max-brain-wave") {
+                Bar(
+                    { "BrainWaves:${(it.realMaxBrainWaveNum)}" },
+                    { Pal.power },
+                    { it.realMaxBrainWaveNum / 5f }
+                )
+            }
         }
     }
 
@@ -138,20 +170,21 @@ open class Heimdall(name: String) : Block(name) {
             Side2(this)
         }
         val properties: Map<UpgradeType, Prop> = mapOf(
-            UpgradeType.Damage to Prop(damage, ::realDamage::get, ::realDamage::set),
-            UpgradeType.Range to Prop(range, ::realRange::get, ::realRange::set),
-            UpgradeType.WaveSpeed to Prop(waveSpeed, ::realWaveSpeed::get, ::realWaveSpeed::set),
-            UpgradeType.WaveWidth to Prop(waveWidth, ::realWaveWidth::get, ::realWaveWidth::set),
-            UpgradeType.ReloadTime to Prop(reloadTime, ::realReloadTime::get, ::realReloadTime::set),
-            UpgradeType.ControlLine to Prop(controlLine, ::executeProportion::get, ::executeProportion::set),
-            UpgradeType.ForceFieldMax to Prop(forceFieldMax, ::realForceFieldMax::get, ::realForceFieldMax::set),
-            UpgradeType.ForceFieldRegen to Prop(forceFieldRegen, ::realForceFieldRegen::get, ::realForceFieldRegen::set),
-            UpgradeType.ForceFieldRadius to Prop(forceFieldRadius, ::realForceFieldRadius::get, ::realForceFieldRadius::set),
-            UpgradeType.ForceFieldRestoreTime to Prop(
-                forceFieldRestoreTime,
-                ::realForceFieldRestoreTime::get,
-                ::realForceFieldRestoreTime::set
-            ),
+            UT.Damage to Prop(damage, ::realDamage::get, ::realDamage::set),
+            UT.Range to Prop(range, ::realRange::get, ::realRange::set),
+            UT.WaveSpeed to Prop(waveSpeed, ::realWaveSpeed::get, ::realWaveSpeed::set),
+            UT.WaveWidth to Prop(waveWidth, ::realWaveWidth::get, ::realWaveWidth::set),
+            UT.ReloadTime to Prop(reloadTime, ::realReloadTime::get, ::realReloadTime::set),
+            UT.ControlLine to Prop(controlLine, ::executeProportion::get, ::executeProportion::set),
+            UT.ForceFieldMax to Prop(forceFieldMax, ::realForceFieldMax::get, ::realForceFieldMax::set),
+            UT.ForceFieldRegen to Prop(forceFieldRegen, ::realForceFieldRegen::get, ::realForceFieldRegen::set),
+            UT.ForceFieldRadius to Prop(forceFieldRadius, ::realForceFieldRadius::get, ::realForceFieldRadius::set),
+            UT.ForceFieldRestoreTime to Prop(forceFieldRestoreTime, ::realForceFieldRestoreTime::get, ::realForceFieldRestoreTime::set),
+            UT.PowerUse to Prop(powerUse, ::realPowerUse::get, ::realPowerUse::set),
+            UT.MaxBrainWaveNum to Prop(maxBrainWaveNum.toFloat(),
+                getter = { realMaxBrainWaveNum.toFloat() },
+                setter = { realMaxBrainWaveNum = it.toInt() }
+            )
         )
 
         override fun range(): Float = realRange
@@ -162,6 +195,7 @@ open class Heimdall(name: String) : Block(name) {
         val logicControlled: Boolean
             get() = logicControlTime > 0
         var unit = UnitTypes.block.create(team) as BlockUnitc
+        @Serialized
         var reload = 0f
         var realRange: Float = range
         var realWaveSpeed: Float = waveSpeed
@@ -173,6 +207,8 @@ open class Heimdall(name: String) : Block(name) {
         var realForceFieldMax: Float = forceFieldMax
         var realForceFieldRadius: Float = forceFieldRadius
         var realForceFieldRestoreTime: Float = forceFieldRestoreTime
+        var realPowerUse: Float = powerUse
+        @Serialized
         var lastShieldDamageTime: Float = 0f
             set(value) {
                 field = value.coerceAtLeast(0f)
@@ -180,6 +216,7 @@ open class Heimdall(name: String) : Block(name) {
         override var executeProportion: Float = controlLine
         @ClientOnly lateinit var linkAnime: Anime
         override var formationEffects: FormationEffects = FormationEffects.Empty
+        @Serialized
         override var shieldAmount: Float = 0f
             set(value) {
                 field = value.coerceAtLeast(0f)
@@ -188,6 +225,7 @@ open class Heimdall(name: String) : Block(name) {
             get() = shieldAmount / realForceFieldMax
         val targetFieldRadius: Float
             get() = realForceFieldRadius * forcePct
+        @Serialized
         var curFieldRadius = 0f
             set(value) {
                 field = value.coerceAtLeast(0f)
@@ -231,8 +269,13 @@ open class Heimdall(name: String) : Block(name) {
                         if (dst in it.range - halfWidth..it.range + halfWidth) {
                             unit.damageContinuous(realDamage)
                             if (unit.canBeExecuted) {
+                                unit.team.data().units.remove(unit)
                                 unit.team = team
-                                unit.controller(SuicideAI())
+                                team.data().updateCount(unit.type, 1)
+                                if (unit.count() > unit.cap() && !unit.spawnedByCore) {
+                                    Call.unitCapDeath(unit)
+                                    team.data().updateCount(unit.type, -1)
+                                }
                                 unit.heal()
                             }
                         }
@@ -245,12 +288,13 @@ open class Heimdall(name: String) : Block(name) {
                 if (shieldAmount < realForceFieldMax) {
                     val factor = if (lastShieldDamageTime > realForceFieldRestoreTime)
                         1f else 0.25f
-                    shieldAmount += realForceFieldRegen * Time.delta * power.status * factor
+                    shieldAmount += realForceFieldRegen * edelta() * factor
                 }
-                curFieldRadius = Mathf.approach(curFieldRadius, targetFieldRadius, power.status * Time.delta * 0.1f)
+                curFieldRadius = Mathf.approach(curFieldRadius, targetFieldRadius,
+                    edelta() * forceFieldRadiusSpeed)
             } else {
                 shieldAmount -= realForceFieldRegen * 2f
-                curFieldRadius -= 2f
+                curFieldRadius -= 2f * Time.delta
             }
             if (shieldAmount > 0f) {
                 Groups.bullet.intersect(
@@ -312,8 +356,8 @@ open class Heimdall(name: String) : Block(name) {
                     }
                 }
             }
-            recacheUpgrade()
             checkFormation()
+            recacheUpgrade()
         }
 
         open fun checkFormation() {
@@ -457,58 +501,66 @@ open class Heimdall(name: String) : Block(name) {
             super.control(type, p1, p2, p3, p4)
         }
 
-        protected val deltaUpgradePropMap = HashMap<UpgradeType, MutableList<Upgrade>>(properties.size + 1)
-        protected val rateUpgradePropMap = HashMap<UpgradeType, MutableList<Upgrade>>(properties.size + 1)
+        protected val deltaUpgradePropMap = HashMap<UpgradeType, UpgradeEntry>(properties.size + 1)
+        protected val rateUpgradePropMap = HashMap<UpgradeType, UpgradeEntry>(properties.size + 1)
         fun clearPropMap() {
-            deltaUpgradePropMap.clearList()
-            rateUpgradePropMap.clearList()
+            deltaUpgradePropMap.clear()
+            rateUpgradePropMap.clear()
         }
 
         open fun recacheUpgrade() {
-            recacheProperties()
-            recacheSpecial()
+            if (components.isNotEmpty()) {
+                recacheProperties()
+            } else {
+                for (prop in properties.values) {
+                    prop.setter(prop.default)
+                }
+            }
         }
-        /**
-         * Used to recache:
-         * - [realDamage]
-         * - [realRange]
-         * - [realWaveSpeed]
-         * - [realReloadTime]
-         * - [realWaveWidth]
-         */
+
         open fun recacheProperties() {
             clearPropMap()
-            for (com in components) {
-                for ((type, upgrade) in com.upgrades) {
-                    if (upgrade.isDelta)
-                        deltaUpgradePropMap[type] = upgrade
-                    else
-                        rateUpgradePropMap[type] = upgrade
+            if (components.isEmpty()) {
+                for (prop in properties.values) {
+                    prop.setter(prop.default)
+                }
+            } else {
+                for (com in components) {
+                    for ((type, upgrade) in com.upgrades) {
+                        if (upgrade.isDelta) {
+                            val entry = deltaUpgradePropMap.getOrPut(type) { UpgradeEntry() }
+                            entry.value += upgrade.value
+                        } else {
+                            val entry = rateUpgradePropMap.getOrPut(type) { UpgradeEntry() }
+                            entry.value += upgrade.value
+                        }
+                    }
+                }
+                for ((type, effectEntry) in formationEffects.deltaUpgrades) {
+                    val entry = deltaUpgradePropMap.getOrPut(type) { UpgradeEntry() }
+                    entry.value += effectEntry.value
+                }
+                for ((type, effectEntry) in formationEffects.rateUpgrades) {
+                    val entry = rateUpgradePropMap.getOrPut(type) { UpgradeEntry() }
+                    entry.value += effectEntry.value
+                }
+                for ((type, prop) in properties) {
+                    //delta
+                    val deltaUpSum = deltaUpgradePropMap[type]
+                    var sum = prop.default
+                    if (deltaUpSum != null) {
+                        sum += deltaUpSum.value
+                    }
+                    //rate
+                    val rateUpSum = rateUpgradePropMap[type]
+                    if (rateUpSum != null) {
+                        sum *= 1f + rateUpSum.value
+                    }
+                    sum = sum.coerceAtLeast(0f)
+                    if (sum != prop.default)
+                        prop.setter(sum)
                 }
             }
-            for ((type, prop) in properties) {
-                //delta
-                val deltaUps = deltaUpgradePropMap.getSafe(type)
-                var sum = prop.default
-                for (upgrade in deltaUps) {
-                    sum += upgrade.value
-                }
-                //rate
-                val rateUps = rateUpgradePropMap.getSafe(type)
-                var rate = 0f
-                for (upgrade in rateUps) {
-                    rate += upgrade.value
-                }
-                val res = sum * (1f + rate)
-                if (res != prop.default)
-                    prop.setter(res.coerceAtLeast(0f))
-            }
-        }
-        /**
-         * Used to recache:
-         * - [realMaxBrainWaveNum]
-         */
-        open fun recacheSpecial() {
         }
 
         fun absorbBullet(bullet: Bullet, range: Float): Boolean {
@@ -526,9 +578,9 @@ open class Heimdall(name: String) : Block(name) {
         }
     }
 }
-
+/*
 operator fun <K, V> MutableMap<K, MutableList<V>>.set(type: K, upgrade: V) {
-    val list = this.computeIfAbsent(type) { LinkedList() }
+    val list = this.getOrPut(type) { LinkedList() }
     list.add(upgrade)
 }
 
@@ -541,9 +593,10 @@ fun <K, V> MutableMap<K, MutableList<V>>.clearList() {
 fun <K, V> MutableMap<K, MutableList<V>>.getSafe(type: K): List<V> {
     return this[type] ?: emptyList()
 }
+*/
 
 class Prop(
     val default: Float,
     val getter: () -> Float,
-    val setter: (Float) -> Unit
+    val setter: (Float) -> Unit,
 )

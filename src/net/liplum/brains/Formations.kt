@@ -1,10 +1,7 @@
 package net.liplum.brains
 
 import net.liplum.ClientOnly
-import net.liplum.api.brain.IBrain
-import net.liplum.api.brain.bottom
-import net.liplum.api.brain.left
-import net.liplum.api.brain.right
+import net.liplum.api.brain.*
 import net.liplum.brains.Ear.EarBuild
 import net.liplum.brains.Eye.EyeBuild
 
@@ -19,6 +16,9 @@ object FaceFE : SelfFormation(
     EyeBuild::class.java, EyeBuild::class.java,
 ), IFormationEffect {
     override val name = "Face"
+    override val upgrades: Map<UpgradeType, Upgrade> = listOf(
+        Upgrade(UT.Damage, true, 1f)
+    ).toUpgradeMap()
     @ClientOnly
     override fun draw(brain: IBrain) {
         val sides = brain.sides
@@ -43,6 +43,9 @@ object FunnyFaceFE : SelfFormation(
     null, null,
 ), IFormationEffect {
     override val name = "FunnyFace"
+    override val upgrades: Map<UpgradeType, Upgrade> = listOf(
+        Upgrade(UT.PowerUse, true, -0.01f)
+    ).toUpgradeMap()
     @ClientOnly
     override fun draw(brain: IBrain) {
         val sides = brain.sides
@@ -70,6 +73,9 @@ object ForceFieldFE : IFormationPattern, IFormationEffect {
     }
 
     override val enableShield = true
+    override val upgrades: Map<UpgradeType, Upgrade> = listOf(
+        Upgrade(UT.PowerUse, true, 0.5f)
+    ).toUpgradeMap()
     override val name = "ForceField"
     override fun toString() = name
 }

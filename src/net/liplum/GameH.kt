@@ -10,28 +10,35 @@ import java.lang.annotation.Inherited
 import kotlin.annotation.AnnotationTarget.*
 
 /**
- * It indicates this should be called or accessed only on Physical Client
+ * It indicates this should be called or accessed only on Physical Client.
  */
 @Retention(AnnotationRetention.SOURCE)
 @Inherited
 @MustBeDocumented
 annotation class ClientOnly
 /**
- * It indicates this should be called or accessed only on Logical Server
+ * It indicates this should be called or accessed only on Logical Server.
  */
 @Retention(AnnotationRetention.SOURCE)
 @Inherited
 @MustBeDocumented
 annotation class ServerOnly
 /**
- * It indicates this should be called or accessed only on Physical Server
+ * It indicates this should be called or accessed only on Physical Server.
  */
 @Retention(AnnotationRetention.SOURCE)
 @Inherited
 @MustBeDocumented
 annotation class HeadlessOnly
 /**
- * It indicates this will send data packet to synchronize no matter which Server/Client
+ * It indicates this should be used when debugging.
+ */
+@Retention(AnnotationRetention.SOURCE)
+@Inherited
+@MustBeDocumented
+annotation class DebugOnly
+/**
+ * It indicates this will send data packet to synchronize no matter which Server/Client.
  */
 @Retention(AnnotationRetention.SOURCE)
 @Target(
@@ -44,12 +51,20 @@ annotation class HeadlessOnly
 @MustBeDocumented
 annotation class SendDataPack
 /**
- * It indicates this will be called by a function which handles data packet
+ * It indicates this will be called by a function which handles data packet.
  */
 @Retention(AnnotationRetention.SOURCE)
 @Inherited
 @MustBeDocumented
 annotation class CalledBySync
+/**
+ * It indicates this property/field should be serialized into save or datapack.
+ */
+@Retention(AnnotationRetention.SOURCE)
+@Inherited
+@MustBeDocumented
+@Target(PROPERTY, FIELD)
+annotation class Serialized
 /**
  * It indicates this function use random number which may not be synchronized on Physical Server between Physical Client
  * so that you have to send data packet manually to share data.
@@ -209,7 +224,7 @@ inline fun UndebugOnly(func: () -> Unit): Boolean {
 }
 
 inline fun SteamOnly(func: () -> Unit): Boolean {
-    if (Vars.steam) {
+    if (Vars.steam || CioMod.TestSteam) {
         func()
         return true
     }
@@ -217,7 +232,7 @@ inline fun SteamOnly(func: () -> Unit): Boolean {
 }
 
 inline fun UnsteamOnly(func: () -> Unit): Boolean {
-    if (!Vars.steam) {
+    if (!(Vars.steam || CioMod.TestSteam)) {
         func()
         return true
     }

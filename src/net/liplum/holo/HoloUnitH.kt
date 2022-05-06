@@ -5,7 +5,7 @@ import mindustry.gen.Groups
 
 val Team2HoloCapacity: HashMap<Team, Int> = HashMap()
 val Team.holoCapacity: Int
-    get() = Team2HoloCapacity.computeIfAbsent(this, Team::updateHoloCapacity)
+    get() = Team2HoloCapacity.getOrPut(this) { this.updateHoloCapacity() }
 
 fun Team.updateHoloCapacity(): Int {
     var count = 0

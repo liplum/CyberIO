@@ -20,11 +20,11 @@ import mindustry.world.blocks.payloads.PayloadMassDriver
 import mindustry.world.blocks.payloads.PayloadUnloader
 import mindustry.world.blocks.production.GenericCrafter
 import mindustry.world.blocks.production.LiquidConverter
-import mindustry.world.consumers.ConsumePower
+import mindustry.world.blocks.sandbox.PowerSource
 import mindustry.world.meta.BuildVisibility
 import net.liplum.*
+import net.liplum.api.brain.UT
 import net.liplum.api.brain.Upgrade
-import net.liplum.api.brain.UpgradeType
 import net.liplum.api.virus.setUninfected
 import net.liplum.api.virus.setUninfectedFloor
 import net.liplum.blocks.cloud.Cloud
@@ -637,10 +637,8 @@ object CioBlocks : ContentTable {
             size = 4
             range = 175f
             health = 400 * size * size
+            powerUse = 3f
             connectedSound = CioSounds.connected
-            consumes.add(
-                ConsumePower(2f, 240f, false)
-            )
             addFormationPatterns(
                 FaceFE, FunnyFaceFE, ForceFieldFE
             )
@@ -657,19 +655,22 @@ object CioBlocks : ContentTable {
             range = 165f
             health = 300 * size * size
             size = 2
+            powerUse = 3f
             chargeTime = 60f
             shootEffect = BrainFx.eyeShoot
             smokeEffect = Fx.none
             chargeEffect = BrainFx.eyeCharge
             chargeBeginEffect = BrainFx.eyeChargeBegin
             addUpgrade(
-                Upgrade(UpgradeType.Damage, false, 0.05f),
-                Upgrade(UpgradeType.ReloadTime, true, -4f),
-                Upgrade(UpgradeType.ControlLine, true, 0.01f),
-                Upgrade(UpgradeType.ForceFieldRegen, false, 0.2f),
-                Upgrade(UpgradeType.Range, false, -0.05f),
-                Upgrade(UpgradeType.ForceFieldRadius, true, -3f),
-                Upgrade(UpgradeType.WaveWidth, true, -0.1f),
+                Upgrade(UT.Damage, false, 0.05f),
+                Upgrade(UT.ReloadTime, true, -4.5f),
+                Upgrade(UT.ControlLine, true, 0.01f),
+                Upgrade(UT.ForceFieldRegen, false, 0.2f),
+                Upgrade(UT.Range, false, -0.05f),
+                Upgrade(UT.ForceFieldRadius, true, -3f),
+                Upgrade(UT.WaveWidth, true, -0.1f),
+                Upgrade(UT.PowerUse, false, 0.55f),
+                Upgrade(UT.MaxBrainWaveNum, true, 0.2f),
             )
             normalSounds = CioSounds.laserWeak
             normalBullet = LightningBulletType().apply {
@@ -706,15 +707,18 @@ object CioBlocks : ContentTable {
                 )
             )
             addUpgrade(
-                Upgrade(UpgradeType.Damage, false, -0.02f),
-                Upgrade(UpgradeType.Range, false, 0.1f),
-                Upgrade(UpgradeType.WaveSpeed, true, 0.08f),
-                Upgrade(UpgradeType.WaveWidth, true, 0.4f),
-                Upgrade(UpgradeType.ForceFieldRadius, true, 5f),
-                Upgrade(UpgradeType.ForceFieldMax, false, 0.2f),
+                Upgrade(UT.Damage, false, -0.02f),
+                Upgrade(UT.Range, false, 0.1f),
+                Upgrade(UT.WaveSpeed, true, 0.08f),
+                Upgrade(UT.WaveWidth, true, 0.4f),
+                Upgrade(UT.ForceFieldRadius, true, 5f),
+                Upgrade(UT.ForceFieldMax, false, 0.2f),
+                Upgrade(UT.PowerUse, false, 0.35f),
+                Upgrade(UT.MaxBrainWaveNum, true, 0.15f),
             )
             range = 145f
             size = 2
+            damage = 5f
             health = 300 * size * size
         }
 
@@ -734,7 +738,10 @@ object CioBlocks : ContentTable {
 
     override fun lastLoad() {
         DebugOnly {
-            Blocks.powerSource.buildVisibility = BuildVisibility.shown
+            (Blocks.powerSource as PowerSource).apply {
+                buildVisibility = BuildVisibility.shown
+                health = Int.MAX_VALUE
+            }
             Blocks.itemSource.buildVisibility = BuildVisibility.shown
             Blocks.liquidSource.buildVisibility = BuildVisibility.shown
             Blocks.payloadSource.buildVisibility = BuildVisibility.shown
