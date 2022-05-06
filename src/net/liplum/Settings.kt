@@ -24,7 +24,9 @@ object Settings {
     var ClickWelcomeTimes: Int
         get() = settings.getInt(R.Setting.ClickWelcomeTimes, 0)
         set(value) = settings.put(R.Setting.ClickWelcomeTimes, value)
-    @Deprecated("Use Settings.LastWelcomeID instead", level = DeprecationLevel.ERROR)
+    @Deprecated("Use Settings.LastWelcomeID instead",
+        ReplaceWith("Settings.LastWelcomeID"),
+        level = DeprecationLevel.ERROR)
     var LastWelcome: Int
         get() = settings.getInt(R.Setting.LastWelcome, 0)
         set(value) = settings.put(R.Setting.LastWelcome, value)

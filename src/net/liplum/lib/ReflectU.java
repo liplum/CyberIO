@@ -1,4 +1,4 @@
-package net.liplum.utils;
+package net.liplum.lib;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

@@ -17,6 +17,8 @@ import mindustry.world.blocks.distribution.PayloadConveyor
 import mindustry.world.blocks.payloads.BuildPayload
 import mindustry.world.blocks.payloads.PayloadSource
 import mindustry.world.blocks.payloads.UnitPayload
+import net.liplum.UseReflection
+import net.liplum.lib.setFIn
 
 fun tileAt(x: Int, y: Int): Tile? =
     Vars.world.tile(x, y)
@@ -131,7 +133,7 @@ fun <T> Class<T>.registerPayloadSource() where T : UnitType {
         }
     }
 }
-
+@UseReflection
 fun UnlockableContent.lock(): UnlockableContent {
     Core.settings.put("$name-unlocked", false)
     setFIn(UnlockableContent::class.java, "unlocked", false)

@@ -54,7 +54,7 @@ class CioMod : Mod() {
             if (IsClient && Vars.clientLoaded && !objCreated) {
                 FirstLoaded.tryRecord()
                 FirstLoaded.load()
-                Time.run(5f) {
+                Time.run(15f) {
                     FirstLoaded.showDialog()
                 }
             }

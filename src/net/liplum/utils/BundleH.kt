@@ -5,7 +5,10 @@ import arc.files.Fi
 import arc.util.I18NBundle
 import arc.util.io.PropertiesUtils
 import net.liplum.R
+import net.liplum.UseReflection
+import net.liplum.lib.ReflectU
 import net.liplum.lib.Res
+import net.liplum.lib.setF
 import java.io.Reader
 import java.util.*
 import kotlin.math.absoluteValue
@@ -108,13 +111,14 @@ fun I18NBundle.loadMoreFrom(folder: String, defaultLocale: String = "en"): I18NB
 /**
  * Link the parent bundle which supports a child bundle to get default text from it.
  */
+@UseReflection
 fun I18NBundle.linkParent(folder: String, parent: String = "en"): I18NBundle {
     val parentBundle = createModBundle()
     parentBundle.loadMoreFrom(folder, parent)
     this.setF("parent", parentBundle)
     return parentBundle
 }
-
+@UseReflection
 fun createModBundle(): I18NBundle {
     val bundle = I18NBundle.createEmptyBundle()
     val globalBundle = Core.bundle
