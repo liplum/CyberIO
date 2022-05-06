@@ -9,6 +9,7 @@ import arc.struct.EnumSet
 import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
+import mindustry.Vars.tilesize
 import mindustry.content.UnitTypes
 import mindustry.entities.TargetPriority
 import mindustry.gen.*
@@ -362,8 +363,8 @@ open class Prism(name: String) : Block(name) {
         }
 
         override fun control(type: LAccess, p1: Double, p2: Double, p3: Double, p4: Double) {
-            if (type == LAccess.shoot && !unit.isPlayer) {
-                logicAngle = toAngle(p1, p2)
+            if (type == LAccess.shoot && !unit.isPlayer && (p1 != 0.0 && p2 != 0.0)) {
+                logicAngle = this.angleTo((p1 * tilesize).toFloat(), (p2 * tilesize).toFloat())
                 logicControlTime = 60f
             }
             super.control(type, p1, p2, p3, p4)
