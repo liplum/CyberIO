@@ -1,4 +1,4 @@
-package net.liplum.utils
+package net.liplum.lib
 
 import java.lang.reflect.Method
 

@@ -2,6 +2,7 @@ package net.liplum.registries
 
 import mindustry.content.Blocks.coreShard
 import mindustry.content.TechTree
+import net.liplum.lib.withContext
 import net.liplum.registries.CioBlocks.TMTRAINER
 import net.liplum.registries.CioBlocks.ear
 import net.liplum.registries.CioBlocks.eye
@@ -13,7 +14,6 @@ import net.liplum.registries.CioBlocks.smartUnloader
 import net.liplum.registries.CioBlocks.streamClient
 import net.liplum.registries.CioBlocks.streamHost
 import net.liplum.registries.CioBlocks.streamServer
-import net.liplum.utils.withContext
 
 object CioTechTree {
     fun loadSerpulo() {

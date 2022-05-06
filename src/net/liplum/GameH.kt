@@ -7,42 +7,48 @@ import mindustry.Vars
 import net.liplum.lib.Condition
 import net.liplum.utils.format
 import java.lang.annotation.Inherited
+import kotlin.annotation.AnnotationTarget.*
 
 /**
  * It indicates this should be called or accessed only on Physical Client
  */
 @Retention(AnnotationRetention.SOURCE)
 @Inherited
+@MustBeDocumented
 annotation class ClientOnly
 /**
  * It indicates this should be called or accessed only on Logical Server
  */
 @Retention(AnnotationRetention.SOURCE)
 @Inherited
+@MustBeDocumented
 annotation class ServerOnly
 /**
  * It indicates this should be called or accessed only on Physical Server
  */
 @Retention(AnnotationRetention.SOURCE)
 @Inherited
+@MustBeDocumented
 annotation class HeadlessOnly
 /**
  * It indicates this will send data packet to synchronize no matter which Server/Client
  */
 @Retention(AnnotationRetention.SOURCE)
 @Target(
-    AnnotationTarget.FUNCTION,
-    AnnotationTarget.PROPERTY_SETTER,
-    AnnotationTarget.CONSTRUCTOR,
-    AnnotationTarget.PROPERTY,
+    FUNCTION,
+    PROPERTY_SETTER,
+    CONSTRUCTOR,
+    PROPERTY,
 )
 @Inherited
+@MustBeDocumented
 annotation class SendDataPack
 /**
  * It indicates this will be called by a function which handles data packet
  */
 @Retention(AnnotationRetention.SOURCE)
 @Inherited
+@MustBeDocumented
 annotation class CalledBySync
 /**
  * It indicates this function use random number which may not be synchronized on Physical Server between Physical Client
@@ -50,7 +56,23 @@ annotation class CalledBySync
  */
 @Retention(AnnotationRetention.SOURCE)
 @Inherited
+@MustBeDocumented
 annotation class UseRandom
+@Retention(AnnotationRetention.SOURCE)
+/**
+ * It indicates reflection is used there. Please pay attention to the API changes between versions.
+ */
+@Target(
+    FUNCTION,
+    PROPERTY_SETTER,
+    PROPERTY_GETTER,
+    CONSTRUCTOR,
+    PROPERTY,
+    EXPRESSION,
+    LOCAL_VARIABLE,
+)
+@MustBeDocumented
+annotation class UseReflection
 /**
  * Runs codes only on Physical Client
  */
