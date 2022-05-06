@@ -34,7 +34,8 @@ import java.io.File
 class CioMod : Mod() {
     companion object {
         @JvmField val IsClient = !Vars.headless
-        @JvmField var DebugMode = false
+        @JvmField var DebugMode = true
+        @JvmField var TestSteam = false
         @JvmField var TestGlCompatibility = false
         @JvmField var ExperimentalMode = false
         @JvmField var CanGlobalAnimationPlay = false
@@ -54,7 +55,7 @@ class CioMod : Mod() {
             if (IsClient && Vars.clientLoaded && !objCreated) {
                 FirstLoaded.tryRecord()
                 FirstLoaded.load()
-                Time.run(5f) {
+                Time.run(15f) {
                     FirstLoaded.showDialog()
                 }
             }
@@ -157,6 +158,7 @@ class CioMod : Mod() {
             NpcSystem.register()
             Core.input.addProcessor(UnitTap)
         }
+
         Settings.updateSettings()
         Clog.info("v${Meta.DetailedVersion} initialized.")
         Settings.LastPlayTime = System.currentTimeMillis()

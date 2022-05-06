@@ -5,7 +5,7 @@ import mindustry.entities.bullet.*
 import mindustry.graphics.Pal
 import net.liplum.R
 import net.liplum.utils.ArrayList
-import net.liplum.utils.copyFrom
+import net.liplum.lib.copyFrom
 
 val BulletType.isTintIgnored: Boolean
     get() = this in IgnoredBullets || this::class.java in IgnoredClass

@@ -18,8 +18,6 @@ import net.liplum.api.cyber.IStreamClient
 import net.liplum.api.cyber.IStreamHost
 import net.liplum.lib.animations.anis.IAniSMedBuild
 
-annotation class CioDebugOnly
-
 fun BlockBars.addTeamInfo() {
     this.add<Building>(
         R.Bar.TeamN

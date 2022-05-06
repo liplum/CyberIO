@@ -4,6 +4,10 @@ fun Double.format(digits: Int) = "%.${digits}f".format(this)
 fun Float.format(digits: Int) = "%.${digits}f".format(this)
 infix fun Float.coIn(abs: Float) = this.coerceIn(-abs, abs)
 infix fun Double.coIn(abs: Double) = this.coerceIn(-abs, abs)
+val Double.intStr: String
+    get() = this.toInt().toString()
+val Float.intStr: String
+    get() = this.toInt().toString()
 val Double.percentI: Int
     get() = (this * 100).toInt()
 val Float.percentI: Int
@@ -176,3 +180,9 @@ inline fun <reified K, reified V, reified R : Comparable<R>> Map<out K, V>.allMa
 ): List<Map.Entry<K, V>> {
     return entries.allMaxBy(selector)
 }
+
+val Any.directSuperClz: Class<*>
+    get() {
+        val clz = javaClass
+        return if (clz.isAnonymousClass) clz.superclass else clz
+    }

@@ -18,10 +18,7 @@ import mindustry.world.consumers.ConsumeItems
 import mindustry.world.consumers.ConsumeType
 import mindustry.world.meta.BlockGroup
 import mindustry.world.meta.Stat
-import net.liplum.ClientOnly
-import net.liplum.DebugOnly
-import net.liplum.R
-import net.liplum.UndebugOnly
+import net.liplum.*
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
 import net.liplum.lib.Draw
@@ -122,6 +119,7 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
     open inner class SmartDISBuild : AniedBlock<SmartDistributor, SmartDistributor.SmartDISBuild>.AniedBuild(),
         IDataReceiver {
         @JvmField var _requirements: Array<Item> = Item::class.java.EmptyArray()
+        @Serialized
         var senders = OrderedSet<Int>()
         @JvmField var _onRequirementUpdated: Delegate1<IDataReceiver> = Delegate1()
         override fun getOnRequirementUpdated() = _onRequirementUpdated
@@ -134,6 +132,7 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
             get() = lastDistributionTime < DistributionTime
         var hasDynamicRequirements: Boolean = false
         var dynamicReqUpdateTimer = 0f
+        @Serialized
         var disIndex = 0
         @ClientOnly
         var color: Color = R.C.Receiver
@@ -286,9 +285,9 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
             write.intSet(senders)
             write.b(disIndex)
         }
-        @CioDebugOnly
+        @DebugOnly
         var requirementsText: String = ""
-        @CioDebugOnly
+        @DebugOnly
         fun genRequirementsText() = _requirements.genText()
         override fun drawSelect() {
             whenNotConfiguringSender {

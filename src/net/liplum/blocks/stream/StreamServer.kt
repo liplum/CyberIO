@@ -14,6 +14,7 @@ import mindustry.logic.LAccess
 import mindustry.type.Liquid
 import net.liplum.ClientOnly
 import net.liplum.R
+import net.liplum.Serialized
 import net.liplum.api.cyber.*
 import net.liplum.lib.DrawOn
 import net.liplum.lib.delegates.Delegate1
@@ -199,6 +200,7 @@ open class StreamServer(name: String) : StreamHost(name) {
             }
         }
 
+        @Serialized
         var hosts = OrderedSet<Int>()
         override fun readStream(host: IStreamHost, liquid: Liquid, amount: Float) {
             if (this.isConnectedWith(host)) {

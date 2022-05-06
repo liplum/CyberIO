@@ -3,6 +3,7 @@ package net.liplum.brains
 import arc.graphics.g2d.Draw
 import arc.graphics.g2d.Lines
 import arc.math.Interp
+import arc.math.geom.Vec2
 import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
@@ -38,12 +39,14 @@ open class Ear(name: String) : Block(name), IComponentBlock {
     @ClientOnly @JvmField var maxScale = 0.3f
     @ClientOnly @JvmField var scaleTime = 30f
     @JvmField var powerUse = 2f
-    @JvmField var reloadTimeI = 0.4f
+    @JvmField var sensitivity = 1f
+    @JvmField var reloadTimeI = 0.5f
     @JvmField var rangeI = 0.4f
     @JvmField var damageI = 1.2f
     @JvmField var radiusI = 0.4f
     @JvmField var widthI = 0.3f
-    @JvmField var sensitivity = 0.3f
+    @JvmField var powerI = 0.5f
+    @JvmField var sensitivityI = -0.3f
     override val upgrades: MutableMap<UpgradeType, Upgrade> = HashMap()
 
     init {
@@ -57,6 +60,7 @@ open class Ear(name: String) : Block(name), IComponentBlock {
     override fun init() {
         clipSize = (range * (1f + rangeI)) + (sonicMaxRadius * (1f * rangeI))
         checkInit()
+        consumes.powerDynamic<EarBuild> { it.realPowerUse }
         super.init()
     }
 
@@ -76,6 +80,7 @@ open class Ear(name: String) : Block(name), IComponentBlock {
             bars.addBrainInfo<EarBuild>()
         }
     }
+
     override fun setStats() {
         super.setStats()
         this.addUpgradeComponentStats()
@@ -102,7 +107,12 @@ open class Ear(name: String) : Block(name), IComponentBlock {
             get() = damage * (1f + if (isLinkedBrain) damageI else 0f)
         val realSonicRadius: Float
             get() = sonicMaxRadius * (1f + if (isLinkedBrain) radiusI else 0f)
+        val realPowerUse: Float
+            get() = powerUse * (1f + if (isLinkedBrain) powerI else 0f)
+        val realSensitive: Float
+            get() = sensitivity * (1f + if (isLinkedBrain) sensitivityI else 0f)
         var lastRadiateTime = 9999f
+        val temp = Vec2()
         override fun updateTile() {
             lastRadiateTime += Time.delta
             sonicWaves.forEach {
@@ -112,18 +122,26 @@ open class Ear(name: String) : Block(name), IComponentBlock {
                 it.range >= realSonicRadius
             }
             reload += efficiency()
-            if (reload >= realReloadTime) {
-                reload = 0f
-                if (sonicWaves.canAdd) {
-                    val result = Units.bestTarget(
-                        team, x, y, realRange,
-                        { !it.dead() && it.isSensed },
-                        { false },
-                        UnitSorts.weakest
-                    )
-                    if (result != null) {
-                        val canShoot = if (isControlled) unit.isShooting else true
-                        if (canShoot) {
+            if (sonicWaves.canAdd) {
+                //TODO: in v4, the damage of sonic wave depends on the speed of unit sensed.
+                if (reload >= realReloadTime) {
+                    val player = unit()
+                    if (isControlled && player.isShooting) {
+                        reload = 0f
+                        temp.set(player.aimX - x, player.aimY - y).limit(realRange).add(x, y)
+                        sonicWaves.append(
+                            PosRadiation(0f, temp.x, temp.y)
+                        )
+                        lastRadiateTime = 0f
+                    } else {
+                        val result = Units.bestTarget(
+                            team, x, y, realRange,
+                            { !it.dead() && it.isSensed },
+                            { false },
+                            UnitSorts.weakest
+                        )
+                        if (result != null) {
+                            reload = 0f
                             sonicWaves.append(
                                 PosRadiation(
                                     0f, result.x, result.y
@@ -155,7 +173,7 @@ open class Ear(name: String) : Block(name), IComponentBlock {
         }
 
         val MdtUnit.isSensed: Boolean
-            get() = this.vel.len2() > sensitivity
+            get() = this.vel.len() >= realSensitive
 
         override fun draw() {
             BaseTR.Draw(x, y)

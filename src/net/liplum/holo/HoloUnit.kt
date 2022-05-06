@@ -22,6 +22,7 @@ import mindustry.world.blocks.ConstructBlock
 import mindustry.world.blocks.ConstructBlock.ConstructBuild
 import net.liplum.ClientOnly
 import net.liplum.R
+import net.liplum.Serialized
 import net.liplum.holo.HoloProjector.HoloPBuild
 import net.liplum.registries.EntityRegistry
 import net.liplum.utils.G
@@ -31,6 +32,7 @@ import net.liplum.utils.hasShields
 import java.util.*
 
 open class HoloUnit : UnitEntity() {
+    @Serialized
     @JvmField var time = 0f
     val HoloType: HoloUnitType
         get() = type as HoloUnitType
@@ -46,6 +48,7 @@ open class HoloUnit : UnitEntity() {
         get() = (lifespan - time).coerceIn(0f, lifespan)
     open val loseMultiplierWhereMissing: Float
         get() = HoloType.loseMultiplierWhereMissing
+    @Serialized
     var projectorPos: Int = -1
     val isProjectorMissing: Boolean
         get() = !projectorPos.build.exists

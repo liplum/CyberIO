@@ -83,6 +83,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
         open val isBlocked: Boolean
             get() = lastSendingTime > SendingTime
         @set:CalledBySync
+        @Serialized
         var receiverPackedPos = -1
             set(value) {
                 var curBuild = receiver

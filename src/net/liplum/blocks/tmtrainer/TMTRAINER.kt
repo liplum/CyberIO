@@ -93,8 +93,8 @@ open class TMTRAINER(name: String) : ItemTurret(name) {
             val drawY = y + tr2.y
             Draw.rect(
                 HeadTR,
-                drawX + targetPol.getX(),
-                drawY + targetPol.getY(),
+                drawX + targetPol.x,
+                drawY + targetPol.y,
                 drawRotation
             )
 

@@ -14,10 +14,7 @@ import mindustry.gen.Building
 import mindustry.type.Item
 import mindustry.world.blocks.ItemSelection
 import mindustry.world.meta.BlockGroup
-import net.liplum.ClientOnly
-import net.liplum.DebugOnly
-import net.liplum.R
-import net.liplum.UndebugOnly
+import net.liplum.*
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
 import net.liplum.blocks.rs.Receiver.ReceiverBuild
@@ -98,6 +95,7 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
 
     override fun outputsItems(): Boolean = true
     open inner class ReceiverBuild : AniedBuild(), IDataReceiver {
+        @Serialized
         var outputItem: Item? = null
             set(value) {
                 if (field != value) {
@@ -111,6 +109,7 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
         var lastOutputDelta = 0f
         @ClientOnly
         var lastFullDataDelta = 0f
+        @Serialized
         var senders = OrderedSet<Int>()
         open fun checkSenderPos() {
             senders.removeAll { !it.ds().exists }

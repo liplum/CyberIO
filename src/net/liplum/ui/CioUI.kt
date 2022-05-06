@@ -19,10 +19,8 @@ import mindustry.ui.Styles
 import mindustry.ui.dialogs.BaseDialog
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.CheckSetting
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.SliderSetting
-import net.liplum.Meta
-import net.liplum.R
-import net.liplum.Settings
-import net.liplum.UnsteamOnly
+import net.liplum.*
+import net.liplum.lib.getF
 import net.liplum.lib.ing
 import net.liplum.lib.ui.ShowTextDialog
 import net.liplum.lib.ui.addTrackTooltip
@@ -31,7 +29,10 @@ import net.liplum.lib.ui.settings.AnySetting.Companion.addAny
 import net.liplum.lib.ui.settings.CheckSettingX.Companion.addCheckPref
 import net.liplum.lib.ui.settings.SliderSettingX.Companion.addSliderSettingX
 import net.liplum.update.Updater
-import net.liplum.utils.*
+import net.liplum.utils.bundle
+import net.liplum.utils.invoke
+import net.liplum.utils.randomExcept
+import net.liplum.utils.useFakeHeader
 import net.liplum.welcome.Conditions
 import net.liplum.welcome.Welcome
 import net.liplum.welcome.WelcomeList
@@ -42,6 +43,7 @@ object CioUI {
         addCyberIOSettingMenu()
     }
     @JvmStatic
+    @UseReflection
     fun addCyberIOSettingMenu() {
         val uiSettings = Vars.ui.settings
         val menu = uiSettings.getF<Table>("menu")

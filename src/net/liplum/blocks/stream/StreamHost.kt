@@ -11,10 +11,7 @@ import mindustry.graphics.Drawf
 import mindustry.logic.LAccess
 import mindustry.type.Liquid
 import mindustry.world.meta.BlockGroup
-import net.liplum.CalledBySync
-import net.liplum.ClientOnly
-import net.liplum.DebugOnly
-import net.liplum.SendDataPack
+import net.liplum.*
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
 import net.liplum.lib.DrawOn
@@ -85,6 +82,7 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
     }
 
     open inner class HostBuild : AniedBuild(), IStreamHost {
+        @Serialized
         var clients = OrderedSet<Int>()
         @ClientOnly @JvmField var liquidFlow = 0f
         open fun checkClientsPos() {

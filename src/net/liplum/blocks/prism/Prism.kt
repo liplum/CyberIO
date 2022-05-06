@@ -9,6 +9,7 @@ import arc.struct.EnumSet
 import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
+import mindustry.Vars.tilesize
 import mindustry.content.UnitTypes
 import mindustry.entities.TargetPriority
 import mindustry.gen.*
@@ -23,12 +24,9 @@ import mindustry.world.blocks.ControlBlock
 import mindustry.world.blocks.defense.turrets.Turret
 import mindustry.world.meta.BlockFlag
 import mindustry.world.meta.BlockGroup
-import net.liplum.ClientOnly
-import net.liplum.DebugOnly
-import net.liplum.R
+import net.liplum.*
 import net.liplum.blocks.prism.CrystalManager.Companion.read
 import net.liplum.blocks.prism.CrystalManager.Companion.write
-import net.liplum.draw
 import net.liplum.math.Polar
 import net.liplum.utils.*
 import kotlin.math.abs
@@ -148,6 +146,7 @@ open class Prism(name: String) : Block(name) {
     }
 
     open inner class PrismBuild : Building(), ControlBlock, Ranged {
+        @Serialized
         @JvmField var cm: CrystalManager = CrystalManager().apply {
             maxAmount = maxCrystal
             prism = this@PrismBuild
@@ -260,8 +259,8 @@ open class Prism(name: String) : Block(name) {
                 realRangeX2
             ) {
                 cm.update {
-                    priselX = revolution.getX() + x
-                    priselY = revolution.getY() + y
+                    priselX = revolution.x + x
+                    priselY = revolution.y + y
                     if (it.team == team &&
                         !it.data.isDuplicate &&
                         it.dst(priselX, priselY) <= prismRange
@@ -321,8 +320,8 @@ open class Prism(name: String) : Block(name) {
             var priselX: Float
             var priselY: Float
             cm.render {
-                priselX = revolution.getX() + x
-                priselY = revolution.getY() + y
+                priselX = revolution.x + x
+                priselY = revolution.y + y
                 Draw.z(Layer.blockOver)
                 Drawf.shadow(
                     img,
@@ -364,8 +363,8 @@ open class Prism(name: String) : Block(name) {
         }
 
         override fun control(type: LAccess, p1: Double, p2: Double, p3: Double, p4: Double) {
-            if (type == LAccess.shoot && !unit.isPlayer) {
-                logicAngle = toAngle(p1, p2)
+            if (type == LAccess.shoot && !unit.isPlayer && (p1 != 0.0 && p2 != 0.0)) {
+                logicAngle = this.angleTo((p1 * tilesize).toFloat(), (p2 * tilesize).toFloat())
                 logicControlTime = 60f
             }
             super.control(type, p1, p2, p3, p4)

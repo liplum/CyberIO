@@ -8,7 +8,7 @@ import kotlinx.coroutines.*
 import mindustry.Vars
 import mindustry.ui.dialogs.ModsDialog
 import net.liplum.*
-import net.liplum.utils.getMethodBy
+import net.liplum.lib.getMethodBy
 import net.liplum.utils.useFakeHeader
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -16,10 +16,11 @@ import java.lang.reflect.Method
 import java.net.URL
 import kotlin.coroutines.CoroutineContext
 
+@UseReflection
 private val ImportModFunc: Method = ModsDialog::class.java.getMethodBy(
     "githubImportMod", String::class.java, Boolean::class.java
 )
-
+@UseReflection
 private fun ModsDialog.ImportMod(repo: String, isJava: Boolean) {
     ImportModFunc(this, repo, isJava)
 }
@@ -52,10 +53,10 @@ object Updater : CoroutineScope {
             val allInfos = info.split('\n')
             /*
                 Removed since 3.3
-            val versionInfo = allInfos[0]
-            latestVersion = runCatching {
-                Version2.valueOf(versionInfo)
-            }.getOrDefault(Meta.DetailedVersion)
+                val versionInfo = allInfos[0]
+                latestVersion = runCatching {
+                    Version2.valueOf(versionInfo)
+                }.getOrDefault(Meta.DetailedVersion)
             */
 
             ClientOnly {

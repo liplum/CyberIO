@@ -3,6 +3,7 @@ package net.liplum.api.brain
 import arc.util.Log
 import mindustry.gen.Building
 import mindustry.world.Block
+import mindustry.world.meta.StatUnit.*
 import net.liplum.ClientOnly
 import net.liplum.api.brain.Direction2.Companion.Part0Pos
 import net.liplum.api.brain.Direction2.Companion.Part1Pos
@@ -10,6 +11,8 @@ import net.liplum.api.cyber.*
 import net.liplum.brains.FormationEffects
 import net.liplum.lib.delegates.Delegate
 import net.liplum.utils.*
+
+typealias UT = UpgradeType
 
 @JvmInline
 value class UpgradeType(val type: Int) {
@@ -28,23 +31,78 @@ value class UpgradeType(val type: Int) {
         val ForceFieldRegen = UpgradeType(8)
         val ForceFieldRadius = UpgradeType(9)
         val ForceFieldRestoreTime = UpgradeType(10)
-        val Names = arrayOf(
-            "damage",
-            "range",
-            "wave-speed",
-            "wave-width",
-            "reload-time",
-            "max-brain-wave-num",
-            "control-line",
-            "force-field-max",
-            "force-field-regen",
-            "force-field-radius",
-            "force-field-restore-time",
+        val PowerUse = UpgradeType(11)
+        val I18ns: Array<UpgradeI18n> = arrayOf(
+            UpgradeI18n("damage", {
+                it.value(1)
+            }, {
+                it.percent(1)
+            }),
+            UpgradeI18n("range", {
+                "${it.value(0)} ${blocks.localized()}"
+            }, {
+                "${it.percent(0)} ${blocks.localized()}"
+            }),
+            UpgradeI18n("wave-speed", {
+                it.value(2)
+            }, {
+                it.percent(2)
+            }),
+            UpgradeI18n("wave-width", {
+                it.value(2)
+            }, {
+                it.percent(2)
+            }),
+            UpgradeI18n("reload-time", {
+                "${(it / 60f).value(1)} ${seconds.localized()}"
+            }, {
+                it.percent(1)
+            }),
+            UpgradeI18n("max-brain-wave-num", {
+                if (it == it.toInt().toFloat()) it.toInt().value() else it.value(1)
+            }, {
+                it.value(1)
+            }),
+            UpgradeI18n("control-line", {
+                "|${it.percent(2)}|"
+            }, {
+                it.percent(2)
+            }),
+            UpgradeI18n("force-field-max", {
+                it.value(0)
+            }, {
+                it.percent(0)
+            }),
+            UpgradeI18n("force-field-regen", {
+                it.value(1)
+            }, {
+                it.percent(1)
+            }),
+            UpgradeI18n("force-field-radius", {
+                "${it.value(1)} ${blocks.localized()}"
+            }, {
+                "${it.percent(1)} ${blocks.localized()}"
+            }),
+            UpgradeI18n("force-field-restore-time", {
+                "${(it / 60f).value(1)} ${seconds.localized()}"
+            }, {
+                it.percent(1)
+            }),
+            UpgradeI18n("power-use", {
+                "${(it * 60f).value(0)} ${perSecond.localized()}"
+            }, {
+                it.percent(0)
+            }),
         )
     }
 }
 
+class UpgradeI18n(
+    val name: String, val delta: (Float) -> String, val percent: (Float) -> String,
+)
+
 data class Upgrade(val type: UpgradeType, val isDelta: Boolean, val value: Float)
+data class UpgradeEntry(var value: Float = 0f)
 interface IUpgradeComponent : ICyberEntity {
     var directionInfo: Direction2
     var brain: IBrain?

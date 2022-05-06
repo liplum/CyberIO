@@ -35,6 +35,7 @@ import mindustry.world.meta.StatUnit
 import net.liplum.ClientOnly
 import net.liplum.DebugOnly
 import net.liplum.R
+import net.liplum.Serialized
 import net.liplum.lib.ui.bars.ReverseBar
 import net.liplum.utils.*
 import kotlin.math.max
@@ -216,6 +217,7 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
 
     open inner class UnderdriveBuild : GeneratorBuild(), Ranged {
         var charge = reload
+        @Serialized
         var curGear = 1
             set(value) {
                 field = value.coerceAtLeast(1)
@@ -225,7 +227,9 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
             set(value) {
                 field = value.coerceIn(0f, 1f)
             }
+        @Serialized
         var underdrivedBlocks: Int = 0
+        @Serialized
         var similarInRange: Int = 0
         override fun range() = realRange
         open val alpha: Float
@@ -368,7 +372,7 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
                 ).apply {
                     value = curGear.toFloat() - 1
                     moved { configure(Mathf.round(it + 1)) }
-                })
+                }).width(180f).growX()
             }
         }
 
