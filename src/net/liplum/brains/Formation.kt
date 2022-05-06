@@ -1,8 +1,7 @@
 package net.liplum.brains
 
 import net.liplum.ClientOnly
-import net.liplum.api.brain.IBrain
-import net.liplum.api.brain.IUpgradeComponent
+import net.liplum.api.brain.*
 import net.liplum.lib.toLinkedString
 
 interface IFormationPattern {
@@ -13,7 +12,7 @@ interface IFormationEffect {
     val name: String
     val enableShield: Boolean
         get() = false
-
+    val upgrades: Map<UpgradeType, Upgrade>
     fun update(brain: IBrain) {}
     @ClientOnly
     fun draw(brain: IBrain) {
@@ -21,11 +20,26 @@ interface IFormationEffect {
 }
 
 class FormationEffects(
-    val all: Set<IFormationEffect>
+    val all: Set<IFormationEffect>,
 ) : Iterable<IFormationEffect> {
-    val enableShield = all.find {
+    val enableShield = all.any {
         it.enableShield
-    } != null
+    }
+    val deltaUpgrades = composeUpgrades(isDelta = true)
+    val rateUpgrades = composeUpgrades(isDelta = false)
+    fun composeUpgrades(isDelta: Boolean): Map<UpgradeType, UpgradeEntry> {
+        val res = HashMap<UpgradeType, UpgradeEntry>()
+        for (effect in all) {
+            for (up in effect.upgrades.filter {
+                if (isDelta) it.value.isDelta else !it.value.isDelta
+            }) {
+                val upgrade = res.getOrPut(up.key) { UpgradeEntry() }
+                upgrade.value += up.value.value
+            }
+        }
+        return res
+    }
+
     val isEmpty = all.isEmpty()
     val isNotEmpty = all.isNotEmpty()
     operator fun contains(effect: IFormationEffect) = effect in all
@@ -49,6 +63,7 @@ class FormationEffects(
 
 object EmptyFormationEffect : IFormationEffect {
     override val name = "Empty"
+    override val upgrades: Map<UpgradeType, Upgrade> = emptyMap()
     override fun update(brain: IBrain) {
     }
 
@@ -70,7 +85,7 @@ class Side2Pattern(
 
 open class Formation(
     var effect: IFormationEffect,
-    vararg val sidePatterns: Side2Pattern
+    vararg val sidePatterns: Side2Pattern,
 ) : IFormationPattern {
     init {
         assert(sidePatterns.size != 4) {
@@ -101,12 +116,16 @@ open class Formation(
     }
 }
 
-abstract class SelfFormation(vararg components: Class<out IUpgradeComponent>?) : Formation(
+abstract class SelfFormation(
+    vararg components: Class<out IUpgradeComponent>?,
+) : Formation(
     EmptyFormationEffect, *analyzeSides(components)
 ), IFormationEffect {
     init {
         effect = this
     }
+
+    override val upgrades: Map<UpgradeType, Upgrade> = emptyMap()
     override fun toString() = name
 }
 
@@ -115,3 +134,6 @@ fun analyzeSides(com: Array<out Class<out IUpgradeComponent>?>)
     Array(4) {
         Side2Pattern(com[2 * it], com[2 * it + 1])
     }
+
+fun List<Upgrade>.toUpgradeMap(): Map<UpgradeType, Upgrade> =
+    this.associateBy { it.type }

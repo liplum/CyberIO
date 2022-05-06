@@ -11,6 +11,7 @@ import mindustry.ui.Bar
 import mindustry.world.blocks.defense.OverdriveProjector
 import mindustry.world.meta.Stat
 import net.liplum.R
+import net.liplum.Serialized
 import net.liplum.utils.*
 import kotlin.math.abs
 
@@ -67,6 +68,7 @@ open class AdjustableOverdrive(name: String) : OverdriveProjector(name) {
 
     open inner class AOBuild : OverdriveBuild() {
         var curBoost = 0f
+        @Serialized
         var curGear = 0
         override fun realBoost(): Float = curBoost
         open fun setGear(gear: Int) {

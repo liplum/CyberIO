@@ -133,6 +133,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
 
     open inner class SmartULDBuild : AniedBlock<SmartUnloader, SmartUnloader.SmartULDBuild>.AniedBuild(),
         IDataSender {
+        @Serialized
         var receivers = OrderedSet<Int>()
         var nearby: Seq<Building> = Seq()
         var trackers: Array<Tracker> = Array(ItemTypeAmount()) {
@@ -301,9 +302,9 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
             updateUnloaded()
             updateTracker()
         }
-        @CioDebugOnly
+        @DebugOnly
         var needUnloadItemsText: String = ""
-        @CioDebugOnly
+        @DebugOnly
         fun genNeedUnloadItemsText() = needUnloadItems.genText()
         override fun drawSelect() {
             this.drawDataNetGraphic()

@@ -51,12 +51,10 @@ open class AniConfig<TBlock : Block, TBuild : Building> {
     /**
      * Which from State is configuring
      */
-    @Nullable
     private var curConfiguringFromState: AniState<TBlock, TBuild>? = null
     /**
      * Which to State is configuring
      */
-    @Nullable
     private var curConfiguringToState: AniState<TBlock, TBuild>? = null
     /**
      * Sets default State
@@ -109,7 +107,7 @@ open class AniConfig<TBlock : Block, TBuild : Building> {
      */
     open fun entry(
         from: AniState<TBlock, TBuild>, to: AniState<TBlock, TBuild>,
-        canEnter: TBuild.() -> Boolean
+        canEnter: TBuild.() -> Boolean,
     ): AniConfig<TBlock, TBuild> {
         checkBuilt()
         if (from === to || from.stateName == to.stateName) {
@@ -118,9 +116,7 @@ open class AniConfig<TBlock : Block, TBuild : Building> {
         curConfiguringFromState = from
         val key = getKey(from, to)
         canEnters[key] = canEnter
-        val entrances = allEntrances.computeIfAbsent(
-            from
-        ) { LinkedList() }
+        val entrances = allEntrances.getOrPut(from) { LinkedList() }
         entrances.add(to)
         return this
     }
@@ -156,9 +152,7 @@ open class AniConfig<TBlock : Block, TBuild : Building> {
         }
         val key = getKey(ccf, to)
         canEnters[key] = canEnter
-        val entrances = allEntrances.computeIfAbsent(
-            ccf
-        ) { LinkedList() }
+        val entrances = allEntrances.getOrPut(ccf) { LinkedList() }
         entrances.add(to)
         return this
     }
@@ -195,9 +189,7 @@ open class AniConfig<TBlock : Block, TBuild : Building> {
             curConfiguringToState!!
         )
         canEnters[key] = canEnter
-        val entrances = allEntrances.computeIfAbsent(
-            curConfiguringFromState!!
-        ) { LinkedList() }
+        val entrances = allEntrances.getOrPut(curConfiguringFromState!!) { LinkedList() }
         entrances.add(curConfiguringToState!!)
         return this
     }
@@ -246,9 +238,7 @@ open class AniConfig<TBlock : Block, TBuild : Building> {
      * @return a collection of States
      */
     open fun getAllEntrances(from: AniState<TBlock, TBuild>): Collection<AniState<TBlock, TBuild>> {
-        return allEntrances.computeIfAbsent(
-            from
-        ) { LinkedList() }
+        return allEntrances.getOrPut(from) { LinkedList() }
     }
 
     class NoDefaultStateException(message: String) : RuntimeException(message)

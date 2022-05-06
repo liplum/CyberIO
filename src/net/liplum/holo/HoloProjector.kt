@@ -140,9 +140,11 @@ open class HoloProjector(name: String) : Block(name) {
             plans[this]
 
     open inner class HoloPBuild : Building() {
+        @Serialized
         var planOrder: Int = -1
         val curPlan: HoloPlan?
             get() = planOrder.plan
+        @Serialized
         var progressTime = 0f
         val progress: Float
             get() {

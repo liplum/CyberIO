@@ -17,6 +17,7 @@ import mindustry.world.blocks.ItemSelection
 import mindustry.world.meta.BlockGroup
 import net.liplum.ClientOnly
 import net.liplum.DebugOnly
+import net.liplum.Serialized
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
 import net.liplum.lib.animations.anis.AniState
@@ -81,7 +82,9 @@ open class StreamClient(name: String) : AniedBlock<StreamClient, StreamClient.Cl
     }
 
     open inner class ClientBuild : AniedBuild(), IStreamClient {
+        @Serialized
         var hosts = OrderedSet<Int>()
+        @Serialized
         var outputLiquid: Liquid? = null
             set(value) {
                 if (field != value) {

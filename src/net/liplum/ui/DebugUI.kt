@@ -7,9 +7,9 @@ import arc.scene.ui.layout.WidgetGroup
 import mindustry.Vars
 import net.liplum.R
 import net.liplum.inputs.Screen
+import net.liplum.lib.lock
 import net.liplum.utils.ForEachUnlockableContent
 import net.liplum.utils.bundle
-import net.liplum.utils.lock
 
 object DebugUI {
     @JvmStatic

@@ -82,13 +82,16 @@ open class HoloWall(name: String) : Wall(name) {
     }
 
     open inner class HoloBuild : WallBuild(), IHoloEntity {
+        @Serialized
         var restoreCharge = restoreReload
         open val isProjecting: Boolean
             get() = health > minHealth
+        @Serialized
         override var restRestore = 0f
             set(value) {
                 field = value.coerceAtLeast(0f)
             }
+        @Serialized
         open var lastDamagedTime = restoreReload
         override val minHealthProportion: Float
             get() = this@HoloWall.minHealthProportion

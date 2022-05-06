@@ -23,12 +23,9 @@ import mindustry.world.blocks.ControlBlock
 import mindustry.world.blocks.defense.turrets.Turret
 import mindustry.world.meta.BlockFlag
 import mindustry.world.meta.BlockGroup
-import net.liplum.ClientOnly
-import net.liplum.DebugOnly
-import net.liplum.R
+import net.liplum.*
 import net.liplum.blocks.prism.CrystalManager.Companion.read
 import net.liplum.blocks.prism.CrystalManager.Companion.write
-import net.liplum.draw
 import net.liplum.math.Polar
 import net.liplum.utils.*
 import kotlin.math.abs
@@ -148,6 +145,7 @@ open class Prism(name: String) : Block(name) {
     }
 
     open inner class PrismBuild : Building(), ControlBlock, Ranged {
+        @Serialized
         @JvmField var cm: CrystalManager = CrystalManager().apply {
             maxAmount = maxCrystal
             prism = this@PrismBuild

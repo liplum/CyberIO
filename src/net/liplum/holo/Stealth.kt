@@ -101,11 +101,14 @@ open class Stealth(name: String) : Turret(name) {
 
     open inner class StealthBuild : TurretBuild(), IStreamClient, IHoloEntity {
         // Hologram
+        @Serialized
         var restoreCharge = restoreReload
+        @Serialized
         override var restRestore = 0f
             set(value) {
                 field = value.coerceAtLeast(0f)
             }
+        @Serialized
         open var lastDamagedTime = restoreReload
         override val minHealthProportion: Float
             get() = this@Stealth.minHealthProportion
@@ -125,6 +128,7 @@ open class Stealth(name: String) : Turret(name) {
                     // Or isn't projecting but has not enough cyberion
                     (!isProjecting && liquids[cyberion] < curCyberionReq)
         // Turret
+        @Serialized
         var hosts = OrderedSet<Int>()
         override fun updateTile() {
             unit.ammo(unit.type().ammoCapacity * liquids.currentAmount() / liquidCapacity)
