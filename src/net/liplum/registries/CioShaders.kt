@@ -55,7 +55,7 @@ Cyberion                    = wrap("Cyberion",                      ::SurfaceSha
     val String.filePath: String
         get() = R.SD.GenFrag(this)
 
-    fun <T : Shader> wrap(
+    inline fun <T : Shader> wrap(
         name: String,
         ctor: (Fi) -> T,
         tryCompatible: Boolean = false,
@@ -68,7 +68,7 @@ Cyberion                    = wrap("Cyberion",                      ::SurfaceSha
         } catch (e: Exception) {
             val fragment = preprocessFragment(file)
             throw ShaderCompileException(
-                "Can't compile shader $fragName\n$fragment\n${e.message}", e)
+                "Can't compile shader $fragName\n$fragment\n", e)
         }
     }
     @JvmStatic

@@ -3,6 +3,7 @@ package net.liplum
 import arc.Core
 import arc.graphics.gl.GLVersion
 import arc.graphics.gl.GLVersion.GlType.GLES
+import arc.graphics.gl.GLVersion.GlType.OpenGL
 import net.liplum.Clog.log
 import net.liplum.Compatible.Hologram
 import net.liplum.Compatible.TvStatic
@@ -13,17 +14,35 @@ object GL {
     @JvmStatic
     fun handleCompatible() {
         Hologram = false
-        TvStatic = match(GLES, 3, 2)
+        TvStatic = useCompatible(
+            LessThan(GLES, 3, 2),
+            LessThan(OpenGL, 3, 1)
+        )
 
         CompatibleMap.log("${Meta.Name} Compatible") { name, func ->
             Clog.info("$name|${func()}")
         }
     }
-    @JvmStatic
-    fun match(A: Int, B: Int) =
+
+    fun useCompatible(A: Int, B: Int) =
         GlVersion.majorVersion <= A && GlVersion.minorVersion <= B
     @JvmStatic
-    fun match(type: GLVersion.GlType, A: Int, B: Int) =
-        GlVersion.type == type && GlVersion.majorVersion <= A && GlVersion.minorVersion <= B
+    fun useCompatible(vararg entries: LessThan): Boolean {
+        for (entry in entries) {
+            if (entry.useCompatible(GlVersion.type, GlVersion.majorVersion, GlVersion.minorVersion))
+                return true
+        }
+        return false
+    }
+    /**
+     * @param atLeastA Including itself
+     * @param atLeastB Including itself
+     */
+    class LessThan(
+        val type: GLVersion.GlType, val atLeastA: Int, val atLeastB: Int,
+    ) {
+        fun useCompatible(type: GLVersion.GlType, A: Int, B: Int) =
+            this.type == type && A <= atLeastA && B <= atLeastB
+    }
 }
 
