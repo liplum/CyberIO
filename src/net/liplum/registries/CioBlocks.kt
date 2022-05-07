@@ -98,22 +98,22 @@ object CioBlocks : ContentTable {
         icMachine = ICMachine("ic-machine").apply {
             requirements(
                 Category.crafting, arrayOf(
-                    ItemStack(Items.copper, 500),
-                    ItemStack(Items.silicon, 100),
-                    ItemStack(Items.graphite, 100),
-                    ItemStack(Items.titanium, 250)
+                    ItemStack(Items.copper, 550),
+                    ItemStack(Items.lead, 280),
+                    ItemStack(Items.silicon, 450),
+                    ItemStack(Items.graphite, 240),
                 )
             )
             health = 2000
-            outputItem = ItemStack(CioItems.ic, 1)
-            craftTime = 240f
+            outputItem = ItemStack(CioItems.ic, 2)
+            craftTime = 340f
             size = 3
             buildCostMultiplier = 1.5f
             craftEffect = Fx.smelt
             itemCapacity = 100
             consumes.items( //Total:100
-                ItemStack(Items.silicon, 20),  //20%
                 ItemStack(Items.copper, 50),  //50%
+                ItemStack(Items.silicon, 20),  //20%
                 ItemStack(Items.metaglass, 30) //30%
             )
             consumes.power(10f)
@@ -122,9 +122,9 @@ object CioBlocks : ContentTable {
         icMachineSmall = ICMachineS("ic-machine-s").apply {
             requirements(
                 Category.crafting, arrayOf(
-                    ItemStack(Items.copper, 100),
-                    ItemStack(Items.silicon, 10),
-                    ItemStack(Items.graphite, 20),
+                    ItemStack(Items.copper, 150),
+                    ItemStack(Items.silicon, 50),
+                    ItemStack(Items.graphite, 50),
                 )
             )
             health = 600
@@ -134,9 +134,9 @@ object CioBlocks : ContentTable {
             craftEffect = Fx.formsmoke
             itemCapacity = 40
             consumes.items(
-                ItemStack(Items.copper, 30),
+                ItemStack(Items.copper, 25),
                 ItemStack(Items.sand, 40),
-                ItemStack(Items.lead, 10),
+                ItemStack(Items.lead, 15),
             )
             consumes.power(2f)
 
@@ -151,10 +151,10 @@ object CioBlocks : ContentTable {
             requirements(
                 Category.distribution, arrayOf(
                     ItemStack(CioItems.ic, 1),
-                    ItemStack(Items.copper, 50),
-                    ItemStack(Items.graphite, 20),
-                    ItemStack(Items.metaglass, 20),
-                    ItemStack(Items.silicon, 10)
+                    ItemStack(Items.lead, 150),
+                    ItemStack(Items.graphite, 120),
+                    ItemStack(Items.metaglass, 60),
+                    ItemStack(Items.silicon, 180),
                 )
             )
             health = 100
@@ -166,10 +166,10 @@ object CioBlocks : ContentTable {
             requirements(
                 Category.distribution, arrayOf(
                     ItemStack(CioItems.ic, 1),
-                    ItemStack(Items.copper, 50),
-                    ItemStack(Items.graphite, 20),
-                    ItemStack(Items.metaglass, 20),
-                    ItemStack(Items.thorium, 10),
+                    ItemStack(Items.lead, 150),
+                    ItemStack(Items.graphite, 120),
+                    ItemStack(Items.metaglass, 60),
+                    ItemStack(Items.silicon, 180),
                 )
             )
             health = 100
@@ -214,10 +214,12 @@ object CioBlocks : ContentTable {
         underdriveProjector = UnderdriveProjector("underdrive-projector").apply {
             requirements(
                 Category.effect, BuildVisibility.shown, arrayOf(
-                    ItemStack(CioItems.ic, 1),
-                    ItemStack(Items.copper, 120),
-                    ItemStack(Items.coal, 80),
-                    ItemStack(Items.metaglass, 75),
+                    ItemStack(CioItems.ic, 4),
+                    ItemStack(Items.copper, 300),
+                    ItemStack(Items.lead, 20),
+                    ItemStack(Items.silicon, 240),
+                    ItemStack(Items.plastanium, 10),
+                    ItemStack(Items.phaseFabric, 5),
                 )
             )
             health = 300
@@ -232,7 +234,7 @@ object CioBlocks : ContentTable {
         antiVirus = AntiVirus("anti-virus").apply {
             requirements(
                 Category.logic, BuildVisibility.shown, arrayOf(
-                    ItemStack(CioItems.ic, 2),
+                    ItemStack(CioItems.ic, 1),
                     ItemStack(Items.copper, 100),
                     ItemStack(Items.graphite, 40),
                     ItemStack(Items.silicon, 25)
@@ -280,25 +282,28 @@ object CioBlocks : ContentTable {
             requirements(
                 Category.turret, BuildVisibility.shown, arrayOf(
                     ItemStack(CioItems.ic, 7),
-                    ItemStack(Items.metaglass, 100),
-                    ItemStack(Items.titanium, 200),
+                    ItemStack(Items.copper, 150),
+                    ItemStack(Items.metaglass, 240),
+                    ItemStack(Items.titanium, 30),
                 )
             )
             buildCostMultiplier = 2f
             size = 4
-            health = 5000
+            health = 2500
         }
 
         prismObelisk = PrismObelisk("prism-obelisk").apply {
             requirements(
                 Category.turret, BuildVisibility.shown, arrayOf(
                     ItemStack(CioItems.ic, 3),
-                    ItemStack(Items.metaglass, 300),
-                    ItemStack(Items.titanium, 300),
+                    ItemStack(Items.copper, 30),
+                    ItemStack(Items.lead, 20),
+                    ItemStack(Items.metaglass, 240),
+                    ItemStack(Items.titanium, 10),
                 )
             )
             size = 2
-            health = 2000
+            health = 1000
             prismType = prism
         }
 
@@ -309,6 +314,7 @@ object CioBlocks : ContentTable {
                     ItemStack(Items.graphite, 100),
                     ItemStack(Items.silicon, 60),
                     ItemStack(Items.thorium, 250),
+                    ItemStack(Items.surgeAlloy, 50),
                 )
             )
             range = 180f
@@ -331,7 +337,9 @@ object CioBlocks : ContentTable {
             requirements(
                 Category.defense, BuildVisibility.shown, arrayOf(
                     ItemStack(CioItems.ic, 1),
-                    ItemStack(Items.titanium, 20),
+                    ItemStack(Items.silicon, 6),
+                    ItemStack(Items.titanium, 12),
+                    ItemStack(Items.plastanium, 1),
                 )
             )
             size = 1
@@ -344,8 +352,9 @@ object CioBlocks : ContentTable {
             requirements(
                 Category.defense, BuildVisibility.shown, arrayOf(
                     ItemStack(CioItems.ic, 2),
-                    ItemStack(Items.titanium, 25 * 4),
-                    ItemStack(Items.silicon, 10),
+                    ItemStack(Items.silicon, 24),
+                    ItemStack(Items.titanium, 48),
+                    ItemStack(Items.plastanium, 4),
                 )
             )
             size = 2
@@ -389,40 +398,44 @@ object CioBlocks : ContentTable {
         smartDistributor = SmartDistributor("smart-distributor").apply {
             requirements(
                 Category.distribution, BuildVisibility.shown, arrayOf(
-                    ItemStack(CioItems.ic, 12),
-                    ItemStack(Items.thorium, 300),
-                    ItemStack(Items.phaseFabric, 100),
-                    ItemStack(Items.surgeAlloy, 125),
+                    ItemStack(CioItems.ic, 15),
+                    ItemStack(Items.copper, 550),
+                    ItemStack(Items.silicon, 210),
+                    ItemStack(Items.plastanium, 80),
+                    ItemStack(Items.thorium, 140),
+                    ItemStack(Items.surgeAlloy, 50),
                 )
             )
-            health = 1000
+            health = 4500
             size = 2
         }
 
         smartUnloader = SmartUnloader("smart-unloader").apply {
             requirements(
                 Category.distribution, BuildVisibility.shown, arrayOf(
-                    ItemStack(CioItems.ic, 10),
-                    ItemStack(Items.metaglass, 80),
-                    ItemStack(Items.silicon, 150),
-                    ItemStack(Items.phaseFabric, 80),
+                    ItemStack(CioItems.ic, 4),
+                    ItemStack(Items.lead, 350),
+                    ItemStack(Items.silicon, 210),
+                    ItemStack(Items.graphite, 150),
+                    ItemStack(Items.titanium, 50),
                 )
             )
             unloadSpeed = 5f
-            health = 1000
+            health = 1500
             size = 2
         }
 
         streamClient = StreamClient("stream-client").apply {
             requirements(
                 Category.liquid, BuildVisibility.shown, arrayOf(
-                    ItemStack(CioItems.ic, 2),
+                    ItemStack(CioItems.ic, 1),
                     ItemStack(Items.metaglass, 40),
-                    ItemStack(Items.silicon, 10),
-                    ItemStack(Items.titanium, 60),
+                    ItemStack(Items.silicon, 20),
+                    ItemStack(Items.graphite, 40),
+                    ItemStack(Items.titanium, 10),
                 )
             )
-            health = 150
+            health = 300
             consumes.power(0.7f)
             liquidCapacity = 300f
             replaceable = false
@@ -432,12 +445,15 @@ object CioBlocks : ContentTable {
             requirements(
                 Category.liquid, BuildVisibility.shown, arrayOf(
                     ItemStack(CioItems.ic, 4),
-                    ItemStack(Items.metaglass, 150),
-                    ItemStack(Items.silicon, 35),
-                    ItemStack(Items.titanium, 100),
+                    ItemStack(Items.lead, 100),
+                    ItemStack(Items.metaglass, 1600),
+                    ItemStack(Items.silicon, 80),
+                    ItemStack(Items.graphite, 60),
+                    ItemStack(Items.titanium, 40),
+                    ItemStack(Items.plastanium, 20),
                 )
             )
-            health = 400
+            health = 2000
             size = 2
             consumes.power(0.7f)
             networkSpeed = 3f
@@ -449,14 +465,18 @@ object CioBlocks : ContentTable {
         streamServer = StreamServer("stream-server").apply {
             requirements(
                 Category.liquid, BuildVisibility.shown, arrayOf(
-                    ItemStack(CioItems.ic, 10),
-                    ItemStack(Items.metaglass, 350),
-                    ItemStack(Items.silicon, 100),
-                    ItemStack(Items.thorium, 500),
+                    ItemStack(CioItems.ic, 16),
+                    ItemStack(Items.copper, 1200),
+                    ItemStack(Items.lead, 400),
+                    ItemStack(Items.metaglass, 1440),
+                    ItemStack(Items.silicon, 320),
+                    ItemStack(Items.thorium, 40),
+                    ItemStack(Items.phaseFabric, 120),
                 )
             )
-            health = 2000
+            health = 5000
             size = 3
+            maxConnection = 5
             consumes.power(2f)
             networkSpeed = 15f
             liquidCapacity = 2000f
@@ -469,11 +489,11 @@ object CioBlocks : ContentTable {
                     ItemStack(CioItems.ic, 6),
                     ItemStack(Items.lead, 350),
                     ItemStack(Items.thorium, 200),
-                    ItemStack(Items.surgeAlloy, 200),
+                    ItemStack(Items.surgeAlloy, 150),
                 )
             )
             size = 3
-
+            health = 250 * size * size
             shootEffect = StaticFx
             shootCone = 40f
             recoilAmount = 4f
@@ -512,8 +532,10 @@ object CioBlocks : ContentTable {
                     ItemStack(CioItems.ic, 2),
                     ItemStack(Items.lead, 100),
                     ItemStack(Items.titanium, 100),
+                    ItemStack(Items.metaglass, 50),
                 )
             )
+            health = 100 * size * size
             drawer = CyberionMixerDrawer(R.C.Holo, R.C.HoloDark)
             outputLiquid = LiquidStack(CioLiquids.cyberion, 0.3f)
             craftTime = 100f
@@ -612,10 +634,11 @@ object CioBlocks : ContentTable {
         wirelessTower = WirelessTower("wireless-tower").apply {
             requirements(
                 Category.power, BuildVisibility.shown, arrayOf(
-                    ItemStack(CioItems.ic, 3),
-                    ItemStack(Items.copper, 300),
-                    ItemStack(Items.graphite, 50),
-                    ItemStack(Items.silicon, 10),
+                    ItemStack(CioItems.ic, 2),
+                    ItemStack(Items.copper, 310),
+                    ItemStack(Items.lead, 20),
+                    ItemStack(Items.silicon, 20),
+                    ItemStack(Items.graphite, 30),
                 )
             )
             health = 600
@@ -628,9 +651,12 @@ object CioBlocks : ContentTable {
             requirements(
                 Category.turret, BuildVisibility.shown, arrayOf(
                     ItemStack(CioItems.ic, 10),
-                    ItemStack(Items.sporePod, 10),
-                    ItemStack(Items.thorium, 300),
+                    ItemStack(Items.sporePod, 300),
+                    ItemStack(Items.thorium, 150),
                     ItemStack(Items.metaglass, 30),
+                    ItemStack(Items.copper, 120),
+                    ItemStack(Items.silicon, 180),
+                    ItemStack(Items.plastanium, 40),
                 )
             )
             size = 4
@@ -645,10 +671,12 @@ object CioBlocks : ContentTable {
         eye = Eye("heimdall-eye").apply {
             requirements(
                 Category.turret, BuildVisibility.shown, arrayOf(
-                    ItemStack(CioItems.ic, 5),
-                    ItemStack(Items.metaglass, 80),
+                    ItemStack(CioItems.ic, 2),
+                    ItemStack(Items.pyratite, 5),
+                    ItemStack(Items.plastanium, 10),
+                    ItemStack(Items.metaglass, 40),
+                    ItemStack(Items.copper, 60),
                     ItemStack(Items.silicon, 30),
-                    ItemStack(Items.lead, 120),
                 )
             )
             range = 165f
@@ -699,10 +727,12 @@ object CioBlocks : ContentTable {
         ear = Ear("heimdall-ear").apply {
             requirements(
                 Category.turret, BuildVisibility.shown, arrayOf(
-                    ItemStack(CioItems.ic, 5),
-                    ItemStack(Items.copper, 80),
-                    ItemStack(Items.silicon, 40),
-                    ItemStack(Items.phaseFabric, 40),
+                    ItemStack(CioItems.ic, 2),
+                    ItemStack(Items.sporePod, 20),
+                    ItemStack(Items.graphite, 5),
+                    ItemStack(Items.copper, 60),
+                    ItemStack(Items.silicon, 50),
+                    ItemStack(Items.plastanium, 10),
                 )
             )
             addUpgrade(

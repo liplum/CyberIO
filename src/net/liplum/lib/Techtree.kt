@@ -9,6 +9,7 @@ import mindustry.game.Objectives.Objective
 import mindustry.game.Objectives.Research
 import mindustry.type.ItemStack
 import net.liplum.UseReflection
+import net.liplum.scripts.KeyNotFoundException
 
 fun Seq<TechNode>.withContext(
     func: Techtree.() -> Unit,
@@ -34,7 +35,7 @@ value class Techtree(
     }
 
     fun at(content: UnlockableContent): TechNode =
-        map[content]!!
+        map[content] ?: throw KeyNotFoundException(content.name)
 
     fun at(name: String): TechNode =
         TechTree.all.find { it.content.name == name }!!
@@ -55,13 +56,13 @@ value class Techtree(
     @JvmOverloads
     inline fun TechNode.sub(
         content: UnlockableContent,
-        vararg args: Any,
+        vararg p: Any,
         genChild: TechNode.() -> Unit = {},
     ): TechNode {
-        val req = args.filterIsInstance<ItemStack>().toTypedArray()
+        val req = p.filterIsInstance<ItemStack>().toTypedArray()
         val node = TechNode(this, content, req)
         if (objectives != null) {
-            val objectives = args.filterObjectives()
+            val objectives = p.filterObjectives()
             node.objectives.addAll(objectives)
         }
         node.genChild()
