@@ -119,7 +119,7 @@ object CioUnitTypes : ContentTable {
             armor = 5f
         }
         holoArchitect = NewUnitType(R.Unit.HoloArchitect, ::HoloUnitType, ::HoloUnit).apply {
-            AutoLife(maxHealth = 1600f, lose = 0.15f)
+            AutoLife(maxHealth = 2200f, lose = 0.15f)
             defaultController = Prov { BuilderAI() }
             speed = 3.5f
             HoloOpacity = 0.4f
