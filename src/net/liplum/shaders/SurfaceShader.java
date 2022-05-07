@@ -2,20 +2,19 @@ package net.liplum.shaders;
 
 import arc.Core;
 import arc.assets.AssetDescriptor;
+import arc.files.Fi;
 import arc.graphics.Texture;
 import arc.graphics.gl.Shader;
 import arc.util.Time;
-import mindustry.Vars;
-import net.liplum.R;
 
 import static mindustry.Vars.renderer;
 import static mindustry.graphics.Shaders.getShaderFi;
 
 public class SurfaceShader extends Shader {
     Texture noise;
-    public SurfaceShader(String fragName) {
-        super(getShaderFi("screenspace.vert"),
-                Vars.tree.get(R.S.GenFrag(fragName)));
+
+    public SurfaceShader(Fi frag) {
+        super(getShaderFi("screenspace.vert"), frag);
         loadNoise();
     }
 
@@ -38,7 +37,7 @@ public class SurfaceShader extends Shader {
         setUniformf("u_time", Time.time);
 
         if (hasUniform("u_noise")) {
-            if(noise == null){
+            if (noise == null) {
                 noise = Core.assets.get("sprites/noise.png", Texture.class);
             }
             noise.bind(1);

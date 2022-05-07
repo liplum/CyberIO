@@ -4,7 +4,6 @@ import arc.Core;
 import arc.graphics.gl.Shader;
 import arc.util.Time;
 import mindustry.Vars;
-import net.liplum.R;
 
 import static mindustry.Vars.renderer;
 import static mindustry.graphics.Shaders.getShaderFi;
@@ -15,7 +14,7 @@ public class ScanlineShader extends Shader implements IReusable {
 
     public ScanlineShader(String fragName) {
         super(getShaderFi("default.vert"),
-                Vars.tree.get(R.S.GenFrag(fragName)));
+                Vars.tree.get(fragName));
     }
 
     @Override

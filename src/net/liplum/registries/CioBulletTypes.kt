@@ -3,7 +3,6 @@ package net.liplum.registries
 import mindustry.content.Fx
 import mindustry.entities.bullet.BasicBulletType
 import mindustry.graphics.Pal
-import net.liplum.ClientOnly
 import net.liplum.R
 import net.liplum.bullets.RuvikBullet
 import net.liplum.bullets.STEM_VERSION
@@ -23,9 +22,7 @@ object CioBulletTypes : ContentTable {
         holoBullet = ShaderBasicBulletT<Hologram>(
             2f, 35f
         ).apply {
-            ClientOnly {
-                shader = SD.Hologram
-            }
+            shader = { SD.Hologram }
             width = 10f
             height = 10f
             hitSize = 10f
@@ -73,9 +70,7 @@ object CioBulletTypes : ContentTable {
         radiationInterference = ShaderBasicBulletT<TrShader>(
             2.3f, 28f, "bullet"
         ).apply {
-            ClientOnly {
-                shader = SD.TvStatic
-            }
+            shader = { SD.TvStatic }
             width = 15f
             height = 15f
             hitSize = 15f

@@ -1,11 +1,10 @@
 package net.liplum.shaders.holo;
 
+import arc.files.Fi;
 import arc.graphics.Texture;
 import arc.graphics.gl.Shader;
 import arc.math.Mathf;
 import arc.util.Time;
-import mindustry.Vars;
-import net.liplum.R;
 import net.liplum.lib.shaders.ILoadResource;
 import net.liplum.lib.shaders.IReusable;
 
@@ -20,9 +19,8 @@ public class HologramOld extends Shader implements ILoadResource, IReusable {
     public float alpha = 1f;
     public float speed = DefaultSpeed;
 
-    public HologramOld(String fragName) {
-        super(getShaderFi("default.vert"),
-                Vars.tree.get(R.S.GenFrag(fragName)));
+    public HologramOld(Fi frag) {
+        super(getShaderFi("default.vert"), frag);
     }
 
     @Override

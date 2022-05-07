@@ -1,18 +1,16 @@
 package net.liplum.lib.shaders;
 
 import arc.Core;
+import arc.files.Fi;
 import arc.graphics.gl.Shader;
 import arc.util.Time;
-import mindustry.Vars;
-import net.liplum.R;
 
 import static mindustry.Vars.renderer;
 import static mindustry.graphics.Shaders.getShaderFi;
 
 public class TrShader extends Shader {
-    public TrShader(String fragName) {
-        super(getShaderFi("default.vert"),
-                Vars.tree.get(R.S.GenFrag(fragName)));
+    public TrShader(Fi frag) {
+        super(getShaderFi("default.vert"), frag);
     }
 
     @Override

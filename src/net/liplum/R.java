@@ -198,7 +198,7 @@ public class R {
         public static Color[] ClientLiquidColors;
     }
 
-    public static final class S {
+    public static final class SD {
         public static final String Test = GenFrag("test");
 
         @NotNull

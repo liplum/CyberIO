@@ -6,7 +6,20 @@ import net.liplum.registries.CioShaders
 
 typealias SD = CioShaders
 
-inline fun Shader?.on(crossinline func: () -> Unit) {
+inline fun <T : Shader> T?.on(crossinline func: (T) -> Unit) {
+    if (this != null) {
+        Draw.draw(Draw.z()) {
+            Draw.shader(this)
+            func(this)
+            Draw.shader()
+            if (this is IReusable) {
+                this.reset()
+            }
+        }
+    }
+}
+
+inline fun <T : Shader> T?.safe(crossinline func: () -> Unit) {
     if (this != null) {
         Draw.draw(Draw.z()) {
             Draw.shader(this)
@@ -16,7 +29,8 @@ inline fun Shader?.on(crossinline func: () -> Unit) {
                 this.reset()
             }
         }
-    } else {
+    }
+    else {
         func()
     }
 }
@@ -32,7 +46,7 @@ inline fun <T : Shader> T.use(crossinline func: (T) -> Unit) {
     }
 }
 
-inline fun Shader?.on(zIndex: Float, crossinline func: () -> Unit) {
+inline fun<T : Shader> T?.on(zIndex: Float, crossinline func: () -> Unit) {
     if (this != null) {
         Draw.draw(zIndex) {
             Draw.shader(this)

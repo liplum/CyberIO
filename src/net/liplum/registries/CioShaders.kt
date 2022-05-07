@@ -1,71 +1,88 @@
 package net.liplum.registries
 
+import arc.files.Fi
 import arc.graphics.gl.Shader
+import mindustry.Vars
 import net.liplum.CioMod
 import net.liplum.ClientOnly
-import net.liplum.lib.shaders.ILoadResource
-import net.liplum.lib.shaders.ProgressShader
-import net.liplum.lib.shaders.TrShader
+import net.liplum.R
+import net.liplum.lib.shaders.*
 import net.liplum.shaders.SurfaceShader
 import net.liplum.shaders.holo.Hologram
 import net.liplum.shaders.holo.HologramOld
 import net.liplum.useCompatible
-import java.util.*
 
 @ClientOnly
 object CioShaders {
-    lateinit var DynamicColor: TrShader
-    lateinit var HologramOld: HologramOld
-    lateinit var Hologram: Hologram
-    lateinit var Monochrome: TrShader
-    lateinit var InvertColor: TrShader
-    lateinit var TvStatic: TrShader
-    lateinit var Pulse: TrShader
-    lateinit var InvertingColorRGB: ProgressShader
-    lateinit var InvertingColorRbg2HsvInHsv: ProgressShader
-    lateinit var InvertingColorRbg2HsvInRgb: ProgressShader
-    lateinit var Monochromize: ProgressShader
-    var Cyberion: SurfaceShader? = null
+    // @formatter:off
+    lateinit var DynamicColor:                  TrShader
+    lateinit var HologramOld:                   HologramOld
+    lateinit var Hologram:                      Hologram
+    lateinit var Monochrome:                    TrShader
+    lateinit var InvertColor:                   TrShader
+    lateinit var TvStatic:                      TrShader
+    lateinit var Pulse:                         TrShader
+    lateinit var InvertingColorRGB:             ProgressShader
+    lateinit var InvertingColorRbg2HsvInHsv:    ProgressShader
+    lateinit var InvertingColorRbg2HsvInRgb:    ProgressShader
+    lateinit var Monochromize:                  ProgressShader
+    var Cyberion:                               SurfaceShader? = null
+    // @formatter:on
     @JvmStatic
     @ClientOnly
     fun init() {
-        DynamicColor = TrShader("DynamicColor").register()
+        // @formatter:off
+// Dynamic
+DynamicColor                = wrap("DynamicColor",                  ::TrShader)
+// Hologram
+HologramOld                 = wrap("HologramOld",                   ::HologramOld)
+Hologram                    = wrap("Hologram",                      ::Hologram)
 
-        HologramOld = HologramOld("HologramOld").register()
-        Hologram = Hologram("Hologram").register()
+Monochrome                  = wrap("Monochrome",                    ::TrShader)
+InvertColor                 = wrap("InvertColor",                   ::TrShader)
+TvStatic                    = wrap("TvStatic",                      ::TrShader,     tryCompatible = true)
+Pulse                       = wrap("Pulse",                         ::TrShader)
+// Progressed
+InvertingColorRGB           = wrap("InvertingColorRgb",             ::ProgressShader)
+InvertingColorRbg2HsvInHsv  = wrap("InvertingColorRgb2HsvInHsv",    ::ProgressShader)
+InvertingColorRbg2HsvInRgb  = wrap("InvertingColorRgb2HsvInRgb",    ::ProgressShader)
+Monochromize                = wrap("Monochromize",                  ::ProgressShader)
+// Block Surface
+Cyberion                    = wrap("Cyberion",                      ::SurfaceShader)
+        // @formatter:on
+    }
 
-        Monochrome = TrShader("Monochrome").register()
-        InvertColor = TrShader("InvertColor").register()
-        TvStatic = TrShader("TvStatic".compatible).register()
-        Pulse = TrShader("Pulse").register()
+    val String.filePath: String
+        get() = R.SD.GenFrag(this)
 
-        InvertingColorRGB = ProgressShader("InvertingColorRgb")
-            .register()
-        InvertingColorRbg2HsvInHsv = ProgressShader("InvertingColorRgb2HsvInHsv")
-            .register()
-        InvertingColorRbg2HsvInRgb = ProgressShader("InvertingColorRgb2HsvInRgb")
-            .register()
-
-        Monochromize = ProgressShader("Monochromize").register()
-        Cyberion = SurfaceShader("Cyberion").register()
-        isInited = true
+    fun <T : Shader> wrap(
+        name: String,
+        ctor: (Fi) -> T,
+        tryCompatible: Boolean = false,
+    ): T {
+        val fragName = (if (tryCompatible) name.compatible else name).filePath
+        val file = Vars.tree.get(fragName)
+        try {
+            val shader = ctor(file)
+            return shader.register()
+        } catch (e: Exception) {
+            val fragment = preprocessFragment(file)
+            throw ShaderCompileException(
+                "Can't compile shader $fragName\n$fragment\n${e.message}", e)
+        }
     }
     @JvmStatic
     @ClientOnly
     fun loadResource() {
-        if (isInited) {
-            for (loadable in AllLoadable) {
-                loadable.loadResource()
-            }
+        for (loadable in AllLoadable) {
+            loadable.loadResource()
         }
     }
-    @ClientOnly
     @JvmStatic
+    @ClientOnly
     fun dispose() {
-        if (isInited) {
-            for (shader in AllShaders) {
-                shader.dispose()
-            }
+        for (shader in AllShaders) {
+            shader.dispose()
         }
     }
     @ClientOnly
@@ -77,9 +94,8 @@ object CioShaders {
         return this
     }
 
-    private var AllShaders: LinkedList<Shader> = LinkedList()
-    private var AllLoadable: LinkedList<ILoadResource> = LinkedList()
-    private var isInited = false
+    private var AllShaders: HashSet<Shader> = HashSet()
+    private var AllLoadable: HashSet<ILoadResource> = HashSet()
 }
 
 val String.compatible: String

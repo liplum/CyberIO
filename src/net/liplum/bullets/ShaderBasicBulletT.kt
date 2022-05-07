@@ -9,7 +9,7 @@ import mindustry.gen.Bullet
 import net.liplum.lib.shaders.on
 
 open class ShaderBasicBulletT<TS : Shader> : BasicBulletType {
-    @JvmField var shader: TS? = null
+    lateinit var shader: () -> TS
     @JvmField var preShader: (TS, Bullet) -> Unit = { _, _ -> }
 
     constructor(speed: Float, damage: Float, bulletSprite: String)
@@ -21,9 +21,9 @@ open class ShaderBasicBulletT<TS : Shader> : BasicBulletType {
     constructor() : this(1f, 1f, "bullet")
 
     override fun draw(b: Bullet) {
-        val shader = shader
+        val shader = shader()
         shader.on {
-            preShader(shader!!, b)
+            preShader(it, b)
             drawTrail(b)
             val height = height * (1f - shrinkY + shrinkY * b.fout())
             val width = width * (1f - shrinkX + shrinkX * b.fout())

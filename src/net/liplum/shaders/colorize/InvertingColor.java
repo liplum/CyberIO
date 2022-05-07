@@ -14,7 +14,7 @@ public class InvertingColor extends Shader implements IReusable {
 
     public InvertingColor(String fragName) {
         super(getShaderFi("default.vert"),
-                Vars.tree.get(R.S.GenFrag(fragName)));
+                Vars.tree.get(R.SD.GenFrag(fragName)));
     }
 
     @Override

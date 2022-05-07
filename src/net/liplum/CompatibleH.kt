@@ -3,7 +3,6 @@ package net.liplum
 import net.liplum.Compatible.*
 
 val CompatibleMap = mapOf(
-    "Hologram" to { Hologram },
     "TvStatic" to { TvStatic },
 )
 val String.useCompatible: Boolean

@@ -1,10 +1,9 @@
 package net.liplum.lib.shaders;
 
 import arc.Core;
+import arc.files.Fi;
 import arc.graphics.gl.Shader;
 import arc.util.Time;
-import mindustry.Vars;
-import net.liplum.R;
 
 import static mindustry.Vars.renderer;
 import static mindustry.graphics.Shaders.getShaderFi;
@@ -12,9 +11,8 @@ import static mindustry.graphics.Shaders.getShaderFi;
 public class ProgressShader extends Shader implements IReusable {
     public float progress = 0f;
 
-    public ProgressShader(String fragName) {
-        super(getShaderFi("default.vert"),
-                Vars.tree.get(R.S.GenFrag(fragName)));
+    public ProgressShader(Fi frag) {
+        super(getShaderFi("default.vert"), frag);
     }
 
     @Override
