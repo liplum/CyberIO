@@ -240,29 +240,6 @@ object CioUnitTypes : ContentTable {
                 }
             })
         }
-        registerUnitType(R.Unit.Brain)
-        brain = BrainUnitType(R.Unit.Brain).apply {
-            flying = true
-            drag = 0.06f
-            accel = 0.12f
-            speed = 1.5f
-            health = 100f
-            engineSize = 1.8f
-            engineOffset = 5.7f
-            range = 50f
-            isCounted = false
-
-            ammoType = PowerAmmoType(500f)
-            weapons.add(Weapon("${R.Unit.Brain}-hand".Cio).apply {
-                x = 8f
-                y = 8f
-                recoil = -10f
-                reload = 7f
-                bullet = BasicBulletType(10f, 1f).apply {
-                    recoil = -0.7f
-                }
-            })
-        }
     }
 
     override fun load() {

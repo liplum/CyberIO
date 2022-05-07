@@ -18,6 +18,7 @@ public class R {
 
     public static final class Liquid {
         public static final String Cyberion = "cyberion";
+        public static final String TissueFluid = "tissue-fluid";
     }
 
     public static final class B {
@@ -173,6 +174,7 @@ public class R {
         public static final Color BlendShadow = Color.white.cpy().lerp(Color.black, Shadow.a);
         public static final Color Power = Pal.power;
         public static final Color BrainWave = Color.valueOf("#be61ab");
+        public static final Color TissueFluid = Color.valueOf("#cc8ebf");
         public static final Color SonicWave = Color.valueOf("#b0bec5");
 
         public static final Color
