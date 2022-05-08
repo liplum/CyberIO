@@ -17,6 +17,10 @@ fun BlockBars.removeItems() {
     this.removeIfExist("items")
 }
 
+fun BlockBars.removeLiquid() {
+    this.removeIfExist("liquid")
+}
+
 inline fun <T : Building> Block.AddBar(
     key: String,
     crossinline name: T.() -> String,

@@ -13,6 +13,7 @@ import mindustry.gen.Building
 import mindustry.graphics.Drawf
 import mindustry.logic.LAccess
 import mindustry.type.Liquid
+import mindustry.ui.Bar
 import net.liplum.ClientOnly
 import net.liplum.DebugOnly
 import net.liplum.R
@@ -20,10 +21,9 @@ import net.liplum.Serialized
 import net.liplum.api.cyber.*
 import net.liplum.lib.DrawOn
 import net.liplum.lib.delegates.Delegate1
+import net.liplum.lib.ui.bars.removeLiquid
 import net.liplum.persistance.intSet
-import net.liplum.utils.ForProximity
-import net.liplum.utils.addHostInfo
-import net.liplum.utils.buildAt
+import net.liplum.utils.*
 
 /**
  * ### Since 1
@@ -31,6 +31,8 @@ import net.liplum.utils.buildAt
  */
 open class StreamServer(name: String) : StreamHost(name) {
     @JvmField var fireproof = false
+    lateinit var allLiquidBars: Array<(Building) -> Bar>
+    @JvmField var minIntervalBarDisplay = 10f
 
     init {
         callDefaultBlockDraw = false
@@ -42,8 +44,22 @@ open class StreamServer(name: String) : StreamHost(name) {
         }
     }
 
+    override fun init() {
+        super.init()
+        allLiquidBars = Array(LiquidTypeAmount()) { i ->
+            val liquid = Vars.content.liquids()[i]
+            {
+                Bar({ liquid.localizedName },
+                    { liquid.barColor() },
+                    { it.liquids[liquid] / liquidCapacity }
+                )
+            }
+        }
+    }
+
     override fun setBars() {
         super.setBars()
+        bars.removeLiquid()
         DebugOnly {
             bars.addHostInfo<ServerBuild>()
         }
@@ -91,7 +107,9 @@ open class StreamServer(name: String) : StreamHost(name) {
                 updateHostColor()
             }
         }
-
+        open fun checkHostPos() {
+            hosts.removeAll { !it.sh().exists }
+        }
         @JvmField protected var restored = true
         override fun updateTile() {
             if (restored) {
@@ -103,6 +121,7 @@ open class StreamServer(name: String) : StreamHost(name) {
             // Check connection every second
             if (Time.time % 60f < 1) {
                 checkClientsPos()
+                checkHostPos()
                 ClientOnly {
                     mixedLiquidColor = Color.white.cpy()
                     val total = liquids.total()
@@ -248,7 +267,19 @@ open class StreamServer(name: String) : StreamHost(name) {
         }
 
         override fun displayBars(table: Table) {
-            super.displayBars(table)
+            table.update {
+                if (Time.time % minIntervalBarDisplay < Time.delta) {
+                    table.clearChildren()
+                    super.displayBars(table)
+                    for (liquid in Vars.content.liquids()) {
+                        if (liquids[liquid] > 0f) {
+                            val bar = allLiquidBars[liquid.ID](this)
+                            table.add(bar).growX()
+                            table.row()
+                        }
+                    }
+                }
+            }
         }
 
         @JvmField var onRequirementUpdated: Delegate1<IStreamClient> = Delegate1()
