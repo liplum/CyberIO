@@ -20,6 +20,7 @@ import mindustry.ui.dialogs.BaseDialog
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.CheckSetting
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.SliderSetting
 import net.liplum.*
+import net.liplum.lib.bundle
 import net.liplum.lib.getF
 import net.liplum.lib.ing
 import net.liplum.lib.ui.ShowTextDialog
@@ -29,7 +30,6 @@ import net.liplum.lib.ui.settings.AnySetting.Companion.addAny
 import net.liplum.lib.ui.settings.CheckSettingX.Companion.addCheckPref
 import net.liplum.lib.ui.settings.SliderSettingX.Companion.addSliderSettingX
 import net.liplum.update.Updater
-import net.liplum.utils.bundle
 import net.liplum.utils.invoke
 import net.liplum.utils.randomExcept
 import net.liplum.utils.useFakeHeader

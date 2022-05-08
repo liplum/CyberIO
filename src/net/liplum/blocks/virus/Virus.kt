@@ -20,8 +20,13 @@ import mindustry.world.Block
 import mindustry.world.Tile
 import net.liplum.*
 import net.liplum.api.virus.UninfectedBlocksRegistry
+import net.liplum.lib.bundle
+import net.liplum.lib.yesNo
 import net.liplum.registries.CioShaders
-import net.liplum.utils.*
+import net.liplum.utils.addSleepInfo
+import net.liplum.utils.off
+import net.liplum.utils.on
+import net.liplum.utils.sub
 
 typealias UBR = UninfectedBlocksRegistry
 

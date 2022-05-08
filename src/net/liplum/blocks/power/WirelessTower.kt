@@ -5,7 +5,6 @@ import arc.graphics.g2d.Draw
 import arc.math.Angles
 import arc.math.Interp
 import arc.math.Mathf
-import arc.scene.ui.Label
 import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
@@ -66,10 +65,7 @@ open class WirelessTower(name: String) : PowerBlock(name) {
     override fun setStats() {
         super.setStats()
         stats.remove(Stat.powerUse)
-        stats.add(Stat.powerUse) {
-            val l = Label("$contentType.$name.stats.power-use".bundle)
-            it.add(l)
-        }
+        addPowerUseStats()
     }
 
     override fun icons() = arrayOf(BaseTR, SupportTR, CoilTR)

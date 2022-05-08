@@ -27,6 +27,7 @@ import mindustry.world.meta.BlockGroup
 import net.liplum.*
 import net.liplum.blocks.prism.CrystalManager.Companion.read
 import net.liplum.blocks.prism.CrystalManager.Companion.write
+import net.liplum.lib.bundle
 import net.liplum.math.Polar
 import net.liplum.utils.*
 import kotlin.math.abs

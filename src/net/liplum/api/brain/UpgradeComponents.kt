@@ -10,6 +10,8 @@ import net.liplum.api.brain.Direction2.Companion.Part1Pos
 import net.liplum.api.cyber.*
 import net.liplum.brains.FormationEffects
 import net.liplum.lib.delegates.Delegate
+import net.liplum.lib.percent
+import net.liplum.lib.value
 import net.liplum.utils.*
 
 typealias UT = UpgradeType

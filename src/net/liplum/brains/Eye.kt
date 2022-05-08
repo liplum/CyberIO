@@ -20,6 +20,7 @@ import net.liplum.api.brain.*
 import net.liplum.lib.Draw
 import net.liplum.lib.animations.anims.Anime
 import net.liplum.lib.animations.anims.genFramesBy
+import net.liplum.lib.ui.ammoStats
 import net.liplum.math.Polar
 import net.liplum.registries.CioSounds
 import net.liplum.utils.*
@@ -80,7 +81,7 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
     override fun setStats() {
         super.setStats()
         stats.remove(Stat.ammo)
-        stats.add(Stat.ammo, eyeAmmo(Pair(this, normalBullet), Pair(this, improvedBullet)))
+        stats.add(Stat.ammo, ammoStats(Pair(this, normalBullet), Pair(this, improvedBullet)))
         this.addUpgradeComponentStats()
     }
 

@@ -4,6 +4,7 @@ import arc.func.Cons
 import arc.func.Prov
 import arc.math.Interp
 import arc.math.Mathf
+import arc.struct.ObjectMap
 import arc.struct.OrderedMap
 import arc.struct.OrderedSet
 import arc.struct.Seq
@@ -19,6 +20,10 @@ val Float.isZero: Boolean
     get() = Mathf.zero(this)
 val Double.isZero: Boolean
     get() = Mathf.zero(this)
+
+operator fun <K, V> ObjectMap<K, V>.set(key: K, value: V) {
+    this.put(key, value)
+}
 
 operator fun <T> Cons<T>.invoke(t: T) {
     this.get(t)

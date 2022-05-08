@@ -14,6 +14,7 @@ import net.liplum.Settings.LastWelcomeID
 import net.liplum.Settings.ShouldShowWelcome
 import net.liplum.Settings.ShowUpdate
 import net.liplum.blocks.tmtrainer.RandomName
+import net.liplum.lib.ReferBundleWrapper
 import net.liplum.lib.Res
 import net.liplum.utils.*
 

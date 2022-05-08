@@ -3,19 +3,16 @@ package net.liplum.blocks.gadgets
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
 import arc.math.Mathf
-import arc.scene.ui.Label
 import arc.struct.OrderedSet
 import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
+import mindustry.Vars
 import mindustry.gen.Building
 import mindustry.graphics.Pal
 import mindustry.type.Item
 import mindustry.type.ItemStack
-import mindustry.world.consumers.Consume
-import mindustry.world.consumers.ConsumeItemDynamic
-import mindustry.world.consumers.ConsumeItems
-import mindustry.world.consumers.ConsumeType
+import mindustry.world.consumers.*
 import mindustry.world.meta.BlockGroup
 import mindustry.world.meta.Stat
 import net.liplum.*
@@ -45,8 +42,8 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
     @JvmField @ClientOnly var ArrowsAnimDuration = 70f
     @JvmField @ClientOnly var DistributionTime = 60f
     @JvmField var DynamicReqUpdateTime = 30f
-    @JvmField var powerUsagePerItem = 2.5f
-    @JvmField var powerUsageBasic = 3f
+    @JvmField var powerUsePerItem = 2.5f
+    @JvmField var powerUseBase = 3f
     @JvmField var boost2Count: (Float) -> Int = {
         if (it <= 1.1f)
             1
@@ -72,10 +69,14 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
         sync = true
     }
 
-    override fun init() {
+    open fun initPowerUse() {
         consumes.powerDynamic<SmartDISBuild> {
-            it._requirements.size * powerUsagePerItem + powerUsageBasic
+            it._requirements.size * powerUsePerItem + powerUseBase
         }
+    }
+
+    override fun init() {
+        initPowerUse()
         super.init()
     }
 
@@ -88,10 +89,7 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
     override fun setStats() {
         super.setStats()
         stats.remove(Stat.powerUse)
-        stats.add(Stat.powerUse) {
-            val l = Label("$contentType.$name.stats.power-use".bundle)
-            it.add(l)
-        }
+        addPowerUseStats()
     }
 
     override fun setBars() {
@@ -155,17 +153,26 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
             for (build in proximity) {
                 val consumes = build.block.consumes
                 if (consumes.has(ConsumeType.item)) {
-                    val reqs: Consume = consumes[ConsumeType.item]
                     //TODO: Support ItemTurret consumer
-                    if (reqs is ConsumeItems) {
-                        for (req in reqs.items) {
-                            all.add(req.item)
+                    when (val reqs: Consume = consumes[ConsumeType.item]) {
+                        is ConsumeItems -> {
+                            for (req in reqs.items) {
+                                all.add(req.item)
+                            }
                         }
-                    } else if (reqs is ConsumeItemDynamic) {
-                        for (req in reqs.items.get(build)) {
-                            all.add(req.item)
+                        is ConsumeItemDynamic -> {
+                            for (req in reqs.items.get(build)) {
+                                all.add(req.item)
+                            }
+                            hasDynamicRequirements = true
                         }
-                        hasDynamicRequirements = true
+                        is ConsumeItemFilter -> {
+                            for (item in Vars.content.items()) {
+                                if (reqs.filter.get(item)) {
+                                    all.add(item)
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -233,11 +240,18 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
             val b = proximity[disIndex]
             val consumes = b.block.consumes
             if (consumes.has(ConsumeType.item)) {
-                val reqs: Consume = consumes[ConsumeType.item]
-                if (reqs is ConsumeItems) {
-                    dised = distributeTo(b, reqs.items)
-                } else if (reqs is ConsumeItemDynamic) {
-                    dised = distributeTo(b, reqs.items.get(b))
+                when (val reqs: Consume = consumes[ConsumeType.item]) {
+                    is ConsumeItems -> {
+                        dised = distributeTo(b, reqs.items)
+                    }
+                    is ConsumeItemDynamic -> {
+                        dised = distributeTo(b, reqs.items.get(b))
+                    }
+                    is ConsumeItemFilter -> {
+                        items.each { item, _ ->
+                            dised = dised or distributeTo(b, item)
+                        }
+                    }
                 }
             }
             disIndex++
@@ -252,6 +266,26 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
                     items.remove(item, 1)
                     return true
                 }
+            }
+            return false
+        }
+
+        protected open fun distributeTo(other: Building, req: ItemStack): Boolean {
+            val item = req.item
+            if (items.has(item) && other.acceptItem(this, item)) {
+                other.handleItem(this, item)
+                items.remove(item, 1)
+                return true
+            }
+            return false
+        }
+
+        protected open fun distributeTo(other: Building, reqItem: Item): Boolean {
+            val item = reqItem
+            if (items.has(item) && other.acceptItem(this, item)) {
+                other.handleItem(this, item)
+                items.remove(item, 1)
+                return true
             }
             return false
         }

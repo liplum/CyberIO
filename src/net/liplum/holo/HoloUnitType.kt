@@ -24,11 +24,11 @@ import mindustry.type.UnitType
 import mindustry.ui.Bar
 import mindustry.world.meta.Stat
 import net.liplum.*
+import net.liplum.lib.bundle
 import net.liplum.lib.shaders.SD
 import net.liplum.lib.shaders.use
-import net.liplum.utils.bundle
+import net.liplum.lib.time
 import net.liplum.utils.healthPct
-import net.liplum.utils.time
 import kotlin.math.min
 
 open class HoloUnitType(name: String) : UnitType(name) {
@@ -165,9 +165,10 @@ open class HoloUnitType(name: String) : UnitType(name) {
         }
         Draw.reset()
     }
+
     override fun setStats() {
         super.setStats()
-        stats.add(Stat.health){
+        stats.add(Stat.health) {
             it.add(lifespan.seconds.time())
             it.row()
         }

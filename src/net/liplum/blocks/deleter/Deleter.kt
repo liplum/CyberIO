@@ -1,5 +1,6 @@
 package net.liplum.blocks.deleter
 
+import arc.Core
 import arc.graphics.g2d.Draw
 import arc.math.Mathf
 import arc.util.Eachable
@@ -13,14 +14,15 @@ import mindustry.gen.Bullet
 import mindustry.gen.Healthc
 import mindustry.gen.Hitboxc
 import mindustry.world.blocks.defense.turrets.PowerTurret
+import mindustry.world.meta.Stat
 import net.liplum.ClientOnly
 import net.liplum.R
 import net.liplum.api.IExecutioner
 import net.liplum.draw
-import net.liplum.utils.TR
-import net.liplum.utils.lostHp
-import net.liplum.utils.quadratic
-import net.liplum.utils.sub
+import net.liplum.lib.MapKeyBundle
+import net.liplum.lib.bundle
+import net.liplum.lib.ui.ammoStats
+import net.liplum.utils.*
 
 private val P2Alpha = quadratic(0.95f, 0.35f)
 
@@ -46,6 +48,28 @@ open class Deleter(name: String) : PowerTurret(name), IExecutioner {
 
     open fun configBullet(config: DeleterWave.() -> Unit) {
         config(waveType)
+    }
+
+    protected val bundleOverwrite = MapKeyBundle(Core.bundle).overwrite(
+        "bullet.damage", "$contentType.${super.name}.stats.bullet.damage".bundle(
+            "{0}",
+            (extraLostHpBounce * 100).format(1)
+        )
+    )
+
+    override fun setStats() {
+        super.setStats()
+        stats.remove(Stat.ammo)
+        stats.add(Stat.ammo, ammoStats(
+            Pair(this, waveType),
+            extra = {
+                it.row()
+                it.add("$contentType.${super.name}.stats.bullet.execution".bundle(
+                    (executeProportion * 100).format(1)
+                ))
+            },
+            bundle = bundleOverwrite
+        ))
     }
 
     override fun drawRequestRegion(req: BuildPlan, list: Eachable<BuildPlan>) {

@@ -1,7 +1,6 @@
 package net.liplum.blocks.gadgets
 
 import arc.math.Mathf
-import arc.scene.ui.Label
 import arc.struct.OrderedSet
 import arc.struct.Seq
 import arc.util.Time
@@ -17,10 +16,10 @@ import mindustry.world.meta.Stat
 import net.liplum.*
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
+import net.liplum.lib.Draw
 import net.liplum.lib.animations.anims.Animation
 import net.liplum.lib.animations.anims.AnimationObj
 import net.liplum.lib.animations.anis.AniState
-import net.liplum.lib.Draw
 import net.liplum.lib.animations.anis.config
 import net.liplum.lib.ui.bars.removeItems
 import net.liplum.persistance.intSet
@@ -44,9 +43,9 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
     @JvmField @ClientOnly var ShrinkingAnimDuration = 120f
     @ClientOnly lateinit var CoverTR: TR
     @ClientOnly lateinit var NoPowerTR: TR
-    @JvmField var powerUsagePerItem = 2.5f
-    @JvmField var powerUsagePerConnection = 2f
-    @JvmField var powerUsageBasic = 1.5f
+    @JvmField var powerUsePerItem = 2.5f
+    @JvmField var powerUsePerConnection = 2f
+    @JvmField var powerUseBasic = 1.5f
     @JvmField var boost2Count: (Float) -> Int = {
         if (it <= 1.1f)
             1
@@ -82,12 +81,15 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
         }
     }
 
-    override fun init() {
+    open fun initPowerUse() {
         consumes.powerDynamic<SmartULDBuild> {
-            (powerUsageBasic
-                    + powerUsagePerItem * it.needUnloadItems.size
-                    + powerUsagePerConnection * it.connectedReceivers.size)
+            (powerUseBasic
+                    + powerUsePerItem * it.needUnloadItems.size
+                    + powerUsePerConnection * it.connectedReceivers.size)
         }
+    }
+    override fun init() {
+        initPowerUse()
         super.init()
     }
 
@@ -101,10 +103,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
     override fun setStats() {
         super.setStats()
         stats.remove(Stat.powerUse)
-        stats.add(Stat.powerUse) {
-            val l = Label("$contentType.$name.stats.power-use".bundle)
-            it.add(l)
-        }
+        addPowerUseStats()
     }
 
     override fun setBars() {

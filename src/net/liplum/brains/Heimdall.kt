@@ -8,7 +8,6 @@ import arc.graphics.g2d.Lines
 import arc.math.Interp
 import arc.math.Mathf
 import arc.math.geom.Intersector
-import arc.scene.ui.Label
 import arc.util.Log
 import arc.util.Time
 import arc.util.io.Reads
@@ -110,10 +109,7 @@ open class Heimdall(name: String) : Block(name) {
         super.setStats()
         stats.addHeimdallProperties(properties)
         stats.remove(Stat.powerUse)
-        stats.add(Stat.powerUse) {
-            val l = Label("$contentType.$name.stats.power-use".bundle)
-            it.add(l)
-        }
+        addPowerUseStats()
     }
     @ClientOnly
     @DebugOnly
