@@ -1,6 +1,7 @@
 package net.liplum.blocks.stream
 
 import arc.graphics.Color
+import arc.scene.ui.layout.Table
 import arc.struct.ObjectSet
 import arc.struct.OrderedSet
 import arc.util.Time
@@ -13,6 +14,7 @@ import mindustry.graphics.Drawf
 import mindustry.logic.LAccess
 import mindustry.type.Liquid
 import net.liplum.ClientOnly
+import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.Serialized
 import net.liplum.api.cyber.*
@@ -20,6 +22,7 @@ import net.liplum.lib.DrawOn
 import net.liplum.lib.delegates.Delegate1
 import net.liplum.persistance.intSet
 import net.liplum.utils.ForProximity
+import net.liplum.utils.addHostInfo
 import net.liplum.utils.buildAt
 
 /**
@@ -31,6 +34,19 @@ open class StreamServer(name: String) : StreamHost(name) {
 
     init {
         callDefaultBlockDraw = false
+    }
+
+    override fun initPowerUse() {
+        consumes.powerDynamic<ServerBuild> {
+            powerUseBase + (it.clients.size + it.hosts.size) * powerUsePerConnection
+        }
+    }
+
+    override fun setBars() {
+        super.setBars()
+        DebugOnly {
+            bars.addHostInfo<ServerBuild>()
+        }
     }
 
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
@@ -199,7 +215,6 @@ open class StreamServer(name: String) : StreamHost(name) {
                 else -> super.control(type, p1, p2, p3, p4)
             }
         }
-
         @Serialized
         var hosts = OrderedSet<Int>()
         override fun readStream(host: IStreamHost, liquid: Liquid, amount: Float) {
@@ -230,6 +245,10 @@ open class StreamServer(name: String) : StreamHost(name) {
             super.write(write)
             // Since 1
             write.intSet(hosts)
+        }
+
+        override fun displayBars(table: Table) {
+            super.displayBars(table)
         }
 
         @JvmField var onRequirementUpdated: Delegate1<IStreamClient> = Delegate1()

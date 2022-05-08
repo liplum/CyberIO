@@ -179,7 +179,7 @@ object CioBlocks : ContentTable {
 
         virus = Virus("virus").apply {
             requirements(
-                Category.logic, BuildVisibility.sandboxOnly,
+                Category.effect, BuildVisibility.sandboxOnly,
                 arrayOf(
                     ItemStack(Items.sporePod, 50),
                     ItemStack(Items.pyratite, 20),
@@ -195,7 +195,11 @@ object CioBlocks : ContentTable {
 
         landProjector = LandProjector("land-projector").apply {
             requirements(
-                Category.logic, BuildVisibility.sandboxOnly, arrayOf(
+                Category.effect,
+                if (CioMod.DebugMode)
+                    BuildVisibility.sandboxOnly
+                else
+                    BuildVisibility.hidden, arrayOf(
                     ItemStack(CioItems.ic, 5),
                     ItemStack(Items.graphite, 80),
                     ItemStack(Items.thorium, 100),
@@ -226,14 +230,14 @@ object CioBlocks : ContentTable {
             color = R.C.LightBlue
             maxSlowDownRate = 0.9f
             powerProduction = 4.5f
-            maxPowerEFFUnBlocksReq = 22
+            maxPowerEFFBlocksReq = 22
             maxGear = 5
             size = 1
         }
 
         antiVirus = AntiVirus("anti-virus").apply {
             requirements(
-                Category.logic, BuildVisibility.shown, arrayOf(
+                Category.effect, BuildVisibility.shown, arrayOf(
                     ItemStack(CioItems.ic, 1),
                     ItemStack(Items.copper, 100),
                     ItemStack(Items.graphite, 40),
@@ -247,7 +251,7 @@ object CioBlocks : ContentTable {
 
         cloud = Cloud("cloud").apply {
             requirements(
-                Category.logic,
+                Category.effect,
                 if (CioMod.DebugMode)
                     BuildVisibility.sandboxOnly
                 else
@@ -455,7 +459,7 @@ object CioBlocks : ContentTable {
             )
             health = 2000
             size = 2
-            consumes.power(0.7f)
+            powerUseBase = 1f
             networkSpeed = 3f
             liquidCapacity = 800f
             replaceable = false
@@ -477,7 +481,8 @@ object CioBlocks : ContentTable {
             health = 5000
             size = 3
             maxConnection = 5
-            consumes.power(2f)
+            powerUseBase = 2f
+            powerUsePerConnection = 2f
             networkSpeed = 15f
             liquidCapacity = 2000f
             replaceable = false
@@ -536,6 +541,7 @@ object CioBlocks : ContentTable {
                 )
             )
             health = 100 * size * size
+            liquidCapacity = 20f
             drawer = CyberionMixerDrawer(R.C.Holo, R.C.HoloDark)
             outputLiquid = LiquidStack(CioLiquids.cyberion, 0.3f)
             craftTime = 100f

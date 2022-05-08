@@ -28,6 +28,8 @@ private typealias AniStateH = AniState<StreamHost, StreamHost.HostBuild>
 open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuild>(name) {
     @JvmField var maxConnection = 5
     @JvmField var liquidColorLerp = 0.5f
+    @JvmField var powerUseBase = 1f
+    @JvmField var powerUsePerConnection = 1f
     @ClientOnly lateinit var BaseTR: TR
     @ClientOnly lateinit var LiquidTR: TR
     @ClientOnly lateinit var TopTR: TR
@@ -69,9 +71,21 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
         NoPowerTR = this.inMod("rs-no-power-large")
     }
 
+    open fun initPowerUse() {
+        consumes.powerDynamic<HostBuild> {
+            powerUseBase + it.clients.size * powerUsePerConnection
+        }
+    }
+
     override fun init() {
+        initPowerUse()
         super.init()
         IconFloatingRange = IconFloatingRange / 8f * size
+    }
+
+    override fun setStats() {
+        super.setStats()
+        addPowerUseStats()
     }
 
     override fun setBars() {

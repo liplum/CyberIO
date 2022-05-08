@@ -30,6 +30,7 @@ import net.liplum.api.holo.IHoloEntity.Companion.minHealth
 import net.liplum.bullets.RuvikBullet
 import net.liplum.lib.Draw
 import net.liplum.lib.animations.Floating
+import net.liplum.lib.bundle
 import net.liplum.lib.delegates.Delegate1
 import net.liplum.lib.shaders.use
 import net.liplum.persistance.intSet

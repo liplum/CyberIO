@@ -2,8 +2,8 @@ package net.liplum.lib.ui.settings
 
 import arc.Core
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable
+import net.liplum.lib.bundle
 import net.liplum.lib.delegates.Delegate
-import net.liplum.utils.bundle
 
 class SettingsTableX : SettingsTable() {
     val onReset = Delegate()

@@ -12,6 +12,7 @@ import mindustry.world.blocks.defense.OverdriveProjector
 import mindustry.world.meta.Stat
 import net.liplum.R
 import net.liplum.Serialized
+import net.liplum.lib.bundle
 import net.liplum.utils.*
 import kotlin.math.abs
 
@@ -52,7 +53,9 @@ open class AdjustableOverdrive(name: String) : OverdriveProjector(name) {
         super.setStats()
         stats.remove(Stat.speedIncrease)
         stats.add(Stat.speedIncrease) {
-            it.add(R.Bundle.AdjustableOverdriveSpeedBound.bundle(minBoost * 100f, maxBoost * 100f))
+            it.add(R.Bundle.Gen("speed-increase.range").bundle(
+                minBoost * 100f, maxBoost * 100f
+            ))
         }
     }
 

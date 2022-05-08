@@ -36,6 +36,7 @@ import net.liplum.ClientOnly
 import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.Serialized
+import net.liplum.lib.bundle
 import net.liplum.lib.ui.bars.ReverseBar
 import net.liplum.utils.*
 import kotlin.math.max
@@ -84,7 +85,7 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
     @JvmField var attenuationRateStep = 0.5f
     @JvmField var color: Color = R.C.LightBlue
     @JvmField var slowDownRateEFFReward = 0.3f
-    @JvmField var maxPowerEFFUnBlocksReq = 10
+    @JvmField var maxPowerEFFBlocksReq = 10
     @JvmField var maxGear = 1
     lateinit var spiralTR: TextureRegion
 
@@ -111,8 +112,9 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
 
     override fun init() {
         super.init()
+        clipSize = range * 1.2f
         maxGear = maxGear.coerceAtLeast(1)
-        maxPowerEFFUnBlocksReq = maxPowerEFFUnBlocksReq.coerceAtLeast(1)
+        maxPowerEFFBlocksReq = maxPowerEFFBlocksReq.coerceAtLeast(1)
     }
 
     override fun load() {
@@ -160,11 +162,19 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
 
     override fun setStats() {
         super.setStats()
-        stats.add(
-            Stat.speedIncrease,
-            -100f * maxSlowDownRate,
-            StatUnit.percent
-        )
+        stats.remove(Stat.basePowerGeneration)
+        stats.add(Stat.basePowerGeneration) {
+            it.add("$contentType.$name.stats.power-gen".bundle(
+                "${powerProduction * Time.toSeconds} ${StatUnit.powerSecond.localized()}", maxPowerEFFBlocksReq
+            ))
+        }
+        stats.add(Stat.speedIncrease) {
+            val max = maxSlowDownRate
+            val min = maxSlowDownRate / maxGear
+            it.add(R.Bundle.Gen("speed-increase.range").bundle(
+                -min.percentI, -max.percentI
+            ))
+        }
         stats.add(
             Stat.range,
             range / Vars.tilesize,
@@ -253,7 +263,7 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
         @ClientOnly
         open val realSpiralRotateSpeed: Float
             get() {
-                val percent = underdrivedBlocks / maxPowerEFFUnBlocksReq.toFloat()
+                val percent = underdrivedBlocks / maxPowerEFFBlocksReq.toFloat()
                 val factor = Mathf.lerp(2f * percent + 0.5f, percent * percent, 0.5f)
                 val final = if (canShowSpiral)
                     (spiralRotateSpeed * factor * similarAttenuationFactor * (1f + realSlowDown / 2f))
@@ -342,7 +352,7 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
                 this.underdrivedBlocks = underdrivedBlock
                 this.similarInRange = similarInRange
                 if (underdrivedBlock > 0) {
-                    val absorption = (underdrivedBlock / maxPowerEFFUnBlocksReq.toFloat())
+                    val absorption = (underdrivedBlock / maxPowerEFFBlocksReq.toFloat())
                         .coerceAtMost(2f)
                     val reward = realSlowDown * slowDownRateEFFReward
                     productionEfficiency = absorption + reward

@@ -32,6 +32,7 @@ import mindustry.world.meta.BlockGroup
 import mindustry.world.meta.Stat
 import net.liplum.*
 import net.liplum.lib.Draw
+import net.liplum.lib.bundle
 import net.liplum.lib.shaders.SD
 import net.liplum.lib.shaders.use
 import net.liplum.lib.ui.addItemSelectorDefault
@@ -41,7 +42,6 @@ import net.liplum.liquidCons.DynamicLiquidCons
 import net.liplum.registries.CioLiquids.cyberion
 import net.liplum.utils.ID
 import net.liplum.utils.ItemTypeAmount
-import net.liplum.utils.bundle
 import net.liplum.utils.percentI
 import kotlin.math.max
 
@@ -381,13 +381,15 @@ open class HoloProjector(name: String) : Block(name) {
             for (plan in p) {
                 val type = plan.unitType
                 stat.image(type.uiIcon).size((8 * 3).toFloat()).padRight(2f).right()
-                stat.add(type.localizedName).left()
+                stat.add(type.localizedName)
+                    .color(cyberion.color).left()
                 stat.table {
                     it.add("${autoFixed(plan.time / 60f, 1)} ${R.Bundle.CostSecond.bundle}")
-                        .color(Color.lightGray).padLeft(12f).left()
+                        .color(Pal.stat).padLeft(12f).left()
                     it.add(autoFixed(plan.req.cyberionReq, 1))
-                        .color(Color.lightGray).padLeft(12f).left()
-                    it.image(cyberion.uiIcon).size((8 * 3).toFloat()).padRight(2f).right()
+                        .color(cyberion.color).padLeft(12f).left()
+                    it.image(cyberion.uiIcon).size((8 * 3).toFloat())
+                        .padRight(2f).right()
                 }
                 stat.row()
             }

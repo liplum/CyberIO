@@ -51,7 +51,6 @@ public class R {
                 PercentMinus = Gen("percent.minus"),
                 ValuePlus = Gen("value.plus"),
                 ValueMinus = Gen("value.minus");
-        public static final String AdjustableOverdriveSpeedBound = Gen("adjustable-overdrive.speed-increase");
     }
 
     public static final class Bar {

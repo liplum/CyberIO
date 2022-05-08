@@ -22,6 +22,7 @@ import net.liplum.lib.animations.anims.ixAuto
 import net.liplum.lib.animations.anis.*
 import net.liplum.lib.animations.blocks.*
 import net.liplum.lib.delegates.Delegate1
+import net.liplum.lib.ui.bars.removeItems
 import net.liplum.persistance.intSet
 import net.liplum.utils.*
 
@@ -74,7 +75,7 @@ open class Cloud(name: String) : PowerBlock(name) {
 
     override fun setBars() {
         super.setBars()
-        bars.remove("items")
+        bars.removeItems()
         DebugOnly {
             bars.addSenderInfo<CloudBuild>()
             bars.addReceiverInfo<CloudBuild>()

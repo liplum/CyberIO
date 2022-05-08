@@ -1,20 +1,77 @@
-package net.liplum.utils
+package net.liplum.lib
 
 import arc.Core
 import arc.files.Fi
+import arc.struct.ObjectMap
 import arc.util.I18NBundle
 import arc.util.io.PropertiesUtils
 import net.liplum.R
 import net.liplum.UseReflection
-import net.liplum.lib.ReflectU
-import net.liplum.lib.Res
-import net.liplum.lib.setF
+import net.liplum.utils.format
+import net.liplum.utils.set
 import java.io.Reader
 import java.util.*
 import kotlin.math.absoluteValue
 
 fun String.bundle(vararg args: Any): String = Core.bundle.format(this, *args)
 fun String.bundle(bundle: I18NBundle, vararg args: Any): String = bundle.format(this, *args)
+private val bundle2Fields: MutableMap<I18NBundle, BundleFields> = HashMap()
+
+class BundleFields(
+    val properties: ObjectMap<String, String>,
+    val formatter: Any,
+) {
+    @UseReflection
+    val formatterFunc = formatter.javaClass.getMethodBy(
+        "format",
+        String::class.java, Array<Any>::class.java)
+
+    operator fun get(key: String): String =
+        properties[key]
+
+    operator fun set(key: String, value: String) {
+        properties[key] = value
+    }
+    /**
+     * Find its value by key then format value
+     */
+    fun format(key: String, vararg args: Any) {
+        formatterFunc(formatter, properties[key], args)
+    }
+    /**
+     * Directly format this value
+     */
+    @UseReflection
+    fun formatValue(value: String, vararg args: Any): String {
+        return formatterFunc(formatter, value, args) as String
+    }
+}
+
+private fun I18NBundle.getBundleFields(): BundleFields {
+    return bundle2Fields.getOrPut(this) {
+        BundleFields(
+            this.getF("properties"),
+            this.getF("formatter"),
+        )
+    }
+}
+@UseReflection
+operator fun I18NBundle.set(key: String, value: String) {
+    val fields = this.getBundleFields()
+    fields.properties[key] = value
+}
+/**
+ * Directly format this value
+ */
+@UseReflection
+fun I18NBundle.formatDirectly(
+    value: String,
+    vararg args: Any,
+): String {
+    val fields = this.getBundleFields()
+    return fields.formatValue(value, *args)
+}
+
 val String.bundle: String
     get() = Core.bundle.format(this)
 
@@ -130,12 +187,123 @@ fun createModBundle(): I18NBundle {
     bundle.setF("parent", parent)
     return bundle
 }
+
+interface IBundle {
+    operator fun get(key: String): String
+    operator fun set(key: String, value: String)
+    fun getOrDefault(key: String, default: String): String
+    operator fun contains(key: String): Boolean
+    fun format(key: String, vararg args: Any): String
+}
+/**
+ * If has new bundle pair, use new pair
+ */
+class OverwriteBundle(
+    val bundle: I18NBundle,
+) : IBundle {
+    /**
+     * Key to value
+     */
+    var overwrites: MutableMap<String, String> = HashMap()
+    /**
+     * Key to value
+     */
+    fun overwrite(map: Map<String, String>): OverwriteBundle {
+        overwrites.putAll(map)
+        return this
+    }
+    /**
+     * Key to value
+     */
+    fun overwrite(key: String, value: String): OverwriteBundle {
+        overwrites[key] = value
+        return this
+    }
+
+    override fun get(key: String): String =
+        overwrites[key] ?: bundle[key]
+
+    override fun set(key: String, value: String) {
+        bundle[key] = value
+    }
+
+    override fun format(key: String, vararg args: Any): String =
+        overwrites[key]?.format(*args) ?: bundle.format(key, *args)
+
+    override fun getOrDefault(key: String, default: String): String =
+        overwrites[key] ?: bundle[key, default]
+
+    override fun contains(key: String) =
+        key in overwrites || bundle.has(key)
+}
+/**
+ * Original key to new Key.
+ */
+class MapKeyBundle(
+    val bundle: I18NBundle,
+) : IBundle {
+    /**
+     * Key to new key
+     */
+    var overwritesKey2Key: MutableMap<String, String> = HashMap()
+    /**
+     * Key to new key
+     */
+    fun overwrite(map: Map<String, String>): MapKeyBundle {
+        overwritesKey2Key.putAll(map)
+        return this
+    }
+    /**
+     * Key to new key
+     */
+    fun overwrite(key: String, value: String): MapKeyBundle {
+        overwritesKey2Key[key] = value
+        return this
+    }
+
+    override fun get(key: String): String =
+        overwritesKey2Key[key].let {
+            if (it != null)
+                bundle[it]
+            else
+                bundle[key]
+        }
+
+    override fun set(key: String, value: String) {
+        bundle[key] = value
+    }
+    /**
+     * If [key] in [overwritesKey2Key], format new key's value by [args]
+     * If not, format [key] by [args]
+     */
+    override fun format(key: String, vararg args: Any): String =
+        overwritesKey2Key[key].let {
+            if (it != null)
+                bundle.formatDirectly(it, *args)
+            else
+                bundle.format(key, *args)
+        }
+
+    override fun getOrDefault(key: String, default: String): String =
+        overwritesKey2Key[key].let {
+            if (it != null)
+                bundle[it, default]
+            else
+                bundle[key, default]
+        }
+
+    override fun contains(key: String) =
+        key in overwritesKey2Key || bundle.has(key)
+}
 @JvmInline
 value class ReferBundleWrapper(
     val bundle: I18NBundle,
-) {
-    operator fun get(key: String): String =
+) : IBundle {
+    override operator fun get(key: String): String =
         bundle[key].handleBundleRefer(bundle)
+
+    override fun getOrDefault(key: String, default: String) =
+        bundle[key, default].handleBundleRefer(bundle)
 
     operator fun get(key: String, default: String): String =
         bundle[key, default].handleBundleRefer(bundle)
@@ -143,10 +311,14 @@ value class ReferBundleWrapper(
     fun has(key: String) =
         bundle.has(key)
 
-    operator fun contains(key: String) =
+    override fun set(key: String, value: String) {
+        bundle[key] = value
+    }
+
+    override operator fun contains(key: String) =
         bundle.has(key)
 
-    fun format(key: String, vararg args: Any?): String =
+    override fun format(key: String, vararg args: Any): String =
         bundle.format(key, *args)
 
     fun loadMoreFrom(folder: String, defaultLocale: String = "en") {

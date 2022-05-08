@@ -16,9 +16,9 @@ import net.liplum.blocks.prism.Prism.PrismBuild
 import net.liplum.lib.animations.anims.Animation
 import net.liplum.lib.animations.anims.AnimationObj
 import net.liplum.lib.animations.anims.pingPong
+import net.liplum.lib.bundle
 import net.liplum.utils.TE
 import net.liplum.utils.autoAnim
-import net.liplum.utils.bundle
 import net.liplum.utils.exists
 
 open class PrismObelisk(name: String) : Block(name) {
