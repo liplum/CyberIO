@@ -56,6 +56,7 @@ import net.liplum.bullets.ShaderCLaser
 import net.liplum.holo.*
 import net.liplum.lib.animations.ganim.globalAnim
 import net.liplum.lib.shaders.SD
+import net.liplum.lib.shaders.TrShader
 import net.liplum.seffects.StaticFx
 import net.liplum.utils.otherConsumersAreValid
 
@@ -98,15 +99,16 @@ object CioBlocks : ContentTable {
         icMachine = ICMachine("ic-machine").apply {
             requirements(
                 Category.crafting, arrayOf(
+                    ItemStack(CioItems.ic, 2),
                     ItemStack(Items.copper, 550),
                     ItemStack(Items.lead, 280),
-                    ItemStack(Items.silicon, 450),
-                    ItemStack(Items.graphite, 240),
+                    ItemStack(Items.silicon, 150),
+                    ItemStack(Items.graphite, 250),
                 )
             )
             health = 2000
             outputItem = ItemStack(CioItems.ic, 2)
-            craftTime = 340f
+            craftTime = 400f
             size = 3
             buildCostMultiplier = 1.5f
             craftEffect = Fx.smelt
@@ -269,7 +271,11 @@ object CioBlocks : ContentTable {
 
         hyperOverdriveSphere = AdjustableOverdrive("hyper-overdrive-sphere").apply {
             requirements(
-                Category.effect, BuildVisibility.sandboxOnly, arrayOf()
+                Category.effect,
+                if (CioMod.DebugMode)
+                    BuildVisibility.shown
+                else
+                    BuildVisibility.sandboxOnly, arrayOf()
             )
             DebugOnly {
                 buildVisibility = BuildVisibility.shown
@@ -286,9 +292,9 @@ object CioBlocks : ContentTable {
             requirements(
                 Category.turret, BuildVisibility.shown, arrayOf(
                     ItemStack(CioItems.ic, 7),
-                    ItemStack(Items.copper, 150),
-                    ItemStack(Items.metaglass, 240),
-                    ItemStack(Items.titanium, 30),
+                    ItemStack(Items.copper, 250),
+                    ItemStack(Items.metaglass, 350),
+                    ItemStack(Items.titanium, 50),
                 )
             )
             buildCostMultiplier = 2f
@@ -300,8 +306,8 @@ object CioBlocks : ContentTable {
             requirements(
                 Category.turret, BuildVisibility.shown, arrayOf(
                     ItemStack(CioItems.ic, 3),
-                    ItemStack(Items.copper, 30),
-                    ItemStack(Items.lead, 20),
+                    ItemStack(Items.copper, 60),
+                    ItemStack(Items.plastanium, 120),
                     ItemStack(Items.metaglass, 240),
                     ItemStack(Items.titanium, 10),
                 )
@@ -343,7 +349,7 @@ object CioBlocks : ContentTable {
                     ItemStack(CioItems.ic, 1),
                     ItemStack(Items.silicon, 6),
                     ItemStack(Items.titanium, 12),
-                    ItemStack(Items.plastanium, 1),
+                    ItemStack(Items.plastanium, 10),
                 )
             )
             size = 1
@@ -358,7 +364,7 @@ object CioBlocks : ContentTable {
                     ItemStack(CioItems.ic, 2),
                     ItemStack(Items.silicon, 24),
                     ItemStack(Items.titanium, 48),
-                    ItemStack(Items.plastanium, 4),
+                    ItemStack(Items.plastanium, 40),
                 )
             )
             size = 2
@@ -450,7 +456,7 @@ object CioBlocks : ContentTable {
                 Category.liquid, BuildVisibility.shown, arrayOf(
                     ItemStack(CioItems.ic, 4),
                     ItemStack(Items.lead, 100),
-                    ItemStack(Items.metaglass, 1600),
+                    ItemStack(Items.metaglass, 600),
                     ItemStack(Items.silicon, 80),
                     ItemStack(Items.graphite, 60),
                     ItemStack(Items.titanium, 40),
@@ -472,7 +478,7 @@ object CioBlocks : ContentTable {
                     ItemStack(CioItems.ic, 16),
                     ItemStack(Items.copper, 1200),
                     ItemStack(Items.lead, 400),
-                    ItemStack(Items.metaglass, 1440),
+                    ItemStack(Items.metaglass, 1200),
                     ItemStack(Items.silicon, 320),
                     ItemStack(Items.thorium, 40),
                     ItemStack(Items.phaseFabric, 120),
@@ -515,7 +521,7 @@ object CioBlocks : ContentTable {
             rotateSpeed = 2f
             powerUse = 15f
 
-            shootType = ShaderCLaser().apply {
+            shootType = ShaderCLaser<TrShader>().apply {
                 damage = 120f
                 length = range
                 hitEffect = StaticFx
@@ -526,9 +532,7 @@ object CioBlocks : ContentTable {
                 incendSpread = 5f
                 incendAmount = 1
                 ammoMultiplier = 1f
-                ClientOnly {
-                    shader = SD.TvStatic
-                }
+                shader = { SD.TvStatic }
             }
         }
         cyberionMixer = LiquidConverter("cyberion-mixer").apply {
@@ -659,16 +663,16 @@ object CioBlocks : ContentTable {
                     ItemStack(CioItems.ic, 10),
                     ItemStack(Items.sporePod, 300),
                     ItemStack(Items.thorium, 150),
-                    ItemStack(Items.metaglass, 30),
+                    ItemStack(Items.metaglass, 50),
                     ItemStack(Items.copper, 120),
                     ItemStack(Items.silicon, 180),
-                    ItemStack(Items.plastanium, 40),
+                    ItemStack(Items.plastanium, 50),
                 )
             )
             size = 4
             range = 175f
             health = 400 * size * size
-            powerUse = 3f
+            powerUse = 2.5f
             connectedSound = CioSounds.connected
             addFormationPatterns(
                 FaceFE, FunnyFaceFE, ForceFieldFE
@@ -686,8 +690,8 @@ object CioBlocks : ContentTable {
                 )
             )
             range = 165f
-            health = 300 * size * size
             size = 2
+            health = 300 * size * size
             powerUse = 3f
             chargeTime = 60f
             shootEffect = BrainFx.eyeShoot
@@ -751,6 +755,7 @@ object CioBlocks : ContentTable {
                 Upgrade(UT.PowerUse, false, 0.35f),
                 Upgrade(UT.MaxBrainWaveNum, true, 0.15f),
             )
+            // TODO: [Bug] Power use doesn't work
             range = 145f
             size = 2
             damage = 5f

@@ -79,6 +79,8 @@ object CioBulletTypes : ContentTable {
             hitEffect = StaticFx
             shootEffect = StaticFx
             smokeEffect = StaticFx
+            pierce = true
+            pierceCap = 2
             status = CioSEffects.static
             statusDuration = CioSEffects.static.initTime
         }

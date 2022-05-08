@@ -33,7 +33,7 @@ open class Ear(name: String) : Block(name), IComponentBlock {
     @JvmField var reloadTime = 60f
     @JvmField var waveSpeed = 2.5f
     @JvmField var waveWidth = 5f
-    @JvmField var damage = 2.5f
+    @JvmField var damage = 3f
     @JvmField var maxSonicWaveNum = 3
     @JvmField var sonicMaxRadius = 40f
     @ClientOnly @JvmField var maxScale = 0.3f
@@ -42,7 +42,7 @@ open class Ear(name: String) : Block(name), IComponentBlock {
     @JvmField var sensitivity = 1f
     @JvmField var reloadTimeI = 0.5f
     @JvmField var rangeI = 0.4f
-    @JvmField var damageI = 1.2f
+    @JvmField var damageI = 1.5f
     @JvmField var radiusI = 0.4f
     @JvmField var widthI = 0.3f
     @JvmField var powerI = 0.5f

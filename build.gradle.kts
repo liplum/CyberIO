@@ -1,5 +1,5 @@
-import org.gradle.internal.os.OperatingSystem
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.internal.os.OperatingSystem
 import java.io.ByteArrayOutputStream
 
 // Add any plugin you want
@@ -80,15 +80,22 @@ abstract class DownloadTask : DefaultTask() {
     abstract val sourceUrl: Property<String>
     abstract val overwrite: Property<Boolean>
         @Optional @Input get
+    abstract val tip: Property<String>
+        @Optional @Input get
     @get:OutputFile
     abstract val targetFile: Property<File>
     @TaskAction
     fun download() {
-        if (!targetFile.get().exists() || overwrite.getOrElse(false)) {
-            logger.lifecycle("Downloading file from $sourceUrl into ${targetFile.get().path}, please wait for a while.")
-            ant.invokeMethod("get", mapOf(
-                "src" to sourceUrl, "dest" to targetFile
-            ))
+        val targetFile = targetFile.get()
+        val sourceUrl = sourceUrl.get()
+        if (!targetFile.exists() || overwrite.getOrElse(false)) {
+            if (tip.isPresent) logger.lifecycle(tip.get())
+            logger.lifecycle("Downloading file from $sourceUrl into ${targetFile.path}, please wait for a while.")
+            ant.withGroovyBuilder {
+                "get"("src" to sourceUrl, "dest" to targetFile)
+            }
+        } else {
+            logger.info("$targetFile exists but there is no need to overwrite it.")
         }
     }
 }
@@ -99,7 +106,8 @@ tasks {
 
         doLast {
             val sdkRoot = sdkRoot
-            if (sdkRoot == null || !File(sdkRoot).exists()) throw GradleException("No valid Android SDK found. Ensure that ANDROID_HOME is set to your Android SDK directory.")
+            if (sdkRoot == null || !File(sdkRoot).exists())
+                throw GradleException("No valid Android SDK found. Ensure that ANDROID_HOME is set to your Android SDK directory.")
             val platformRoot = File("$sdkRoot/platforms/").listFiles()!!.sorted().reversed()
                 .find { f -> File(f, "android.jar").exists() }
                 ?: throw GradleException("No android.jar found. Ensure that you have an Android platform installed.")
@@ -147,10 +155,15 @@ tasks {
             }
         }
     }
-    register<DownloadTask>("downloadOpenGalPlumy") {
+    register("downloadOpenGalPlumy") {
         group = "download"
-        sourceUrl.set("https://github.com/liplum/OpenGalPlumy/releases/download/$plumyVersion/PlumyCompiler.jar")
-        targetFile.set(File("$rootDir/run/PlumyCompiler$plumyVersion.jar"))
+        doLast {
+            create<DownloadTask>("${name}Wrapper") {
+                sourceUrl.set("https://github.com/liplum/OpenGalPlumy/releases/download/$plumyVersion/PlumyCompiler.jar")
+                targetFile.set(File("$rootDir/run/PlumyCompiler$plumyVersion.jar"))
+                tip.set("Downloading OpenGal Plumy...")
+            }.download()
+        }
     }
     register<JavaExec>("compileGAL") {
         group = "build"
@@ -196,28 +209,27 @@ tasks {
         }
     }
 
-    register<DownloadTask>("downloadDesktop") {
+    register("downloadDesktop") {
         group = "download"
-        sourceUrl.set("http://github.com/Anuken/Mindustry/releases/download/${mdtVersion}/Mindustry.jar")
-        targetFile.set(File("$rootDir/run/Mindustry${mdtVersionNum}.jar"))
-        if (!targetFile.get().exists()) {
-            logger.lifecycle("Downloading Mindustry ${mdtVersion}.")
-        } else {
-            logger.lifecycle("You have already downloaded this Mindustry.")
+        doLast {
+            create<DownloadTask>("${name}Wrapper") {
+                sourceUrl.set("http://github.com/Anuken/Mindustry/releases/download/${mdtVersion}/Mindustry.jar")
+                targetFile.set(File("$rootDir/run/Mindustry${mdtVersionNum}.jar"))
+                tip.set("Downloading Mindustry ${mdtVersion}...")
+            }.download()
         }
     }
 
-    register<DownloadTask>("downloadServer") {
+    register("downloadServer") {
         group = "download"
-        sourceUrl.set("https://github.com/Anuken/Mindustry/releases/download/${mdtVersion}/server-release.jar")
-        targetFile.set(File("$rootDir/run/MindustryServer${mdtVersionNum}.jar"))
-        if (!targetFile.get().exists()) {
-            logger.lifecycle("Downloading Mindustry Server ${mdtVersion}.")
-        } else {
-            logger.lifecycle("You have already downloaded this Mindustry Server.")
+        doLast {
+            create<DownloadTask>("${name}Wrapper") {
+                sourceUrl.set("https://github.com/Anuken/Mindustry/releases/download/${mdtVersion}/server-release.jar")
+                targetFile.set(File("$rootDir/run/MindustryServer${mdtVersionNum}.jar"))
+                tip.set("Downloading Mindustry Server ${mdtVersion}...")
+            }.download()
         }
     }
-
 
     register<JavaExec>("runMod") {
         group = "game"

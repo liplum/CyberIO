@@ -21,8 +21,7 @@ open class ShaderBasicBulletT<TS : Shader> : BasicBulletType {
     constructor() : this(1f, 1f, "bullet")
 
     override fun draw(b: Bullet) {
-        val shader = shader()
-        shader.on {
+        shader().on {
             preShader(it, b)
             drawTrail(b)
             val height = height * (1f - shrinkY + shrinkY * b.fout())

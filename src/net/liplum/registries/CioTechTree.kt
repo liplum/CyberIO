@@ -40,10 +40,11 @@ import net.liplum.registries.CioUnitTypes.holoSupporter
 object CioTechTree {
     fun loadSerpulo() {
         TechTree.all.withContext {
-            at(silicon).sub(ic)
+            at(silicon).sub(ic, icMachineSmall)
             at(cryofluid).sub(cyberion)
             at(salvo).sub(TMTRAINER, icMachine) {
                 sub(ear)
+                // TODO: [Bug] Heimdall can be directly unlocked without research.
                 sub(heimdall, eye, ear)
                 sub(eye)
             }
