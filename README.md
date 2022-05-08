@@ -17,14 +17,14 @@ To learn about playing Cyber IO, you can check [the wiki](https://github.com/lip
 
 #### Mod Compatibility
 
-If you'd like to play a mod pack, [there is a rough test](SafelyWorkWith.md) of inter-mod compatibility as a reference
+If you'd like to play a mod pack, [there is a rough test](Info/SafelyWorkWith.md) of inter-mod compatibility as a reference
 for you.
 
 *Note: Every mod could update and might break the result, please think and test on your own.*
 
 #### For Server
 
-Please [check this file](ForServer.md) to learn more about running Cyber IO on a server.
+Please [check this file](Info/ForServer.md) to learn more about running Cyber IO on a server.
 ___
 
 ### IC Machine
@@ -68,7 +68,7 @@ ___
 
 Everyone is welcome to contribute Cyber IO.
 
-If you want to translate or programme cooperatively. Please [check this file](ForContributors.md) to learn how to join
+If you want to translate or programme cooperatively. Please [check this file](Info/ForContributors.md) to learn how to join
 us.
 ___
 
@@ -76,4 +76,4 @@ ___
 
 The codes of CyberIO are open source in GNU General Public License v3.0 (GPL 3.0).
 
-To learn about the resources of CyberIO, please check the [Copyright File](Copyright.md).
+To learn about the resources of CyberIO, please check the [Copyright File](Info/Copyright.md).

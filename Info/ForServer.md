@@ -12,7 +12,7 @@ Cyber IO supports auto-update when you run it on the server version, whether you
 
 For security, auto-update is disabled as default in the config. 
 
-Cyber IO will check the latest version from [update info file](update) on this GitHub repository.
+Cyber IO will check the latest version from [update info file](../update) on this GitHub repository.
 To do so, you should keep the network be able to access GitHub and firewall open at a specific port.
 
 ### Reload or Reset Config by Command in-game

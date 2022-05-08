@@ -19,19 +19,12 @@ sourceSets {
         java.srcDir("src")
     }
     test {
-        java.srcDir("src")
+        java.srcDir("test")
     }
 }
 version = "3.4"
 group = "net.liplum"
-sourceSets {
-    main {
-        java.srcDir("src")
-    }
-    test {
-        java.srcDir("src")
-    }
-}
+
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
