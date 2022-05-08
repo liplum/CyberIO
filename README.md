@@ -54,12 +54,17 @@ ___
 **IN NO ORDER**
 
 * The friendly people on Discord whoever have ever helped me.
-
-* Anyone who committed the issue or made pull request on GitHub.
-
+* Anyone who committed any issue or made any pull request on GitHub.
 * Anyone who likes CyberIO.
+* And you.
 
-### For Contributors
+### Translation
+
+- Ukrainian -> Prosta4ok_ua#6336
+- Chinese Simplified -> woodjecket#0554
+- Japanese -> 星華輝月#2243
+
+### For Contributor
 
 Everyone is welcome to contribute Cyber IO.
 
