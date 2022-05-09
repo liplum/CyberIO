@@ -1,4 +1,4 @@
 rootProject.name = "cyberio"
 include(
-    "main", "app", "story"
+    "main", "app", "story", "bundle"
 )

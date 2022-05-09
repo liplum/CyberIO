@@ -1,6 +1,6 @@
 package net.liplum.gradle
 
-import net.liplum.gradle.dsl.invoke
+import net.liplum.gradle.dsl.call
 import org.gradle.api.DefaultTask
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
@@ -29,9 +29,9 @@ abstract class DownloadTask : DefaultTask() {
         if (!targetFile.exists() || overwrite.getOrElse(false)) {
             if (tip.isPresent) logger.lifecycle(tip.get())
             logger.lifecycle("Downloading file from $sourceUrl into ${targetFile.path}, please wait for a while.")
-            ant("get",
-                "src" to sourceUrl, "dest" to targetFile
-            )
+            ant.call {
+                "get"("src" to sourceUrl, "dest" to targetFile)
+            }
         } else {
             logger.info("$targetFile exists but there is no need to overwrite it.")
         }

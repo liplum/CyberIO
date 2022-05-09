@@ -1,10 +1,5 @@
 import net.liplum.gradle.DownloadTask
 
-plugins {
-    kotlin("jvm") version "1.6.10"
-    application
-    java
-}
 val outputJarName: String get() = extra["outputJarName"] as String
 
 val mdtVersion: String get() = extra["mdtVersion"] as String

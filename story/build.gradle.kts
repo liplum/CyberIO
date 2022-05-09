@@ -1,33 +1,49 @@
-import net.liplum.gradle.DownloadTask
-
-val plumyVersion: String by extra(property("OpenGalPlumy") as String)
+import net.liplum.gradle.CompileOpenGalTask
 
 tasks {
-    register("downloadOpenGalPlumy") {
-        group = "download"
+    register("build") {
+        group = "build"
+        dependsOn("copyAllFiles")
+        dependsOn("compileGAL")
+    }
+    register("copyAllFiles") {
+        group = "copy"
+        dependsOn("copyInfo")
+        dependsOn("copyStories")
+    }
+    register("copyStories") {
+        group = "copy"
         doLast {
-            create<DownloadTask>("${name}Wrapper") {
-                sourceUrl.set("https://github.com/liplum/OpenGalPlumy/releases/download/$plumyVersion/PlumyCompiler.jar")
-                targetFile.set(File("$rootDir/run/PlumyCompiler$plumyVersion.jar"))
-                tip.set("Downloading OpenGal Plumy...")
-            }.download()
+            copy {
+                from("stories") {
+                    include("*.properties")
+                }
+                into("$rootDir/extra/stories")
+            }
         }
     }
-    register<JavaExec>("compileGAL") {
+    register("copyInfo") {
+        group = "copy"
+        doLast {
+            copy {
+                from("ScriptInfo.json")
+                into("$rootDir/extra")
+            }
+        }
+    }
+    register("compileGAL") {
         group = "build"
-        dependsOn("classes")
-        dependsOn("downloadOpenGalPlumy")
-        val plumy = File("$rootDir/run/PlumyCompiler$plumyVersion.jar")
-        mainClass.set("-jar")
-        standardInput = System.`in`
-        args = listOf(
-            plumy.path,
-            "-c",
-            "-recursive=true",
-            "-batch=folder",
-            "scripts",
-            "-t",
-            "assets/script"
-        )
+        doLast {
+            create<CompileOpenGalTask>("${name}Wrapper") {
+                args.set(listOf(
+                    "-c",
+                    "-recursive=true",
+                    "-batch=folder",
+                    "scripts",
+                    "-t",
+                    "$rootDir/extra/script"
+                ))
+            }.compile()
+        }
     }
 }

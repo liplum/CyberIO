@@ -130,11 +130,14 @@ tasks.named<Jar>("jar") {
         include("icon.png")
     }
 
-    from("$rootDir/assets/") {
+    from("$rootDir/assets") {
         include("**")
     }
 
-    from("$rootDir/meta/") {
+    from("$rootDir/meta") {
         include("*.json")
+    }
+    from("$rootDir/extra") {
+        include("**")
     }
 }

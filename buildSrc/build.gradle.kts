@@ -19,4 +19,5 @@ sourceSets {
 }
 dependencies {
     implementation(gradleApi())
+    implementation("com.github.liplum:OpenGalPlumy:v0.1.4")
 }
