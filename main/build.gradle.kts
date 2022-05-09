@@ -24,7 +24,6 @@ java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
 }
-
 dependencies {
     compileOnly("com.github.Anuken.Arc:arc-core:$mdtVersion")
     compileOnly("com.github.Anuken.Mindustry:core:$mdtVersion")
@@ -86,11 +85,9 @@ tasks {
         }
     }
 
-
     register<Jar>("deploy") {
         group = "build"
         dependsOn("jarAndroid")
-        dependsOn("jar")
         archiveFileName.set("${outputJarName}.jar")
 
         from(
@@ -100,7 +97,6 @@ tasks {
 
         doLast {
             delete {
-                delete("$buildDir/libs/${outputJarName}Desktop.jar")
                 delete("$buildDir/libs/${outputJarName}Android.jar")
             }
         }

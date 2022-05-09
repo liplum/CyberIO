@@ -49,13 +49,15 @@ open class Deleter(name: String) : PowerTurret(name), IExecutioner {
     open fun configBullet(config: DeleterWave.() -> Unit) {
         config(waveType)
     }
-
-    protected val bundleOverwrite = MapKeyBundle(Core.bundle).overwrite(
-        "bullet.damage", "$contentType.${super.name}.stats.bullet.damage".bundle(
-            "{0}",
-            (extraLostHpBounce * 100).format(1)
+    @ClientOnly
+    protected val bundleOverwrite by lazy {
+        MapKeyBundle(Core.bundle).overwrite(
+            "bullet.damage", "$contentType.${super.name}.stats.bullet.damage".bundle(
+                "{0}",
+                (extraLostHpBounce * 100).format(1)
+            )
         )
-    )
+    }
 
     override fun setStats() {
         super.setStats()

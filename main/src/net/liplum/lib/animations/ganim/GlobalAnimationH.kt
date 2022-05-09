@@ -3,15 +3,22 @@ package net.liplum.lib.animations.ganim
 import mindustry.ctype.UnlockableContent
 import mindustry.world.Block
 import net.liplum.ClientOnly
+import net.liplum.lib.animations.ganim.GlobalAnimation.Companion.register
 import net.liplum.utils.anim
 
-fun <T : Block> T.globalAnim(duration: Float, frameCount: Int): T {
+fun <T : Block> T.globalAnim(
+    duration: Float, frameCount: Int,
+    config: GlobalAnimation.() -> Unit = {},
+): T {
     ClientOnly {
         val a = GlobalAnimation(duration) {
             this.region.set(it)
             this.fullIcon.set(it)
             this.uiIcon.set(it)
-        }.register()
+        }.apply {
+            config()
+            register()
+        }
         GlobalAnimation.loadingTask += {
             a.frames = this.anim(number = frameCount)
         }
@@ -19,12 +26,18 @@ fun <T : Block> T.globalAnim(duration: Float, frameCount: Int): T {
     return this
 }
 
-fun <T : UnlockableContent> T.globalAnim(duration: Float, frameCount: Int): T {
+fun <T : UnlockableContent> T.globalAnim(
+    duration: Float, frameCount: Int,
+    config: GlobalAnimation.() -> Unit = {},
+): T {
     ClientOnly {
         val a = GlobalAnimation(duration) {
             this.uiIcon.set(it)
             this.fullIcon.set(it)
-        }.register()
+        }.apply {
+            config()
+            register()
+        }
         GlobalAnimation.loadingTask += {
             a.frames = this.anim(number = frameCount)
         }

@@ -631,7 +631,7 @@ object CioBlocks : ContentTable {
             health = 1500
             liquidCapacity = 60f
             reloadTime = 15f
-            shootType = RuvikBullet(2f, 70f).apply {
+            shootType = RuvikBullet(2f, 100f).apply {
                 stemVersion = STEM_VERSION.STEM2
                 width = 10f
                 height = 10f
