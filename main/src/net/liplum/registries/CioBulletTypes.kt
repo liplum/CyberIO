@@ -50,7 +50,7 @@ object CioBulletTypes : ContentTable {
 
     override fun load() {
         virus = BasicBulletType(
-            2.5f, 45f, "bullet"
+            2.5f, 50f, "bullet"
         ).apply {
             width = 10f
             height = 12f
@@ -68,7 +68,7 @@ object CioBulletTypes : ContentTable {
         }
 
         radiationInterference = ShaderBasicBulletT<TrShader>(
-            2.3f, 28f, "bullet"
+            2.3f, 30f, "bullet"
         ).apply {
             shader = { SD.TvStatic }
             width = 15f

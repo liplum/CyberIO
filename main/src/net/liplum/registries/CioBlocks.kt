@@ -112,7 +112,7 @@ object CioBlocks : ContentTable {
             size = 3
             buildCostMultiplier = 1.5f
             craftEffect = Fx.smelt
-            itemCapacity = 100
+            itemCapacity = 60
             consumes.items( //Total:100
                 ItemStack(Items.copper, 50),  //50%
                 ItemStack(Items.silicon, 20),  //20%
@@ -291,7 +291,7 @@ object CioBlocks : ContentTable {
         prism = Prism("prism").apply {
             requirements(
                 Category.turret, BuildVisibility.shown, arrayOf(
-                    ItemStack(CioItems.ic, 7),
+                    ItemStack(CioItems.ic, 10),
                     ItemStack(Items.copper, 250),
                     ItemStack(Items.metaglass, 350),
                     ItemStack(Items.titanium, 50),
@@ -423,7 +423,7 @@ object CioBlocks : ContentTable {
         smartUnloader = SmartUnloader("smart-unloader").apply {
             requirements(
                 Category.distribution, BuildVisibility.shown, arrayOf(
-                    ItemStack(CioItems.ic, 4),
+                    ItemStack(CioItems.ic, 5),
                     ItemStack(Items.lead, 350),
                     ItemStack(Items.silicon, 210),
                     ItemStack(Items.graphite, 150),
@@ -438,7 +438,7 @@ object CioBlocks : ContentTable {
         streamClient = StreamClient("stream-client").apply {
             requirements(
                 Category.liquid, BuildVisibility.shown, arrayOf(
-                    ItemStack(CioItems.ic, 1),
+                    ItemStack(CioItems.ic, 2),
                     ItemStack(Items.metaglass, 40),
                     ItemStack(Items.silicon, 20),
                     ItemStack(Items.graphite, 40),
@@ -454,7 +454,7 @@ object CioBlocks : ContentTable {
         streamHost = StreamHost("stream-host").apply {
             requirements(
                 Category.liquid, BuildVisibility.shown, arrayOf(
-                    ItemStack(CioItems.ic, 4),
+                    ItemStack(CioItems.ic, 5),
                     ItemStack(Items.lead, 100),
                     ItemStack(Items.metaglass, 600),
                     ItemStack(Items.silicon, 80),
@@ -498,7 +498,7 @@ object CioBlocks : ContentTable {
         jammer = Jammer("jammer").apply {
             requirements(
                 Category.turret, BuildVisibility.shown, arrayOf(
-                    ItemStack(CioItems.ic, 6),
+                    ItemStack(CioItems.ic, 8),
                     ItemStack(Items.lead, 350),
                     ItemStack(Items.thorium, 200),
                     ItemStack(Items.surgeAlloy, 150),
@@ -539,7 +539,7 @@ object CioBlocks : ContentTable {
         cyberionMixer = LiquidConverter("cyberion-mixer").apply {
             requirements(
                 Category.crafting, BuildVisibility.shown, arrayOf(
-                    ItemStack(CioItems.ic, 2),
+                    ItemStack(CioItems.ic, 4),
                     ItemStack(Items.lead, 100),
                     ItemStack(Items.titanium, 100),
                     ItemStack(Items.metaglass, 50),
@@ -559,7 +559,7 @@ object CioBlocks : ContentTable {
         holoProjector = HoloProjector("holo-projector").apply {
             requirements(
                 Category.units, BuildVisibility.shown, arrayOf(
-                    ItemStack(CioItems.ic, 14),
+                    ItemStack(CioItems.ic, 16),
                     ItemStack(Items.silicon, 220),
                     ItemStack(Items.graphite, 300),
                     ItemStack(Items.metaglass, 500),
@@ -684,7 +684,7 @@ object CioBlocks : ContentTable {
             requirements(
                 Category.turret, BuildVisibility.shown, arrayOf(
                     ItemStack(CioItems.ic, 2),
-                    ItemStack(Items.pyratite, 5),
+                    ItemStack(Items.pyratite, 15),
                     ItemStack(Items.plastanium, 10),
                     ItemStack(Items.metaglass, 40),
                     ItemStack(Items.copper, 60),
@@ -760,7 +760,7 @@ object CioBlocks : ContentTable {
             // TODO: [Bug] Power use doesn't work
             range = 145f
             size = 2
-            damage = 5f
+            damage = 8f
             health = 300 * size * size
         }
     }
