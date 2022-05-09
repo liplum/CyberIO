@@ -160,8 +160,12 @@ android/libs/
 run
 cache
 
-#OpenGAL
+## OpenGAL
 *.node
 
-#Python
+## Python
 __pycache__/
+
+## Gradle :main project
+main/build
+buildSrc/build

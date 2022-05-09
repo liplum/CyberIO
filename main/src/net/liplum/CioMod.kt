@@ -21,7 +21,6 @@ import net.liplum.registries.*
 import net.liplum.registries.ServerCommands.registerCioCmds
 import net.liplum.render.LinkDrawer
 import net.liplum.scripts.NpcSystem
-import net.liplum.scripts.Script
 import net.liplum.ui.CioUI
 import net.liplum.ui.DebugUI
 import net.liplum.update.Updater
@@ -97,11 +96,12 @@ class CioMod : Mod() {
                     CioShaders.init()
                     WelcomeList.loadList()
                     Welcome.load()
+                    /* TODO: Add real story mode in v4?
                     DebugOnly {
                         Script.init()
                         Script.initInterpreter()
                         Script.loadStory("OnTheShip.Captain.Introduction")
-                    }
+                    }*/
                 }
             }
         }

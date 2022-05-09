@@ -97,7 +97,8 @@ open class Cloud(name: String) : PowerBlock(name) {
     }
 
     override fun outputsItems() = false
-    open inner class CloudBuild : Building(), IShared, IDataReceiver,
+    open inner class CloudBuild : Building(), IShared,
+        IDataReceiver,
         IDataSender {
         lateinit var cloudRoom: SharedRoom
         lateinit var aniBlockGroupObj: BlockGroupObj<Cloud, CloudBuild>

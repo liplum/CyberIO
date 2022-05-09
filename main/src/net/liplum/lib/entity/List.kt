@@ -38,7 +38,8 @@ class FixedList<T : IRWable>(
     }
 }
 
-class Queue<T : IRWable>(var maxSize: () -> Int = { 1 }, val creator: () -> T) : Iterable<T>, IRWable {
+class Queue<T : IRWable>(var maxSize: () -> Int = { 1 }, val creator: () -> T) : Iterable<T>,
+    IRWable {
     constructor(maxSize: Int, creator: () -> T) : this({ maxSize }, creator)
 
     val list: LinkedList<T> = LinkedList()
