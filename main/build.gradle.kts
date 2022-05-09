@@ -121,7 +121,7 @@ tasks.named<Jar>("jar") {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     archiveFileName.set("${outputJarName}Desktop.jar")
     includeEmptyDirs = false
-
+    exclude("**/**/*.java")
     from(
         configurations.runtimeClasspath.get().map {
             if (it.isDirectory) it else zipTree(it)
@@ -134,7 +134,7 @@ tasks.named<Jar>("jar") {
         include("icon.png")
     }
 
-    from("assets/") {
+    from("$rootDir/assets/") {
         include("**")
     }
 
