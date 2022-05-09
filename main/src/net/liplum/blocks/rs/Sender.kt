@@ -95,7 +95,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
 
         open fun checkReceiverPos() {
             if (receiverPackedPos == -1) return
-            /* TODO: For payload
+            /* For payload
              if (receiverPackedPos.drOrPayload() == null) {
                  receiverPackedPos = -1
              }*/
@@ -137,7 +137,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
 
         val receiver: IDataReceiver?
             get() = if (receiverPackedPos != -1)
-            /* TODO: For payload
+            /*For payload
             receiverPackedPos.dr() Or { receiverPackedPos.inPayload() }*/
                 receiverPackedPos.dr()
             else
@@ -181,7 +181,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
                 }
                 return false
             }
-            /* TODO: For payload
+            /*  For payload
             if (other is PayloadConveyor.PayloadConveyorBuild) {
                 val payload = other.payload
                 if (payload is BuildPayload) {
@@ -228,7 +228,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
                 configure(null)
             }
         }
-        /* TODO: For payload
+        /*  For payload
         @SendDataPack
         override fun connectSync(receiver: Int) {
             configure(receiver)

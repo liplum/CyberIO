@@ -20,6 +20,7 @@ import mindustry.gen.Payloadc
 import mindustry.gen.Unit
 import mindustry.graphics.Layer
 import mindustry.graphics.Pal
+import mindustry.type.ItemStack
 import mindustry.type.UnitType
 import mindustry.ui.Bar
 import mindustry.world.meta.Stat
@@ -42,6 +43,7 @@ open class HoloUnitType(name: String) : UnitType(name) {
     @ClientOnly @JvmField var ruvikShootingTipTime = 30f
     @ClientOnly @JvmField var ruvikTipRange = 100f
     @ClientOnly @JvmField var enableRuvikTip = false
+    @JvmField var researchReq: Array<ItemStack> = emptyArray()
 
     init {
         //outlineColor = R.C.HoloDark
@@ -164,6 +166,13 @@ open class HoloUnitType(name: String) : UnitType(name) {
             }
         }
         Draw.reset()
+    }
+
+    override fun getRequirements(
+        prevReturn: Array<out UnitType>?,
+        timeReturn: FloatArray?,
+    ): Array<ItemStack> {
+        return researchReq
     }
 
     override fun setStats() {

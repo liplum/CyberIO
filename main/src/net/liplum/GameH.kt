@@ -191,14 +191,6 @@ inline fun <reified T> T.HeadlessOnlyOn(func: T.() -> Unit): Boolean {
     return false
 }
 
-inline fun WhenCanGlobalAnimationPlay(func: () -> Unit): Boolean {
-    if (CioMod.CanGlobalAnimationPlay) {
-        func()
-        return true
-    }
-    return false
-}
-
 inline fun DebugOnly(func: () -> Unit): Boolean {
     if (CioMod.DebugMode) {
         func()

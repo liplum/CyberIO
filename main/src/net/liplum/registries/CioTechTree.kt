@@ -44,7 +44,6 @@ object CioTechTree {
             at(cryofluid).sub(cyberion)
             at(salvo).sub(TMTRAINER, icMachine) {
                 sub(ear)
-                // TODO: [Bug] Heimdall can be directly unlocked without research.
                 sub(heimdall, eye, ear)
                 sub(eye)
             }
@@ -62,12 +61,12 @@ object CioTechTree {
                 }
             }
             at(coreShard).sub(sender, icMachineSmall) {
-                sub(receiver) {
+                sub(receiver, sender, overwriteReq = true) {
                     sub(smartUnloader, icMachine)
                     sub(smartDistributor, icMachine)
                 }
                 sub(streamClient) {
-                    sub(streamHost, icMachine) {
+                    sub(streamHost, icMachine, streamClient, overwriteReq = true) {
                         sub(streamServer)
                     }
                 }
@@ -76,13 +75,13 @@ object CioTechTree {
             at(differentialGenerator).sub(underdriveProjector)
             at(coreShard).sub(cyberionMixer, icMachine) {
                 sub(stealth, streamHost)
-                sub(holoProjector) {
-                    sub(holoMiner) {
+                sub(holoProjector, cyberion) {
+                    sub(holoMiner, holoProjector, overwriteReq = true) {
                         sub(holoSupporter) {
                             sub(holoArchitect)
                         }
                     }
-                    sub(holoGuardian) {
+                    sub(holoGuardian, holoProjector, overwriteReq = true) {
                         sub(holoFighter)
                     }
                 }

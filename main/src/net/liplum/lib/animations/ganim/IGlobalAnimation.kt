@@ -1,6 +1,6 @@
 package net.liplum.lib.animations.ganim
 
 interface IGlobalAnimation {
-    val needUpdate: Boolean
+    val canUpdate: Boolean
     fun update()
 }

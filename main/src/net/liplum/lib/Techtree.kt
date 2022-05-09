@@ -57,10 +57,15 @@ value class Techtree(
     inline fun TechNode.sub(
         content: UnlockableContent,
         vararg p: Any,
+        overwriteReq: Boolean = false,
         genChild: TechNode.() -> Unit = {},
     ): TechNode {
-        val req = p.filterIsInstance<ItemStack>().toTypedArray()
-        val node = TechNode(this, content, req)
+        val req = p.filterIsInstance<ItemStack>()
+        val reqStacks = p.filterIsInstance<Array<ItemStack>>()
+        val allReq = (req + reqStacks.flatMap { it.toList() }).toMutableList()
+        if (!overwriteReq)
+            allReq += content.researchRequirements()
+        val node = TechNode(this, content, allReq.toTypedArray())
         if (objectives != null) {
             val objectives = p.filterObjectives()
             node.objectives.addAll(objectives)

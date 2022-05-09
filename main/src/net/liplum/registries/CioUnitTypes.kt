@@ -12,6 +12,7 @@ import mindustry.entities.abilities.RepairFieldAbility
 import mindustry.entities.bullet.LaserBoltBulletType
 import mindustry.entities.bullet.MissileBulletType
 import mindustry.gen.Sounds
+import mindustry.type.ItemStack
 import mindustry.type.ammo.ItemAmmoType
 import mindustry.type.ammo.PowerAmmoType
 import mindustry.world.meta.BlockFlag
@@ -51,7 +52,11 @@ object CioUnitTypes : ContentTable {
             engineSize = 1.8f
             engineOffset = 5.7f
             range = 50f
-
+            researchReq = arrayOf(
+                ItemStack(CioItems.ic, 1),
+                ItemStack(Items.titanium, 60),
+                ItemStack(Items.plastanium, 30),
+            )
             ammoType = PowerAmmoType(500f)
         }
 
@@ -76,6 +81,12 @@ object CioUnitTypes : ContentTable {
             ammoType = ItemAmmoType(Items.plastanium)
             enableRuvikTip = true
             ruvikTipRange = 220f
+            researchReq = arrayOf(
+                ItemStack(CioItems.ic, 2),
+                ItemStack(Items.titanium, 100),
+                ItemStack(Items.plastanium, 80),
+                ItemStack(Items.thorium, 60),
+            )
             weapons.add(HoloWeapon("holo-fighter-gun".Cio).apply {
                 top = false
                 shootSound = Sounds.flame
@@ -98,7 +109,7 @@ object CioUnitTypes : ContentTable {
         }
 
         holoGuardian = NewUnitType(R.Unit.HoloGuardian, ::HoloUnitType, ::HoloUnit).apply {
-            AutoLife(maxHealth = 5000f, lose = 0.3f)
+            AutoLife(maxHealth = 5000f, lose = 0.28f)
             abilities.add(
                 HoloForceField(
                     60f, 4f, 2200f, 60f * 8
@@ -117,6 +128,10 @@ object CioUnitTypes : ContentTable {
             engineOffset = 5.7f
             hitSize = 15f
             armor = 5f
+            researchReq = arrayOf(
+                ItemStack(CioItems.ic, 1),
+                ItemStack(Items.titanium, 40),
+            )
         }
         holoArchitect = NewUnitType(R.Unit.HoloArchitect, ::HoloUnitType, ::HoloUnit).apply {
             AutoLife(maxHealth = 2200f, lose = 0.15f)
@@ -135,7 +150,12 @@ object CioUnitTypes : ContentTable {
             armor = 5f
             buildSpeed = 4.6f
             ammoType = PowerAmmoType(900f)
-
+            researchReq = arrayOf(
+                ItemStack(CioItems.ic, 3),
+                ItemStack(Items.titanium, 120),
+                ItemStack(Items.plastanium, 160),
+                ItemStack(Items.thorium, 100),
+            )
             weapons.add(HoloWeapon().apply {
                 x = 0f
                 y = 5f
@@ -191,6 +211,11 @@ object CioUnitTypes : ContentTable {
             engineSize = 2f
             engineOffset = 3f
             ammoType = PowerAmmoType(1100f)
+            researchReq = arrayOf(
+                ItemStack(CioItems.ic, 2),
+                ItemStack(Items.titanium, 80),
+                ItemStack(Items.plastanium, 120),
+            )
             weapons.add(HoloWeapon((R.Unit.HoloSupporter + "-gun").Cio).apply {
                 shootSound = Sounds.lasershoot
                 reload = 15f

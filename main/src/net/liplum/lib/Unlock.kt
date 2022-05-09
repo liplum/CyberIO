@@ -14,6 +14,7 @@ fun UnlockableContent.lock(): UnlockableContent {
         setFIn(UnlockableContent::class.java, "unlocked", false)
         Vars.state.rules.researched.remove(name)
         Events.fire(LockEvent(this))
+        this.node()?.reset()
     }
     return this
 }

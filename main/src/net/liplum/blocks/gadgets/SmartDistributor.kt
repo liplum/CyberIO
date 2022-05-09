@@ -153,7 +153,6 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
             for (build in proximity) {
                 val consumes = build.block.consumes
                 if (consumes.has(ConsumeType.item)) {
-                    //TODO: Support ItemTurret consumer
                     when (val reqs: Consume = consumes[ConsumeType.item]) {
                         is ConsumeItems -> {
                             for (req in reqs.items) {

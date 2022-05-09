@@ -37,7 +37,6 @@ class CioMod : Mod() {
         @JvmField var TestSteam = false
         @JvmField var TestGlCompatibility = false
         @JvmField var ExperimentalMode = false
-        @JvmField var CanGlobalAnimationPlay = false
         @JvmField var UpdateFrequency = 5f
         lateinit var Info: Mods.LoadedMod
         @JvmField val jarFile = CioMod::class.java.protectionDomain?.let {
@@ -145,6 +144,7 @@ class CioMod : Mod() {
         DataCenter.initData()
         StreamCenter.initAndLoad()
         ClientOnly {
+            GlobalAnimation.registerAll()
             CioUI.appendSettings()
             DebugOnly {
                 DebugUI.appendUI()
@@ -172,7 +172,7 @@ class CioMod : Mod() {
         ContentRegistry.loadContent()
         IHoloEntity.registerHoloEntityInitHealth()
         PrismBlackList.load()
-        CanGlobalAnimationPlay = true
+        GlobalAnimation.CanPlay = true
         Log.info("v${Meta.DetailedVersion} mod's contents loaded.")
     }
     @HeadlessOnly

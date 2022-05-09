@@ -16,6 +16,8 @@ import mindustry.graphics.Layer
 import mindustry.logic.LAccess
 import mindustry.world.Block
 import mindustry.world.blocks.ControlBlock
+import mindustry.world.meta.Stat
+import mindustry.world.meta.StatUnit
 import net.liplum.ClientOnly
 import net.liplum.DebugOnly
 import net.liplum.R
@@ -33,7 +35,7 @@ open class Ear(name: String) : Block(name), IComponentBlock {
     @JvmField var reloadTime = 60f
     @JvmField var waveSpeed = 2.5f
     @JvmField var waveWidth = 5f
-    @JvmField var damage = 3f
+    @JvmField var damage = 3.2f
     @JvmField var maxSonicWaveNum = 3
     @JvmField var sonicMaxRadius = 40f
     @ClientOnly @JvmField var maxScale = 0.3f
@@ -45,8 +47,9 @@ open class Ear(name: String) : Block(name), IComponentBlock {
     @JvmField var damageI = 1.5f
     @JvmField var radiusI = 0.4f
     @JvmField var widthI = 0.3f
-    @JvmField var powerI = 0.5f
+    @JvmField var powerI = 0.8f
     @JvmField var sensitivityI = -0.3f
+    @JvmField var powerConsumeTime = 30f
     override val upgrades: MutableMap<UpgradeType, Upgrade> = HashMap()
 
     init {
@@ -60,14 +63,13 @@ open class Ear(name: String) : Block(name), IComponentBlock {
     override fun init() {
         clipSize = (range * (1f + rangeI)) + (sonicMaxRadius * (1f * rangeI))
         checkInit()
-        consumes.powerDynamic<EarBuild> { it.realPowerUse }
+        consumes.powerDynamic<EarBuild> {
+            if (it.lastRadiateTime < powerConsumeTime) it.realPowerUse else 0f
+        }
         super.init()
     }
 
     override fun load() {
-        consumes.powerCond<EarBuild>(2f) {
-            it.lastRadiateTime < 1f
-        }
         super.load()
         BaseTR = this.sub("base")
         EarTR = region
@@ -84,6 +86,8 @@ open class Ear(name: String) : Block(name), IComponentBlock {
     override fun setStats() {
         super.setStats()
         this.addUpgradeComponentStats()
+        stats.remove(Stat.powerUse)
+        stats.add(Stat.powerUse, powerUse * 60f, StatUnit.powerSecond)
     }
 
     open inner class EarBuild : Building(), IUpgradeComponent, ControlBlock {
@@ -111,7 +115,7 @@ open class Ear(name: String) : Block(name), IComponentBlock {
             get() = powerUse * (1f + if (isLinkedBrain) powerI else 0f)
         val realSensitive: Float
             get() = sensitivity * (1f + if (isLinkedBrain) sensitivityI else 0f)
-        var lastRadiateTime = 9999f
+        var lastRadiateTime = powerConsumeTime + 1f
         val temp = Vec2()
         override fun updateTile() {
             lastRadiateTime += Time.delta

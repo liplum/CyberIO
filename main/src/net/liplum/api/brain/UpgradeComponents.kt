@@ -1,6 +1,7 @@
 package net.liplum.api.brain
 
 import arc.util.Log
+import mindustry.Vars
 import mindustry.gen.Building
 import mindustry.world.Block
 import mindustry.world.meta.StatUnit.*
@@ -41,7 +42,7 @@ value class UpgradeType(val type: Int) {
                 it.percent(1)
             }),
             UpgradeI18n("range", {
-                "${it.value(0)} ${blocks.localized()}"
+                "${(it / Vars.tilesize).value(0)} ${blocks.localized()}"
             }, {
                 "${it.percent(0)} ${blocks.localized()}"
             }),
@@ -81,7 +82,7 @@ value class UpgradeType(val type: Int) {
                 it.percent(1)
             }),
             UpgradeI18n("force-field-radius", {
-                "${it.value(1)} ${blocks.localized()}"
+                "${(it / Vars.tilesize).value(1)} ${blocks.localized()}"
             }, {
                 "${it.percent(1)} ${blocks.localized()}"
             }),
@@ -91,7 +92,7 @@ value class UpgradeType(val type: Int) {
                 it.percent(1)
             }),
             UpgradeI18n("power-use", {
-                "${(it * 60f).value(0)} ${perSecond.localized()}"
+                "${(it * 60f).value(0)} ${powerSecond.localized()}"
             }, {
                 it.percent(0)
             }),

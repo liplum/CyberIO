@@ -486,6 +486,7 @@ object CioBlocks : ContentTable {
             )
             health = 5000
             size = 3
+            researchCostMultiplier = 0.7f
             maxConnection = 5
             powerUseBase = 2f
             powerUsePerConnection = 2f
@@ -565,6 +566,7 @@ object CioBlocks : ContentTable {
                     ItemStack(Items.thorium, 1200),
                 )
             )
+            researchCostMultiplier = 0.8f
             health = 3500
             plans = Seq.with(
                 HoloPlan(
@@ -702,7 +704,7 @@ object CioBlocks : ContentTable {
                 Upgrade(UT.Damage, false, 0.05f),
                 Upgrade(UT.ReloadTime, true, -4.5f),
                 Upgrade(UT.ControlLine, true, 0.01f),
-                Upgrade(UT.ForceFieldRegen, false, 0.2f),
+                Upgrade(UT.ForceFieldRegen, false, 0.3f),
                 Upgrade(UT.Range, false, -0.05f),
                 Upgrade(UT.ForceFieldRadius, true, -3f),
                 Upgrade(UT.WaveWidth, true, -0.1f),

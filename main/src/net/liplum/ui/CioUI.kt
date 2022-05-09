@@ -174,13 +174,13 @@ object CioUI {
                             }
                             t.add(saveButton).size(200f, 50f)
                             t.button("@cancel") {
-                                hide()
+                                field.text = Settings.GitHubMirrorUrl
                             }.size(200f, 50f).get().apply {
                                 addTrackTooltip(bundle("cancel-tooltip"))
                             }
                         }
                         cont.row()
-                        addCloseListener()
+                        addCloseButton()
                     }
                     dialog.show()
                 }.addTrackTooltip(bundle("button-tooltip")).apply {

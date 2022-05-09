@@ -6,31 +6,26 @@ import arc.graphics.g2d.TextureRegion
 import arc.math.Mathf
 import arc.util.Time
 import mindustry.game.EventType
-import net.liplum.CanRefresh
-import net.liplum.CioMod
-import net.liplum.ClientOnly
 import net.liplum.lib.delegates.Delegate
 
 open class GlobalAnimation(
     val duration: Float,
-    val setTR: Cons<TextureRegion>
+    val setTR: Cons<TextureRegion>,
 ) : IGlobalAnimation {
     var frames: Array<TextureRegion>? = null
-    override val needUpdate: Boolean
-        get() {
-            return CioMod.CanGlobalAnimationPlay && CanRefresh() && frames != null
-        }
+    override val canUpdate: Boolean
+        get() = frames != null
     var lastTR: TextureRegion? = null
-    protected var registered: Boolean = false
     protected fun getCurTR(): TextureRegion {
-        val progress = Time.time % duration / duration //percent
-        var index: Int = (progress * frames!!.size).toInt()
-        index = Mathf.clamp(index, 0, frames!!.size)
-        return frames!![index]
+        val frames = frames!!
+        val progress = Time.globalTime % duration / duration //percent
+        var index: Int = (progress * frames.size).toInt()
+        index = Mathf.clamp(index, 0, frames.size)
+        return frames[index]
     }
 
     override fun update() {
-        if (needUpdate) {
+        if (canUpdate) {
             val curTR = getCurTR()
             if (curTR != lastTR) {
                 lastTR = curTR
@@ -40,17 +35,22 @@ open class GlobalAnimation(
     }
 
     fun register(): GlobalAnimation {
-        ClientOnly {
-            if (!registered) {
-                registered = true
-                Events.run(EventType.Trigger.draw, this::update)
-            }
-        }
+        updateTasks.add(this)
         return this
     }
 
     companion object {
+        var CanPlay = false
+        val updateTasks = HashSet<IGlobalAnimation>()
         val loadingTask: Delegate = Delegate()
+        fun registerAll() {
+            Events.run(EventType.Trigger.update) {
+                if (CanPlay) {
+                    for (task in updateTasks)
+                        task.update()
+                }
+            }
+        }
         @JvmStatic
         fun loadAllResources() {
             loadingTask()

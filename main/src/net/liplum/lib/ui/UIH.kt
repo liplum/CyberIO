@@ -10,6 +10,9 @@ import arc.util.Tmp
 import mindustry.ui.Styles
 import mindustry.ui.dialogs.BaseDialog
 
+val NewBaseDialog: BaseDialog
+    get() = BaseDialog("")
+
 inline fun ShowTextDialog(
     crossinline text: () -> String = { "" },
 ): BaseDialog {
