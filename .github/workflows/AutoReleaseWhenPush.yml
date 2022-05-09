@@ -23,12 +23,12 @@ jobs:
       - name: Build Cyber-IO
         run: |
           chmod +x gradlew
-          ./gradlew deploy
+          ./gradlew :main:deploy
 
       - uses: actions/upload-artifact@v2
         with:
-          name: Cyber-IO-byLiplum
-          path: build/libs/*.jar
+          name: CyberIO-Jar
+          path: main/build/libs/*.jar
 
   upload:
     needs: build
@@ -41,7 +41,7 @@ jobs:
 
       - uses: actions/download-artifact@v2
         with:
-          name: Cyber-IO-byLiplum
+          name: CyberIO-Jar
           path: out
 
       - name: Delete and recreate tag
@@ -57,4 +57,4 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TODAY: ${{ steps.date.outputs.date }}
-        run: gh release create AUTOR --title "Auto-release on $TODAY" --notes-file "$GITHUB_WORKSPACE/.github/workflows/EveryAutoCommitMessage.md" out/*.jar
+        run: gh release create AUTOR --title "Auto-release on $TODAY" --notes-file "$GITHUB_WORKSPACE/.github/workflows/AutoReleaseMsg.md" out/*.jar
