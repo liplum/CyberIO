@@ -85,7 +85,7 @@ tasks {
         }
     }
 
-    register<Jar>("deploy") {
+    register<Jar>("deployLocal") {
         group = "build"
         dependsOn("jarAndroid")
         archiveFileName.set("${outputJarName}.jar")
@@ -98,6 +98,26 @@ tasks {
         doLast {
             delete {
                 delete("$buildDir/libs/${outputJarName}Android.jar")
+            }
+        }
+    }
+
+    register<Jar>("deploy") {
+        group = "build"
+        dependsOn("jarAndroid")
+        archiveFileName.set("${outputJarName}.jar")
+
+        from(
+            zipTree("$buildDir/libs/${outputJarName}Desktop.jar"),
+            zipTree("$buildDir/libs/${outputJarName}Android.jar")
+        )
+
+        doLast {
+            delete {
+                delete(
+                    "$buildDir/libs/${outputJarName}Desktop.jar",
+                    "$buildDir/libs/${outputJarName}Android.jar"
+                )
             }
         }
     }
