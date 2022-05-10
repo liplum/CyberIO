@@ -21,7 +21,7 @@
 
   GitHub: [#42a5f5[]]github.com/liplum/CyberIO[[]]
   '''
-  "version": 3.4,
+  "version": 4,
   "minGameVersion": 136,
   "dependencies": [],
   "hidden": false,

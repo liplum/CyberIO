@@ -169,4 +169,5 @@ __pycache__/
 ## Gradle :main project
 main/build
 buildSrc/build
+bundle/build
 extra

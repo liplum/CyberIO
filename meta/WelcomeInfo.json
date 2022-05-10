@@ -23,5 +23,10 @@
     "Scene": [
       "ResearchProject"
     ]
+  },
+  "v4": {
+    "Default": "ResearchProject",
+    "Parent": "common",
+    "Scene": []
   }
 }

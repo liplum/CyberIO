@@ -1,9 +1,7 @@
 package net.liplum.utils
 
-import mindustry.ai.types.FormationAI
 import mindustry.gen.*
 import mindustry.world.blocks.ControlBlock
-import mindustry.world.consumers.Consume
 
 var Healthc.lostHp: Float
     get() = maxHealth() - health()
@@ -36,7 +34,9 @@ fun Entityc?.findPlayer(): Player? {
     return null
 }
 typealias MdtUnit = mindustry.gen.Unit
-
+/*
+TODO: Because of the real RTS,
+  player cannot shoot plentiful bullets once when they control a group.
 fun MdtUnit.findLeaderInFormation(): MdtUnit {
     val controller = this.controller()
     if (controller is FormationAI) {
@@ -55,3 +55,5 @@ fun Building.otherConsumersAreValid(consume: Consume): Boolean {
     }
     return true
 }
+*/
+

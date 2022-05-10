@@ -2,7 +2,6 @@ package net.liplum.test
 
 import net.liplum.lib.skeletal.Bone
 import net.liplum.lib.skeletal.Skeleton
-import net.liplum.utils.check
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
@@ -33,9 +32,5 @@ class TestSkeleton {
         assert(skeleton.findFirstByName("Forearm") != null) {
             "Can't find Forearm"
         }
-    }
-    @Test
-    fun `Test skeleton`() {
-        skeleton.check()
     }
 }

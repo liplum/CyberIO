@@ -1,6 +1,5 @@
 package net.liplum.lib
 
-import arc.struct.ObjectMap
 import arc.struct.Seq
 import mindustry.content.TechTree
 import mindustry.content.TechTree.TechNode
@@ -8,23 +7,19 @@ import mindustry.ctype.UnlockableContent
 import mindustry.game.Objectives.Objective
 import mindustry.game.Objectives.Research
 import mindustry.type.ItemStack
-import net.liplum.UseReflection
-import net.liplum.scripts.KeyNotFoundException
 
 fun Seq<TechNode>.withContext(
     func: Techtree.() -> Unit,
 ) {
     Techtree(this).func()
 }
+
+class NoSuchTechNodeException(msg: String) : RuntimeException(msg)
 @JvmInline
 value class Techtree(
     val all: Seq<TechNode>,
 ) {
     companion object {
-        @UseReflection
-        val map: ObjectMap<UnlockableContent, TechNode> =
-            TechTree::class.java.getF("map")
-
         fun Array<out Any>.filterObjectives(): List<Objective> =
             this.filterIsInstance<UnlockableContent>().map {
                 it.toObjective()
@@ -35,7 +30,7 @@ value class Techtree(
     }
 
     fun at(content: UnlockableContent): TechNode =
-        map[content] ?: throw KeyNotFoundException(content.name)
+        content.techNode ?: throw NoSuchTechNodeException(content.name)
 
     fun at(name: String): TechNode =
         TechTree.all.find { it.content.name == name }!!

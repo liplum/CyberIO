@@ -136,8 +136,8 @@ public class ArcU {
         }
 
         @Override
-        public Seq replace(Func mapper) {
-            return this;
+        public boolean replace(Object from, Object to) {
+            return false;
         }
 
         @Override
@@ -211,7 +211,7 @@ public class ArcU {
         }
 
         @Override
-        public Seq asArray() {
+        public Seq toSeq() {
             return EmptySeq;
         }
 

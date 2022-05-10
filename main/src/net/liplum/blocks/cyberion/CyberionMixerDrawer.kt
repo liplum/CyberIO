@@ -1,20 +1,7 @@
 package net.liplum.blocks.cyberion
 
-import arc.graphics.Color
-import arc.graphics.g2d.Draw
-import arc.graphics.g2d.Fill
-import arc.math.Mathf
-import arc.util.Time
-import mindustry.graphics.Drawf
-import mindustry.graphics.Layer
-import mindustry.world.Block
-import mindustry.world.blocks.production.GenericCrafter
-import mindustry.world.draw.DrawMulti
-import net.liplum.ClientOnly
-import net.liplum.registries.CioLiquids
-import net.liplum.utils.TR
-import net.liplum.utils.sub
-
+/*
+TODO: Rewrite this
 class CyberionMixerDrawer : DrawMulti {
     @ClientOnly lateinit var LiquidTR: TR
     @JvmField var lightColor: Color = Color.white
@@ -28,7 +15,7 @@ class CyberionMixerDrawer : DrawMulti {
     }
 
     init {
-        flameRadius = 1.8f
+        //flameRadius = 1.8f
     }
 
     override fun load(block: Block) {
@@ -76,4 +63,4 @@ class CyberionMixerDrawer : DrawMulti {
             Draw.color()
         }
     }
-}
+}*/

@@ -306,9 +306,6 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
 
         override fun onRemoved() {
             super.onRemoved()
-            forEachTargetInRange {
-                it.resetBoost()
-            }
             ClientOnly {
                 if (canShowSpiral) {
                     this.spiralShrinking()
@@ -331,7 +328,7 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
                 forEachBuildingInRange {
                     if (it.block.canOverdrive) {
                         underdrivedBlock++
-                        it.applyBoostOrSlow(restEfficiency, reload + 1f)
+                        it.applySlowdown(restEfficiency, reload + 1f)
                     } else if (it is UnderdriveBuild && it != this) {
                         similarInRange++
                     }

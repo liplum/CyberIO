@@ -82,7 +82,7 @@ object ForceFieldFE : IFormationPattern, IFormationEffect {
 
 fun syncEyeBlink(eyeA: EyeBuild, eyeB: EyeBuild) {
     val res = findIn(eyeA, eyeB) {
-        it.isShooting || it.charging
+        it.isShooting || it.charging()
     }
     if (res == null) {
         val index = eyeA.blinkAnime.index

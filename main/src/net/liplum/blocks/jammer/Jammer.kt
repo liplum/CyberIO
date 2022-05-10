@@ -59,6 +59,7 @@ open class Jammer(name: String) : LaserTurret(name) {
             @ClientOnly lateinit var StereoTR: TR
             @ClientOnly lateinit var SonicWaveAnim: Animation
             override fun load(block: Block) = block.run {
+                super.load(this)
                 TurretTR = this.sub("turret")
                 StereoTR = this.sub("stereo")
                 SonicWaveAnim = this.autoAnim("sonic-wave", 6, 30f)

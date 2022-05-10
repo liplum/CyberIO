@@ -61,18 +61,5 @@ val shootPyraFlameFx = RgbList {
 }
 
 fun tintedBulletsRegistryLoad() {
-    ExperimentalOnly {
-        Bullets.basicFlame.registerRGBIndex {
-            (this.copy() as BulletType).apply {
-                shootEffect = SmallRgbFx[it]
-                hitEffect = hitFlameSmallFx[it]
-            }
-        }
-        Bullets.pyraFlame.registerRGBIndex {
-            (this.copy() as BulletType).apply {
-                shootEffect = shootPyraFlameFx[it]
-                hitEffect = hitFlameSmallFx[it]
-            }
-        }
-    }
+
 }

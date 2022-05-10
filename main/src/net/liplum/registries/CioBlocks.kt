@@ -18,6 +18,9 @@ import mindustry.world.blocks.environment.Floor
 import mindustry.world.blocks.payloads.*
 import mindustry.world.blocks.production.GenericCrafter
 import mindustry.world.blocks.sandbox.PowerSource
+import mindustry.world.draw.DrawDefault
+import mindustry.world.draw.DrawLiquidTile
+import mindustry.world.draw.DrawMulti
 import mindustry.world.meta.BuildVisibility
 import net.liplum.*
 import net.liplum.api.brain.UT
@@ -25,7 +28,6 @@ import net.liplum.api.brain.Upgrade
 import net.liplum.api.virus.setUninfected
 import net.liplum.api.virus.setUninfectedFloor
 import net.liplum.blocks.cloud.Cloud
-import net.liplum.blocks.cyberion.CyberionMixerDrawer
 import net.liplum.blocks.debugonly.AdjustableOverdrive
 import net.liplum.blocks.deleter.Deleter
 import net.liplum.blocks.gadgets.SmartDistributor
@@ -548,7 +550,9 @@ object CioBlocks : ContentTable {
             )
             health = 100 * size * size
             liquidCapacity = 20f
-            drawer = CyberionMixerDrawer(R.C.Holo, R.C.HoloDark)
+            // TODO: use default drawer temporarily
+            //drawer = CyberionMixerDrawer(R.C.Holo, R.C.HoloDark)
+            drawer = DrawMulti(DrawLiquidTile(CioLiquids.cyberion), DrawDefault())
             outputLiquid = LiquidStack(CioLiquids.cyberion, 0.3f)
             craftTime = 100f
             size = 3

@@ -8,9 +8,8 @@ import arc.math.Interp
 import arc.math.Mathf
 import arc.util.Time
 import mindustry.Vars
-import mindustry.content.Fx
-import mindustry.entities.Effect
 import mindustry.entities.bullet.BulletType
+import mindustry.gen.Bullet
 import mindustry.graphics.Drawf
 import mindustry.graphics.Layer
 import mindustry.world.blocks.defense.turrets.PowerTurret
@@ -151,7 +150,7 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
             val radiusSpeed = radiusSpeed * Time.delta
             val consValid = canConsume()
 
-            if (consValid && (isShooting || lastInCombatTime < 40f || charging)) {
+            if (consValid && (isShooting || lastInCombatTime < 40f || charging())) {
                 sight.approachR(PupilMax, radiusSpeed * 3f)
             } else {
                 sight.approachR(PupilMin, radiusSpeed)
@@ -176,9 +175,8 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
             var pupilX = x + sight.x
             var pupilY = y + sight.y
             if (isLinkedBrain) {
-                tr2.trns(rotation, -recoil)
-                pupilX += tr2.x
-                pupilY += tr2.y
+                pupilX += recoilOffset.x
+                pupilY += recoilOffset.y
             }
             Draw.mixcol(eyeColor, heat)
             pupil.Draw(pupilX, pupilY, rotationDraw)
@@ -200,23 +198,12 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
             Draw.color()
         }
 
-        override fun effects() {
-            val type = peekAmmo()
-            val fshootEffect = if (shootEffect == Fx.none) type.shootEffect else shootEffect
-            val fsmokeEffect = if (smokeEffect == Fx.none) type.smokeEffect else smokeEffect
-
-            fshootEffect.at(x + tr.x, y + tr.y, rotation, liquids.current().color)
-            fsmokeEffect.at(x + tr.x, y + tr.y, rotation, liquids.current().color)
+        override fun handleBullet(bullet: Bullet, offsetX: Float, offsetY: Float, angleOffset: Float) {
+            super.handleBullet(bullet, offsetX, offsetY, angleOffset)
             if (isLinkedBrain)
                 improvedSounds.random().at(tile)
             else
                 normalSounds.random().at(tile)
-
-            if (shootShake > 0) {
-                Effect.shake(shootShake, shootShake, tile.build)
-            }
-
-            recoil = recoilAmount
         }
 
         override fun hasAmmo() = true
