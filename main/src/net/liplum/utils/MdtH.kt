@@ -12,8 +12,8 @@ import mindustry.game.Team
 import mindustry.gen.Building
 import mindustry.type.UnitType
 import mindustry.world.Tile
-import mindustry.world.blocks.distribution.PayloadConveyor
 import mindustry.world.blocks.payloads.BuildPayload
+import mindustry.world.blocks.payloads.PayloadConveyor
 import mindustry.world.blocks.payloads.PayloadSource
 import mindustry.world.blocks.payloads.UnitPayload
 

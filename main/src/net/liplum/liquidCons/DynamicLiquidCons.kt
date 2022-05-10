@@ -2,16 +2,14 @@ package net.liplum.liquidCons
 
 import arc.func.Func
 import arc.scene.ui.layout.Table
-import arc.struct.Bits
 import mindustry.gen.Building
 import mindustry.type.LiquidStack
 import mindustry.ui.ReqImage
 import mindustry.world.consumers.Consume
-import mindustry.world.consumers.ConsumeType
 import mindustry.world.meta.Stats
 
 open class DynamicLiquidCons(
-    val liquids: Func<Building, Array<LiquidStack>>
+    val liquids: Func<Building, Array<LiquidStack>>,
 ) : Consume() {
     companion object {
         @Suppress("UNCHECKED_CAST")
@@ -20,12 +18,13 @@ open class DynamicLiquidCons(
             return DynamicLiquidCons(cons as Func<Building, Array<LiquidStack>>)
         }
     }
+/*
 
     override fun type(): ConsumeType = ConsumeType.liquid
     override fun applyLiquidFilter(filter: Bits) {
         //this must be done dynamically
     }
-
+*/
     override fun update(entity: Building) {
     }
 
@@ -56,6 +55,7 @@ open class DynamicLiquidCons(
                 table.row()
         }
     }
+/*
 
     override fun getIcon(): String {
         return "icon-liquid-consume"
@@ -65,7 +65,7 @@ open class DynamicLiquidCons(
         return entity.liquids != null &&
                 entity.liquids.has(liquids.get(entity))
     }
-
+*/
     override fun trigger(entity: Building) {
         for (stack in liquids.get(entity)) {
             entity.liquids.remove(stack.liquid, stack.amount)

@@ -16,7 +16,7 @@ fun Animation.ixAuto(tileEntity: Building? = null) =
         val index = (progress * it).toInt()
         index.coerceIn(0, it - 1)
     } else IFrameIndexer {
-        val fixedTotalDuration = duration / tileEntity.timeScale
+        val fixedTotalDuration = duration / tileEntity.timeScale()
         val progress = Time.time % fixedTotalDuration / fixedTotalDuration//percent
         val index = (progress * it).toInt()
         index.coerceIn(0, it - 1)
@@ -24,7 +24,7 @@ fun Animation.ixAuto(tileEntity: Building? = null) =
 @JvmOverloads
 fun Animation.ixSpeed(tileEntity: Building? = null, speedUpPct: () -> Float) =
     if (tileEntity != null) IFrameIndexer {
-        var fixedTotalDuration = duration / tileEntity.timeScale
+        var fixedTotalDuration = duration / tileEntity.timeScale()
         fixedTotalDuration /= speedUpPct()
         val progress = Time.time % fixedTotalDuration / fixedTotalDuration//percent
         val index = (progress * it).toInt()
@@ -39,7 +39,7 @@ fun Animation.ixSpeed(tileEntity: Building? = null, speedUpPct: () -> Float) =
 fun Animation.ixReciprocate(tileEntity: Building? = null) =
     if (tileEntity != null) IFrameIndexer {
         val endI = it - 1
-        val fixedTotalDuration = duration * 2f / tileEntity.timeScale
+        val fixedTotalDuration = duration * 2f / tileEntity.timeScale()
         val progress = Time.time % fixedTotalDuration / fixedTotalDuration//percent
         var index = (progress * it * 2).toInt()
         if (index > endI) {
@@ -68,7 +68,7 @@ fun AutoAnimation(duration: Float, vararg allFrames: TextureRegion) =
     Animation(duration, *allFrames).auto()
 
 fun AnimationObj.byTimeScale(tileEntity: Building) =
-    this.tmod { it / tileEntity.timeScale }
+    this.tmod { it / tileEntity.timeScale() }
 
 val PingPong = IFrameIndexerObj { obj, len ->
     var progress = obj.curTime / obj.meta.duration

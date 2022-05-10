@@ -5,6 +5,7 @@ plugins {
     kotlin("jvm") version "1.6.10"
     java
 }
+
 val outputJarName: String get() = extra["outputJarName"] as String
 val mdtVersion: String get() = extra["mdtVersion"] as String
 val mdtVersionNum: String get() = extra["mdtVersionNum"] as String
@@ -25,15 +26,14 @@ java {
     targetCompatibility = JavaVersion.VERSION_1_8
 }
 dependencies {
-    compileOnly("com.github.Anuken.Arc:arc-core:$mdtVersion")
-    compileOnly("com.github.Anuken.Mindustry:core:$mdtVersion")
+//    compileOnly("com.github.Anuken.Arc:arc-core:$mdtVersion")
+//    compileOnly("com.github.Anuken.Mindustry:core:$mdtVersion")
+    // For preview jar
+    //compileOnly("mindustry:")
+    implementation(files("$rootDir/run/Mindustryv136.jar"))
     implementation("com.github.liplum:OpenGAL:v0.4.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1")
 
-    testImplementation("com.github.Anuken.Arc:arc-core:$mdtVersion")
-    testImplementation("com.github.Anuken.Mindustry:core:$mdtVersion")
-    testImplementation("com.github.Anuken.Mindustry:desktop:$mdtVersion")
-    testImplementation("com.github.Anuken.Mindustry:server:$mdtVersion")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.2")
     testImplementation("com.github.liplum:TestUtils:v0.1")

@@ -72,7 +72,7 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
     }
 
     open fun initPowerUse() {
-        consumes.powerDynamic<HostBuild> {
+        consumePowerDynamic<HostBuild> {
             powerUseBase + it.clients.size * powerUsePerConnection
         }
     }
@@ -91,7 +91,7 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
     override fun setBars() {
         super.setBars()
         DebugOnly {
-            bars.addClientInfo<HostBuild>()
+            addClientInfo<HostBuild>()
         }
     }
 
@@ -113,7 +113,7 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
             if (Time.time % 60f < 1) {
                 checkClientsPos()
             }
-            if (!consValid()) return
+            if (!canConsume()) return
             SharedClientSeq.clear()
             for (pos in clients) {
                 val client = pos.sc()
@@ -159,7 +159,7 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
         }
 
         override fun acceptLiquid(source: Building, liquid: Liquid): Boolean {
-            return consValid() && liquids.current() == liquid || liquids.currentAmount() < 0.2f
+            return canConsume() && liquids.current() == liquid || liquids.currentAmount() < 0.2f
         }
         @CalledBySync
         open fun setClient(pos: Int) {
@@ -201,7 +201,7 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
             onClientsChanged()
         }
 
-        override fun onConfigureTileTapped(other: Building): Boolean {
+        override fun onConfigureBuildTapped(other: Building): Boolean {
             if (this === other) {
                 deselect()
                 configure(null)
@@ -312,11 +312,11 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
     override fun genAniConfig() {
         config {
             From(NoPowerAni) To NormalAni When {
-                consValid()
+                canConsume()
             }
 
             From(NormalAni) To NoPowerAni When {
-                !consValid()
+                !canConsume()
             }
         }
     }

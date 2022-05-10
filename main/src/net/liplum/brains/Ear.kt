@@ -63,7 +63,7 @@ open class Ear(name: String) : Block(name), IComponentBlock {
     override fun init() {
         clipSize = (range * (1f + rangeI)) + (sonicMaxRadius * (1f * rangeI))
         checkInit()
-        consumes.powerDynamic<EarBuild> {
+        consumePowerDynamic<EarBuild> {
             if (it.lastRadiateTime < powerConsumeTime) it.realPowerUse else 0f
         }
         super.init()
@@ -79,7 +79,7 @@ open class Ear(name: String) : Block(name), IComponentBlock {
     override fun setBars() {
         super.setBars()
         DebugOnly {
-            bars.addBrainInfo<EarBuild>()
+            addBrainInfo<EarBuild>()
         }
     }
 

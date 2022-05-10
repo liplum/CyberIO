@@ -9,7 +9,6 @@ import mindustry.gen.Building
 import mindustry.graphics.Pal
 import mindustry.logic.LAccess
 import mindustry.type.Item
-import mindustry.ui.Bar
 import mindustry.world.meta.BlockGroup
 import net.liplum.*
 import net.liplum.api.cyber.*
@@ -21,6 +20,7 @@ import net.liplum.lib.SetColor
 import net.liplum.lib.animations.anims.Animation
 import net.liplum.lib.animations.anis.AniState
 import net.liplum.lib.animations.anis.config
+import net.liplum.lib.ui.bars.AddBar
 import net.liplum.utils.*
 
 private typealias AniStateS = AniState<Sender, SenderBuild>
@@ -63,14 +63,12 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
     override fun setBars() {
         super.setBars()
         DebugOnly {
-            bars.addReceiverInfo<SenderBuild>()
-            bars.add<SenderBuild>("last-sending") {
-                Bar(
-                    { "Last Send: ${it.lastSendingTime.toInt()}" },
-                    { Pal.bar },
-                    { it.lastSendingTime / SendingTime }
-                )
-            }
+            addReceiverInfo<SenderBuild>()
+            AddBar<SenderBuild>("last-sending",
+                { "Last Send: ${lastSendingTime.toInt()}" },
+                { Pal.bar },
+                { lastSendingTime / SendingTime }
+            )
         }
     }
 
@@ -123,7 +121,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
         }
 
         override fun handleItem(source: Building, item: Item) {
-            if (!consValid()) {
+            if (!canConsume()) {
                 return
             }
             val reb = receiver
@@ -152,7 +150,6 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
                     receiver.receiverColor
             return super.getSenderColor()
         }
-
         @ClientOnly
         override fun drawConfigure() {
             super.drawConfigure()
@@ -163,7 +160,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
             this.drawDataNetGraphic()
         }
         @ClientOnly
-        override fun onConfigureTileTapped(other: Building): Boolean {
+        override fun onConfigureBuildTapped(other: Building): Boolean {
             if (this == other) {
                 deselect()
                 configure(null)
@@ -199,7 +196,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
         }
 
         override fun acceptItem(source: Building, item: Item): Boolean {
-            if (!consValid()) {
+            if (!canConsume()) {
                 return false
             }
             val reb = receiver
@@ -291,7 +288,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
                 val reb = receiver
                 reb != null
             } To NoPowerAni When {
-                !consValid()
+                !canConsume()
             }
             // Upload
             From(UploadAni) To IdleAni When {
@@ -300,7 +297,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
                 val reb = receiver
                 reb != null && isBlocked
             } To NoPowerAni When {
-                !consValid()
+                !canConsume()
             }
             // Blocked
             From(BlockedAni) To IdleAni When {
@@ -309,11 +306,11 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
                 val reb = receiver
                 reb != null && !isBlocked
             } To NoPowerAni When {
-                !consValid()
+                !canConsume()
             }
             // NoPower
             From(NoPowerAni) To IdleAni When {
-                consValid()
+                canConsume()
             }
         }
     }

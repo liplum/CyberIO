@@ -1,5 +1,6 @@
 package net.liplum.blocks.gadgets
 
+import arc.func.Boolf
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
 import arc.math.Mathf
@@ -12,7 +13,10 @@ import mindustry.gen.Building
 import mindustry.graphics.Pal
 import mindustry.type.Item
 import mindustry.type.ItemStack
-import mindustry.world.consumers.*
+import mindustry.world.consumers.Consume
+import mindustry.world.consumers.ConsumeItemDynamic
+import mindustry.world.consumers.ConsumeItemFilter
+import mindustry.world.consumers.ConsumeItems
 import mindustry.world.meta.BlockGroup
 import mindustry.world.meta.Stat
 import net.liplum.*
@@ -24,8 +28,8 @@ import net.liplum.lib.animations.anims.AnimationObj
 import net.liplum.lib.animations.anis.AniState
 import net.liplum.lib.animations.anis.config
 import net.liplum.lib.delegates.Delegate1
-import net.liplum.lib.ui.bars.addBar
-import net.liplum.lib.ui.bars.removeItems
+import net.liplum.lib.ui.bars.AddBar
+import net.liplum.lib.ui.bars.removeItemsInBar
 import net.liplum.persistance.intSet
 import net.liplum.utils.*
 import kotlin.math.log2
@@ -44,6 +48,9 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
     @JvmField var DynamicReqUpdateTime = 30f
     @JvmField var powerUsePerItem = 2.5f
     @JvmField var powerUseBase = 3f
+    @JvmField var supportedConsumerFilter = Boolf<Consume> {
+        it is ConsumeItems || it is ConsumeItemDynamic || it is ConsumeItemFilter
+    }
     @JvmField var boost2Count: (Float) -> Int = {
         if (it <= 1.1f)
             1
@@ -70,7 +77,7 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
     }
 
     open fun initPowerUse() {
-        consumes.powerDynamic<SmartDISBuild> {
+        consumePowerDynamic<SmartDISBuild> {
             it._requirements.size * powerUsePerItem + powerUseBase
         }
     }
@@ -95,17 +102,15 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
     override fun setBars() {
         super.setBars()
         UndebugOnly {
-            bars.removeItems()
+            removeItemsInBar()
         }
         DebugOnly {
-            addBar("dis-count", {
-                "Count:" + boost2Count(timeScale)
-            }, {
-                Pal.power
-            }, {
-                boost2Count(timeScale) / 4f
-            })
-            bars.addSenderInfo<SmartDISBuild>()
+            AddBar<SmartDISBuild>("dis-count",
+                { "Count:" + boost2Count(timeScale()) },
+                { Pal.power },
+                { boost2Count(timeScale()) / 4f }
+            )
+            addSenderInfo<SmartDISBuild>()
         }
     }
 
@@ -151,25 +156,22 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
             val all = HashSet<Item>()
             hasDynamicRequirements = false
             for (build in proximity) {
-                val consumes = build.block.consumes
-                if (consumes.has(ConsumeType.item)) {
-                    when (val reqs: Consume = consumes[ConsumeType.item]) {
-                        is ConsumeItems -> {
-                            for (req in reqs.items) {
-                                all.add(req.item)
-                            }
+                when (val reqs = build.block.findConsumer<Consume> (supportedConsumerFilter)) {
+                    is ConsumeItems -> {
+                        for (req in reqs.items) {
+                            all.add(req.item)
                         }
-                        is ConsumeItemDynamic -> {
-                            for (req in reqs.items.get(build)) {
-                                all.add(req.item)
-                            }
-                            hasDynamicRequirements = true
+                    }
+                    is ConsumeItemDynamic -> {
+                        for (req in reqs.items.get(build)) {
+                            all.add(req.item)
                         }
-                        is ConsumeItemFilter -> {
-                            for (item in Vars.content.items()) {
-                                if (reqs.filter.get(item)) {
-                                    all.add(item)
-                                }
+                        hasDynamicRequirements = true
+                    }
+                    is ConsumeItemFilter -> {
+                        for (item in Vars.content.items()) {
+                            if (reqs.filter.get(item)) {
+                                all.add(item)
                             }
                         }
                     }
@@ -220,7 +222,7 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
             } else {
                 dynamicReqUpdateTimer = 0f
             }
-            if (consValid()) {
+            if (canConsume()) {
                 val dised = DoMultipleBool(canOverdrive, boost2Count(timeScale), this::distribute)
                 if (dised) {
                     lastDistributionTime = 0f
@@ -237,19 +239,16 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
             if (proximity.isEmpty) return false
             disIndex %= proximity.size
             val b = proximity[disIndex]
-            val consumes = b.block.consumes
-            if (consumes.has(ConsumeType.item)) {
-                when (val reqs: Consume = consumes[ConsumeType.item]) {
-                    is ConsumeItems -> {
-                        dised = distributeTo(b, reqs.items)
-                    }
-                    is ConsumeItemDynamic -> {
-                        dised = distributeTo(b, reqs.items.get(b))
-                    }
-                    is ConsumeItemFilter -> {
-                        items.each { item, _ ->
-                            dised = dised or distributeTo(b, item)
-                        }
+            when (val reqs = b.block.findConsumer<Consume> (supportedConsumerFilter)) {
+                is ConsumeItems -> {
+                    dised = distributeTo(b, reqs.items)
+                }
+                is ConsumeItemDynamic -> {
+                    dised = distributeTo(b, reqs.items.get(b))
+                }
+                is ConsumeItemFilter -> {
+                    items.each { item, _ ->
+                        dised = dised or distributeTo(b, item)
                     }
                 }
             }
@@ -296,7 +295,7 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
         }
 
         override fun acceptedAmount(sender: IDataSender, item: Item): Int {
-            if (!consValid()) return 0
+            if (!canConsume()) return 0
 
             return if (item in _requirements)
                 getMaximumAccepted(item) - items[item]

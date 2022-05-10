@@ -236,7 +236,6 @@ open class HoloUnit : UnitEntity() {
             Draw.color(R.C.Holo)
             Draw.alpha(0.45f)
             Drawf.laser(
-                this.team(),
                 Core.atlas.find("minelaser"),
                 Core.atlas.find("minelaser-end"),
                 px, py, ex, ey, 0.75f

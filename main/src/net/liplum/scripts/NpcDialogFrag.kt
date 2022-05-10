@@ -5,14 +5,13 @@ import arc.scene.ui.Label
 import arc.scene.ui.layout.Cell
 import arc.scene.ui.layout.Table
 import mindustry.gen.Tex
-import mindustry.ui.fragments.Fragment
 import net.liplum.lib.delegates.Delegate
 
 enum class DialogMode {
     Text, Option
 }
 
-open class NpcDialogFrag : Fragment() {
+open class NpcDialogFrag {
     var showDialog = { false }
     var text = { "" }
     var onGoNext = Delegate()
@@ -21,7 +20,7 @@ open class NpcDialogFrag : Fragment() {
     var textMode = Table()
     var optionMode = Table()
     var mode = DialogMode.Text
-    override fun build(parent: Group) {
+    fun build(parent: Group) {
         parent.fill { t ->
             t.name = "npc dialog"
             t.center()

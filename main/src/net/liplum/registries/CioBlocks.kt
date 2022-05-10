@@ -12,14 +12,9 @@ import mindustry.type.Category
 import mindustry.type.ItemStack
 import mindustry.type.LiquidStack
 import mindustry.world.blocks.defense.OverdriveProjector
-import mindustry.world.blocks.distribution.PayloadConveyor
-import mindustry.world.blocks.distribution.PayloadRouter
 import mindustry.world.blocks.environment.Floor
-import mindustry.world.blocks.payloads.PayloadLoader
-import mindustry.world.blocks.payloads.PayloadMassDriver
-import mindustry.world.blocks.payloads.PayloadUnloader
+import mindustry.world.blocks.payloads.*
 import mindustry.world.blocks.production.GenericCrafter
-import mindustry.world.blocks.production.LiquidConverter
 import mindustry.world.blocks.sandbox.PowerSource
 import mindustry.world.meta.BuildVisibility
 import net.liplum.*
@@ -84,7 +79,7 @@ object CioBlocks : ContentTable {
     @JvmStatic lateinit var streamHost: StreamHost
     @JvmStatic lateinit var streamServer: StreamServer
     @JvmStatic lateinit var jammer: Jammer
-    @JvmStatic lateinit var cyberionMixer: LiquidConverter
+    @JvmStatic lateinit var cyberionMixer: GenericCrafter
     @JvmStatic lateinit var holoProjector: HoloProjector
     @JvmStatic lateinit var aquacyberion: Floor
     @JvmStatic lateinit var stealth: Stealth
@@ -112,14 +107,14 @@ object CioBlocks : ContentTable {
             craftTime = 400f
             size = 3
             buildCostMultiplier = 1.5f
-            craftEffect = Fx.smelt
+            craftEffect = Fx.smeltsmoke
             itemCapacity = 60
-            consumes.items( //Total:100
+            consumeItems( //Total:100
                 ItemStack(Items.copper, 50),  //50%
                 ItemStack(Items.silicon, 20),  //20%
                 ItemStack(Items.metaglass, 30) //30%
             )
-            consumes.power(10f)
+            consumePower(10f)
         }
 
         icMachineSmall = ICMachineS("ic-machine-s").apply {
@@ -136,12 +131,12 @@ object CioBlocks : ContentTable {
             size = 2
             craftEffect = Fx.formsmoke
             itemCapacity = 40
-            consumes.items(
+            consumeItems(
                 ItemStack(Items.copper, 25),
                 ItemStack(Items.sand, 40),
                 ItemStack(Items.lead, 15),
             )
-            consumes.power(2f)
+            consumePower(2f)
 
             processIcons = arrayOf(
                 Items.metaglass,
@@ -161,7 +156,7 @@ object CioBlocks : ContentTable {
                 )
             )
             health = 100
-            consumes.power(0.5f)
+            consumePower(0.5f)
             replaceable = false
         }
 
@@ -176,7 +171,7 @@ object CioBlocks : ContentTable {
                 )
             )
             health = 100
-            consumes.power(0.5f)
+            consumePower(0.5f)
             replaceable = false
         }
 
@@ -248,7 +243,7 @@ object CioBlocks : ContentTable {
                 )
             )
             health = 500
-            consumes.power(0.5f)
+            consumePower(0.5f)
             size = 1
         }.setUninfected()
 
@@ -267,7 +262,7 @@ object CioBlocks : ContentTable {
             size = 3
             buildCostMultiplier = 2f
             health = 500 * size * size
-            consumes.power(1f)
+            consumePower(1f)
         }
 
         hyperOverdriveSphere = AdjustableOverdrive("hyper-overdrive-sphere").apply {
@@ -284,7 +279,7 @@ object CioBlocks : ContentTable {
             size = 3
             maxBoost = 50f
             minBoost = 0.5f
-            consumes.power(50f)
+            consumePower(50f)
             speedBoost = 50f
             range = 1000f
         }
@@ -332,7 +327,7 @@ object CioBlocks : ContentTable {
             cooldown = 0.1f
             recoilAmount = 5f
             reloadTime = 15f
-            powerUse = 3f
+            consumePower(3f)
             size = 3
             buildCostMultiplier = 1.5f
             extraLostHpBounce = 0.005f
@@ -447,7 +442,7 @@ object CioBlocks : ContentTable {
                 )
             )
             health = 300
-            consumes.power(0.7f)
+            consumePower(0.7f)
             liquidCapacity = 300f
             replaceable = false
         }
@@ -521,7 +516,7 @@ object CioBlocks : ContentTable {
             loopSound = CioSounds.tvStatic
             loopSoundVolume = 0.5f
             rotateSpeed = 2f
-            powerUse = 15f
+            consumePower(15f)
 
             shootType = ShaderCLaser<TrShader>().apply {
                 damage = 120f
@@ -537,7 +532,7 @@ object CioBlocks : ContentTable {
                 shader = { SD.TvStatic }
             }
         }
-        cyberionMixer = LiquidConverter("cyberion-mixer").apply {
+        cyberionMixer = GenericCrafter("cyberion-mixer").apply {
             requirements(
                 Category.crafting, BuildVisibility.shown, arrayOf(
                     ItemStack(CioItems.ic, 4),
@@ -552,9 +547,9 @@ object CioBlocks : ContentTable {
             outputLiquid = LiquidStack(CioLiquids.cyberion, 0.3f)
             craftTime = 100f
             size = 3
-            consumes.power(1.5f)
-            consumes.item(Items.thorium, 1)
-            consumes.liquid(Liquids.cryofluid, 0.3f)
+            consumePower(1.5f)
+            consumeItem(Items.thorium, 1)
+            consumeLiquid(Liquids.cryofluid, 0.3f)
         }
 
         holoProjector = HoloProjector("holo-projector").apply {
@@ -598,8 +593,8 @@ object CioBlocks : ContentTable {
             )
             size = 5
             buildCostMultiplier = 2f
-            consumes.powerCond(3f) { it: HoloProjector.HoloPBuild ->
-                it.curPlan != null && it.otherConsumersAreValid(consumes.power)
+            consumePowerCond(3f) { it: HoloProjector.HoloPBuild ->
+                it.curPlan != null && it.otherConsumersAreValid(consumePower)
             }
         }
 
@@ -695,7 +690,7 @@ object CioBlocks : ContentTable {
             range = 165f
             size = 2
             health = 300 * size * size
-            powerUse = 3f
+            consumePower(3f)
             chargeTime = 60f
             shootEffect = BrainFx.eyeShoot
             smokeEffect = Fx.none

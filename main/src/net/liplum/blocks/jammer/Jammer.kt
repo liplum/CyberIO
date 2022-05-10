@@ -11,7 +11,6 @@ import mindustry.gen.Groups
 import mindustry.graphics.Drawf
 import mindustry.graphics.Layer
 import mindustry.world.blocks.defense.turrets.LaserTurret
-import mindustry.world.consumers.ConsumeType
 import mindustry.world.meta.BlockGroup
 import net.liplum.*
 import net.liplum.lib.Draw
@@ -47,7 +46,7 @@ open class Jammer(name: String) : LaserTurret(name) {
 
     init {
         outlineIcon = false
-        consumes.remove(ConsumeType.liquid)
+        //consumes.remove(ConsumeType.liquid)
         config(Integer::class.java) { obj: JammerBuild, i ->
             if (i.toInt() == 1)
                 obj.onJamming()
@@ -104,7 +103,7 @@ open class Jammer(name: String) : LaserTurret(name) {
             super.updateTile()
             isShootingOb.update()
             ClientOnly {
-                if (bullet != null)
+                if (!bullets.isEmpty)
                     shootingTime += Time.delta
                 else
                     shootingTime -= Time.delta
@@ -112,7 +111,7 @@ open class Jammer(name: String) : LaserTurret(name) {
         }
         @ClientOnly
         val realWaveMaxNumber: Int
-            get() = waveMaxNumber + if(bullet!= null) 1 else 0
+            get() = waveMaxNumber + if(!bullets.isEmpty) 1 else 0
         @ClientOnly
         val waves: Queue<Progress> = Queue(this::realWaveMaxNumber::get) {
             Progress()

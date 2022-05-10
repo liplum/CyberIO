@@ -13,8 +13,8 @@ import mindustry.core.Renderer
 import mindustry.gen.Building
 import mindustry.graphics.Drawf
 import mindustry.graphics.Layer
-import mindustry.world.blocks.power.ConditionalConsumePower
 import mindustry.world.blocks.power.PowerBlock
+import mindustry.world.consumers.ConsumePowerCondition
 import mindustry.world.meta.Stat
 import net.liplum.*
 import net.liplum.lib.Draw
@@ -44,7 +44,7 @@ open class WirelessTower(name: String) : PowerBlock(name) {
         update = true
         solid = true
         canOverdrive = true
-        consumes.powerDynamic<WirelessTowerBuild> {
+        consumePowerDynamic<WirelessTowerBuild> {
             it.lastNeed.coerceAtLeast(reactivePower)
         }
     }
@@ -78,7 +78,7 @@ open class WirelessTower(name: String) : PowerBlock(name) {
             y.toDrawXY(this),
             range,
             {
-                it.block.hasPower && it.block.consumes.hasPower()
+                it.block.hasPower && it.block.consPower != null
             }) {
             G.drawSelected(it, R.C.Power)
         }
@@ -103,7 +103,7 @@ open class WirelessTower(name: String) : PowerBlock(name) {
             lastNeed = 0f
             if (power.status <= 0.999f) return
             forEachTargetInRange {
-                val powerCons = it.block.consumes.power
+                val powerCons = it.block.consPower
                 val power = it.power
                 val originalStatus = power.status
                 var request = powerCons.requestedPower(it)
@@ -116,7 +116,7 @@ open class WirelessTower(name: String) : PowerBlock(name) {
                         lastNeed += provided * dst2CostRate(it.dst(this))
                     }
                 } else {
-                    if (powerCons is ConditionalConsumePower)
+                    if (powerCons is ConsumePowerCondition)
                         request = if (request.isZero)
                             powerCons.usage
                         else
@@ -200,7 +200,7 @@ open class WirelessTower(name: String) : PowerBlock(name) {
         open fun forEachTargetInRange(cons: (Building) -> Unit) {
             Vars.indexer.eachBlock(
                 this, range,
-                { it.block.hasPower && it.block.consumes.hasPower() && it !is WirelessTowerBuild },
+                { it.block.hasPower && it.block.consPower != null && it !is WirelessTowerBuild },
                 cons
             )
         }

@@ -8,9 +8,9 @@ public class Meta {
     public static final String Name = "Cyber IO";
     public static final String NameX = "CyberIO";
     public static final String NameAbbr = "CIO";
-    public static final String Version = "v3";
+    public static final String Version = "v4";
     public static final String DefaultLang = "en";
-    public static final Version2 DetailedVersion = new Version2(3, 4);
+    public static final Version2 DetailedVersion = new Version2(4, 0);
     public static final String Repo = "liplum/CyberIO";
     public static final String RepoInSettingsKey = "mod-" + ModID + "-repo";
     public static final String Discord = "https://discord.gg/PDwyxM3waw";

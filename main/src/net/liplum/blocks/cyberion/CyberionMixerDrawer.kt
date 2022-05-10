@@ -9,13 +9,15 @@ import mindustry.graphics.Drawf
 import mindustry.graphics.Layer
 import mindustry.world.Block
 import mindustry.world.blocks.production.GenericCrafter
+import mindustry.world.draw.DrawBlock
+import mindustry.world.draw.DrawMulti
 import mindustry.world.draw.DrawSmelter
 import net.liplum.ClientOnly
 import net.liplum.registries.CioLiquids
 import net.liplum.utils.TR
 import net.liplum.utils.sub
 
-class CyberionMixerDrawer : DrawSmelter {
+class CyberionMixerDrawer : DrawMulti {
     @ClientOnly lateinit var LiquidTR: TR
     @JvmField var lightColor: Color = Color.white
 

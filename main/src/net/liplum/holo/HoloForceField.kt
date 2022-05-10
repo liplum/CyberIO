@@ -25,7 +25,7 @@ import net.liplum.utils.healthPct
 
 open class HoloForceField(
     val radius: Float, val regen: Float, val max: Float, val cooldown: Float,
-    val color: Color = R.C.Holo
+    val color: Color = R.C.Holo,
 ) : Ability() {
     override fun update(unit: Unit) {
         if (unit.shield < max) {

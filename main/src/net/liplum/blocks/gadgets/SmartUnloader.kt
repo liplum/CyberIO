@@ -10,7 +10,6 @@ import mindustry.gen.Building
 import mindustry.graphics.Pal
 import mindustry.logic.LAccess
 import mindustry.type.Item
-import mindustry.ui.Bar
 import mindustry.world.meta.BlockGroup
 import mindustry.world.meta.Stat
 import net.liplum.*
@@ -21,7 +20,8 @@ import net.liplum.lib.animations.anims.Animation
 import net.liplum.lib.animations.anims.AnimationObj
 import net.liplum.lib.animations.anis.AniState
 import net.liplum.lib.animations.anis.config
-import net.liplum.lib.ui.bars.removeItems
+import net.liplum.lib.ui.bars.AddBar
+import net.liplum.lib.ui.bars.removeItemsInBar
 import net.liplum.persistance.intSet
 import net.liplum.utils.*
 import kotlin.math.absoluteValue
@@ -82,12 +82,13 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
     }
 
     open fun initPowerUse() {
-        consumes.powerDynamic<SmartULDBuild> {
+        consumePowerDynamic<SmartULDBuild> {
             (powerUseBasic
                     + powerUsePerItem * it.needUnloadItems.size
                     + powerUsePerConnection * it.connectedReceivers.size)
         }
     }
+
     override fun init() {
         initPowerUse()
         super.init()
@@ -109,24 +110,20 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
     override fun setBars() {
         super.setBars()
         UndebugOnly {
-            bars.removeItems()
+            removeItemsInBar()
         }
         DebugOnly {
-            bars.addReceiverInfo<SmartULDBuild>()
-            bars.add<SmartULDBuild>("last-unloading") {
-                Bar(
-                    { "Last Unload: ${it.lastUnloadTime.toInt()}" },
-                    { Pal.bar },
-                    { it.lastUnloadTime / UnloadTime }
-                )
-            }
-            bars.add<SmartULDBuild>("last-sending") {
-                Bar(
-                    { "Last Send: ${it.lastSendingTime.toInt()}" },
-                    { Pal.bar },
-                    { it.lastSendingTime / SendingTime }
-                )
-            }
+            addReceiverInfo<SmartULDBuild>()
+            AddBar<SmartULDBuild>("last-unloading",
+                { "Last Unload: ${lastUnloadTime.toInt()}" },
+                { Pal.bar },
+                { lastUnloadTime / UnloadTime }
+            )
+            AddBar<SmartULDBuild>("last-sending",
+                { "Last Send: ${lastSendingTime.toInt()}" },
+                { Pal.bar },
+                { lastSendingTime / SendingTime }
+            )
         }
     }
 
@@ -198,7 +195,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
             if (Time.time % 60f < 1) {
                 checkReceiverPos()
             }
-            if (!consValid()) {
+            if (!canConsume()) {
                 return
             }
             if (receivers.isEmpty) {
@@ -319,8 +316,8 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
             this.drawDataNetGraphic()
         }
 
-        override fun onConfigureTileTapped(other: Building): Boolean {
-            if (this === other) {
+        override fun onConfigureBuildTapped(other: Building): Boolean {
+            if (this == other) {
                 deselect()
                 configure(null)
                 return false
@@ -420,7 +417,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
                 receivers.first()
 
         override fun beforeDraw() {
-            if (consValid() && isUnloading && isSending) {
+            if (canConsume() && isUnloading && isSending) {
                 shrinkingAnimObj.spend(delta())
             }
         }
@@ -464,17 +461,17 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
     override fun genAniConfig() {
         config {
             From(NoPowerAni) To UnloadingAni When {
-                consValid()
+                canConsume()
             }
 
             From(UnloadingAni) To NoPowerAni When {
-                !consValid()
+                !canConsume()
             } To BlockedAni When {
                 !isUnloading || !isSending
             }
 
             From(BlockedAni) To NoPowerAni When {
-                !consValid()
+                !canConsume()
             } To UnloadingAni When {
                 isUnloading && isSending
             }

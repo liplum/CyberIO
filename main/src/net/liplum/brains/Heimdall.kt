@@ -35,6 +35,7 @@ import net.liplum.lib.animations.anims.linearFrames
 import net.liplum.lib.delegates.Delegate
 import net.liplum.lib.entity.Radiation
 import net.liplum.lib.entity.RadiationQueue
+import net.liplum.lib.ui.bars.AddBar
 import net.liplum.utils.*
 
 /**
@@ -89,7 +90,7 @@ open class Heimdall(name: String) : Block(name) {
             Log.warn("Block $name's size isn't 4 but $size, so it was set as 4 automatically.")
             size = 4
         }
-        consumes.powerDynamic<HeimdallBuild> {
+        consumePowerDynamic<HeimdallBuild> {
             it.realPowerUse
         }
         super.init()
@@ -117,45 +118,35 @@ open class Heimdall(name: String) : Block(name) {
     override fun setBars() {
         super.setBars()
         DebugOnly {
-            bars.add<HeimdallBuild>(R.Bar.FormationN) {
-                Bar(
-                    { "${it.formationEffects}" },
-                    { R.C.BrainWave },
-                    { if (it.formationEffects.isNotEmpty) 1f else 0f }
-                )
-            }
-            bars.add<HeimdallBuild>("shield") {
-                Bar(
-                    { "${it.shieldAmount.toInt()}" },
-                    { R.C.BrainWave },
-                    { it.shieldAmount / it.realForceFieldMax }
-                )
-            }
-            bars.add<HeimdallBuild>("last-damage-time") {
-                Bar(
-                    { it.lastShieldDamageTime.format(1) },
-                    { R.C.BrainWave },
-                    { it.lastShieldDamageTime / it.realForceFieldRestoreTime }
-                )
-            }
+            AddBar<HeimdallBuild>(R.Bar.FormationN,
+                { "${formationEffects}" },
+                { R.C.BrainWave },
+                { if (formationEffects.isNotEmpty) 1f else 0f }
+            )
+            AddBar<HeimdallBuild>("shield",
+                { "${shieldAmount.toInt()}" },
+                { R.C.BrainWave },
+                { shieldAmount / realForceFieldMax }
+            )
+            AddBar<HeimdallBuild>("last-damage-time",
+                { lastShieldDamageTime.format(1) },
+                { R.C.BrainWave },
+                { lastShieldDamageTime / realForceFieldRestoreTime }
+            )
 
-            bars.add<HeimdallBuild>("power-use") {
-                Bar(
-                    { "PowerUse:${(it.realPowerUse * 60).toInt()}" },
+            AddBar<HeimdallBuild>("power-use",
+                { "PowerUse:${(realPowerUse * 60).toInt()}" },
+                { Pal.power },
+                {
+                    maxPowerUse = maxPowerUse.coerceAtLeast(realPowerUse + 2f)
+                    realPowerUse / maxPowerUse
+                }
+            )
+            AddBar<HeimdallBuild>("max-brain-wave",
+                    { "BrainWaves:${(realMaxBrainWaveNum)}" },
                     { Pal.power },
-                    {
-                        maxPowerUse = maxPowerUse.coerceAtLeast(it.realPowerUse + 2f)
-                        it.realPowerUse / maxPowerUse
-                    }
+                    { realMaxBrainWaveNum / 5f }
                 )
-            }
-            bars.add<HeimdallBuild>("max-brain-wave") {
-                Bar(
-                    { "BrainWaves:${(it.realMaxBrainWaveNum)}" },
-                    { Pal.power },
-                    { it.realMaxBrainWaveNum / 5f }
-                )
-            }
         }
     }
 
@@ -451,7 +442,7 @@ open class Heimdall(name: String) : Block(name) {
             G.dashCircle(x, y, realRange, R.C.BrainWave)
         }
 
-        override fun canControl() = consValid()
+        override fun canControl() = canConsume()
         override fun unit(): MdtUnit {
             //make sure stats are correct
             unit.tile(this)

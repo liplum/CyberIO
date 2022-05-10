@@ -8,7 +8,7 @@ import mindustry.type.UnitType
 
 class BrainUnitType(name: String) : UnitType(name) {
     init {
-        defaultController = Prov {
+        aiController = Prov {
             object : GroundAI() {
                 override fun updateMovement() {
                     val nearest: Teamc? = Units.closestTarget(

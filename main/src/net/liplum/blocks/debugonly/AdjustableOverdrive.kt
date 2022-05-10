@@ -7,12 +7,12 @@ import arc.scene.ui.Slider
 import arc.scene.ui.layout.Table
 import arc.util.io.Reads
 import arc.util.io.Writes
-import mindustry.ui.Bar
 import mindustry.world.blocks.defense.OverdriveProjector
 import mindustry.world.meta.Stat
 import net.liplum.R
 import net.liplum.Serialized
 import net.liplum.lib.bundle
+import net.liplum.lib.ui.bars.AddBar
 import net.liplum.utils.*
 import kotlin.math.abs
 
@@ -38,15 +38,11 @@ open class AdjustableOverdrive(name: String) : OverdriveProjector(name) {
 
     override fun setBars() {
         super.setBars()
-        bars.add<AOBuild>(
-            "boost"
-        ) {
-            Bar(
-                { Core.bundle.format("bar.boost", it.realBoost().percentI) },
-                { baseColor },
-                { it.realBoost() / maxBoost / 2f }
-            )
-        }
+        AddBar<AOBuild>("boost",
+            { Core.bundle.format("bar.boost", realBoost().percentI) },
+            { baseColor },
+            { realBoost() / maxBoost / 2f }
+        )
     }
 
     override fun setStats() {

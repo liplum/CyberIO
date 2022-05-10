@@ -18,7 +18,6 @@ import mindustry.graphics.Drawf
 import mindustry.graphics.Layer
 import mindustry.graphics.Pal
 import mindustry.type.Liquid
-import mindustry.ui.Bar
 import mindustry.world.blocks.defense.turrets.Turret
 import mindustry.world.meta.Stat
 import mindustry.world.meta.StatUnit
@@ -33,6 +32,7 @@ import net.liplum.lib.animations.Floating
 import net.liplum.lib.bundle
 import net.liplum.lib.delegates.Delegate1
 import net.liplum.lib.shaders.use
+import net.liplum.lib.ui.bars.AddBar
 import net.liplum.persistance.intSet
 import net.liplum.registries.CioBulletTypes
 import net.liplum.registries.CioLiquids.cyberion
@@ -70,7 +70,7 @@ open class Stealth(name: String) : Turret(name) {
     }
 
     override fun init() {
-        consumes.powerDynamic<StealthBuild> {
+        consumePowerDynamic<StealthBuild> {
             if (it.isActive)
                 activePower + reactivePower
             else
@@ -279,11 +279,11 @@ open class Stealth(name: String) : Turret(name) {
         }
 
         override fun bullet(type: BulletType, angle: Float) {
-            val lifeScl = if (type.scaleVelocity)
+            val lifeScl = if (type.scaleLife)
                 Mathf.clamp(
                     Mathf.dst(x + tr.x, y + tr.y, targetPos.x, targetPos.y) / type.range(),
-                    minRange / type.range(),
-                    range / type.range()
+                    minRange / type.range,
+                    range / type.range
                 )
             else 1f
             val nearestPlayer = if (isControlled) {
@@ -327,27 +327,21 @@ open class Stealth(name: String) : Turret(name) {
     override fun setBars() {
         super.setBars()
         DebugOnly {
-            bars.add<StealthBuild>(R.Bar.RestRestoreN) {
-                Bar(
-                    { R.Bar.RestRestore.bundle(it.restRestore.toInt()) },
-                    { Pal.bar },
-                    { it.restRestore / it.maxHealth }
-                )
-            }
-            bars.add<StealthBuild>(R.Bar.ChargeN) {
-                Bar(
-                    { R.Bar.Charge.bundle(it.restoreCharge.seconds) },
-                    { Pal.power },
-                    { it.restoreCharge / restoreReload }
-                )
-            }
-            bars.add<StealthBuild>(R.Bar.LastDamagedN) {
-                Bar(
-                    { R.Bar.LastDamaged.bundle(it.lastDamagedTime.seconds) },
-                    { Pal.power },
-                    { it.lastDamagedTime / restoreReload }
-                )
-            }
+            AddBar<StealthBuild>(R.Bar.RestRestoreN,
+                { R.Bar.RestRestore.bundle(restRestore.toInt()) },
+                { Pal.bar },
+                { restRestore / maxHealth }
+            )
+            AddBar<StealthBuild>(R.Bar.ChargeN,
+                { R.Bar.Charge.bundle(restoreCharge.seconds) },
+                { Pal.power },
+                { restoreCharge / restoreReload }
+            )
+            AddBar<StealthBuild>(R.Bar.LastDamagedN,
+                { R.Bar.LastDamaged.bundle(lastDamagedTime.seconds) },
+                { Pal.power },
+                { lastDamagedTime / restoreReload }
+            )
         }
     }
 }

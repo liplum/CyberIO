@@ -200,8 +200,8 @@ fun IDataReceiver.drawRequirements() {
  * @param y        tile y
  */
 fun Block.drawLinkedLineToReceiverWhenConfiguring(x: Int, y: Int) {
-    if (!Vars.control.input.frag.config.isShown) return
-    val selected = Vars.control.input.frag.config.selectedTile
+    if (!Vars.control.input.config.isShown) return
+    val selected = Vars.control.input.config.selected
     if (selected !is IDataSender) {
         return
     }
@@ -251,8 +251,8 @@ fun IStreamClient.drawRequirements() {
  * @param y        tile y
  */
 fun Block.drawLinkedLineToClientWhenConfiguring(x: Int, y: Int) {
-    if (!Vars.control.input.frag.config.isShown) return
-    val selected = Vars.control.input.frag.config.selectedTile
+    if (!Vars.control.input.config.isShown) return
+    val selected = Vars.control.input.config.selected
     if (selected !is IStreamHost) {
         return
     }
@@ -380,7 +380,7 @@ fun IDataSender.drawReceivers(receivers: Iterable<Int>, showCircle: Boolean = tr
 }
 
 fun isConfiguringSender(): Boolean {
-    val selected = Vars.control.input.frag.config.selectedTile
+    val selected = Vars.control.input.config.selected
     return selected is IDataSender
 }
 /**
@@ -424,6 +424,6 @@ fun IStreamHost.drawClients(clients: Iterable<Int>, showCircle: Boolean = true) 
 }
 
 fun isConfiguringHost(): Boolean {
-    val selected = Vars.control.input.frag.config.selectedTile
+    val selected = Vars.control.input.config.selected
     return selected is IStreamHost
 }

@@ -20,9 +20,9 @@ import net.liplum.DebugOnly
 import net.liplum.Serialized
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
-import net.liplum.lib.animations.anis.AniState
 import net.liplum.lib.Draw
 import net.liplum.lib.DrawOn
+import net.liplum.lib.animations.anis.AniState
 import net.liplum.lib.animations.anis.config
 import net.liplum.lib.delegates.Delegate1
 import net.liplum.persistance.intSet
@@ -61,7 +61,7 @@ open class StreamClient(name: String) : AniedBlock<StreamClient, StreamClient.Cl
     override fun setBars() {
         super.setBars()
         DebugOnly {
-            bars.addHostInfo<ClientBuild>()
+            addHostInfo<ClientBuild>()
         }
     }
 
@@ -77,8 +77,8 @@ open class StreamClient(name: String) : AniedBlock<StreamClient, StreamClient.Cl
         this.drawLinkedLineToClientWhenConfiguring(x, y)
     }
 
-    override fun drawRequestConfig(req: BuildPlan, list: Eachable<BuildPlan>) {
-        drawRequestConfigCenter(req, req.config, "center", true)
+    override fun drawPlanConfig(req: BuildPlan, list: Eachable<BuildPlan>) {
+        drawPlanConfigCenter(req, req.config, "center", true)
     }
 
     open inner class ClientBuild : AniedBuild(), IStreamClient {
@@ -110,7 +110,7 @@ open class StreamClient(name: String) : AniedBlock<StreamClient, StreamClient.Cl
             }
             val outputLiquid = outputLiquid
             if (outputLiquid != null) {
-                if (consValid()) {
+                if (canConsume()) {
                     if (liquids.currentAmount() > 0.1f) {
                         dumpLiquid(outputLiquid)
                     }
@@ -125,7 +125,7 @@ open class StreamClient(name: String) : AniedBlock<StreamClient, StreamClient.Cl
         }
 
         override fun acceptedAmount(host: IStreamHost, liquid: Liquid): Float {
-            if (!consValid()) return 0f
+            if (!canConsume()) return 0f
             if (!isConnectedWith(host)) return 0f
             return if (liquid == outputLiquid)
                 liquidCapacity - liquids[outputLiquid]
@@ -155,7 +155,7 @@ open class StreamClient(name: String) : AniedBlock<StreamClient, StreamClient.Cl
             return true
         }
 
-        override fun onConfigureTileTapped(other: Building): Boolean {
+        override fun onConfigureBuildTapped(other: Building): Boolean {
             if (this == other) {
                 deselect()
                 configure(null)
@@ -202,10 +202,10 @@ open class StreamClient(name: String) : AniedBlock<StreamClient, StreamClient.Cl
     override fun genAniConfig() {
         config {
             From(NormalAni) To NoPowerAni When {
-                !consValid()
+                !canConsume()
             }
             From(NoPowerAni) To NormalAni When {
-                consValid()
+                canConsume()
             }
         }
     }

@@ -22,7 +22,7 @@ import net.liplum.lib.animations.anims.ixAuto
 import net.liplum.lib.animations.anis.*
 import net.liplum.lib.animations.blocks.*
 import net.liplum.lib.delegates.Delegate1
-import net.liplum.lib.ui.bars.removeItems
+import net.liplum.lib.ui.bars.removeItemsInBar
 import net.liplum.persistance.intSet
 import net.liplum.utils.*
 
@@ -75,11 +75,11 @@ open class Cloud(name: String) : PowerBlock(name) {
 
     override fun setBars() {
         super.setBars()
-        bars.removeItems()
+        removeItemsInBar()
         DebugOnly {
-            bars.addSenderInfo<CloudBuild>()
-            bars.addReceiverInfo<CloudBuild>()
-            bars.addTeamInfo()
+            addSenderInfo<CloudBuild>()
+            addReceiverInfo<CloudBuild>()
+            addTeamInfo()
         }
     }
 
@@ -217,7 +217,7 @@ open class Cloud(name: String) : PowerBlock(name) {
             drawTeamTop()
         }
 
-        override fun onConfigureTileTapped(other: Building): Boolean {
+        override fun onConfigureBuildTapped(other: Building): Boolean {
             if (this === other) {
                 deselect()
                 configure(null)
@@ -317,10 +317,10 @@ open class Cloud(name: String) : PowerBlock(name) {
     open fun genAniConfig() {
         CloudAniConfig = config {
             From(CloudNoPowerAni) To CloudIdleAni When {
-                consValid()
+                canConsume()
             }
             From(CloudIdleAni) To CloudNoPowerAni When {
-                !consValid()
+                !canConsume()
             }
             transitionDuration = 60f
         }
@@ -352,7 +352,7 @@ open class Cloud(name: String) : PowerBlock(name) {
             })
 
             DataAniBlock = addType(BlockType.render { _, build ->
-                if (build.consValid() && build.info.isDataTransferring) {
+                if (build.canConsume() && build.info.isDataTransferring) {
                     DataTransferAnim.draw(build.dataTransferIx) {
                         Draw.rect(
                             it,
@@ -364,7 +364,7 @@ open class Cloud(name: String) : PowerBlock(name) {
             })
 
             ShredderAniBlock = addType(BlockType.render { _, build ->
-                if (build.consValid() && build.info.isShredding) {
+                if (build.canConsume() && build.info.isShredding) {
                     ShredderAnim.draw(build.shredderIx) {
                         Draw.rect(
                             it,

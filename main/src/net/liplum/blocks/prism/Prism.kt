@@ -18,7 +18,6 @@ import mindustry.graphics.Layer
 import mindustry.graphics.Pal
 import mindustry.logic.LAccess
 import mindustry.logic.Ranged
-import mindustry.ui.Bar
 import mindustry.world.Block
 import mindustry.world.blocks.ControlBlock
 import mindustry.world.blocks.defense.turrets.Turret
@@ -28,6 +27,7 @@ import net.liplum.*
 import net.liplum.blocks.prism.CrystalManager.Companion.read
 import net.liplum.blocks.prism.CrystalManager.Companion.write
 import net.liplum.lib.bundle
+import net.liplum.lib.ui.bars.AddBar
 import net.liplum.math.Polar
 import net.liplum.utils.*
 import kotlin.math.abs
@@ -110,39 +110,31 @@ open class Prism(name: String) : Block(name) {
 
     override fun setBars() {
         super.setBars()
-        bars.add<PrismBuild>(R.Bar.PrismN) {
-            Bar(
-                {
-                    if (it.cm.validAmount > 1)
-                        "${it.crystalAmount} ${R.Bar.PrismPl.bundle()}"
-                    else
-                        "${it.crystalAmount} ${R.Bar.Prism.bundle()}"
-                }, AutoRGB,
-                { it.crystalAmount.toFloat() / maxCrystal }
-            )
-        }
+        AddBar<PrismBuild>(R.Bar.PrismN,
+            {
+                if (cm.validAmount > 1)
+                    "${crystalAmount} ${R.Bar.PrismPl.bundle()}"
+                else
+                    "${crystalAmount} ${R.Bar.Prism.bundle()}"
+            }, AutoRGBx,
+            { crystalAmount.toFloat() / maxCrystal }
+        )
         DebugOnly {
-            bars.add<PrismBuild>(R.Bar.ProgressN) {
-                Bar(
-                    { R.Bar.Progress.bundle(it.cm.process) },
-                    { Pal.power },
-                    { it.cm.process / 1f }
-                )
-            }
-            bars.add<PrismBuild>(R.Bar.StatusN) {
-                Bar(
-                    { it.cm.status.toString() },
-                    { Pal.accent },
-                    { 1f }
-                )
-            }
-            bars.add<PrismBuild>("obelisk-count") {
-                Bar(
-                    { "Obelisk:${it.cm.obeliskCount}" },
-                    { Pal.accent },
-                    { it.cm.obeliskCount.toFloat() / (maxCrystal - 1) }
-                )
-            }
+            AddBar<PrismBuild>(R.Bar.ProgressN,
+                { R.Bar.Progress.bundle(cm.process) },
+                { Pal.power },
+                { cm.process / 1f }
+            )
+            AddBar<PrismBuild>(R.Bar.StatusN,
+                { cm.status.toString() },
+                { Pal.accent },
+                { 1f }
+            )
+            AddBar<PrismBuild>("obelisk-count",
+                { "Obelisk:${cm.obeliskCount}" },
+                { Pal.accent },
+                { cm.obeliskCount.toFloat() / (maxCrystal - 1) }
+            )
         }
     }
 

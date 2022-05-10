@@ -19,6 +19,9 @@ import mindustry.world.blocks.ItemSelection
 import net.liplum.utils.TR
 import net.liplum.utils.invoke
 
+/**
+ * Copy from [ItemSelection.buildTable]
+ */
 fun <T : UnlockableContent> Table.addItemSelector(
     @Nullable block: Block?,
     items: Seq<T>,
@@ -35,10 +38,10 @@ fun <T : UnlockableContent> Table.addItemSelector(
     for (item in items) {
         if (!item.unlockedNow()) continue
         val button = cont.button(
-            Tex.whiteui, Styles.clearToggleTransi, 24f
+            Tex.whiteui, Styles.clearTogglei, 24f
         ) {
             if (closeSelect)
-                Vars.control.input.frag.config.hideConfig()
+                Vars.control.input.config.hideConfig()
         }.group(group).get()
         button.changed {
             consumer(if (button.isChecked) item else null)

@@ -37,7 +37,7 @@ import net.liplum.lib.shaders.SD
 import net.liplum.lib.shaders.use
 import net.liplum.lib.ui.addItemSelectorDefault
 import net.liplum.lib.ui.bars.AddBar
-import net.liplum.lib.ui.bars.removeItems
+import net.liplum.lib.ui.bars.removeItemsInBar
 import net.liplum.liquidCons.DynamicLiquidCons
 import net.liplum.registries.CioLiquids.cyberion
 import net.liplum.utils.ID
@@ -96,7 +96,7 @@ open class HoloProjector(name: String) : Block(name) {
     override fun setBars() {
         super.setBars()
         UndebugOnly {
-            bars.removeItems()
+            removeItemsInBar()
         }
         DebugOnly {
             AddBar<HoloPBuild>(R.Bar.ProgressN,
@@ -156,7 +156,7 @@ open class HoloProjector(name: String) : Block(name) {
             }
 
         override fun updateTile() {
-            if (!consValid()) return
+            if (!canConsume()) return
             val plan = curPlan ?: return
             progressTime += delta()
 
@@ -205,7 +205,7 @@ open class HoloProjector(name: String) : Block(name) {
             }
         }
 
-        override fun onConfigureTileTapped(other: Building): Boolean {
+        override fun onConfigureBuildTapped(other: Building): Boolean {
             if (this == other) {
                 deselect()
                 configure(null)
@@ -245,7 +245,7 @@ open class HoloProjector(name: String) : Block(name) {
         override fun draw() {
             super.draw()
             val curPlan = curPlan
-            val delta = if (consValid() && curPlan != null)
+            val delta = if (canConsume() && curPlan != null)
                 0.015f
             else
                 -0.015f

@@ -34,8 +34,8 @@ abstract class AniedCrafter<
     override fun setBars() {
         super.setBars()
         if (CioMod.DebugMode) {
-            bars.addProgressInfo<GenericCrafterBuild>()
-            bars.addAniStateInfo<AniedCrafterBuild>()
+            addProgressInfo<GenericCrafterBuild>()
+            addAniStateInfo<AniedCrafterBuild>()
         }
     }
 

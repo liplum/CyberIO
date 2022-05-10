@@ -92,9 +92,9 @@ open class AntiVirus(name: String) : Block(name) {
     override fun setBars() {
         super.setBars()
         DebugOnly {
-            bars.addRangeInfo<AntiVirusBuild>(100f)
+            addRangeInfo<AntiVirusBuild>(100f)
         }
-        bars.add<AntiVirusBuild>(R.Bar.CoolDownN) {
+        addBar<AntiVirusBuild>(R.Bar.CoolDownN) {
             ReverseBar(
                 { R.Bar.CoolDown.bundle(it.coolDown.seconds) },
                 { R.C.CoolDown },

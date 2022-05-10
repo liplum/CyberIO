@@ -1,11 +1,13 @@
 package net.liplum.blocks.prism
 
+import arc.graphics.Color
 import arc.util.Time
 import mindustry.entities.bullet.*
+import mindustry.gen.Building
 import mindustry.graphics.Pal
 import net.liplum.R
-import net.liplum.utils.ArrayList
 import net.liplum.lib.copyFrom
+import net.liplum.utils.ArrayList
 
 val BulletType.isTintIgnored: Boolean
     get() = this in IgnoredBullets || this::class.java in IgnoredClass
@@ -33,6 +35,12 @@ fun tintedRGB(b: BulletType): List<BulletType> {
 }
 
 val AutoRGB = {
+    val rgb = R.C.PrismRgbFG
+    val len = rgb.size
+    val total = len * 60f
+    rgb[((Time.time % total / total) * len).toInt().coerceIn(0, len - 1)]
+}
+val AutoRGBx: (Building) -> Color = {
     val rgb = R.C.PrismRgbFG
     val len = rgb.size
     val total = len * 60f

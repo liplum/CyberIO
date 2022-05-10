@@ -2,7 +2,6 @@ package net.liplum.blocks.icmachine
 
 import mindustry.graphics.Pal
 import mindustry.type.Item
-import mindustry.ui.Bar
 import net.liplum.ClientOnly
 import net.liplum.DebugOnly
 import net.liplum.R
@@ -13,6 +12,7 @@ import net.liplum.lib.animations.anis.AniState
 import net.liplum.lib.animations.anis.None
 import net.liplum.lib.animations.anis.config
 import net.liplum.lib.bundle
+import net.liplum.lib.ui.bars.AddBar
 import net.liplum.utils.*
 import kotlin.math.sqrt
 
@@ -36,15 +36,11 @@ open class ICMachineS(name: String) : AniedCrafter<ICMachineS, ICMachineS.ICMach
     override fun setBars() {
         super.setBars()
         DebugOnly {
-            bars.add<ICMachineSBuild>(
-                R.Bar.AlphaN
-            ) {
-                Bar(
-                    { R.Bar.Alpha.bundle(it.baffleAlpha.percentI) },
-                    { Pal.powerBar },
-                    { it.baffleAlpha / 1f }
-                )
-            }
+            AddBar<ICMachineSBuild>(                R.Bar.AlphaN,
+                { R.Bar.Alpha.bundle(baffleAlpha.percentI) },
+                { Pal.powerBar },
+                { baffleAlpha / 1f }
+            )
         }
     }
 

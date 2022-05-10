@@ -15,15 +15,14 @@ import mindustry.gen.Building
 import mindustry.gen.Call
 import mindustry.graphics.Layer
 import mindustry.graphics.Pal
-import mindustry.ui.Bar
 import mindustry.world.Block
 import mindustry.world.Tile
 import net.liplum.*
 import net.liplum.api.virus.UninfectedBlocksRegistry
 import net.liplum.lib.bundle
+import net.liplum.lib.ui.bars.AddBar
 import net.liplum.lib.yesNo
 import net.liplum.registries.CioShaders
-import net.liplum.utils.addSleepInfo
 import net.liplum.utils.off
 import net.liplum.utils.on
 import net.liplum.utils.sub
@@ -91,29 +90,22 @@ open class Virus(name: String) : Block(name) {
 
     override fun setBars() {
         super.setBars()
-        bars.add<VirusBuild>(R.Bar.GenerationN) {
-            Bar(
-                { R.Bar.Generation.bundle(it.curGeneration) },
-                { R.C.VirusBK },
-                { it.curGeneration / maxGenerationOrDefault.toFloat() }
-            )
-        }
+        AddBar<VirusBuild>(R.Bar.GenerationN,
+            { R.Bar.Generation.bundle(curGeneration) },
+            { R.C.VirusBK },
+            { curGeneration / maxGenerationOrDefault.toFloat() }
+        )
         DebugOnly {
-            bars.add<VirusBuild>(R.Bar.IsAliveN) {
-                Bar(
-                    { R.Bar.IsAlive.bundle(it.isAlive.yesNo()) },
-                    { R.C.IsAive },
-                    { if (it.isAlive) 1f else 0f }
-                )
-            }
-            bars.add<VirusBuild>(R.Bar.NeighborStateN) {
-                Bar(
-                    { "${it.neighborState.countOneBits()}" },
-                    { Pal.bar },
-                    { it.neighborState.countOneBits() / 8f }
-                )
-            }
-            bars.addSleepInfo()
+            AddBar<VirusBuild>(R.Bar.IsAliveN,
+                { R.Bar.IsAlive.bundle(isAlive.yesNo()) },
+                { R.C.IsAive },
+                { if (isAlive) 1f else 0f }
+            )
+            AddBar<VirusBuild>(R.Bar.NeighborStateN,
+                { "${neighborState.countOneBits()}" },
+                { Pal.bar },
+                { neighborState.countOneBits() / 8f }
+            )
         }
     }
 

@@ -46,8 +46,10 @@ fun MdtUnit.findLeaderInFormation(): MdtUnit {
 }
 
 fun Building.otherConsumersAreValid(consume: Consume): Boolean {
-    for (cons in this.block.consumes.all()) {
-        if (cons != consume && !cons.isOptional && !cons.valid(this)) {
+    for (cons in this.block.consumers) {
+        // TODO: Migration
+// if (cons != consume && !cons.optional && cons.efficiency(this) <= 0f) {
+        if (cons != consume && !cons.optional && !cons.valid(this)) {
             return false
         }
     }

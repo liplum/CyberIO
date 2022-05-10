@@ -24,7 +24,7 @@ import net.liplum.lib.animations.anims.Animation
 import net.liplum.lib.animations.anis.AniState
 import net.liplum.lib.animations.anis.config
 import net.liplum.lib.delegates.Delegate1
-import net.liplum.lib.ui.bars.removeItems
+import net.liplum.lib.ui.bars.removeItemsInBar
 import net.liplum.persistance.intSet
 import net.liplum.utils.TR
 import net.liplum.utils.addSenderInfo
@@ -82,15 +82,12 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
     override fun setBars() {
         super.setBars()
         UndebugOnly {
-            bars.removeItems()
-        }
-        DebugOnly {
-            bars.addSenderInfo<ReceiverBuild>()
+            removeItemsInBar()
         }
     }
 
-    override fun drawRequestConfig(req: BuildPlan, list: Eachable<BuildPlan>) {
-        drawRequestConfigCenter(req, req.config, "center", true)
+    override fun drawPlanConfig(req: BuildPlan, list: Eachable<BuildPlan>) {
+        drawPlanConfigCenter(req, req.config, "center", true)
     }
 
     override fun outputsItems(): Boolean = true
@@ -144,7 +141,7 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
                         lastFullDataDelta += Time.delta
                     }
                 }
-                if (consValid()) {
+                if (canConsume()) {
                     val dumped = dump(outputItem)
                     ClientOnly {
                         if (dumped) {
@@ -164,7 +161,7 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
                 { value: Item? -> configure(value) })
         }
 
-        override fun onConfigureTileTapped(other: Building): Boolean {
+        override fun onConfigureBuildTapped(other: Building): Boolean {
             if (this === other) {
                 deselect()
                 configure(null)
@@ -175,7 +172,7 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
 
         override fun acceptItem(source: Building, item: Item): Boolean = false
         override fun acceptedAmount(sender: IDataSender, itme: Item): Int {
-            if (!consValid()) return 0
+            if (!canConsume()) return 0
 
             return if (itme == outputItem)
                 getMaximumAccepted(outputItem) - items[outputItem]
@@ -237,7 +234,7 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
             From(UnconnectedAni) To DownloadAni When {
                 outputItem != null
             } To NoPowerAni When {
-                !consValid()
+                !canConsume()
             }
             // BlockedAni
             From(BlockedAni) To UnconnectedAni When {
@@ -245,7 +242,7 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
             } To DownloadAni When {
                 !isBlocked || lastFullDataDelta < fullTime
             } To NoPowerAni When {
-                !consValid()
+                !canConsume()
             }
             // DownloadAni
             From(DownloadAni) To UnconnectedAni When {
@@ -253,13 +250,13 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
             } To BlockedAni When {
                 isBlocked && lastFullDataDelta > fullTime
             } To NoPowerAni When {
-                !consValid()
+                !canConsume()
             }
             // NoPower
             From(NoPowerAni) To UnconnectedAni When {
-                consValid() && outputItem == null
+                canConsume() && outputItem == null
             } To DownloadAni When {
-                consValid() && outputItem != null
+                canConsume() && outputItem != null
             }
         }
     }

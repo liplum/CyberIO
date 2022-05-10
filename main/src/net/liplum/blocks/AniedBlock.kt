@@ -41,7 +41,7 @@ abstract class AniedBlock<
     override fun setBars() {
         super.setBars()
         if (CioMod.DebugMode) {
-            bars.addAniStateInfo<AniedBuild>()
+            addAniStateInfo<AniedBuild>()
         }
     }
     @Nullable

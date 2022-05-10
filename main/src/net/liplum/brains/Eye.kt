@@ -74,7 +74,7 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
     override fun setBars() {
         super.setBars()
         DebugOnly {
-            bars.addBrainInfo<EyeBuild>()
+            addBrainInfo<EyeBuild>()
         }
     }
 
@@ -149,7 +149,7 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
             Drawf.shadow(EyeBallTR, x - elevation, y - elevation)
             EyeBallTR.Draw(x, y)
             val radiusSpeed = radiusSpeed * Time.delta
-            val consValid = consValid()
+            val consValid = canConsume()
 
             if (consValid && (isShooting || lastInCombatTime < 40f || charging)) {
                 sight.approachR(PupilMax, radiusSpeed * 3f)

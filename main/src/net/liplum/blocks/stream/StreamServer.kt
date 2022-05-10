@@ -21,7 +21,8 @@ import net.liplum.Serialized
 import net.liplum.api.cyber.*
 import net.liplum.lib.DrawOn
 import net.liplum.lib.delegates.Delegate1
-import net.liplum.lib.ui.bars.removeLiquid
+import net.liplum.lib.mixin.total
+import net.liplum.lib.ui.bars.removeLiquidInBar
 import net.liplum.persistance.intSet
 import net.liplum.utils.*
 
@@ -39,7 +40,7 @@ open class StreamServer(name: String) : StreamHost(name) {
     }
 
     override fun initPowerUse() {
-        consumes.powerDynamic<ServerBuild> {
+        consumePowerDynamic<ServerBuild> {
             powerUseBase + (it.clients.size + it.hosts.size) * powerUsePerConnection
         }
     }
@@ -59,9 +60,9 @@ open class StreamServer(name: String) : StreamHost(name) {
 
     override fun setBars() {
         super.setBars()
-        bars.removeLiquid()
+        removeLiquidInBar()
         DebugOnly {
-            bars.addHostInfo<ServerBuild>()
+            addHostInfo<ServerBuild>()
         }
     }
 
@@ -107,9 +108,11 @@ open class StreamServer(name: String) : StreamHost(name) {
                 updateHostColor()
             }
         }
+
         open fun checkHostPos() {
             hosts.removeAll { !it.sh().exists }
         }
+
         @JvmField protected var restored = true
         override fun updateTile() {
             if (restored) {
@@ -134,7 +137,7 @@ open class StreamServer(name: String) : StreamHost(name) {
                     }
                 }
             }
-            if (!consValid()) return
+            if (!canConsume()) return
             if (fireproof) {
                 ForProximity(5) {
                     Fires.remove(tile)
@@ -187,7 +190,7 @@ open class StreamServer(name: String) : StreamHost(name) {
         }
 
         override fun acceptLiquid(source: Building, liquid: Liquid): Boolean {
-            return consValid() && liquids.get(liquid) < liquidCapacity
+            return canConsume() && liquids.get(liquid) < liquidCapacity
         }
 
         override fun handleLiquid(source: Building, liquid: Liquid, amount: Float) {
@@ -246,7 +249,7 @@ open class StreamServer(name: String) : StreamHost(name) {
         }
 
         override fun acceptedAmount(host: IStreamHost, liquid: Liquid): Float {
-            if (!consValid()) return 0f
+            if (!canConsume()) return 0f
             if (!isConnectedWith(host)) return 0f
             return liquidCapacity - liquids[liquid]
         }

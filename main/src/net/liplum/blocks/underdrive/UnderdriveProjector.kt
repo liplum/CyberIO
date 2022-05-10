@@ -26,7 +26,6 @@ import mindustry.graphics.Layer
 import mindustry.graphics.Pal
 import mindustry.input.Placement
 import mindustry.logic.Ranged
-import mindustry.ui.Bar
 import mindustry.world.Tile
 import mindustry.world.blocks.power.PowerGenerator
 import mindustry.world.meta.BlockGroup
@@ -37,6 +36,7 @@ import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.Serialized
 import net.liplum.lib.bundle
+import net.liplum.lib.ui.bars.AddBar
 import net.liplum.lib.ui.bars.ReverseBar
 import net.liplum.utils.*
 import kotlin.math.max
@@ -184,44 +184,32 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
 
     override fun setBars() {
         super.setBars()
-        bars.add<UnderdriveBuild>(
-            R.Bar.SlowDownN
-        ) {
+        addBar<UnderdriveBuild>(R.Bar.SlowDownN) {
             ReverseBar(
                 { R.Bar.SlowDown.bundle(it.realSlowDown.percentI) },
                 { color },
                 { it.restEfficiency / 1f }
             )
         }
-        bars.add<UnderdriveBuild>(
-            R.Bar.EfficiencyAbsorptionN
-        ) {
-            Bar(
-                { R.Bar.EfficiencyAbsorption.bundle(it.productionEfficiency.percentI) },
-                { Pal.powerBar },
-                { it.productionEfficiency / 1f }
-            )
-        }
+        AddBar<UnderdriveBuild>(R.Bar.EfficiencyAbsorptionN,
+            { R.Bar.EfficiencyAbsorption.bundle(productionEfficiency.percentI) },
+            { Pal.powerBar },
+            { productionEfficiency / 1f }
+        )
         DebugOnly {
-            bars.add<UnderdriveBuild>(
-                R.Bar.SpiralRotationSpeedN
-            ) {
-                Bar(
-                    { R.Bar.SpiralRotationSpeed.bundle(it.realSpiralRotateSpeed.format(2)) },
-                    { Pal.powerBar },
-                    { it.realSpiralRotateSpeed / 10f }
-                )
-            }
-            bars.add<UnderdriveBuild>(
-                R.Bar.AlphaN
-            ) {
-                Bar(
-                    { R.Bar.Alpha.bundle(it.alpha.format(2)) },
-                    { Color.blue },
-                    { it.alpha / 1f }
-                )
-            }
-            bars.addRangeInfo<UnderdriveBuild>(100f)
+            AddBar<UnderdriveBuild>(
+                R.Bar.SpiralRotationSpeedN,
+                { R.Bar.SpiralRotationSpeed.bundle(realSpiralRotateSpeed.format(2)) },
+                { Pal.powerBar },
+                { realSpiralRotateSpeed / 10f }
+            )
+            AddBar<UnderdriveBuild>(
+                R.Bar.AlphaN,
+                { R.Bar.Alpha.bundle(alpha.format(2)) },
+                { Color.blue },
+                { alpha / 1f }
+            )
+            addRangeInfo<UnderdriveBuild>(100f)
         }
     }
 

@@ -5,7 +5,6 @@ import arc.struct.EnumSet
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.gen.Building
-import mindustry.ui.Bar
 import mindustry.world.Block
 import mindustry.world.meta.BlockFlag
 import mindustry.world.meta.BlockGroup
@@ -17,6 +16,7 @@ import net.liplum.lib.animations.anims.Animation
 import net.liplum.lib.animations.anims.AnimationObj
 import net.liplum.lib.animations.anims.pingPong
 import net.liplum.lib.bundle
+import net.liplum.lib.ui.bars.AddBar
 import net.liplum.utils.TE
 import net.liplum.utils.autoAnim
 import net.liplum.utils.exists
@@ -44,17 +44,15 @@ open class PrismObelisk(name: String) : Block(name) {
 
     override fun setBars() {
         super.setBars()
-        bars.add<ObeliskBuild>(R.Bar.LinkedN) {
-            Bar(
-                {
-                    if (it.linked != -1)
-                        R.Bar.Linked.bundle()
-                    else
-                        R.Bar.NoLink.bundle()
-                }, AutoRGB,
-                { if (it.linked != -1) 1f else 0f }
-            )
-        }
+        AddBar<ObeliskBuild>(R.Bar.LinkedN,
+            {
+                if (linked != -1)
+                    R.Bar.Linked.bundle()
+                else
+                    R.Bar.NoLink.bundle()
+            }, AutoRGBx,
+            { if (linked != -1) 1f else 0f }
+        )
     }
 
     open inner class ObeliskBuild : Building() {

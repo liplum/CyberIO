@@ -8,6 +8,7 @@ import arc.util.Tmp
 import mindustry.Vars
 import mindustry.content.Fx
 import mindustry.entities.bullet.BasicBulletType
+import mindustry.entities.pattern.ShootSpread
 import mindustry.entities.units.BuildPlan
 import mindustry.gen.Building
 import mindustry.gen.Bullet
@@ -21,6 +22,7 @@ import net.liplum.api.IExecutioner
 import net.liplum.draw
 import net.liplum.lib.MapKeyBundle
 import net.liplum.lib.bundle
+import net.liplum.lib.mixin.shootPattern
 import net.liplum.lib.ui.ammoStats
 import net.liplum.utils.*
 
@@ -33,8 +35,9 @@ open class Deleter(name: String) : PowerTurret(name), IExecutioner {
     @JvmField var waveType: DeleterWave
 
     init {
-        shots = 18
-        spread = 3f
+        val shootPattern = shootPattern(ShootSpread())
+        shootPattern.shots = 18
+        shootPattern.spread = 3f
         targetAir = true
         targetGround = true
         waveType = DeleterWave()
@@ -74,8 +77,8 @@ open class Deleter(name: String) : PowerTurret(name), IExecutioner {
         ))
     }
 
-    override fun drawRequestRegion(req: BuildPlan, list: Eachable<BuildPlan>) {
-        super.drawRequestRegion(req, list)
+    override fun drawPlanRegion(req: BuildPlan, list: Eachable<BuildPlan>) {
+        super.drawPlanRegion(req, list)
         val team = Vars.player.team()
         Draw.color(team.color)
         Draw.rect(

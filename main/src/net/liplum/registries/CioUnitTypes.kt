@@ -9,9 +9,12 @@ import mindustry.ai.types.RepairAI
 import mindustry.content.Fx
 import mindustry.content.Items
 import mindustry.entities.abilities.RepairFieldAbility
+import mindustry.entities.bullet.BasicBulletType
 import mindustry.entities.bullet.LaserBoltBulletType
 import mindustry.entities.bullet.MissileBulletType
 import mindustry.gen.Sounds
+import mindustry.type.ItemStack
+import mindustry.type.Weapon
 import mindustry.type.ammo.ItemAmmoType
 import mindustry.type.ammo.PowerAmmoType
 import mindustry.world.meta.BlockFlag
@@ -42,7 +45,8 @@ object CioUnitTypes : ContentTable {
             AutoLife(maxHealth = 1600f, lose = 0.08f)
             health = 2000f
             speed = 2f
-            defaultController = Prov { MinerAI() }
+            controller
+            aiController = Prov { MinerAI() }
             lowAltitude = true
             flying = true
             hovering = true
@@ -77,9 +81,7 @@ object CioUnitTypes : ContentTable {
             engineOffset = 7f
             range = 150f
             armor = 3f
-            playerTargetFlags = arrayOf(null)
             targetFlags = arrayOf(BlockFlag.factory, null)
-            commandLimit = 5
             circleTarget = true
             ammoType = ItemAmmoType(Items.plastanium)
             enableRuvikTip = true
@@ -118,7 +120,7 @@ object CioUnitTypes : ContentTable {
                     60f, 4f, 2200f, 60f * 8
                 )
             )
-            defaultController = Prov { DefenderAI() }
+            aiController = Prov { DefenderAI() }
             HoloOpacity = 0.4f
             speed = 1.6f
             flying = true
@@ -138,7 +140,7 @@ object CioUnitTypes : ContentTable {
         }
         holoArchitect = NewUnitType(R.Unit.HoloArchitect, ::HoloUnitType, ::HoloUnit).apply {
             AutoLife(maxHealth = 2200f, lose = 0.15f)
-            defaultController = Prov { BuilderAI() }
+            aiController = Prov { BuilderAI() }
             speed = 3.5f
             HoloOpacity = 0.4f
             ColorOpacity = 0.05f
@@ -166,7 +168,7 @@ object CioUnitTypes : ContentTable {
                 reload = 30f
                 ejectEffect = Fx.none
                 recoil = 2f
-                shots = 2
+                shoot.shots = 2
                 shootSound = Sounds.missile
                 velocityRnd = 0.5f
                 inaccuracy = 15f
@@ -200,7 +202,7 @@ object CioUnitTypes : ContentTable {
                     activeEffect = HoloFx.healWaveDynamic
                 }
             )
-            defaultController = Prov { RepairAI() }
+            aiController = Prov { RepairAI() }
             flying = true
             hovering = true
             HoloOpacity = 0.4f
@@ -249,7 +251,6 @@ object CioUnitTypes : ContentTable {
             engineSize = 1.8f
             engineOffset = 5.7f
             range = 50f
-            isCounted = false
 
             ammoType = PowerAmmoType(500f)
             weapons.add(Weapon("${R.Unit.Brain}-hand".Cio).apply {

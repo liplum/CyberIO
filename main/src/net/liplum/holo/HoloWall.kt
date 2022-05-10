@@ -9,7 +9,6 @@ import mindustry.gen.Call
 import mindustry.graphics.Drawf
 import mindustry.graphics.Layer
 import mindustry.graphics.Pal
-import mindustry.ui.Bar
 import mindustry.world.blocks.defense.Wall
 import net.liplum.*
 import net.liplum.api.holo.IHoloEntity
@@ -17,6 +16,7 @@ import net.liplum.api.holo.IHoloEntity.Companion.minHealth
 import net.liplum.lib.animations.Floating
 import net.liplum.lib.bundle
 import net.liplum.lib.shaders.use
+import net.liplum.lib.ui.bars.AddBar
 import net.liplum.lib.yesNo
 import net.liplum.registries.CioShaders
 import net.liplum.utils.*
@@ -52,34 +52,26 @@ open class HoloWall(name: String) : Wall(name) {
     override fun setBars() {
         super.setBars()
         DebugOnly {
-            bars.add<HoloBuild>(R.Bar.IsProjectingN) {
-                Bar(
-                    { R.Bar.IsProjecting.bundle(it.isProjecting.yesNo()) },
-                    { Pal.bar },
-                    { if (it.isProjecting) 1f else 0f }
-                )
-            }
-            bars.add<HoloBuild>(R.Bar.RestRestoreN) {
-                Bar(
-                    { R.Bar.RestRestore.bundle(it.restRestore.toInt()) },
-                    { Pal.bar },
-                    { it.restRestore / it.maxHealth }
-                )
-            }
-            bars.add<HoloBuild>(R.Bar.ChargeN) {
-                Bar(
-                    { R.Bar.Charge.bundle(it.restoreCharge.seconds) },
-                    { Pal.power },
-                    { it.restoreCharge / restoreReload }
-                )
-            }
-            bars.add<HoloBuild>(R.Bar.LastDamagedN) {
-                Bar(
-                    { R.Bar.LastDamaged.bundle(it.lastDamagedTime.seconds) },
-                    { Pal.power },
-                    { it.lastDamagedTime / restoreReload }
-                )
-            }
+            AddBar<HoloBuild>(R.Bar.IsProjectingN,
+                { R.Bar.IsProjecting.bundle(isProjecting.yesNo()) },
+                { Pal.bar },
+                { if (isProjecting) 1f else 0f }
+            )
+            AddBar<HoloBuild>(R.Bar.RestRestoreN,
+                { R.Bar.RestRestore.bundle(restRestore.toInt()) },
+                { Pal.bar },
+                { restRestore / maxHealth }
+            )
+            AddBar<HoloBuild>(R.Bar.ChargeN,
+                { R.Bar.Charge.bundle(restoreCharge.seconds) },
+                { Pal.power },
+                { restoreCharge / restoreReload }
+            )
+            AddBar<HoloBuild>(R.Bar.LastDamagedN,
+                { R.Bar.LastDamaged.bundle(lastDamagedTime.seconds) },
+                { Pal.power },
+                { lastDamagedTime / restoreReload }
+            )
         }
     }
 

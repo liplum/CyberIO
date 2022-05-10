@@ -28,7 +28,7 @@ fun JsonValue.getValue(): Any? {
             if (name.endsWith("[S]"))
                 asStringArray()
             if (name.endsWith("[F]"))
-                asFloatSeq()
+                asFloatArray()
             if (name.endsWith("[I]"))
                 asIntArray()
             if (name.endsWith("[B]"))
