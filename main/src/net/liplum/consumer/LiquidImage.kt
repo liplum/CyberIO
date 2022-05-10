@@ -1,4 +1,4 @@
-package net.liplum.liquidCons
+package net.liplum.consumer
 
 import arc.scene.ui.Image
 import arc.scene.ui.layout.Stack

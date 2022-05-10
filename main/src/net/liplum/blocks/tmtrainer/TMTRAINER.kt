@@ -1,19 +1,24 @@
 package net.liplum.blocks.tmtrainer
 
-import arc.Core
 import arc.graphics.g2d.Draw
+import arc.graphics.g2d.TextureRegion
 import arc.util.Time
 import mindustry.graphics.Drawf
-import mindustry.graphics.Layer
+import mindustry.world.Block
 import mindustry.world.blocks.defense.turrets.ItemTurret
+import mindustry.world.blocks.defense.turrets.Turret
+import mindustry.world.draw.DrawTurret
 import net.liplum.ClientOnly
 import net.liplum.WhenNotPaused
+import net.liplum.draw
 import net.liplum.lib.animations.anims.Animation
 import net.liplum.lib.animations.anims.AnimationObj
 import net.liplum.lib.animations.anims.ITimeModifier
-import net.liplum.draw
 import net.liplum.math.Polar
-import net.liplum.utils.*
+import net.liplum.utils.TR
+import net.liplum.utils.autoAnim
+import net.liplum.utils.radian
+import net.liplum.utils.sub
 
 open class TMTRAINER(name: String) : ItemTurret(name) {
     @ClientOnly lateinit var CoreAnim: Animation
@@ -25,21 +30,60 @@ open class TMTRAINER(name: String) : ItemTurret(name) {
     @JvmField var maxVirusChargeSpeedUp = 2.5f
 
     init {
-        alternate = true
-        inaccuracy = 1f
-        rotateSpeed = 10f
-    }
+        drawer = object : DrawTurret() {
+            lateinit var CoreAnim: Animation
+            lateinit var EmptyCoreAnim: Animation
+            lateinit var HeadTR: TR
+            override fun load(b: Block) = b.run {
+                super.load(this)
+                CoreAnim = autoAnim("core", CoreAnimFrames, 60f)
+                HeadTR = sub("head")
+                EmptyCoreAnim = autoAnim("core-empty", CoreAnimFrames, 60f)
+            }
 
-    override fun load() {
-        super.load()
-        CoreAnim = this.autoAnim("core", CoreAnimFrames, 60f)
-        HeadTR = this.sub("head")
-        EmptyCoreAnim = this.autoAnim("core-empty", CoreAnimFrames, 60f)
-    }
+            override fun icons(block: Block): Array<TextureRegion> =
+                arrayOf(base, HeadTR, region)
 
-    override fun icons() = arrayOf(
-        baseRegion, HeadTR, region
-    )
+            override fun drawTurret(t: Turret, b: TurretBuild) = (b as TMTRAINERBUILD).run {
+                WhenNotPaused {
+                    coreAnimObj.spend(Time.delta)
+                    emptyCoreAnimObj.spend(Time.delta)
+                    targetPol.a = rotation.radian
+                    var tpr = targetPol.r
+                    val delta = virusCharge * 0.001f
+                    tpr = if (wasShooting) tpr - delta else tpr + delta
+                    tpr = tpr.coerceIn(headMin, headMax)
+                    targetPol.r = tpr
+                }
+                val drawRotation = rotation.draw
+                val drawX = x + recoilOffset.x
+                val drawY = y + recoilOffset.y
+                Draw.rect(
+                    HeadTR,
+                    drawX + targetPol.x,
+                    drawY + targetPol.y,
+                    drawRotation
+                )
+
+                Drawf.shadow(region, drawX - elevation, drawY - elevation, drawRotation)
+                super.draw(this)
+                emptyCoreAnimObj.draw(
+                    drawX,
+                    drawY,
+                    drawRotation
+                )
+                if (unit.ammo() > 0) {
+                    Draw.alpha(unit.ammof())
+                    coreAnimObj.draw(
+                        drawX,
+                        drawY,
+                        drawRotation
+                    )
+                    Draw.color()
+                }
+            }
+        }
+    }
 
     open inner class TMTRAINERBUILD : ItemTurretBuild() {
         @ClientOnly lateinit var coreAnimObj: AnimationObj
@@ -67,57 +111,6 @@ open class TMTRAINER(name: String) : ItemTurret(name) {
             super.update()
             val delta = if (wasShooting) delta() else -delta()
             virusCharge += delta / 2.5f
-        }
-
-        override fun draw() {
-            WhenNotPaused {
-                coreAnimObj.spend(Time.delta)
-                emptyCoreAnimObj.spend(Time.delta)
-            }
-            Draw.rect(baseRegion, x, y)
-            Draw.color()
-
-            Draw.z(Layer.turret)
-            WhenNotPaused {
-                targetPol.a = rotation.radian
-                var tpr = targetPol.r
-                val delta = virusCharge * 0.001f
-                tpr = if (wasShooting) tpr - delta else tpr + delta
-                tpr = tpr.coerceIn(headMin, headMax)
-                targetPol.r = tpr
-            }
-
-            tr2.trns(rotation, -recoil)
-            val drawRotation = rotation.draw
-            val drawX = x + tr2.x
-            val drawY = y + tr2.y
-            Draw.rect(
-                HeadTR,
-                drawX + targetPol.x,
-                drawY + targetPol.y,
-                drawRotation
-            )
-
-            Drawf.shadow(region, drawX - elevation, drawY - elevation, drawRotation)
-            drawer(this)
-            emptyCoreAnimObj.draw(
-                drawX,
-                drawY,
-                drawRotation
-            )
-            if (unit.ammo() > 0) {
-                Draw.alpha(unit.ammof())
-                coreAnimObj.draw(
-                    drawX,
-                    drawY,
-                    drawRotation
-                )
-                Draw.color()
-            }
-
-            if (Core.atlas.isFound(heatRegion)) {
-                heatDrawer(this)
-            }
         }
     }
 }

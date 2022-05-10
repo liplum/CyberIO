@@ -5,8 +5,8 @@ import arc.graphics.Color
 import arc.graphics.g2d.Draw
 import arc.graphics.g2d.Fill
 import arc.graphics.g2d.Lines
-import arc.math.Angles
 import arc.math.Mathf
+import arc.math.Scaled
 import arc.scene.ui.Image
 import arc.scene.ui.layout.Table
 import arc.util.Scaling
@@ -15,6 +15,7 @@ import mindustry.Vars
 import mindustry.ai.types.LogicAI
 import mindustry.content.Blocks
 import mindustry.content.Fx
+import mindustry.entities.part.DrawPart
 import mindustry.gen.Iconc
 import mindustry.gen.Payloadc
 import mindustry.gen.Unit
@@ -32,6 +33,9 @@ import net.liplum.lib.time
 import net.liplum.utils.healthPct
 import kotlin.math.min
 
+/**
+ * Only support flying unit for now.
+ */
 open class HoloUnitType(name: String) : UnitType(name) {
     @JvmField @ClientOnly var ColorOpacity = -1f
     @JvmField @ClientOnly var HoloOpacity = -1f
@@ -52,9 +56,9 @@ open class HoloUnitType(name: String) : UnitType(name) {
         healColor = R.C.Holo
         engineColorInner = R.C.HoloDark
         mechLegColor = R.C.HoloDark
-        destructibleWreck = false
+        wreckRegions = emptyArray()
         fallEffect = Fx.none
-        fallThrusterEffect = Fx.none
+        fallEngineEffect = Fx.none
         deathExplosionEffect = Fx.none
         canDrown = false
         immunities.addAll(Vars.content.statusEffects())
@@ -81,18 +85,24 @@ open class HoloUnitType(name: String) : UnitType(name) {
         }
 
     override fun draw(unit: Unit) {
-        val z =
-            if (unit.elevation > 0.5f) if (lowAltitude) Layer.flyingUnitLow else Layer.flyingUnit else groundLayer + Mathf.clamp(
-                hitSize / 4000f,
-                0f,
-                0.01f
-            )
+        if (unit.inFogTo(Vars.player.team())) return
+        val isPayload = !unit.isAdded
+        val z = if (isPayload)
+            Draw.z()
+        else
+            if (unit.elevation > 0.5f)
+                if (lowAltitude)
+                    Layer.flyingUnitLow
+                else
+                    Layer.flyingUnit
+            else
+                groundLayer + Mathf.clamp(hitSize / 4000f, 0f, 0.01f)
 
         if (unit.controller().isBeingControlled(Vars.player.unit())) {
             drawControl(unit)
         }
 
-        if (unit.isFlying || visualElevation > 0) {
+        if (!isPayload && (unit.isFlying || shadowElevation > 0)) {
             Draw.z(min(Layer.darkness, z - 1f))
             drawShadow(unit)
         }
@@ -108,7 +118,6 @@ open class HoloUnitType(name: String) : UnitType(name) {
         val alpha = unit.holoAlpha
         drawSoftShadow(unit, alpha)
 
-        Draw.z(z)
         SD.Hologram.use {
             it.alpha = alpha
             it.opacityNoise *= 2f - healthPct
@@ -118,19 +127,19 @@ open class HoloUnitType(name: String) : UnitType(name) {
             if (HoloOpacity > 0f) {
                 it.blendHoloColorOpacity = HoloOpacity
             }
+            Draw.z(z)
             if (drawBody) {
                 drawOutline(unit)
             }
             drawWeaponOutlines(unit)
-            if (engineSize > 0) {
-                drawEngine(unit)
-            }
-            if (drawBody) {
+            if (engineLayer > 0)
+                Draw.z(engineLayer)
+            if (engineSize > 0)
+                drawEngines(unit)
+            if (drawBody)
                 drawBody(unit)
-            }
-            if (drawCell) {
+            if (drawCell)
                 drawCell(unit)
-            }
             drawWeapons(unit)
             drawLight(unit)
         }
@@ -141,31 +150,40 @@ open class HoloUnitType(name: String) : UnitType(name) {
         if (drawItems) {
             drawItems(unit)
         }
-
-        if (decals.size > 0) {
-            val base = unit.rotation - 90
-            for (d in decals) {
-                Draw.z(d.layer)
-                Draw.scl(d.xScale, d.yScale)
-                Draw.color(d.color)
-                Draw.rect(
-                    d.region,
-                    unit.x + Angles.trnsx(base, d.x, d.y),
-                    unit.y + Angles.trnsy(base, d.x, d.y),
-                    base + d.rotation
-                )
+        // TODO: need update maybe
+        for ((i, part) in parts.withIndex()) {
+            val first = if (unit.mounts.size > part.weaponIndex)
+                unit.mounts[part.weaponIndex]
+            else null
+            if (first != null) {
+                DrawPart.params.set(first.warmup, first.reload / weapons.first().reload, first.smoothReload, first.heat, unit.x, unit.y,
+                    unit.rotation)
+            } else {
+                DrawPart.params.set(0f, 0f, 0f, 0f, unit.x, unit.y, unit.rotation)
             }
-            Draw.reset()
-            Draw.z(z)
+            if (unit is Scaled) {
+                DrawPart.params.life = unit.fin()
+            }
+            part.draw(DrawPart.params)
         }
 
-        if (unit.abilities.size > 0) {
+        if (!isPayload) {
             for (a in unit.abilities) {
                 Draw.reset()
                 a.draw(unit)
             }
         }
         Draw.reset()
+    }
+
+    override fun <T> drawPayload(unit: T) where T : Unit, T : Payloadc {
+        if (unit.hasPayload()) {
+            val pay = unit.payloads().first()
+            pay.set(unit.x, unit.y, unit.rotation)
+            SD.Hologram.use {
+                pay.draw()
+            }
+        }
     }
 
     override fun getRequirements(

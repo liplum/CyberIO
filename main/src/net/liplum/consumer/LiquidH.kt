@@ -1,4 +1,4 @@
-package net.liplum.liquidCons
+package net.liplum.consumer
 
 import mindustry.type.Liquid
 import mindustry.type.LiquidStack

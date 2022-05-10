@@ -2,7 +2,6 @@ package net.liplum.holo
 
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
-import arc.math.Mathf
 import arc.struct.ObjectMap
 import arc.struct.ObjectSet
 import arc.struct.OrderedSet
@@ -18,7 +17,9 @@ import mindustry.graphics.Drawf
 import mindustry.graphics.Layer
 import mindustry.graphics.Pal
 import mindustry.type.Liquid
+import mindustry.world.Block
 import mindustry.world.blocks.defense.turrets.Turret
+import mindustry.world.draw.DrawTurret
 import mindustry.world.meta.Stat
 import mindustry.world.meta.StatUnit
 import mindustry.world.meta.StatValues
@@ -27,6 +28,7 @@ import net.liplum.api.cyber.*
 import net.liplum.api.holo.IHoloEntity
 import net.liplum.api.holo.IHoloEntity.Companion.minHealth
 import net.liplum.bullets.RuvikBullet
+import net.liplum.consumer.LiquidTurretCons
 import net.liplum.lib.Draw
 import net.liplum.lib.animations.Floating
 import net.liplum.lib.bundle
@@ -45,9 +47,6 @@ open class Stealth(name: String) : Turret(name) {
     @JvmField var shootType: BulletType = CioBulletTypes.ruvik2
     @JvmField var activePower = 2.5f
     @JvmField var reactivePower = 0.5f
-    @ClientOnly lateinit var BaseTR: TR
-    @ClientOnly lateinit var ImageTR: TR
-    @ClientOnly lateinit var UnknownTR: TR
     @JvmField var minHealthProportion = 0.05f
     @ClientOnly @JvmField var FloatingRange = 0.6f
     @JvmField var restoreReq = 30f
@@ -64,12 +63,11 @@ open class Stealth(name: String) : Turret(name) {
         //Turret
         hasLiquids = true
         hasPower = true
-        acceptCoolant = false
         acceptsItems = false
-        consumes.consumesLiquid(cyberion)
     }
 
     override fun init() {
+        consume(LiquidTurretCons(cyberion))
         consumePowerDynamic<StealthBuild> {
             if (it.isActive)
                 activePower + reactivePower
@@ -77,13 +75,6 @@ open class Stealth(name: String) : Turret(name) {
                 reactivePower
         }
         super.init()
-    }
-
-    override fun load() {
-        super.load()
-        BaseTR = this.sub("base")
-        ImageTR = this.sub("image")
-        UnknownTR = region
     }
 
     override fun setStats() {
@@ -98,6 +89,58 @@ open class Stealth(name: String) : Turret(name) {
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)
         this.drawLinkedLineToClientWhenConfiguring(x, y)
+    }
+
+    init {
+        drawer = object : DrawTurret() {
+            lateinit var BaseTR: TR
+            lateinit var ImageTR: TR
+            lateinit var UnknownTR: TR
+            override fun load(block: Block) = block.run {
+                super.load(block)
+                BaseTR = this.sub("base")
+                ImageTR = this.sub("image")
+                UnknownTR = region
+            }
+
+            override fun draw(build: Building) = (build as StealthBuild).run {
+                WhenNotPaused {
+                    val d = G.D(0.1f * FloatingRange * delta() * (2f - healthPct))
+                    floating.move(d)
+                }
+                Draw.z(Layer.blockUnder)
+                Drawf.shadow(x, y, 10f)
+                Draw.z(Layer.block)
+                Draw.rect(BaseTR, x, y)
+                if (isProjecting) {
+                    CioShaders.Hologram.use(Layer.power) {
+                        val healthPct = healthPct
+                        it.alpha = healthPct / 4f * 3f
+                        it.opacityNoise *= 2f - healthPct
+                        it.flickering = it.DefaultFlickering + (1f - healthPct)
+                        it.blendHoloColorOpacity = 0f
+                        Draw.color(R.C.Holo)
+                        ImageTR.Draw(
+                            x + recoilOffset.x + floating.dx,
+                            y + recoilOffset.y + floating.dy,
+                            rotation.draw
+                        )
+                        Draw.reset()
+                    }
+                }
+                // TODO: Since it's only on local, why not use static one?
+                if (unit.isLocal && shootType is RuvikBullet) {
+                    if (isShooting) {
+                        ruvikTipAlpha += 2f / ruvikShootingTipTime
+                    } else {
+                        ruvikTipAlpha -= 0.5f / ruvikShootingTipTime
+                    }
+                    if (ruvikTipAlpha > 0f) {
+                        G.drawDashCircle(x, y, range, color = R.C.Holo, alpha = ruvikTipAlpha)
+                    }
+                }
+            }
+        }
     }
 
     open inner class StealthBuild : TurretBuild(), IStreamClient, IHoloEntity {
@@ -192,57 +235,12 @@ open class Stealth(name: String) : Turret(name) {
             }
         }
         @ClientOnly
-        open fun updateFloating() {
-            val d = G.D(0.1f * FloatingRange * delta() * (2f - healthPct))
-            floating.move(d)
-        }
-        @ClientOnly
         var ruvikTipAlpha = 0f
             set(value) {
                 field = value.coerceIn(0f, 1f)
             }
         @ClientOnly @JvmField
         var floating: Floating = Floating(FloatingRange).randomXY().changeRate(1)
-        override fun draw() {
-            WhenNotPaused {
-                updateFloating()
-            }
-            Draw.z(Layer.blockUnder)
-            Drawf.shadow(x, y, 10f)
-            Draw.z(Layer.block)
-            Draw.rect(BaseTR, x, y)
-            tr2.trns(rotation, -recoil)
-            val tr2x = tr2.x
-            val tr2y = tr2.y
-            if (isProjecting) {
-                CioShaders.Hologram.use(Layer.power) {
-                    val healthPct = healthPct
-                    it.alpha = healthPct / 4f * 3f
-                    it.opacityNoise *= 2f - healthPct
-                    it.flickering = it.DefaultFlickering + (1f - healthPct)
-                    it.blendHoloColorOpacity = 0f
-                    Draw.color(R.C.Holo)
-                    ImageTR.Draw(
-                        x + tr2x + floating.dx,
-                        y + tr2y + floating.dy,
-                        rotation.draw
-                    )
-                    Draw.reset()
-                }
-            }
-            Draw.reset()
-            if (unit.isLocal && shootType is RuvikBullet) {
-                if (isShooting) {
-                    ruvikTipAlpha += 2f / ruvikShootingTipTime
-                } else {
-                    ruvikTipAlpha -= 0.5f / ruvikShootingTipTime
-                }
-                if (ruvikTipAlpha > 0f) {
-                    G.drawDashCircle(x, y, range, color = R.C.Holo, alpha = ruvikTipAlpha)
-                }
-            }
-        }
-
         override fun drawSelect() {
             G.dashCircle(x, y, range, R.C.HoloDark)
             whenNotConfiguringHost {
@@ -278,14 +276,8 @@ open class Stealth(name: String) : Turret(name) {
                 0f
         }
 
-        override fun bullet(type: BulletType, angle: Float) {
-            val lifeScl = if (type.scaleLife)
-                Mathf.clamp(
-                    Mathf.dst(x + tr.x, y + tr.y, targetPos.x, targetPos.y) / type.range(),
-                    minRange / type.range,
-                    range / type.range
-                )
-            else 1f
+        override fun handleBullet(bullet: Bullet, offsetX: Float, offsetY: Float, angleOffset: Float) {
+            super.handleBullet(bullet, offsetX, offsetY, angleOffset)
             val nearestPlayer = if (isControlled) {
                 unit().findPlayer()
             } else {
@@ -293,10 +285,7 @@ open class Stealth(name: String) : Turret(name) {
                     it.team() == team && it.dst(this) <= range
                 }
             }
-            type.create(
-                this, team, x + tr.x, y + tr.y, angle, -1f,
-                1f + Mathf.range(velocityInaccuracy), lifeScl, nearestPlayer
-            )
+            bullet.data = nearestPlayer
         }
 
         override fun peekAmmo() = shootType

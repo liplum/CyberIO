@@ -31,6 +31,7 @@ import mindustry.world.consumers.ConsumeItemDynamic
 import mindustry.world.meta.BlockGroup
 import mindustry.world.meta.Stat
 import net.liplum.*
+import net.liplum.consumer.DynamicLiquidCons
 import net.liplum.lib.Draw
 import net.liplum.lib.bundle
 import net.liplum.lib.shaders.SD
@@ -38,7 +39,6 @@ import net.liplum.lib.shaders.use
 import net.liplum.lib.ui.addItemSelectorDefault
 import net.liplum.lib.ui.bars.AddBar
 import net.liplum.lib.ui.bars.removeItemsInBar
-import net.liplum.liquidCons.DynamicLiquidCons
 import net.liplum.registries.CioLiquids.cyberion
 import net.liplum.utils.ID
 import net.liplum.utils.ItemTypeAmount
@@ -50,6 +50,7 @@ open class HoloProjector(name: String) : Block(name) {
     @JvmField var itemCapabilities: IntArray = IntArray(0)
     @JvmField var cyberionCapacity: Float = 0f
     @JvmField var holoUnitCapacity = 8
+    @JvmField var powerUse = 3f
     @ClientOnly @JvmField var projectorShrink = 5f
     @ClientOnly @JvmField var projectorCenterRate = 3f
 
@@ -66,15 +67,18 @@ open class HoloProjector(name: String) : Block(name) {
             obj.setPlan(plan.toInt())
         }
 
-        consumes.add(ConsumeItemDynamic<HoloPBuild> {
+        consume(ConsumeItemDynamic<HoloPBuild> {
             it.curPlan.itemReqs
         })
-        consumes.add(DynamicLiquidCons.create<HoloPBuild> {
+        consume(DynamicLiquidCons.create<HoloPBuild> {
             it.curPlan.cyberionReq
         })
     }
 
     override fun init() {
+        consumePowerCond<HoloPBuild>(powerUse) {
+            it.curPlan != null
+        }
         itemCapabilities = IntArray(ItemTypeAmount())
         for (plan in plans) {
             for (itemReq in plan.itemReqs) {

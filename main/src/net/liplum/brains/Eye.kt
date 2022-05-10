@@ -102,10 +102,10 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
                 ).apply {
                     var forward = true
                     isForward = {
-                        forward || isShooting || charging
+                        forward || isShooting || charging()
                     }
                     onEnd = {
-                        if (!isShooting && !charging) {
+                        if (!isShooting && !charging()) {
                             forward = !forward
                             isEnd = false
                         }

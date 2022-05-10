@@ -14,7 +14,10 @@ import mindustry.gen.Building
 import mindustry.gen.Bullet
 import mindustry.gen.Healthc
 import mindustry.gen.Hitboxc
+import mindustry.world.Block
 import mindustry.world.blocks.defense.turrets.PowerTurret
+import mindustry.world.blocks.defense.turrets.Turret
+import mindustry.world.draw.DrawTurret
 import mindustry.world.meta.Stat
 import net.liplum.ClientOnly
 import net.liplum.R
@@ -29,7 +32,6 @@ import net.liplum.utils.*
 private val P2Alpha = quadratic(0.95f, 0.35f)
 
 open class Deleter(name: String) : PowerTurret(name), IExecutioner {
-    @ClientOnly lateinit var HaloTR: TR
     override var executeProportion: Float = 0.2f
     @JvmField var extraLostHpBounce = 0.01f
     @JvmField var waveType: DeleterWave
@@ -42,11 +44,6 @@ open class Deleter(name: String) : PowerTurret(name), IExecutioner {
         targetGround = true
         waveType = DeleterWave()
         shootType = waveType
-    }
-
-    override fun load() {
-        super.load()
-        HaloTR = this.sub("halo")
     }
 
     open fun configBullet(config: DeleterWave.() -> Unit) {
@@ -77,29 +74,30 @@ open class Deleter(name: String) : PowerTurret(name), IExecutioner {
         ))
     }
 
-    override fun drawPlanRegion(req: BuildPlan, list: Eachable<BuildPlan>) {
-        super.drawPlanRegion(req, list)
-        val team = Vars.player.team()
-        Draw.color(team.color)
-        Draw.rect(
-            HaloTR,
-            req.drawx(),
-            req.drawy()
-        )
-        Draw.reset()
-    }
+    init {
+        drawer = object : DrawTurret() {
+            lateinit var HaloTR: TR
+            override fun load(b: Block) {
+                super.load(this@Deleter)
+                HaloTR = this@Deleter.sub("halo")
+            }
 
-    open inner class DeleterBuild : PowerTurretBuild() {
-        override fun draw() {
-            super.draw()
-            Draw.color(team.color)
-            Draw.rect(
-                HaloTR,
-                x + tr2.x,
-                y + tr2.y,
-                rotation.draw
-            )
-            Draw.reset()
+            override fun drawTurret(t: Turret, b: TurretBuild) = b.run {
+                super.drawTurret(this@Deleter, this)
+                Draw.color(team.color)
+                Draw.rect(
+                    HaloTR,
+                    x + recoilOffset.x,
+                    y + recoilOffset.y,
+                    rotation.draw
+                )
+            }
+
+            override fun drawPlan(block: Block, plan: BuildPlan, list: Eachable<BuildPlan>) {
+                super.drawPlan(this@Deleter, plan, list)
+                Draw.color(Vars.player.team().color)
+                Draw.rect(HaloTR, plan.drawx(), plan.drawy())
+            }
         }
     }
 
@@ -140,7 +138,7 @@ open class Deleter(name: String) : PowerTurret(name), IExecutioner {
             }
         }
 
-        override fun hitTile(b: Bullet, build: Building, initialHealth: Float, direct: Boolean) {
+        override fun hitTile(b: Bullet, build: Building, x: Float, y: Float, initialHealth: Float, direct: Boolean) {
             onHitTarget(b, build)
         }
 

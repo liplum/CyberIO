@@ -6,6 +6,8 @@ import arc.struct.Seq
 import mindustry.content.*
 import mindustry.entities.bullet.LaserBulletType
 import mindustry.entities.bullet.LightningBulletType
+import mindustry.entities.effect.MultiEffect
+import mindustry.entities.pattern.ShootAlternate
 import mindustry.game.EventType.Trigger
 import mindustry.gen.Sounds
 import mindustry.type.Category
@@ -47,13 +49,12 @@ import net.liplum.blocks.virus.Virus
 import net.liplum.brains.*
 import net.liplum.bullets.RuvikBullet
 import net.liplum.bullets.STEM_VERSION
-import net.liplum.bullets.ShaderCLaser
+import net.liplum.bullets.ShaderCLaserT
 import net.liplum.holo.*
 import net.liplum.lib.animations.ganim.globalAnim
 import net.liplum.lib.shaders.SD
 import net.liplum.lib.shaders.TrShader
 import net.liplum.seffects.StaticFx
-import net.liplum.utils.otherConsumersAreValid
 
 object CioBlocks : ContentTable {
     @JvmStatic lateinit var icMachine: GenericCrafter
@@ -324,9 +325,10 @@ object CioBlocks : ContentTable {
                 )
             )
             range = 180f
-            cooldown = 0.1f
-            recoilAmount = 5f
-            reloadTime = 15f
+            cooldownTime
+            //cooldown = 0.1f
+            recoil = 5f
+            reload = 15f
             consumePower(3f)
             size = 3
             buildCostMultiplier = 1.5f
@@ -382,13 +384,16 @@ object CioBlocks : ContentTable {
                 Items.sporePod, CioBulletTypes.virus,
                 Items.thorium, CioBulletTypes.radiationInterference,
             )
+            inaccuracy = 1f
+            rotateSpeed = 10f
             maxAmmo = 80
-            spread = 4f
-            reloadTime = 5f
-            restitution = 0.03f
+            shoot = ShootAlternate().apply {
+                spread = 4f
+            }
+            reload = 5f
+            recoilPow
             range = 260f
             shootCone = 15f
-            shots = 2
             size = 4
             health = 250 * size * size
             limitRange(20f)
@@ -504,12 +509,12 @@ object CioBlocks : ContentTable {
             health = 250 * size * size
             shootEffect = StaticFx
             shootCone = 40f
-            recoilAmount = 4f
-            shootShake = 2f
+            recoil = 4f
+            shake = 2f
             shootDuration = 150f
             range = 195f
-            cooldown = 10f
-            reloadTime = 40f
+            coolant = consumeCoolant(0.3f)
+            reload = 40f
             firingMoveFract = 1f
             shootDuration = 180f
             shootSound = CioSounds.jammerPreShoot
@@ -518,7 +523,7 @@ object CioBlocks : ContentTable {
             rotateSpeed = 2f
             consumePower(15f)
 
-            shootType = ShaderCLaser<TrShader>().apply {
+            shootType = ShaderCLaserT<TrShader>().apply {
                 damage = 120f
                 length = range
                 hitEffect = StaticFx
@@ -593,9 +598,6 @@ object CioBlocks : ContentTable {
             )
             size = 5
             buildCostMultiplier = 2f
-            consumePowerCond(3f) { it: HoloProjector.HoloPBuild ->
-                it.curPlan != null && it.otherConsumersAreValid(consumePower)
-            }
         }
 
         aquacyberion = Floor("aqua-cyberion").apply {
@@ -622,11 +624,11 @@ object CioBlocks : ContentTable {
                 )
             )
             size = 3
-            recoilAmount = 3f
+            recoil = 3f
             range = 260f
             health = 1500
             liquidCapacity = 60f
-            reloadTime = 15f
+            reload = 15f
             shootType = RuvikBullet(2f, 100f).apply {
                 stemVersion = STEM_VERSION.STEM2
                 width = 10f
@@ -691,11 +693,12 @@ object CioBlocks : ContentTable {
             size = 2
             health = 300 * size * size
             consumePower(3f)
-            chargeTime = 60f
+            moveWhileCharging = false
+            shoot.firstShotDelay = 60f
             shootEffect = BrainFx.eyeShoot
             smokeEffect = Fx.none
-            chargeEffect = BrainFx.eyeCharge
-            chargeBeginEffect = BrainFx.eyeChargeBegin
+//            chargeEffect = BrainFx.eyeCharge
+//            chargeBeginEffect = BrainFx.eyeChargeBegin
             addUpgrade(
                 Upgrade(UT.Damage, false, 0.05f),
                 Upgrade(UT.ReloadTime, true, -4.5f),
@@ -721,6 +724,7 @@ object CioBlocks : ContentTable {
             improvedSounds = CioSounds.laser
             improvedBullet = LaserBulletType(250f).apply {
                 colors = arrayOf(R.C.RedAlert.cpy().a(0.4f), R.C.RedAlert, R.C.RedAlertDark)
+                chargeEffect = MultiEffect(BrainFx.eyeCharge, BrainFx.eyeChargeBegin)
                 hitEffect = Fx.hitLancer
                 hitSize = 4f
                 lifetime = 16f
@@ -753,7 +757,6 @@ object CioBlocks : ContentTable {
                 Upgrade(UT.PowerUse, false, 0.35f),
                 Upgrade(UT.MaxBrainWaveNum, true, 0.15f),
             )
-            // TODO: [Bug] Power use doesn't work
             range = 145f
             size = 2
             damage = 8f
