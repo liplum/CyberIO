@@ -28,6 +28,11 @@ open class TMTRAINER(name: String) : ItemTurret(name) {
     @JvmField @ClientOnly var headMin = -3f
     @JvmField var CoreAnimFrames = 8
     @JvmField var maxVirusChargeSpeedUp = 2.5f
+    override fun load() {
+        super.load()
+        CoreAnim = autoAnim("core", CoreAnimFrames, 60f)
+        EmptyCoreAnim = autoAnim("core-empty", CoreAnimFrames, 60f)
+    }
 
     init {
         drawer = object : DrawTurret() {
@@ -36,9 +41,7 @@ open class TMTRAINER(name: String) : ItemTurret(name) {
             lateinit var HeadTR: TR
             override fun load(b: Block) = b.run {
                 super.load(this)
-                CoreAnim = autoAnim("core", CoreAnimFrames, 60f)
                 HeadTR = sub("head")
-                EmptyCoreAnim = autoAnim("core-empty", CoreAnimFrames, 60f)
             }
 
             override fun icons(block: Block): Array<TextureRegion> =
@@ -66,7 +69,7 @@ open class TMTRAINER(name: String) : ItemTurret(name) {
                 )
 
                 Drawf.shadow(region, drawX - elevation, drawY - elevation, drawRotation)
-                super.draw(this)
+                super.drawTurret(t,this)
                 emptyCoreAnimObj.draw(
                     drawX,
                     drawY,

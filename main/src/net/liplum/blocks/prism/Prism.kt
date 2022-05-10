@@ -113,15 +113,15 @@ open class Prism(name: String) : Block(name) {
         AddBar<PrismBuild>(R.Bar.PrismN,
             {
                 if (cm.validAmount > 1)
-                    "${crystalAmount} ${R.Bar.PrismPl.bundle()}"
+                    "$crystalAmount ${R.Bar.PrismPl.bundle()}"
                 else
-                    "${crystalAmount} ${R.Bar.Prism.bundle()}"
+                    "$crystalAmount ${R.Bar.Prism.bundle()}"
             }, AutoRGBx,
             { crystalAmount.toFloat() / maxCrystal }
         )
         DebugOnly {
             AddBar<PrismBuild>(R.Bar.ProgressN,
-                { R.Bar.Progress.bundle(cm.process) },
+                { R.Bar.Progress.bundle(cm.process.percentI) },
                 { Pal.power },
                 { cm.process / 1f }
             )

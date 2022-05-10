@@ -28,8 +28,8 @@ java {
 dependencies {
 //    compileOnly("com.github.Anuken.Arc:arc-core:$mdtVersion")
 //    compileOnly("com.github.Anuken.Mindustry:core:$mdtVersion")
-    // For preview jar
-    //compileOnly("mindustry:")
+    // Use my shaow for now on https://github.com/liplum/MindustryShadowUtil
+    //implementation("com.github.liplum:MindustryShadow:-567cbafc84-1")
     compileOnly(files("$rootDir/run/Mindustry136.jar"))
     implementation("com.github.liplum:OpenGAL:v0.4.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1")

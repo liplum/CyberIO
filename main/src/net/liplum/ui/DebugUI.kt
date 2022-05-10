@@ -25,10 +25,6 @@ object DebugUI {
         minimap?.apply {
             row()
             label {
-                R.UI.MousePositionTile.bundle(Screen.tileXOnMouse(), Screen.tileYOnMouse())
-            }.touchable(Touchable.disabled).name("mouse-position-tile")
-            row()
-            label {
                 val build = Screen.tileOnMouse()?.build
                 if (build != null)
                     R.UI.MousePositionBuild.bundle(build.tile.x, build.tile.y)
@@ -39,7 +35,7 @@ object DebugUI {
             label {
                 val pos = Screen.worldOnMouse()
                 R.UI.MousePositionWorld.bundle(pos.x.toInt(), pos.y.toInt())
-            }.touchable(Touchable.disabled).name("mouse-position-world").fillX()
+            }.touchable(Touchable.disabled).name("mouse-position-world").uniformX()
             row()
         }
         val debug = WidgetGroup()

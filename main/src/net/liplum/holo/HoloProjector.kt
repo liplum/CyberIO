@@ -31,7 +31,7 @@ import mindustry.world.consumers.ConsumeItemDynamic
 import mindustry.world.meta.BlockGroup
 import mindustry.world.meta.Stat
 import net.liplum.*
-import net.liplum.consumer.DynamicLiquidCons
+import net.liplum.consumer.DynamicContinuousLiquidCons
 import net.liplum.lib.Draw
 import net.liplum.lib.bundle
 import net.liplum.lib.shaders.SD
@@ -66,16 +66,27 @@ open class HoloProjector(name: String) : Block(name) {
         config(Integer::class.java) { obj: HoloPBuild, plan ->
             obj.setPlan(plan.toInt())
         }
-
-        consume(ConsumeItemDynamic<HoloPBuild> {
-            it.curPlan.itemReqs
-        })
-        consume(DynamicLiquidCons.create<HoloPBuild> {
-            it.curPlan.cyberionReq
-        })
     }
 
     override fun init() {
+        consume(ConsumeItemDynamic<HoloPBuild> {
+            it.curPlan.itemReqs
+        })
+
+        consume(object : DynamicContinuousLiquidCons({
+            (it as HoloPBuild).curPlan.cyberionReq
+        }) {
+            override fun update(b: Building) {
+                b as HoloPBuild
+                val plan = b.curPlan
+                if (plan != null) {
+                    val liquid = plan.req.liquid
+                    if (liquid != null) {
+                        b.liquids.remove(liquid.liquid, liquid.amount / plan.time * b.edelta())
+                    }
+                }
+            }
+        })
         consumePowerCond<HoloPBuild>(powerUse) {
             it.curPlan != null
         }
@@ -162,7 +173,7 @@ open class HoloProjector(name: String) : Block(name) {
         override fun updateTile() {
             if (!canConsume()) return
             val plan = curPlan ?: return
-            progressTime += delta()
+            progressTime += edelta()
 
             if (progressTime >= plan.time) {
                 val projected = projectUnit(plan.unitType)

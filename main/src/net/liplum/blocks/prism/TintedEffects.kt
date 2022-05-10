@@ -8,19 +8,18 @@ import arc.math.Angles
 import arc.math.Mathf
 import mindustry.entities.Effect
 import mindustry.entities.Effect.EffectContainer
-import net.liplum.R
 
 val SmallRgbFx = RgbList {
-    shootSmallRGBGen(3.35f, 17f, R.C.PrismRgbFG[it], R.C.PrismRgbBK[it])
+    shootSmallRGBGen(3.35f, 17f, FG(it), BK(it))
 }
 val ShootRgbFx = RgbList {
-    shootRGBGen(4f, 60f, R.C.PrismRgbFG[it], R.C.PrismRgbBK[it])
+    shootRGBGen(4f, 60f, FG(it), BK(it))
 }
 val HitBulletBigRgbFx = RgbList {
-    hitBulletBigRGBGen(13f, R.C.PrismRgbFG[it], R.C.PrismRgbBK[it])
+    hitBulletBigRGBGen(13f, FG(it), BK(it))
 }
 val HitMeltRgbFx = RgbList {
-    hitMeltRGBGen(13f, R.C.PrismRgbBK[it])
+    hitMeltRGBGen(13f, BK(it))
 }
 
 fun shootSmallRGBGen(lifetime: Float, clipSize: Float, fg: Color, bk: Color): Effect =

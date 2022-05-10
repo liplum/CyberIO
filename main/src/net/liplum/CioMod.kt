@@ -33,7 +33,7 @@ import java.io.File
 class CioMod : Mod() {
     companion object {
         @JvmField val IsClient = !Vars.headless
-        @JvmField var DebugMode = false
+        @JvmField var DebugMode = true
         @JvmField var TestSteam = false
         @JvmField var TestGlCompatibility = false
         @JvmField var ExperimentalMode = false

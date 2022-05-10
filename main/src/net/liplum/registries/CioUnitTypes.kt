@@ -1,5 +1,6 @@
 package net.liplum.registries
 
+import arc.func.Func
 import arc.func.Prov
 import arc.graphics.Color
 import mindustry.ai.types.BuilderAI
@@ -47,6 +48,7 @@ object CioUnitTypes : ContentTable {
             speed = 2f
             controller
             aiController = Prov { MinerAI() }
+            controller = Func { MinerAI() }
             lowAltitude = true
             flying = true
             hovering = true
