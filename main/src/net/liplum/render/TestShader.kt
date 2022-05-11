@@ -8,15 +8,17 @@ import net.liplum.DebugOnly
 object TestShader {
     @JvmStatic
     fun load() {
-        /*
+        /*//val bufferScreen = FrameBuffer(Core.graphics.width, Core.graphics.height)
         val bufferScreen = FrameBuffer(Core.graphics.width, Core.graphics.height)
-        Events.run(Trigger.draw) {
+        RunOnDraw {
             bufferScreen.begin()
         }
-        Events.run(Trigger.postDraw) {
+        RunOnPostDraw {
             bufferScreen.end()
-            Blending.disabled.apply()
+            Blending.additive.apply()
+            SD.TestScreen.useEffectBuffer = false
             bufferScreen.blit(SD.TestScreen)
+            SD.TestScreen.useEffectBuffer = true
         }*/
     }
 }

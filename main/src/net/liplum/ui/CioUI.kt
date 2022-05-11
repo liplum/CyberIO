@@ -3,6 +3,7 @@ package net.liplum.ui
 import arc.Core
 import arc.Events
 import arc.math.Interp
+import arc.scene.style.TextureRegionDrawable
 import arc.scene.ui.Dialog
 import arc.scene.ui.TextButton
 import arc.scene.ui.TextField
@@ -30,6 +31,7 @@ import net.liplum.lib.ui.settings.AnySetting.Companion.addAny
 import net.liplum.lib.ui.settings.CheckSettingX.Companion.addCheckPref
 import net.liplum.lib.ui.settings.SliderSettingX.Companion.addSliderSettingX
 import net.liplum.update.Updater
+import net.liplum.utils.inCio
 import net.liplum.utils.invoke
 import net.liplum.utils.randomExcept
 import net.liplum.utils.useFakeHeader
@@ -52,15 +54,19 @@ object CioUI {
             settings.rebuild()
             uiSettings.updateScrollFocus()
         }
+        val marg = 8f
         Events.run(Trigger.update) {
             if (Vars.ui.settings.isShown) {
                 val cioSettings = menu.find<TextButton>(SettingButtonName)
                 if (cioSettings == null) {
                     menu.row()
-                    menu.button(Meta.Name, Styles.cleart) {
+                    menu.button(
+                        Meta.Name, TextureRegionDrawable("welcome-cyber-io".inCio()),
+                        Styles.flatt, Vars.iconMed
+                    ) {
                         prefs.clearChildren()
                         prefs.add(settings)
-                    }.get().apply {
+                    }.marginLeft(marg).get().apply {
                         name = SettingButtonName
                     }
                 }

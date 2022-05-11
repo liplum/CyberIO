@@ -2,9 +2,11 @@
 
 package net.liplum
 
+import arc.Events
 import arc.util.Log
 import arc.util.Time
 import mindustry.Vars
+import mindustry.game.EventType.Trigger
 import net.liplum.lib.Condition
 import net.liplum.utils.format
 import java.lang.annotation.Inherited
@@ -291,3 +293,27 @@ val Float.draw: Float
     get() = this - 90
 val String.Cio: String
     get() = R.Gen(this)
+
+inline fun RunOnUpdate(crossinline func: () -> Unit) {
+    Events.run(Trigger.update) {
+        func()
+    }
+}
+
+inline fun RunOnDraw(crossinline func: () -> Unit) {
+    Events.run(Trigger.draw) {
+        func()
+    }
+}
+
+inline fun RunOnPostDraw(crossinline func: () -> Unit) {
+    Events.run(Trigger.postDraw) {
+        func()
+    }
+}
+
+inline fun RunOnPreDraw(crossinline func: () -> Unit) {
+    Events.run(Trigger.preDraw) {
+        func()
+    }
+}

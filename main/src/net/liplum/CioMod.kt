@@ -3,7 +3,6 @@ package net.liplum
 import arc.Core
 import arc.Events
 import arc.util.CommandHandler
-import arc.util.Log
 import arc.util.Time
 import mindustry.Vars
 import mindustry.game.EventType.*
@@ -179,7 +178,7 @@ class CioMod : Mod() {
         IHoloEntity.registerHoloEntityInitHealth()
         PrismBlackList.load()
         GlobalAnimation.CanPlay = true
-        Log.info("v${Meta.DetailedVersion} mod's contents loaded.")
+        Clog.info("v${Meta.DetailedVersion} mod's contents loaded.")
     }
     @HeadlessOnly
     override fun registerServerCommands(handler: CommandHandler) {

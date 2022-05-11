@@ -128,7 +128,6 @@ open class Stealth(name: String) : Turret(name) {
                         Draw.reset()
                     }
                 }
-                // TODO: Since it's only on local, why not use static one?
                 if (unit.isLocal && shootType is RuvikBullet) {
                     if (isShooting) {
                         ruvikTipAlpha += 2f / ruvikShootingTipTime

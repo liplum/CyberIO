@@ -126,7 +126,6 @@ open class Ear(name: String) : Block(name), IComponentBlock {
             }
             reload += edelta()
             if (sonicWaves.canAdd) {
-                //TODO: in v4, the damage of sonic wave depends on the speed of unit sensed.
                 if (reload >= realReloadTime) {
                     val player = unit()
                     if (isControlled && player.isShooting) {

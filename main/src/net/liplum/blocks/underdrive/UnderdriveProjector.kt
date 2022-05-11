@@ -112,7 +112,7 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
 
     override fun init() {
         super.init()
-        clipSize = range * 1.2f
+        clipSize = range * 2f
         maxGear = maxGear.coerceAtLeast(1)
         maxPowerEFFBlocksReq = maxPowerEFFBlocksReq.coerceAtLeast(1)
     }
