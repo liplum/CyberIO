@@ -24,8 +24,6 @@ import net.liplum.R
 import net.liplum.api.brain.*
 import net.liplum.lib.Draw
 import net.liplum.lib.DrawSize
-import net.liplum.lib.entity.PosRadiation
-import net.liplum.lib.entity.PosRadiationQueue
 import net.liplum.utils.*
 
 open class Ear(name: String) : Block(name), IComponentBlock {
@@ -38,10 +36,11 @@ open class Ear(name: String) : Block(name), IComponentBlock {
     @JvmField var damage = 3.2f
     @JvmField var maxSonicWaveNum = 3
     @JvmField var sonicMaxRadius = 40f
+    @JvmField var bounce = 1f
     @ClientOnly @JvmField var maxScale = 0.3f
     @ClientOnly @JvmField var scaleTime = 30f
     @JvmField var powerUse = 2f
-    @JvmField var sensitivity = 1f
+    @JvmField var sensitivity = 0.8f
     @JvmField var reloadTimeI = 0.5f
     @JvmField var rangeI = 0.4f
     @JvmField var damageI = 1.5f
@@ -95,7 +94,7 @@ open class Ear(name: String) : Block(name), IComponentBlock {
         override var brain: IBrain? = null
         override val upgrades: Map<UpgradeType, Upgrade>
             get() = this@Ear.upgrades
-        val sonicWaves = PosRadiationQueue(maxSonicWaveNum)
+        val sonicWaves = SonicWaveQueue(maxSonicWaveNum)
         var unit = UnitTypes.block.create(team) as BlockUnitc
         var logicControlTime: Float = -1f
         val logicControlled: Boolean
@@ -134,7 +133,7 @@ open class Ear(name: String) : Block(name), IComponentBlock {
                         reload = 0f
                         temp.set(player.aimX - x, player.aimY - y).limit(realRange).add(x, y)
                         sonicWaves.append(
-                            PosRadiation(0f, temp.x, temp.y)
+                            SonicWave(0f, temp.x, temp.y, realDamage)
                         )
                         lastRadiateTime = 0f
                     } else {
@@ -144,11 +143,12 @@ open class Ear(name: String) : Block(name), IComponentBlock {
                             { false },
                             UnitSorts.weakest
                         )
-                        if (result != null) {
+                        if (result is Velc) {
                             reload = 0f
                             sonicWaves.append(
-                                PosRadiation(
-                                    0f, result.x, result.y
+                                SonicWave(
+                                    0f, result.x(), result.y(),
+                                    realDamage * (1f + (result.vel().len() - realSensitive) * bounce)
                                 )
                             )
                             lastRadiateTime = 0f
@@ -169,7 +169,7 @@ open class Ear(name: String) : Block(name), IComponentBlock {
                     sonicWaves.forEach {
                         val dst = unit.dst(it.x, it.y)
                         if (dst in it.range - halfWidth..it.range + halfWidth) {
-                            unit.damageContinuous(realDamage)
+                            unit.damageContinuous(it.damage)
                         }
                     }
                 }
@@ -182,9 +182,9 @@ open class Ear(name: String) : Block(name), IComponentBlock {
         override fun draw() {
             BaseTR.Draw(x, y)
             var scale = 1f
-            val realReloadTime = realReloadTime
-            if (lastRadiateTime <= realReloadTime) {
-                val progress = lastRadiateTime / realReloadTime
+            val scaleDuration = realSonicRadius / waveSpeed
+            if (lastRadiateTime <= scaleDuration * 2f) {
+                val progress = lastRadiateTime / scaleDuration
                 scale += Interp.sine(progress) * maxScale
             }
             EarTR.DrawSize(x, y, scale)

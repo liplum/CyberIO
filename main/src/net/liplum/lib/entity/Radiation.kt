@@ -14,7 +14,7 @@ open class Radiation(var range: Float = 0f) : IRWable {
     }
 }
 
-class PosRadiation(
+open class PosRadiation(
     range: Float = 0f,
     var x: Float = 0f,
     var y: Float = 0f

@@ -27,7 +27,6 @@ import net.liplum.persistance.intSet
 import net.liplum.utils.*
 
 /**
- * ### Since 1
  * Steam server is also a [IStreamClient].
  */
 open class StreamServer(name: String) : StreamHost(name) {
@@ -72,7 +71,6 @@ open class StreamServer(name: String) : StreamHost(name) {
     }
 
     open inner class ServerBuild : HostBuild(), IStreamClient {
-        override fun version(): Byte = 1
         @ClientOnly @JvmField var mixedLiquidColor: Color = Color.white.cpy()
         @ClientOnly @JvmField var _hostColor: Color = R.C.Host.cpy()
         @ClientOnly
@@ -256,16 +254,12 @@ open class StreamServer(name: String) : StreamHost(name) {
 
         override fun read(read: Reads, revision: Byte) {
             super.read(read, revision)
-            if (revision.toInt() > 0) {
-                // Since 1
-                hosts = read.intSet()
-            }
+            hosts = read.intSet()
             restored = true
         }
 
         override fun write(write: Writes) {
             super.write(write)
-            // Since 1
             write.intSet(hosts)
         }
 

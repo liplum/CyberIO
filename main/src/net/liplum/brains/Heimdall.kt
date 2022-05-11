@@ -13,6 +13,7 @@ import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.Vars
+import mindustry.ai.types.CommandAI
 import mindustry.content.Fx
 import mindustry.content.UnitTypes
 import mindustry.gen.*
@@ -20,7 +21,6 @@ import mindustry.graphics.Layer
 import mindustry.graphics.Pal
 import mindustry.logic.LAccess
 import mindustry.logic.Ranged
-import mindustry.ui.Bar
 import mindustry.world.Block
 import mindustry.world.blocks.ControlBlock
 import mindustry.world.meta.Stat
@@ -143,16 +143,15 @@ open class Heimdall(name: String) : Block(name) {
                 }
             )
             AddBar<HeimdallBuild>("max-brain-wave",
-                    { "BrainWaves:${(realMaxBrainWaveNum)}" },
-                    { Pal.power },
-                    { realMaxBrainWaveNum / 5f }
-                )
+                { "BrainWaves:${(realMaxBrainWaveNum)}" },
+                { Pal.power },
+                { realMaxBrainWaveNum / 5f }
+            )
         }
     }
 
     open inner class HeimdallBuild : Building(),
         ControlBlock, IExecutioner, IBrain, Ranged {
-        override fun version(): Byte = 1
         override val sides: Array<Side2> = Array(4) {
             Side2(this)
         }
@@ -256,7 +255,11 @@ open class Heimdall(name: String) : Block(name) {
                         if (dst in it.range - halfWidth..it.range + halfWidth) {
                             unit.damageContinuous(realDamage)
                             if (unit.canBeExecuted) {
-                                unit.team.data().units.remove(unit)
+                                val originalTeam = unit.team
+                                originalTeam.data().units.remove(unit)
+                                if (!team.isAI) {
+                                    unit.controller(CommandAI())
+                                }
                                 unit.team = team
                                 team.data().updateCount(unit.type, 1)
                                 if (unit.count() > unit.cap() && !unit.spawnedByCore) {
@@ -456,10 +459,7 @@ open class Heimdall(name: String) : Block(name) {
             reload = read.f()
             shieldAmount = read.f()
             lastShieldDamageTime = read.f()
-            if (revision.toInt() > 0) {
-                // Since 1
-                curFieldRadius = read.f()
-            }
+            curFieldRadius = read.f()
         }
 
         override fun write(write: Writes) {
@@ -468,7 +468,6 @@ open class Heimdall(name: String) : Block(name) {
             write.f(reload)
             write.f(shieldAmount)
             write.f(lastShieldDamageTime)
-            // Since 1
             write.f(curFieldRadius)
         }
 

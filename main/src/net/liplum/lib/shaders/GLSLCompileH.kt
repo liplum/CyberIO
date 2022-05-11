@@ -3,10 +3,9 @@ package net.liplum.lib.shaders
 import arc.Core
 import arc.files.Fi
 import arc.graphics.gl.Shader
-import arc.util.ArcRuntimeException
-import java.lang.RuntimeException
 
 class ShaderCompileException(message: String, cause: Throwable) : RuntimeException(message, cause)
+
 fun preprocessFragment(file: Fi): String =
     preprocessFragment(file.readString())
 
@@ -23,15 +22,7 @@ fun preprocessFragment(source: String): String {
  */
 @Suppress("SpellCheckingInspection")
 fun preprocess(sourceCode: String, fragment: Boolean): String {
-    //disallow gles qualifiers
     var source = sourceCode
-    if (source.contains("#ifdef GL_ES")) {
-        throw ArcRuntimeException("Shader contains GL_ES specific code; this should be handled by the preprocessor. Code: \n```\n$source\n```")
-    }
-    //disallow explicit versions
-    if (source.contains("#version")) {
-        throw ArcRuntimeException("Shader contains explicit version requirement; this should be handled by the preprocessor. Code: \n```\n$source\n```")
-    }
     //add GL_ES precision qualifiers
     source = if (fragment) {
         """#ifdef GL_ES
