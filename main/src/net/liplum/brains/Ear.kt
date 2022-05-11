@@ -115,7 +115,7 @@ open class Ear(name: String) : Block(name), IComponentBlock {
             get() = powerUse * (1f + if (isLinkedBrain) powerI else 0f)
         val realSensitive: Float
             get() = sensitivity * (1f + if (isLinkedBrain) sensitivityI else 0f)
-        var lastRadiateTime = powerConsumeTime + 1f
+        var lastRadiateTime = realReloadTime + 1f
         val temp = Vec2()
         override fun updateTile() {
             lastRadiateTime += Time.delta

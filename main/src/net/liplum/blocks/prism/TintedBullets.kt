@@ -55,7 +55,7 @@ inline fun <T> HashMap<T, List<T>>.rgb(
     RgbList(gen)
 }
 
-fun BulletType.tintTrail(i: Int, lerp: Float = 0.3f) {
+fun BulletType.commonTint(i: Int, lerp: Float = 0.3f) {
     trailColor = FG(i).lerp(trailColor, lerp)
 }
 
@@ -77,7 +77,7 @@ val BasicBulletType.tinted: List<BasicBulletType>
             backColor = BK(it).lerp(
                 backColor, BasicTintLerp
             )
-            tintTrail(it, BasicTintLerp)
+            commonTint(it, BasicTintLerp)
         }
     }
 val ShrapnelBullets: HashMap<ShrapnelBulletType, List<ShrapnelBulletType>> = HashMap()
@@ -86,7 +86,7 @@ val ShrapnelBulletType.tinted: List<ShrapnelBulletType>
         (this.copy() as ShrapnelBulletType).apply {
             fromColor = FG(it)
             toColor = BK(it)
-            tintTrail(it, BasicTintLerp)
+            commonTint(it, BasicTintLerp)
         }
     }
 val LightningBullets: HashMap<LightningBulletType, List<LightningBulletType>> = HashMap()
@@ -94,7 +94,7 @@ val LightningBulletType.tinted: List<LightningBulletType>
     get() = LightningBullets.rgb(this) {
         (this.copy() as LightningBulletType).apply {
             lightningColor = BK(it)
-            tintTrail(it, BasicTintLerp)
+            commonTint(it, BasicTintLerp)
         }
     }
 val RedSapBullets: HashMap<SapBulletType, List<SapBulletType>> = HashMap()
@@ -102,7 +102,7 @@ val SapBulletType.tinted: List<SapBulletType>
     get() = RedSapBullets.rgb(this) {
         (this.copy() as SapBulletType).apply {
             color = BK(it)
-            tintTrail(it, BasicTintLerp)
+            commonTint(it, BasicTintLerp)
         }
     }
 val FireBullets: HashMap<FireBulletType, List<FireBulletType>> = HashMap()
@@ -112,7 +112,7 @@ val FireBulletType.tinted: List<FireBulletType>
             colorFrom = FG(it)
             colorMid = FG(it)
             colorTo = BK(it)
-            tintTrail(it, BasicTintLerp)
+            commonTint(it, BasicTintLerp)
         }
     }
 val LaserBullets: HashMap<LaserBulletType, List<LaserBulletType>> = HashMap()
@@ -124,7 +124,7 @@ val LaserBulletType.tinted: List<LaserBulletType>
             colors = Array(colors.size) { i ->
                 FG(it).lerp(colors[i], LaserTintLerp)
             }
-            tintTrail(it, LaserTintLerp)
+            commonTint(it, LaserTintLerp)
         }
     }
 val ContinuousLaserBullets: HashMap<ContinuousLaserBulletType, List<ContinuousLaserBulletType>> = HashMap()
@@ -139,7 +139,7 @@ val ContinuousLaserBulletType.tinted: List<ContinuousLaserBulletType>
             smokeEffect = HitMeltRgbFx[it]
             despawnEffect = HitMeltRgbFx[it]
             lightColor = FG(it)
-            tintTrail(it, LaserTintLerp)
+            commonTint(it, LaserTintLerp)
         }
     }
 val LiquidBullets: HashMap<LiquidBulletType, List<LiquidBulletType>> = HashMap()
@@ -153,7 +153,7 @@ val LiquidBulletType.tinted: List<LiquidBulletType>
                 tintColor = BK(it).cpy().lerp(
                     this@tinted.liquid.color, LiquidTintLerp
                 )
-                tintTrail(it, LiquidTintLerp)
+                commonTint(it, LiquidTintLerp)
             }
         } catch (e: Exception) {
             this
@@ -175,7 +175,7 @@ val MassDriverBolt.tinted: List<MassDriverBolt>
                 )
                 hitEffect = HitBulletBigRgbFx[it]
                 despawnEffect = HitBulletBigRgbFx[it]
-                tintTrail(it, LiquidTintLerp)
+                commonTint(it, LiquidTintLerp)
             }
         } catch (e: Exception) {
             this
@@ -187,7 +187,7 @@ val BulletType.tintedLighting: List<BulletType>
         this.copy().apply {
             lightningType = this.lightningType.copy().apply {
                 lightningColor = BK(it)
-                tintTrail(it, LiquidTintLerp)
+                commonTint(it, LiquidTintLerp)
             }
         }
     }
@@ -223,7 +223,7 @@ val BulletType.tintGeneral: List<BulletType>
             hitEffect = SmallRgbFx[it]
             despawnEffect = SmallRgbFx[it]
             smokeEffect = SmallRgbFx[it]
-            tintTrail(it, BasicTintLerp)
+            commonTint(it, BasicTintLerp)
         }
     }
 val IgnoredBullets: HashSet<BulletType> = HashSet()

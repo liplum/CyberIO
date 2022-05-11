@@ -36,6 +36,7 @@ import net.liplum.blocks.gadgets.SmartUnloader
 import net.liplum.blocks.icmachine.ICMachine
 import net.liplum.blocks.icmachine.ICMachineS
 import net.liplum.blocks.jammer.Jammer
+import net.liplum.blocks.jammer.JammingLaser
 import net.liplum.blocks.power.WirelessTower
 import net.liplum.blocks.prism.Prism
 import net.liplum.blocks.prism.PrismObelisk
@@ -52,11 +53,8 @@ import net.liplum.blocks.virus.Virus
 import net.liplum.brains.*
 import net.liplum.bullets.RuvikBullet
 import net.liplum.bullets.STEM_VERSION
-import net.liplum.bullets.ShaderCLaserT
 import net.liplum.holo.*
 import net.liplum.lib.animations.ganim.globalAnim
-import net.liplum.lib.shaders.SD
-import net.liplum.lib.shaders.TrShader
 import net.liplum.seffects.StaticFx
 import net.liplum.ui.DynamicContentInfoDialog.Companion.registerDynamicInfo
 
@@ -93,6 +91,7 @@ object CioBlocks : ContentTable {
     @JvmStatic lateinit var eye: Eye
     @JvmStatic lateinit var ear: Ear
     @JvmStatic lateinit var hand: Hand
+    @JvmStatic lateinit var heart: Heart
     override fun firstLoad() {
     }
 
@@ -403,7 +402,7 @@ object CioBlocks : ContentTable {
             limitRange(20f)
             ClientOnly {
                 Events.run(Trigger.update) {
-                    if(Time.globalTime % CioMod.UpdateFrequency < 1f) {
+                    if (Time.globalTime % CioMod.UpdateFrequency < 1f) {
                         TMTRAINER.localizedName = RandomName.one(8)
                         TMTRAINER.description = RandomName.one(25)
                     }
@@ -527,9 +526,9 @@ object CioBlocks : ContentTable {
             rotateSpeed = 2f
             consumePower(15f)
 
-            shootType = ShaderCLaserT<TrShader>().apply {
-                damage = 120f
-                length = range
+            shootType = JammingLaser().apply {
+                length = 220f
+                divisions = 5
                 hitEffect = StaticFx
                 hitColor = Color.white
                 status = CioSEffects.static
@@ -538,7 +537,7 @@ object CioBlocks : ContentTable {
                 incendSpread = 5f
                 incendAmount = 1
                 ammoMultiplier = 1f
-                shader = { SD.TvStatic }
+                damage = 120f
             }
         }
         cyberionMixer = GenericCrafter("cyberion-mixer").apply {
@@ -779,6 +778,11 @@ object CioBlocks : ContentTable {
                         ItemStack(Items.phaseFabric, 40),
                     )
                 )
+            }
+            heart = Heart("heimdall-heart").apply {
+                requirements(Category.turret, BuildVisibility.shown, arrayOf(
+                ))
+                size = 4
             }
         }
     }
