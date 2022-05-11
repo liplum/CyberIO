@@ -1,14 +1,12 @@
 package net.liplum.shaders.holo;
 
 import arc.files.Fi;
-import arc.graphics.gl.Shader;
 import arc.util.Time;
-import net.liplum.lib.shaders.IReusable;
+import net.liplum.lib.shaders.ShaderBase;
 
 import static mindustry.Vars.renderer;
-import static mindustry.graphics.Shaders.getShaderFi;
 
-public class Hologram extends Shader implements IReusable {
+public class Hologram extends ShaderBase {
     public final float DefaultBlendHoloColorOpacity = 0.8f;
     public final float DefaultBlendFormerColorOpacity = 0.6f;
     public final float DefaultFlickering = 0.03f;
@@ -18,8 +16,8 @@ public class Hologram extends Shader implements IReusable {
     public float blendFormerColorOpacity = DefaultBlendFormerColorOpacity;
     public float flickering = DefaultFlickering;
 
-    public Hologram(Fi fragName) {
-        super(getShaderFi("default.vert"), fragName);
+    public Hologram(Fi vert, Fi frag) {
+        super(vert, frag);
     }
 
     @Override
@@ -30,8 +28,8 @@ public class Hologram extends Shader implements IReusable {
         setUniformf("u_flickering", flickering);
         setUniformf("u_blendHoloColorOpacity", blendHoloColorOpacity);
         setUniformf("u_blendFormerColorOpacity", blendFormerColorOpacity);
-
-        renderer.effectBuffer.getTexture().bind(0);
+        if (useEffectBuffer)
+            renderer.effectBuffer.getTexture().bind(0);
     }
 
     @Override

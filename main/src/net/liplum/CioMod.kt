@@ -20,6 +20,7 @@ import net.liplum.lib.animations.ganim.GlobalAnimation
 import net.liplum.registries.*
 import net.liplum.registries.ServerCommands.registerCioCmds
 import net.liplum.render.LinkDrawer
+import net.liplum.render.TestShader
 import net.liplum.scripts.NpcSystem
 import net.liplum.ui.CioUI
 import net.liplum.ui.DebugUI
@@ -96,6 +97,9 @@ class CioMod : Mod() {
                     CioShaders.init()
                     WelcomeList.loadList()
                     Welcome.load()
+                    DebugOnly{
+                        TestShader.load()
+                    }
                     /* TODO: Add real story mode in v4?
                     DebugOnly {
                         Script.init()

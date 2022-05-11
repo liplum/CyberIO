@@ -7,14 +7,14 @@ import net.liplum.R
 import net.liplum.bullets.RuvikBullet
 import net.liplum.bullets.STEM_VERSION
 import net.liplum.bullets.ShaderBasicBulletT
+import net.liplum.lib.shaders.CommonShader
 import net.liplum.lib.shaders.SD
-import net.liplum.lib.shaders.TrShader
 import net.liplum.seffects.StaticFx
 import net.liplum.shaders.holo.Hologram
 
 object CioBulletTypes : ContentTable {
     @JvmStatic lateinit var virus: BasicBulletType
-    @JvmStatic lateinit var radiationInterference: ShaderBasicBulletT<TrShader>
+    @JvmStatic lateinit var radiationInterference: ShaderBasicBulletT<CommonShader>
     @JvmStatic lateinit var holoBullet: ShaderBasicBulletT<Hologram>
     @JvmStatic lateinit var ruvik: RuvikBullet
     @JvmStatic lateinit var ruvik2: RuvikBullet
@@ -67,7 +67,7 @@ object CioBulletTypes : ContentTable {
             statusDuration = CioSEffects.infected.initTime
         }
 
-        radiationInterference = ShaderBasicBulletT<TrShader>(
+        radiationInterference = ShaderBasicBulletT<CommonShader>(
             2.3f, 30f, "bullet"
         ).apply {
             shader = { SD.TvStatic }

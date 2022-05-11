@@ -1,13 +1,14 @@
 package net.liplum.registries
 
 import arc.files.Fi
-import arc.graphics.gl.Shader
 import mindustry.Vars
+import mindustry.graphics.Shaders.getShaderFi
 import net.liplum.CioMod
 import net.liplum.ClientOnly
 import net.liplum.R
 import net.liplum.lib.shaders.*
 import net.liplum.shaders.SurfaceShader
+import net.liplum.shaders.TestShieldShader
 import net.liplum.shaders.holo.Hologram
 import net.liplum.shaders.holo.HologramOld
 import net.liplum.useCompatible
@@ -15,66 +16,93 @@ import net.liplum.useCompatible
 @ClientOnly
 object CioShaders {
     // @formatter:off
-    lateinit var DynamicColor:                  TrShader
+    lateinit var DynamicColor:                  CommonShader
     lateinit var HologramOld:                   HologramOld
     lateinit var Hologram:                      Hologram
-    lateinit var Monochrome:                    TrShader
-    lateinit var InvertColor:                   TrShader
-    lateinit var TvStatic:                      TrShader
-    lateinit var Pulse:                         TrShader
+    lateinit var Monochrome:                    CommonShader
+    lateinit var InvertColor:                   CommonShader
+    lateinit var TvStatic:                      CommonShader
+    lateinit var Pulse:                         CommonShader
     lateinit var InvertingColorRGB:             ProgressShader
     lateinit var InvertingColorRbg2HsvInHsv:    ProgressShader
     lateinit var InvertingColorRbg2HsvInRgb:    ProgressShader
     lateinit var Monochromize:                  ProgressShader
     var Cyberion:                               SurfaceShader? = null
+    lateinit var TestShieldScreen:              TestShieldShader
+    lateinit var TestScreen:                    Hologram
     // @formatter:on
     @JvmStatic
     @ClientOnly
     fun init() {
         // @formatter:off
 // Dynamic
-DynamicColor                = wrap("DynamicColor",                  ::TrShader)
+DynamicColor                = default("DynamicColor",                  ::CommonShader)
 // Hologram
-HologramOld                 = wrap("HologramOld",                   ::HologramOld)
-Hologram                    = wrap("Hologram",                      ::Hologram)
+HologramOld                 = default("HologramOld",                   ::HologramOld)
+Hologram                    = default("Hologram",                      ::Hologram)
 
-Monochrome                  = wrap("Monochrome",                    ::TrShader)
-InvertColor                 = wrap("InvertColor",                   ::TrShader)
-TvStatic                    = wrap("TvStatic",                      ::TrShader,     tryCompatible = true)
-Pulse                       = wrap("Pulse",                         ::TrShader)
+Monochrome                  = default("Monochrome",                    ::CommonShader)
+InvertColor                 = default("InvertColor",                   ::CommonShader)
+TvStatic                    = default("TvStatic",                      ::CommonShader,     tryCompatible = true)
+Pulse                       = default("Pulse",                         ::CommonShader)
 // Progressed
-InvertingColorRGB           = wrap("InvertingColorRgb",             ::ProgressShader)
-InvertingColorRbg2HsvInHsv  = wrap("InvertingColorRgb2HsvInHsv",    ::ProgressShader)
-InvertingColorRbg2HsvInRgb  = wrap("InvertingColorRgb2HsvInRgb",    ::ProgressShader)
-Monochromize                = wrap("Monochromize",                  ::ProgressShader)
+InvertingColorRGB           = default("InvertingColorRgb",             ::ProgressShader)
+InvertingColorRbg2HsvInHsv  = default("InvertingColorRgb2HsvInHsv",    ::ProgressShader)
+InvertingColorRbg2HsvInRgb  = default("InvertingColorRgb2HsvInRgb",    ::ProgressShader)
+Monochromize                = default("Monochromize",                  ::ProgressShader)
 // Block Surface
-Cyberion                    = wrap("Cyberion",                      ::SurfaceShader)
+Cyberion                    = screen("Cyberion",                       ::SurfaceShader)
+TestShieldScreen            = screen("TestShield",                     ::TestShieldShader)
+TestScreen                  = screen("Hologram",                       ::Hologram)
         // @formatter:on
     }
 
-    val String.filePath: String
-        get() = R.SD.GenFrag(this)
+    val String.fragFileInCio: FragFi
+        get() = Vars.tree.get(R.SD.GenFrag(this.removeSuffix(".frag")))
 
-    inline fun <T : Shader> wrap(
-        name: String,
-        ctor: (Fi) -> T,
+    inline fun <T : ShaderBase> default(
+        fragName: String,
+        ctor: ShaderCtor<T>,
+        tryCompatible: Boolean = false,
+    ) = wrap("default", fragName, ctor, tryCompatible)
+
+    inline fun <T : ShaderBase> screen(
+        fragName: String,
+        ctor: ShaderCtor<T>,
+        tryCompatible: Boolean = false,
+    ) = wrap("screenspace", fragName, ctor, tryCompatible)
+    /**
+     * @param vertName use vertex shader in vanilla's tree. Only the name is needed.
+     * @param fragName use fragment shader in Cyber IO's tree. Only the name is needed
+     * @param ctor the constructor of shaders.
+     */
+    inline fun <T : ShaderBase> wrap(
+        vertName: String,
+        fragName: String,
+        ctor: ShaderCtor<T>,
         tryCompatible: Boolean = false,
     ): T {
-        val fragName = (if (tryCompatible) name.compatible else name).filePath
-        val file = Vars.tree.get(fragName)
+        val fragFileName = if (tryCompatible) fragName.compatible else fragName
+        val fragFile = fragFileName.fragFileInCio
+        val vertFileName = "${vertName.removeSuffix(".vert")}.vert"
+        val vertFile = getShaderFi(vertFileName)
         try {
-            val shader = ctor(file)
+            val shader = ctor(vertFile, fragFile)
             return shader.register()
         } catch (e: Exception) {
-            val fragment = preprocessFragment(file)
+            var fragment = "Re-preprocess fragment error!"
+            try {
+                fragment = preprocessFragment(fragFile)
+            } catch (_: Exception) {
+            }
             throw ShaderCompileException(
-                "Can't compile shader $fragName\n$fragment\n", e)
+                "Can't compile shaders $vertFileName and $fragFileName\n$fragment\n", e)
         }
     }
     @JvmStatic
     @ClientOnly
     fun loadResource() {
-        for (loadable in AllLoadable) {
+        for (loadable in AllShaders) {
             loadable.loadResource()
         }
     }
@@ -86,17 +114,17 @@ Cyberion                    = wrap("Cyberion",                      ::SurfaceSha
         }
     }
     @ClientOnly
-    fun <T> T.register(): T where T : Shader {
+    fun <T> T.register(): T where T : ShaderBase {
         AllShaders.add(this)
-        if (this is ILoadResource) {
-            AllLoadable.add(this)
-        }
         return this
     }
 
-    private var AllShaders: HashSet<Shader> = HashSet()
-    private var AllLoadable: HashSet<ILoadResource> = HashSet()
+    private var AllShaders: HashSet<ShaderBase> = HashSet()
 }
+
+private typealias FragFi = Fi
+private typealias VertFi = Fi
+private typealias ShaderCtor<T> = (FragFi, VertFi) -> T
 
 val String.compatible: String
     get() = if (CioMod.TestGlCompatibility || this.useCompatible)

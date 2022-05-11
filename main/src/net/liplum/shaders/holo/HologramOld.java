@@ -2,25 +2,23 @@ package net.liplum.shaders.holo;
 
 import arc.files.Fi;
 import arc.graphics.Texture;
-import arc.graphics.gl.Shader;
 import arc.math.Mathf;
 import arc.util.Time;
-import net.liplum.lib.shaders.ILoadResource;
-import net.liplum.lib.shaders.IReusable;
+import net.liplum.lib.shaders.ShaderBase;
+import org.jetbrains.annotations.NotNull;
 
 import static mindustry.Vars.renderer;
-import static mindustry.graphics.Shaders.getShaderFi;
 import static net.liplum.utils.AtlasHKt.inCio;
 
-public class HologramOld extends Shader implements ILoadResource, IReusable {
+public class HologramOld extends ShaderBase {
     public static final float DefaultSpeed = 0.5f;
     public Texture fringe;
     public float randomRange = 0f;
     public float alpha = 1f;
     public float speed = DefaultSpeed;
 
-    public HologramOld(Fi frag) {
-        super(getShaderFi("default.vert"), frag);
+    public HologramOld(@NotNull Fi vert, @NotNull Fi frag) {
+        super(vert, frag);
     }
 
     @Override
@@ -29,9 +27,10 @@ public class HologramOld extends Shader implements ILoadResource, IReusable {
         setUniformf("u_alpha", alpha);
         setUniformf("u_speed", speed);
 
-        fringe.bind(1);
-        renderer.effectBuffer.getTexture().bind(0);
         setUniformi("u_hologram", 1);
+        if (useEffectBuffer)
+            renderer.effectBuffer.getTexture().bind(0);
+        fringe.bind(1);
     }
 
     @Override

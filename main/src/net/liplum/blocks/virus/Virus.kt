@@ -20,9 +20,10 @@ import mindustry.world.Tile
 import net.liplum.*
 import net.liplum.api.virus.UninfectedBlocksRegistry
 import net.liplum.lib.bundle
+import net.liplum.lib.shaders.SD
+import net.liplum.lib.shaders.use
 import net.liplum.lib.ui.bars.AddBar
 import net.liplum.lib.yesNo
-import net.liplum.registries.CioShaders
 import net.liplum.utils.off
 import net.liplum.utils.on
 import net.liplum.utils.sub
@@ -192,16 +193,13 @@ open class Virus(name: String) : Block(name) {
 
         override fun draw() {
             DebugOnly {
-                Draw.draw(Layer.block) {
-                    Draw.shader(CioShaders.DynamicColor)
+                SD.DynamicColor.use(Layer.block) {
                     Draw.rect(block.region, x, y)
                     if (raceColor != null) {
                         Draw.color(raceColor)
                         Draw.rect(raceMaskTR, x, y)
                         Draw.color()
                     }
-                    Draw.shader()
-                    Draw.reset()
                 }
             } Else {
                 Draw.rect(block.region, x, y)

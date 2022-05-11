@@ -2,7 +2,6 @@ package net.liplum.bullets
 
 import arc.graphics.g2d.Draw
 import arc.graphics.g2d.Lines
-import arc.graphics.gl.Shader
 import arc.math.Mathf
 import arc.util.Time
 import arc.util.Tmp
@@ -11,9 +10,10 @@ import mindustry.entities.bullet.BasicBulletType
 import mindustry.entities.bullet.ContinuousLaserBulletType
 import mindustry.gen.Bullet
 import mindustry.graphics.Drawf
+import net.liplum.lib.shaders.ShaderBase
 import net.liplum.lib.shaders.on
 
-open class ShaderCLaserT<TS : Shader>(damage: Float) : ContinuousLaserBulletType(damage) {
+open class ShaderCLaserT<TS : ShaderBase>(damage: Float) : ContinuousLaserBulletType(damage) {
     constructor() : this(0f)
     @JvmField var preShader: (TS, Bullet) -> Unit = { _, _ -> }
     lateinit var shader: () -> TS
@@ -52,7 +52,7 @@ open class ShaderCLaserT<TS : Shader>(damage: Float) : ContinuousLaserBulletType
     }
 }
 
-open class ShaderBasicBulletT<TS : Shader> : BasicBulletType {
+open class ShaderBasicBulletT<TS : ShaderBase> : BasicBulletType {
     lateinit var shader: () -> TS
     @JvmField var preShader: (TS, Bullet) -> Unit = { _, _ -> }
 
