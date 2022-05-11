@@ -4,12 +4,16 @@ import arc.math.Angles
 import arc.math.Mathf
 import arc.util.Nullable
 import arc.util.Time
+import mindustry.Vars
+import mindustry.ai.types.MissileAI
+import mindustry.entities.Mover
 import mindustry.entities.Units
 import mindustry.entities.bullet.BasicBulletType
 import mindustry.game.Team
 import mindustry.gen.*
 import mindustry.world.blocks.ControlBlock
 import mindustry.world.blocks.defense.turrets.BaseTurret
+import net.liplum.utils.MdtUnit
 import net.liplum.utils.findPlayer
 
 @Suppress("ClassName")
@@ -125,16 +129,6 @@ open class RuvikBullet : BasicBulletType {
                  val len = b.vel.len()
                  b.vel.setLength(len + Mathf.log(100f,dis))
              }*/
-        } else if (homingPower > 0.0001f && b.time >= homingDelay) {
-            val target: Teamc? = findNormalTarget(b)
-            if (target != null) {
-                b.vel.setAngle(
-                    Angles.moveToward(
-                        b.rotation(), b.angleTo(target),
-                        homingPower * Time.delta * 50f
-                    )
-                )
-            }
         }
 
         if (weaveMag > 0) {
@@ -185,28 +179,52 @@ open class RuvikBullet : BasicBulletType {
                 collidesGround && !b.hasCollided(it.id)
             }
     }
-
+    @Nullable
     override fun create(
-        @Nullable owner: Entityc?,
-        team: Team,
+        owner: Entityc?,
+        team: Team?,
         x: Float,
         y: Float,
         angle: Float,
         damage: Float,
         velocityScl: Float,
         lifetimeScl: Float,
-        data: Any?
-    ): Bullet {
+        data: Any?,
+        mover: Mover?,
+        aimX: Float,
+        aimY: Float,
+    ): Bullet? {
+        if (spawnUnit != null) {
+            if (!Vars.net.client()) {
+                val spawned = spawnUnit.create(team)
+                spawned[x] = y
+                spawned.rotation = angle
+                //immediately spawn at top speed, since it was launched
+                spawned.vel.trns(angle, spawnUnit.speed)
+                //assign unit owner
+                val controller = spawned.controller()
+                if (controller is MissileAI && owner is MdtUnit) {
+                    controller.shooter = owner
+                }
+            }
+            //no bullet returned
+            return null
+        }
         val b = Bullet.create()
         b.type = this
         b.owner = owner
         b.team = team
         b.time = 0f
+        b.originX = x
+        b.originY = y
+        b.aimTile = Vars.world.tileWorld(aimX, aimY)
+        b.aimX = aimX
+        b.aimY = aimY
         b.initVel(angle, speed * velocityScl)
         if (backMove) {
-            b.set(x - b.vel.x * Time.delta, y - b.vel.y * Time.delta)
+            b[x - b.vel.x * Time.delta] = y - b.vel.y * Time.delta
         } else {
-            b.set(x, y)
+            b[x] = y
         }
         b.lifetime = lifetime * lifetimeScl
         when (stemVersion) {
@@ -217,15 +235,15 @@ open class RuvikBullet : BasicBulletType {
         }
         b.drag = drag
         b.hitSize = hitSize
-        b.damage = (if (damage < 0) this.damage else damage) * buildingDamageMultiplier
+        b.mover = mover
+        b.damage = (if (damage < 0) this.damage else damage) * b.damageMultiplier()
         //reset trail
         if (b.trail != null) {
             b.trail.clear()
         }
         b.add()
-        if (keepVelocity && owner is Velc) {
+        if (keepVelocity && owner is Velc)
             b.vel.add(owner.vel())
-        }
         return b
     }
 }

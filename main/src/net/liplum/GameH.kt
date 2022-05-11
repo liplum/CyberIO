@@ -2,6 +2,7 @@
 
 package net.liplum
 
+import arc.util.Log
 import arc.util.Time
 import mindustry.Vars
 import net.liplum.lib.Condition
@@ -100,7 +101,7 @@ annotation class Idempotent
  */
 @Retention(AnnotationRetention.SOURCE)
 @MustBeDocumented
-annotation class OverwriteVanilla
+annotation class OverwriteVanilla(val value: String = "")
 /**
  * Runs codes only on Physical Client
  */
@@ -269,6 +270,16 @@ inline fun WhenRefresh(func: () -> Unit): Boolean {
 inline fun WhenNotPaused(func: () -> Unit) {
     if (!Vars.state.isPaused) {
         func()
+    }
+}
+/**
+ * If an exception is thrown, it doesn't crash the game.
+ */
+inline fun safeCall(func: () -> Unit) {
+    try {
+        func()
+    } catch (e: Throwable) {
+        Log.err(e)
     }
 }
 
