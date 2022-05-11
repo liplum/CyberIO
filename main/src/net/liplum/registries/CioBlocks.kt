@@ -3,6 +3,7 @@ package net.liplum.registries
 import arc.Events
 import arc.graphics.Color
 import arc.struct.Seq
+import arc.util.Time
 import mindustry.content.*
 import mindustry.entities.bullet.LaserBulletType
 import mindustry.entities.bullet.LightningBulletType
@@ -57,6 +58,7 @@ import net.liplum.lib.animations.ganim.globalAnim
 import net.liplum.lib.shaders.SD
 import net.liplum.lib.shaders.TrShader
 import net.liplum.seffects.StaticFx
+import net.liplum.ui.DynamicContentInfoDialog.Companion.registerDynamicInfo
 
 object CioBlocks : ContentTable {
     @JvmStatic lateinit var icMachine: GenericCrafter
@@ -400,14 +402,14 @@ object CioBlocks : ContentTable {
             health = 250 * size * size
             limitRange(20f)
             ClientOnly {
-                Events.run(Trigger.preDraw) {
-                    WhenRefresh {
+                Events.run(Trigger.update) {
+                    if(Time.globalTime % CioMod.UpdateFrequency < 1f) {
                         TMTRAINER.localizedName = RandomName.one(8)
                         TMTRAINER.description = RandomName.one(25)
                     }
                 }
             }
-        }
+        }.registerDynamicInfo()
         smartDistributor = SmartDistributor("smart-distributor").apply {
             requirements(
                 Category.distribution, BuildVisibility.shown, arrayOf(

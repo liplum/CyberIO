@@ -23,6 +23,7 @@ import net.liplum.render.LinkDrawer
 import net.liplum.scripts.NpcSystem
 import net.liplum.ui.CioUI
 import net.liplum.ui.DebugUI
+import net.liplum.ui.OverwrittenUI
 import net.liplum.update.Updater
 import net.liplum.utils.G
 import net.liplum.welcome.FirstLoaded
@@ -145,10 +146,11 @@ class CioMod : Mod() {
         StreamCenter.initAndLoad()
         ClientOnly {
             GlobalAnimation.registerAll()
-            CioUI.appendSettings()
+            CioUI.appendUI()
             DebugOnly {
                 DebugUI.appendUI()
             }
+            OverwrittenUI.overwrite()
             CioShaders.loadResource()
             GlobalAnimation.loadAllResources()
             Events.run(Trigger.preDraw) {

@@ -39,7 +39,7 @@ import net.liplum.welcome.WelcomeList
 
 object CioUI {
     @JvmStatic
-    fun appendSettings() {
+    fun appendUI() {
         addCyberIOSettingMenu()
     }
     @JvmStatic

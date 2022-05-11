@@ -116,34 +116,30 @@ val FireBulletType.tinted: List<FireBulletType>
         }
     }
 val LaserBullets: HashMap<LaserBulletType, List<LaserBulletType>> = HashMap()
-val LaserColorRgb = arrayOf(
-    arrayOf(R.C.PrismRedFG, R.C.PrismRedBK, R.C.PrismRedBK),
-    arrayOf(R.C.PrismGreenFG, R.C.PrismGreenBK, R.C.PrismRedBK),
-    arrayOf(R.C.PrismBlueFG, R.C.PrismBlueBK, R.C.PrismRedBK)
-)
+val LaserTintLerp: Float
+    get() = 0.3f + Mathf.random(-0.15f, 0.15f)
 val LaserBulletType.tinted: List<LaserBulletType>
     get() = LaserBullets.rgb(this) {
         (this.copy() as LaserBulletType).apply {
-            colors = LaserColorRgb[it]
-            tintTrail(it, BasicTintLerp)
+            colors = Array(colors.size) { i ->
+                FG(it).lerp(colors[i], LaserTintLerp)
+            }
+            tintTrail(it, LaserTintLerp)
         }
     }
 val ContinuousLaserBullets: HashMap<ContinuousLaserBulletType, List<ContinuousLaserBulletType>> = HashMap()
-val ContinuousLaserColorRgb = arrayOf(
-    arrayOf(R.C.PrismRedFG, R.C.PrismRedFG, R.C.PrismRedBK, R.C.PrismRedBK),
-    arrayOf(R.C.PrismGreenFG, R.C.PrismGreenFG, R.C.PrismGreenBK, R.C.PrismRedBK),
-    arrayOf(R.C.PrismBlueFG, R.C.PrismBlueFG, R.C.PrismBlueBK, R.C.PrismRedBK)
-)
 val ContinuousLaserBulletType.tinted: List<ContinuousLaserBulletType>
     get() = ContinuousLaserBullets.rgb(this) {
         (this.copy() as ContinuousLaserBulletType).apply {
-            colors = ContinuousLaserColorRgb[it]
+            colors = Array(colors.size) { i ->
+                FG(it).lerp(colors[i], LaserTintLerp)
+            }
             hitEffect = HitMeltRgbFx[it]
             shootEffect = HitMeltRgbFx[it]
             smokeEffect = HitMeltRgbFx[it]
             despawnEffect = HitMeltRgbFx[it]
             lightColor = FG(it)
-            tintTrail(it, BasicTintLerp)
+            tintTrail(it, LaserTintLerp)
         }
     }
 val LiquidBullets: HashMap<LiquidBulletType, List<LiquidBulletType>> = HashMap()

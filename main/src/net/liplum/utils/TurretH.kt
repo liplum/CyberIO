@@ -4,11 +4,14 @@ import mindustry.gen.Bullet
 
 fun Bullet.copy(): Bullet {
     val d = Bullet.create()
-    d.type = this.type()
-    d.owner = this.owner()
-    d.team = this.team()
+    d.type = this.type
+    d.owner = this.owner
+    d.team = this.team
     d.x = this.x
     d.y = this.y
+    d.aimX = this.aimX
+    d.aimY = this.aimY
+    d.aimTile = this.aimTile
     d.lifetime = this.lifetime
     d.time = this.time
     d.data = this.data

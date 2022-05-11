@@ -73,7 +73,6 @@ annotation class Serialized
 @Inherited
 @MustBeDocumented
 annotation class UseRandom
-@Retention(AnnotationRetention.SOURCE)
 /**
  * It indicates reflection is used there. Please pay attention to the API changes between versions.
  */
@@ -86,8 +85,22 @@ annotation class UseRandom
     EXPRESSION,
     LOCAL_VARIABLE,
 )
+@Retention(AnnotationRetention.SOURCE)
 @MustBeDocumented
 annotation class UseReflection
+/**
+ * It indicates a function is idempotent
+ */
+@Target(FUNCTION)
+@Retention(AnnotationRetention.SOURCE)
+@MustBeDocumented
+annotation class Idempotent
+/**
+ * It indicates something in the vanilla will be overwritten
+ */
+@Retention(AnnotationRetention.SOURCE)
+@MustBeDocumented
+annotation class OverwriteVanilla
 /**
  * Runs codes only on Physical Client
  */

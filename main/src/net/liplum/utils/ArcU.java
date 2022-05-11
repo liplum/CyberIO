@@ -6,21 +6,40 @@ import arc.struct.*;
 @SuppressWarnings({"rawtypes", "unchecked"})
 public class ArcU {
     private static final Seq EmptySeq = new Seq() {
-        @Override
-        public void add(Object value) {
 
+        @Override
+        public Seq add(Seq array) {
+            return this;
         }
 
         @Override
-        public void add(Object value1, Object value2) {
+        public boolean addUnique(Object value) {
+            return false;
         }
 
         @Override
-        public void add(Object value1, Object value2, Object value3) {
+        public Seq add(Object value) {
+            return this;
         }
 
         @Override
-        public void add(Object value1, Object value2, Object value3, Object value4) {
+        public Seq add(Object value1, Object value2) {
+            return this;
+        }
+
+        @Override
+        public Seq add(Object value1, Object value2, Object value3) {
+            return this;
+        }
+
+        @Override
+        public Seq add(Object value1, Object value2, Object value3, Object value4) {
+            return this;
+        }
+
+        @Override
+        public Seq add(Object[] array) {
+            return this;
         }
 
         @Override

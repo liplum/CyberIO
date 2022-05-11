@@ -20,6 +20,7 @@ import mindustry.logic.LAccess
 import mindustry.logic.Ranged
 import mindustry.world.Block
 import mindustry.world.blocks.ControlBlock
+import mindustry.world.blocks.defense.turrets.LaserTurret
 import mindustry.world.blocks.defense.turrets.Turret
 import mindustry.world.meta.BlockFlag
 import mindustry.world.meta.BlockGroup
@@ -263,17 +264,24 @@ open class Prism(name: String) : Block(name) {
                 }
             }
         }
-
+        /**
+         * The Current is considered as green.
+         */
         open fun Bullet.passThrough() {
             if (!type.canDisperse) return
             this.setDuplicate()
+            // Current is green
             val angle = this.rotation()
+            val start = angle
             val copyRed = this.copy()
             val copyBlue = this.copy()
-            val start = angle - deflectionAngle
-            copyRed.rotation(start)
-            this.rotation(start + perDeflectionAngle)
-            copyBlue.rotation(start + perDeflectionAngle * 2)
+            copyRed.rotation(start - perDeflectionAngle)
+            this.rotation(start)
+            copyBlue.rotation(start + perDeflectionAngle)
+
+            copyRed.handleDuplicate(-perDeflectionAngle)
+            this.handleDuplicate(0f)
+            copyBlue.handleDuplicate(perDeflectionAngle)
             if (tintBullet) {
                 if (!this.type.isTintIgnored) {
                     val rgbs = tintedRGB(this.type)
@@ -282,6 +290,22 @@ open class Prism(name: String) : Block(name) {
                     copyBlue.type = rgbs[2]
                 }
             }
+        }
+
+        open fun Bullet.handleDuplicate(
+            angleOffset: Float = 0f
+        ): Bullet {
+            val owner = owner
+            if (owner is LaserTurret.LaserTurretBuild) {
+                val bullets = owner.bullets
+                if (bullets.any()) {
+                    val first = bullets.first()
+                    bullets.add(Turret.BulletEntry(
+                        this, first.x, first.y, first.rotation + angleOffset, first.life
+                    ))
+                }
+            }
+            return this
         }
 
         override fun draw() {
