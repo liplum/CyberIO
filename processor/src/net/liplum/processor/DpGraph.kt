@@ -6,9 +6,11 @@ typealias ID = String
 
 class DpGraph {
     private val id2Node = HashMap<ID, DpNode>()
-    operator fun get(id: ID): DpNode {
-        return id2Node.getOrPut(id) { DpNode(id) }
-    }
+    operator fun get(id: ID): DpNode =
+        id2Node.getOrPut(id) { DpNode(id) }
+
+    operator fun contains(id: ID): Boolean =
+        id in id2Node
 
     private fun resolve(node: DpNode): LinkedList<DpNode> {
         val resolved = LinkedList<DpNode>()

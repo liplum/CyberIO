@@ -31,6 +31,8 @@ ksp {
     arg("FileName", "Contents")
     arg("GenerateSpec", "Contents")
     arg("Scope", "net.liplum.registries")
+    allowSourcesFromOtherPlugins = true
+    blockOtherCompilerPlugins = true
 }
 version = "4.0"
 group = "net.liplum"
@@ -152,8 +154,8 @@ tasks.withType<Test>().configureEach {
         showStandardStreams = true
     }
 }
+
 tasks.named<Jar>("jar") {
-    dependsOn("kspKotlin")
     //dependsOn("compileGAL")
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     archiveFileName.set("${outputJarName}Desktop.jar")

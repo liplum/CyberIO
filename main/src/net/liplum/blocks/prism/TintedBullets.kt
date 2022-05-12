@@ -26,12 +26,7 @@ fun tintedRGB(b: BulletType): List<BulletType> {
         is FireBulletType -> b.tinted
         is LiquidBulletType -> b.tinted
         is MassDriverBolt -> b.tinted
-        else -> {
-            if (b.lightningType != null)
-                b.tintedLighting
-            else
-                b.tintGeneral
-        }
+        else -> b.tintGeneral
     }
 }
 
@@ -57,6 +52,9 @@ inline fun <T> HashMap<T, List<T>>.rgb(
 
 fun BulletType.commonTint(i: Int, lerp: Float = 0.3f) {
     trailColor = FG(i).lerp(trailColor, lerp)
+    healColor = FG(i).lerp(healColor, lerp)
+    lightColor = FG(i).lerp(lightColor, lerp)
+    lightningColor = BK(i).lerp(lightningColor, lerp)
 }
 
 internal fun FG(i: Int): Color =
@@ -138,7 +136,6 @@ val ContinuousLaserBulletType.tinted: List<ContinuousLaserBulletType>
             shootEffect = HitMeltRgbFx[it]
             smokeEffect = HitMeltRgbFx[it]
             despawnEffect = HitMeltRgbFx[it]
-            lightColor = FG(it)
             commonTint(it, LaserTintLerp)
         }
     }
@@ -181,16 +178,7 @@ val MassDriverBolt.tinted: List<MassDriverBolt>
             this
         }
     }
-val LightingBullets: HashMap<BulletType, List<BulletType>> = HashMap()
-val BulletType.tintedLighting: List<BulletType>
-    get() = LightingBullets.rgb(this) {
-        this.copy().apply {
-            lightningType = this.lightningType.copy().apply {
-                lightningColor = BK(it)
-                commonTint(it, LiquidTintLerp)
-            }
-        }
-    }
+
 val Registry: HashMap<BulletType, List<BulletType>> = HashMap()
 fun <T : BulletType> T.registerRGB(register: T.() -> Triple<T, T, T>) {
     val (r, g, b) = register()
@@ -219,10 +207,11 @@ val GeneralBullets: HashMap<BulletType, List<BulletType>> = HashMap()
 val BulletType.tintGeneral: List<BulletType>
     get() = GeneralBullets.rgb(this) {
         (this.copy() as BulletType).apply {
-            shootEffect = ShootRgbFx[it]
-            hitEffect = SmallRgbFx[it]
-            despawnEffect = SmallRgbFx[it]
-            smokeEffect = SmallRgbFx[it]
+            if (lightningType != null) {
+                lightningType = lightningType.copy().apply {
+                    commonTint(it, LiquidTintLerp)
+                }
+            }
             commonTint(it, BasicTintLerp)
         }
     }

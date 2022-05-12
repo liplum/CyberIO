@@ -52,9 +52,13 @@ class DpProcessor(
                 if (curFuncFullName != null) {
                     @Suppress("UNCHECKED_CAST")
                     val dependencies = dependenciesArg.value as ArrayList<String>
-                    for (dependency in dependencies) {
-                        val dpFullName = "$scope.$dependency"
-                        graph[curFuncFullName].dependsOn(graph[dpFullName])
+                    if (dependencies.isEmpty()) {
+                        graph[curFuncFullName]
+                    } else {
+                        for (dependency in dependencies) {
+                            val dpFullName = "$scope.$dependency"
+                            graph[curFuncFullName].dependsOn(graph[dpFullName])
+                        }
                     }
                 }
             }

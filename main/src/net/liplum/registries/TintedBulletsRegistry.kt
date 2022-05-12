@@ -6,15 +6,10 @@ import arc.graphics.g2d.Fill
 import arc.graphics.g2d.Lines
 import arc.math.Angles
 import arc.math.Mathf
-import mindustry.content.Bullets
 import mindustry.entities.Effect
 import mindustry.entities.Effect.EffectContainer
-import mindustry.entities.bullet.BulletType
-import net.liplum.ExperimentalOnly
 import net.liplum.R
 import net.liplum.blocks.prism.RgbList
-import net.liplum.blocks.prism.SmallRgbFx
-import net.liplum.blocks.prism.registerRGBIndex
 
 fun shootSmallFlameGen(lifetime: Float, clipSize: Float, fg: Color, bk: Color): Effect =
     Effect(lifetime, clipSize) { e: EffectContainer ->
@@ -61,5 +56,4 @@ val shootPyraFlameFx = RgbList {
 }
 
 fun tintedBulletsRegistryLoad() {
-
 }
