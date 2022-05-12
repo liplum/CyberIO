@@ -21,6 +21,7 @@ import mindustry.type.ammo.PowerAmmoType
 import mindustry.world.meta.BlockFlag
 import net.liplum.Cio
 import net.liplum.R
+import net.liplum.annotations.DependOn
 import net.liplum.bullets.RuvikBullet
 import net.liplum.bullets.STEM_VERSION
 import net.liplum.flesh.BrainUnitType
@@ -30,18 +31,21 @@ import net.liplum.utils.NewUnitType
 import net.liplum.utils.registerPayloadSource
 import net.liplum.utils.registerUnitType
 
-object CioUnitTypes : ContentTable {
+object CioUnitTypes {
     @JvmStatic lateinit var holoMiner: HoloUnitType
     @JvmStatic lateinit var holoFighter: HoloUnitType
     @JvmStatic lateinit var holoGuardian: HoloUnitType
     @JvmStatic lateinit var holoArchitect: HoloUnitType
     @JvmStatic lateinit var holoSupporter: HoloUnitType
     @JvmStatic lateinit var brain: BrainUnitType
-    override fun firstLoad() {
+    @DependOn
+    fun preRegister() {
         HoloUnitType::class.java.registerPayloadSource()
         BrainUnitType::class.java.registerPayloadSource()
         NpcUnitType::class.java.registerPayloadSource()
-
+    }
+    @DependOn("CioItems.ic")
+    fun holoMiner() {
         holoMiner = NewUnitType(R.Unit.HoloMiner, ::HoloUnitType, ::HoloUnit).apply {
             AutoLife(maxHealth = 1600f, lose = 0.08f)
             health = 2000f
@@ -68,7 +72,9 @@ object CioUnitTypes : ContentTable {
             )
             ammoType = PowerAmmoType(500f)
         }
-
+    }
+    @DependOn("CioItems.ic")
+    fun holoFighter() {
         holoFighter = NewUnitType(R.Unit.HoloFighter, ::HoloUnitType, ::HoloUnit).apply {
             AutoLife(maxHealth = 2200f, lose = 0.2f)
             speed = 4f
@@ -114,7 +120,10 @@ object CioUnitTypes : ContentTable {
                 }
             })
         }
+    }
 
+    @DependOn("CioItems.ic")
+    fun holoGuardian() {
         holoGuardian = NewUnitType(R.Unit.HoloGuardian, ::HoloUnitType, ::HoloUnit).apply {
             AutoLife(maxHealth = 5000f, lose = 0.28f)
             abilities.add(
@@ -140,6 +149,9 @@ object CioUnitTypes : ContentTable {
                 ItemStack(Items.titanium, 40),
             )
         }
+    }
+    @DependOn("CioItems.ic")
+    fun holoArchitect() {
         holoArchitect = NewUnitType(R.Unit.HoloArchitect, ::HoloUnitType, ::HoloUnit).apply {
             AutoLife(maxHealth = 2200f, lose = 0.15f)
             aiController = Prov { BuilderAI() }
@@ -195,7 +207,10 @@ object CioUnitTypes : ContentTable {
                 }
             })
         }
+    }
 
+    @DependOn
+    fun holoSupporter() {
         holoSupporter = NewUnitType(R.Unit.HoloSupporter, ::HoloUnitType, ::HoloUnit).apply {
             AutoLife(maxHealth = 4000f, lose = 0.15f)
             abilities.add(
@@ -243,6 +258,10 @@ object CioUnitTypes : ContentTable {
                 }
             })
         }
+    }
+
+    @DependOn
+    fun brain() {
         registerUnitType(R.Unit.Brain)
         brain = BrainUnitType(R.Unit.Brain).apply {
             flying = true
@@ -265,11 +284,5 @@ object CioUnitTypes : ContentTable {
                 }
             })
         }
-    }
-
-    override fun load() {
-    }
-
-    override fun lastLoad() {
     }
 }

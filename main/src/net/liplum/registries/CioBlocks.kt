@@ -24,6 +24,7 @@ import mindustry.world.draw.DrawLiquidTile
 import mindustry.world.draw.DrawMulti
 import mindustry.world.meta.BuildVisibility
 import net.liplum.*
+import net.liplum.annotations.DependOn
 import net.liplum.api.brain.UT
 import net.liplum.api.brain.Upgrade
 import net.liplum.api.virus.setUninfected
@@ -58,7 +59,7 @@ import net.liplum.lib.animations.ganim.globalAnim
 import net.liplum.seffects.StaticFx
 import net.liplum.ui.DynamicContentInfoDialog.Companion.registerDynamicInfo
 
-object CioBlocks : ContentTable {
+object CioBlocks {
     @JvmStatic lateinit var icMachine: GenericCrafter
     @JvmStatic lateinit var icMachineSmall: GenericCrafter
     @JvmStatic lateinit var receiver: Receiver
@@ -92,10 +93,8 @@ object CioBlocks : ContentTable {
     @JvmStatic lateinit var ear: Ear
     @JvmStatic lateinit var hand: Hand
     @JvmStatic lateinit var heart: Heart
-    override fun firstLoad() {
-    }
-
-    override fun load() {
+    @DependOn("CioItems.ic")
+    fun icMachine() {
         icMachine = ICMachine("ic-machine").apply {
             requirements(
                 Category.crafting, arrayOf(
@@ -120,7 +119,10 @@ object CioBlocks : ContentTable {
             )
             consumePower(10f)
         }
+    }
 
+    @DependOn("CioItems.ic")
+    fun icMachineSmall() {
         icMachineSmall = ICMachineS("ic-machine-s").apply {
             requirements(
                 Category.crafting, arrayOf(
@@ -148,7 +150,10 @@ object CioBlocks : ContentTable {
                 CioItems.ic
             )
         }
+    }
 
+    @DependOn("CioItems.ic")
+    fun receiver() {
         receiver = Receiver("receiver").apply {
             requirements(
                 Category.distribution, arrayOf(
@@ -163,7 +168,10 @@ object CioBlocks : ContentTable {
             consumePower(0.5f)
             replaceable = false
         }
+    }
 
+    @DependOn("CioItems.ic")
+    fun sender() {
         sender = Sender("sender").apply {
             requirements(
                 Category.distribution, arrayOf(
@@ -178,7 +186,10 @@ object CioBlocks : ContentTable {
             consumePower(0.5f)
             replaceable = false
         }
+    }
 
+    @DependOn
+    fun virus() {
         virus = Virus("virus").apply {
             requirements(
                 Category.effect, BuildVisibility.sandboxOnly,
@@ -194,7 +205,17 @@ object CioBlocks : ContentTable {
             inheritChildrenNumber = false
             mutationRate = 10
         }.globalAnim(30f, 3)
+        Blocks.air.setUninfectedFloor()
+        Blocks.space.setUninfectedFloor()
+        Blocks.water.setUninfectedFloor()
+        Blocks.deepwater.setUninfectedFloor()
+        Blocks.itemSource.setUninfected()
+        Blocks.liquidSource.setUninfected()
+        Blocks.powerSource.setUninfected()
+    }
 
+    @DependOn("CioItems.ic")
+    fun landProjector() {
         landProjector = LandProjector("land-projector").apply {
             requirements(
                 Category.effect,
@@ -212,11 +233,17 @@ object CioBlocks : ContentTable {
             size = 2
             buildCostMultiplier = 3f
         }
+    }
 
+    @DependOn
+    fun holoFloor() {
         holoFloor = HoloFloor("holo-floor").apply {
             variants = 3
         }.setUninfectedFloor()
+    }
 
+    @DependOn("CioItems.ic")
+    fun underdriveProjector() {
         underdriveProjector = UnderdriveProjector("underdrive-projector").apply {
             requirements(
                 Category.effect, BuildVisibility.shown, arrayOf(
@@ -236,7 +263,10 @@ object CioBlocks : ContentTable {
             maxGear = 5
             size = 1
         }
+    }
 
+    @DependOn("CioItems.ic")
+    fun antiVirus() {
         antiVirus = AntiVirus("anti-virus").apply {
             requirements(
                 Category.effect, BuildVisibility.shown, arrayOf(
@@ -250,7 +280,10 @@ object CioBlocks : ContentTable {
             consumePower(0.5f)
             size = 1
         }.setUninfected()
+    }
 
+    @DependOn("CioItems.ic")
+    fun cloud() {
         cloud = Cloud("cloud").apply {
             requirements(
                 Category.effect,
@@ -268,7 +301,10 @@ object CioBlocks : ContentTable {
             health = 500 * size * size
             consumePower(1f)
         }
+    }
 
+    @DependOn
+    fun hyperOverdriveSphere() {
         hyperOverdriveSphere = AdjustableOverdrive("hyper-overdrive-sphere").apply {
             requirements(
                 Category.effect,
@@ -287,7 +323,10 @@ object CioBlocks : ContentTable {
             speedBoost = 50f
             range = 1000f
         }
+    }
 
+    @DependOn("CioItems.ic")
+    fun prism() {
         prism = Prism("prism").apply {
             requirements(
                 Category.turret, BuildVisibility.shown, arrayOf(
@@ -301,7 +340,13 @@ object CioBlocks : ContentTable {
             size = 4
             health = 2500
         }
+    }
 
+    @DependOn(
+        "CioItems.ic",
+        "CioBlocks.prism"
+    )
+    fun prismObelisk() {
         prismObelisk = PrismObelisk("prism-obelisk").apply {
             requirements(
                 Category.turret, BuildVisibility.shown, arrayOf(
@@ -316,7 +361,10 @@ object CioBlocks : ContentTable {
             health = 1000
             prismType = prism
         }
+    }
 
+    @DependOn("CioItems.ic")
+    fun deleter() {
         deleter = Deleter("deleter").apply {
             requirements(
                 Category.turret, BuildVisibility.shown, arrayOf(
@@ -343,7 +391,10 @@ object CioBlocks : ContentTable {
                 pierceCap = 3
             }
         }
+    }
 
+    @DependOn("CioItems.ic")
+    fun holoWall() {
         holoWall = HoloWall("holo-wall").apply {
             requirements(
                 Category.defense, BuildVisibility.shown, arrayOf(
@@ -358,7 +409,10 @@ object CioBlocks : ContentTable {
             health = 600
             buildCostMultiplier = 3.5f
         }
+    }
 
+    @DependOn("CioItems.ic")
+    fun holoWallLarge() {
         holoWallLarge = HoloWall("holo-wall-large").apply {
             requirements(
                 Category.defense, BuildVisibility.shown, arrayOf(
@@ -373,7 +427,14 @@ object CioBlocks : ContentTable {
             health = 550 * 5
             buildCostMultiplier = 4.5f
         }
+    }
 
+    @DependOn(
+        "CioItems.ic",
+        "CioBulletTypes.radiationInterference",
+        "CioBulletTypes.virus",
+    )
+    fun TMTRAINER() {
         TMTRAINER = TMTRAINER("TMTRAINER").apply {
             requirements(
                 Category.turret, BuildVisibility.shown, arrayOf(
@@ -409,6 +470,10 @@ object CioBlocks : ContentTable {
                 }
             }
         }.registerDynamicInfo()
+    }
+
+    @DependOn("CioItems.ic")
+    fun smartDistributor() {
         smartDistributor = SmartDistributor("smart-distributor").apply {
             requirements(
                 Category.distribution, BuildVisibility.shown, arrayOf(
@@ -423,7 +488,10 @@ object CioBlocks : ContentTable {
             health = 4500
             size = 2
         }
+    }
 
+    @DependOn("CioItems.ic")
+    fun smartUnloader() {
         smartUnloader = SmartUnloader("smart-unloader").apply {
             requirements(
                 Category.distribution, BuildVisibility.shown, arrayOf(
@@ -438,7 +506,10 @@ object CioBlocks : ContentTable {
             health = 1500
             size = 2
         }
+    }
 
+    @DependOn("CioItems.ic")
+    fun streamClient() {
         streamClient = StreamClient("stream-client").apply {
             requirements(
                 Category.liquid, BuildVisibility.shown, arrayOf(
@@ -454,7 +525,10 @@ object CioBlocks : ContentTable {
             liquidCapacity = 300f
             replaceable = false
         }
+    }
 
+    @DependOn("CioItems.ic")
+    fun streamHost() {
         streamHost = StreamHost("stream-host").apply {
             requirements(
                 Category.liquid, BuildVisibility.shown, arrayOf(
@@ -475,7 +549,10 @@ object CioBlocks : ContentTable {
             replaceable = false
             maxConnection = 3
         }
+    }
 
+    @DependOn("CioItems.ic")
+    fun streamServer() {
         streamServer = StreamServer("stream-server").apply {
             requirements(
                 Category.liquid, BuildVisibility.shown, arrayOf(
@@ -498,7 +575,10 @@ object CioBlocks : ContentTable {
             liquidCapacity = 2000f
             replaceable = false
         }
+    }
 
+    @DependOn("CioItems.ic")
+    fun jammer() {
         jammer = Jammer("jammer").apply {
             requirements(
                 Category.turret, BuildVisibility.shown, arrayOf(
@@ -540,6 +620,13 @@ object CioBlocks : ContentTable {
                 damage = 120f
             }
         }
+    }
+
+    @DependOn(
+        "CioItems.ic",
+        "CioLiquids.cyberion"
+    )
+    fun cyberionMixer() {
         cyberionMixer = GenericCrafter("cyberion-mixer").apply {
             requirements(
                 Category.crafting, BuildVisibility.shown, arrayOf(
@@ -561,7 +648,18 @@ object CioBlocks : ContentTable {
             consumeItem(Items.thorium, 1)
             consumeLiquid(Liquids.cryofluid, 0.3f)
         }
+    }
 
+    @DependOn(
+        "CioItems.ic",
+        "CioLiquids.cyberion",
+        "CioUnitTypes.holoMiner",
+        "CioUnitTypes.holoFighter",
+        "CioUnitTypes.holoGuardian",
+        "CioUnitTypes.holoArchitect",
+        "CioUnitTypes.holoSupporter",
+    )
+    fun holoProjector() {
         holoProjector = HoloProjector("holo-projector").apply {
             requirements(
                 Category.units, BuildVisibility.shown, arrayOf(
@@ -604,7 +702,10 @@ object CioBlocks : ContentTable {
             size = 5
             buildCostMultiplier = 2f
         }
+    }
 
+    @DependOn("CioLiquids.cyberion")
+    fun aquacyberion() {
         aquacyberion = Floor("aqua-cyberion").apply {
             drownTime = 0f
             status = StatusEffects.freezing
@@ -619,7 +720,13 @@ object CioBlocks : ContentTable {
             lightRadius = 30f
             lightColor = R.C.Holo.cpy().a(0.19f)
         }
+    }
 
+    @DependOn(
+        "CioItems.ic",
+        "CioBulletTypes.ruvik2"
+    )
+    fun stealth() {
         stealth = Stealth("stealth").apply {
             requirements(
                 Category.turret, BuildVisibility.shown, arrayOf(
@@ -645,7 +752,10 @@ object CioBlocks : ContentTable {
                 backColor = R.C.HoloDark
             }
         }
+    }
 
+    @DependOn("CioItems.ic")
+    fun wirelessTower() {
         wirelessTower = WirelessTower("wireless-tower").apply {
             requirements(
                 Category.power, BuildVisibility.shown, arrayOf(
@@ -661,7 +771,10 @@ object CioBlocks : ContentTable {
             size = 2
             range = 300f
         }
+    }
 
+    @DependOn("CioItems.ic")
+    fun heimdall() {
         heimdall = Heimdall("heimdall").apply {
             requirements(
                 Category.turret, BuildVisibility.shown, arrayOf(
@@ -683,6 +796,10 @@ object CioBlocks : ContentTable {
                 FaceFE, FunnyFaceFE, ForceFieldFE
             )
         }
+    }
+
+    @DependOn("CioItems.ic")
+    fun eye() {
         eye = Eye("heimdall-eye").apply {
             requirements(
                 Category.turret, BuildVisibility.shown, arrayOf(
@@ -741,6 +858,10 @@ object CioBlocks : ContentTable {
                 ammoMultiplier = 1f
             }
         }
+    }
+
+    @DependOn("CioItems.ic")
+    fun ear() {
         ear = Ear("heimdall-ear").apply {
             requirements(
                 Category.turret, BuildVisibility.shown, arrayOf(
@@ -767,7 +888,10 @@ object CioBlocks : ContentTable {
             damage = 8f
             health = 300 * size * size
         }
+    }
 
+    @DependOn("CioItems.ic")
+    fun hand() {
         DebugOnly {
             hand = Hand("heimdall-hand").apply {
                 requirements(
@@ -779,6 +903,12 @@ object CioBlocks : ContentTable {
                     )
                 )
             }
+        }
+    }
+
+    @DependOn("CioItems.ic")
+    fun heart() {
+        DebugOnly {
             heart = Heart("heimdall-heart").apply {
                 requirements(Category.turret, BuildVisibility.shown, arrayOf(
                 ))
@@ -786,8 +916,8 @@ object CioBlocks : ContentTable {
             }
         }
     }
-
-    override fun lastLoad() {
+    @DependOn
+    fun overwriteVanilla() {
         DebugOnly {
             (Blocks.powerSource as PowerSource).apply {
                 buildVisibility = BuildVisibility.shown

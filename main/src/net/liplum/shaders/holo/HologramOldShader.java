@@ -10,14 +10,14 @@ import org.jetbrains.annotations.NotNull;
 import static mindustry.Vars.renderer;
 import static net.liplum.utils.AtlasHKt.inCio;
 
-public class HologramOld extends ShaderBase {
+public class HologramOldShader extends ShaderBase {
     public static final float DefaultSpeed = 0.5f;
     public Texture fringe;
     public float randomRange = 0f;
     public float alpha = 1f;
     public float speed = DefaultSpeed;
 
-    public HologramOld(@NotNull Fi vert, @NotNull Fi frag) {
+    public HologramOldShader(@NotNull Fi vert, @NotNull Fi frag) {
         super(vert, frag);
     }
 

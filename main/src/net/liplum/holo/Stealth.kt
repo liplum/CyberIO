@@ -33,12 +33,12 @@ import net.liplum.lib.Draw
 import net.liplum.lib.animations.Floating
 import net.liplum.lib.bundle
 import net.liplum.lib.delegates.Delegate1
+import net.liplum.lib.shaders.SD
 import net.liplum.lib.shaders.use
 import net.liplum.lib.ui.bars.AddBar
 import net.liplum.persistance.intSet
 import net.liplum.registries.CioBulletTypes
 import net.liplum.registries.CioLiquids.cyberion
-import net.liplum.registries.CioShaders
 import net.liplum.utils.*
 
 open class Stealth(name: String) : Turret(name) {
@@ -113,7 +113,7 @@ open class Stealth(name: String) : Turret(name) {
                 Draw.z(Layer.block)
                 Draw.rect(BaseTR, x, y)
                 if (isProjecting) {
-                    CioShaders.Hologram.use(Layer.power) {
+                    SD.Hologram.use(Layer.power) {
                         val healthPct = healthPct
                         it.alpha = healthPct / 4f * 3f
                         it.opacityNoise *= 2f - healthPct
