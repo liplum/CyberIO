@@ -8,6 +8,8 @@ import mindustry.gen.BlockUnitc
 import mindustry.graphics.Pal
 import net.liplum.OverwriteVanilla
 import net.liplum.R
+import net.liplum.blocks.prism.AutoRGB
+import net.liplum.blocks.prism.Prism
 import net.liplum.holo.HoloUnit
 import net.liplum.lib.setF
 import net.liplum.safeCall
@@ -58,9 +60,15 @@ object OverwrittenUI {
                         if (unit is HoloUnit)
                             R.C.Holo
                         else if (player.displayAmmo())
-                            if (player.dead() || unit is BlockUnitc)
-                                Pal.ammo
-                            else
+                            if (player.dead() || unit is BlockUnitc) {
+                                if (unit is BlockUnitc) {
+                                    if (unit.tile() is Prism.PrismBuild)
+                                        AutoRGB()
+                                    else
+                                        Pal.ammo
+                                } else
+                                    Pal.ammo
+                            } else
                                 unit.type.ammoType.color()
                         else
                             Pal.health

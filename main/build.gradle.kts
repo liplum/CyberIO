@@ -1,12 +1,12 @@
+
+import com.google.devtools.ksp.gradle.KspTaskJvm
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import java.io.ByteArrayOutputStream
-
 plugins {
     kotlin("jvm") version "1.6.10"
     id("com.google.devtools.ksp") version "1.6.20-1.0.5"
     java
 }
-
 val outputJarName: String get() = extra["outputJarName"] as String
 val mdtVersion: String get() = extra["mdtVersion"] as String
 val mdtVersionNum: String get() = extra["mdtVersionNum"] as String
@@ -21,18 +21,20 @@ sourceSets {
         resources.srcDir("resources")
     }
 }
+/*
+Ignore the default path of ksp generated files.
+Replace it with copying generated codes into source path.
 kotlin.sourceSets.main {
     kotlin.srcDirs(
         file("$buildDir/generated/ksp/main/kotlin")
     )
 }
+*/
 ksp {
     arg("PackageName", "net.liplum.gen")
     arg("FileName", "Contents")
     arg("GenerateSpec", "Contents")
     arg("Scope", "net.liplum.registries")
-    allowSourcesFromOtherPlugins = true
-    blockOtherCompilerPlugins = true
 }
 version = "4.0"
 group = "net.liplum"
@@ -144,6 +146,24 @@ tasks {
         }
     }
 }
+
+tasks.whenTaskAdded {
+    if (name == "kspKotlin") {
+        this as KspTaskJvm
+        doLast {
+            copy{
+                from("$buildDir/generated/ksp/main/kotlin"){
+                    include("**")
+                }
+                into("src")
+            }
+            delete{
+                delete("$buildDir/generated/ksp/main/kotlin")
+            }
+        }
+    }
+}
+
 tasks.withType<Test>().configureEach {
     useJUnitPlatform {
         includeTags("fast")
