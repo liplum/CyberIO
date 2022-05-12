@@ -1,5 +1,8 @@
 package net.liplum.gradle.bundle.test
 
-class TestLocale {
+fun main() {
+    `get all locale in java`()
+}
 
+fun `get all locale in java`() {
 }

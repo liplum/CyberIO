@@ -7,30 +7,15 @@ import net.liplum.CioMod
 import net.liplum.ClientOnly
 import net.liplum.R
 import net.liplum.lib.shaders.*
+import net.liplum.registries.CioShaders.*
 import net.liplum.shaders.SurfaceShader
 import net.liplum.shaders.TestShieldShader
-import net.liplum.shaders.holo.Hologram
-import net.liplum.shaders.holo.HologramOld
+import net.liplum.shaders.holo.HologramOldShader
+import net.liplum.shaders.holo.HologramShader
 import net.liplum.useCompatible
 
 @ClientOnly
-object CioShaders {
-    // @formatter:off
-    lateinit var DynamicColor:                  CommonShader
-    lateinit var HologramOld:                   HologramOld
-    lateinit var Hologram:                      Hologram
-    lateinit var Monochrome:                    CommonShader
-    lateinit var InvertColor:                   CommonShader
-    lateinit var TvStatic:                      CommonShader
-    lateinit var Pulse:                         CommonShader
-    lateinit var InvertingColorRGB:             ProgressShader
-    lateinit var InvertingColorRbg2HsvInHsv:    ProgressShader
-    lateinit var InvertingColorRbg2HsvInRgb:    ProgressShader
-    lateinit var Monochromize:                  ProgressShader
-    var Cyberion:                               SurfaceShader? = null
-    lateinit var TestShieldScreen:              TestShieldShader
-    lateinit var TestScreen:                    Hologram
-    // @formatter:on
+object CioShaderLoader {
     @JvmStatic
     @ClientOnly
     fun init() {
@@ -38,8 +23,8 @@ object CioShaders {
 // Dynamic
 DynamicColor                = default("DynamicColor",                  ::CommonShader)
 // Hologram
-HologramOld                 = default("HologramOld",                   ::HologramOld)
-Hologram                    = default("Hologram",                      ::Hologram)
+HologramOld                 = default("HologramOld",                   ::HologramOldShader)
+Hologram                    = default("Hologram",                      ::HologramShader)
 
 Monochrome                  = default("Monochrome",                    ::CommonShader)
 InvertColor                 = default("InvertColor",                   ::CommonShader)
@@ -53,7 +38,7 @@ Monochromize                = default("Monochromize",                  ::Progres
 // Block Surface
 Cyberion                    = screen("Cyberion",                       ::SurfaceShader)
 TestShieldScreen            = screen("TestShield",                     ::TestShieldShader)
-TestScreen                  = screen("Hologram",                       ::Hologram)
+TestScreen                  = screen("Hologram",                       ::HologramShader)
         // @formatter:on
     }
 

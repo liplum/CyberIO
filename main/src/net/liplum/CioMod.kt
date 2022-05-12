@@ -93,7 +93,7 @@ class CioMod : Mod() {
         Events.on(FileTreeInitEvent::class.java) {
             ClientOnly {
                 Core.app.post {
-                    CioShaders.init()
+                    CioShaderLoader.init()
                     WelcomeList.loadList()
                     Welcome.load()
                     DebugOnly{
@@ -110,7 +110,7 @@ class CioMod : Mod() {
         }
         Events.on(DisposeEvent::class.java) {
             ClientOnly {
-                CioShaders.dispose()
+                CioShaderLoader.dispose()
             }
         }
     }
@@ -154,7 +154,7 @@ class CioMod : Mod() {
                 DebugUI.appendUI()
             }
             OverwrittenUI.overwrite()
-            CioShaders.loadResource()
+            CioShaderLoader.loadResource()
             GlobalAnimation.loadAllResources()
             Events.run(Trigger.preDraw) {
                 G.init()
@@ -174,7 +174,7 @@ class CioMod : Mod() {
         CioSounds.load()
         EntityRegistry.registerAll()
         CioCLs.load()
-        ContentRegistry.loadContent()
+        CioContentLoader.load()
         IHoloEntity.registerHoloEntityInitHealth()
         PrismBlackList.load()
         GlobalAnimation.CanPlay = true

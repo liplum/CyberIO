@@ -17,10 +17,12 @@ sourceSets {
         java.srcDir("test")
     }
 }
+
 dependencies {
     implementation(gradleApi())
-    testImplementation ("org.junit.jupiter:junit-jupiter-api:5.8.2")
-    testRuntimeOnly ("org.junit.jupiter:junit-jupiter-engine:5.8.2")
+    implementation(project(":main","default"))
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.2")
 }
 
 tasks.withType<Test>().configureEach {

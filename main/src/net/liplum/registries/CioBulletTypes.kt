@@ -4,25 +4,27 @@ import mindustry.content.Fx
 import mindustry.entities.bullet.BasicBulletType
 import mindustry.graphics.Pal
 import net.liplum.R
+import net.liplum.annotations.DependOn
 import net.liplum.bullets.RuvikBullet
 import net.liplum.bullets.STEM_VERSION
 import net.liplum.bullets.ShaderBasicBulletT
 import net.liplum.lib.shaders.CommonShader
 import net.liplum.lib.shaders.SD
 import net.liplum.seffects.StaticFx
-import net.liplum.shaders.holo.Hologram
+import net.liplum.shaders.holo.HologramShader
 
-object CioBulletTypes : ContentTable {
+object CioBulletTypes {
     @JvmStatic lateinit var virus: BasicBulletType
     @JvmStatic lateinit var radiationInterference: ShaderBasicBulletT<CommonShader>
-    @JvmStatic lateinit var holoBullet: ShaderBasicBulletT<Hologram>
+    @JvmStatic lateinit var holoBullet: ShaderBasicBulletT<HologramShader>
     @JvmStatic lateinit var ruvik: RuvikBullet
     @JvmStatic lateinit var ruvik2: RuvikBullet
-    override fun firstLoad() {
-        holoBullet = ShaderBasicBulletT<Hologram>(
+    @DependOn
+    fun holoBullet() {
+        holoBullet = ShaderBasicBulletT<HologramShader>(
             2f, 35f
         ).apply {
-            shader = { SD.Hologram }
+            shader = SD.Hologram
             width = 10f
             height = 10f
             hitSize = 10f
@@ -32,6 +34,9 @@ object CioBulletTypes : ContentTable {
             backColor = R.C.HoloDark2
             frontColor = R.C.HoloDark2
         }
+    }
+    @DependOn
+    fun ruvik() {
         ruvik = RuvikBullet(1.5f, 30f).apply {
             stemVersion = STEM_VERSION.STEM1
             width = 10f
@@ -39,6 +44,9 @@ object CioBulletTypes : ContentTable {
             hitSize = 10f
             lifetime = 240f
         }
+    }
+    @DependOn
+    fun ruvik2() {
         ruvik2 = RuvikBullet(1.5f, 30f).apply {
             stemVersion = STEM_VERSION.STEM2
             width = 10f
@@ -47,8 +55,8 @@ object CioBulletTypes : ContentTable {
             lifetime = 240f
         }
     }
-
-    override fun load() {
+    @DependOn("CioSEffects.infected")
+    fun virus() {
         virus = BasicBulletType(
             2.5f, 50f, "bullet"
         ).apply {
@@ -66,11 +74,15 @@ object CioBulletTypes : ContentTable {
             status = CioSEffects.infected
             statusDuration = CioSEffects.infected.initTime
         }
-
+    }
+    @DependOn(
+        "CioSEffects.static"
+    )
+    fun radiationInterference() {
         radiationInterference = ShaderBasicBulletT<CommonShader>(
             2.3f, 30f, "bullet"
         ).apply {
-            shader = { SD.TvStatic }
+            shader = SD.TvStatic
             width = 15f
             height = 15f
             hitSize = 15f
@@ -84,8 +96,5 @@ object CioBulletTypes : ContentTable {
             status = CioSEffects.static
             statusDuration = CioSEffects.static.initTime
         }
-    }
-
-    override fun lastLoad() {
     }
 }

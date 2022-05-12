@@ -3,8 +3,10 @@ import java.io.ByteArrayOutputStream
 
 plugins {
     kotlin("jvm") version "1.6.10"
+    id("com.google.devtools.ksp") version "1.6.20-1.0.5"
     java
 }
+
 val outputJarName: String get() = extra["outputJarName"] as String
 val mdtVersion: String get() = extra["mdtVersion"] as String
 val mdtVersionNum: String get() = extra["mdtVersionNum"] as String
@@ -12,12 +14,25 @@ val sdkRoot: String? by extra(System.getenv("ANDROID_HOME") ?: System.getenv("AN
 sourceSets {
     main {
         java.srcDir("src")
+        resources.srcDir("resources")
     }
     test {
         java.srcDir("test")
+        resources.srcDir("resources")
     }
 }
-version = "3.4"
+kotlin.sourceSets.main {
+    kotlin.srcDirs(
+        file("$buildDir/generated/ksp/main/kotlin")
+    )
+}
+ksp {
+    arg("PackageName", "net.liplum.gen")
+    arg("FileName", "Contents")
+    arg("GenerateSpec", "Contents")
+    arg("Scope", "net.liplum.registries")
+}
+version = "4.0"
 group = "net.liplum"
 
 java {
@@ -26,6 +41,8 @@ java {
 }
 val mdthash = "5b7f751073"
 dependencies {
+    implementation(project(":annotations"))
+    ksp(project(":processor"))
 //    compileOnly("com.github.Anuken.Arc:arc-core:$mdtVersion")
 //    compileOnly("com.github.Anuken.Mindustry:core:$mdtVersion")
     // Use anuke's mirror for now on https://github.com/Anuken/MindustryJitpack
@@ -136,6 +153,7 @@ tasks.withType<Test>().configureEach {
     }
 }
 tasks.named<Jar>("jar") {
+    dependsOn("kspKotlin")
     //dependsOn("compileGAL")
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     archiveFileName.set("${outputJarName}Desktop.jar")

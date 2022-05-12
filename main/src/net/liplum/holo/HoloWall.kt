@@ -15,10 +15,10 @@ import net.liplum.api.holo.IHoloEntity
 import net.liplum.api.holo.IHoloEntity.Companion.minHealth
 import net.liplum.lib.animations.Floating
 import net.liplum.lib.bundle
+import net.liplum.lib.shaders.SD
 import net.liplum.lib.shaders.use
 import net.liplum.lib.ui.bars.AddBar
 import net.liplum.lib.yesNo
-import net.liplum.registries.CioShaders
 import net.liplum.utils.*
 
 open class HoloWall(name: String) : Wall(name) {
@@ -123,7 +123,7 @@ open class HoloWall(name: String) : Wall(name) {
             Draw.z(Layer.block)
             Draw.rect(BaseTR, x, y)
             if (isProjecting) {
-                CioShaders.Hologram.use(Layer.power) {
+                SD.Hologram.use(Layer.power) {
                     val healthPct = healthPct
                     it.alpha = healthPct / 4f * 3f
                     it.opacityNoise *= 2f - healthPct

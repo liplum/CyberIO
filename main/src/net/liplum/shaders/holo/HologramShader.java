@@ -6,7 +6,7 @@ import net.liplum.lib.shaders.ShaderBase;
 
 import static mindustry.Vars.renderer;
 
-public class Hologram extends ShaderBase {
+public class HologramShader extends ShaderBase {
     public final float DefaultBlendHoloColorOpacity = 0.8f;
     public final float DefaultBlendFormerColorOpacity = 0.6f;
     public final float DefaultFlickering = 0.03f;
@@ -16,7 +16,7 @@ public class Hologram extends ShaderBase {
     public float blendFormerColorOpacity = DefaultBlendFormerColorOpacity;
     public float flickering = DefaultFlickering;
 
-    public Hologram(Fi vert, Fi frag) {
+    public HologramShader(Fi vert, Fi frag) {
         super(vert, frag);
     }
 

@@ -170,4 +170,6 @@ __pycache__/
 main/build
 buildSrc/build
 bundle/build
+processor/build
+annotations/build
 extra

@@ -3,11 +3,13 @@ package net.liplum.registries
 import mindustry.content.StatusEffects
 import mindustry.type.Liquid
 import net.liplum.R
+import net.liplum.annotations.DependOn
 
-object CioLiquids : ContentTable {
+object CioLiquids {
     @JvmStatic lateinit var cyberion: Liquid
     @JvmStatic lateinit var tissueFluid: Liquid
-    override fun firstLoad() {
+    @DependOn
+    fun cyberion() {
         cyberion = Liquid(R.Liquid.Cyberion, R.C.Holo).apply {
             flammability = 0f
             explosiveness = 0f
@@ -17,6 +19,9 @@ object CioLiquids : ContentTable {
             effect = StatusEffects.freezing
             lightColor = R.C.Holo.cpy().a(0.2f)
         }
+    }
+    @DependOn
+    fun tissueFluid() {
         tissueFluid = Liquid(R.Liquid.TissueFluid, R.C.TissueFluid).apply {
             flammability = 0f
             explosiveness = 0f
@@ -26,11 +31,5 @@ object CioLiquids : ContentTable {
             effect = StatusEffects.freezing
             lightColor = R.C.Holo.cpy().a(0.2f)
         }
-    }
-
-    override fun load() {
-    }
-
-    override fun lastLoad() {
     }
 }
