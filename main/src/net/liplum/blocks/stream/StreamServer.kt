@@ -120,7 +120,7 @@ open class StreamServer(name: String) : StreamHost(name) {
                 restored = false
             }
             // Check connection every second
-            if (Time.time % 60f < 1) {
+            if (timer(CheckConnectionTimer, 60f)) {
                 checkClientsPos()
                 checkHostPos()
                 ClientOnly {
@@ -135,55 +135,56 @@ open class StreamServer(name: String) : StreamHost(name) {
                     }
                 }
             }
-            if (!canConsume()) return
-            if (fireproof) {
-                ForProximity(5) {
-                    Fires.remove(tile)
-                }
-            }
-            //Generate clients
-            SharedClientSeq.clear()
-            for (pos in clients) {
-                val client = pos.sc()
-                if (client != null) {
-                    SharedClientSeq.add(client)
-                }
-            }
-            val needPumped = realNetworkSpeed.coerceAtMost(liquids.total())
-            var restNeedPumped = needPumped
-            var per = restNeedPumped / clients.size
-            var restClient = clients.size
-            for (client in SharedClientSeq) {
-                val reqs = client.requirements
-                if (reqs == null) {
-                    val current = liquids.current()
-                    val pumpedThisTime = per.coerceAtMost(liquids.currentAmount())
-                    if (pumpedThisTime > 0.01f) {
-                        val rest = streaming(client, current, pumpedThisTime)
-                        val consumed = (pumpedThisTime - rest)
-                        liquids.remove(current, consumed)
-                        restNeedPumped -= consumed
+            if (timer(TransferTimer, 1f)) {
+                if (fireproof) {
+                    ForProximity(5) {
+                        Fires.remove(tile)
                     }
-                } else if (reqs.isNotEmpty()) {
-                    val perThisTime = per / reqs.size
-                    for (liquidNeed in reqs) {
-                        val pumpedThisTime = perThisTime.coerceAtMost(liquids.get(liquidNeed))
+                }
+                //Generate clients
+                SharedClientSeq.clear()
+                for (pos in clients) {
+                    val client = pos.sc()
+                    if (client != null) {
+                        SharedClientSeq.add(client)
+                    }
+                }
+                val needPumped = (realNetworkSpeed * efficiency).coerceAtMost(liquids.total())
+                var restNeedPumped = needPumped
+                var per = restNeedPumped / clients.size
+                var restClient = clients.size
+                for (client in SharedClientSeq) {
+                    val reqs = client.requirements
+                    if (reqs == null) {
+                        val current = liquids.current()
+                        val pumpedThisTime = per.coerceAtMost(liquids.currentAmount())
                         if (pumpedThisTime > 0.01f) {
-                            val rest = streaming(client, liquidNeed!!, pumpedThisTime)
-                            val consumed = (perThisTime - rest)
-                            liquids.remove(liquidNeed, consumed)
+                            val rest = streaming(client, current, pumpedThisTime)
+                            val consumed = (pumpedThisTime - rest)
+                            liquids.remove(current, consumed)
                             restNeedPumped -= consumed
                         }
+                    } else if (reqs.isNotEmpty()) {
+                        val perThisTime = per / reqs.size
+                        for (liquidNeed in reqs) {
+                            val pumpedThisTime = perThisTime.coerceAtMost(liquids.get(liquidNeed))
+                            if (pumpedThisTime > 0.01f) {
+                                val rest = streaming(client, liquidNeed!!, pumpedThisTime)
+                                val consumed = (perThisTime - rest)
+                                liquids.remove(liquidNeed, consumed)
+                                restNeedPumped -= consumed
+                            }
+                        }
+                    }
+                    restClient--
+                    if (restClient > 0) {
+                        per = restNeedPumped / restClient
                     }
                 }
-                restClient--
-                if (restClient > 0) {
-                    per = restNeedPumped / restClient
+                val consumed = needPumped - restNeedPumped
+                ClientOnly {
+                    liquidFlow += consumed
                 }
-            }
-            val consumed = needPumped - restNeedPumped
-            ClientOnly {
-                liquidFlow += consumed
             }
         }
 

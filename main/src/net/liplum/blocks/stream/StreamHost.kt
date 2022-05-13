@@ -3,7 +3,6 @@ package net.liplum.blocks.stream
 import arc.graphics.Color
 import arc.struct.OrderedSet
 import arc.struct.Seq
-import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.gen.Building
@@ -37,6 +36,8 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
     @ClientOnly lateinit var NormalAni: AniStateH
     @ClientOnly lateinit var NoPowerTR: TR
     @ClientOnly @JvmField var IconFloatingRange = 1f
+    @JvmField val CheckConnectionTimer = timers++
+    @JvmField val TransferTimer = timers++
     /**
      * 1 networkSpeed = 60 per seconds
      */
@@ -110,33 +111,34 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
         override fun getHostColor(): Color = liquids.current().color
         override fun updateTile() {
             // Check connection every second
-            if (Time.time % 60f < 1) {
+            if (timer(CheckConnectionTimer, 60f)) {
                 checkClientsPos()
             }
-            if (!canConsume()) return
-            SharedClientSeq.clear()
-            for (pos in clients) {
-                val client = pos.sc()
-                if (client != null) {
-                    SharedClientSeq.add(client)
+            if (efficiency > 0f && timer(TransferTimer, 1f)) {
+                SharedClientSeq.clear()
+                for (pos in clients) {
+                    val client = pos.sc()
+                    if (client != null) {
+                        SharedClientSeq.add(client)
+                    }
                 }
+                val liquid = liquids.current()
+                val needPumped = (realNetworkSpeed * efficiency).coerceAtMost(liquids.currentAmount())
+                var restNeedPumped = needPumped
+                var per = restNeedPumped / clients.size
+                var resetClient = clients.size
+                for (client in SharedClientSeq) {
+                    if (liquid.match(client.requirements)) {
+                        val rest = streaming(client, liquid, per)
+                        restNeedPumped -= (per - rest)
+                    }
+                    resetClient--
+                    if (resetClient > 0) {
+                        per = restNeedPumped / resetClient
+                    }
+                }
+                liquids.remove(liquid, needPumped - restNeedPumped)
             }
-            val liquid = liquids.current()
-            val needPumped = realNetworkSpeed.coerceAtMost(liquids.currentAmount())
-            var restNeedPumped = needPumped
-            var per = restNeedPumped / clients.size
-            var resetClient = clients.size
-            for (client in SharedClientSeq) {
-                if (liquid.match(client.requirements)) {
-                    val rest = streaming(client, liquid, per)
-                    restNeedPumped -= (per - rest)
-                }
-                resetClient--
-                if (resetClient > 0) {
-                    per = restNeedPumped / resetClient
-                }
-            }
-            liquids.remove(liquid, needPumped - restNeedPumped)
         }
 
         override fun onProximityAdded() {

@@ -48,6 +48,8 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
     @JvmField var DynamicReqUpdateTime = 30f
     @JvmField var powerUsePerItem = 2.5f
     @JvmField var powerUseBase = 3f
+    @JvmField val CheckConnectionTimer = timers++
+    @JvmField val TransferTimer = timers++
     @JvmField var supportedConsumerFilter = Boolf<Consume> {
         it is ConsumeItems || it is ConsumeItemDynamic || it is ConsumeItemFilter
     }
@@ -156,7 +158,7 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
             val all = HashSet<Item>()
             hasDynamicRequirements = false
             for (build in proximity) {
-                when (val reqs = build.block.findConsumer<Consume> (supportedConsumerFilter)) {
+                when (val reqs = build.block.findConsumer<Consume>(supportedConsumerFilter)) {
                     is ConsumeItems -> {
                         for (req in reqs.items) {
                             all.add(req.item)
@@ -212,7 +214,15 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
             updateRequirements()
         }
 
+        open fun checkSendersPos() {
+            senders.removeAll { !it.ds().exists }
+        }
+
         override fun updateTile() {
+            // Check connection every second
+            if (timer(CheckConnectionTimer, 60f)) {
+                checkSendersPos()
+            }
             if (hasDynamicRequirements) {
                 dynamicReqUpdateTimer += Time.delta
                 if (dynamicReqUpdateTimer >= DynamicReqUpdateTime) {
@@ -222,7 +232,8 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
             } else {
                 dynamicReqUpdateTimer = 0f
             }
-            if (canConsume()) {
+            if (efficiency <= 0f) return
+            if (timer(TransferTimer, 1f)) {
                 val dised = DoMultipleBool(canOverdrive, boost2Count(timeScale), this::distribute)
                 if (dised) {
                     lastDistributionTime = 0f
@@ -239,7 +250,7 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
             if (proximity.isEmpty) return false
             disIndex %= proximity.size
             val b = proximity[disIndex]
-            when (val reqs = b.block.findConsumer<Consume> (supportedConsumerFilter)) {
+            when (val reqs = b.block.findConsumer<Consume>(supportedConsumerFilter)) {
                 is ConsumeItems -> {
                     dised = distributeTo(b, reqs.items)
                 }

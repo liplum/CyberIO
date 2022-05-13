@@ -30,6 +30,10 @@ kotlin.sourceSets.main {
         file("$buildDir/generated/ksp/main/kotlin")
     )
 }
+/*
+val properties = Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+*/
 ksp {
     arg("PackageName", "net.liplum.gen")
     arg("FileName", "Contents")
@@ -40,22 +44,11 @@ ksp {
 }
 version = "4.0"
 group = "net.liplum"
-/*
 tasks.whenTaskAdded {
     if (name == "kspKotlin") {
-        (this as com.google.devtools.ksp.gradle.KspTaskJvm).doLast {
-            copy {
-                from("$buildDir/generated/ksp/main/kotlin") {
-                    include("**")
-                }
-                into("src")
-            }
-            delete {
-                delete("$buildDir/generated/ksp/main/kotlin")
-            }
-        }
+           //enabled = false
     }
-}*/
+}
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8

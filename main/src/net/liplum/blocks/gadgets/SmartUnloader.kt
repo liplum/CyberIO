@@ -46,6 +46,8 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
     @JvmField var powerUsePerItem = 2.5f
     @JvmField var powerUsePerConnection = 2f
     @JvmField var powerUseBasic = 1.5f
+    @JvmField val CheckConnectionTimer = timers++
+    @JvmField val TransferTimer = timers++
     @JvmField var boost2Count: (Float) -> Int = {
         if (it <= 1.1f)
             1
@@ -187,20 +189,16 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
                 updateTracker()
                 justRestored = false
             }
-
+            if (timer(CheckConnectionTimer, 60f)) {
+                checkReceiverPos()
+            }
             ClientOnly {
                 lastUnloadTime += Time.delta
                 lastSendingTime += Time.delta
             }
-            if (Time.time % 60f < 1) {
-                checkReceiverPos()
-            }
-            if (!canConsume()) {
-                return
-            }
-            if (receivers.isEmpty) {
-                return
-            }
+            if (receivers.isEmpty) return
+            if (efficiency <= 0f) return
+
             unloadTimer += delta()
             if (unloadTimer >= unloadSpeed) {
                 unloadTimer = 0f

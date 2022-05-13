@@ -3,6 +3,7 @@ package net.liplum.brains
 import arc.audio.Sound
 import arc.graphics.g2d.TextureRegion
 import mindustry.content.UnitTypes
+import mindustry.entities.bullet.BulletType
 import mindustry.gen.BlockUnitc
 import mindustry.gen.Building
 import mindustry.type.Liquid
@@ -42,14 +43,14 @@ class Heart(name: String) : Turret(name), IComponentBlock {
         super.init()
     }
 
-    var drawer = DrawMulti(
+    var heartDrawer = DrawMulti(
         DrawRegion("-base"),
         DrawRegion("-heart"),
     )
 
     override fun load() {
         super.load()
-        drawer.load(this)
+        heartDrawer.load(this)
     }
 
     override fun setStats() {
@@ -58,7 +59,7 @@ class Heart(name: String) : Turret(name), IComponentBlock {
     }
 
     override fun icons(): Array<TextureRegion> {
-        return drawer.icons(this)
+        return heartDrawer.icons(this)
     }
 
     open inner class HeartBuild : TurretBuild(),
@@ -76,6 +77,7 @@ class Heart(name: String) : Turret(name), IComponentBlock {
         var temperature = 0f
         @Serialized
         var bloodAmount = 0f
+        val sideHeat = FloatArray(4)
         override fun unit(): MdtUnit {
             //make sure stats are correct
             unit.tile(this)
@@ -84,7 +86,7 @@ class Heart(name: String) : Turret(name), IComponentBlock {
         }
 
         override fun draw() {
-            drawer.draw(this)
+            heartDrawer.draw(this)
         }
         /**
          * Heart doesn't allow gas
@@ -95,14 +97,20 @@ class Heart(name: String) : Turret(name), IComponentBlock {
         }
 
         override fun sideHeat(): FloatArray {
-            TODO("Not yet implemented")
+            return sideHeat
         }
 
         override fun heatRequirement(): Float {
-            TODO("Not yet implemented")
+            return 0f
         }
 
         override fun heat() = heat
         override fun heatFrac() = heat / coreHeat
+        override fun hasAmmo() = true
+        override fun useAmmo(): BulletType {
+            return if (isLinkedBrain) improvedBullet else normalBullet
+        }
+        override fun peekAmmo(): BulletType =
+            if (isLinkedBrain) improvedBullet else normalBullet
     }
 }

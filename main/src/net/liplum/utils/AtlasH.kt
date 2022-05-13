@@ -18,6 +18,9 @@ fun MappableContent.sub(subName: String): TR =
 fun MappableContent.inMod(name: String): TR =
     atlas.find("${this.minfo.mod.name}-$name")
 
+fun MappableContent.selfTR(): TR =
+    atlas.find(name)
+
 fun String.inMod(): TR =
     atlas.find(Vars.content.transformName(this))
 
@@ -69,7 +72,7 @@ fun MappableContent.sheet(
 fun MappableContent.anim(
     subName: String? = null,
     isHorizontal: Boolean = true,
-    number: Int
+    number: Int,
 ): Array<TR> =
     AtlasU.animation(this, subName, isHorizontal, number)
 @JvmOverloads

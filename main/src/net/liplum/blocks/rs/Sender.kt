@@ -34,6 +34,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
     @JvmField var UploadAnimFrameNumber = 7
     @JvmField var UploadAnimDuration = 30f
     @ClientOnly @JvmField var SendingTime = 60f
+    @JvmField val CheckConnectionTimer = timers++
 
     init {
         solid = true
@@ -104,7 +105,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
 
         override fun updateTile() {
             // Check connection every second
-            if (Time.time % 60f < 1) {
+            if (timer(CheckConnectionTimer, 60f)) {
                 checkReceiverPos()
             }
             ClientOnly {

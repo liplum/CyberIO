@@ -137,10 +137,6 @@ open class AntiVirus(name: String) : Block(name) {
                 field = value.coerceIn(0f, maxCoolDown)
             }
 
-        open fun resetCoolDown() {
-            coolDown = reload
-        }
-
         open fun heat() {
             coolDown += reload * heatRate
         }
@@ -152,7 +148,6 @@ open class AntiVirus(name: String) : Block(name) {
                 shieldExpendCharge += Time.delta
             }
             if (coolDown <= 0f) {
-                resetCoolDown()
                 var eliminated = false
                 Vars.indexer.eachBlock(this, realRange,
                     { b ->
@@ -181,6 +176,9 @@ open class AntiVirus(name: String) : Block(name) {
                         eliminated = true
                         heat()
                     }
+                }
+                if (eliminated) {
+                    coolDown = reload
                 }
                 ClientOnly {
                     if (eliminated && shieldExpendCharge >= shieldExpendMinInterval) {

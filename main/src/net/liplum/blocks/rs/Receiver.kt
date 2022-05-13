@@ -14,7 +14,10 @@ import mindustry.gen.Building
 import mindustry.type.Item
 import mindustry.world.blocks.ItemSelection
 import mindustry.world.meta.BlockGroup
-import net.liplum.*
+import net.liplum.ClientOnly
+import net.liplum.R
+import net.liplum.Serialized
+import net.liplum.UndebugOnly
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
 import net.liplum.blocks.rs.Receiver.ReceiverBuild
@@ -27,7 +30,6 @@ import net.liplum.lib.delegates.Delegate1
 import net.liplum.lib.ui.bars.removeItemsInBar
 import net.liplum.persistance.intSet
 import net.liplum.utils.TR
-import net.liplum.utils.addSenderInfo
 import net.liplum.utils.autoAnimInMod
 import net.liplum.utils.inMod
 
@@ -43,6 +45,8 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
     @JvmField var DownloadAnimDuration = 30f
     @JvmField var blockTime = 60f
     @JvmField var fullTime = 60f
+    @JvmField val CheckConnectionTimer = timers++
+    @JvmField val TransferTimer = timers++
 
     init {
         hasItems = true
@@ -128,8 +132,11 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
 
         override fun updateTile() {
             // Check connection every second
-            if (Time.time % 60f < 1) {
+            if (timer(CheckConnectionTimer, 60f)) {
                 checkSenderPos()
+            }
+            ClientOnly {
+                lastOutputDelta += Time.delta
             }
             val outputItem = outputItem
             if (outputItem != null) {
@@ -141,16 +148,13 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
                         lastFullDataDelta += Time.delta
                     }
                 }
-                if (canConsume()) {
+                if (efficiency > 0f && timer(TransferTimer, 1f)) {
                     val dumped = dump(outputItem)
                     ClientOnly {
                         if (dumped) {
                             lastOutputDelta = 0f
                         }
                     }
-                }
-                ClientOnly {
-                    lastOutputDelta += Time.delta
                 }
             }
         }

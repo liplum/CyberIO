@@ -38,6 +38,8 @@ open class StreamClient(name: String) : AniedBlock<StreamClient, StreamClient.Cl
     @ClientOnly lateinit var NoPowerTR: TR
     @ClientOnly lateinit var LiquidTR: TR
     @ClientOnly lateinit var TopTR: TR
+    @JvmField val timerTransfer = timers++
+    @JvmField var dumpScale = 2f
 
     init {
         hasLiquids = true
@@ -109,11 +111,12 @@ open class StreamClient(name: String) : AniedBlock<StreamClient, StreamClient.Cl
                 checkHostPos()
             }
             val outputLiquid = outputLiquid
+            // every tick check dump
             if (outputLiquid != null) {
-                if (canConsume()) {
-                    if (liquids.currentAmount() > 0.1f) {
-                        dumpLiquid(outputLiquid)
-                    }
+                if (efficiency > 0f && liquids.currentAmount() > 0.001f
+                    && timer(timerTransfer, 1f)
+                ) {
+                    dumpLiquid(outputLiquid, dumpScale * efficiency)
                 }
             }
         }
