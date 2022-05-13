@@ -39,7 +39,7 @@ object CioUnitTypes {
     @JvmStatic lateinit var holoSupporter: HoloUnitType
     @JvmStatic lateinit var brain: BrainUnitType
     @DependOn
-    fun preRegister() {
+    fun _preRegister() {
         HoloUnitType::class.java.registerPayloadSource()
         BrainUnitType::class.java.registerPayloadSource()
         NpcUnitType::class.java.registerPayloadSource()

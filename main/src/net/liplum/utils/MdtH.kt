@@ -122,7 +122,7 @@ fun UnitType.pctOfTeamOwns(team: Team) =
 fun <T> Class<T>.registerPayloadSource() where T : UnitType {
     val source = Blocks.payloadSource as PayloadSource
     source.config(this) { build: PayloadSource.PayloadSourceBuild, unitType ->
-        if (source.canProduce(unitType) && build.unit !== unitType) {
+        if (source.canProduce(unitType) && build.unit != unitType) {
             build.unit = unitType
             build.block = null
             build.payload = null

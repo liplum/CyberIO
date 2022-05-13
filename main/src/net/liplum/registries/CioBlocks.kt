@@ -917,7 +917,7 @@ object CioBlocks {
         }
     }
     @DependOn
-    fun overwriteVanilla() {
+    fun _overwriteVanilla() {
         DebugOnly {
             (Blocks.powerSource as PowerSource).apply {
                 buildVisibility = BuildVisibility.shown
