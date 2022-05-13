@@ -1,7 +1,7 @@
 
-import com.google.devtools.ksp.gradle.KspTaskJvm
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import java.io.ByteArrayOutputStream
+
 plugins {
     kotlin("jvm") version "1.6.10"
     id("com.google.devtools.ksp") version "1.6.20-1.0.5"
@@ -24,39 +24,57 @@ sourceSets {
 /*
 Ignore the default path of ksp generated files.
 Replace it with copying generated codes into source path.
+*/
 kotlin.sourceSets.main {
     kotlin.srcDirs(
         file("$buildDir/generated/ksp/main/kotlin")
     )
 }
-*/
 ksp {
     arg("PackageName", "net.liplum.gen")
     arg("FileName", "Contents")
     arg("GenerateSpec", "Contents")
     arg("Scope", "net.liplum.registries")
+    allowSourcesFromOtherPlugins = true
+    blockOtherCompilerPlugins = true
 }
 version = "4.0"
 group = "net.liplum"
-
+/*
+tasks.whenTaskAdded {
+    if (name == "kspKotlin") {
+        (this as com.google.devtools.ksp.gradle.KspTaskJvm).doLast {
+            copy {
+                from("$buildDir/generated/ksp/main/kotlin") {
+                    include("**")
+                }
+                into("src")
+            }
+            delete {
+                delete("$buildDir/generated/ksp/main/kotlin")
+            }
+        }
+    }
+}*/
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
 }
-val mdthash = "5b7f751073"
+val mdthash = "e856652db4"
 dependencies {
     implementation(project(":annotations"))
     ksp(project(":processor"))
 //    compileOnly("com.github.Anuken.Arc:arc-core:$mdtVersion")
 //    compileOnly("com.github.Anuken.Mindustry:core:$mdtVersion")
     // Use anuke's mirror for now on https://github.com/Anuken/MindustryJitpack
-    compileOnly("com.github.anuken.mindustryjitpack:core:$mdthash")
     compileOnly("com.github.Anuken.Arc:arc-core:dfcb21ce56")
     //compileOnly(files("$rootDir/run/Mindustry136.jar"))
+    compileOnly("com.github.anuken.mindustryjitpack:core:$mdthash")
+    testImplementation("com.github.anuken.mindustryjitpack:core:$mdthash")
     implementation("com.github.liplum:OpenGAL:v0.4.1")
+
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1")
 
-    testImplementation("com.github.anuken.mindustryjitpack:core:$mdthash")
     testImplementation("com.github.Anuken.Arc:arc-core:dfcb21ce56")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.2")
@@ -142,23 +160,6 @@ tasks {
                     "$buildDir/libs/${outputJarName}Desktop.jar",
                     "$buildDir/libs/${outputJarName}Android.jar"
                 )
-            }
-        }
-    }
-}
-
-tasks.whenTaskAdded {
-    if (name == "kspKotlin") {
-        this as KspTaskJvm
-        doLast {
-            copy{
-                from("$buildDir/generated/ksp/main/kotlin"){
-                    include("**")
-                }
-                into("src")
-            }
-            delete{
-                delete("$buildDir/generated/ksp/main/kotlin")
             }
         }
     }

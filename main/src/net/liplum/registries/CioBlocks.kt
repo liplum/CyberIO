@@ -120,7 +120,6 @@ object CioBlocks {
             consumePower(10f)
         }
     }
-
     @DependOn("CioItems.ic")
     fun icMachineSmall() {
         icMachineSmall = ICMachineS("ic-machine-s").apply {
@@ -151,7 +150,6 @@ object CioBlocks {
             )
         }
     }
-
     @DependOn("CioItems.ic")
     fun receiver() {
         receiver = Receiver("receiver").apply {
@@ -169,7 +167,6 @@ object CioBlocks {
             replaceable = false
         }
     }
-
     @DependOn("CioItems.ic")
     fun sender() {
         sender = Sender("sender").apply {
@@ -187,7 +184,6 @@ object CioBlocks {
             replaceable = false
         }
     }
-
     @DependOn
     fun virus() {
         virus = Virus("virus").apply {
@@ -213,7 +209,6 @@ object CioBlocks {
         Blocks.liquidSource.setUninfected()
         Blocks.powerSource.setUninfected()
     }
-
     @DependOn("CioItems.ic")
     fun landProjector() {
         landProjector = LandProjector("land-projector").apply {
@@ -234,14 +229,12 @@ object CioBlocks {
             buildCostMultiplier = 3f
         }
     }
-
     @DependOn
     fun holoFloor() {
         holoFloor = HoloFloor("holo-floor").apply {
             variants = 3
         }.setUninfectedFloor()
     }
-
     @DependOn("CioItems.ic")
     fun underdriveProjector() {
         underdriveProjector = UnderdriveProjector("underdrive-projector").apply {
@@ -264,7 +257,6 @@ object CioBlocks {
             size = 1
         }
     }
-
     @DependOn("CioItems.ic")
     fun antiVirus() {
         antiVirus = AntiVirus("anti-virus").apply {
@@ -281,7 +273,6 @@ object CioBlocks {
             size = 1
         }.setUninfected()
     }
-
     @DependOn("CioItems.ic")
     fun cloud() {
         cloud = Cloud("cloud").apply {
@@ -302,7 +293,6 @@ object CioBlocks {
             consumePower(1f)
         }
     }
-
     @DependOn
     fun hyperOverdriveSphere() {
         hyperOverdriveSphere = AdjustableOverdrive("hyper-overdrive-sphere").apply {
@@ -324,7 +314,6 @@ object CioBlocks {
             range = 1000f
         }
     }
-
     @DependOn("CioItems.ic")
     fun prism() {
         prism = Prism("prism").apply {
@@ -341,7 +330,6 @@ object CioBlocks {
             health = 2500
         }
     }
-
     @DependOn(
         "CioItems.ic",
         "CioBlocks.prism"
@@ -362,7 +350,6 @@ object CioBlocks {
             prismType = prism
         }
     }
-
     @DependOn("CioItems.ic")
     fun deleter() {
         deleter = Deleter("deleter").apply {
@@ -392,7 +379,6 @@ object CioBlocks {
             }
         }
     }
-
     @DependOn("CioItems.ic")
     fun holoWall() {
         holoWall = HoloWall("holo-wall").apply {
@@ -410,7 +396,6 @@ object CioBlocks {
             buildCostMultiplier = 3.5f
         }
     }
-
     @DependOn("CioItems.ic")
     fun holoWallLarge() {
         holoWallLarge = HoloWall("holo-wall-large").apply {
@@ -428,7 +413,6 @@ object CioBlocks {
             buildCostMultiplier = 4.5f
         }
     }
-
     @DependOn(
         "CioItems.ic",
         "CioBulletTypes.radiationInterference",
@@ -445,7 +429,8 @@ object CioBlocks {
                 )
             )
             ammo(
-                Items.sporePod, CioBulletTypes.virus,
+                Items.sporePod,
+                CioBulletTypes.virus,
                 Items.thorium, CioBulletTypes.radiationInterference,
             )
             inaccuracy = 1f
@@ -460,7 +445,7 @@ object CioBlocks {
             shootCone = 15f
             size = 4
             health = 250 * size * size
-            limitRange(20f)
+            //limitRange(20f)
             ClientOnly {
                 Events.run(Trigger.update) {
                     if (Time.globalTime % CioMod.UpdateFrequency < 1f) {
@@ -471,7 +456,6 @@ object CioBlocks {
             }
         }.registerDynamicInfo()
     }
-
     @DependOn("CioItems.ic")
     fun smartDistributor() {
         smartDistributor = SmartDistributor("smart-distributor").apply {
@@ -489,7 +473,6 @@ object CioBlocks {
             size = 2
         }
     }
-
     @DependOn("CioItems.ic")
     fun smartUnloader() {
         smartUnloader = SmartUnloader("smart-unloader").apply {
@@ -507,7 +490,6 @@ object CioBlocks {
             size = 2
         }
     }
-
     @DependOn("CioItems.ic")
     fun streamClient() {
         streamClient = StreamClient("stream-client").apply {
@@ -526,7 +508,6 @@ object CioBlocks {
             replaceable = false
         }
     }
-
     @DependOn("CioItems.ic")
     fun streamHost() {
         streamHost = StreamHost("stream-host").apply {
@@ -550,7 +531,6 @@ object CioBlocks {
             maxConnection = 3
         }
     }
-
     @DependOn("CioItems.ic")
     fun streamServer() {
         streamServer = StreamServer("stream-server").apply {
@@ -576,7 +556,6 @@ object CioBlocks {
             replaceable = false
         }
     }
-
     @DependOn("CioItems.ic")
     fun jammer() {
         jammer = Jammer("jammer").apply {
@@ -621,7 +600,6 @@ object CioBlocks {
             }
         }
     }
-
     @DependOn(
         "CioItems.ic",
         "CioLiquids.cyberion"
@@ -649,7 +627,6 @@ object CioBlocks {
             consumeLiquid(Liquids.cryofluid, 0.3f)
         }
     }
-
     @DependOn(
         "CioItems.ic",
         "CioLiquids.cyberion",
@@ -703,7 +680,6 @@ object CioBlocks {
             buildCostMultiplier = 2f
         }
     }
-
     @DependOn("CioLiquids.cyberion")
     fun aquacyberion() {
         aquacyberion = Floor("aqua-cyberion").apply {
@@ -721,7 +697,6 @@ object CioBlocks {
             lightColor = R.C.Holo.cpy().a(0.19f)
         }
     }
-
     @DependOn(
         "CioItems.ic",
         "CioBulletTypes.ruvik2"
@@ -753,7 +728,6 @@ object CioBlocks {
             }
         }
     }
-
     @DependOn("CioItems.ic")
     fun wirelessTower() {
         wirelessTower = WirelessTower("wireless-tower").apply {
@@ -772,7 +746,6 @@ object CioBlocks {
             range = 300f
         }
     }
-
     @DependOn("CioItems.ic")
     fun heimdall() {
         heimdall = Heimdall("heimdall").apply {
@@ -797,7 +770,6 @@ object CioBlocks {
             )
         }
     }
-
     @DependOn("CioItems.ic")
     fun eye() {
         eye = Eye("heimdall-eye").apply {
@@ -859,7 +831,6 @@ object CioBlocks {
             }
         }
     }
-
     @DependOn("CioItems.ic")
     fun ear() {
         ear = Ear("heimdall-ear").apply {
@@ -889,7 +860,6 @@ object CioBlocks {
             health = 300 * size * size
         }
     }
-
     @DependOn("CioItems.ic")
     fun hand() {
         DebugOnly {
@@ -905,7 +875,6 @@ object CioBlocks {
             }
         }
     }
-
     @DependOn("CioItems.ic")
     fun heart() {
         DebugOnly {

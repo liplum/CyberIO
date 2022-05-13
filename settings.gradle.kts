@@ -7,3 +7,8 @@ include(
     "processor",
     "annotations"
 )
+/*
+startParameter.excludedTaskNames.add(
+    ":main:kspKotlin"
+)
+*/

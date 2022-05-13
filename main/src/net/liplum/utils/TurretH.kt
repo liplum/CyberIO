@@ -18,6 +18,7 @@ fun Bullet.copy(): Bullet {
     d.drag = this.drag
     d.hitSize = this.hitSize
     d.damage = this.damage
+    d.mover = this.mover
     //reset trail
     if (d.trail != null) {
         d.trail.clear()

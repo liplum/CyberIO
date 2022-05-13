@@ -1,7 +1,6 @@
 package net.liplum.bullets
 
 import arc.math.Angles
-import arc.math.Mathf
 import arc.util.Nullable
 import arc.util.Time
 import mindustry.Vars
@@ -112,8 +111,7 @@ open class RuvikBullet : BasicBulletType {
         }
     }
 
-    override fun update(b: Bullet) {
-        updateTrail(b)
+    open fun updateRuvik(b: Bullet) {
         STEMSystem.reset()
         CONTROL(b)
         if (STEMSystem.controlled) {
@@ -130,28 +128,11 @@ open class RuvikBullet : BasicBulletType {
                  b.vel.setLength(len + Mathf.log(100f,dis))
              }*/
         }
+    }
 
-        if (weaveMag > 0) {
-            b.vel.rotate(
-                Mathf.sin(
-                    b.time + Mathf.PI * weaveScale / 2f,
-                    weaveScale,
-                    weaveMag * if (Mathf.randomSeed(b.id.toLong(), 0, 1) == 1) -1 else 1
-                ) * Time.delta
-            )
-        }
-
-        if (trailChance > 0) {
-            if (Mathf.chanceDelta(trailChance.toDouble())) {
-                trailEffect.at(b.x, b.y, if (trailRotation) b.rotation() else trailParam, trailColor)
-            }
-        }
-
-        if (trailInterval > 0f) {
-            if (b.timer(0, trailInterval)) {
-                trailEffect.at(b.x, b.y, if (trailRotation) b.rotation() else trailParam, trailColor)
-            }
-        }
+    override fun update(b: Bullet) {
+        updateRuvik(b)
+        super.update(b)
     }
 
     open fun findNormalTarget(b: Bullet): Teamc? {

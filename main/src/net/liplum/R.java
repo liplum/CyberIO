@@ -162,6 +162,7 @@ public class R {
         public static final Color HoloDark = Color.valueOf("#1e88e5");//(0.1176,0.5333,0.898)
         public static final Color HoloDark2 = Color.valueOf("#0c80df");
         public static final Color VirusBK = Color.valueOf("#cd44ff");
+        public static final Color Blood = Color.valueOf("#8a0303");
         public static final Color IsAive = GreenSafe;
         public static final Color CoolDown = Color.gray;
         public static final Color Sender = RedAlert,

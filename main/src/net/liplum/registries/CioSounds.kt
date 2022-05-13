@@ -7,6 +7,7 @@ import net.liplum.utils.LoadSounds
 
 object CioSounds {
     val EmptySounds = emptyArray<Sound>()
+    val EmptySound: Sound = Sounds.none
     var tvStatic: Sound = Sounds.none
     var jammerPreShoot: Sound = Sounds.none
     var laserWeak: Array<Sound> = EmptySounds

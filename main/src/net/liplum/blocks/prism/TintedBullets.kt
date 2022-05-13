@@ -64,8 +64,8 @@ internal fun BK(i: Int): Color =
     R.C.PrismRgbBK[i].cpy()
 
 val BasicBullets: HashMap<BasicBulletType, List<BasicBulletType>> = HashMap()
-val BasicTintLerp: Float
-    get() = 0.4f + Mathf.random(-0.1f, 0.1f)
+val BulletType.BasicTintLerp: Float
+    get() = 0.4f + Mathf.randomSeed(id.toLong(), -0.1f, 0.1f)
 val BasicBulletType.tinted: List<BasicBulletType>
     get() = BasicBullets.rgb(this) {
         (this.copy() as BasicBulletType).apply {
@@ -140,8 +140,8 @@ val ContinuousLaserBulletType.tinted: List<ContinuousLaserBulletType>
         }
     }
 val LiquidBullets: HashMap<LiquidBulletType, List<LiquidBulletType>> = HashMap()
-val LiquidTintLerp: Float
-    get() = 0.4f + Mathf.random(-0.08f, 0.08f)
+val BulletType.LiquidTintLerp: Float
+    get() = 0.4f + Mathf.randomSeed(id.toLong(), -0.08f, 0.08f)
 val LiquidBulletType.tinted: List<LiquidBulletType>
     get() = LiquidBullets.rgb(this) {
         try {
@@ -157,8 +157,8 @@ val LiquidBulletType.tinted: List<LiquidBulletType>
         }
     }
 val MassDriverBolts: HashMap<MassDriverBolt, List<MassDriverBolt>> = HashMap()
-val MassDriverLerp: Float
-    get() = 0.4f + Mathf.random(-1.2f, 1.2f)
+val BulletType.MassDriverLerp: Float
+    get() = 0.4f + Mathf.randomSeed(id.toLong(), -1.2f, 1.2f)
 val MassDriverBolt.tinted: List<MassDriverBolt>
     get() = MassDriverBolts.rgb(this) {
         try {
@@ -178,7 +178,6 @@ val MassDriverBolt.tinted: List<MassDriverBolt>
             this
         }
     }
-
 val Registry: HashMap<BulletType, List<BulletType>> = HashMap()
 fun <T : BulletType> T.registerRGB(register: T.() -> Triple<T, T, T>) {
     val (r, g, b) = register()

@@ -51,9 +51,15 @@ $source"""
         //if there already is a version, do nothing
         //if on a desktop platform, pick 150 or 130 depending on supported version
         //if on anything else, it's GLES, so pick 300 ES
-        val version = if (source.contains("#version ")) "" else if (Core.app.isDesktop) if (Core.graphics.glVersion.atLeast(3,
-                2)
-        ) "150" else "130" else "300 es"
+        val version = if (source.contains("#version "))
+            ""
+        else if (Core.app.isDesktop)
+            if (Core.graphics.glVersion.atLeast(3, 2))
+                "150"
+            else
+                "130"
+        else
+            "300 es"
         return ("""
     #version $version
     ${if (fragment) "out lowp vec4 fragColor;\n" else ""}
