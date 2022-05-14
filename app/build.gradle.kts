@@ -1,4 +1,4 @@
-import net.liplum.gradle.DownloadTask
+import net.liplum.gradle.tasks.DownloadTask
 
 val outputJarName: String get() = extra["outputJarName"] as String
 

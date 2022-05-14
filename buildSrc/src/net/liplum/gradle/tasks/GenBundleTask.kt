@@ -1,4 +1,4 @@
-package net.liplum.gradle
+package net.liplum.gradle.tasks
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.provider.Property
@@ -12,7 +12,7 @@ abstract class GenBundleTask : DefaultTask() {
     abstract val bundleDir: Property<File>
     var pattern: (String) -> String = { "" }
     @get:Input
-    abstract val default:Property<String>
+    abstract val default: Property<String>
     init {
         default.convention("en")
     }

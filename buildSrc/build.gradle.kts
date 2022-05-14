@@ -24,6 +24,6 @@ sourceSets {
 }
 dependencies {
     implementation(gradleApi())
+    implementation("com.beust:klaxon:5.5")
     implementation("com.github.liplum:OpenGalPlumy:v0.1.4")
-    implementation("com.google.devtools.ksp:symbol-processing-api:1.6.21-1.0.5")
 }

@@ -26,10 +26,7 @@ import net.liplum.lib.mixin.drawRotation
 import net.liplum.lib.mixin.drawX
 import net.liplum.lib.mixin.drawY
 import net.liplum.math.Polar
-import net.liplum.utils.TR
-import net.liplum.utils.autoAnim
-import net.liplum.utils.radian
-import net.liplum.utils.sub
+import net.liplum.utils.*
 
 open class TMTRAINER(name: String) : ItemTurret(name) {
     @ClientOnly lateinit var CoreAnim: Animation
@@ -90,7 +87,7 @@ open class TMTRAINER(name: String) : ItemTurret(name) {
     }
 
     override fun icons() =
-        arrayOf(this.sub("base"), this.sub("icon"))
+        arrayOf(this.sub("base"), this.selfTR(),this.sub("head"))
 
     open inner class TMTRAINERBUILD : ItemTurretBuild() {
         @ClientOnly lateinit var coreAnimObj: AnimationObj

@@ -18,8 +18,6 @@ object GL {
             LessThan(GLES, 3, 2),
             LessThan(OpenGL, 3, 1)
         )
-        // TODO: #version 330 can't be used in e856652db4
-        TvStatic = true
 
         CompatibleMap.log("${Meta.Name} Compatible") { name, func ->
             Clog.info("$name|${func()}")

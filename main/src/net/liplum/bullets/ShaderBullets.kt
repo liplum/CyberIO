@@ -15,10 +15,11 @@ import net.liplum.lib.shaders.on
 
 open class ShaderCLaserT<TS : ShaderBase>(damage: Float) : ContinuousLaserBulletType(damage) {
     constructor() : this(0f)
+
     @JvmField var preShader: (TS, Bullet) -> Unit = { _, _ -> }
-    lateinit var shader: TS
+    lateinit var shader: () -> TS
     override fun draw(b: Bullet) {
-        shader.on {
+        shader().on {
             preShader(it, b)
             val realLength = Damage.findLaserLength(b, length)
             val fout = Mathf.clamp(
@@ -53,7 +54,7 @@ open class ShaderCLaserT<TS : ShaderBase>(damage: Float) : ContinuousLaserBullet
 }
 
 open class ShaderBasicBulletT<TS : ShaderBase> : BasicBulletType {
-    lateinit var shader: TS
+    lateinit var shader: () -> TS
     @JvmField var preShader: (TS, Bullet) -> Unit = { _, _ -> }
 
     constructor(speed: Float, damage: Float, bulletSprite: String)
@@ -65,7 +66,7 @@ open class ShaderBasicBulletT<TS : ShaderBase> : BasicBulletType {
     constructor() : this(1f, 1f, "bullet")
 
     override fun draw(b: Bullet) {
-        shader.on {
+        shader().on {
             preShader(it, b)
             super.draw(b)
         }

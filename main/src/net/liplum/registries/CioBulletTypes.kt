@@ -24,7 +24,7 @@ object CioBulletTypes {
         holoBullet = ShaderBasicBulletT<HologramShader>(
             2f, 35f
         ).apply {
-            shader = SD.Hologram
+            shader = { SD.Hologram }
             width = 10f
             height = 10f
             hitSize = 10f
@@ -82,7 +82,7 @@ object CioBulletTypes {
         radiationInterference = ShaderBasicBulletT<CommonShader>(
             2.3f, 30f, "bullet"
         ).apply {
-            shader = SD.TvStatic
+            shader = { SD.TvStatic }
             width = 15f
             height = 15f
             hitSize = 15f

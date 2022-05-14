@@ -1,4 +1,4 @@
-import net.liplum.gradle.CompileOpenGalTask
+import net.liplum.gradle.tasks.CompileOpenGalTask
 
 tasks {
     register("build") {

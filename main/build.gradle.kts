@@ -1,4 +1,3 @@
-
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import java.io.ByteArrayOutputStream
 
@@ -7,6 +6,7 @@ plugins {
     id("com.google.devtools.ksp") version "1.6.20-1.0.5"
     java
 }
+val settings = net.liplum.gradle.settings.Settings.get(rootDir)
 val outputJarName: String get() = extra["outputJarName"] as String
 val mdtVersion: String get() = extra["mdtVersion"] as String
 val mdtVersionNum: String get() = extra["mdtVersionNum"] as String
@@ -46,7 +46,9 @@ version = "4.0"
 group = "net.liplum"
 tasks.whenTaskAdded {
     if (name == "kspKotlin") {
-           //enabled = false
+        if (settings.env == "dev") {
+            enabled = false
+        }
     }
 }
 java {

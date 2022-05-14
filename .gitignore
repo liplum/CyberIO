@@ -174,3 +174,4 @@ bundle/build
 processor/build
 annotations/build
 extra
+local_settings.json

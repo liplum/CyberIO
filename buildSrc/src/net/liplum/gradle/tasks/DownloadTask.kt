@@ -1,4 +1,4 @@
-package net.liplum.gradle
+package net.liplum.gradle.tasks
 
 import net.liplum.gradle.dsl.call
 import org.gradle.api.DefaultTask
