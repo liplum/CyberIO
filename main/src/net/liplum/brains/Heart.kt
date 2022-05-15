@@ -3,9 +3,11 @@ package net.liplum.brains
 import arc.audio.Sound
 import arc.graphics.Color
 import arc.math.Mathf
+import arc.scene.ui.layout.Table
 import arc.util.Time
+import arc.util.Tmp
 import mindustry.Vars
-import mindustry.content.Fx
+import mindustry.content.Bullets
 import mindustry.content.UnitTypes
 import mindustry.entities.Effect
 import mindustry.entities.Mover
@@ -15,69 +17,76 @@ import mindustry.entities.bullet.BulletType
 import mindustry.entities.pattern.ShootPattern
 import mindustry.gen.*
 import mindustry.graphics.Drawf
+import mindustry.graphics.Pal
 import mindustry.logic.LAccess
 import mindustry.logic.Ranged
 import mindustry.type.Liquid
+import mindustry.ui.Bar
 import mindustry.world.Block
 import mindustry.world.blocks.ControlBlock
 import mindustry.world.blocks.heat.HeatBlock
-import net.liplum.ClientOnly
-import net.liplum.R
-import net.liplum.Serialized
-import net.liplum.WhenNotPaused
+import net.liplum.*
+import net.liplum.CioMod.Companion.DebugMode
 import net.liplum.api.brain.*
 import net.liplum.lib.Draw
 import net.liplum.lib.animations.anims.Anime
 import net.liplum.lib.animations.anims.linearFrames
 import net.liplum.lib.animations.anims.randomCurTime
+import net.liplum.lib.bundle
+import net.liplum.lib.mixin.Mover
+import net.liplum.lib.ui.bars.AddBar
+import net.liplum.lib.ui.bars.appendDisplayLiquidsDynamic
+import net.liplum.lib.ui.bars.genAllLiquidBars
+import net.liplum.lib.ui.bars.removeLiquidInBar
 import net.liplum.utils.*
 
 class Heart(name: String) : Block(name), IComponentBlock {
+    // Upgrade component
     override val upgrades: MutableMap<UpgradeType, Upgrade> = HashMap()
-    // Normal
-    lateinit var normalBullet: BulletType
-    @JvmField var normalHeartBeat: Sound = Sounds.none
-    @JvmField var normalPattern = HeartBeatShootPattern.X
-    @JvmField var normalSound: Sound = Sounds.none
-    @JvmField var normalShake = 0f
-    // Improved
-    lateinit var improvedBullet: BulletType
-    @JvmField var improvedHeartBeat: Sound = Sounds.none
-    @JvmField var improvedPattern = HeartBeatShootPattern.X
-    @JvmField var improvedSound: Sound = Sounds.none
-    @JvmField var improvedShake = 0f
-    // Temperature
-    @JvmField var coreHeat = 5f
-    @JvmField var bloodCost = 1f
-    @JvmField var bloodCostI = 1f
-    @JvmField var reloadTime = 60f
-    @JvmField var reloadTimeI = -0.2f
-    @JvmField var range = 165f
-    @JvmField var rangeI = 0.45f
-    @JvmField var maxHeartbeatSpeedUp = 1.5f
+    @JvmField var bulletType: BulletType = Bullets.placeholder
+    @JvmField var heartbeat = Heartbeat()
+    @JvmField var shootPatternInit: ShootPattern.() -> Unit = {}
+    // Blood
+    @JvmField var blood: Blood = Blood.X
+    @JvmField var downApproachSpeed = 0.00025f
+    @JvmField var upApproachSpeed = 0.00001f
+    // Improved by Heimdall
+    @JvmField var bloodCapacity = 1000f
+    @JvmField var bloodCapacityI = 0.5f
+    @JvmField var temperatureI = 0.1f
+    @JvmField var convertSpeed = 1f
+    @JvmField var convertSpeedI = 0.5f
     // Turret
     @JvmField var soundPitchMin = 0.9f
     @JvmField var soundPitchMax = 1.1f
-    @JvmField var shootEffect: Effect = Fx.none
-    @JvmField var chargeSound: Sound = Sounds.none
+    // Visual effects
     @ClientOnly @JvmField var bloodColor: Color = R.C.Blood
     @ClientOnly lateinit var BaseTR: TR
     @ClientOnly lateinit var HeartTR: TR
     @ClientOnly lateinit var HeartBeatTRs: TRs
     @ClientOnly @JvmField var HeartbeatDuration = 60f
     @ClientOnly @JvmField var HeartbeatFrameNum = 20
+    @ClientOnly lateinit var allLiquidBars: Array<(Building) -> Bar>
+    // Timer
+    @JvmField var convertTimer = timers++
 
     init {
         solid = true
         update = true
         hasPower = true
         sync = true
+        hasLiquids = true
         canOverdrive = false
     }
 
     override fun init() {
         checkInit()
+        liquidCapacity = bloodCapacity * (1f + bloodCapacityI)
+        consumePowerDynamic<HeartBuild> {
+            it.realPowerUse
+        }
         super.init()
+        allLiquidBars = genAllLiquidBars()
     }
 
     override fun load() {
@@ -98,61 +107,157 @@ class Heart(name: String) : Block(name), IComponentBlock {
 
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)
-        Drawf.dashCircle(x * Vars.tilesize + offset, y * Vars.tilesize + offset, range, bloodColor)
+        Drawf.dashCircle(
+            x * Vars.tilesize + offset,
+            y * Vars.tilesize + offset,
+            heartbeat.range.base,
+            bloodColor
+        )
+    }
+
+    override fun setBars() {
+        super.setBars()
+        removeLiquidInBar()
+        DebugOnly {
+            addBrainInfo<HeartBuild>()
+        }
+        AddBar<HeartBuild>(R.Bar.BloodN, if (DebugMode) {
+            { "${R.Bar.Blood.bundle}: ${bloodAmount.toInt()}" }
+        } else {
+            { R.Bar.Blood.bundle }
+        }, {
+            bloodColor
+        }, {
+            bloodAmount / realBloodCapacity
+        })
+        AddBar<HeartBuild>(R.Bar.TemperatureN, if (DebugMode) {
+            { "${R.Bar.Temperature.bundle}: ${temperature.format(2)}" }
+        } else {
+            { R.Bar.Temperature.bundle }
+        }, {
+            Pal.power
+        }, {
+            temperature / 1f
+        })
     }
 
     open inner class HeartBuild : Building(),
         IUpgradeComponent, ControlBlock, HeatBlock, Ranged {
+        //<editor-fold desc="Heimdall">
         override var directionInfo: Direction2 = Direction2()
         override var brain: IBrain? = null
         override val upgrades: Map<UpgradeType, Upgrade>
             get() = this@Heart.upgrades
+        //</editor-fold>
+        //<editor-fold desc="Controllable">
         var unit = UnitTypes.block.create(team) as BlockUnitc
+        //</editor-fold>
+        //<editor-fold desc="Heat Block">
         var heat = 0f
-        /**
-         *  Q = mcΔT
-         */
+        //</editor-fold>
+        //<editor-fold desc="Serialized">
+        // Serialized
         @Serialized
-        var temperature = 0f
+        var temperature = blood.temperature
+            set(value) {
+                field = value.coerceIn(0f, 1f)
+            }
         @Serialized
-        var bloodAmount = Float.MAX_VALUE
+        var bloodAmount = 0f
             set(value) {
                 field = value.coerceAtLeast(0f)
             }
         @Serialized
         var reloadCounter = 0f
+        //</editor-fold">
+        //<editor-fold desc="Logic">
         var logicControlTime: Float = -1f
         val logicControlled: Boolean
             get() = logicControlTime > 0
         var logicShoot = false
+        //</editor-fold>
+        //<editor-fold desc="Properties">
+        val realReloadTime: Float
+            get() = heartbeat.reloadTime.progress(temperatureEfficiency)
+        val realPowerUse: Float
+            get() = heartbeat.powerUse.progress(temperatureEfficiency)
         val realBloodCost: Float
-            get() = bloodCost * (1f + if (isLinkedBrain) bloodCostI else 0f)
-        val curShootPattern: ShootPattern
-            get() = if (isLinkedBrain) improvedPattern else normalPattern
+            get() = heartbeat.bloodCost.progress(temperatureEfficiency)
+        val realRange: Float
+            get() = heartbeat.range.progress(temperatureEfficiency)
+        val realShake: Float
+            get() = heartbeat.shake.progress(temperatureEfficiency)
+        val realShootNumber: Int
+            get() = heartbeat.shootNumber.progress(temperatureEfficiency)
+        val realSystole: Float
+            get() = heartbeat.systole.progress(temperatureEfficiency)
+        val realDiastole: Float
+            get() = heartbeat.diastole.progress(temperatureEfficiency)
+        val realDamage: Float
+            get() = heartbeat.damage.progress(temperatureEfficiency)
+        val realBulletLifeTime: Float
+            get() = heartbeat.bulletLifeTime.progress(temperatureEfficiency)
+        //</editor-fold>
+        //<editor-fold desc="Meta">
         val curBulletType: BulletType
-            get() = if (isLinkedBrain) improvedBullet else normalBullet
+            get() = bulletType
+        val curShooSound: Sound
+            get() = heartbeat.sounds[heartbeat.soundIndexer(temperatureEfficiency)]
+        val shootPattern = object : ShootPattern() {
+            val systoleMover = Mover {
+                if (timer.get(5, heartbeat.systoleTime)) {
+                    vel.scl(1f - realSystole)
+                }
+                if (vel.len() < heartbeat.systoleMinIn) {
+                    vel.setLength(realDiastole)
+                }
+            }
+
+            override fun shoot(totalShots: Int, handler: BulletHandler) {
+                val shots = realShootNumber
+                val perAngle = 360f / shots
+                val offset = Tmp.v1.set(heartbeat.offset, 0f)
+                for (i in 0 until shots) {
+                    val angle = perAngle * i
+                    offset.setAngle(angle)
+                    handler.shoot(
+                        0f + offset.x,
+                        0f + offset.y,
+                        angle,
+                        firstShotDelay + shotDelay * i,
+                        systoleMover
+                    )
+                }
+            }
+        }.apply(shootPatternInit)
+        //</editor-fold>
+        //<editor-fold desc="Improved by Heimdall">
+        val realBloodCapacity: Float
+            get() = bloodCapacity * (1f + if (isLinkedBrain) bloodCapacityI else 0f)
+        val realBloodConvertSpeed: Float
+            get() = if (isLinkedBrain) convertSpeed * (1f + convertSpeedI) else convertSpeed
+        val targetTemperature: Float
+            get() = if (isLinkedBrain) blood.temperature * (1f + temperatureI) else blood.temperature
+        //</editor-fold>
+        // Function
+        //  0.0 -> -100%, 0.5f C -> 0%,, 1.0 C-> 100%
+        val temperatureEfficiency: Float
+            get() = (temperature / blood.temperature) - 1f
         val hasEnoughBlood: Boolean
             get() = bloodAmount >= realBloodCost
-        val curShootEffect: Effect
-            get() = shootEffect
-        val curShooSound: Sound
-            get() = if (isLinkedBrain) improvedSound else normalSound
-        val curShake: Float
-            get() = if (isLinkedBrain) improvedShake else normalShake
-        val realReloadTime: Float
-            get() = reloadTime * (1f + if (isLinkedBrain) reloadTimeI else 0f)
-        val realRange: Float
-            get() = range * (1f + if (isLinkedBrain) rangeI else 0f)
-        val sideHeat = FloatArray(4)
+        // TODO: take Attribute.heat into account
+        val temperatureChangeSpeed: Float
+            get() = if (temperature > targetTemperature) downApproachSpeed else upApproachSpeed
+        val temperatureDelta: Float
+            get() = temperature - targetTemperature
+        //<editor-fold desc="Visual effects">
         @ClientOnly
         var heartbeatFactor = 1f
         @ClientOnly
         var lastHeartBeatTime = 0f
         @ClientOnly
         lateinit var heartbeatAnime: Anime
-        val heartbeatSpeedUp: Float
-            get() = if(isLinkedBrain) maxHeartbeatSpeedUp else 0f
-
+        //</editor-fold>
         init {
             ClientOnly {
                 heartbeatAnime = Anime(
@@ -174,6 +279,14 @@ class Heart(name: String) : Block(name), IComponentBlock {
             reloadCounter += edelta()
             logicControlTime -= Time.delta
             lastHeartBeatTime += Time.delta
+            temperature = Mathf.approach(
+                temperature, targetTemperature,
+                temperatureChangeSpeed * Time.delta
+            )
+            if (efficiency <= 0f) return
+            if (timer(convertTimer, 1f)) {
+                convertBlood()
+            }
             if (hasEnoughBlood && reloadCounter >= realReloadTime) {
                 val nextBullet = retrieveNextBullet()
                 val shot = if (isControlled) {
@@ -191,6 +304,33 @@ class Heart(name: String) : Block(name), IComponentBlock {
                 }
             }
         }
+        /**
+         *  Q = m C ΔT
+         *  enthalpy = mass * capacity * temperature
+         *  H = m C T
+         *  Only consider another liquid mixing with blood
+         */
+        open fun convertBlood() {
+            val capacity = realBloodCapacity
+            if (bloodAmount >= capacity) return
+            val speed = realBloodConvertSpeed * efficiency
+            for (liquid in Vars.content.liquids()) {
+                var amount = liquids[liquid]
+                if (amount > 0f) {
+                    amount = amount.coerceAtMost(speed)
+                    // Calculate enthalpy
+                    val H = liquid.calcuEnthalpy(amount)
+                    bloodAmount += amount
+                    if (liquid.temperature < temperature) {
+                        temperature -= H / blood.heatCapacity / bloodAmount
+                    } else {
+                        temperature += H / blood.heatCapacity / bloodAmount
+                    }
+                    liquids.remove(liquid, amount)
+                    if (bloodAmount >= capacity) return
+                }
+            }
+        }
 
         open fun findTarget(nextBullet: BulletType? = null): Teamc? {
             var result = Units.bestTarget(
@@ -200,7 +340,7 @@ class Heart(name: String) : Block(name), IComponentBlock {
                 UnitSorts.weakest
             )
             if (result == null && nextBullet != null && nextBullet.heals()) {
-                result = Units.findAllyTile(team, x, y, range) {
+                result = Units.findAllyTile(team, x, y, realRange) {
                     it.damaged() && it == this
                 }
             }
@@ -214,8 +354,9 @@ class Heart(name: String) : Block(name), IComponentBlock {
 
         override fun draw() {
             WhenNotPaused {
+                val speedUp = temperatureEfficiency + 1f
                 heartbeatAnime.spend(
-                    (Time.delta + Mathf.random()) * heartbeatFactor + heartbeatSpeedUp
+                    (Time.delta * speedUp) * heartbeatFactor
                 )
             }
             BaseTR.Draw(x, y)
@@ -225,27 +366,16 @@ class Heart(name: String) : Block(name), IComponentBlock {
          * Heart doesn't allow gas
          */
         override fun acceptLiquid(source: Building, liquid: Liquid): Boolean {
-            if (liquid.gas) return false
-            return super.acceptLiquid(source, liquid)
+            return !liquid.gas && liquids[liquid] < liquidCapacity
         }
 
         var queuedBullets = 0
         var totalShots = 0
         open fun shoot(type: BulletType) {
-            val shoot = curShootPattern
-            val bulletX = x
-            val bulletY = y
-            if (shoot.firstShotDelay > 0) {
-                chargeSound.at(bulletX, bulletY, Mathf.random(soundPitchMin, soundPitchMax))
-                type.chargeEffect.at(bulletX, bulletY)
-            }
-            shoot.shoot(totalShots) { xOffset, yOffset, angle, delay, mover ->
+            val shoot = shootPattern
+            shoot.shoot(totalShots) { xOffset, yOffset, angle, _, mover ->
                 queuedBullets++
-                if (delay > 0f) {
-                    Time.run(delay) { bullet(type, xOffset, yOffset, angle, mover) }
-                } else {
-                    bullet(type, xOffset, yOffset, angle, mover)
-                }
+                bullet(type, xOffset, yOffset, angle, mover)
                 totalShots++
             }
         }
@@ -265,17 +395,18 @@ class Heart(name: String) : Block(name), IComponentBlock {
                     this, team, bulletX, bulletY, shootAngle, -1f, 1f, 1f, null, mover, x, y
                 ), xOffset, yOffset, shootAngle
             )
-            curShootEffect.at(bulletX, bulletY, angleOffset, type.hitColor)
             curShooSound.at(bulletX, bulletY, Mathf.random(soundPitchMin, soundPitchMax))
 
-            if (curShake > 0) {
-                Effect.shake(curShake, curShake, this)
+            if (realShake > 0) {
+                Effect.shake(realShake, realShake, this)
             }
-            // No turret heat
-            // heat = 1f
         }
 
         open fun handleBullet(bullet: Bullet?, offsetX: Float, offsetY: Float, angleOffset: Float) {
+            if (bullet != null) {
+                bullet.damage += realDamage
+                bullet.lifetime += realBulletLifeTime
+            }
         }
 
         override fun unit(): MdtUnit {
@@ -303,8 +434,16 @@ class Heart(name: String) : Block(name), IComponentBlock {
             super.control(type, p1, p2, p3, p4)
         }
 
+        override fun displayBars(table: Table) {
+            this.appendDisplayLiquidsDynamic(
+                table, allLiquidBars
+            ) {
+                super.displayBars(table)
+            }
+        }
+        // Implement heat
         override fun heat() = heat
-        override fun heatFrac() = heat / coreHeat
+        override fun heatFrac() = heat / 5f
         override fun range() = realRange
         override fun drawSelect() {
             Drawf.dashCircle(x, y, realRange, bloodColor)

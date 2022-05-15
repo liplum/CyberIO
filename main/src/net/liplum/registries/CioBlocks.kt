@@ -61,7 +61,6 @@ import net.liplum.holo.*
 import net.liplum.lib.animations.ganim.globalAnim
 import net.liplum.seffects.StaticFx
 import net.liplum.ui.DynamicContentInfoDialog.Companion.registerDynamicInfo
-import net.liplum.utils.copyAs
 
 object CioBlocks {
     @JvmStatic lateinit var icMachine: GenericCrafter
@@ -400,7 +399,10 @@ object CioBlocks {
             buildCostMultiplier = 3.5f
         }
     }
-    @DependOn("CioItems.ic")
+    @DependOn(
+        "CioItems.ic",
+        "CioBlocks.holoWall"
+    )
     fun holoWallLarge() {
         holoWallLarge = HoloWall("holo-wall-large").apply {
             requirements(
@@ -887,37 +889,86 @@ object CioBlocks {
                     )
                 )
                 size = 4
-                val bulletOffset = 20f
-                normalShake = 2.8f
-                normalSound = CioSounds.heartbeat
-                normalPattern = HeartBeatShootPattern().apply {
-                    shots = 22
-                    offset = bulletOffset
-                    systole = 0.192f
+                convertSpeed = 10f
+                heartbeat.apply {
+                    shake.config {
+                        base = 1.5f
+                        upRange = 4.8f - base
+                        downRange = 1.0f
+                    }
+                    reloadTime.config {
+                        // Decrease
+                        base = 120f
+                        upRange = 50f
+                        downRange = 80f
+                    }
+                    powerUse.config {
+                        base = 2f
+                        upRange = 5f - base
+                        downRange = 0f
+                    }
+                    damage.config {
+                        base = 60f
+                        upRange = 120f - base
+                        downRange = 20f
+                    }
+                    range.config {
+                        base = 165f
+                        upRange = 240f - base
+                        downRange = 0f
+                    }
+                    shootNumber.config {
+                        base = 22
+                        upRange = 34 - 22
+                        downRange = 22 - 12
+                    }
+                    bloodCost.config {
+                        base = 50f
+                        upRange = 150f - 50f
+                        downRange = 0f
+                    }
+                    systole.config {
+                        base = 0.175f
+                        upRange = 0.192f - 0.175f
+                        downRange = 0.175f - 0.17f
+                    }
+                    diastole.config {
+                        // Decrease
+                        base = 3.3f
+                        upRange = 3.5f - 3.3f
+                        downRange = 3.3f - 3.15f
+                    }
+                    bulletLifeTime.config {
+                        base = 200f
+                        upRange = 300f - 200f
+                        downRange = 50f
+                    }
+                    sounds = arrayOf(
+                        CioSounds.heartbeat,
+                        CioSounds.heartbeatFaster,
+                    )
+                    soundIndexer = {
+                        when (it) {
+                            in Float.MIN_VALUE..0.1f -> 0
+                            in 0.1f..Float.MAX_VALUE -> 1
+                            else -> 0
+                        }
+                    }
+                    offset = 20f // +5f when improved
                 }
-                normalBullet = BBulletType("blood-bullet".Cio).apply {
-                    damage = 15f
-                    lifetime = 200f
+                bulletType = BBulletType("blood-bullet".Cio).apply {
+                    damage = 0f
+                    lifetime = 0f
                     hitEffect = Fx.none
                     shootEffect = Fx.none
                     smokeEffect = Fx.none
                     layer = Layer.bullet - 0.1f
                     despawnEffect = BrainFx.bloodBulletHit
+                    hitEffect = BrainFx.bloodBulletHit
+                    collidesTiles = false
                     filter = Texture.TextureFilter.nearest
-                    scale = { 2.3f + it.damage / 40f }
-                }
-                improvedShake = 4.8f
-                improvedSound = CioSounds.heartbeatFaster
-                improvedPattern = HeartBeatShootPattern().apply {
-                    shots = 34
-                    diastole = 3.3f
-                    offset = bulletOffset + 5f
-                    systole = 0.175f
-                }
-                improvedBullet = normalBullet.copyAs<BBulletType>().apply {
-                    damage = 30f
-                    lifetime = 300f
-                    scale = { 2.5f + it.damage / 60f }
+                    scale = { 2.4f + it.damage / 80f }
+                    hitSize = 20f
                 }
             }
         }

@@ -4,7 +4,6 @@ import arc.graphics.Color
 import arc.scene.ui.layout.Table
 import arc.struct.ObjectSet
 import arc.struct.OrderedSet
-import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.Vars
@@ -22,17 +21,20 @@ import net.liplum.api.cyber.*
 import net.liplum.lib.DrawOn
 import net.liplum.lib.delegates.Delegate1
 import net.liplum.lib.mixin.total
+import net.liplum.lib.ui.bars.appendDisplayLiquidsDynamic
+import net.liplum.lib.ui.bars.genAllLiquidBars
 import net.liplum.lib.ui.bars.removeLiquidInBar
 import net.liplum.persistance.intSet
-import net.liplum.utils.*
+import net.liplum.utils.ForProximity
+import net.liplum.utils.addHostInfo
+import net.liplum.utils.buildAt
 
 /**
  * Steam server is also a [IStreamClient].
  */
 open class StreamServer(name: String) : StreamHost(name) {
     @JvmField var fireproof = false
-    lateinit var allLiquidBars: Array<(Building) -> Bar>
-    @JvmField var minIntervalBarDisplay = 10f
+    @ClientOnly lateinit var allLiquidBars: Array<(Building) -> Bar>
 
     init {
         callDefaultBlockDraw = false
@@ -46,15 +48,7 @@ open class StreamServer(name: String) : StreamHost(name) {
 
     override fun init() {
         super.init()
-        allLiquidBars = Array(LiquidTypeAmount()) { i ->
-            val liquid = Vars.content.liquids()[i]
-            {
-                Bar({ liquid.localizedName },
-                    { liquid.barColor() },
-                    { it.liquids[liquid] / liquidCapacity }
-                )
-            }
-        }
+        allLiquidBars = genAllLiquidBars()
     }
 
     override fun setBars() {
@@ -265,18 +259,10 @@ open class StreamServer(name: String) : StreamHost(name) {
         }
 
         override fun displayBars(table: Table) {
-            table.update {
-                if (Time.time % minIntervalBarDisplay < Time.delta) {
-                    table.clearChildren()
-                    super.displayBars(table)
-                    for (liquid in Vars.content.liquids()) {
-                        if (liquids[liquid] > 0f) {
-                            val bar = allLiquidBars[liquid.ID](this)
-                            table.add(bar).growX()
-                            table.row()
-                        }
-                    }
-                }
+            this.appendDisplayLiquidsDynamic(
+                table, allLiquidBars
+            ) {
+                super.displayBars(table)
             }
         }
 

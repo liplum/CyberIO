@@ -1,5 +1,6 @@
 package net.liplum.utils
 
+import arc.audio.Sound
 import arc.func.Cons
 import arc.func.Prov
 import arc.math.Interp
@@ -12,6 +13,7 @@ import arc.struct.Seq
 fun <T> Seq<T>.removeT(element: T) {
     this.remove(element)
 }
+val EmptySounds = emptyArray<Sound>()
 
 fun <T> emptySeq(): Seq<T> = ArcU.emptySeq()
 fun <T> emptyOrderedSet(): OrderedSet<T> = ArcU.emptySet()

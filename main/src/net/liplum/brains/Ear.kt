@@ -42,7 +42,7 @@ open class Ear(name: String) : Block(name), IComponentBlock {
     @JvmField var sonicMaxRadius = 40f
     @JvmField var sonicMaxRadiusI = 0.4f
     @JvmField var powerUse = 2f
-    @JvmField var powerPowerI = 0.8f
+    @JvmField var powerUseI = 0.8f
     @JvmField var range = 150f
     @JvmField var rangeI = 0.4f
     @JvmField var reloadTime = 60f
@@ -122,7 +122,7 @@ open class Ear(name: String) : Block(name), IComponentBlock {
         val realSonicRadius: Float
             get() = sonicMaxRadius * (1f + if (isLinkedBrain) sonicMaxRadiusI else 0f)
         val realPowerUse: Float
-            get() = powerUse * (1f + if (isLinkedBrain) powerPowerI else 0f)
+            get() = powerUse * (1f + if (isLinkedBrain) powerUseI else 0f)
         val realSensitive: Float
             get() = sensitivity * (1f + if (isLinkedBrain) sensitivityI else 0f)
         @Serialized

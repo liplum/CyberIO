@@ -134,6 +134,10 @@ public class R {
         public static final String RestResurrectN = "rest-resurrect",
                 RestResurrect = Gen(RestResurrectN);
         public static final String FormationN = "formation";
+        public static final String BloodN = "blood",
+                Blood = Gen(BloodN);
+        public static final String TemperatureN = "temperature",
+                Temperature = Gen(TemperatureN);
     }
 
     public static final class Ctrl {

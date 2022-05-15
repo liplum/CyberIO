@@ -75,7 +75,7 @@ object CioUnitTypes {
     @DependOn("CioItems.ic")
     fun holoFighter() {
         holoFighter = NewUnitType(R.Unit.HoloFighter, ::HoloUnitType, ::HoloUnit).apply {
-            AutoLife(maxHealth = 2200f, lose = 0.2f)
+            AutoLife(maxHealth = 2400f, lose = 0.19f)
             speed = 4f
             accel = 0.08f
             drag = 0.016f

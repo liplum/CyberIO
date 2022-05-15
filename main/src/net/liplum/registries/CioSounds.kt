@@ -2,11 +2,11 @@ package net.liplum.registries
 
 import arc.audio.Sound
 import mindustry.gen.Sounds
+import net.liplum.utils.EmptySounds
 import net.liplum.utils.LoadSound
 import net.liplum.utils.LoadSounds
 
 object CioSounds {
-    val EmptySounds = emptyArray<Sound>()
     var tvStatic: Sound = Sounds.none
     var jammerPreShoot: Sound = Sounds.none
     var laserWeak: Array<Sound> = EmptySounds

@@ -28,8 +28,8 @@ import net.liplum.utils.*
 open class Eye(name: String) : PowerTurret(name), IComponentBlock {
     lateinit var normalBullet: BulletType
     lateinit var improvedBullet: BulletType
-    @JvmField var normalSounds: Array<Sound> = CioSounds.EmptySounds
-    @JvmField var improvedSounds: Array<Sound> = CioSounds.EmptySounds
+    @JvmField var normalSounds: Array<Sound> = EmptySounds
+    @JvmField var improvedSounds: Array<Sound> = EmptySounds
     @ClientOnly lateinit var BaseTR: TR
     @ClientOnly lateinit var EyeBallTR: TR
     @ClientOnly lateinit var EyelidTR: TR

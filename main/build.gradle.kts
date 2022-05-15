@@ -55,7 +55,7 @@ java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
 }
-val mdthash = "e856652db4"
+val mdthash = "0fa26b1b0f"
 dependencies {
     implementation(project(":annotations"))
     ksp(project(":processor"))

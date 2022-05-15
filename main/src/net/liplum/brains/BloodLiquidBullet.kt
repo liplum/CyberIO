@@ -16,14 +16,15 @@ import mindustry.entities.pattern.ShootPattern
 import mindustry.gen.Bullet
 import net.liplum.lib.mixin.Mover
 
+@Deprecated(
+    "Just for design.",
+    ReplaceWith("net.liplum.brains.Heartbeat")
+)
 open class HeartBeatShootPattern : ShootPattern() {
     /**
      * The force of systole
      */
     var systole = 0.15f
-    /**
-     * The
-     */
     var diastole = 3.5f
     var minIn = 0.02f
     var systoleTime = 1f
@@ -52,12 +53,11 @@ open class HeartBeatShootPattern : ShootPattern() {
             )
         }
     }
-
-    companion object {
-        val X = HeartBeatShootPattern()
-    }
 }
-@Deprecated("Blood bullet doesn't use liquid effect anymore")
+@Deprecated(
+    "Blood bullet doesn't use liquid effect anymore",
+    ReplaceWith("net.liplum.bullets.BBulletType")
+)
 /**
  * Copy from [LiquidBulletType]
  */
