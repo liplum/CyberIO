@@ -155,7 +155,7 @@ class CioMod : Mod() {
             }
             OverwrittenUI.overwrite()
             CioShaderLoader.loadResource()
-            GlobalAnimation.loadAllResources()
+            ResourceLoader.loadAllResources()
             Events.run(Trigger.preDraw) {
                 G.init()
             }

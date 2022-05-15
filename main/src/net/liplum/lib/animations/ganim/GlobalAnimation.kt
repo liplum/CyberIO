@@ -3,11 +3,10 @@ package net.liplum.lib.animations.ganim
 import arc.Events
 import arc.func.Cons
 import arc.graphics.g2d.TextureRegion
-import arc.math.Mathf
 import arc.util.Time
 import mindustry.game.EventType
 import net.liplum.ClientOnly
-import net.liplum.lib.delegates.Delegate
+import net.liplum.utils.progress
 
 typealias GlobalAnimationIndexer = GlobalAnimation.() -> TextureRegion
 
@@ -18,7 +17,7 @@ open class GlobalAnimation(
     lateinit var frames: Array<TextureRegion>
     var frameIndexer: GlobalAnimationIndexer = loopIndexer
     override val canUpdate: Boolean
-        get() = CanPlay && ResourceLoaded
+        get() = CanPlay
     var lastTR: TextureRegion? = null
     protected fun getCurTR(): TextureRegion {
         return frameIndexer()
@@ -38,18 +37,14 @@ open class GlobalAnimation(
         val loopIndexer: GlobalAnimationIndexer = {
             val frames = frames
             val progress = Time.globalTime % duration / duration //percent
-            var index: Int = (progress * frames.size).toInt()
-            index = Mathf.clamp(index, 0, frames.size)
-            frames[index]
+            frames.progress(progress)
         }
         // TODO: that's too random.
         val randomSelectIndexr: GlobalAnimationIndexer = {
             frames.random()
         }
         var CanPlay = false
-        var ResourceLoaded = false
         val updateTasks = HashSet<IGlobalAnimation>()
-        val loadingTask: Delegate = Delegate()
         @ClientOnly
         @JvmStatic
         fun registerAll() {
@@ -72,17 +67,10 @@ open class GlobalAnimation(
         }
         @ClientOnly
         fun globalPlay() {
-            if (CanPlay && ResourceLoaded) {
+            if (CanPlay) {
                 for (task in updateTasks)
                     task.update()
             }
-        }
-        @JvmStatic
-        @ClientOnly
-        fun loadAllResources() {
-            loadingTask()
-            loadingTask.clear()
-            ResourceLoaded = true
         }
     }
 }

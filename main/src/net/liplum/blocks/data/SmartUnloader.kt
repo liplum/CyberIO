@@ -1,4 +1,4 @@
-package net.liplum.blocks.gadgets
+package net.liplum.blocks.data
 
 import arc.math.Mathf
 import arc.struct.OrderedSet
@@ -129,7 +129,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
         }
     }
 
-    open inner class SmartULDBuild : AniedBlock<SmartUnloader, SmartUnloader.SmartULDBuild>.AniedBuild(),
+    open inner class SmartULDBuild : AniedBlock<SmartUnloader, SmartULDBuild>.AniedBuild(),
         IDataSender {
         @Serialized
         var receivers = OrderedSet<Int>()

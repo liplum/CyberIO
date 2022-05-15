@@ -1,4 +1,4 @@
-package net.liplum.blocks.gadgets
+package net.liplum.blocks.data
 
 import arc.func.Boolf
 import arc.graphics.Color
@@ -121,7 +121,7 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
         this.drawLinkedLineToReceiverWhenConfiguring(x, y)
     }
 
-    open inner class SmartDISBuild : AniedBlock<SmartDistributor, SmartDistributor.SmartDISBuild>.AniedBuild(),
+    open inner class SmartDISBuild : AniedBlock<SmartDistributor, SmartDISBuild>.AniedBuild(),
         IDataReceiver {
         @JvmField var _requirements: Array<Item> = Item::class.java.EmptyArray()
         @Serialized

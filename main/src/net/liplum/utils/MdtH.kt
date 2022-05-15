@@ -8,6 +8,9 @@ import mindustry.content.Blocks
 import mindustry.ctype.Content
 import mindustry.ctype.UnlockableContent
 import mindustry.entities.Units
+import mindustry.entities.bullet.BasicBulletType
+import mindustry.entities.bullet.BulletType
+import mindustry.entities.pattern.ShootPattern
 import mindustry.game.Team
 import mindustry.gen.Building
 import mindustry.type.UnitType
@@ -142,3 +145,13 @@ inline fun ForEachUnlockableContent(func: (UnlockableContent) -> Unit) {
         if (it is UnlockableContent) func(it)
     }
 }
+
+fun BasicBulletType(textureName: String): BasicBulletType {
+    return BasicBulletType(1f, 1f, textureName)
+}
+
+fun <T : BulletType> BulletType.copyAs(): T =
+    this.copy() as T
+
+fun <T : ShootPattern> ShootPattern.copyAs(): T =
+    this.copy() as T

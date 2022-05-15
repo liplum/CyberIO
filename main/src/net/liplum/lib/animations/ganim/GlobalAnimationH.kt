@@ -3,6 +3,7 @@ package net.liplum.lib.animations.ganim
 import mindustry.ctype.UnlockableContent
 import mindustry.world.Block
 import net.liplum.ClientOnly
+import net.liplum.ResourceLoader
 import net.liplum.lib.animations.ganim.GlobalAnimation.Companion.register
 import net.liplum.utils.anim
 
@@ -19,7 +20,7 @@ fun <T : Block> T.globalAnim(
             config()
             register()
         }
-        GlobalAnimation.loadingTask += {
+        ResourceLoader += {
             a.frames = this.anim(number = frameCount)
         }
     }
@@ -38,7 +39,7 @@ fun <T : UnlockableContent> T.globalAnim(
             config()
             register()
         }
-        GlobalAnimation.loadingTask += {
+        ResourceLoader += {
             a.frames = this.anim(number = frameCount)
         }
     }

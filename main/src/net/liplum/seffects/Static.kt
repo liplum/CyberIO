@@ -8,10 +8,10 @@ import mindustry.entities.Effect
 import mindustry.gen.Unit
 import mindustry.type.StatusEffect
 import net.liplum.lib.shaders.SD
-import net.liplum.lib.shaders.on
+import net.liplum.lib.shaders.onWith
 
 val StaticFx = Effect(40f) {
-    SD.TvStatic.on { _ ->
+    SD.TvStatic.onWith { _ ->
         Draw.color(Color.white)
         Fill.circle(
             it.x, it.y,

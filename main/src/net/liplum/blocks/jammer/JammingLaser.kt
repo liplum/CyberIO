@@ -10,16 +10,17 @@ import mindustry.entities.bullet.ContinuousLaserBulletType
 import mindustry.gen.Bullet
 import mindustry.graphics.Drawf
 import net.liplum.lib.shaders.SD
-import net.liplum.lib.shaders.on
+import net.liplum.lib.shaders.use
 
 class JammingLaser(damage: Float) : ContinuousLaserBulletType(damage) {
     constructor() : this(0f)
+
     var spaceMag = 35f
     var tscales = floatArrayOf(1f, 0.7f, 0.5f, 0.2f)
     var strokes = floatArrayOf(2f, 1.5f, 1f, 0.3f)
     var lenscales = floatArrayOf(1f, 1.12f, 1.15f, 1.17f)
     override fun draw(b: Bullet) {
-        SD.TvStatic.on {
+        SD.TvStatic.use(layer) {
             val realLength = Damage.findLaserLength(b, length)
             val fout =
                 Mathf.clamp(

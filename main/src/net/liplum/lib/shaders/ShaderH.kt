@@ -5,11 +5,12 @@ import net.liplum.registries.CioShaders
 
 typealias SD = CioShaders
 
-inline fun <T : ShaderBase> T?.on(
+inline fun <T : ShaderBase> T?.onWith(
+    zIndex: Float = Draw.z(),
     crossinline func: (T) -> Unit,
 ) {
     if (this != null) {
-        Draw.draw(Draw.z()) {
+        Draw.draw(zIndex) {
             Draw.shader(this)
             func(this)
             Draw.shader()
@@ -45,7 +46,7 @@ inline fun <T : ShaderBase> T.use(
 }
 
 inline fun <T : ShaderBase> T?.on(
-    zIndex: Float,
+    zIndex: Float = Draw.z(),
     crossinline func: () -> Unit,
 ) {
     if (this != null) {

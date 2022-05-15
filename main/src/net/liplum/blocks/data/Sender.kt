@@ -1,4 +1,4 @@
-package net.liplum.blocks.rs
+package net.liplum.blocks.data
 
 import arc.graphics.Color
 import arc.util.Nullable
@@ -13,7 +13,7 @@ import mindustry.world.meta.BlockGroup
 import net.liplum.*
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
-import net.liplum.blocks.rs.Sender.SenderBuild
+import net.liplum.blocks.data.Sender.SenderBuild
 import net.liplum.lib.Draw
 import net.liplum.lib.ResetColor
 import net.liplum.lib.SetColor

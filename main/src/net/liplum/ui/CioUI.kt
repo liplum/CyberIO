@@ -61,7 +61,7 @@ object CioUI {
                 if (cioSettings == null) {
                     menu.row()
                     menu.button(
-                        Meta.Name, TextureRegionDrawable("welcome-cyber-io".inCio()),
+                        Meta.Name, TextureRegionDrawable("welcome-cyber-io".inCio),
                         Styles.flatt, Vars.iconMed
                     ) {
                         prefs.clearChildren()

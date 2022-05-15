@@ -5,10 +5,10 @@ import arc.graphics.Texture;
 import arc.math.Mathf;
 import arc.util.Time;
 import net.liplum.lib.shaders.ShaderBase;
+import net.liplum.utils.AtlasHKt;
 import org.jetbrains.annotations.NotNull;
 
 import static mindustry.Vars.renderer;
-import static net.liplum.utils.AtlasHKt.inCio;
 
 public class HologramOldShader extends ShaderBase {
     public static final float DefaultSpeed = 0.5f;
@@ -35,7 +35,7 @@ public class HologramOldShader extends ShaderBase {
 
     @Override
     public void loadResource() {
-        fringe = inCio("hologram").texture;
+        fringe = AtlasHKt.getInCio("hologram").texture;
         fringe.setFilter(Texture.TextureFilter.linear);
         fringe.setWrap(Texture.TextureWrap.repeat);
     }

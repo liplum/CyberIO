@@ -4,6 +4,7 @@ import arc.Core;
 import arc.graphics.g2d.TextureRegion;
 import arc.util.Log;
 import mindustry.ctype.MappableContent;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class AtlasU {
@@ -40,13 +41,7 @@ public class AtlasU {
         return slice(tr, number, isHorizontal);
     }
 
-    public static TextureRegion[] sheet(MappableContent content, @Nullable String subName, boolean isHorizontal, int number) {
-        String identity;
-        if (subName != null) {
-            identity = content.name + '-' + subName;
-        } else {
-            identity = content.name;
-        }
+    public static TextureRegion[] sheet(@NotNull String identity, boolean isHorizontal, int number) {
         TextureRegion tr = Core.atlas.find(identity);
         return slice(tr, number, isHorizontal);
     }

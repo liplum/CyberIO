@@ -300,9 +300,11 @@ open class Prism(name: String) : Block(name) {
                 val bullets = owner.bullets
                 if (bullets.any()) {
                     val first = bullets.first()
-                    bullets.add(Turret.BulletEntry(
-                        this, first.x, first.y, first.rotation + angleOffset, first.life
-                    ))
+                    bullets.add(
+                        Turret.BulletEntry(
+                            this, first.x, first.y, first.rotation + angleOffset, first.life
+                        )
+                    )
                 }
             }
             return this
@@ -380,7 +382,7 @@ open class Prism(name: String) : Block(name) {
         }
 
         override fun control(type: LAccess, p1: Double, p2: Double, p3: Double, p4: Double) {
-            if (type == LAccess.shoot && !unit.isPlayer && (p1 != 0.0 && p2 != 0.0)) {
+            if (type == LAccess.shoot && !unit.isPlayer && !p3.isZero) {
                 logicAngle = this.angleTo((p1 * tilesize).toFloat(), (p2 * tilesize).toFloat())
                 logicControlTime = 60f
             }
@@ -388,7 +390,7 @@ open class Prism(name: String) : Block(name) {
         }
 
         override fun control(type: LAccess, p1: Any?, p2: Double, p3: Double, p4: Double) {
-            if (type == LAccess.shootp && !unit.isPlayer) {
+            if (type == LAccess.shootp && !unit.isPlayer && !p2.isZero) {
                 if (p1 is Posc) {
                     logicControlTime = 60f
                     logicAngle = toAngle(x, y, p1.x, p1.y)

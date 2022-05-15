@@ -50,7 +50,6 @@ object CioUnitTypes {
             AutoLife(maxHealth = 1600f, lose = 0.08f)
             health = 2000f
             speed = 2f
-            controller
             aiController = Prov { MinerAI() }
             controller = Func { MinerAI() }
             lowAltitude = true

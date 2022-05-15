@@ -7,6 +7,7 @@ import mindustry.entities.bullet.*
 import mindustry.gen.Building
 import mindustry.graphics.Pal
 import net.liplum.R
+import net.liplum.bullets.BBulletType
 import net.liplum.lib.copyFrom
 import net.liplum.utils.ArrayList
 
@@ -26,6 +27,7 @@ fun tintedRGB(b: BulletType): List<BulletType> {
         is FireBulletType -> b.tinted
         is LiquidBulletType -> b.tinted
         is MassDriverBolt -> b.tinted
+        is BBulletType -> b.tinted
         else -> b.tintGeneral
     }
 }
@@ -55,6 +57,7 @@ fun BulletType.commonTint(i: Int, lerp: Float = 0.3f) {
     healColor = FG(i).lerp(healColor, lerp)
     lightColor = FG(i).lerp(lightColor, lerp)
     lightningColor = BK(i).lerp(lightningColor, lerp)
+    hitColor = BK(i).lerp(hitColor,lerp)
 }
 
 internal fun FG(i: Int): Color =
@@ -74,6 +77,18 @@ val BasicBulletType.tinted: List<BasicBulletType>
             )
             backColor = BK(it).lerp(
                 backColor, BasicTintLerp
+            )
+            commonTint(it, BasicTintLerp)
+        }
+    }
+val BBullets: HashMap<BBulletType, List<BBulletType>> = HashMap()
+val BBulletType.BasicTintLerp: Float
+    get() = 0.4f + Mathf.randomSeed(id.toLong(), -0.1f, 0.1f)
+val BBulletType.tinted: List<BBulletType>
+    get() = BBullets.rgb(this) {
+        (this.copy() as BBulletType).apply {
+            color = FG(it).lerp(
+                color, BasicTintLerp
             )
             commonTint(it, BasicTintLerp)
         }

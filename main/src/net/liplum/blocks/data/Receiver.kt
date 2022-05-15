@@ -1,4 +1,4 @@
-package net.liplum.blocks.rs
+package net.liplum.blocks.data
 
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
@@ -20,7 +20,7 @@ import net.liplum.Serialized
 import net.liplum.UndebugOnly
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
-import net.liplum.blocks.rs.Receiver.ReceiverBuild
+import net.liplum.blocks.data.Receiver.ReceiverBuild
 import net.liplum.lib.Draw
 import net.liplum.lib.SetColor
 import net.liplum.lib.animations.anims.Animation

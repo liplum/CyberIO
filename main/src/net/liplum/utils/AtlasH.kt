@@ -7,7 +7,7 @@ import mindustry.ctype.MappableContent
 import net.liplum.Meta
 
 typealias TR = TextureRegion
-
+val EmptyTR = TR()
 /**
  * Gets the Texture Region of "sprites/{this}-{subName}"
  * @param subName the following name after a hyphen
@@ -20,24 +20,25 @@ fun MappableContent.inMod(name: String): TR =
 
 fun MappableContent.selfTR(): TR =
     atlas.find(name)
-
-fun String.inMod(): TR =
-    atlas.find(Vars.content.transformName(this))
-
-fun String.inCio(): TR =
-    atlas.find("${Meta.ModID}-$this")
+/**
+ * In current loading mod
+ */
+val String.inMod: TR
+    get() = atlas.find(Vars.content.transformName(this))
+val String.inCio: TR
+    get() = atlas.find("${Meta.ModID}-$this")
 
 fun String.atlas(): TR =
     atlas.find(this)
 
 fun TR.orSubA(obj: MappableContent, subName: String): TR =
-    if (atlas.isFound(this))
+    if (this.found())
         this
     else
         obj.sub(subName)
 
 infix fun TR.or(texture: TR): TR =
-    if (atlas.isFound(this))
+    if (this.found())
         this
     else
         texture
@@ -60,8 +61,15 @@ fun MappableContent.sheet(
     subName: String? = null,
     number: Int,
     isHorizontal: Boolean = true,
-): Array<TR> =
-    AtlasU.sheet(this, subName, isHorizontal, number)
+): Array<TR> {
+    val identity = name + if (subName != null) "-$subName" else ""
+    return AtlasU.sheet(identity, isHorizontal, number)
+}
+
+fun String.sheet(
+    number: Int,
+    isHorizontal: Boolean = true,
+): Array<TR> = AtlasU.sheet(this, isHorizontal, number)
 /**
  * Gets an array of Texture Region of "sprites/{this}-{subName}" or "sprites/{this}" if subName is null.
  * @param subName the following name after a hyphen. If it's null, use the {this} name

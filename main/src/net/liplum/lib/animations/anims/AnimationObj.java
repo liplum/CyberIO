@@ -38,7 +38,7 @@ public class AnimationObj implements IAnimated, ITimer {
             return indexer.getCurIndex(this, length);
         } else {
             float process = curTime / meta.duration;
-            return (int) (process * (length - 1));
+            return Math.min((int) (process * length), length - 1);
         }
     }
 

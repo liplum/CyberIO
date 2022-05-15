@@ -20,13 +20,14 @@ open class HeartBeatShootPattern : ShootPattern() {
     /**
      * The force of systole
      */
-    val systole = 0.15f
+    var systole = 0.15f
     /**
      * The
      */
-    val diastole = 3.5f
-    val minIn = 0.02f
-    val systoleTime = 1f
+    var diastole = 3.5f
+    var minIn = 0.02f
+    var systoleTime = 1f
+    var offset = 0f
     val systoleMover: Mover = Mover {
         if (timer.get(5, systoleTime)) {
             vel.scl(1f - systole)
@@ -38,22 +39,29 @@ open class HeartBeatShootPattern : ShootPattern() {
 
     override fun shoot(totalShots: Int, handler: BulletHandler) {
         val perAngle = 360f / shots
+        val offset = Tmp.v1.set(offset, 0f)
         for (i in 0 until shots) {
-            handler.shoot(0f, 0f,
-                perAngle * i,
+            val angle = perAngle * i
+            offset.setAngle(angle)
+            handler.shoot(
+                0f + offset.x,
+                0f + offset.y,
+                angle,
                 firstShotDelay + shotDelay * i,
                 systoleMover
             )
         }
     }
-    companion object{
+
+    companion object {
         val X = HeartBeatShootPattern()
     }
 }
+@Deprecated("Blood bullet doesn't use liquid effect anymore")
 /**
  * Copy from [LiquidBulletType]
  */
-open class BloodBullet : BulletType() {
+open class BloodLiquidBullet : BulletType() {
     var boilTime = 5f
     var blood: Blood = Blood.X
     var extinguishIntensity = 400f
@@ -102,8 +110,5 @@ open class BloodBullet : BulletType() {
                 Fires.extinguish(Vars.world.tileWorld(hitx + p.x * Vars.tilesize, hity + p.y * Vars.tilesize), extinguishIntensity)
             }
         }
-    }
-    companion object{
-        val X = BloodBullet()
     }
 }

@@ -5,6 +5,7 @@ package net.liplum.lib.animations.anims
 import arc.graphics.g2d.TextureRegion
 import arc.util.Time
 import mindustry.gen.Building
+import net.liplum.utils.progress
 
 /**
  * It plays animation evenly based on [Time.time].
@@ -13,13 +14,11 @@ import mindustry.gen.Building
 fun Animation.ixAuto(tileEntity: Building? = null) =
     if (tileEntity == null) IFrameIndexer {
         val progress = Time.time % duration / duration//percent
-        val index = (progress * it).toInt()
-        index.coerceIn(0, it - 1)
+        it.progress(progress)
     } else IFrameIndexer {
         val fixedTotalDuration = duration / tileEntity.timeScale()
         val progress = Time.time % fixedTotalDuration / fixedTotalDuration//percent
-        val index = (progress * it).toInt()
-        index.coerceIn(0, it - 1)
+        it.progress(progress)
     }
 @JvmOverloads
 fun Animation.ixSpeed(tileEntity: Building? = null, speedUpPct: () -> Float) =
@@ -27,13 +26,11 @@ fun Animation.ixSpeed(tileEntity: Building? = null, speedUpPct: () -> Float) =
         var fixedTotalDuration = duration / tileEntity.timeScale()
         fixedTotalDuration /= speedUpPct()
         val progress = Time.time % fixedTotalDuration / fixedTotalDuration//percent
-        val index = (progress * it).toInt()
-        index.coerceIn(0, it - 1)
+        it.progress(progress)
     } else IFrameIndexer {
         val fixedTotalDuration = duration / speedUpPct()
         val progress = Time.time % fixedTotalDuration / fixedTotalDuration//percent
-        val index = (progress * it).toInt()
-        index.coerceIn(0, it - 1)
+        it.progress(progress)
     }
 @JvmOverloads
 fun Animation.ixReciprocate(tileEntity: Building? = null) =

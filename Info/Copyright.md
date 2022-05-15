@@ -23,3 +23,9 @@ In [assets/sounds](/assets/sounds):
 3. laser-weak0.wav to laser-weak2.wav
 4. laser-strong0.wav to laser-strong2.wav
 5. tv-static.wav
+6. heartbeat.wav
+7. heartbeat-faster.wav
+
+In [assets/sprites](/assets/sprites):
+1. blood-bullet.png
+2. blood-bullet-hit.png

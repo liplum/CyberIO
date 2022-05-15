@@ -119,7 +119,7 @@ open class Heimdall(name: String) : Block(name) {
         super.setBars()
         DebugOnly {
             AddBar<HeimdallBuild>(R.Bar.FormationN,
-                { "${formationEffects}" },
+                { "$formationEffects" },
                 { R.C.BrainWave },
                 { if (formationEffects.isNotEmpty) 1f else 0f }
             )
@@ -182,7 +182,7 @@ open class Heimdall(name: String) : Block(name) {
             get() = logicControlTime > 0
         var unit = UnitTypes.block.create(team) as BlockUnitc
         @Serialized
-        var reload = 0f
+        var reloadCounter = 0f
         var realRange: Float = range
         var realWaveSpeed: Float = waveSpeed
         var realMaxBrainWaveNum: Int = maxBrainWaveNum
@@ -225,15 +225,15 @@ open class Heimdall(name: String) : Block(name) {
 
         override fun updateTile() {
             // Brain waves
-            reload += edelta()
+            reloadCounter += edelta()
             brainWaves.forEach {
                 it.range += waveSpeed * delta()
             }
             brainWaves.pollWhen {
                 it.range >= realRange
             }
-            if (reload >= realReloadTime) {
-                reload = 0f
+            if (reloadCounter >= realReloadTime) {
+                reloadCounter = 0f
                 if ((isControlled && unit.isShooting) ||
                     logicControlled || enemyNearby()
                 ) {
@@ -280,8 +280,10 @@ open class Heimdall(name: String) : Block(name) {
                         1f else 0.25f
                     shieldAmount += realForceFieldRegen * edelta() * factor
                 }
-                curFieldRadius = Mathf.approach(curFieldRadius, targetFieldRadius,
-                    edelta() * forceFieldRadiusSpeed)
+                curFieldRadius = Mathf.approach(
+                    curFieldRadius, targetFieldRadius,
+                    edelta() * forceFieldRadiusSpeed
+                )
             } else {
                 shieldAmount -= realForceFieldRegen * 2f
                 curFieldRadius -= 2f * Time.delta
@@ -400,13 +402,13 @@ open class Heimdall(name: String) : Block(name) {
             }
             Draw.reset()
             // brain waves
-            Draw.z(Layer.power)
+            Draw.z(Layer.bullet)
             val realRange = realRange
             for (wave in brainWaves) {
                 val dst = realRange - wave.range
                 val alpha = Interp.pow2Out(dst / realRange)
                 Lines.stroke(waveWidth, R.C.BrainWave)
-                Draw.alpha(alpha)
+                Draw.alpha(alpha + 0.7f)
                 Lines.circle(x, y, wave.range)
             }
             Draw.reset()
@@ -456,7 +458,7 @@ open class Heimdall(name: String) : Block(name) {
         override fun read(read: Reads, revision: Byte) {
             super.read(read, revision)
             brainWaves.read(read)
-            reload = read.f()
+            reloadCounter = read.f()
             shieldAmount = read.f()
             lastShieldDamageTime = read.f()
             curFieldRadius = read.f()
@@ -465,21 +467,21 @@ open class Heimdall(name: String) : Block(name) {
         override fun write(write: Writes) {
             super.write(write)
             brainWaves.write(write)
-            write.f(reload)
+            write.f(reloadCounter)
             write.f(shieldAmount)
             write.f(lastShieldDamageTime)
             write.f(curFieldRadius)
         }
 
         override fun control(type: LAccess, p1: Double, p2: Double, p3: Double, p4: Double) {
-            if (type == LAccess.shoot && !unit.isPlayer) {
+            if (type == LAccess.shoot && !unit.isPlayer && !p3.isZero) {
                 logicControlTime = 60f
             }
             super.control(type, p1, p2, p3, p4)
         }
 
         override fun control(type: LAccess, p1: Any?, p2: Double, p3: Double, p4: Double) {
-            if (type == LAccess.shootp && !unit.isPlayer) {
+            if (type == LAccess.shootp && !unit.isPlayer && !p2.isZero) {
                 if (p1 is Posc) {
                     logicControlTime = 60f
                 }
@@ -564,22 +566,6 @@ open class Heimdall(name: String) : Block(name) {
         }
     }
 }
-/*
-operator fun <K, V> MutableMap<K, MutableList<V>>.set(type: K, upgrade: V) {
-    val list = this.getOrPut(type) { LinkedList() }
-    list.add(upgrade)
-}
-
-fun <K, V> MutableMap<K, MutableList<V>>.clearList() {
-    for (list in values) {
-        list.clear()
-    }
-}
-
-fun <K, V> MutableMap<K, MutableList<V>>.getSafe(type: K): List<V> {
-    return this[type] ?: emptyList()
-}
-*/
 
 class Prop(
     val default: Float,

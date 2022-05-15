@@ -2,6 +2,7 @@ package net.liplum.registries
 
 import arc.Events
 import arc.graphics.Color
+import arc.graphics.Texture
 import arc.struct.Seq
 import arc.util.Time
 import mindustry.content.*
@@ -11,6 +12,7 @@ import mindustry.entities.effect.MultiEffect
 import mindustry.entities.pattern.ShootAlternate
 import mindustry.game.EventType.Trigger
 import mindustry.gen.Sounds
+import mindustry.graphics.Layer
 import mindustry.type.Category
 import mindustry.type.ItemStack
 import mindustry.type.LiquidStack
@@ -30,10 +32,12 @@ import net.liplum.api.brain.Upgrade
 import net.liplum.api.virus.setUninfected
 import net.liplum.api.virus.setUninfectedFloor
 import net.liplum.blocks.cloud.Cloud
+import net.liplum.blocks.data.Receiver
+import net.liplum.blocks.data.Sender
+import net.liplum.blocks.data.SmartDistributor
+import net.liplum.blocks.data.SmartUnloader
 import net.liplum.blocks.debugonly.AdjustableOverdrive
 import net.liplum.blocks.deleter.Deleter
-import net.liplum.blocks.gadgets.SmartDistributor
-import net.liplum.blocks.gadgets.SmartUnloader
 import net.liplum.blocks.icmachine.ICMachine
 import net.liplum.blocks.icmachine.ICMachineS
 import net.liplum.blocks.jammer.Jammer
@@ -41,8 +45,6 @@ import net.liplum.blocks.jammer.JammingLaser
 import net.liplum.blocks.power.WirelessTower
 import net.liplum.blocks.prism.Prism
 import net.liplum.blocks.prism.PrismObelisk
-import net.liplum.blocks.rs.Receiver
-import net.liplum.blocks.rs.Sender
 import net.liplum.blocks.stream.StreamClient
 import net.liplum.blocks.stream.StreamHost
 import net.liplum.blocks.stream.StreamServer
@@ -52,12 +54,14 @@ import net.liplum.blocks.underdrive.UnderdriveProjector
 import net.liplum.blocks.virus.AntiVirus
 import net.liplum.blocks.virus.Virus
 import net.liplum.brains.*
+import net.liplum.bullets.BBulletType
 import net.liplum.bullets.RuvikBullet
 import net.liplum.bullets.STEM_VERSION
 import net.liplum.holo.*
 import net.liplum.lib.animations.ganim.globalAnim
 import net.liplum.seffects.StaticFx
 import net.liplum.ui.DynamicContentInfoDialog.Companion.registerDynamicInfo
+import net.liplum.utils.copyAs
 
 object CioBlocks {
     @JvmStatic lateinit var icMachine: GenericCrafter
@@ -879,9 +883,41 @@ object CioBlocks {
     fun heart() {
         DebugOnly {
             heart = Heart("heimdall-heart").apply {
-                requirements(Category.turret, BuildVisibility.shown, arrayOf(
-                ))
+                requirements(
+                    Category.turret, BuildVisibility.shown, arrayOf(
+                    )
+                )
                 size = 4
+                val bulletOffset = 20f
+                normalShake = 0.1f
+                improvedShake = 0.5f
+                normalPattern = HeartBeatShootPattern().apply {
+                    shots = 22
+                    offset = bulletOffset
+                    systole = 0.192f
+                }
+                normalBullet = BBulletType("blood-bullet".Cio).apply {
+                    damage = 15f
+                    lifetime = 200f
+                    hitEffect = Fx.none
+                    shootEffect = Fx.none
+                    smokeEffect = Fx.none
+                    layer = Layer.bullet - 0.1f
+                    despawnEffect = BrainFx.bloodBulletHit
+                    filter = Texture.TextureFilter.nearest
+                    scale = { 2.3f + it.damage / 40f }
+                }
+                improvedPattern = HeartBeatShootPattern().apply {
+                    shots = 34
+                    diastole = 3.3f
+                    offset = bulletOffset + 5f
+                    systole = 0.175f
+                }
+                improvedBullet = normalBullet.copyAs<BBulletType>().apply {
+                    damage = 30f
+                    lifetime = 300f
+                    scale = { 2.5f + it.damage / 60f }
+                }
             }
         }
     }

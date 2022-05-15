@@ -1,5 +1,6 @@
 package net.liplum.holo
 
+import arc.Events
 import arc.func.Floatf
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
@@ -16,6 +17,7 @@ import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.Vars
+import mindustry.game.EventType.UnitCreateEvent
 import mindustry.gen.Building
 import mindustry.gen.Iconc
 import mindustry.graphics.Layer
@@ -53,6 +55,11 @@ open class HoloProjector(name: String) : Block(name) {
     @JvmField var powerUse = 3f
     @ClientOnly @JvmField var projectorShrink = 5f
     @ClientOnly @JvmField var projectorCenterRate = 3f
+    /**
+     * For vertices of plan
+     */
+    @ClientOnly
+    val vecs = arrayOf(Vec2(), Vec2(), Vec2(), Vec2())
 
     init {
         solid = true
@@ -161,6 +168,7 @@ open class HoloProjector(name: String) : Block(name) {
             get() = planOrder.plan
         @Serialized
         var progressTime = 0f
+        var commandPos: Vec2? = null
         val progress: Float
             get() {
                 val plan = curPlan
@@ -231,23 +239,23 @@ open class HoloProjector(name: String) : Block(name) {
 
         open fun projectUnit(unitType: HoloUnitType): Boolean {
             if (unitType.canCreateHoloUnitIn(team)) {
-                ServerOnly {
-                    val unit = unitType.create(team)
-                    if (unit is HoloUnit) {
-                        unit.set(x, y)
+                val unit = unitType.create(team)
+                if (unit is HoloUnit) {
+                    unit.set(x, y)
+                    ServerOnly {
                         unit.add()
-                        unit.setProjector(this)
                     }
+                    unit.setProjector(this)
+                    val commandPos = commandPos
+                    if(commandPos != null && unit.isCommandable){
+                        unit.command().commandPosition(commandPos)
+                    }
+                    Events.fire(UnitCreateEvent(unit, this))
                 }
                 return true
             }
             return false
         }
-        /**
-         * For vertices of plan
-         */
-        @ClientOnly
-        val vecs = arrayOf(Vec2(), Vec2(), Vec2(), Vec2())
         @ClientOnly
         var alpha = 0f
             set(value) {
@@ -381,6 +389,14 @@ open class HoloProjector(name: String) : Block(name) {
                 LAccess.progress -> progress.toDouble()
                 else -> super.sense(sensor)
             }
+        }
+
+        override fun getCommandPosition(): Vec2? {
+            return commandPos
+        }
+
+        override fun onCommand(target: Vec2) {
+            commandPos = target
         }
     }
 
