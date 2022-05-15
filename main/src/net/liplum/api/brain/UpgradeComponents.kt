@@ -119,14 +119,24 @@ interface IUpgradeComponent : ICyberEntity {
         if (canLinked(brain)) {
             this.brain = brain
             directionInfo = dire
+            onLinkedBrain()
             return true
         }
         return false
     }
 
+    fun onLinkedBrain() {
+    }
+
+    fun onUnlikedBrain() {
+    }
+
     fun unlinkBrain() {
-        brain = null
-        directionInfo = Direction2.Empty
+        if (brain != null) {
+            brain = null
+            directionInfo = Direction2.Empty
+            onUnlikedBrain()
+        }
     }
 
     fun clear() {

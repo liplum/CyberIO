@@ -2,7 +2,6 @@ package net.liplum.brains
 
 import arc.audio.Sound
 import arc.graphics.Color
-import arc.graphics.g2d.TextureRegion
 import arc.math.Mathf
 import arc.util.Time
 import mindustry.Vars
@@ -16,18 +15,22 @@ import mindustry.entities.bullet.BulletType
 import mindustry.entities.pattern.ShootPattern
 import mindustry.gen.*
 import mindustry.graphics.Drawf
+import mindustry.logic.LAccess
 import mindustry.logic.Ranged
 import mindustry.type.Liquid
 import mindustry.world.Block
 import mindustry.world.blocks.ControlBlock
 import mindustry.world.blocks.heat.HeatBlock
-import mindustry.world.draw.DrawMulti
-import mindustry.world.draw.DrawRegion
 import net.liplum.ClientOnly
 import net.liplum.R
 import net.liplum.Serialized
+import net.liplum.WhenNotPaused
 import net.liplum.api.brain.*
-import net.liplum.utils.MdtUnit
+import net.liplum.lib.Draw
+import net.liplum.lib.animations.anims.Anime
+import net.liplum.lib.animations.anims.linearFrames
+import net.liplum.lib.animations.anims.randomCurTime
+import net.liplum.utils.*
 
 class Heart(name: String) : Block(name), IComponentBlock {
     override val upgrades: MutableMap<UpgradeType, Upgrade> = HashMap()
@@ -51,12 +54,18 @@ class Heart(name: String) : Block(name), IComponentBlock {
     @JvmField var reloadTimeI = -0.2f
     @JvmField var range = 165f
     @JvmField var rangeI = 0.45f
+    @JvmField var maxHeartbeatSpeedUp = 1.5f
     // Turret
     @JvmField var soundPitchMin = 0.9f
     @JvmField var soundPitchMax = 1.1f
     @JvmField var shootEffect: Effect = Fx.none
     @JvmField var chargeSound: Sound = Sounds.none
     @ClientOnly @JvmField var bloodColor: Color = R.C.Blood
+    @ClientOnly lateinit var BaseTR: TR
+    @ClientOnly lateinit var HeartTR: TR
+    @ClientOnly lateinit var HeartBeatTRs: TRs
+    @ClientOnly @JvmField var HeartbeatDuration = 60f
+    @ClientOnly @JvmField var HeartbeatFrameNum = 20
 
     init {
         solid = true
@@ -67,17 +76,15 @@ class Heart(name: String) : Block(name), IComponentBlock {
     }
 
     override fun init() {
+        checkInit()
         super.init()
     }
 
-    var heartDrawer = DrawMulti(
-        DrawRegion("-base"),
-        DrawRegion("-heart"),
-    )
-
     override fun load() {
         super.load()
-        heartDrawer.load(this)
+        BaseTR = this.sub("base")
+        HeartTR = this.sub("heart")
+        HeartBeatTRs = this.sheet("beat", HeartbeatFrameNum)
     }
 
     override fun setStats() {
@@ -85,9 +92,9 @@ class Heart(name: String) : Block(name), IComponentBlock {
         this.addUpgradeComponentStats()
     }
 
-    override fun icons(): Array<TextureRegion> {
-        return heartDrawer.icons(this)
-    }
+    override fun icons() = arrayOf(
+        BaseTR, HeartTR
+    )
 
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)
@@ -137,9 +144,36 @@ class Heart(name: String) : Block(name), IComponentBlock {
         val realRange: Float
             get() = range * (1f + if (isLinkedBrain) rangeI else 0f)
         val sideHeat = FloatArray(4)
+        @ClientOnly
+        var heartbeatFactor = 1f
+        @ClientOnly
+        var lastHeartBeatTime = 0f
+        @ClientOnly
+        lateinit var heartbeatAnime: Anime
+        val heartbeatSpeedUp: Float
+            get() = if(isLinkedBrain) maxHeartbeatSpeedUp else 0f
+
+        init {
+            ClientOnly {
+                heartbeatAnime = Anime(
+                    HeartBeatTRs.linearFrames(HeartbeatDuration)
+                ).apply {
+                    isEnd = true
+                    onEnd = {
+                        if (lastHeartBeatTime < 10f) {
+                            isEnd = false
+                            index = 0
+                        }
+                    }
+                    randomCurTime()
+                }
+            }
+        }
 
         override fun updateTile() {
             reloadCounter += edelta()
+            logicControlTime -= Time.delta
+            lastHeartBeatTime += Time.delta
             if (hasEnoughBlood && reloadCounter >= realReloadTime) {
                 val nextBullet = retrieveNextBullet()
                 val shot = if (isControlled) {
@@ -153,17 +187,23 @@ class Heart(name: String) : Block(name), IComponentBlock {
                     shoot(nextBullet)
                     reloadCounter = 0f
                     consumeBlood()
+                    lastHeartBeatTime = 0f
                 }
             }
         }
 
         open fun findTarget(nextBullet: BulletType? = null): Teamc? {
-            val result = Units.bestTarget(
+            var result = Units.bestTarget(
                 team, x, y, realRange,
                 { !it.dead() },
                 { true },
                 UnitSorts.weakest
             )
+            if (result == null && nextBullet != null && nextBullet.heals()) {
+                result = Units.findAllyTile(team, x, y, range) {
+                    it.damaged() && it == this
+                }
+            }
             return result
         }
 
@@ -173,7 +213,13 @@ class Heart(name: String) : Block(name), IComponentBlock {
         }
 
         override fun draw() {
-            heartDrawer.draw(this)
+            WhenNotPaused {
+                heartbeatAnime.spend(
+                    (Time.delta + Mathf.random()) * heartbeatFactor + heartbeatSpeedUp
+                )
+            }
+            BaseTR.Draw(x, y)
+            heartbeatAnime.draw(x, y)
         }
         /**
          * Heart doesn't allow gas
@@ -237,6 +283,24 @@ class Heart(name: String) : Block(name), IComponentBlock {
             unit.tile(this)
             unit.team(team)
             return (unit as MdtUnit)
+        }
+
+        override fun control(type: LAccess, p1: Double, p2: Double, p3: Double, p4: Double) {
+            if (type == LAccess.shoot && !unit.isPlayer) {
+                logicControlTime = 60f
+                logicShoot = !p3.isZero
+            }
+            super.control(type, p1, p2, p3, p4)
+        }
+
+        override fun control(type: LAccess, p1: Any?, p2: Double, p3: Double, p4: Double) {
+            if (type == LAccess.shootp && !unit.isPlayer) {
+                if (p1 is Posc) {
+                    logicControlTime = 60f
+                    logicShoot = !p2.isZero
+                }
+            }
+            super.control(type, p1, p2, p3, p4)
         }
 
         override fun heat() = heat

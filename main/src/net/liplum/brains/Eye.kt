@@ -19,6 +19,7 @@ import net.liplum.api.brain.*
 import net.liplum.lib.Draw
 import net.liplum.lib.animations.anims.Anime
 import net.liplum.lib.animations.anims.genFramesBy
+import net.liplum.lib.animations.anims.randomCurTime
 import net.liplum.lib.ui.ammoStats
 import net.liplum.math.Polar
 import net.liplum.registries.CioSounds
@@ -34,15 +35,17 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
     @ClientOnly lateinit var EyelidTR: TR
     @ClientOnly lateinit var PupilTR: TR
     @ClientOnly lateinit var PupilOutsideTR: TR
-    @ClientOnly lateinit var HemorrhageTRs: Array<TR>
-    @ClientOnly lateinit var BlinkTRs: Array<TR>
+    @ClientOnly lateinit var HemorrhageTRs: TRs
+    @ClientOnly lateinit var BlinkTRs: TRs
     @ClientOnly @JvmField var BlinkDuration = 50f
     @ClientOnly @JvmField var BlinkFrameNum = 9
     @ClientOnly @JvmField var radiusSpeed = 0.1f
     @ClientOnly @JvmField var PupilMax = 4.3f
     @ClientOnly @JvmField var PupilMin = 1.2f
     @ClientOnly @JvmField var outOfCompactTime = 240f
+    @ClientOnly @JvmField var continuousShootCheckTime = 10f
     override val upgrades: MutableMap<UpgradeType, Upgrade> = HashMap()
+    @ClientOnly @JvmField var maxHemorrhageShotsReq = 5
 
     init {
         canOverdrive = false
@@ -104,13 +107,13 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
                         forward || isShooting || charging()
                     }
                     onEnd = {
-                        if (!isShooting && !charging()) {
+                        if (!isShooting && !charging() && !pupilIsApproachingMin) {
                             forward = !forward
                             isEnd = false
                         }
                     }
+                    randomCurTime()
                 }
-                blinkAnime.randomCurTime()
             }
         }
 
@@ -134,11 +137,21 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
         val isOutOfCombat: Boolean
             get() = lastInCombatTime >= outOfCompactTime
         val eyeColor: Color = R.C.RedAlert
+        @ClientOnly
         var blinkFactor = 1f
+        @ClientOnly
+        var pupilIsApproachingMin = false
+        @ClientOnly
+        var continuousShots = 0
+        fun checkContinuousShooting() =
+            lastInCombatTime < reload + continuousShootCheckTime + shoot.firstShotDelay
+
         override fun draw() {
             WhenNotPaused {
-                blinkAnime.spend((Time.delta + Mathf.random()) * blinkFactor)
+                blinkAnime.spend(((Mathf.random() * 1) + Time.delta) * blinkFactor)
                 lastInCombatTime += Time.delta
+                if (!checkContinuousShooting())
+                    continuousShots = 0
             }
             BaseTR.Draw(x, y)
             Draw.color()
@@ -152,8 +165,12 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
 
             if (consValid && (isShooting || lastInCombatTime < 40f || charging())) {
                 sight.approachR(PupilMax, radiusSpeed * 3f)
+                pupilIsApproachingMin = true
             } else {
                 sight.approachR(PupilMin, radiusSpeed)
+                if (sight.r - PupilMin <= radiusSpeed) {
+                    pupilIsApproachingMin = false
+                }
             }
             DebugOnly {
                 G.dashCircle(x, y, stareAtScreenRadius, alpha = 0.2f)
@@ -172,12 +189,8 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
                 }
             }
             val pupil = if (consValid && isShooting || sight.r > PupilMin * 1.5f) PupilOutsideTR else PupilTR
-            var pupilX = x + sight.x
-            var pupilY = y + sight.y
-            if (isLinkedBrain) {
-                pupilX += recoilOffset.x
-                pupilY += recoilOffset.y
-            }
+            val pupilX = x + sight.x + recoilOffset.x
+            val pupilY = y + sight.y + recoilOffset.y
             Draw.mixcol(eyeColor, heat)
             pupil.Draw(pupilX, pupilY, rotationDraw)
             Draw.reset()
@@ -187,13 +200,8 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
         }
 
         open fun drawHemorrhage() {
-            val index = when (timeScale) {
-                in 0f..1f -> 0
-                in 1.01f..2.499f -> 1
-                else -> 2
-            }
-            val hemorrhage = HemorrhageTRs[index]
-            Draw.alpha(heat * 1.2f)
+            val hemorrhage = HemorrhageTRs.progress(continuousShots.toFloat() / maxHemorrhageShotsReq)
+            Draw.alpha(heat)
             hemorrhage.Draw(x, y)
             Draw.color()
         }
@@ -201,7 +209,7 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
         override fun handleBullet(bullet: Bullet, offsetX: Float, offsetY: Float, angleOffset: Float) {
             super.handleBullet(bullet, offsetX, offsetY, angleOffset)
             if (isLinkedBrain)
-                improvedSounds.random().at(tile)
+                improvedSounds.random().at(tile,soundPitchMin)
             else
                 normalSounds.random().at(tile)
         }
@@ -210,6 +218,8 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
         override fun useAmmo(): BulletType {
             ClientOnly {
                 lastInCombatTime = 0f
+                if (checkContinuousShooting())
+                    continuousShots++
             }
             return if (isLinkedBrain) improvedBullet else normalBullet
         }

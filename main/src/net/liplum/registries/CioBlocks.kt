@@ -795,8 +795,6 @@ object CioBlocks {
             shoot.firstShotDelay = 60f
             shootEffect = BrainFx.eyeShoot
             smokeEffect = Fx.none
-//            chargeEffect = BrainFx.eyeCharge
-//            chargeBeginEffect = BrainFx.eyeChargeBegin
             addUpgrade(
                 Upgrade(UT.Damage, false, 0.05f),
                 Upgrade(UT.ReloadTime, true, -4.5f),
@@ -822,11 +820,12 @@ object CioBlocks {
             improvedSounds = CioSounds.laser
             improvedBullet = LaserBulletType(250f).apply {
                 colors = arrayOf(R.C.RedAlert.cpy().a(0.4f), R.C.RedAlert, R.C.RedAlertDark)
+                lightningColor = R.C.RedAlertDark
                 chargeEffect = MultiEffect(BrainFx.eyeCharge, BrainFx.eyeChargeBegin)
                 hitEffect = Fx.hitLancer
                 hitSize = 4f
                 lifetime = 16f
-                recoil = 1.5f
+                recoil = 4f
                 drawSize = 200f
                 shootCone = 3f
                 length = 173f
@@ -889,8 +888,8 @@ object CioBlocks {
                 )
                 size = 4
                 val bulletOffset = 20f
-                normalShake = 0.1f
-                improvedShake = 0.5f
+                normalShake = 2.8f
+                normalSound = CioSounds.heartbeat
                 normalPattern = HeartBeatShootPattern().apply {
                     shots = 22
                     offset = bulletOffset
@@ -907,6 +906,8 @@ object CioBlocks {
                     filter = Texture.TextureFilter.nearest
                     scale = { 2.3f + it.damage / 40f }
                 }
+                improvedShake = 4.8f
+                improvedSound = CioSounds.heartbeatFaster
                 improvedPattern = HeartBeatShootPattern().apply {
                     shots = 34
                     diastole = 3.3f

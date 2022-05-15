@@ -2,8 +2,8 @@ package net.liplum.lib.animations.anims
 
 import arc.graphics.Color
 import arc.math.Mathf
-import net.liplum.lib.ITimer
 import net.liplum.lib.Draw
+import net.liplum.lib.ITimer
 import net.liplum.lib.Reset
 import net.liplum.lib.SetColor
 import net.liplum.utils.TR
@@ -32,9 +32,6 @@ class Anime(
             field = value.coerceIn(0, frames.size - 1)
         }
     var curTime = 0f
-    fun randomCurTime() {
-        curTime = Mathf.random(curDuration)
-    }
 
     var isForward = { true }
     val curDuration: Float
@@ -57,7 +54,9 @@ class Anime(
     override fun spend(time: Float) {
         if (isEnd) {
             onEnd()
-            return
+            // If it still ends, just skip
+            if(isEnd)
+                return
         }
         if (isForward()) {
             curTime += time
@@ -104,6 +103,27 @@ class Anime(
         val curImage = frames[curIndex.coerceIn(0, frames.size - 1)].image
         howToRender.render(curImage)
     }
+}
+fun Anime.randomCurTime(): Anime {
+    curTime = Mathf.random(curDuration)
+    return this
+}
+fun Anime.loop(): Anime {
+    onEnd = {
+        isEnd = false
+        index = 0
+    }
+    return this
+}
+
+fun Anime.pingpong(): Anime {
+    var forward = true
+    isForward = { forward }
+    onEnd = {
+        forward = !forward
+        isEnd = false
+    }
+    return this
 }
 /**
  * Generate frames of a linear animation.

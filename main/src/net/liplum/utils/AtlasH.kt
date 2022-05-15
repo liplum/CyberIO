@@ -7,6 +7,8 @@ import mindustry.ctype.MappableContent
 import net.liplum.Meta
 
 typealias TR = TextureRegion
+typealias TRs = Array<TextureRegion>
+
 val EmptyTR = TR()
 /**
  * Gets the Texture Region of "sprites/{this}-{subName}"
