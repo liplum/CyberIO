@@ -6,8 +6,6 @@ uniform vec2 u_offset;
 varying vec2 v_texCoords;
 uniform sampler2D u_texture;
 
-// grabbed from https://stackoverflow.com/questions/4200224/random-noise-functions-for-glsl
-// A single iteration of Bob Jenkins' One-At-A-Time hashing algorithm.
 uint hash(uint x) {
     x += (x << 10u);
     x ^= (x >>  6u);
@@ -17,11 +15,8 @@ uint hash(uint x) {
     return x;
 }
 
-// Compound versions of the hashing algorithm I whipped together.
 uint hash(uvec3 v) { return hash(v.x ^ hash(v.y) ^ hash(v.z)); }
 
-// Construct a float with half-open range [0:1] using low 23 bits.
-// All zeroes yields 0.0, all ones yields the next smallest representable value below 1.0.
 float floatConstruct(uint m) {
     const uint ieeeMantissa = 0x007FFFFFu;// binary32 mantissa bitmask
     const uint ieeeOne      = 0x3F800000u;// 1.0 in IEEE binary32

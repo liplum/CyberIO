@@ -15,13 +15,13 @@
   '''
   [#e53935[]]Provides lots of cybernetic things!!![[]]
 
-  Current version is v3, while v4 is still in development.
-  Language Supports: English, Chinese(简体/正體中文), Japanese(日本語) and Russian(Русский).
+  Current version is v3.4, while v4 is still in development.
+  Language Supports: English, Chinese(简体/正體中文), Japanese(日本語), Russian(Русский) and Ukrainian (українська).
   To learn about the inter-mod compatibility and running Cyber IO on a server, please check the repository on GitHub by hitting the button below.
 
   GitHub: [#42a5f5[]]github.com/liplum/CyberIO[[]]
   '''
-  "version": 3,
+  "version": 3.4,
   "minGameVersion": 135,
   "dependencies": [],
   "hidden": false,
