@@ -185,6 +185,7 @@ object CioBlocks {
             health = 100
             consumePower(0.5f)
             replaceable = false
+            squareSprite = false
         }
     }
     @DependOn
