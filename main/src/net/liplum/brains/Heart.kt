@@ -40,6 +40,7 @@ import net.liplum.lib.ui.bars.AddBar
 import net.liplum.lib.ui.bars.appendDisplayLiquidsDynamic
 import net.liplum.lib.ui.bars.genAllLiquidBars
 import net.liplum.lib.ui.bars.removeLiquidInBar
+import net.liplum.render.DrawHeat
 import net.liplum.utils.*
 
 class Heart(name: String) : Block(name), IComponentBlock {
@@ -52,6 +53,9 @@ class Heart(name: String) : Block(name), IComponentBlock {
     @JvmField var blood: Blood = Blood.X
     @JvmField var downApproachSpeed = 0.00025f
     @JvmField var upApproachSpeed = 0.00001f
+    @JvmField var heatFactor = 5f
+    @JvmField var heatMax = 2.5f
+    @JvmField var bloodConsumePreTick = 0.1f
     // Improved by Heimdall
     @JvmField var bloodCapacity = 1000f
     @JvmField var bloodCapacityI = 0.5f
@@ -70,7 +74,7 @@ class Heart(name: String) : Block(name), IComponentBlock {
     @ClientOnly @JvmField var HeartbeatFrameNum = 20
     @ClientOnly lateinit var allLiquidBars: Array<(Building) -> Bar>
     // Timer
-    @JvmField var convertTimer = timers++
+    @JvmField var convertOrConsumeTimer = timers++
     @JvmField var TemperatureEFF2ASpeed: FUNC = {
         if (it >= 0f) it + 1
         else pow(4f, it)
@@ -85,12 +89,14 @@ class Heart(name: String) : Block(name), IComponentBlock {
         canOverdrive = false
     }
 
+    val heatTest = DrawHeat("-heat")
     override fun init() {
         checkInit()
         liquidCapacity = bloodCapacity * (1f + bloodCapacityI)
         consumePowerDynamic<HeartBuild> {
             it.realPowerUse
         }
+        heatMax = (1f - blood.temperature) * heatFactor
         super.init()
         allLiquidBars = genAllLiquidBars()
     }
@@ -100,6 +106,7 @@ class Heart(name: String) : Block(name), IComponentBlock {
         BaseTR = this.sub("base")
         HeartTR = this.sub("heart")
         HeartBeatTRs = this.sheet("beat", HeartbeatFrameNum)
+        heatTest.load(this)
     }
 
     override fun setStats() {
@@ -161,6 +168,11 @@ class Heart(name: String) : Block(name), IComponentBlock {
                 }
             )
         }
+        AddBar<HeartBuild>("heat",
+            { "bar.heat".bundle },
+            { Pal.power },
+            { heat / heatMax }
+        )
     }
 
     open inner class HeartBuild : Building(),
@@ -174,24 +186,24 @@ class Heart(name: String) : Block(name), IComponentBlock {
         //</editor-fold>
         //<editor-fold desc="Controllable">
         var unit = UnitTypes.block.create(team) as BlockUnitc
-
         override fun unit(): MdtUnit {
             //make sure stats are correct
             unit.tile(this)
             unit.team(team)
             return (unit as MdtUnit)
         }
-
         //</editor-fold>
         //<editor-fold desc="Heat Block">
         // TODO: Heat
-        var heat = 0f
+        val heat: Float
+            get() = ((temperature - blood.temperature) * heatFactor).coerceAtLeast(0f)
         //</editor-fold>
         //<editor-fold desc="Serialized">
         // Serialized
         @Serialized
         var temperature = blood.temperature
             set(value) {
+                // Prevent inputting more scorching liquid but can't handle its value
                 field = value.coerceIn(0f, 1f)
             }
         @Serialized
@@ -207,7 +219,6 @@ class Heart(name: String) : Block(name), IComponentBlock {
         val logicControlled: Boolean
             get() = logicControlTime > 0
         var logicShoot = false
-
         override fun control(type: LAccess, p1: Double, p2: Double, p3: Double, p4: Double) {
             if (type == LAccess.shoot && !unit.isPlayer) {
                 logicControlTime = 60f
@@ -263,7 +274,7 @@ class Heart(name: String) : Block(name), IComponentBlock {
         val curBulletType: BulletType
             get() = bulletType
         val curShooSound: Sound
-            get() = heartbeat.sounds[heartbeat.soundIndexer(temperatureEfficiency)]
+            get() = heartbeat.soundGetter(temperatureEfficiency)
         val shootPattern = object : ShootPattern() {
             val systoleMover = Mover {
                 if (timer.get(5, heartbeat.systoleTime)) {
@@ -315,7 +326,7 @@ class Heart(name: String) : Block(name), IComponentBlock {
         @ClientOnly
         var heartbeatFactor = 1f
         @ClientOnly
-        var lastHeartBeatTime = 0f
+        var lastHeartBeatTime = 10f
         @ClientOnly
         lateinit var heartbeatAnime: Anime
         @ClientOnly
@@ -349,8 +360,12 @@ class Heart(name: String) : Block(name), IComponentBlock {
                 temperature, targetTemperature,
                 temperatureChangeSpeed * delta()
             )
+            val canConvertOrConsume = timer(convertOrConsumeTimer, 1f)
+            if (canConvertOrConsume) {
+                consumeBloodAsEnergy()
+            }
             if (efficiency <= 0f) return
-            if (timer(convertTimer, 1f)) {
+            if (canConvertOrConsume) {
                 convertBlood()
                 bloodAmount = bloodAmount.coerceAtMost(realBloodCapacity)
             }
@@ -366,7 +381,7 @@ class Heart(name: String) : Block(name), IComponentBlock {
                 if (shot) {
                     shoot(nextBullet)
                     reloadCounter = 0f
-                    consumeBlood()
+                    consumeBloodAsBullet()
                     lastHeartBeatTime = 0f
                 }
             }
@@ -388,10 +403,11 @@ class Heart(name: String) : Block(name), IComponentBlock {
                     // Calculate enthalpy
                     val H = liquid.calcuEnthalpy(amount)
                     bloodAmount += amount
+                    val delta = H / (blood.heatCapacity + liquid.heatCapacity) / bloodAmount
                     if (liquid.temperature < temperature) {
-                        temperature -= H / blood.heatCapacity / bloodAmount
+                        temperature -= delta
                     } else {
-                        temperature += H / blood.heatCapacity / bloodAmount
+                        temperature += delta
                     }
                     liquids.remove(liquid, amount)
                     if (bloodAmount >= capacity) return
@@ -433,6 +449,7 @@ class Heart(name: String) : Block(name), IComponentBlock {
             }
             BaseTR.Draw(x, y)
             heartbeatAnime.draw(x, y)
+            heatTest.draw(this)
         }
         /**
          * Heart doesn't allow gas
@@ -452,8 +469,12 @@ class Heart(name: String) : Block(name), IComponentBlock {
             }
         }
 
-        open fun consumeBlood() {
+        open fun consumeBloodAsBullet() {
             bloodAmount -= realBloodCost
+        }
+
+        open fun consumeBloodAsEnergy() {
+            bloodAmount -= bloodConsumePreTick
         }
 
         open fun bullet(type: BulletType, xOffset: Float, yOffset: Float, angleOffset: Float, mover: Mover?) {
@@ -491,7 +512,7 @@ class Heart(name: String) : Block(name), IComponentBlock {
         }
         // Implement heat
         override fun heat() = heat
-        override fun heatFrac() = heat / 5f
+        override fun heatFrac() = heat / heatMax
         override fun range() = realRange
         override fun drawSelect() {
             Drawf.dashCircle(x, y, visualRange.value, bloodColor)

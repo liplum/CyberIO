@@ -2,10 +2,10 @@ package net.liplum.brains
 
 import arc.audio.Sound
 import arc.graphics.Color
+import mindustry.gen.Sounds
 import mindustry.type.Liquid
 import mindustry.world.meta.Attribute
 import net.liplum.R
-import net.liplum.utils.EmptySounds
 
 class Heartbeat {
     @JvmField var shake = FProp()
@@ -19,11 +19,7 @@ class Heartbeat {
     // 300 ticks -> 240 range
     @JvmField var bulletLifeTime = FProp()
     // Sound
-    /**
-     * Slower -> Faster
-     */
-    @JvmField var sounds: Array<Sound> = EmptySounds
-    @JvmField var soundIndexer: (Float) -> Int = { 0 }
+    @JvmField var soundGetter: (Float) -> Sound = { Sounds.none }
     // Systole&Diastole
     // normal: 3.5f ,improved: 3.3f
     @JvmField var diastole = FProp(Decrease)

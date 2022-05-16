@@ -895,7 +895,7 @@ object CioBlocks {
                     shake.config {
                         base = 1.5f
                         upRange = 4.8f - base
-                        downRange = 1.0f
+                        downRange = 0.9f
                     }
                     reloadTime.config {
                         // Decrease
@@ -944,15 +944,11 @@ object CioBlocks {
                         upRange = 300f - 200f
                         downRange = 50f
                     }
-                    sounds = arrayOf(
-                        CioSounds.heartbeat,
-                        CioSounds.heartbeatFaster,
-                    )
-                    soundIndexer = {
+                    soundGetter = {
                         when (it) {
-                            in Float.MIN_VALUE..0.1f -> 0
-                            in 0.1f..Float.MAX_VALUE -> 1
-                            else -> 0
+                            in Float.MIN_VALUE..0.1f -> CioSounds.heartbeat
+                            in 0.1f..Float.MAX_VALUE -> CioSounds.heartbeatFaster
+                            else -> CioSounds.heartbeat
                         }
                     }
                     offset = 20f // +5f when improved

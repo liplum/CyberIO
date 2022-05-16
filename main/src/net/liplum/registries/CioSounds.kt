@@ -7,14 +7,14 @@ import net.liplum.utils.LoadSound
 import net.liplum.utils.LoadSounds
 
 object CioSounds {
-    var tvStatic: Sound = Sounds.none
-    var jammerPreShoot: Sound = Sounds.none
-    var laserWeak: Array<Sound> = EmptySounds
-    var laser: Array<Sound> = EmptySounds
-    var laserStrong: Array<Sound> = EmptySounds
-    var connected: Sound = Sounds.none
-    var heartbeat: Sound = Sounds.none
-    var heartbeatFaster: Sound = Sounds.none
+    @JvmField var tvStatic: Sound = Sounds.none
+    @JvmField var jammerPreShoot: Sound = Sounds.none
+    @JvmField var laserWeak: Array<Sound> = EmptySounds
+    @JvmField var laser: Array<Sound> = EmptySounds
+    @JvmField var laserStrong: Array<Sound> = EmptySounds
+    @JvmField var connected: Sound = Sounds.none
+    @JvmField var heartbeat: Sound = Sounds.none
+    @JvmField var heartbeatFaster: Sound = Sounds.none
     @JvmStatic
     fun load() {
         tvStatic = "tv-static".LoadSound()
