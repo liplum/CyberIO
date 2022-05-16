@@ -36,11 +36,12 @@ import net.liplum.lib.animations.anims.linearFrames
 import net.liplum.lib.animations.anims.randomCurTime
 import net.liplum.lib.bundle
 import net.liplum.lib.mixin.Mover
+import net.liplum.lib.render.HeatMeta
+import net.liplum.lib.render.drawHeat
 import net.liplum.lib.ui.bars.AddBar
 import net.liplum.lib.ui.bars.appendDisplayLiquidsDynamic
 import net.liplum.lib.ui.bars.genAllLiquidBars
 import net.liplum.lib.ui.bars.removeLiquidInBar
-import net.liplum.render.DrawHeat
 import net.liplum.utils.*
 
 class Heart(name: String) : Block(name), IComponentBlock {
@@ -52,7 +53,7 @@ class Heart(name: String) : Block(name), IComponentBlock {
     // Blood
     @JvmField var blood: Blood = Blood.X
     @JvmField var downApproachSpeed = 0.00025f
-    @JvmField var upApproachSpeed = 0.00001f
+    @JvmField var upApproachSpeed = 0.0001f
     @JvmField var heatFactor = 5f
     @JvmField var heatMax = 2.5f
     @JvmField var bloodConsumePreTick = 0.1f
@@ -70,15 +71,17 @@ class Heart(name: String) : Block(name), IComponentBlock {
     @ClientOnly lateinit var BaseTR: TR
     @ClientOnly lateinit var HeartTR: TR
     @ClientOnly lateinit var HeartBeatTRs: TRs
+    @ClientOnly lateinit var HeatTRs: TRs
     @ClientOnly @JvmField var HeartbeatDuration = 60f
     @ClientOnly @JvmField var HeartbeatFrameNum = 20
     @ClientOnly lateinit var allLiquidBars: Array<(Building) -> Bar>
-    // Timer
-    @JvmField var convertOrConsumeTimer = timers++
+    @ClientOnly @JvmField val heatMeta = HeatMeta()
     @JvmField var TemperatureEFF2ASpeed: FUNC = {
         if (it >= 0f) it + 1
         else pow(4f, it)
     }
+    // Timer
+    @JvmField var convertOrConsumeTimer = timers++
 
     init {
         solid = true
@@ -89,7 +92,6 @@ class Heart(name: String) : Block(name), IComponentBlock {
         canOverdrive = false
     }
 
-    val heatTest = DrawHeat("-heat")
     override fun init() {
         checkInit()
         liquidCapacity = bloodCapacity * (1f + bloodCapacityI)
@@ -106,7 +108,7 @@ class Heart(name: String) : Block(name), IComponentBlock {
         BaseTR = this.sub("base")
         HeartTR = this.sub("heart")
         HeartBeatTRs = this.sheet("beat", HeartbeatFrameNum)
-        heatTest.load(this)
+        HeatTRs = this.sheet("heat", HeartbeatFrameNum)
     }
 
     override fun setStats() {
@@ -183,6 +185,7 @@ class Heart(name: String) : Block(name), IComponentBlock {
         override var brain: IBrain? = null
         override val upgrades: Map<UpgradeType, Upgrade>
             get() = this@Heart.upgrades
+        override var heatShared = 0f
         //</editor-fold>
         //<editor-fold desc="Controllable">
         var unit = UnitTypes.block.create(team) as BlockUnitc
@@ -364,6 +367,11 @@ class Heart(name: String) : Block(name), IComponentBlock {
             if (canConvertOrConsume) {
                 consumeBloodAsEnergy()
             }
+            if (isLinkedBrain) {
+                onOtherParts {
+
+                }
+            }
             if (efficiency <= 0f) return
             if (canConvertOrConsume) {
                 convertBlood()
@@ -449,7 +457,7 @@ class Heart(name: String) : Block(name), IComponentBlock {
             }
             BaseTR.Draw(x, y)
             heartbeatAnime.draw(x, y)
-            heatTest.draw(this)
+            heatMeta.drawHeat(this, HeatTRs[heartbeatAnime.index])
         }
         /**
          * Heart doesn't allow gas
@@ -467,6 +475,7 @@ class Heart(name: String) : Block(name), IComponentBlock {
                 bullet(type, xOffset, yOffset, angle, mover)
                 totalShots++
             }
+            curShooSound.at(x, y, Mathf.random(soundPitchMin, soundPitchMax))
         }
 
         open fun consumeBloodAsBullet() {
@@ -488,7 +497,6 @@ class Heart(name: String) : Block(name), IComponentBlock {
                     this, team, bulletX, bulletY, shootAngle, -1f, 1f, 1f, null, mover, x, y
                 ), xOffset, yOffset, shootAngle
             )
-            curShooSound.at(bulletX, bulletY, Mathf.random(soundPitchMin, soundPitchMax))
 
             if (realShake > 0) {
                 Effect.shake(realShake, realShake, this)

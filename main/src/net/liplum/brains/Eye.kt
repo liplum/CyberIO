@@ -20,6 +20,8 @@ import net.liplum.lib.Draw
 import net.liplum.lib.animations.anims.Anime
 import net.liplum.lib.animations.anims.genFramesBy
 import net.liplum.lib.animations.anims.randomCurTime
+import net.liplum.lib.render.HeatMeta
+import net.liplum.lib.render.drawHeat
 import net.liplum.lib.ui.ammoStats
 import net.liplum.math.Polar
 import net.liplum.registries.CioSounds
@@ -37,6 +39,8 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
     @ClientOnly lateinit var PupilOutsideTR: TR
     @ClientOnly lateinit var HemorrhageTRs: TRs
     @ClientOnly lateinit var BlinkTRs: TRs
+    @ClientOnly lateinit var HeartTR: TR
+    @JvmField @ClientOnly val heatMeta = HeatMeta()
     @ClientOnly @JvmField var BlinkDuration = 50f
     @ClientOnly @JvmField var BlinkFrameNum = 9
     @ClientOnly @JvmField var radiusSpeed = 0.1f
@@ -67,6 +71,7 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
         PupilTR = this.sub("pupil")
         PupilOutsideTR = this.sub("pupil-outside")
         HemorrhageTRs = this.sheet("hemorrhage", 3)
+        HeartTR = this.inMod("heimdall-heat-x$size")
     }
 
     override fun icons() = arrayOf(
@@ -94,6 +99,7 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
         override var brain: IBrain? = null
         override val upgrades: Map<UpgradeType, Upgrade>
             get() = this@Eye.upgrades
+        override var heatShared = 0f
         //</editor-fold>
         @ClientOnly
         lateinit var blinkAnime: Anime
@@ -208,6 +214,7 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
             drawHemorrhage()
             blinkAnime.draw(x, y)
             blinkFactor = 1f
+            heatMeta.drawHeat(this, HeartTR, heatShared)
         }
 
         open fun drawHemorrhage() {

@@ -146,6 +146,10 @@ interface IHeimdallEntity : ICyberEntity {
     val scale: SpeedScale
     val speedScale: Float
         get() = scale.value
+    /**
+     * It's belongs to [0,1]
+     */
+    var heatShared: Float
 }
 
 interface IUpgradeComponent : IHeimdallEntity {
@@ -183,6 +187,34 @@ interface IUpgradeComponent : IHeimdallEntity {
 
     fun clear() {
         unlinkBrain()
+    }
+}
+/**
+ * Iterate other linked parts and run a closure on them.
+ * Brain first.
+ * If this doesn't link with a brain, nothing will happen
+ */
+inline fun IUpgradeComponent.onOtherParts(func: IHeimdallEntity.() -> Unit) {
+    val brain = brain
+    if (brain != null) {
+        brain.func()
+        for (component in brain) {
+            if(component != this)
+                component.func()
+        }
+    }
+}
+/**
+ * Iterate other linked upgrade components and run a closure on them.
+ * If this doesn't link with a brain, nothing will happen
+ */
+inline fun IUpgradeComponent.onOtherComponents(func: IUpgradeComponent.() -> Unit) {
+    val brain = brain
+    if (brain != null) {
+        for (component in brain) {
+            if(component != this)
+                component.func()
+        }
     }
 }
 
@@ -391,7 +423,9 @@ interface IBrain : IHeimdallEntity, Iterable<IUpgradeComponent> {
         }
         return Direction2(res)
     }
-
+    /**
+     * Doesn't guarantee the order.
+     */
     override fun iterator() = components.iterator()
 
     companion object {

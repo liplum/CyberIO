@@ -35,6 +35,8 @@ import net.liplum.lib.animations.anims.linearFrames
 import net.liplum.lib.delegates.Delegate
 import net.liplum.lib.entity.Radiation
 import net.liplum.lib.entity.RadiationQueue
+import net.liplum.lib.render.HeatMeta
+import net.liplum.lib.render.drawHeat
 import net.liplum.lib.ui.bars.AddBar
 import net.liplum.utils.*
 
@@ -57,6 +59,8 @@ open class Heimdall(name: String) : Block(name) {
     @JvmField var forceFieldRestoreTime = 200f
     @JvmField var powerUse = 2f
     @ClientOnly lateinit var BuckleTRs: Array<TR>
+    @ClientOnly lateinit var HeartTR: TR
+    @JvmField @ClientOnly val heatMeta = HeatMeta()
     @ClientOnly @JvmField var BuckleDuration = 20f
     @ClientOnly @JvmField var BuckleFrameNum = 5
     @JvmField var connectedSound: Sound = Sounds.none
@@ -99,6 +103,7 @@ open class Heimdall(name: String) : Block(name) {
     override fun load() {
         super.load()
         BuckleTRs = this.sheet("buckle", BuckleFrameNum)
+        HeartTR = this.inMod("heimdall-heat-x$size")
     }
 
     fun addFormationPatterns(vararg patterns: IFormationPattern) {
@@ -156,6 +161,7 @@ open class Heimdall(name: String) : Block(name) {
         override val sides: Array<Side2> = Array(4) {
             Side2(this)
         }
+        override var heatShared = 0f
         //<editor-fold desc="Properties">
         var realRange: Float = range
         var realWaveSpeed: Float = waveSpeed
@@ -222,7 +228,6 @@ open class Heimdall(name: String) : Block(name) {
         //</editor-fold>
         @Serialized
         var reloadCounter = 0f
-
         @Serialized
         var lastShieldDamageTime: Float = 0f
             set(value) {
@@ -251,9 +256,11 @@ open class Heimdall(name: String) : Block(name) {
                 linkAnime = Anime(BuckleTRs.linearFrames(BuckleDuration))
             }
         }
+
         override fun delta(): Float {
             return this.timeScale * Time.delta * speedScale
         }
+
         override fun updateTile() {
             // Brain waves
             reloadCounter += edelta()
@@ -459,6 +466,7 @@ open class Heimdall(name: String) : Block(name) {
                 }
             }
             Draw.reset()
+            heatMeta.drawHeat(this, HeartTR, heatShared)
             formationEffects.draw(this)
         }
 

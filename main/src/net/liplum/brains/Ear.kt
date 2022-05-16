@@ -29,6 +29,8 @@ import net.liplum.Serialized
 import net.liplum.api.brain.*
 import net.liplum.lib.Draw
 import net.liplum.lib.DrawSize
+import net.liplum.lib.render.HeatMeta
+import net.liplum.lib.render.drawHeat
 import net.liplum.utils.*
 
 open class Ear(name: String) : Block(name), IComponentBlock {
@@ -52,6 +54,8 @@ open class Ear(name: String) : Block(name), IComponentBlock {
     @JvmField var bounce = 1f
     @ClientOnly lateinit var BaseTR: TR
     @ClientOnly lateinit var EarTR: TR
+    @ClientOnly lateinit var HeartTR: TR
+    @JvmField @ClientOnly val heatMeta = HeatMeta()
     @ClientOnly @JvmField var scaleTime = 30f
     @ClientOnly @JvmField var maxScale = 0.3f
     @ClientOnly @JvmField var sonicWaveColor: Color = R.C.SonicWave
@@ -77,6 +81,7 @@ open class Ear(name: String) : Block(name), IComponentBlock {
     override fun load() {
         super.load()
         BaseTR = this.sub("base")
+        HeartTR = this.inMod("heimdall-heat-x$size")
         EarTR = region
     }
 
@@ -107,6 +112,7 @@ open class Ear(name: String) : Block(name), IComponentBlock {
         override var brain: IBrain? = null
         override val upgrades: Map<UpgradeType, Upgrade>
             get() = this@Ear.upgrades
+        override var heatShared = 0f
         // </editor-fold>
         // <editor-fold desc="Controllable">
         var unit = UnitTypes.block.create(team) as BlockUnitc
@@ -203,6 +209,7 @@ open class Ear(name: String) : Block(name), IComponentBlock {
                 Draw.alpha((1f - alpha) + 0.4f)
                 Lines.circle(wave.x, wave.y, wave.range)
             }
+            heatMeta.drawHeat(this, HeartTR, heatShared)
         }
 
         override fun drawSelect() {
