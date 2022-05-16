@@ -152,9 +152,22 @@ open class Heimdall(name: String) : Block(name) {
 
     open inner class HeimdallBuild : Building(),
         ControlBlock, IExecutioner, IBrain, Ranged {
+        override val scale: SpeedScale = SpeedScale()
         override val sides: Array<Side2> = Array(4) {
             Side2(this)
         }
+        //<editor-fold desc="Properties">
+        var realRange: Float = range
+        var realWaveSpeed: Float = waveSpeed
+        var realMaxBrainWaveNum: Int = maxBrainWaveNum
+        var realReloadTime: Float = reloadTime
+        var realDamage: Float = damage
+        var realWaveWidth: Float = waveWidth
+        var realForceFieldRegen: Float = forceFieldRegen
+        var realForceFieldMax: Float = forceFieldMax
+        var realForceFieldRadius: Float = forceFieldRadius
+        var realForceFieldRestoreTime: Float = forceFieldRestoreTime
+        var realPowerUse: Float = powerUse
         val properties: Map<UpgradeType, Prop> = mapOf(
             UT.Damage to Prop(damage, ::realDamage::get, ::realDamage::set),
             UT.Range to Prop(range, ::realRange::get, ::realRange::set),
@@ -172,28 +185,44 @@ open class Heimdall(name: String) : Block(name) {
                 setter = { realMaxBrainWaveNum = it.toInt() }
             )
         )
-
+        //</editor-fold>
         override fun range(): Float = realRange
         override val onComponentChanged: Delegate = Delegate()
         override var components: MutableSet<IUpgradeComponent> = HashSet()
         val brainWaves = RadiationQueue { realMaxBrainWaveNum }
+        var unit = UnitTypes.block.create(team) as BlockUnitc
+        //<editor-fold desc="Logic">
         var logicControlTime: Float = -1f
         val logicControlled: Boolean
             get() = logicControlTime > 0
-        var unit = UnitTypes.block.create(team) as BlockUnitc
+
+        override fun sense(sensor: LAccess): Double {
+            return when (sensor) {
+                LAccess.shooting -> (reloadCounter < realReloadTime).toDouble()
+                LAccess.progress -> (reloadCounter / realReloadTime).toDouble()
+                else -> super.sense(sensor)
+            }
+        }
+
+        override fun control(type: LAccess, p1: Double, p2: Double, p3: Double, p4: Double) {
+            if (type == LAccess.shoot && !unit.isPlayer && !p3.isZero) {
+                logicControlTime = 60f
+            }
+            super.control(type, p1, p2, p3, p4)
+        }
+
+        override fun control(type: LAccess, p1: Any?, p2: Double, p3: Double, p4: Double) {
+            if (type == LAccess.shootp && !unit.isPlayer && !p2.isZero) {
+                if (p1 is Posc) {
+                    logicControlTime = 60f
+                }
+            }
+            super.control(type, p1, p2, p3, p4)
+        }
+        //</editor-fold>
         @Serialized
         var reloadCounter = 0f
-        var realRange: Float = range
-        var realWaveSpeed: Float = waveSpeed
-        var realMaxBrainWaveNum: Int = maxBrainWaveNum
-        var realReloadTime: Float = reloadTime
-        var realDamage: Float = damage
-        var realWaveWidth: Float = waveWidth
-        var realForceFieldRegen: Float = forceFieldRegen
-        var realForceFieldMax: Float = forceFieldMax
-        var realForceFieldRadius: Float = forceFieldRadius
-        var realForceFieldRestoreTime: Float = forceFieldRestoreTime
-        var realPowerUse: Float = powerUse
+
         @Serialized
         var lastShieldDamageTime: Float = 0f
             set(value) {
@@ -222,12 +251,14 @@ open class Heimdall(name: String) : Block(name) {
                 linkAnime = Anime(BuckleTRs.linearFrames(BuckleDuration))
             }
         }
-
+        override fun delta(): Float {
+            return this.timeScale * Time.delta * speedScale
+        }
         override fun updateTile() {
             // Brain waves
             reloadCounter += edelta()
             brainWaves.forEach {
-                it.range += waveSpeed * delta()
+                it.range += waveSpeed * Time.delta
             }
             brainWaves.pollWhen {
                 it.range >= realRange
@@ -286,7 +317,7 @@ open class Heimdall(name: String) : Block(name) {
                 )
             } else {
                 shieldAmount -= realForceFieldRegen * 2f
-                curFieldRadius -= 2f * Time.delta
+                curFieldRadius -= 2f * delta()
             }
             if (shieldAmount > 0f) {
                 Groups.bullet.intersect(
@@ -471,22 +502,6 @@ open class Heimdall(name: String) : Block(name) {
             write.f(shieldAmount)
             write.f(lastShieldDamageTime)
             write.f(curFieldRadius)
-        }
-
-        override fun control(type: LAccess, p1: Double, p2: Double, p3: Double, p4: Double) {
-            if (type == LAccess.shoot && !unit.isPlayer && !p3.isZero) {
-                logicControlTime = 60f
-            }
-            super.control(type, p1, p2, p3, p4)
-        }
-
-        override fun control(type: LAccess, p1: Any?, p2: Double, p3: Double, p4: Double) {
-            if (type == LAccess.shootp && !unit.isPlayer && !p2.isZero) {
-                if (p1 is Posc) {
-                    logicControlTime = 60f
-                }
-            }
-            super.control(type, p1, p2, p3, p4)
         }
 
         protected val deltaUpgradePropMap = HashMap<UpgradeType, UpgradeEntry>(properties.size + 1)

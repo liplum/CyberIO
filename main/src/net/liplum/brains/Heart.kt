@@ -3,6 +3,7 @@ package net.liplum.brains
 import arc.audio.Sound
 import arc.graphics.Color
 import arc.math.Mathf
+import arc.math.Mathf.pow
 import arc.scene.ui.layout.Table
 import arc.util.Time
 import arc.util.Tmp
@@ -29,6 +30,7 @@ import net.liplum.*
 import net.liplum.CioMod.Companion.DebugMode
 import net.liplum.api.brain.*
 import net.liplum.lib.Draw
+import net.liplum.lib.Smooth
 import net.liplum.lib.animations.anims.Anime
 import net.liplum.lib.animations.anims.linearFrames
 import net.liplum.lib.animations.anims.randomCurTime
@@ -69,6 +71,10 @@ class Heart(name: String) : Block(name), IComponentBlock {
     @ClientOnly lateinit var allLiquidBars: Array<(Building) -> Bar>
     // Timer
     @JvmField var convertTimer = timers++
+    @JvmField var TemperatureEFF2ASpeed: FUNC = {
+        if (it >= 0f) it + 1
+        else pow(4f, it)
+    }
 
     init {
         solid = true
@@ -139,11 +145,28 @@ class Heart(name: String) : Block(name), IComponentBlock {
         }, {
             temperature / 1f
         })
+        DebugOnly {
+            AddBar<HeartBuild>("reload",
+                { "Reload: ${reloadCounter.toInt()}/ ${realReloadTime.toInt()}" }, {
+                    Pal.power
+                }, {
+                    reloadCounter / realReloadTime
+                }
+            )
+            AddBar<HeartBuild>("speed",
+                { "Speed: ${TemperatureEFF2ASpeed(temperatureEfficiency).format(2)}" }, {
+                    Pal.power
+                }, {
+                    TemperatureEFF2ASpeed(temperatureEfficiency) / 2f
+                }
+            )
+        }
     }
 
     open inner class HeartBuild : Building(),
         IUpgradeComponent, ControlBlock, HeatBlock, Ranged {
         //<editor-fold desc="Heimdall">
+        override val scale: SpeedScale = SpeedScale()
         override var directionInfo: Direction2 = Direction2()
         override var brain: IBrain? = null
         override val upgrades: Map<UpgradeType, Upgrade>
@@ -151,8 +174,17 @@ class Heart(name: String) : Block(name), IComponentBlock {
         //</editor-fold>
         //<editor-fold desc="Controllable">
         var unit = UnitTypes.block.create(team) as BlockUnitc
+
+        override fun unit(): MdtUnit {
+            //make sure stats are correct
+            unit.tile(this)
+            unit.team(team)
+            return (unit as MdtUnit)
+        }
+
         //</editor-fold>
         //<editor-fold desc="Heat Block">
+        // TODO: Heat
         var heat = 0f
         //</editor-fold>
         //<editor-fold desc="Serialized">
@@ -175,6 +207,35 @@ class Heart(name: String) : Block(name), IComponentBlock {
         val logicControlled: Boolean
             get() = logicControlTime > 0
         var logicShoot = false
+
+        override fun control(type: LAccess, p1: Double, p2: Double, p3: Double, p4: Double) {
+            if (type == LAccess.shoot && !unit.isPlayer) {
+                logicControlTime = 60f
+                logicShoot = !p3.isZero
+            }
+            super.control(type, p1, p2, p3, p4)
+        }
+
+        override fun control(type: LAccess, p1: Any?, p2: Double, p3: Double, p4: Double) {
+            if (type == LAccess.shootp && !unit.isPlayer) {
+                if (p1 is Posc) {
+                    logicControlTime = 60f
+                    logicShoot = !p2.isZero
+                }
+            }
+            super.control(type, p1, p2, p3, p4)
+        }
+
+        override fun sense(sensor: LAccess): Double {
+            return when (sensor) {
+                LAccess.ammo -> (bloodAmount).toDouble()
+                LAccess.ammoCapacity -> (realBloodCapacity).toDouble()
+                LAccess.shooting -> (reloadCounter < realReloadTime).toDouble()
+                LAccess.progress -> (reloadCounter / realReloadTime).toDouble()
+                LAccess.heat -> heat().toDouble()
+                else -> super.sense(sensor)
+            }
+        }
         //</editor-fold>
         //<editor-fold desc="Properties">
         val realReloadTime: Float
@@ -257,6 +318,10 @@ class Heart(name: String) : Block(name), IComponentBlock {
         var lastHeartBeatTime = 0f
         @ClientOnly
         lateinit var heartbeatAnime: Anime
+        @ClientOnly
+        var visualRange = Smooth(heartbeat.range.base).target {
+            heartbeat.range.progress(temperatureEfficiency)
+        }.speed(0.5f)
         //</editor-fold>
         init {
             ClientOnly {
@@ -276,16 +341,18 @@ class Heart(name: String) : Block(name), IComponentBlock {
         }
 
         override fun updateTile() {
+            scale.update()
             reloadCounter += edelta()
             logicControlTime -= Time.delta
             lastHeartBeatTime += Time.delta
             temperature = Mathf.approach(
                 temperature, targetTemperature,
-                temperatureChangeSpeed * Time.delta
+                temperatureChangeSpeed * delta()
             )
             if (efficiency <= 0f) return
             if (timer(convertTimer, 1f)) {
                 convertBlood()
+                bloodAmount = bloodAmount.coerceAtMost(realBloodCapacity)
             }
             if (hasEnoughBlood && reloadCounter >= realReloadTime) {
                 val nextBullet = retrieveNextBullet()
@@ -313,7 +380,7 @@ class Heart(name: String) : Block(name), IComponentBlock {
         open fun convertBlood() {
             val capacity = realBloodCapacity
             if (bloodAmount >= capacity) return
-            val speed = realBloodConvertSpeed * efficiency
+            val speed = realBloodConvertSpeed * efficiency * scale.value
             for (liquid in Vars.content.liquids()) {
                 var amount = liquids[liquid]
                 if (amount > 0f) {
@@ -352,12 +419,17 @@ class Heart(name: String) : Block(name), IComponentBlock {
             return curBulletType
         }
 
+        override fun delta(): Float {
+            return this.timeScale * Time.delta * speedScale
+        }
+
         override fun draw() {
             WhenNotPaused {
-                val speedUp = temperatureEfficiency + 1f
+                val speed = TemperatureEFF2ASpeed(temperatureEfficiency + 1f)
                 heartbeatAnime.spend(
-                    (Time.delta * speedUp) * heartbeatFactor
+                    (speed * delta()) * heartbeatFactor
                 )
+                visualRange.update(delta())
             }
             BaseTR.Draw(x, y)
             heartbeatAnime.draw(x, y)
@@ -409,32 +481,8 @@ class Heart(name: String) : Block(name), IComponentBlock {
             }
         }
 
-        override fun unit(): MdtUnit {
-            //make sure stats are correct
-            unit.tile(this)
-            unit.team(team)
-            return (unit as MdtUnit)
-        }
-
-        override fun control(type: LAccess, p1: Double, p2: Double, p3: Double, p4: Double) {
-            if (type == LAccess.shoot && !unit.isPlayer) {
-                logicControlTime = 60f
-                logicShoot = !p3.isZero
-            }
-            super.control(type, p1, p2, p3, p4)
-        }
-
-        override fun control(type: LAccess, p1: Any?, p2: Double, p3: Double, p4: Double) {
-            if (type == LAccess.shootp && !unit.isPlayer) {
-                if (p1 is Posc) {
-                    logicControlTime = 60f
-                    logicShoot = !p2.isZero
-                }
-            }
-            super.control(type, p1, p2, p3, p4)
-        }
-
         override fun displayBars(table: Table) {
+            super.displayBars(table)
             this.appendDisplayLiquidsDynamic(
                 table, allLiquidBars
             ) {
@@ -446,7 +494,7 @@ class Heart(name: String) : Block(name), IComponentBlock {
         override fun heatFrac() = heat / 5f
         override fun range() = realRange
         override fun drawSelect() {
-            Drawf.dashCircle(x, y, realRange, bloodColor)
+            Drawf.dashCircle(x, y, visualRange.value, bloodColor)
         }
     }
 }

@@ -43,9 +43,12 @@ open class Hand(name: String) : Block(name), IComponentBlock {
 
     open inner class HandBuild : Building(),
         IUpgradeComponent, ControlBlock {
+        //<editor-fold desc="Heimdall">
+        override val scale: SpeedScale = SpeedScale()
         override var directionInfo: Direction2 = Direction2.Empty
         override var brain: IBrain? = null
         override val upgrades: Map<UpgradeType, Upgrade> = this@Hand.upgrades
+        //</editor-fold>
         var unit = UnitTypes.block.create(team) as BlockUnitc
         val forearm: Bone
         val skeleton = Skeleton().apply {
@@ -74,8 +77,11 @@ open class Hand(name: String) : Block(name), IComponentBlock {
                 })
             }
         }
-
+        override fun delta(): Float {
+            return this.timeScale * Time.delta * speedScale
+        }
         override fun updateTile() {
+            scale.update()
             skeleton.findFirstByName("UpperArm")?.apply {
                 applyForce(Tmp.v1.set(0f, -0.001f))
             }

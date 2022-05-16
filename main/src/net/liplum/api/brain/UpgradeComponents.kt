@@ -1,6 +1,7 @@
 package net.liplum.api.brain
 
 import arc.util.Log
+import arc.util.Time
 import mindustry.Vars
 import mindustry.gen.Building
 import mindustry.world.Block
@@ -14,6 +15,7 @@ import net.liplum.lib.delegates.Delegate
 import net.liplum.lib.percent
 import net.liplum.lib.value
 import net.liplum.utils.*
+import kotlin.math.absoluteValue
 
 typealias UT = UpgradeType
 
@@ -106,7 +108,47 @@ class UpgradeI18n(
 
 data class Upgrade(val type: UpgradeType, val isDelta: Boolean, val value: Float)
 data class UpgradeEntry(var value: Float = 0f)
-interface IUpgradeComponent : ICyberEntity {
+class SpeedScale {
+    var scale: Float = 1f
+    var duration: Float = 0f
+    fun reset() {
+        scale = 1f
+        duration = 0f
+    }
+
+    val value: Float
+        get() = if (duration <= 0f) 1f else scale
+
+    fun update(delta: Float = Time.delta) {
+        duration -= delta
+    }
+
+    fun applySpeedUp(scale: Float, duration: Float = 60f) {
+        this.scale = scale.coerceAtLeast(1f)
+        this.duration = duration.absoluteValue
+    }
+
+    fun applySlowDown(scale: Float, duration: Float = 60f) {
+        this.scale = scale.coerceIn(0f, 1f)
+        this.duration = duration.absoluteValue
+    }
+
+    operator fun plusAssign(scale: Float) {
+        applySpeedUp(scale)
+    }
+
+    operator fun minusAssign(scale: Float) {
+        applySlowDown(1f - scale)
+    }
+}
+
+interface IHeimdallEntity : ICyberEntity {
+    val scale: SpeedScale
+    val speedScale: Float
+        get() = scale.value
+}
+
+interface IUpgradeComponent : IHeimdallEntity {
     var directionInfo: Direction2
     var brain: IBrain?
     val isLinkedBrain: Boolean
@@ -266,7 +308,7 @@ internal val Array<Side2>.left: Side2
 internal val Array<Side2>.bottom: Side2
     get() = this[3]
 
-interface IBrain : ICyberEntity, Iterable<IUpgradeComponent> {
+interface IBrain : IHeimdallEntity, Iterable<IUpgradeComponent> {
     /**
      * 4 sides of this brain block.
      * - 0 is [right]

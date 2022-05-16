@@ -69,9 +69,11 @@ class FProp(
      */
     fun progress(p: Float): Float {
         val delta = if (isIncrease) {
-            if (p > 0f) p * upRange else -p * downRange
+            //if (p > 0f) p * upRange else -p.absoluteValue * downRange
+            if (p > 0f) p * upRange else p * downRange
         } else {
-            if (p > 0f) -p * upRange else p * downRange
+            //if (p > 0f) -p * downRange else p.absoluteValue * upRange
+            if (p > 0f) -p * downRange else -p * upRange
         }
         return (base + delta).coerceAtLeast(0f)
     }
@@ -104,9 +106,11 @@ class IntProp(
      */
     fun progress(p: Float): Int {
         val delta = if (isIncrease) {
-            if (p > 0f) p * upRange else -p * downRange
+            //if (p > 0f) p * upRange else -p.absoluteValue * downRange
+            if (p > 0f) p * upRange else p * downRange
         } else {
-            if (p > 0f) -p * upRange else p * downRange
+            //if (p > 0f) -p * downRange else p.absoluteValue * upRange
+            if (p > 0f) -p * downRange else -p * upRange
         }
         return (base + delta).coerceAtLeast(0f).toInt()
     }
@@ -125,7 +129,8 @@ class Blood {
      */
     var heatCapacity = 0.3007f
     /**
-     * Blood's boil point is a bit less than water because of salt
+     * Blood's boil point is a bit less than water because of salt.
+     * Water's 0.5f --> 100 C
      */
     var boilPoint = 0.499f
     var flammability = 0f

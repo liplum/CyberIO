@@ -259,6 +259,7 @@ open class StreamServer(name: String) : StreamHost(name) {
         }
 
         override fun displayBars(table: Table) {
+            super.displayBars(table)
             this.appendDisplayLiquidsDynamic(
                 table, allLiquidBars
             ) {

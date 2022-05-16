@@ -66,6 +66,7 @@ inline fun <reified T> Array<T>.sortManually(vararg indices: Int): Array<T> {
 
 fun Boolean.toInt(): Int = if (this) 1 else 0
 fun Boolean.toFloat(): Float = if (this) 1f else 0f
+fun Boolean.toDouble(): Double = if (this) 1.0 else 0.0
 /**
  * Roll an element from a collection.
  * @return the result that doesn't equal to [exception].

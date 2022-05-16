@@ -88,13 +88,15 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
     }
 
     open inner class EyeBuild : PowerTurretBuild(), IUpgradeComponent {
+        //<editor-fold desc="Heimdall">
+        override val scale: SpeedScale = SpeedScale()
         override var directionInfo: Direction2 = Direction2.Empty
         override var brain: IBrain? = null
-        @ClientOnly
-        lateinit var blinkAnime: Anime
         override val upgrades: Map<UpgradeType, Upgrade>
             get() = this@Eye.upgrades
-
+        //</editor-fold>
+        @ClientOnly
+        lateinit var blinkAnime: Anime
         init {
             ClientOnly {
                 blinkAnime = Anime(
@@ -115,6 +117,15 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
                     randomCurTime()
                 }
             }
+        }
+
+        override fun delta(): Float {
+            return this.timeScale * Time.delta * speedScale
+        }
+
+        override fun updateTile() {
+            scale.update()
+            super.updateTile()
         }
 
         override fun onProximityRemoved() {

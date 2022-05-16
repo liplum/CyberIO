@@ -87,10 +87,12 @@ open class Ear(name: String) : Block(name), IComponentBlock {
             addBrainInfo<EarBuild>()
         }
     }
+
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)
         Drawf.dashCircle(x * Vars.tilesize + offset, y * Vars.tilesize + offset, range, sonicWaveColor)
     }
+
     override fun setStats() {
         super.setStats()
         this.addUpgradeComponentStats()
@@ -99,18 +101,76 @@ open class Ear(name: String) : Block(name), IComponentBlock {
     }
 
     open inner class EarBuild : Building(), IUpgradeComponent, ControlBlock {
+        // <editor-fold desc="Heimdall">
+        override val scale: SpeedScale = SpeedScale()
         override var directionInfo: Direction2 = Direction2()
         override var brain: IBrain? = null
         override val upgrades: Map<UpgradeType, Upgrade>
             get() = this@Ear.upgrades
-        val sonicWaves = SonicWaveQueue(maxSonicWaveNum)
+        // </editor-fold>
+        // <editor-fold desc="Controllable">
         var unit = UnitTypes.block.create(team) as BlockUnitc
+        override fun unit(): Unit {
+            //make sure stats are correct
+            unit.tile(this)
+            unit.team(team)
+            return (unit as Unit)
+        }
+        // </editor-fold>
+        // <editor-fold desc="Logic">
         var logicControlTime: Float = -1f
         val logicControlled: Boolean
             get() = logicControlTime > 0
         val logicAim = Vec2()
+        override fun control(type: LAccess, p1: Double, p2: Double, p3: Double, p4: Double) {
+            if (type == LAccess.shoot && !unit.isPlayer && !p3.isZero) {
+                logicControlTime = 60f
+                logicAim.set(
+                    (p1 * Vars.tilesize).toFloat(),
+                    (p2 * Vars.tilesize).toFloat(),
+                )
+            }
+            super.control(type, p1, p2, p3, p4)
+        }
+
+        override fun control(type: LAccess, p1: Any?, p2: Double, p3: Double, p4: Double) {
+            if (type == LAccess.shootp && !unit.isPlayer && !p2.isZero) {
+                if (p1 is Posc) {
+                    logicControlTime = 60f
+                    logicAim.set(p1.x(), p1.y())
+                }
+            }
+            super.control(type, p1, p2, p3, p4)
+        }
+
+        override fun sense(sensor: LAccess): Double {
+            return when (sensor) {
+                LAccess.shooting -> sonicWaves.list.isNotEmpty().toDouble()
+                LAccess.progress -> (reloadCounter / realReloadTime).toDouble()
+                else -> super.sense(sensor)
+            }
+        }
+        // </editor-fold>
+        // <editor-fold desc="Serialized">
         @Serialized
         var reloadCounter = 0f
+        @Serialized
+        var lastRadiateTime = realReloadTime + 1f
+        override fun read(read: Reads, revision: Byte) {
+            super.read(read, revision)
+            sonicWaves.read(read)
+            reloadCounter = read.f()
+            lastRadiateTime = read.f()
+        }
+
+        override fun write(write: Writes) {
+            super.write(write)
+            sonicWaves.write(write)
+            write.f(reloadCounter)
+            write.f(lastRadiateTime)
+        }
+        // </editor-fold>
+        // <editor-fold desc="Properties">
         val realReloadTime: Float
             get() = reloadTime * (1f - if (isLinkedBrain) reloadTimeI else 0f)
         val realRange: Float
@@ -125,13 +185,37 @@ open class Ear(name: String) : Block(name), IComponentBlock {
             get() = powerUse * (1f + if (isLinkedBrain) powerUseI else 0f)
         val realSensitive: Float
             get() = sensitivity * (1f + if (isLinkedBrain) sensitivityI else 0f)
-        @Serialized
-        var lastRadiateTime = realReloadTime + 1f
+        // </editor-fold>
+        // <editor-fold desc="Draw">
+        override fun draw() {
+            BaseTR.Draw(x, y)
+            var scale = 1f
+            val scaleDuration = realSonicRadius / waveSpeed
+            if (lastRadiateTime <= scaleDuration * 2f) {
+                val progress = lastRadiateTime / scaleDuration
+                scale += Interp.sine(progress) * maxScale
+            }
+            EarTR.DrawSize(x, y, scale)
+            Draw.z(Layer.bullet)
+            for (wave in sonicWaves) {
+                val alpha = Interp.pow2Out(wave.range / realSonicRadius)
+                Lines.stroke(waveWidth, sonicWaveColor)
+                Draw.alpha((1f - alpha) + 0.4f)
+                Lines.circle(wave.x, wave.y, wave.range)
+            }
+        }
+
+        override fun drawSelect() {
+            G.dashCircle(x, y, realRange, sonicWaveColor)
+        }
+        // </editor-fold>
+        val sonicWaves = SonicWaveQueue(maxSonicWaveNum)
         override fun updateTile() {
+            scale.update()
             lastRadiateTime += Time.delta
             logicControlTime -= Time.delta
             sonicWaves.forEach {
-                it.range += waveSpeed * delta()
+                it.range += waveSpeed * Time.delta
             }
             sonicWaves.pollWhen {
                 it.range >= realSonicRadius
@@ -201,37 +285,12 @@ open class Ear(name: String) : Block(name), IComponentBlock {
             }
         }
 
+        override fun delta(): Float {
+            return this.timeScale * Time.delta * speedScale
+        }
+
         val MdtUnit.isSensed: Boolean
             get() = this.vel.len() >= realSensitive
-
-        override fun draw() {
-            BaseTR.Draw(x, y)
-            var scale = 1f
-            val scaleDuration = realSonicRadius / waveSpeed
-            if (lastRadiateTime <= scaleDuration * 2f) {
-                val progress = lastRadiateTime / scaleDuration
-                scale += Interp.sine(progress) * maxScale
-            }
-            EarTR.DrawSize(x, y, scale)
-            Draw.z(Layer.bullet)
-            for (wave in sonicWaves) {
-                val alpha = Interp.pow2Out(wave.range / realSonicRadius)
-                Lines.stroke(waveWidth, sonicWaveColor)
-                Draw.alpha((1f - alpha) + 0.4f)
-                Lines.circle(wave.x, wave.y, wave.range)
-            }
-        }
-
-        override fun drawSelect() {
-            G.dashCircle(x, y, realRange, sonicWaveColor)
-        }
-
-        override fun unit(): Unit {
-            //make sure stats are correct
-            unit.tile(this)
-            unit.team(team)
-            return (unit as Unit)
-        }
 
         override fun remove() {
             super.remove()
@@ -241,41 +300,6 @@ open class Ear(name: String) : Block(name), IComponentBlock {
         override fun onProximityRemoved() {
             super.onProximityRemoved()
             clear()
-        }
-
-        override fun control(type: LAccess, p1: Double, p2: Double, p3: Double, p4: Double) {
-            if (type == LAccess.shoot && !unit.isPlayer && !p3.isZero) {
-                logicControlTime = 60f
-                logicAim.set(
-                    (p1 * Vars.tilesize).toFloat(),
-                    (p2 * Vars.tilesize).toFloat(),
-                )
-            }
-            super.control(type, p1, p2, p3, p4)
-        }
-
-        override fun control(type: LAccess, p1: Any?, p2: Double, p3: Double, p4: Double) {
-            if (type == LAccess.shootp && !unit.isPlayer && !p2.isZero) {
-                if (p1 is Posc) {
-                    logicControlTime = 60f
-                    logicAim.set(p1.x(), p1.y())
-                }
-            }
-            super.control(type, p1, p2, p3, p4)
-        }
-
-        override fun read(read: Reads, revision: Byte) {
-            super.read(read, revision)
-            sonicWaves.read(read)
-            reloadCounter = read.f()
-            lastRadiateTime = read.f()
-        }
-
-        override fun write(write: Writes) {
-            super.write(write)
-            sonicWaves.write(write)
-            write.f(reloadCounter)
-            write.f(lastRadiateTime)
         }
     }
 }

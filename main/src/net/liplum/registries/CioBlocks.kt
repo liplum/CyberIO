@@ -889,7 +889,8 @@ object CioBlocks {
                     )
                 )
                 size = 4
-                convertSpeed = 10f
+                convertSpeed = 8f
+                blood = Blood()
                 heartbeat.apply {
                     shake.config {
                         base = 1.5f
