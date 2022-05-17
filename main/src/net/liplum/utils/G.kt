@@ -65,15 +65,15 @@ object G {
     @JvmStatic
     @JvmOverloads
     fun drawDashLineBetweenTwoBlocks(
-        startBlock: Block, startBlockX: Short, startBlockY: Short,
-        endBlock: Block, endBlockX: Short, endBlockY: Short,
+        startBlock: Block, startBlockX: TileXYs, startBlockY: TileXYs,
+        endBlock: Block, endBlockX: TileXYs, endBlockY: TileXYs,
         lineColor: Color = Pal.placing, outlineColor: Color = Pal.gray,
         alpha: Float? = null
     ) {
-        val startDrawX = startBlockX.toDrawXY(startBlock)
-        val startDrawY = startBlockY.toDrawXY(startBlock)
-        val endDrawX = endBlockX.toDrawXY(endBlock)
-        val endDrawY = endBlockY.toDrawXY(endBlock)
+        val startDrawX = startBlock.toCenterWorldXY(startBlockX)
+        val startDrawY = startBlock.toCenterWorldXY(startBlockY)
+        val endDrawX = endBlock.toCenterWorldXY(endBlockX)
+        val endDrawY = endBlock.toCenterWorldXY(endBlockY)
         val segsf = distance(
             startDrawX,
             startDrawY,
@@ -125,15 +125,15 @@ object G {
     @JvmOverloads
     @JvmStatic
     fun drawArrowBetweenTwoBlocks(
-        startBlock: Block, startBlockX: Short, startBlockY: Short,
-        pointedBlock: Block, pointedBlockX: Short, pointedBlockY: Short,
+        startBlock: Block, startBlockX: TileXYs, startBlockY: TileXYs,
+        pointedBlock: Block, pointedBlockX: TileXYs, pointedBlockY: TileXYs,
         arrowColor: Color = Pal.accent,
         alpha: Float? = null
     ) {
-        val startDrawX = pointedBlockX.toDrawXY(pointedBlock)
-        val startDrawY = pointedBlockY.toDrawXY(pointedBlock)
-        val pointedDrawX = startBlockX.toDrawXY(startBlock)
-        val pointedDrawY = startBlockY.toDrawXY(startBlock)
+        val startDrawX = pointedBlock.toCenterWorldXY(pointedBlockX)
+        val startDrawY = pointedBlock.toCenterWorldXY(pointedBlockY)
+        val pointedDrawX = startBlock.toCenterWorldXY(startBlockX)
+        val pointedDrawY = startBlock.toCenterWorldXY(startBlockY)
         arrow(
             pointedDrawX, pointedDrawY,
             startDrawX, startDrawY,
@@ -145,13 +145,13 @@ object G {
     @JvmStatic
     @JvmOverloads
     fun drawArrowPointingThis(
-        pointedBlock: Block, pointedBlockX: Short, pointedBlockY: Short,
+        pointedBlock: Block, pointedBlockX: TileXYs, pointedBlockY: TileXYs,
         degrees: Float,
         arrowColor: Color = Pal.power,
         alpha: Float? = null
     ) {
-        val pointedDrawX = pointedBlockX.toDrawXY(pointedBlock)
-        val pointedDrawY = pointedBlockY.toDrawXY(pointedBlock)
+        val pointedDrawX = pointedBlock.toCenterWorldXY(pointedBlockX)
+        val pointedDrawY = pointedBlock.toCenterWorldXY(pointedBlockY)
         Tmp.v2.set(1f, 1f).setAngle(degrees).setLength(22f)
         arrow(
             pointedDrawX + Tmp.v2.x, pointedDrawY + Tmp.v2.y,
@@ -164,7 +164,7 @@ object G {
     @JvmStatic
     @JvmOverloads
     fun arrow(
-        x: Float, y: Float, x2: Float, y2: Float,
+        x: WorldXY, y: WorldXY, x2: WorldXY, y2: WorldXY,
         length: Float, radius: Float,
         color: Color = Pal.power,
         alpha: Float? = null
@@ -189,8 +189,8 @@ object G {
     @JvmStatic
     @JvmOverloads
     fun drawArrowLine(
-        startDrawX: Float, startDrawY: Float,
-        endDrawX: Float, endDrawY: Float,
+        startDrawX: WorldXY, startDrawY: WorldXY,
+        endDrawX: WorldXY, endDrawY: WorldXY,
         blockSize: Int,
         density: Float,
         arrowColor: Color = Pal.power,
@@ -222,18 +222,18 @@ object G {
     @JvmStatic
     @JvmOverloads
     fun drawArrowLine(
-        startBlockX: Short, startBlockY: Short,
-        endBlockX: Short, endBlockY: Short,
+        startBlockX: TileXYs, startBlockY: TileXYs,
+        endBlockX: TileXYs, endBlockY: TileXYs,
         density: Float,
         arrowColor: Color = Pal.power,
         alpha: Float? = null,
         size: Float = 4f,
     ) {
         drawArrowLine(
-            startBlockX.toDrawXY,
-            startBlockY.toDrawXY,
-            endBlockX.toDrawXY,
-            endBlockY.toDrawXY,
+            startBlockX.toWorldXY,
+            startBlockY.toWorldXY,
+            endBlockX.toWorldXY,
+            endBlockY.toWorldXY,
             2,
             density,
             arrowColor,
@@ -245,19 +245,19 @@ object G {
     @JvmOverloads
     fun drawArrowLine(
         startBlock: Block,
-        startBlockX: Short, startBlockY: Short,
+        startBlockX: TileXYs, startBlockY: TileXYs,
         endBlock: Block,
-        endBlockX: Short, endBlockY: Short,
+        endBlockX: TileXYs, endBlockY: TileXYs,
         density: Float,
         arrowColor: Color = Pal.power,
         alpha: Float? = null,
         size: Float = 4f,
     ) {
         drawArrowLine(
-            startBlockX.toDrawXY(startBlock),
-            startBlockY.toDrawXY(startBlock),
-            endBlockX.toDrawXY(endBlock),
-            endBlockY.toDrawXY(endBlock),
+            startBlock.toCenterWorldXY(startBlockX),
+            startBlock.toCenterWorldXY(startBlockY),
+            endBlock.toCenterWorldXY(endBlockX),
+            endBlock.toCenterWorldXY(endBlockY),
             startBlock.size,
             density,
             arrowColor,
@@ -285,7 +285,7 @@ object G {
     @JvmStatic
     @JvmOverloads
     fun circle(
-        x: Float, y: Float, rad: Float, color: Color = Pal.power,
+        x: WorldXY, y: WorldXY, rad: Float, color: Color = Pal.power,
         alpha: Float? = null, storke: Float = 1f
     ) {
         Lines.stroke(storke + 2f, Pal.gray)
@@ -314,29 +314,29 @@ object G {
     @JvmStatic
     @JvmOverloads
     fun drawSurroundingCircle(
-        b: Block, drawX: Float, drawY: Float, circleColor: Color = Pal.power,
+        b: Block, x: WorldXY, y: WorldXY, circleColor: Color = Pal.power,
         alpha: Float? = null, storke: Float = 1f
     ) = circle(
-        drawX, drawY,
+        x, y,
         (b.size / 2f + 1) * Vars.tilesize + sin - 2f,
         circleColor, alpha, storke
     )
     @JvmStatic
     @JvmOverloads
     fun drawSurroundingCircle(
-        b: Block, worldX: Int, worldY: Int,
+        b: Block, x: TileXY, y: TileXY,
         circleColor: Color = Pal.power,
         alpha: Float? = null, storke: Float = 1f
     ) = circle(
-        worldX.toDrawXY(b),
-        worldY.toDrawXY(b),
+        b.toCenterWorldXY(x),
+        b.toCenterWorldXY(y),
         (b.size / 2f + 1) * Vars.tilesize + sin - 2f,
         circleColor, alpha, storke
     )
     @JvmStatic
     @JvmOverloads
     fun dashCircle(
-        x: Float, y: Float, rad: Float, color: Color = Pal.power,
+        x: WorldXY, y: WorldXY, rad: WorldXY, color: Color = Pal.power,
         alpha: Float? = null, storke: Float = 1f
     ) {
         Lines.stroke(storke + 2f, Pal.gray)
@@ -356,25 +356,25 @@ object G {
     @JvmOverloads
     fun drawDashCircle(
         build: Building,
-        range: Float, color: Color = Pal.power,
+        range: WorldXY, color: Color = Pal.power,
         alpha: Float? = null, storke: Float = 1f
     ) = dashCircle(build.x, build.y, range + sin - 2, color, alpha, storke)
     @JvmStatic
     @JvmOverloads
     fun drawDashCircle(
-        x: Float, y: Float,
-        range: Float, color: Color = Pal.power,
+        x: WorldXY, y: WorldXY,
+        range: WorldXY, color: Color = Pal.power,
         alpha: Float? = null, storke: Float = 1f
     ) = dashCircle(x, y, range + sin - 2, color, alpha, storke)
     @JvmStatic
     @JvmOverloads
     fun drawDashCircle(
-        b: Block, blockX: Short, BlockY: Short,
-        range: Float, color: Color = Pal.power,
+        b: Block, blockX: TileXYs, BlockY: TileXYs,
+        range: WorldXY, color: Color = Pal.power,
         alpha: Float? = null, storke: Float = 1f
     ) = dashCircle(
-        blockX.toDrawXY(b),
-        BlockY.toDrawXY(b),
+        b.toCenterWorldXY(blockX),
+        b.toCenterWorldXY(BlockY),
         range + sin - 2, color, alpha, storke
     )
     @JvmStatic

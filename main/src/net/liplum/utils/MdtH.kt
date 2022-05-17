@@ -14,29 +14,40 @@ import mindustry.entities.pattern.ShootPattern
 import mindustry.game.Team
 import mindustry.gen.Building
 import mindustry.type.UnitType
+import mindustry.world.Block
 import mindustry.world.Tile
 import mindustry.world.blocks.payloads.BuildPayload
 import mindustry.world.blocks.payloads.PayloadConveyor
 import mindustry.world.blocks.payloads.PayloadSource
 import mindustry.world.blocks.payloads.UnitPayload
 
-fun tileAt(x: Int, y: Int): Tile? =
+typealias TileXY = Int
+typealias TileXYs = Short
+typealias TileXYf = Float
+typealias TileXYd = Double
+typealias WorldXY = Float
+
+fun tileAt(x: TileXY, y: TileXY): Tile? =
     Vars.world.tile(x, y)
 
-fun tileAt(x: Float, y: Float): Tile? =
+fun tileAt(x: TileXYf, y: TileXYf): Tile? =
     Vars.world.tile(x.toInt(), y.toInt())
 
-fun tileAt(x: Double, y: Double): Tile? =
+fun tileAt(x: TileXYd, y: TileXYd): Tile? =
     Vars.world.tile(x.toInt(), y.toInt())
 
-fun buildAt(x: Int, y: Int): Building? =
+fun buildAt(x: TileXY, y: TileXY): Building? =
     Vars.world.build(x, y)
 
-fun buildAt(x: Float, y: Float): Building? =
+fun buildAt(x: TileXYf, y: TileXYf): Building? =
     Vars.world.build(x.toInt(), y.toInt())
 
-fun buildAt(x: Double, y: Double): Building? =
+fun buildAt(x: TileXYd, y: TileXYd): Building? =
     Vars.world.build(x.toInt(), y.toInt())
+
+fun Block.toCenterXY(xy: TileXY): WorldXY {
+    return xy.worldXY + offset
+}
 
 val Int.build: Building?
     get() = Vars.world.build(this)
@@ -95,11 +106,11 @@ fun ItemTypeAmount(): Int =
 fun LiquidTypeAmount(): Int =
     Vars.content.liquids().size
 
-inline fun ForProximity(centerX: Int, centerY: Int, tileDistance: Int, func: (Tile) -> Unit) {
-    val minX = centerX - tileDistance
-    val minY = centerY - tileDistance
-    val maxX = centerX + tileDistance
-    val maxY = centerY + tileDistance
+inline fun ForProximity(centerTileX: TileXY, centerTileY: TileXY, tileDistance: TileXY, func: (Tile) -> Unit) {
+    val minX = centerTileX - tileDistance
+    val minY = centerTileY - tileDistance
+    val maxX = centerTileX + tileDistance
+    val maxY = centerTileY + tileDistance
     val world = Vars.world
     for (i in minX..maxX) {
         for (j in minY..maxY) {
@@ -111,7 +122,7 @@ inline fun ForProximity(centerX: Int, centerY: Int, tileDistance: Int, func: (Ti
     }
 }
 
-inline fun Building.ForProximity(tileDistance: Int, func: (Tile) -> Unit) {
+inline fun Building.ForProximity(tileDistance: TileXY, func: (Tile) -> Unit) {
     ForProximity(this.tileX(), this.tileY(), tileDistance, func)
 }
 
@@ -155,3 +166,67 @@ fun <T : BulletType> BulletType.copyAs(): T =
 
 fun <T : ShootPattern> ShootPattern.copyAs(): T =
     this.copy() as T
+/**
+ * Tile xy to world xy. Take block's offset into account
+ */
+fun Block.toCenterWorldXY(xy: TileXYs): Float =
+    offset + xy * Vars.tilesize
+/**
+ * Tile xy to world xy. Take block's offset into account
+ */
+fun Block.toCenterWorldXY(xy: TileXY): Float =
+    offset + xy * Vars.tilesize
+/**
+ * Tile xy to world xy
+ */
+val TileXYs.toWorldXY: Float
+    get() = this.toFloat() * Vars.tilesize
+/**
+ * Tile xy to world xy
+ */
+val TileXY.worldXY: Float
+    get() = this.toFloat() * Vars.tilesize
+val TileXYf.worldXY: Float
+    get() = this * Vars.tilesize
+@JvmOverloads
+fun Tile.left(distance: TileXY = 1): Tile? {
+    return Vars.world.tile(x.toInt() - distance, y.toInt())
+}
+@JvmOverloads
+fun Tile.right(distance: TileXY = 1): Tile? {
+    return Vars.world.tile(x.toInt() + distance, y.toInt())
+}
+@JvmOverloads
+fun Tile.bottom(distance: TileXY = 1): Tile? {
+    return Vars.world.tile(x.toInt(), y.toInt() - distance)
+}
+@JvmOverloads
+fun Tile.up(distance: TileXY = 1): Tile? {
+    return Vars.world.tile(x.toInt(), y.toInt() + distance)
+}
+//X Bottom
+val Building.bottomLeftX: TileXY
+    get() = tile.x - (block.size - 1) / 2
+val Building.bottomRightX: TileXY
+    get() = bottomLeftX + block.size - 1
+// X Left
+val Building.topLeftX: TileXY
+    get() = bottomLeftX
+val Building.topRightX: TileXY
+    get() = bottomRightX
+// Y Bottom
+val Building.bottomLeftY: TileXY
+    get() = tile.y - (block.size - 1) / 2
+val Building.bottomRightY: TileXY
+    get() = bottomLeftY
+// Y Top
+val Building.topLeftY: TileXY
+    get() = bottomLeftY + block.size - 1
+val Building.topRightY: TileXY
+    get() = topLeftY
+
+fun Building.isDiagonalTo(other: Block, x: TileXY, y: TileXY) =
+    isDiagonalTo(
+        other.toCenterXY(x), other.toCenterXY(y),
+        this.x, this.y,
+    )

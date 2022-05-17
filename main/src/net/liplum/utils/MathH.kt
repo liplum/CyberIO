@@ -217,3 +217,37 @@ fun <T> List<T>.randomByWeights(
     }
     throw ArithmeticException("Random weight($pos) is over than maximum($maxWeight)")
 }
+
+fun Vec2.set(x: Short, y: Short): Vec2 =
+    this.set(x.toFloat(), y.toFloat())
+
+fun Vec2.set(x: Int, y: Int): Vec2 =
+    this.set(x.toFloat(), y.toFloat())
+
+fun Vec2.minus(x: Int, y: Int): Vec2 = apply {
+    this.x -= x.toFloat()
+    this.y -= y.toFloat()
+}
+
+fun Vec2.minus(x: Short, y: Short): Vec2 = apply {
+    this.x -= x.toFloat()
+    this.y -= y.toFloat()
+}
+
+fun Vec2.minus(x: Float, y: Float): Vec2 = apply {
+    this.x -= x
+    this.y -= y
+}
+private val temp = Vec2()
+fun isDiagonalTo(
+    x1: Float, y1: Float, x2: Float, y2: Float,
+): Boolean {
+    val angle = temp.set(x1, y1).minus(x2, y2).angle()
+    println("(x1=$x1,y1=$y1),(x2=$x2,y2=$y2),$angle")
+    return (angle % 45f).isZero
+}
+fun isDiagonalTo(
+    x1: Int, y1: Int, x2: Int, y2: Int,
+): Boolean {
+    return (temp.set(x1, y1).minus(x2, y2).angle() % 45f).isZero
+}

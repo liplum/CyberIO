@@ -149,8 +149,8 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
         G.drawDashCircle(this, x.toShort(), y.toShort(), range, color)
         Vars.indexer.eachBlock(
             Vars.player.team(),
-            x.toDrawXY(this),
-            y.toDrawXY(this),
+            toCenterWorldXY(x),
+            toCenterWorldXY(y),
             range,
             {
                 it.block.canOverdrive

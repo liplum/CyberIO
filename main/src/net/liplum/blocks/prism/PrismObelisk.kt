@@ -17,15 +17,21 @@ import net.liplum.lib.animations.anims.AnimationObj
 import net.liplum.lib.animations.anims.pingPong
 import net.liplum.lib.bundle
 import net.liplum.lib.ui.bars.AddBar
+import net.liplum.render.drawSurroundingRect
 import net.liplum.utils.TE
 import net.liplum.utils.autoAnim
 import net.liplum.utils.exists
+import net.liplum.utils.isDiagonalTo
 
 open class PrismObelisk(name: String) : Block(name) {
     @JvmField var prismType: Prism? = null
-    lateinit var BlinkAnim: Animation
-    @JvmField var BlinkFrames = 6
-    @JvmField var BlinkDuration = 20f
+    @ClientOnly lateinit var BlinkAnim: Animation
+    /**
+     * The area(tile xy) indicates the surrounding prism can be linked.
+     */
+    @JvmField @ClientOnly var indicateAreaExtension = 2f
+    @JvmField @ClientOnly var BlinkFrames = 6
+    @JvmField @ClientOnly var BlinkDuration = 20f
 
     init {
         absorbLasers = true
@@ -53,6 +59,14 @@ open class PrismObelisk(name: String) : Block(name) {
             }, AutoRGBx,
             { if (linked != -1) 1f else 0f }
         )
+    }
+
+    override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
+        super.drawPlace(x, y, rotation, valid)
+        drawSurroundingRect(x, y, indicateAreaExtension, if (valid) R.C.GreenSafe else R.C.RedAlert) {
+            it.block == prismType && !it.isDiagonalTo(this, x, y)
+        }
+        drawPlaceText("$contentType.$name.tip".bundle, x, y, valid)
     }
 
     open inner class ObeliskBuild : Building() {

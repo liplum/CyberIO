@@ -71,11 +71,11 @@ open class WirelessTower(name: String) : PowerBlock(name) {
     override fun icons() = arrayOf(BaseTR, SupportTR, CoilTR)
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)
-        G.drawDashCircle(x.drawXY, y.drawXY, range, R.C.Power)
+        G.drawDashCircle(x.worldXY, y.worldXY, range, R.C.Power)
         Vars.indexer.eachBlock(
             Vars.player.team(),
-            x.toDrawXY(this),
-            y.toDrawXY(this),
+            toCenterWorldXY(x),
+            toCenterWorldXY(y),
             range,
             {
                 it.block.hasPower && it.block.consPower != null

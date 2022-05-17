@@ -27,10 +27,12 @@ import net.liplum.lib.animations.anims.Animation
 import net.liplum.lib.animations.anims.AnimationObj
 import net.liplum.lib.animations.anis.AniState
 import net.liplum.lib.animations.anis.config
+import net.liplum.lib.bundle
 import net.liplum.lib.delegates.Delegate1
 import net.liplum.lib.ui.bars.AddBar
 import net.liplum.lib.ui.bars.removeItemsInBar
 import net.liplum.persistance.intSet
+import net.liplum.render.drawSurroundingRect
 import net.liplum.utils.*
 import kotlin.math.log2
 
@@ -45,6 +47,10 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
     @JvmField @ClientOnly var ArrowsAnimFrames = 9
     @JvmField @ClientOnly var ArrowsAnimDuration = 70f
     @JvmField @ClientOnly var DistributionTime = 60f
+    /**
+     * The area(tile xy) indicates the surrounding machines can be distributed.
+     */
+    @JvmField @ClientOnly var indicateAreaExtension = 2f
     @JvmField var DynamicReqUpdateTime = 30f
     @JvmField var powerUsePerItem = 2.5f
     @JvmField var powerUseBase = 3f
@@ -119,6 +125,12 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)
         this.drawLinkedLineToReceiverWhenConfiguring(x, y)
+        drawSurroundingRect(x, y, indicateAreaExtension, if (valid) R.C.GreenSafe else R.C.RedAlert) { b ->
+            b.block.consumers.any {
+                it is ConsumeItems || it is ConsumeItemDynamic || it is ConsumeItemFilter
+            } && !b.isDiagonalTo(this, x, y)
+        }
+        drawPlaceText("$contentType.$name.tip".bundle, x, y, valid)
     }
 
     open inner class SmartDISBuild : AniedBlock<SmartDistributor, SmartDISBuild>.AniedBuild(),
