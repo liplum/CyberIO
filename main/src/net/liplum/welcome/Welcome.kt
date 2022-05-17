@@ -17,6 +17,7 @@ import net.liplum.blocks.tmtrainer.RandomName
 import net.liplum.lib.ReferBundleWrapper
 import net.liplum.lib.Res
 import net.liplum.utils.*
+import net.liplum.welcome.Welcome.Entity.Companion.showTipByID
 
 @ClientOnly
 object Welcome {
@@ -32,6 +33,8 @@ object Welcome {
         if (showWelcome) {
             entity.showTip()
         }
+        // For debug
+        entity.showTipByID("OhNo")
     }
     @JvmStatic
     fun judgeWelcome() {
@@ -164,10 +167,23 @@ object Welcome {
             bundle.format("$tip", *args)
 
         val icon: TR
-            get() = tip.iconPath.Cio.atlas()
+            get() {
+                val path = tip.iconPath
+                return if (path.startsWith('@'))
+                    path.removePrefix("@").atlas()
+                else path.Cio.atlas()
+            }
 
         fun showTip() {
             tip.template.gen(this).show()
+        }
+
+        companion object {
+            fun Entity.showTipByID(id: String): Entity {
+                tip = WelcomeList[id]
+                showTip()
+                return this
+            }
         }
     }
 }

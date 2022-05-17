@@ -21,8 +21,7 @@ internal fun Dialog.addPoster(
     val minFilter = tx.minFilter
     val img = Image(icon)
     shown {
-        if (!(nearest == tx.magFilter && nearest == tx.minFilter))
-            tx.setFilter(nearest)
+        tx.setFilter(nearest)
     }
     hidden {
         if (magFilter != tx.magFilter || minFilter != tx.minFilter)
