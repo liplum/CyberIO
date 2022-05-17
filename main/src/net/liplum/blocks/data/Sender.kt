@@ -1,6 +1,7 @@
 package net.liplum.blocks.data
 
 import arc.graphics.Color
+import arc.math.geom.Point2
 import arc.util.Nullable
 import arc.util.Time
 import arc.util.io.Reads
@@ -44,11 +45,21 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
         group = BlockGroup.transportation
         canOverdrive = false
         unloadable = false
-        config(Integer::class.java) { obj: SenderBuild, receiverPackedPos ->
-            obj.receiverPackedPos = receiverPackedPos.toInt()
+        saveConfig = true
+        /**
+         * For connect
+         */
+        config(Integer::class.java) { it: SenderBuild, receiverPackedPos ->
+            it.setReceiverFromRemote(receiverPackedPos.toInt())
         }
         configClear<SenderBuild> {
-            it.receiverPackedPos = -1
+            it.receiverPos = null
+        }
+        /**
+         * For schematic
+         */
+        config(Point2::class.java) { it: SenderBuild, point ->
+            it.resolveRelativePosFromRemote(point)
         }
     }
 
@@ -70,6 +81,11 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
                 { Pal.bar },
                 { lastSendingTime / SendingTime }
             )
+            AddBar<SenderBuild>("queue",
+                { "Queue: $queue" },
+                { Pal.bar },
+                { (queue != null).toFloat() }
+            )
         }
     }
 
@@ -83,27 +99,76 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
             get() = lastSendingTime > SendingTime
         @set:CalledBySync
         @Serialized
-        var receiverPackedPos = -1
+        var receiverPos: Point2? = null
             set(value) {
-                var curBuild = receiver
+                var curBuild = receiverPos.dr()
                 curBuild?.disconnect(this)
                 field = value
-                curBuild = receiver
+                curBuild = receiverPos.dr()
                 curBuild?.connect(this)
             }
+        val receiver: IDataReceiver?
+            get() = receiverPos.dr()
+        @CalledBySync
+        fun setReceiverFromRemote(pos: PackedPos) {
+            val unpacked = Point2.unpack(pos)
+            receiverPos = if (unpacked.dr().exists) unpacked else null
+        }
+        @CalledBySync
+        fun resolveRelativePosFromRemote(relative: Point2) {
+            val abs = resolveRelativePos(relative)
+            queue = abs
+            if (abs.dr().exists) {
+                receiverPos = abs
+                queue = null
+            } else {
+                receiverPos = null
+            }
+        }
+        /**
+         * @param relative the relative position
+         * @return
+         */
+        fun resolveRelativePos(relative: Point2): Point2 {
+            val res = relative.cpy()
+            res.x += this.tile.x
+            res.y += this.tile.y
+            return res // now it's absolute position
+        }
+        /**
+         * When this sender was restored by schematic, it should check whether the receiver was built.
+         *
+         * It's an absolute point
+         */
+        @CalledBySync
+        var queue: Point2? = null
+        /**
+         * Consider this block as (0,0)
+         */
+        fun genRelativePos(): Point2? {
+            val abs = receiverPos?.cpy() ?: return null
+            abs.x -= this.tile.x
+            abs.y -= this.tile.y
+            val relative = abs// now it's relative
+            return relative
+        }
 
         open fun checkReceiverPos() {
-            if (receiverPackedPos == -1) return
-            /* For payload
-             if (receiverPackedPos.drOrPayload() == null) {
-                 receiverPackedPos = -1
-             }*/
-            if (!receiverPackedPos.dr().exists) {
-                receiverPackedPos = -1
+            if (receiverPos == null) return
+            if (!receiverPos.dr().exists) {
+                receiverPos = null
             }
         }
 
         override fun updateTile() {
+            val waiting = queue
+            if (waiting != null) {
+                val dr = waiting.dr()
+                if (dr != null) {
+                    receiverPos = dr.building.tilePoint()
+                    queue = null
+                }
+            }
             // Check connection every second
             if (timer(CheckConnectionTimer, 60f)) {
                 checkReceiverPos()
@@ -114,11 +179,11 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
         }
 
         override fun toString(): String {
-            return super.toString() + "(receiverPackedPos:" + receiverPackedPos + ")"
+            return super.toString() + "(receiverPos:" + receiverPos + ")"
         }
         @Nullable
         override fun getConnectedReceiver(): Int? {
-            return if (receiverPackedPos == -1) null else receiverPackedPos
+            return receiverPos?.pack()
         }
 
         override fun handleItem(source: Building, item: Item) {
@@ -133,15 +198,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
                 }
             }
         }
-
-        val receiver: IDataReceiver?
-            get() = if (receiverPackedPos != -1)
-            /*For payload
-            receiverPackedPos.dr() Or { receiverPackedPos.inPayload() }*/
-                receiverPackedPos.dr()
-            else
-                null
-
+        @ClientOnly
         override fun getSenderColor(): Color {
             val receiver = receiver
             if (receiver != null)
@@ -161,13 +218,14 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
             this.drawDataNetGraphic()
         }
         @ClientOnly
+        @SendDataPack
         override fun onConfigureBuildTapped(other: Building): Boolean {
             if (this == other) {
                 deselect()
                 configure(null)
                 return false
             }
-            if (receiverPackedPos == other.pos()) {
+            if (other.tileEquals(receiverPos)) {
                 deselect()
                 configure(null)
                 return false
@@ -179,21 +237,11 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
                 }
                 return false
             }
-            /*  For payload
-            if (other is PayloadConveyor.PayloadConveyorBuild) {
-                val payload = other.payload
-                if (payload is BuildPayload) {
-                    val build = payload.build
-                    if (build is IDataReceiver) {
-                        deselect()
-                        if (build.acceptConnection(this)) {
-                            connectSync(other.pos())
-                        }
-                        return false
-                    }
-                }
-            }*/
             return true
+        }
+        @Synchronized
+        override fun config(): Any? {
+            return genRelativePos()
         }
 
         override fun acceptItem(source: Building, item: Item): Boolean {
@@ -206,39 +254,32 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
 
         override fun write(write: Writes) {
             super.write(write)
-            write.i(receiverPackedPos)
+            write.i(receiverPos?.pack() ?: -1)
         }
 
         override fun read(read: Reads, revision: Byte) {
             super.read(read, revision)
-            receiverPackedPos = read.i()
+            val packPos = read.i()
+            receiverPos = if (packPos != -1) packPos.unpack() else null
         }
         @SendDataPack
         override fun connectSync(receiver: IDataReceiver) {
-            val pos = receiver.building.pos()
-            if (pos != receiverPackedPos) {
-                configure(pos)
+            val target = receiver.building
+            if (!target.tileEquals(receiverPos)) {
+                configure(target.pos())
             }
         }
         @SendDataPack
         override fun disconnectSync(receiver: IDataReceiver) {
-            if (receiver.building.pos() == receiverPackedPos) {
+            if (receiver.building.tileEquals(receiverPos)) {
                 configure(null)
             }
         }
-        /*  For payload
-        @SendDataPack
-        override fun connectSync(receiver: Int) {
-            configure(receiver)
-        }
-        @SendDataPack
-        override fun disconnectSync(receiver: Int) {
-            configure(null)
-        }*/
+
         override fun control(type: LAccess, p1: Any?, p2: Double, p3: Double, p4: Double) {
             when (type) {
                 LAccess.shoot ->
-                    if (p1 is IDataReceiver) connectSync(p1)
+                    if (!p2.isZero && p1 is IDataReceiver) connectSync(p1)
                 else -> super.control(type, p1, p2, p3, p4)
             }
         }
@@ -247,7 +288,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
             when (type) {
                 LAccess.shoot -> {
                     val receiver = buildAt(p1, p2)
-                    if (receiver is IDataReceiver) connectSync(receiver)
+                    if (!p3.isZero && receiver is IDataReceiver) connectSync(receiver)
                 }
                 else -> super.control(type, p1, p2, p3, p4)
             }
@@ -266,6 +307,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
     @ClientOnly lateinit var UploadAni: AniStateS
     @ClientOnly lateinit var BlockedAni: AniStateS
     @ClientOnly lateinit var NoPowerAni: AniStateS
+    @ClientOnly
     override fun genAniState() {
         IdleAni = addAniState("Idle")
 
@@ -281,7 +323,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
             NoPowerTR.Draw(x, y)
         }
     }
-
+    @ClientOnly
     override fun genAniConfig() {
         config {
             // Idle
@@ -293,7 +335,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
             }
             // Upload
             From(UploadAni) To IdleAni When {
-                receiverPackedPos == -1
+                receiverPos == null
             } To BlockedAni When {
                 val reb = receiver
                 reb != null && isBlocked
@@ -302,7 +344,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
             }
             // Blocked
             From(BlockedAni) To IdleAni When {
-                receiverPackedPos == -1
+                receiverPos == null
             } To UploadAni When {
                 val reb = receiver
                 reb != null && !isBlocked

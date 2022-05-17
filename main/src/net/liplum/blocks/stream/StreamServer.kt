@@ -1,6 +1,7 @@
 package net.liplum.blocks.stream
 
 import arc.graphics.Color
+import arc.math.geom.Point2
 import arc.scene.ui.layout.Table
 import arc.struct.ObjectSet
 import arc.struct.OrderedSet
@@ -38,6 +39,8 @@ open class StreamServer(name: String) : StreamHost(name) {
 
     init {
         callDefaultBlockDraw = false
+        saveConfig = false
+        configurations.remove(Array<Point2>::class.java)
     }
 
     override fun initPowerUse() {

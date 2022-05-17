@@ -374,6 +374,7 @@ class Heart(name: String) : Block(name), IComponentBlock {
             if (canConvertOrConsume) {
                 consumeBloodAsEnergy()
             }
+
             if (efficiency <= 0f) return
             if (isLinkedBrain) {
                 onOtherParts {

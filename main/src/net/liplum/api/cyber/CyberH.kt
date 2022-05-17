@@ -4,6 +4,7 @@ package net.liplum.api.cyber
 
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
+import arc.math.geom.Point2
 import mindustry.Vars
 import mindustry.type.Item
 import mindustry.type.Liquid
@@ -26,6 +27,21 @@ fun Int.ds(): IDataSender? =
 
 fun Int.dsOrPayload(): IDataSender? =
     this.ds() Or { this.inPayload() }
+
+fun Point2?.db(): IDataBuilding? =
+    this?.let { this.build as? IDataBuilding }
+
+fun Point2?.dr(): IDataReceiver? =
+    this?.let { this.build as? IDataReceiver }
+
+fun Point2?.drOrPayload(): IDataReceiver? =
+    this?.let { this.dr() Or { this.inPayload() } }
+
+fun Point2?.ds(): IDataSender? =
+    this?.let { this.build as? IDataSender }
+
+fun Point2?.dsOrPayload(): IDataSender? =
+    this?.let { this.ds() Or { this.inPayload() } }
 
 val IDataBuilding?.exists: Boolean
     get() = this != null && this.building.exists
@@ -93,6 +109,15 @@ fun Int.sc(): IStreamClient? =
 fun Int.sh(): IStreamHost? =
     this.build as? IStreamHost
 
+fun Point2?.sn(): IStreamNode? =
+    this?.let {  this.build as? IStreamNode }
+
+fun Point2?.sc(): IStreamClient? =
+    this?.let {  this.build as? IStreamClient}
+
+fun Point2?.sh(): IStreamHost? =
+    this?.let {  this.build as? IStreamHost}
+
 val IStreamNode?.exists: Boolean
     get() = this != null && this.building.exists
 
@@ -115,7 +140,7 @@ object StreamCenter {
             val color = liquid.color
             // To prevent crash with the adaptor of liquid because their Liquid#color is null. @Discord Normalperson666#2826
             // So I just cause a crash when loading and provide more details for handling with it.
-            assert(color != null){
+            assert(color != null) {
                 "${liquid.localizedName}(${liquid.name} of ${liquid.javaClass.name}) in ${liquid.minfo?.mod} has a nullable color." +
                         "This message is only for notifying that you might be on a extreme condition about mods or some mods doesn't obey the rules of Mindustry." +
                         "Try again after uninstalling some unnecessary mods."

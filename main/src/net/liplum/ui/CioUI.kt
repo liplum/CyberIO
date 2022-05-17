@@ -244,6 +244,23 @@ object CioUI {
                 canShow = { isMenu }
             }
         }
+        DebugOnly {
+            addAny {
+                val button = TextButton("Debug Settings").apply {
+                    changed {
+                        BaseDialog("Debug Settings").apply {
+                            for (setting in Debug.settings) {
+                                cont.check(setting.name, setting.getter()) { b ->
+                                    setting.setter(b)
+                                }.growX()
+                            }
+                            addCloseButton()
+                        }.show()
+                    }
+                }
+                it.add(button).fillX()
+            }
+        }
         sortBy {
             when (it) {
                 is SliderSetting -> 0

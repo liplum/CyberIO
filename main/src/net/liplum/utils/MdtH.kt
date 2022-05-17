@@ -3,6 +3,7 @@
 package net.liplum.utils
 
 import arc.math.Mathf
+import arc.math.geom.Point2
 import mindustry.Vars
 import mindustry.content.Blocks
 import mindustry.ctype.Content
@@ -26,6 +27,10 @@ typealias TileXYs = Short
 typealias TileXYf = Float
 typealias TileXYd = Double
 typealias WorldXY = Float
+typealias PackedPos = Int
+
+fun PackedPos.unpack(): Point2 =
+    Point2.unpack(this)
 
 fun tileAt(x: TileXY, y: TileXY): Tile? =
     Vars.world.tile(x, y)
@@ -51,6 +56,8 @@ fun Block.toCenterXY(xy: TileXY): WorldXY {
 
 val Int.build: Building?
     get() = Vars.world.build(this)
+val Point2.build: Building?
+    get() = Vars.world.build(x, y)
 
 fun <T : Building> Int.TE(): T? =
     Vars.world.build(this) as? T
@@ -59,6 +66,19 @@ fun <T> Int.TEAny(): T? =
     Vars.world.build(this) as? T
 
 fun <T> Int.inPayload(): T? {
+    val build = this.build
+    if (build is PayloadConveyor.PayloadConveyorBuild) {
+        val payload = build.payload
+        if (payload is BuildPayload) {
+            return payload.build as? T
+        } else if (payload is UnitPayload) {
+            return payload.unit as? T
+        }
+    }
+    return null
+}
+
+fun <T> Point2.inPayload(): T? {
     val build = this.build
     if (build is PayloadConveyor.PayloadConveyorBuild) {
         val payload = build.payload
@@ -230,3 +250,15 @@ fun Building.isDiagonalTo(other: Block, x: TileXY, y: TileXY) =
         other.toCenterXY(x), other.toCenterXY(y),
         this.x, this.y,
     )
+
+fun Building.tileEquals(pos: PackedPos): Boolean =
+    pos() == pos
+
+fun Building.tilePoint(): Point2 =
+    Point2(tileX(), tileY())
+
+fun Building.tileEquals(pos: Point2?): Boolean =
+    pos != null && tileX() == pos.x && tileY() == pos.y
+
+fun Point2?.packSafe(): Int =
+    this?.pack() ?: -1

@@ -6,6 +6,7 @@ import arc.scene.ui.layout.Table
 import arc.scene.ui.layout.WidgetGroup
 import mindustry.Vars
 import mindustry.gen.Tex
+import net.liplum.Debug
 import net.liplum.R
 import net.liplum.inputs.Screen
 import net.liplum.lib.bundle
@@ -41,6 +42,9 @@ object DebugUI {
         val debug = WidgetGroup()
         Core.scene.add(debug)
         debug.addChildAt(0, Table().apply {
+            visible {
+                Debug.enableUnlockContent
+            }
             button("Lock") {
                 NewBaseDialog.apply {
                     cont.table(Tex.button) { t ->

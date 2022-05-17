@@ -1,6 +1,7 @@
 package net.liplum.blocks.stream
 
 import arc.graphics.Color
+import arc.math.geom.Point2
 import arc.struct.OrderedSet
 import arc.struct.Seq
 import arc.util.io.Reads
@@ -21,6 +22,7 @@ import net.liplum.lib.animations.anis.AniState
 import net.liplum.lib.animations.anis.config
 import net.liplum.persistance.intSet
 import net.liplum.utils.*
+import java.util.*
 
 private typealias AniStateH = AniState<StreamHost, StreamHost.HostBuild>
 
@@ -54,13 +56,23 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
         group = BlockGroup.liquids
         noUpdateDisabled = true
         hasLiquids = true
+        saveConfig = true
         canOverdrive = true
         sync = true
+        /**
+         * For connect
+         */
         config(Integer::class.java) { obj: HostBuild, clientPackedPos ->
             obj.setClient(clientPackedPos.toInt())
         }
         configClear<HostBuild> {
             it.clearClients()
+        }
+        /**
+         * For schematic
+         */
+        config(Array<Point2>::class.java) { obj: HostBuild, relatives ->
+            obj.resolveRelativePosFromRemote(relatives)
         }
     }
 
@@ -103,13 +115,19 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
         open fun checkClientsPos() {
             clients.removeAll { !it.sc().exists }
         }
-
+        /**
+         * When this stream host was restored by schematic, it should check whether the client was built.
+         *
+         * It contains absolute points.
+         */
+        var queue = LinkedList<Point2>()
         val realNetworkSpeed: Float
             get() = networkSpeed * timeScale
         @ClientOnly @JvmField
         var floating: Floating = Floating(IconFloatingRange).randomXY().changeRate(1)
         override fun getHostColor(): Color = liquids.current().color
         override fun updateTile() {
+            checkQueue()
             // Check connection every second
             if (timer(CheckConnectionTimer, 60f)) {
                 checkClientsPos()
@@ -139,6 +157,49 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
                 }
                 liquids.remove(liquid, needPumped - restNeedPumped)
             }
+        }
+
+        open fun checkQueue() {
+            if (queue.isNotEmpty()) {
+                val it = queue.iterator()
+                while (it.hasNext()) {
+                    val pos = it.next()
+                    val dr = pos.sc()
+                    if (dr != null) {
+                        dr.connect(this)
+                        this.connectClient(dr)
+                        it.remove()
+                    }
+                }
+            }
+        }
+        @CalledBySync
+        fun resolveRelativePosFromRemote(relatives: Array<Point2>) {
+            for (relative in relatives) {
+                val rel = relative.cpy()
+                rel.x += tile.x
+                rel.y += tile.y
+                val abs = rel
+                val dr = abs.sc()
+                if (dr != null) {
+                    dr.connect(this)
+                    this.connectClient(dr)
+                } else {
+                    queue.add(abs)
+                }
+            }
+        }
+
+        fun genRelativeAllPos(): Array<Point2> {
+            return clients.map {
+                it.unpack().apply {
+                    x -= tile.x
+                    y -= tile.y
+                }
+            }.toTypedArray()
+        }
+        override fun config(): Any? {
+            return genRelativeAllPos()
         }
 
         override fun onProximityAdded() {

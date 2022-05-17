@@ -30,6 +30,7 @@ import net.liplum.api.brain.*
 import net.liplum.api.brain.IBrain.Companion.Mirror
 import net.liplum.api.brain.IBrain.Companion.XSign
 import net.liplum.api.brain.IBrain.Companion.YSign
+import net.liplum.lib.Draw
 import net.liplum.lib.animations.anims.Anime
 import net.liplum.lib.animations.anims.linearFrames
 import net.liplum.lib.delegates.Delegate
@@ -63,6 +64,7 @@ open class Heimdall(name: String) : Block(name) {
      */
     @JvmField var coolingSpeed = 0.01f
     @ClientOnly lateinit var BuckleTRs: Array<TR>
+    @ClientOnly lateinit var BuckleHeatTRs: Array<TR>
     @ClientOnly lateinit var HeartTR: TR
     @JvmField @ClientOnly val heatMeta = HeatMeta()
     @ClientOnly @JvmField var BuckleDuration = 20f
@@ -107,6 +109,7 @@ open class Heimdall(name: String) : Block(name) {
     override fun load() {
         super.load()
         BuckleTRs = this.sheet("buckle", BuckleFrameNum)
+        BuckleHeatTRs = this.sheet("buckle-heat", BuckleFrameNum)
         HeartTR = this.sub("heat")
     }
 
@@ -409,13 +412,23 @@ open class Heimdall(name: String) : Block(name) {
             formationEffects = FormationEffects(res)
         }
 
+        open fun drawLinkAnimationAt(x: Float, y: Float, rotation: Float) {
+            Draw.z(Layer.blockOver)
+            linkAnime.draw(x, y, rotation)
+            Draw.z(Layer.blockOver + 1f)
+            heatMeta.drawHeat(heatShared) {
+                BuckleHeatTRs[linkAnime.index].Draw(x, y, rotation)
+            }
+            Draw.z(Layer.blockOver)
+        }
+
         override fun draw() {
             WhenNotPaused {
                 linkAnime.spend(Time.delta)
             }
+            Draw.z(Layer.block)
             super.draw()
             // buckles
-            Draw.z(Layer.blockOver)
             val step = size * Vars.tilesize / 4f
             val step2 = step * 2
             for ((i, side) in sides.withIndex()) {
@@ -431,15 +444,15 @@ open class Heimdall(name: String) : Block(name) {
                         dx += j * step2
                     }
                     if (com == null) continue
-                    linkAnime.draw(x + dx, y + dy, rotation)
+                    drawLinkAnimationAt(x + dx, y + dy, rotation)
                     if (isVertical) {
-                        linkAnime.draw(
+                        drawLinkAnimationAt(
                             x + dx + mirror * step2,
                             y + dy,
                             rotation + 180f
                         )
                     } else {
-                        linkAnime.draw(
+                        drawLinkAnimationAt(
                             x + dx,
                             y + dy + mirror * step2,
                             rotation + 180f

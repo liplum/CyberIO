@@ -30,6 +30,7 @@ import net.liplum.lib.delegates.Delegate1
 import net.liplum.lib.ui.bars.removeItemsInBar
 import net.liplum.persistance.intSet
 import net.liplum.utils.TR
+import net.liplum.utils.addSenderInfo
 import net.liplum.utils.autoAnimInMod
 import net.liplum.utils.inMod
 
@@ -86,6 +87,7 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
     override fun setBars() {
         super.setBars()
         UndebugOnly {
+            addSenderInfo<ReceiverBuild>()
             removeItemsInBar()
         }
     }

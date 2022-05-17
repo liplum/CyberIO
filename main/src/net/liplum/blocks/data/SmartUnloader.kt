@@ -1,6 +1,7 @@
 package net.liplum.blocks.data
 
 import arc.math.Mathf
+import arc.math.geom.Point2
 import arc.struct.OrderedSet
 import arc.struct.Seq
 import arc.util.Time
@@ -24,6 +25,7 @@ import net.liplum.lib.ui.bars.AddBar
 import net.liplum.lib.ui.bars.removeItemsInBar
 import net.liplum.persistance.intSet
 import net.liplum.utils.*
+import java.util.*
 import kotlin.math.absoluteValue
 import kotlin.math.log2
 
@@ -74,12 +76,20 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
         configurable = true
         saveConfig = true
         acceptsItems = false
-
+        /**
+         * For connect
+         */
         config(Integer::class.java) { obj: SmartULDBuild, receiverPackedPos ->
-            obj.setReceiver(receiverPackedPos.toInt())
+            obj.addReceiverFromRemote(receiverPackedPos.toInt())
         }
         configClear<SmartULDBuild> {
             it.clearReceivers()
+        }
+        /**
+         * For schematic
+         */
+        config(Array<Point2>::class.java) { obj: SmartULDBuild, relatives ->
+            obj.resolveRelativePosFromRemote(relatives)
         }
     }
 
@@ -126,6 +136,11 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
                 { Pal.bar },
                 { lastSendingTime / SendingTime }
             )
+            AddBar<SmartULDBuild>("queue",
+                { "Queue: ${queue.size}" },
+                { Pal.bar },
+                { queue.size.toFloat() / maxReceiverConnection() }
+            )
         }
     }
 
@@ -133,6 +148,12 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
         IDataSender {
         @Serialized
         var receivers = OrderedSet<Int>()
+        /**
+         * When this smart unloader was restored by schematic, it should check whether the receiver was built.
+         *
+         * It contains absolute points.
+         */
+        var queue = LinkedList<Point2>()
         var nearby: Seq<Building> = Seq()
         var trackers: Array<Tracker> = Array(ItemTypeAmount()) {
             Tracker(maxConnection)
@@ -180,8 +201,36 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
             unloadedNearbyIndex = 0
         }
 
+        fun genRelativeAllPos(): Array<Point2> {
+            return receivers.map {
+                it.unpack().apply {
+                    x -= tile.x
+                    y -= tile.y
+                }
+            }.toTypedArray()
+        }
+
+        override fun config(): Any? {
+            return genRelativeAllPos()
+        }
+
         open fun checkReceiverPos() {
             receivers.removeAll { !it.dr().exists }
+        }
+
+        open fun checkQueue() {
+            if (queue.isNotEmpty()) {
+                val it = queue.iterator()
+                while (it.hasNext()) {
+                    val pos = it.next()
+                    val dr = pos.dr()
+                    if (dr != null) {
+                        dr.connect(this)
+                        this.connectReceiver(dr)
+                        it.remove()
+                    }
+                }
+            }
         }
 
         override fun updateTile() {
@@ -189,6 +238,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
                 updateTracker()
                 justRestored = false
             }
+            checkQueue()
             if (timer(CheckConnectionTimer, 60f)) {
                 checkReceiverPos()
             }
@@ -341,8 +391,25 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
             }
             return true
         }
+
         @CalledBySync
-        open fun setReceiver(pos: Int) {
+        fun resolveRelativePosFromRemote(relatives: Array<Point2>) {
+            for (relative in relatives) {
+                val rel = relative.cpy()
+                rel.x += tile.x
+                rel.y += tile.y
+                val abs = rel
+                val dr = abs.dr()
+                if (dr != null) {
+                    dr.connect(this)
+                    this.connectReceiver(dr)
+                } else {
+                    queue.add(abs)
+                }
+            }
+        }
+        @CalledBySync
+        open fun addReceiverFromRemote(pos: Int) {
             if (pos in receivers) {
                 pos.dr()?.let {
                     disconnectReceiver(it)
