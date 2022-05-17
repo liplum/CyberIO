@@ -59,11 +59,13 @@ import net.liplum.bullets.RuvikBullet
 import net.liplum.bullets.STEM_VERSION
 import net.liplum.holo.*
 import net.liplum.lib.animations.ganim.globalAnim
+import net.liplum.render.DrawConstruct
 import net.liplum.seffects.StaticFx
 import net.liplum.ui.DynamicContentInfoDialog.Companion.registerDynamicInfo
 
 object CioBlocks {
     @JvmStatic lateinit var icMachine: GenericCrafter
+    @JvmStatic lateinit var icAssembler: GenericCrafter
     @JvmStatic lateinit var icMachineSmall: GenericCrafter
     @JvmStatic lateinit var receiver: Receiver
     @JvmStatic lateinit var sender: Sender
@@ -154,6 +156,32 @@ object CioBlocks {
         }
     }
     @DependOn("CioItems.ic")
+    fun icAssembler() {
+        icAssembler = GenericCrafter("ic-assembler").apply {
+            requirements(
+                Category.crafting, arrayOf(
+                    ItemStack(Items.lead, 60),
+                    ItemStack(Items.graphite, 35),
+                    ItemStack(Items.metaglass, 50),
+                    ItemStack(Items.silicon, 50),
+                )
+            )
+            health = 250
+            size = 2
+            consumePower(1.2f)
+            itemCapacity = 40
+            consumeItems(
+                ItemStack(Items.copper, 10),
+                ItemStack(Items.metaglass, 5),
+                ItemStack(Items.silicon, 15)
+            )
+            outputItem = ItemStack(CioItems.ic, 1)
+            craftTime = 600f
+            craftEffect = Fx.smeltsmoke
+            drawer = DrawMulti(DrawDefault(), DrawConstruct())
+        }
+    }
+    @DependOn("CioItems.ic")
     fun receiver() {
         receiver = Receiver("receiver").apply {
             requirements(
@@ -185,6 +213,7 @@ object CioBlocks {
             health = 100
             consumePower(0.5f)
             replaceable = false
+            squareSprite = false
         }
     }
     @DependOn
@@ -477,6 +506,8 @@ object CioBlocks {
             )
             health = 4500
             size = 2
+            ArrowsAnimFrames = 4
+            ArrowsAnimDuration = 12f
         }
     }
     @DependOn("CioItems.ic")
@@ -494,6 +525,8 @@ object CioBlocks {
             unloadSpeed = 5f
             health = 1500
             size = 2
+            ShrinkingAnimFrames = 7
+            ShrinkingAnimDuration = 25f
         }
     }
     @DependOn("CioItems.ic")
