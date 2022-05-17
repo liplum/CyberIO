@@ -24,7 +24,6 @@ import net.liplum.lib.render.HeatMeta
 import net.liplum.lib.render.drawHeat
 import net.liplum.lib.ui.ammoStats
 import net.liplum.math.Polar
-import net.liplum.registries.CioSounds
 import net.liplum.utils.*
 
 open class Eye(name: String) : PowerTurret(name), IComponentBlock {
@@ -32,14 +31,20 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
     lateinit var improvedBullet: BulletType
     @JvmField var normalSounds: Array<Sound> = EmptySounds
     @JvmField var improvedSounds: Array<Sound> = EmptySounds
+    /**
+     * Cooling per tick. It should be multiplied by [Time.delta]
+     */
+    @JvmField var coolingSpeed = 0.01f
     @ClientOnly lateinit var BaseTR: TR
+    @ClientOnly lateinit var BaseHeatTR: TR
     @ClientOnly lateinit var EyeBallTR: TR
     @ClientOnly lateinit var EyelidTR: TR
     @ClientOnly lateinit var PupilTR: TR
+    @ClientOnly lateinit var PupilHeatTR: TR
     @ClientOnly lateinit var PupilOutsideTR: TR
+    @ClientOnly lateinit var PupilOutsideHeatTR: TR
     @ClientOnly lateinit var HemorrhageTRs: TRs
     @ClientOnly lateinit var BlinkTRs: TRs
-    @ClientOnly lateinit var HeartTR: TR
     @JvmField @ClientOnly val heatMeta = HeatMeta()
     @ClientOnly @JvmField var BlinkDuration = 50f
     @ClientOnly @JvmField var BlinkFrameNum = 9
@@ -65,13 +70,15 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
     override fun load() {
         super.load()
         BaseTR = this.sub("base")
+        BaseHeatTR = this.sub("heat")
         EyeBallTR = this.sub("eyeball")
         EyelidTR = this.sub("eyelid")
         BlinkTRs = this.sheet("blink", BlinkFrameNum)
         PupilTR = this.sub("pupil")
+        PupilHeatTR = this.sub("pupil-heat")
         PupilOutsideTR = this.sub("pupil-outside")
+        PupilOutsideHeatTR = this.sub("pupil-outside-heat")
         HemorrhageTRs = this.sheet("hemorrhage", 3)
-        HeartTR = this.inMod("heimdall-heat-x$size")
     }
 
     override fun icons() = arrayOf(
@@ -100,9 +107,13 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
         override val upgrades: Map<UpgradeType, Upgrade>
             get() = this@Eye.upgrades
         override var heatShared = 0f
+            set(value) {
+                field = value.coerceIn(0f, 1f)
+            }
         //</editor-fold>
         @ClientOnly
         lateinit var blinkAnime: Anime
+
         init {
             ClientOnly {
                 blinkAnime = Anime(
@@ -126,11 +137,12 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
         }
 
         override fun delta(): Float {
-            return this.timeScale * Time.delta * speedScale
+            return this.timeScale * Time.delta * speedScale* (1f + heatShared)
         }
 
         override fun updateTile() {
             scale.update()
+            heatShared -= coolingSpeed * Time.delta
             super.updateTile()
         }
 
@@ -171,6 +183,7 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
                     continuousShots = 0
             }
             BaseTR.Draw(x, y)
+            heatMeta.drawHeat(this, BaseHeatTR, heatShared)
             Draw.color()
 
             Draw.z(Layer.turret)
@@ -205,16 +218,22 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
                     }
                 }
             }
-            val pupil = if (consValid && isShooting || sight.r > PupilMin * 1.5f) PupilOutsideTR else PupilTR
+            val isOutside = consValid && isShooting || sight.r > PupilMin * 1.5f
+            val pupilTR = if (isOutside) PupilOutsideTR else PupilTR
+            val pupilHeatTR = if (isOutside) PupilOutsideHeatTR else PupilHeatTR
             val pupilX = x + sight.x + recoilOffset.x
             val pupilY = y + sight.y + recoilOffset.y
             Draw.mixcol(eyeColor, heat)
-            pupil.Draw(pupilX, pupilY, rotationDraw)
-            Draw.reset()
+            pupilTR.Draw(pupilX, pupilY, rotationDraw)
+            Draw.z(Layer.turretHeat)
+            heatMeta.drawHeat(heatShared) {
+                pupilHeatTR.Draw(pupilX, pupilY, rotationDraw)
+            }
+            Draw.z(Layer.turret)
+            Draw.z(Layer.turretHeat+0.1f)
             drawHemorrhage()
             blinkAnime.draw(x, y)
             blinkFactor = 1f
-            heatMeta.drawHeat(this, HeartTR, heatShared)
         }
 
         open fun drawHemorrhage() {
@@ -227,7 +246,7 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
         override fun handleBullet(bullet: Bullet, offsetX: Float, offsetY: Float, angleOffset: Float) {
             super.handleBullet(bullet, offsetX, offsetY, angleOffset)
             if (isLinkedBrain)
-                improvedSounds.random().at(tile,soundPitchMin)
+                improvedSounds.random().at(tile, soundPitchMin)
             else
                 normalSounds.random().at(tile)
         }

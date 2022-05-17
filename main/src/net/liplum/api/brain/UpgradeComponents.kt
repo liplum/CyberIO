@@ -199,8 +199,22 @@ inline fun IUpgradeComponent.onOtherParts(func: IHeimdallEntity.() -> Unit) {
     if (brain != null) {
         brain.func()
         for (component in brain) {
-            if(component != this)
+            if (component != this)
                 component.func()
+        }
+    }
+}
+/**
+ * Iterate other linked parts and run a closure on them.
+ * Brain first.
+ * If this doesn't link with a brain, nothing will happen
+ */
+inline fun IUpgradeComponent.onAllParts(func: IHeimdallEntity.() -> Unit) {
+    val brain = brain
+    if (brain != null) {
+        brain.func()
+        for (component in brain) {
+            component.func()
         }
     }
 }
@@ -212,7 +226,7 @@ inline fun IUpgradeComponent.onOtherComponents(func: IUpgradeComponent.() -> Uni
     val brain = brain
     if (brain != null) {
         for (component in brain) {
-            if(component != this)
+            if (component != this)
                 component.func()
         }
     }

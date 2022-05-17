@@ -49,6 +49,9 @@ open class Hand(name: String) : Block(name), IComponentBlock {
         override var brain: IBrain? = null
         override val upgrades: Map<UpgradeType, Upgrade> = this@Hand.upgrades
         override var heatShared = 0f
+            set(value) {
+                field = value.coerceIn(0f, 1f)
+            }
         //</editor-fold>
         var unit = UnitTypes.block.create(team) as BlockUnitc
         val forearm: Bone

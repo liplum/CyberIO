@@ -22,7 +22,6 @@ class HeatMeta {
 fun HeatMeta.drawHeat(b: Building, tr: TR, heatFrac: Float) {
     if (heatFrac > 0f) {
         Draw.z(Layer.blockAdditive)
-        Draw.z(Layer.blockAdditive)
         Draw.blend(Blending.additive)
         Draw.color(
             heatColor,
@@ -35,11 +34,38 @@ fun HeatMeta.drawHeat(b: Building, tr: TR, heatFrac: Float) {
     }
 }
 
+fun HeatMeta.drawHeatAt(x: Float, y: Float, tr: TR, heatFrac: Float) {
+    if (heatFrac > 0f) {
+        Draw.z(Layer.blockAdditive)
+        Draw.blend(Blending.additive)
+        Draw.color(
+            heatColor,
+            heatFrac * (heatColor.a * (1f - heatPulse + Mathf.absin(heatPulseScl, heatPulse)))
+        )
+        Draw.rect(tr, x, y)
+        Draw.blend()
+        Draw.color()
+        Draw.z(Layer.block)
+    }
+}
+
+inline fun HeatMeta.drawHeat(heatFrac: Float, draw: () -> Unit) {
+    if (heatFrac > 0f) {
+        Draw.blend(Blending.additive)
+        Draw.color(
+            heatColor,
+            heatFrac * (heatColor.a * (1f - heatPulse + Mathf.absin(heatPulseScl, heatPulse)))
+        )
+        draw()
+        Draw.blend()
+        Draw.color()
+    }
+}
+
 fun HeatMeta.drawHeat(b: Building, tr: TR) {
     if (b is HeatBlock) {
         val heatFrac = b.heatFrac()
         if (heatFrac > 0f) {
-            Draw.z(Layer.blockAdditive)
             Draw.z(Layer.blockAdditive)
             Draw.blend(Blending.additive)
             Draw.color(

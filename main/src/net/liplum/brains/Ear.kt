@@ -47,14 +47,19 @@ open class Ear(name: String) : Block(name), IComponentBlock {
     @JvmField var powerUseI = 0.8f
     @JvmField var range = 150f
     @JvmField var rangeI = 0.4f
-    @JvmField var reloadTime = 60f
-    @JvmField var reloadTimeI = 0.5f
+    @JvmField var reloadTime = 120f
+    @JvmField var reloadTimeI = -0.4f
     @JvmField var powerConsumeTime = 30f
     @JvmField var maxSonicWaveNum = 3
     @JvmField var bounce = 1f
+    /**
+     * Cooling per tick. It should be multiplied by [Time.delta]
+     */
+    @JvmField var coolingSpeed = 0.01f
     @ClientOnly lateinit var BaseTR: TR
     @ClientOnly lateinit var EarTR: TR
-    @ClientOnly lateinit var HeartTR: TR
+    @ClientOnly lateinit var BaseHeatTR: TR
+    @ClientOnly lateinit var EarHeatTR: TR
     @JvmField @ClientOnly val heatMeta = HeatMeta()
     @ClientOnly @JvmField var scaleTime = 30f
     @ClientOnly @JvmField var maxScale = 0.3f
@@ -81,7 +86,8 @@ open class Ear(name: String) : Block(name), IComponentBlock {
     override fun load() {
         super.load()
         BaseTR = this.sub("base")
-        HeartTR = this.inMod("heimdall-heat-x$size")
+        BaseHeatTR = this.sub("base-heat")
+        EarHeatTR = this.sub("heat")
         EarTR = region
     }
 
@@ -113,6 +119,9 @@ open class Ear(name: String) : Block(name), IComponentBlock {
         override val upgrades: Map<UpgradeType, Upgrade>
             get() = this@Ear.upgrades
         override var heatShared = 0f
+            set(value) {
+                field = value.coerceIn(0f, 1f)
+            }
         // </editor-fold>
         // <editor-fold desc="Controllable">
         var unit = UnitTypes.block.create(team) as BlockUnitc
@@ -178,7 +187,7 @@ open class Ear(name: String) : Block(name), IComponentBlock {
         // </editor-fold>
         // <editor-fold desc="Properties">
         val realReloadTime: Float
-            get() = reloadTime * (1f - if (isLinkedBrain) reloadTimeI else 0f)
+            get() = reloadTime * (1f + if (isLinkedBrain) reloadTimeI else 0f)
         val realRange: Float
             get() = range * (1f + if (isLinkedBrain) rangeI else 0f)
         val realWaveWidth: Float
@@ -201,7 +210,17 @@ open class Ear(name: String) : Block(name), IComponentBlock {
                 val progress = lastRadiateTime / scaleDuration
                 scale += Interp.sine(progress) * maxScale
             }
+            Draw.z(Layer.blockAdditive)
+            heatMeta.drawHeat(heatShared) {
+                BaseHeatTR.Draw(x, y)
+            }
+            Draw.z(Layer.turret)
             EarTR.DrawSize(x, y, scale)
+            Draw.z(Layer.turretHeat)
+            heatMeta.drawHeat(heatShared) {
+                EarHeatTR.DrawSize(x, y, scale)
+            }
+            Draw.z(Layer.turret)
             Draw.z(Layer.bullet)
             for (wave in sonicWaves) {
                 val alpha = Interp.pow2Out(wave.range / realSonicRadius)
@@ -209,7 +228,6 @@ open class Ear(name: String) : Block(name), IComponentBlock {
                 Draw.alpha((1f - alpha) + 0.4f)
                 Lines.circle(wave.x, wave.y, wave.range)
             }
-            heatMeta.drawHeat(this, HeartTR, heatShared)
         }
 
         override fun drawSelect() {
@@ -221,6 +239,7 @@ open class Ear(name: String) : Block(name), IComponentBlock {
             scale.update()
             lastRadiateTime += Time.delta
             logicControlTime -= Time.delta
+            heatShared -= coolingSpeed * Time.delta
             sonicWaves.forEach {
                 it.range += waveSpeed * Time.delta
             }
@@ -293,7 +312,7 @@ open class Ear(name: String) : Block(name), IComponentBlock {
         }
 
         override fun delta(): Float {
-            return this.timeScale * Time.delta * speedScale
+            return this.timeScale * Time.delta * speedScale * (1f + heatShared)
         }
 
         val MdtUnit.isSensed: Boolean

@@ -58,6 +58,10 @@ open class Heimdall(name: String) : Block(name) {
     @JvmField var forceFieldRadiusSpeed = 0.1f
     @JvmField var forceFieldRestoreTime = 200f
     @JvmField var powerUse = 2f
+    /**
+     * Cooling per tick. It should be multiplied by [Time.delta]
+     */
+    @JvmField var coolingSpeed = 0.01f
     @ClientOnly lateinit var BuckleTRs: Array<TR>
     @ClientOnly lateinit var HeartTR: TR
     @JvmField @ClientOnly val heatMeta = HeatMeta()
@@ -103,7 +107,7 @@ open class Heimdall(name: String) : Block(name) {
     override fun load() {
         super.load()
         BuckleTRs = this.sheet("buckle", BuckleFrameNum)
-        HeartTR = this.inMod("heimdall-heat-x$size")
+        HeartTR = this.sub("heat")
     }
 
     fun addFormationPatterns(vararg patterns: IFormationPattern) {
@@ -162,6 +166,9 @@ open class Heimdall(name: String) : Block(name) {
             Side2(this)
         }
         override var heatShared = 0f
+            set(value) {
+                field = value.coerceIn(0f, 1f)
+            }
         //<editor-fold desc="Properties">
         var realRange: Float = range
         var realWaveSpeed: Float = waveSpeed
@@ -258,12 +265,13 @@ open class Heimdall(name: String) : Block(name) {
         }
 
         override fun delta(): Float {
-            return this.timeScale * Time.delta * speedScale
+            return this.timeScale * Time.delta * speedScale * (1f + heatShared)
         }
 
         override fun updateTile() {
             // Brain waves
             reloadCounter += edelta()
+            heatShared -= coolingSpeed * Time.delta
             brainWaves.forEach {
                 it.range += waveSpeed * Time.delta
             }
@@ -339,6 +347,7 @@ open class Heimdall(name: String) : Block(name) {
                 }
             }
             // Formation
+            heatMeta.drawHeat(this, HeartTR, heatShared)
             formationEffects.update(this)
         }
 

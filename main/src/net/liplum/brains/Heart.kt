@@ -34,6 +34,7 @@ import net.liplum.lib.Smooth
 import net.liplum.lib.animations.anims.Anime
 import net.liplum.lib.animations.anims.linearFrames
 import net.liplum.lib.animations.anims.randomCurTime
+import net.liplum.lib.animations.anims.setEnd
 import net.liplum.lib.bundle
 import net.liplum.lib.mixin.Mover
 import net.liplum.lib.render.HeatMeta
@@ -52,11 +53,12 @@ class Heart(name: String) : Block(name), IComponentBlock {
     @JvmField var shootPatternInit: ShootPattern.() -> Unit = {}
     // Blood
     @JvmField var blood: Blood = Blood.X
-    @JvmField var downApproachSpeed = 0.00025f
+    @JvmField var downApproachSpeed = 0.0002f
     @JvmField var upApproachSpeed = 0.0001f
     @JvmField var heatFactor = 5f
     @JvmField var heatMax = 2.5f
-    @JvmField var bloodConsumePreTick = 0.1f
+    @JvmField var temperatureConvertFactor = 0.3f
+    @JvmField var bloodConsumePreTick = 0.2f
     // Improved by Heimdall
     @JvmField var bloodCapacity = 1000f
     @JvmField var bloodCapacityI = 0.5f
@@ -185,7 +187,13 @@ class Heart(name: String) : Block(name), IComponentBlock {
         override var brain: IBrain? = null
         override val upgrades: Map<UpgradeType, Upgrade>
             get() = this@Heart.upgrades
+        /**
+         * Do not use it.
+         */
         override var heatShared = 0f
+            set(value) {
+                field = value.coerceIn(0f, 1f)
+            }
         //</editor-fold>
         //<editor-fold desc="Controllable">
         var unit = UnitTypes.block.create(team) as BlockUnitc
@@ -197,7 +205,6 @@ class Heart(name: String) : Block(name), IComponentBlock {
         }
         //</editor-fold>
         //<editor-fold desc="Heat Block">
-        // TODO: Heat
         val heat: Float
             get() = ((temperature - blood.temperature) * heatFactor).coerceAtLeast(0f)
         //</editor-fold>
@@ -342,7 +349,6 @@ class Heart(name: String) : Block(name), IComponentBlock {
                 heartbeatAnime = Anime(
                     HeartBeatTRs.linearFrames(HeartbeatDuration)
                 ).apply {
-                    isEnd = true
                     onEnd = {
                         if (lastHeartBeatTime < 10f) {
                             isEnd = false
@@ -350,6 +356,7 @@ class Heart(name: String) : Block(name), IComponentBlock {
                         }
                     }
                     randomCurTime()
+                    setEnd()
                 }
             }
         }
@@ -367,13 +374,14 @@ class Heart(name: String) : Block(name), IComponentBlock {
             if (canConvertOrConsume) {
                 consumeBloodAsEnergy()
             }
+            if (efficiency <= 0f) return
             if (isLinkedBrain) {
                 onOtherParts {
-
+                    heatShared = this@HeartBuild.heatFrac()
+                    // TODO: When connect with brain, restore health by blood.
                 }
             }
-            if (efficiency <= 0f) return
-            if (canConvertOrConsume) {
+            if (canConvertOrConsume && bloodAmount < realBloodCapacity) {
                 convertBlood()
                 bloodAmount = bloodAmount.coerceAtMost(realBloodCapacity)
             }
@@ -405,20 +413,20 @@ class Heart(name: String) : Block(name), IComponentBlock {
             if (bloodAmount >= capacity) return
             val speed = realBloodConvertSpeed * efficiency * scale.value
             for (liquid in Vars.content.liquids()) {
+                if (bloodAmount >= capacity) return
                 var amount = liquids[liquid]
                 if (amount > 0f) {
-                    amount = amount.coerceAtMost(speed)
+                    amount = amount.coerceAtMost(speed).coerceAtMost(capacity - bloodAmount)
                     // Calculate enthalpy
                     val H = liquid.calcuEnthalpy(amount)
                     bloodAmount += amount
-                    val delta = H / (blood.heatCapacity + liquid.heatCapacity) / bloodAmount
+                    val delta = (H / blood.heatCapacity / bloodAmount) * temperatureConvertFactor
                     if (liquid.temperature < temperature) {
                         temperature -= delta
                     } else {
                         temperature += delta
                     }
                     liquids.remove(liquid, amount)
-                    if (bloodAmount >= capacity) return
                 }
             }
         }

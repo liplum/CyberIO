@@ -34,7 +34,7 @@ object Welcome {
             entity.showTip()
         }
         // For debug
-        entity.showTipByID("OhNo")
+        //entity.showTipByID("OhNo")
     }
     @JvmStatic
     fun judgeWelcome() {

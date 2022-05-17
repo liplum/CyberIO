@@ -242,9 +242,7 @@ private val temp = Vec2()
 fun isDiagonalTo(
     x1: Float, y1: Float, x2: Float, y2: Float,
 ): Boolean {
-    val angle = temp.set(x1, y1).minus(x2, y2).angle()
-    println("(x1=$x1,y1=$y1),(x2=$x2,y2=$y2),$angle")
-    return (angle % 45f).isZero
+    return (temp.set(x1, y1).minus(x2, y2).angle() % 45f).isZero
 }
 fun isDiagonalTo(
     x1: Int, y1: Int, x2: Int, y2: Int,

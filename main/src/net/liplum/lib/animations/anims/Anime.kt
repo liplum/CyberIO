@@ -108,6 +108,11 @@ fun Anime.randomCurTime(): Anime {
     curTime = Mathf.random(curDuration)
     return this
 }
+fun Anime.setEnd(): Anime {
+    isEnd = true
+    index = frames.size -1
+    return this
+}
 fun Anime.loop(): Anime {
     onEnd = {
         isEnd = false
