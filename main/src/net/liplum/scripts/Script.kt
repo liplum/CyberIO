@@ -5,11 +5,11 @@ import arc.util.I18NBundle
 import mindustry.Vars
 import mindustry.core.GameState.State
 import mindustry.game.EventType.Trigger
-import net.liplum.ClientOnly
+import net.liplum.mdt.ClientOnly
 import net.liplum.Clog
 import net.liplum.lib.Res
-import net.liplum.lib.createModBundle
-import net.liplum.lib.loadMoreFrom
+import net.liplum.lib.utils.createModBundle
+import net.liplum.lib.utils.loadMoreFrom
 import net.liplum.lib.toLinkedString
 import net.liplum.scripts.ScriptLoader.load
 import opengal.core.Interpreter

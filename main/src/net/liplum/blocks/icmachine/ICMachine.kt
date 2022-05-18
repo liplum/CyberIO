@@ -2,16 +2,16 @@ package net.liplum.blocks.icmachine
 
 import arc.math.Mathf
 import arc.util.Time
-import net.liplum.ClientOnly
-import net.liplum.lib.animations.anims.Animation
-import net.liplum.lib.animations.anims.AnimationObj
-import net.liplum.lib.animations.anis.AniState
+import net.liplum.mdt.ClientOnly
+import net.liplum.mdt.animations.anims.Animation
+import net.liplum.mdt.animations.anims.AnimationObj
+import net.liplum.mdt.animations.anis.AniState
 import net.liplum.lib.SetAlpha
-import net.liplum.lib.animations.anis.config
+import net.liplum.mdt.animations.anis.config
 import net.liplum.blocks.AniedCrafter
-import net.liplum.utils.FUNC
-import net.liplum.utils.autoAnim
-import net.liplum.utils.isZero
+import net.liplum.lib.math.FUNC
+import net.liplum.mdt.utils.autoAnim
+import net.liplum.lib.utils.isZero
 
 private typealias AniStateM = AniState<ICMachine, ICMachine.ICMachineBuild>
 

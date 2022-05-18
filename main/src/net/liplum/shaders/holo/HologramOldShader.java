@@ -4,8 +4,8 @@ import arc.files.Fi;
 import arc.graphics.Texture;
 import arc.math.Mathf;
 import arc.util.Time;
+import net.liplum.CioH;
 import net.liplum.lib.shaders.ShaderBase;
-import net.liplum.utils.AtlasHKt;
 import org.jetbrains.annotations.NotNull;
 
 import static mindustry.Vars.renderer;
@@ -35,7 +35,7 @@ public class HologramOldShader extends ShaderBase {
 
     @Override
     public void loadResource() {
-        fringe = AtlasHKt.getInCio("hologram").texture;
+        fringe = CioH.getInCio("hologram").texture;
         fringe.setFilter(Texture.TextureFilter.linear);
         fringe.setWrap(Texture.TextureWrap.repeat);
     }

@@ -5,9 +5,9 @@ import mindustry.gen.Building
 import mindustry.world.Block
 import net.liplum.CanRefresh
 import net.liplum.CioMod
-import net.liplum.ClientOnly
-import net.liplum.WhenNotPaused
-import net.liplum.lib.animations.anis.*
+import net.liplum.mdt.ClientOnly
+import net.liplum.mdt.WhenNotPaused
+import net.liplum.mdt.animations.anis.*
 import net.liplum.utils.addAniStateInfo
 
 /**

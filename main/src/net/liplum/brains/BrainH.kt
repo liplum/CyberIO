@@ -6,8 +6,8 @@ import mindustry.world.meta.Stat
 import mindustry.world.meta.Stats
 import net.liplum.api.brain.IComponentBlock
 import net.liplum.api.brain.UpgradeType
-import net.liplum.lib.bundle
-import net.liplum.lib.ui.addTooltip
+import net.liplum.lib.utils.bundle
+import net.liplum.mdt.ui.addTooltip
 
 val UpgradeType.localizedName: String
     get() = "heimdall.${UpgradeType.I18ns[type].name}.name".bundle

@@ -1,6 +1,6 @@
 package net.liplum.scripts
 
-import net.liplum.ClientOnly
+import net.liplum.mdt.ClientOnly
 
 interface INpc {
     @ClientOnly

@@ -1,6 +1,6 @@
 package net.liplum.render
 
-import net.liplum.ClientOnly
+import net.liplum.mdt.ClientOnly
 import net.liplum.DebugOnly
 
 @ClientOnly

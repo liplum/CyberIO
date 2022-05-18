@@ -8,7 +8,7 @@ import mindustry.gen.Entityc
 import net.liplum.Clog.log
 import net.liplum.Meta
 import net.liplum.OnlyDebug
-import net.liplum.OnlyServer
+import net.liplum.mdt.OnlyServer
 import net.liplum.holo.HoloUnit
 import net.liplum.scripts.NpcUnit
 

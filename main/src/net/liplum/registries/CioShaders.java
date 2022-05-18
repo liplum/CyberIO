@@ -1,7 +1,7 @@
 package net.liplum.registries;
 
-import net.liplum.lib.shaders.CommonShader;
-import net.liplum.lib.shaders.ProgressShader;
+import net.liplum.mdt.shaders.CommonShader;
+import net.liplum.mdt.shaders.ProgressShader;
 import net.liplum.shaders.SurfaceShader;
 import net.liplum.shaders.TestShieldShader;
 import net.liplum.shaders.holo.HologramOldShader;

@@ -2,18 +2,21 @@ package net.liplum.blocks.icmachine
 
 import mindustry.graphics.Pal
 import mindustry.type.Item
-import net.liplum.ClientOnly
+import net.liplum.mdt.ClientOnly
 import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.blocks.AniedCrafter
-import net.liplum.lib.Draw
-import net.liplum.lib.SetAlpha
-import net.liplum.lib.animations.anis.AniState
-import net.liplum.lib.animations.anis.None
-import net.liplum.lib.animations.anis.config
-import net.liplum.lib.bundle
-import net.liplum.lib.ui.bars.AddBar
-import net.liplum.utils.*
+import net.liplum.lib.*
+import net.liplum.mdt.animations.anis.AniState
+import net.liplum.mdt.animations.anis.None
+import net.liplum.mdt.animations.anis.config
+import net.liplum.mdt.ui.bars.AddBar
+import net.liplum.lib.math.FUNC
+import net.liplum.lib.utils.bundle
+import net.liplum.lib.utils.isZero
+import net.liplum.lib.utils.percentI
+import net.liplum.lib.TR
+import net.liplum.mdt.utils.sub
 import kotlin.math.sqrt
 
 private typealias AniStateMS = AniState<ICMachineS, ICMachineS.ICMachineSBuild>

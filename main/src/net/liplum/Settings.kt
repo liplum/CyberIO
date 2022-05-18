@@ -2,6 +2,7 @@ package net.liplum
 
 import arc.Core.settings
 import mindustry.Vars
+import net.liplum.mdt.ClientOnly
 import net.liplum.scripts.KeyNotFoundException
 
 object Settings {

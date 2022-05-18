@@ -7,17 +7,24 @@ import arc.util.Time
 import arc.util.serialization.JsonValue
 import mindustry.game.EventType.Trigger
 import mindustry.io.JsonIO
-import net.liplum.*
+import net.liplum.Cio
+import net.liplum.CioMod
+import net.liplum.Meta
+import net.liplum.R
 import net.liplum.Settings.CioVersion
 import net.liplum.Settings.ClickWelcomeTimes
 import net.liplum.Settings.LastWelcomeID
 import net.liplum.Settings.ShouldShowWelcome
 import net.liplum.Settings.ShowUpdate
 import net.liplum.blocks.tmtrainer.RandomName
-import net.liplum.lib.ReferBundleWrapper
 import net.liplum.lib.Res
-import net.liplum.utils.*
-import net.liplum.welcome.Welcome.Entity.Companion.showTipByID
+import net.liplum.lib.TR
+import net.liplum.lib.math.randomByWeights
+import net.liplum.lib.utils.ReferBundleWrapper
+import net.liplum.lib.utils.allMaxBy
+import net.liplum.lib.utils.randomExcept
+import net.liplum.mdt.ClientOnly
+import net.liplum.mdt.utils.atlas
 
 @ClientOnly
 object Welcome {

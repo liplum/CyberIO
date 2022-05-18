@@ -18,11 +18,16 @@ import net.liplum.blocks.data.Sender.SenderBuild
 import net.liplum.lib.Draw
 import net.liplum.lib.ResetColor
 import net.liplum.lib.SetColor
-import net.liplum.lib.animations.anims.Animation
-import net.liplum.lib.animations.anis.AniState
-import net.liplum.lib.animations.anis.config
-import net.liplum.lib.ui.bars.AddBar
-import net.liplum.render.G
+import net.liplum.mdt.animations.anims.Animation
+import net.liplum.mdt.animations.anis.AniState
+import net.liplum.mdt.animations.anis.config
+import net.liplum.lib.utils.isZero
+import net.liplum.mdt.ui.bars.AddBar
+import net.liplum.lib.utils.toFloat
+import net.liplum.lib.TR
+import net.liplum.mdt.*
+import net.liplum.mdt.utils.*
+import net.liplum.mdt.render.G
 import net.liplum.utils.*
 
 private typealias AniStateS = AniState<Sender, SenderBuild>
@@ -37,10 +42,15 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
     @JvmField var UploadAnimDuration = 30f
     @ClientOnly @JvmField var SendingTime = 60f
     @JvmField val CheckConnectionTimer = timers++
+    @JvmField val SpeedLimitTimer = timers++
     /**
      * The max range when trying to connect. -1f means no limit.
      */
     @JvmField var maxRange = -1f
+    /**
+     * The
+     */
+    @JvmField var SpeedLimit = -1f
 
     init {
         solid = true

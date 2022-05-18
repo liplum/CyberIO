@@ -30,16 +30,25 @@ import net.liplum.api.holo.IHoloEntity.Companion.minHealth
 import net.liplum.bullets.RuvikBullet
 import net.liplum.consumer.LiquidTurretCons
 import net.liplum.lib.Draw
-import net.liplum.lib.animations.Floating
-import net.liplum.lib.bundle
+import net.liplum.mdt.animations.Floating
+import net.liplum.lib.utils.bundle
 import net.liplum.lib.delegates.Delegate1
+import net.liplum.lib.utils.isZero
 import net.liplum.lib.shaders.SD
 import net.liplum.lib.shaders.use
-import net.liplum.lib.ui.bars.AddBar
-import net.liplum.persistance.intSet
+import net.liplum.mdt.ui.bars.AddBar
+import net.liplum.lib.TR
+import net.liplum.mdt.ClientOnly
+import net.liplum.DebugOnly
+import net.liplum.mdt.Serialized
+import net.liplum.mdt.WhenNotPaused
+import net.liplum.mdt.utils.draw
+import net.liplum.mdt.utils.seconds
+import net.liplum.mdt.utils.sub
+import net.liplum.lib.persistance.intSet
 import net.liplum.registries.CioBulletTypes
 import net.liplum.registries.CioLiquids.cyberion
-import net.liplum.render.G
+import net.liplum.mdt.render.G
 import net.liplum.utils.*
 
 open class Stealth(name: String) : Turret(name) {

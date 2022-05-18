@@ -19,14 +19,18 @@ import mindustry.world.blocks.defense.turrets.PowerTurret
 import mindustry.world.blocks.defense.turrets.Turret
 import mindustry.world.draw.DrawTurret
 import mindustry.world.meta.Stat
-import net.liplum.ClientOnly
+import net.liplum.mdt.ClientOnly
 import net.liplum.R
 import net.liplum.api.IExecutioner
-import net.liplum.draw
-import net.liplum.lib.MapKeyBundle
-import net.liplum.lib.bundle
-import net.liplum.lib.mixin.shootPattern
-import net.liplum.lib.ui.ammoStats
+import net.liplum.mdt.utils.draw
+import net.liplum.lib.utils.MapKeyBundle
+import net.liplum.lib.utils.bundle
+import net.liplum.mdt.mixin.shootPattern
+import net.liplum.lib.math.quadratic
+import net.liplum.mdt.ui.ammoStats
+import net.liplum.lib.utils.format
+import net.liplum.lib.TR
+import net.liplum.mdt.utils.sub
 import net.liplum.utils.*
 
 private val P2Alpha = quadratic(0.95f, 0.35f)
@@ -71,7 +75,8 @@ open class Deleter(name: String) : PowerTurret(name), IExecutioner {
                 ))
             },
             bundle = bundleOverwrite
-        ))
+        )
+        )
     }
 
     init {

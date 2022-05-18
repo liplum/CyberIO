@@ -12,17 +12,21 @@ import mindustry.world.blocks.defense.turrets.LaserTurret
 import mindustry.world.blocks.defense.turrets.Turret
 import mindustry.world.draw.DrawTurret
 import mindustry.world.meta.BlockGroup
-import net.liplum.*
 import net.liplum.lib.Draw
 import net.liplum.lib.Observer
-import net.liplum.lib.animations.Floating
-import net.liplum.lib.animations.anims.Animation
+import net.liplum.mdt.animations.Floating
+import net.liplum.mdt.animations.anims.Animation
 import net.liplum.lib.entity.Progress
 import net.liplum.lib.entity.Queue
-import net.liplum.utils.FUNC
-import net.liplum.utils.TR
-import net.liplum.utils.autoAnim
-import net.liplum.utils.sub
+import net.liplum.lib.math.FUNC
+import net.liplum.lib.TR
+import net.liplum.mdt.CalledBySync
+import net.liplum.mdt.ClientOnly
+import net.liplum.mdt.SendDataPack
+import net.liplum.mdt.WhenNotPaused
+import net.liplum.mdt.utils.autoAnim
+import net.liplum.mdt.utils.draw
+import net.liplum.mdt.utils.sub
 
 open class Jammer(name: String) : LaserTurret(name) {
     @ClientOnly var dx = -15f

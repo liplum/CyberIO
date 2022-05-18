@@ -15,21 +15,21 @@ import mindustry.graphics.Drawf
 import mindustry.type.Liquid
 import mindustry.world.blocks.ItemSelection
 import mindustry.world.meta.BlockGroup
-import net.liplum.ClientOnly
+import net.liplum.mdt.ClientOnly
 import net.liplum.DebugOnly
-import net.liplum.Serialized
+import net.liplum.mdt.Serialized
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
 import net.liplum.lib.Draw
 import net.liplum.lib.DrawOn
-import net.liplum.lib.animations.anis.AniState
-import net.liplum.lib.animations.anis.config
+import net.liplum.mdt.animations.anis.AniState
+import net.liplum.mdt.animations.anis.config
 import net.liplum.lib.delegates.Delegate1
-import net.liplum.persistance.intSet
-import net.liplum.utils.TR
+import net.liplum.lib.persistance.intSet
+import net.liplum.lib.TR
 import net.liplum.utils.addHostInfo
-import net.liplum.utils.inMod
-import net.liplum.utils.sub
+import net.liplum.mdt.utils.inMod
+import net.liplum.mdt.utils.sub
 
 private typealias AniStateC = AniState<StreamClient, StreamClient.ClientBuild>
 

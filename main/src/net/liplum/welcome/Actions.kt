@@ -7,7 +7,7 @@ import mindustry.Vars
 import net.liplum.CioMod
 import net.liplum.R
 import net.liplum.Settings
-import net.liplum.lib.bundle
+import net.liplum.lib.utils.bundle
 import net.liplum.ui.CioUI
 import net.liplum.update.Updater
 

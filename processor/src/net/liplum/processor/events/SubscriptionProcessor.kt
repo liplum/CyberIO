@@ -88,13 +88,13 @@ class SubscriptionProcessor(
             funcList += registerFunc
             for (subscriber in subscribers) {
                 subscriber.apply {
-                    if (clientOnly) file += "net.liplum.ClientOnly{\n"
+                    if (clientOnly) file += "net.liplum.mdt.ClientOnly{\n"
                     if (debugOnly) file += "net.liplum.DebugOnly{\n"
-                    if (headlessOnly) file += "net.liplum.HeadlessOnly{\n"
-                    if (steamOnly) file += "net.liplum.SteamOnly{\n"
-                    if (unsteamOnly) file += "net.liplum.UnsteamOnly{\n"
-                    if (desktopOnly) file += "net.liplum.DesktopOnly{\n"
-                    if (mobileOnly) file += "net.liplum.MobileOnly{\n"
+                    if (headlessOnly) file += "net.liplum.mdt.HeadlessOnly{\n"
+                    if (steamOnly) file += "net.liplum.mdt.SteamOnly{\n"
+                    if (unsteamOnly) file += "net.liplum.mdt.UnsteamOnly{\n"
+                    if (desktopOnly) file += "net.liplum.mdt.DesktopOnly{\n"
+                    if (mobileOnly) file += "net.liplum.mdt.MobileOnly{\n"
                 }
                 // Start subscription
                 file += "$EventsName.run(${event}){\n"

@@ -2,7 +2,7 @@ package net.liplum.lib
 
 import arc.util.Strings
 import arc.util.Time
-import net.liplum.utils.isOdd
+import net.liplum.lib.utils.isOdd
 import org.jetbrains.annotations.Contract
 
 fun Fill(c: Char, number: Int): String {

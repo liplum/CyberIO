@@ -1,6 +1,7 @@
 package net.liplum
 
 import net.liplum.lib.delegates.Delegate
+import net.liplum.mdt.ClientOnly
 
 @ClientOnly
 object ResourceLoader {

@@ -2,7 +2,7 @@ package net.liplum.blocks.virus;
 
 import arc.graphics.Color;
 import arc.math.Mathf;
-import net.liplum.utils.JavaU;
+import net.liplum.lib.utils.JavaU;
 import org.jetbrains.annotations.Nullable;
 
 public class VirusColors {

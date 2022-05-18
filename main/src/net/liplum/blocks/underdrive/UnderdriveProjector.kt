@@ -31,14 +31,18 @@ import mindustry.world.blocks.power.PowerGenerator
 import mindustry.world.meta.BlockGroup
 import mindustry.world.meta.Stat
 import mindustry.world.meta.StatUnit
-import net.liplum.ClientOnly
+import net.liplum.mdt.ClientOnly
 import net.liplum.DebugOnly
 import net.liplum.R
-import net.liplum.Serialized
-import net.liplum.lib.bundle
-import net.liplum.lib.ui.bars.AddBar
-import net.liplum.lib.ui.bars.ReverseBar
-import net.liplum.render.G
+import net.liplum.mdt.Serialized
+import net.liplum.lib.utils.bundle
+import net.liplum.mdt.ui.bars.AddBar
+import net.liplum.mdt.ui.bars.ReverseBar
+import net.liplum.lib.utils.format
+import net.liplum.lib.utils.percentI
+import net.liplum.mdt.utils.sub
+import net.liplum.mdt.utils.toCenterWorldXY
+import net.liplum.mdt.render.G
 import net.liplum.utils.*
 import kotlin.math.max
 

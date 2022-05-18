@@ -16,16 +16,29 @@ import mindustry.world.blocks.defense.turrets.PowerTurret
 import mindustry.world.meta.Stat
 import net.liplum.*
 import net.liplum.api.brain.*
-import net.liplum.lib.Draw
-import net.liplum.lib.animations.anims.Anime
-import net.liplum.lib.animations.anims.genFramesBy
-import net.liplum.lib.animations.anims.randomCurTime
-import net.liplum.lib.render.HeatMeta
-import net.liplum.lib.render.drawHeat
-import net.liplum.lib.ui.ammoStats
-import net.liplum.math.Polar
-import net.liplum.render.G
+import net.liplum.lib.*
+import net.liplum.mdt.animations.anims.Anime
+import net.liplum.mdt.animations.anims.genFramesBy
+import net.liplum.mdt.animations.anims.randomCurTime
+import net.liplum.mdt.render.HeatMeta
+import net.liplum.mdt.render.drawHeat
+import net.liplum.mdt.ui.ammoStats
+import net.liplum.lib.math.Polar
+import net.liplum.lib.utils.EmptySounds
+import net.liplum.lib.math.approachR
+import net.liplum.lib.utils.progress
+import net.liplum.lib.math.radian
+import net.liplum.lib.TR
+import net.liplum.lib.TRs
+import net.liplum.mdt.ClientOnly
+import net.liplum.DebugOnly
+import net.liplum.mdt.WhenNotPaused
+import net.liplum.mdt.utils.draw
+import net.liplum.mdt.utils.sheet
+import net.liplum.mdt.utils.sub
+import net.liplum.mdt.render.G
 import net.liplum.utils.*
+import kotlin.collections.random
 
 open class Eye(name: String) : PowerTurret(name), IComponentBlock {
     lateinit var normalBullet: BulletType

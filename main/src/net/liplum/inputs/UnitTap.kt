@@ -6,7 +6,7 @@ import arc.input.KeyCode
 import mindustry.Vars
 import mindustry.entities.Units
 import mindustry.gen.Player
-import net.liplum.ClientOnly
+import net.liplum.mdt.ClientOnly
 import net.liplum.utils.MdtUnit
 
 @ClientOnly

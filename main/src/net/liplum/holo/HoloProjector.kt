@@ -35,16 +35,17 @@ import mindustry.world.meta.Stat
 import net.liplum.*
 import net.liplum.consumer.DynamicContinuousLiquidCons
 import net.liplum.lib.Draw
-import net.liplum.lib.bundle
+import net.liplum.lib.utils.bundle
 import net.liplum.lib.shaders.SD
 import net.liplum.lib.shaders.use
-import net.liplum.lib.ui.addItemSelectorDefault
-import net.liplum.lib.ui.bars.AddBar
-import net.liplum.lib.ui.bars.removeItemsInBar
+import net.liplum.mdt.ui.addItemSelectorDefault
+import net.liplum.mdt.ui.bars.AddBar
+import net.liplum.mdt.ui.bars.removeItemsInBar
 import net.liplum.registries.CioLiquids.cyberion
-import net.liplum.utils.ID
-import net.liplum.utils.ItemTypeAmount
-import net.liplum.utils.percentI
+import net.liplum.mdt.utils.ID
+import net.liplum.mdt.utils.ItemTypeAmount
+import net.liplum.lib.utils.percentI
+import net.liplum.mdt.*
 import kotlin.math.max
 
 open class HoloProjector(name: String) : Block(name) {

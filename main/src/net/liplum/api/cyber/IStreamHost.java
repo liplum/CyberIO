@@ -3,8 +3,8 @@ package net.liplum.api.cyber;
 import arc.graphics.Color;
 import arc.struct.OrderedSet;
 import mindustry.type.Liquid;
-import net.liplum.ClientOnly;
-import net.liplum.SendDataPack;
+import net.liplum.mdt.ClientOnly;
+import net.liplum.mdt.SendDataPack;
 import org.jetbrains.annotations.NotNull;
 
 public interface IStreamHost extends IStreamNode {

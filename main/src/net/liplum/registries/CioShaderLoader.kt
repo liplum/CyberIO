@@ -4,12 +4,13 @@ import arc.files.Fi
 import mindustry.Vars
 import mindustry.graphics.Shaders.getShaderFi
 import net.liplum.CioMod
-import net.liplum.ClientOnly
+import net.liplum.mdt.ClientOnly
 import net.liplum.R
 import net.liplum.lib.shaders.*
+import net.liplum.mdt.shaders.CommonShader
+import net.liplum.mdt.shaders.ProgressShader
 import net.liplum.registries.CioShaders.*
 import net.liplum.shaders.SurfaceShader
-import net.liplum.shaders.TestShieldShader
 import net.liplum.shaders.holo.HologramOldShader
 import net.liplum.shaders.holo.HologramShader
 import net.liplum.useCompatible

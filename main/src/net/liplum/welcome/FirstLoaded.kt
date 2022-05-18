@@ -6,8 +6,11 @@ import mindustry.Vars
 import mindustry.ui.BorderImage
 import mindustry.ui.dialogs.BaseDialog
 import net.liplum.*
-import net.liplum.lib.ReferBundleWrapper
+import net.liplum.lib.utils.ReferBundleWrapper
 import net.liplum.lib.Res
+import net.liplum.mdt.ClientOnly
+import net.liplum.mdt.DesktopOnly
+import net.liplum.mdt.Else
 import net.liplum.utils.loadDynamicAsync
 
 @ClientOnly

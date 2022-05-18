@@ -3,10 +3,11 @@ package net.liplum.blocks.prism;
 import arc.graphics.g2d.TextureRegion;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
-import net.liplum.ClientOnly;
-import net.liplum.math.Polar;
-import net.liplum.persistance.RWU;
-import net.liplum.utils.ByteU;
+import net.liplum.lib.utils.ByteH;
+import net.liplum.mdt.ClientOnly;
+import net.liplum.lib.math.Polar;
+import net.liplum.lib.utils.ByteH;
+import net.liplum.lib.persistance.RWU;
 
 public class Crystal {
     private static final int ClockwisePos = 0;
@@ -41,37 +42,37 @@ public class Crystal {
     }
 
     public boolean isClockwise() {
-        return ByteU.isOn(data, ClockwisePos);
+        return ByteH.isOn(data, ClockwisePos);
     }
 
     public void setClockwise(boolean clockwise) {
         if (clockwise)
-            data = ByteU.on(data, ClockwisePos);
+            data = ByteH.on(data, ClockwisePos);
         else
-            data = ByteU.off(data, ClockwisePos);
+            data = ByteH.off(data, ClockwisePos);
     }
 
     public boolean isRemoved() {
-        return ByteU.isOn(data, RemovedPos);
+        return ByteH.isOn(data, RemovedPos);
     }
 
     public void setRemoved(boolean removed) {
         if (removed) {
-            data = ByteU.on(data, RemovedPos);
+            data = ByteH.on(data, RemovedPos);
             setAwaitAdding(false);
         } else
-            data = ByteU.off(data, RemovedPos);
+            data = ByteH.off(data, RemovedPos);
     }
 
     public boolean isAwaitAdding() {
-        return ByteU.isOn(data, AwaitAddingPos);
+        return ByteH.isOn(data, AwaitAddingPos);
     }
 
     public void setAwaitAdding(boolean awaitAdding) {
         if (awaitAdding) {
-            data = ByteU.on(data, AwaitAddingPos);
+            data = ByteH.on(data, AwaitAddingPos);
             setRemoved(false);
         } else
-            data = ByteU.off(data, AwaitAddingPos);
+            data = ByteH.off(data, AwaitAddingPos);
     }
 }

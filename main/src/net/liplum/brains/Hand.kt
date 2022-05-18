@@ -7,14 +7,14 @@ import mindustry.gen.BlockUnitc
 import mindustry.gen.Building
 import mindustry.world.Block
 import mindustry.world.blocks.ControlBlock
-import net.liplum.ClientOnly
+import net.liplum.mdt.ClientOnly
 import net.liplum.api.brain.*
 import net.liplum.lib.Tx
 import net.liplum.lib.skeletal.Bone
 import net.liplum.lib.skeletal.Skeleton
 import net.liplum.lib.skeletal.Skin
 import net.liplum.utils.MdtUnit
-import net.liplum.utils.inMod
+import net.liplum.mdt.utils.inMod
 
 open class Hand(name: String) : Block(name), IComponentBlock {
     override val upgrades: MutableMap<UpgradeType, Upgrade> = HashMap()

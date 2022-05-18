@@ -15,9 +15,9 @@ import net.liplum.api.cyber.IDataReceiver
 import net.liplum.api.cyber.IDataSender
 import net.liplum.api.cyber.IStreamClient
 import net.liplum.api.cyber.IStreamHost
-import net.liplum.lib.animations.anis.IAniSMedBuild
-import net.liplum.lib.bundle
-import net.liplum.lib.ui.bars.AddBar
+import net.liplum.mdt.animations.anis.IAniSMedBuild
+import net.liplum.mdt.ui.bars.AddBar
+import net.liplum.lib.utils.*
 
 fun Block.addTeamInfo() {
     AddBar<Building>(R.Bar.TeamN,

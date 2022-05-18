@@ -9,10 +9,11 @@ import mindustry.gen.Tex
 import net.liplum.Debug
 import net.liplum.R
 import net.liplum.inputs.Screen
-import net.liplum.lib.bundle
-import net.liplum.lib.lock
-import net.liplum.lib.ui.NewBaseDialog
-import net.liplum.utils.ForEachUnlockableContent
+import net.liplum.lib.utils.bundle
+import net.liplum.mdt.lock
+import net.liplum.mdt.ui.DatabaseSelectorDialog
+import net.liplum.mdt.ui.NewBaseDialog
+import net.liplum.mdt.utils.ForEachUnlockableContent
 
 object DebugUI {
     @JvmStatic

@@ -14,21 +14,21 @@ import mindustry.graphics.Drawf
 import mindustry.logic.LAccess
 import mindustry.type.Liquid
 import mindustry.ui.Bar
-import net.liplum.ClientOnly
+import net.liplum.mdt.ClientOnly
 import net.liplum.DebugOnly
 import net.liplum.R
-import net.liplum.Serialized
+import net.liplum.mdt.Serialized
 import net.liplum.api.cyber.*
 import net.liplum.lib.DrawOn
 import net.liplum.lib.delegates.Delegate1
-import net.liplum.lib.mixin.total
-import net.liplum.lib.ui.bars.appendDisplayLiquidsDynamic
-import net.liplum.lib.ui.bars.genAllLiquidBars
-import net.liplum.lib.ui.bars.removeLiquidInBar
-import net.liplum.persistance.intSet
-import net.liplum.utils.ForProximity
+import net.liplum.mdt.mixin.total
+import net.liplum.mdt.ui.bars.appendDisplayLiquidsDynamic
+import net.liplum.mdt.ui.bars.genAllLiquidBars
+import net.liplum.mdt.ui.bars.removeLiquidInBar
+import net.liplum.lib.persistance.intSet
+import net.liplum.mdt.utils.ForProximity
 import net.liplum.utils.addHostInfo
-import net.liplum.utils.buildAt
+import net.liplum.mdt.utils.buildAt
 
 /**
  * Steam server is also a [IStreamClient].

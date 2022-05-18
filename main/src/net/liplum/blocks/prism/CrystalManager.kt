@@ -5,13 +5,13 @@ import arc.struct.OrderedSet
 import arc.struct.Seq
 import arc.util.io.Reads
 import arc.util.io.Writes
-import net.liplum.ClientOnly
-import net.liplum.persistance.intSet
-import net.liplum.persistance.readSeq
-import net.liplum.persistance.writeSeq
-import net.liplum.utils.TE
-import net.liplum.utils.build
-import net.liplum.utils.exists
+import net.liplum.mdt.ClientOnly
+import net.liplum.lib.persistance.intSet
+import net.liplum.lib.persistance.readSeq
+import net.liplum.lib.persistance.writeSeq
+import net.liplum.mdt.utils.TE
+import net.liplum.mdt.utils.build
+import net.liplum.mdt.utils.exists
 
 enum class Status {
     Shrinking, Expending

@@ -14,25 +14,25 @@ import mindustry.gen.Building
 import mindustry.type.Item
 import mindustry.world.blocks.ItemSelection
 import mindustry.world.meta.BlockGroup
-import net.liplum.ClientOnly
+import net.liplum.mdt.ClientOnly
 import net.liplum.R
-import net.liplum.Serialized
+import net.liplum.mdt.Serialized
 import net.liplum.UndebugOnly
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
 import net.liplum.blocks.data.Receiver.ReceiverBuild
 import net.liplum.lib.Draw
 import net.liplum.lib.SetColor
-import net.liplum.lib.animations.anims.Animation
-import net.liplum.lib.animations.anis.AniState
-import net.liplum.lib.animations.anis.config
+import net.liplum.mdt.animations.anims.Animation
+import net.liplum.mdt.animations.anis.AniState
+import net.liplum.mdt.animations.anis.config
 import net.liplum.lib.delegates.Delegate1
-import net.liplum.lib.ui.bars.removeItemsInBar
-import net.liplum.persistance.intSet
-import net.liplum.utils.TR
+import net.liplum.mdt.ui.bars.removeItemsInBar
+import net.liplum.lib.persistance.intSet
+import net.liplum.lib.TR
 import net.liplum.utils.addSenderInfo
-import net.liplum.utils.autoAnimInMod
-import net.liplum.utils.inMod
+import net.liplum.mdt.utils.autoAnimInMod
+import net.liplum.mdt.utils.inMod
 
 private typealias AniStateR = AniState<Receiver, ReceiverBuild>
 

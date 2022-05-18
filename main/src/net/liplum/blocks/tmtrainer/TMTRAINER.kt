@@ -11,23 +11,26 @@ import arc.util.Time
 import mindustry.Vars
 import mindustry.gen.Building
 import mindustry.graphics.Drawf
-import mindustry.graphics.Layer
 import mindustry.type.Category
 import mindustry.world.blocks.defense.turrets.ItemTurret
 import mindustry.world.draw.DrawBlock
 import mindustry.world.draw.DrawMulti
 import mindustry.world.draw.DrawRegion
 import mindustry.world.meta.StatUnit
-import net.liplum.ClientOnly
-import net.liplum.WhenNotPaused
-import net.liplum.lib.animations.anims.Animation
-import net.liplum.lib.animations.anims.AnimationObj
-import net.liplum.lib.animations.anims.ITimeModifier
-import net.liplum.lib.mixin.drawRotation
-import net.liplum.lib.mixin.drawX
-import net.liplum.lib.mixin.drawY
-import net.liplum.math.Polar
-import net.liplum.utils.*
+import net.liplum.mdt.ClientOnly
+import net.liplum.mdt.WhenNotPaused
+import net.liplum.mdt.animations.anims.Animation
+import net.liplum.mdt.animations.anims.AnimationObj
+import net.liplum.mdt.animations.anims.ITimeModifier
+import net.liplum.mdt.mixin.drawRotation
+import net.liplum.mdt.mixin.drawX
+import net.liplum.mdt.mixin.drawY
+import net.liplum.lib.math.Polar
+import net.liplum.lib.math.radian
+import net.liplum.lib.TR
+import net.liplum.mdt.utils.autoAnim
+import net.liplum.mdt.utils.selfTR
+import net.liplum.mdt.utils.sub
 
 open class TMTRAINER(name: String) : ItemTurret(name) {
     @ClientOnly lateinit var CoreAnim: Animation

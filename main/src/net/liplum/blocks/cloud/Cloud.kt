@@ -15,16 +15,24 @@ import net.liplum.*
 import net.liplum.api.cyber.*
 import net.liplum.lib.Draw
 import net.liplum.lib.DrawSize
-import net.liplum.lib.animations.Floating
-import net.liplum.lib.animations.anims.Animation
-import net.liplum.lib.animations.anims.IFrameIndexer
-import net.liplum.lib.animations.anims.ixAuto
-import net.liplum.lib.animations.anis.*
-import net.liplum.lib.animations.blocks.*
+import net.liplum.mdt.animations.Floating
+import net.liplum.mdt.animations.anims.Animation
+import net.liplum.mdt.animations.anims.IFrameIndexer
+import net.liplum.mdt.animations.anims.ixAuto
+import net.liplum.mdt.animations.anis.AniConfig
+import net.liplum.mdt.animations.anis.AniState
+import net.liplum.mdt.animations.anis.config
+import net.liplum.lib.utils.bundle
 import net.liplum.lib.delegates.Delegate1
-import net.liplum.lib.ui.bars.removeItemsInBar
-import net.liplum.persistance.intSet
-import net.liplum.render.G
+import net.liplum.mdt.animations.blocks.*
+import net.liplum.mdt.ui.bars.removeItemsInBar
+import net.liplum.lib.TR
+import net.liplum.mdt.*
+import net.liplum.mdt.utils.autoAnim
+import net.liplum.mdt.utils.inMod
+import net.liplum.mdt.utils.sub
+import net.liplum.lib.persistance.intSet
+import net.liplum.mdt.render.G
 import net.liplum.utils.*
 
 private typealias Anim = Animation
@@ -219,7 +227,7 @@ open class Cloud(name: String) : PowerBlock(name) {
         }
 
         override fun onConfigureBuildTapped(other: Building): Boolean {
-            if (this === other) {
+            if (this == other) {
                 deselect()
                 configure(null)
                 return false
@@ -233,6 +241,11 @@ open class Cloud(name: String) : PowerBlock(name) {
                 return false
             }
             if (other is IDataReceiver) {
+                if (other is CloudBuild) {
+                    "${block.contentType}.${block.name}.self-connect".bundle
+                        .drawTextOn(other)
+                    return false
+                }
                 if (!canMultipleConnect()) {
                     deselect()
                 }

@@ -1,7 +1,7 @@
 package net.liplum.lib.skeletal;
 
 import arc.math.geom.Vec2;
-import net.liplum.utils.MathH;
+import net.liplum.lib.math.MathH;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;

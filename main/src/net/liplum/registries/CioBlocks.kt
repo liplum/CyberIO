@@ -58,10 +58,12 @@ import net.liplum.bullets.BBulletType
 import net.liplum.bullets.RuvikBullet
 import net.liplum.bullets.STEM_VERSION
 import net.liplum.holo.*
-import net.liplum.lib.animations.ganim.globalAnim
-import net.liplum.render.DrawConstruct
+import net.liplum.DebugOnly
+import net.liplum.ExperimentalOnly
+import net.liplum.mdt.animations.ganim.globalAnim
+import net.liplum.mdt.render.DrawConstruct
 import net.liplum.seffects.StaticFx
-import net.liplum.ui.DynamicContentInfoDialog.Companion.registerDynamicInfo
+import net.liplum.mdt.ui.DynamicContentInfoDialog.Companion.registerDynamicInfo
 
 object CioBlocks {
     @JvmStatic lateinit var icMachine: GenericCrafter

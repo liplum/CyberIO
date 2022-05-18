@@ -8,20 +8,20 @@ import mindustry.gen.Building
 import mindustry.world.Block
 import mindustry.world.meta.BlockFlag
 import mindustry.world.meta.BlockGroup
-import net.liplum.ClientOnly
 import net.liplum.R
-import net.liplum.WhenNotPaused
 import net.liplum.blocks.prism.Prism.PrismBuild
-import net.liplum.lib.animations.anims.Animation
-import net.liplum.lib.animations.anims.AnimationObj
-import net.liplum.lib.animations.anims.pingPong
-import net.liplum.lib.bundle
-import net.liplum.lib.ui.bars.AddBar
-import net.liplum.render.drawSurroundingRect
-import net.liplum.utils.TE
-import net.liplum.utils.autoAnim
-import net.liplum.utils.exists
-import net.liplum.utils.isDiagonalTo
+import net.liplum.lib.utils.bundle
+import net.liplum.mdt.ClientOnly
+import net.liplum.mdt.WhenNotPaused
+import net.liplum.mdt.animations.anims.Animation
+import net.liplum.mdt.animations.anims.AnimationObj
+import net.liplum.mdt.animations.anims.pingPong
+import net.liplum.mdt.render.drawSurroundingRect
+import net.liplum.mdt.ui.bars.AddBar
+import net.liplum.mdt.utils.TE
+import net.liplum.mdt.utils.autoAnim
+import net.liplum.mdt.utils.exists
+import net.liplum.mdt.utils.isDiagonalTo
 
 open class PrismObelisk(name: String) : Block(name) {
     @JvmField var prismType: Prism? = null

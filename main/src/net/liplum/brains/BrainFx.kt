@@ -13,9 +13,9 @@ import net.liplum.Cio
 import net.liplum.R
 import net.liplum.ResourceLoader
 import net.liplum.lib.DrawSize
-import net.liplum.utils.TR
-import net.liplum.utils.progress
-import net.liplum.utils.sheet
+import net.liplum.lib.TR
+import net.liplum.lib.utils.progress
+import net.liplum.mdt.utils.sheet
 
 object BrainFx {
     val eyeCharge = Effect(38f) {

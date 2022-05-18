@@ -8,8 +8,8 @@ import mindustry.gen.Building
 import mindustry.graphics.Pal
 import net.liplum.R
 import net.liplum.bullets.BBulletType
-import net.liplum.lib.copyFrom
-import net.liplum.utils.ArrayList
+import net.liplum.lib.utils.copyFrom
+import net.liplum.lib.utils.ArrayList
 
 val BulletType.isTintIgnored: Boolean
     get() = this in IgnoredBullets || this::class.java in IgnoredClass

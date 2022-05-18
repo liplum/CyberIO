@@ -1,16 +1,10 @@
 package net.liplum.utils
 
-import arc.Core
-import arc.assets.loaders.SoundLoader
 import arc.audio.Sound
-import arc.func.Cons
 import mindustry.Vars
-import net.liplum.ClientOnly
 import net.liplum.R
-
-val EmptySound: Sound by lazy {
-    Sound()
-}
+import net.liplum.mdt.utils.EmptySound
+import net.liplum.mdt.utils.loadSound
 
 fun loadOgg(name: String): Sound =
     loadSound(R.Sound.OGG(name))
@@ -42,16 +36,3 @@ fun String.LoadSounds(number: Int): Array<Sound> =
     Array(number) {
         loadAuto(this + it)
     }
-
-fun loadSound(path: String): Sound {
-    ClientOnly {
-        val sound = Sound()
-        Core.assets.load(
-            path, Sound::class.java, SoundLoader.SoundParameter(sound)
-        ).errored = Cons {
-            it.printStackTrace()
-        }
-        return sound
-    }
-    return EmptySound
-}

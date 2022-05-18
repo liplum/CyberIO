@@ -6,15 +6,17 @@ import mindustry.Vars
 import mindustry.gen.Building
 import mindustry.world.Block
 import mindustry.world.meta.StatUnit.*
-import net.liplum.ClientOnly
+import net.liplum.mdt.ClientOnly
 import net.liplum.api.brain.Direction2.Companion.Part0Pos
 import net.liplum.api.brain.Direction2.Companion.Part1Pos
 import net.liplum.api.cyber.*
 import net.liplum.brains.FormationEffects
 import net.liplum.lib.delegates.Delegate
-import net.liplum.lib.percent
-import net.liplum.lib.value
-import net.liplum.utils.*
+import net.liplum.lib.utils.isOn
+import net.liplum.lib.utils.on
+import net.liplum.lib.utils.percent
+import net.liplum.lib.utils.value
+import net.liplum.mdt.utils.*
 import kotlin.math.absoluteValue
 
 typealias UT = UpgradeType

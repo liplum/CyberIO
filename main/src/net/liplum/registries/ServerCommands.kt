@@ -2,7 +2,7 @@ package net.liplum.registries
 
 import arc.util.CommandHandler
 import net.liplum.Config
-import net.liplum.HeadlessOnly
+import net.liplum.mdt.HeadlessOnly
 import net.liplum.R
 import net.liplum.update.Updater
 

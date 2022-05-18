@@ -3,8 +3,8 @@ package net.liplum.blocks.cloud
 import arc.struct.OrderedSet
 import arc.util.Time
 import mindustry.Vars
-import net.liplum.ClientOnly
-import net.liplum.lib.animations.blocks.BlockGroupObj
+import net.liplum.mdt.ClientOnly
+import net.liplum.mdt.animations.blocks.BlockGroupObj
 import net.liplum.api.cyber.*
 
 open class CloudInfo(val sharedRoom: SharedRoom) {
@@ -42,7 +42,7 @@ open class CloudInfo(val sharedRoom: SharedRoom) {
                 val reqs = receiver.requirements
                 if (reqs == null) {
                     var i = curItemIndex
-                    while (i <= items.size) {
+                    while (i < items.size) {
                         val item = items[i]
                         if (itemModule.has(item) &&
                             receiver.acceptedAmount(shardBuild, item).isAccepted()

@@ -3,7 +3,7 @@ package net.liplum.blocks.prism
 import mindustry.entities.bullet.BulletType
 import mindustry.gen.Bullet
 import mindustry.type.UnitType
-import net.liplum.utils.directSuperClz
+import net.liplum.lib.utils.directSuperClz
 
 enum class PrismData {
     Duplicate

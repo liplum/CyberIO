@@ -11,15 +11,16 @@ import mindustry.gen.Building
 import mindustry.type.Item
 import mindustry.type.Liquid
 import mindustry.world.Block
-import net.liplum.ClientOnly
+import net.liplum.mdt.ClientOnly
 import net.liplum.R
 import net.liplum.Settings
-import net.liplum.lib.bundle
-import net.liplum.render.G
-import net.liplum.render.Text
-import net.liplum.render.Toaster
-import net.liplum.render.fadeInOutPct
-import net.liplum.utils.*
+import net.liplum.lib.utils.Or
+import net.liplum.lib.utils.bundle
+import net.liplum.mdt.utils.*
+import net.liplum.mdt.render.G
+import net.liplum.mdt.render.Text
+import net.liplum.mdt.render.Toaster
+import net.liplum.mdt.render.fadeInOutPct
 
 @ClientOnly
 val ArrowDensity: Float
@@ -467,6 +468,19 @@ fun Building.drawOverRangeOn(other: Building) {
             setText(it, tip)
             it.color.set(R.C.RedAlert).a(fadeInOutPct(ToastTimeFadePercent))
             it.draw(tip, other.x, other.y + 1f, Align.center)
+        }
+    }
+}
+@ClientOnly
+fun String.drawTextOn(
+    other: Building,
+    color: Color = R.C.RedAlert
+) {
+    Toaster.post(ToastTime) {
+        Text.drawText {
+            setText(it, this@drawTextOn)
+            it.color.set(color).a(fadeInOutPct(ToastTimeFadePercent))
+            it.draw(this@drawTextOn, other.x, other.y + 1f, Align.center)
         }
     }
 }

@@ -18,9 +18,20 @@ import mindustry.world.consumers.ConsumePowerCondition
 import mindustry.world.meta.Stat
 import net.liplum.*
 import net.liplum.lib.Draw
+import net.liplum.lib.math.approachR
 import net.liplum.lib.entity.RadiationArray
-import net.liplum.math.Polar
-import net.liplum.render.G
+import net.liplum.lib.utils.isZero
+import net.liplum.lib.math.Polar
+import net.liplum.lib.math.radian
+import net.liplum.lib.TR
+import net.liplum.mdt.ClientOnly
+import net.liplum.DebugOnly
+import net.liplum.mdt.Serialized
+import net.liplum.mdt.WhenNotPaused
+import net.liplum.mdt.utils.sub
+import net.liplum.mdt.utils.toCenterWorldXY
+import net.liplum.mdt.utils.worldXY
+import net.liplum.mdt.render.G
 import net.liplum.utils.*
 import kotlin.math.min
 

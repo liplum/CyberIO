@@ -19,14 +19,15 @@ import mindustry.world.Block
 import mindustry.world.Tile
 import net.liplum.*
 import net.liplum.api.virus.UninfectedBlocksRegistry
-import net.liplum.lib.bundle
+import net.liplum.lib.utils.bundle
 import net.liplum.lib.shaders.SD
 import net.liplum.lib.shaders.use
-import net.liplum.lib.ui.bars.AddBar
-import net.liplum.lib.yesNo
-import net.liplum.utils.off
-import net.liplum.utils.on
-import net.liplum.utils.sub
+import net.liplum.mdt.ui.bars.AddBar
+import net.liplum.lib.utils.yesNo
+import net.liplum.lib.utils.off
+import net.liplum.lib.utils.on
+import net.liplum.mdt.*
+import net.liplum.mdt.utils.sub
 
 typealias UBR = UninfectedBlocksRegistry
 

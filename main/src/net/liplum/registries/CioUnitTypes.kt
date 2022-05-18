@@ -27,9 +27,9 @@ import net.liplum.bullets.STEM_VERSION
 import net.liplum.flesh.BrainUnitType
 import net.liplum.holo.*
 import net.liplum.scripts.NpcUnitType
-import net.liplum.utils.NewUnitType
-import net.liplum.utils.registerPayloadSource
-import net.liplum.utils.registerUnitType
+import net.liplum.mdt.utils.NewUnitType
+import net.liplum.mdt.utils.registerPayloadSource
+import net.liplum.mdt.utils.registerUnitType
 
 object CioUnitTypes {
     @JvmStatic lateinit var holoMiner: HoloUnitType

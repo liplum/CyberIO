@@ -17,14 +17,14 @@ import mindustry.graphics.Drawf
 import mindustry.graphics.Layer
 import mindustry.logic.LAccess
 import mindustry.world.blocks.ConstructBlock.ConstructBuild
-import net.liplum.ClientOnly
+import net.liplum.mdt.ClientOnly
 import net.liplum.R
-import net.liplum.Serialized
+import net.liplum.mdt.Serialized
 import net.liplum.holo.HoloProjector.HoloPBuild
 import net.liplum.registries.EntityRegistry
-import net.liplum.render.G
-import net.liplum.utils.build
-import net.liplum.utils.exists
+import net.liplum.mdt.render.G
+import net.liplum.mdt.utils.build
+import net.liplum.mdt.utils.exists
 import net.liplum.utils.hasShields
 
 open class HoloUnit : UnitEntity() {

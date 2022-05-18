@@ -5,8 +5,8 @@ import mindustry.gen.Building
 import mindustry.type.LiquidStack
 import mindustry.ui.ReqImage
 import mindustry.world.consumers.Consume
-import net.liplum.lib.mixin.has
-import net.liplum.utils.toFloat
+import net.liplum.mdt.mixin.has
+import net.liplum.lib.utils.toFloat
 
 open class DynamicOnceLiquidsCons(
     val liquids: (Building) -> Array<LiquidStack>,

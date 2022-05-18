@@ -16,7 +16,8 @@ import net.liplum.blocks.cloud.LiplumCloud
 import net.liplum.blocks.cloud.SharedRoom
 import net.liplum.gen.EventRegistry
 import net.liplum.inputs.UnitTap
-import net.liplum.lib.animations.ganim.GlobalAnimation
+import net.liplum.mdt.*
+import net.liplum.mdt.animations.ganim.GlobalAnimation
 import net.liplum.registries.*
 import net.liplum.registries.ServerCommands.registerCioCmds
 import net.liplum.render.TestShader

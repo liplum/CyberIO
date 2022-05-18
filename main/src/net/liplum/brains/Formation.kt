@@ -1,6 +1,6 @@
 package net.liplum.brains
 
-import net.liplum.ClientOnly
+import net.liplum.mdt.ClientOnly
 import net.liplum.api.brain.*
 import net.liplum.lib.toLinkedString
 

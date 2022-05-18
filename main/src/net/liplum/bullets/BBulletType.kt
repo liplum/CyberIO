@@ -11,9 +11,9 @@ import mindustry.entities.Lightning
 import mindustry.entities.bullet.BulletType
 import mindustry.gen.Bullet
 import net.liplum.lib.DrawSize
-import net.liplum.utils.EmptyTR
-import net.liplum.utils.TR
-import net.liplum.utils.atlas
+import net.liplum.lib.EmptyTR
+import net.liplum.lib.TR
+import net.liplum.mdt.utils.atlas
 
 class BBulletType() : BulletType() {
     var scale: (Bullet) -> Float = { 1f }

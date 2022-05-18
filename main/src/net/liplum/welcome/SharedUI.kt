@@ -9,8 +9,8 @@ import arc.scene.ui.layout.Cell
 import arc.scene.ui.layout.Table
 import arc.scene.utils.Elem
 import arc.util.Scaling
-import net.liplum.DesktopOnly
-import net.liplum.utils.TR
+import net.liplum.mdt.DesktopOnly
+import net.liplum.lib.TR
 
 internal fun Dialog.addPoster(
     icon: TR,

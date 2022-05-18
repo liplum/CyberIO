@@ -14,7 +14,7 @@ import mindustry.entities.bullet.BulletType
 import mindustry.entities.bullet.LiquidBulletType
 import mindustry.entities.pattern.ShootPattern
 import mindustry.gen.Bullet
-import net.liplum.lib.mixin.Mover
+import net.liplum.mdt.mixin.Mover
 
 @Deprecated(
     "Just for design.",

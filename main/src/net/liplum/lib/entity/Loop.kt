@@ -2,7 +2,7 @@ package net.liplum.lib.entity
 
 import arc.util.io.Reads
 import arc.util.io.Writes
-import net.liplum.persistance.IRWable
+import net.liplum.lib.persistance.IRWable
 
 open class Progress(progress: Float = 0f) : IRWable {
     open var progress: Float = progress

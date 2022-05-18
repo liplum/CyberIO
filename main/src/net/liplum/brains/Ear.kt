@@ -22,17 +22,23 @@ import mindustry.world.Block
 import mindustry.world.blocks.ControlBlock
 import mindustry.world.meta.Stat
 import mindustry.world.meta.StatUnit
-import net.liplum.ClientOnly
 import net.liplum.DebugOnly
 import net.liplum.R
-import net.liplum.Serialized
 import net.liplum.api.brain.*
 import net.liplum.lib.Draw
 import net.liplum.lib.DrawSize
-import net.liplum.lib.render.HeatMeta
-import net.liplum.lib.render.drawHeat
-import net.liplum.render.G
-import net.liplum.utils.*
+import net.liplum.lib.TR
+import net.liplum.lib.utils.invoke
+import net.liplum.lib.utils.isZero
+import net.liplum.lib.utils.toDouble
+import net.liplum.mdt.ClientOnly
+import net.liplum.mdt.Serialized
+import net.liplum.mdt.render.G
+import net.liplum.mdt.render.HeatMeta
+import net.liplum.mdt.render.drawHeat
+import net.liplum.mdt.utils.sub
+import net.liplum.utils.MdtUnit
+import net.liplum.utils.addBrainInfo
 
 open class Ear(name: String) : Block(name), IComponentBlock {
     @JvmField var waveSpeed = 2.5f

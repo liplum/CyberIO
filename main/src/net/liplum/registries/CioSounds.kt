@@ -2,7 +2,7 @@ package net.liplum.registries
 
 import arc.audio.Sound
 import mindustry.gen.Sounds
-import net.liplum.utils.EmptySounds
+import net.liplum.lib.utils.EmptySounds
 import net.liplum.utils.LoadSound
 import net.liplum.utils.LoadSounds
 
