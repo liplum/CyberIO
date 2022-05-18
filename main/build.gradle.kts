@@ -8,7 +8,8 @@ plugins {
     java
 }
 val settings = net.liplum.gradle.settings.Settings.get(rootDir)
-val outputJarName: String get() = extra["outputJarName"] as String
+val OutputJarName: String by project
+val MdtHash: String by project
 val mdtVersion: String get() = extra["mdtVersion"] as String
 val mdtVersionNum: String get() = extra["mdtVersionNum"] as String
 val sdkRoot: String? by extra(System.getenv("ANDROID_HOME") ?: System.getenv("ANDROID_SDK_ROOT"))
@@ -22,24 +23,19 @@ sourceSets {
         resources.srcDir("resources")
     }
 }
-/*
-Ignore the default path of ksp generated files.
-Replace it with copying generated codes into source path.
-*/
+
 kotlin.sourceSets.main {
     kotlin.srcDirs(
         file("$buildDir/generated/ksp/main/kotlin")
     )
 }
-/*
-val properties = Properties()
-properties.load(project.rootProject.file('local.properties').newDataInputStream())
-*/
+
 ksp {
-    arg("PackageName", "net.liplum.gen")
-    arg("FileName", "Contents")
-    arg("GenerateSpec", "Contents")
-    arg("Scope", "net.liplum.registries")
+    arg("Event.FileName", "EventRegistry")
+    arg("Event.GenerateSpec", "EventRegistry")
+    arg("Dp.FileName", "Contents")
+    arg("Dp.GenerateSpec", "Contents")
+    arg("Dp.Scope", "net.liplum.registries")
     allowSourcesFromOtherPlugins = true
     blockOtherCompilerPlugins = true
 }
@@ -59,17 +55,17 @@ java {
 tasks.withType<KotlinCompile>().configureEach {
     kotlinOptions.freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
 }
-val mdthash = "68f053f409"
 dependencies {
     implementation(project(":annotations"))
     ksp(project(":processor"))
+    ksp("com.github.anuken.mindustryjitpack:core:$MdtHash")
 //    compileOnly("com.github.Anuken.Arc:arc-core:$mdtVersion")
 //    compileOnly("com.github.Anuken.Mindustry:core:$mdtVersion")
     // Use anuke's mirror for now on https://github.com/Anuken/MindustryJitpack
     compileOnly("com.github.Anuken.Arc:arc-core:dfcb21ce56")
     //compileOnly(files("$rootDir/run/Mindustry136.jar"))
-    compileOnly("com.github.anuken.mindustryjitpack:core:$mdthash")
-    testImplementation("com.github.anuken.mindustryjitpack:core:$mdthash")
+    compileOnly("com.github.anuken.mindustryjitpack:core:$MdtHash")
+    testImplementation("com.github.anuken.mindustryjitpack:core:$MdtHash")
     implementation("com.github.liplum:OpenGAL:v0.4.1")
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1")
@@ -99,7 +95,7 @@ tasks {
                     listOf(File(platformRoot, "android.jar"))
             val dependencies = allDependencies.joinToString(" ") { "--classpath ${it.path}" }
             //dex and desugar files - this requires d8 in your PATH
-            val paras = "$dependencies --min-api 14 --output ${outputJarName}Android.jar ${outputJarName}Desktop.jar"
+            val paras = "$dependencies --min-api 14 --output ${OutputJarName}Android.jar ${OutputJarName}Desktop.jar"
             try {
                 exec {
                     commandLine = "d8 $paras".split(' ')
@@ -129,16 +125,16 @@ tasks {
     register<Jar>("deployLocal") {
         group = "build"
         dependsOn("jarAndroid")
-        archiveFileName.set("${outputJarName}.jar")
+        archiveFileName.set("${OutputJarName}.jar")
 
         from(
-            zipTree("$buildDir/libs/${outputJarName}Desktop.jar"),
-            zipTree("$buildDir/libs/${outputJarName}Android.jar")
+            zipTree("$buildDir/libs/${OutputJarName}Desktop.jar"),
+            zipTree("$buildDir/libs/${OutputJarName}Android.jar")
         )
 
         doLast {
             delete {
-                delete("$buildDir/libs/${outputJarName}Android.jar")
+                delete("$buildDir/libs/${OutputJarName}Android.jar")
             }
         }
     }
@@ -146,18 +142,18 @@ tasks {
     register<Jar>("deploy") {
         group = "build"
         dependsOn("jarAndroid")
-        archiveFileName.set("${outputJarName}.jar")
+        archiveFileName.set("${OutputJarName}.jar")
 
         from(
-            zipTree("$buildDir/libs/${outputJarName}Desktop.jar"),
-            zipTree("$buildDir/libs/${outputJarName}Android.jar")
+            zipTree("$buildDir/libs/${OutputJarName}Desktop.jar"),
+            zipTree("$buildDir/libs/${OutputJarName}Android.jar")
         )
 
         doLast {
             delete {
                 delete(
-                    "$buildDir/libs/${outputJarName}Desktop.jar",
-                    "$buildDir/libs/${outputJarName}Android.jar"
+                    "$buildDir/libs/${OutputJarName}Desktop.jar",
+                    "$buildDir/libs/${OutputJarName}Android.jar"
                 )
             }
         }
@@ -178,7 +174,7 @@ tasks.withType<Test>().configureEach {
 tasks.named<Jar>("jar") {
     //dependsOn("compileGAL")
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    archiveFileName.set("${outputJarName}Desktop.jar")
+    archiveFileName.set("${OutputJarName}Desktop.jar")
     includeEmptyDirs = false
     exclude("**/**/*.java")
     from(

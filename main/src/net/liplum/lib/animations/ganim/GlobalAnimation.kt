@@ -1,11 +1,11 @@
 package net.liplum.lib.animations.ganim
 
-import arc.Events
 import arc.func.Cons
 import arc.graphics.g2d.TextureRegion
 import arc.util.Time
 import mindustry.game.EventType
 import net.liplum.ClientOnly
+import net.liplum.annotations.Subscribe
 import net.liplum.utils.progress
 
 typealias GlobalAnimationIndexer = GlobalAnimation.() -> TextureRegion
@@ -47,12 +47,11 @@ open class GlobalAnimation(
         val updateTasks = HashSet<IGlobalAnimation>()
         @ClientOnly
         @JvmStatic
-        fun registerAll() {
-            Events.run(EventType.Trigger.update) {
-                if (CanPlay) {
-                    for (task in updateTasks)
-                        task.update()
-                }
+        @Subscribe(EventType.Trigger.update, clientOnly = true)
+        fun animate() {
+            if (CanPlay) {
+                for (task in updateTasks)
+                    task.update()
             }
         }
 

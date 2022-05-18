@@ -9,3 +9,6 @@ operator fun OutputStream.plusAssign(str: String) {
 fun OutputStream.line() {
     this += "\n"
 }
+
+fun String.simpleName() =
+    split('.').last()

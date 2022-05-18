@@ -13,16 +13,27 @@ import arc.util.Time
 import arc.util.Tmp
 import mindustry.Vars
 import mindustry.ctype.UnlockableContent
+import mindustry.game.EventType
 import mindustry.gen.Building
 import mindustry.graphics.Drawf
 import mindustry.graphics.Pal
 import mindustry.world.Block
 import mindustry.world.Tile
+import net.liplum.annotations.Subscribe
 import net.liplum.utils.*
 
+/**
+ * G means graphics.
+ */
 object G {
     var sin = 0f
     var tan = 0f
+    @JvmStatic
+    @Subscribe(EventType.Trigger.preDraw)
+    fun init() {
+        sin = Mathf.absin(Time.time, 6f, 1f)
+        tan = Mathf.tan(Time.time, 6f, 1f)
+    }
     @JvmStatic
     fun Ax(): Float {
         return Draw.scl * Draw.xscl
@@ -46,11 +57,6 @@ object G {
     @JvmStatic
     fun D(a: Int): Float {
         return a * Draw.scl * Draw.xscl
-    }
-    @JvmStatic
-    fun init() {
-        sin = Mathf.absin(Time.time, 6f, 1f)
-        tan = Mathf.tan(Time.time, 6f, 1f)
     }
     @JvmStatic
     @JvmOverloads

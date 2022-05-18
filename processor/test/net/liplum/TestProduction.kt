@@ -5,7 +5,7 @@ import com.tschuchort.compiletesting.KotlinCompilation.ExitCode.OK
 import com.tschuchort.compiletesting.kspArgs
 import com.tschuchort.compiletesting.kspSourcesDir
 import com.tschuchort.compiletesting.symbolProcessorProviders
-import net.liplum.processor.DpProcessorProv
+import net.liplum.processor.dp.DpProcessorProv
 import net.liplum.source.Blocks
 import net.liplum.source.Items
 import net.liplum.source.Liquids

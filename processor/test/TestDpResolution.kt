@@ -1,4 +1,4 @@
-import net.liplum.processor.DpGraph
+import net.liplum.processor.dp.DpGraph
 import org.junit.jupiter.api.Test
 
 class TestDpResolution {

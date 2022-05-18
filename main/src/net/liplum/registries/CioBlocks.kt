@@ -1,6 +1,5 @@
 package net.liplum.registries
 
-import arc.Events
 import arc.graphics.Color
 import arc.graphics.Texture
 import arc.struct.Seq
@@ -27,6 +26,7 @@ import mindustry.world.draw.DrawMulti
 import mindustry.world.meta.BuildVisibility
 import net.liplum.*
 import net.liplum.annotations.DependOn
+import net.liplum.annotations.Subscribe
 import net.liplum.api.brain.UT
 import net.liplum.api.brain.Upgrade
 import net.liplum.api.virus.setUninfected
@@ -480,16 +480,14 @@ object CioBlocks {
             shootCone = 15f
             size = 4
             health = 250 * size * size
-            //limitRange(20f)
-            ClientOnly {
-                Events.run(Trigger.update) {
-                    if (Time.globalTime % CioMod.UpdateFrequency < 1f) {
-                        TMTRAINER.localizedName = RandomName.one(8)
-                        TMTRAINER.description = RandomName.one(25)
-                    }
-                }
-            }
         }.registerDynamicInfo()
+    }
+    @Subscribe(Trigger.update, clientOnly = true)
+    fun TMTRAINER_RandomName() {
+        if (Time.globalTime % CioMod.UpdateFrequency < 1f) {
+            TMTRAINER.localizedName = RandomName.one(8)
+            TMTRAINER.description = RandomName.one(25)
+        }
     }
     @DependOn("CioItems.ic")
     fun smartDistributor() {

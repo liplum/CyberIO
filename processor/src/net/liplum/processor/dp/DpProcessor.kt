@@ -1,8 +1,10 @@
-package net.liplum.processor
+package net.liplum.processor.dp
 
 import com.google.devtools.ksp.processing.*
 import com.google.devtools.ksp.symbol.*
 import com.google.devtools.ksp.validate
+import net.liplum.processor.plusAssign
+import net.liplum.processor.simpleName
 
 class DpProcessor(
     private val codeGenerator: CodeGenerator,
@@ -10,14 +12,14 @@ class DpProcessor(
     private val options: Map<String, String>,
 ) : SymbolProcessor {
     override fun process(resolver: Resolver): List<KSAnnotated> {
-        val dependOnFullName = options["DependOnQualifiedName"] ?: "net.liplum.annotations.DependOn"
-        val dependOnShortName = dependOnFullName.split('.').last()
+        val dependOnFullName = options["Dp.DependOnQualifiedName"] ?: "net.liplum.annotations.DependOn"
+        val dependOnShortName = dependOnFullName.simpleName()
         val symbols = resolver
             .getSymbolsWithAnnotation(dependOnFullName)
             .filterIsInstance<KSFunctionDeclaration>()
         if (!symbols.iterator().hasNext()) return emptyList()
-        val packageName = options["PackageName"] ?: ""
-        val fileName = options["FileName"] ?: "GeneratedFile"
+        val packageName = options["Dp.PackageName"] ?: "net.liplum.gen"
+        val fileName = options["Dp.FileName"] ?: "GeneratedDpFile"
         val file = codeGenerator.createNewFile(
             dependencies = Dependencies(false),
             packageName = packageName,
@@ -25,14 +27,14 @@ class DpProcessor(
         )
         if (packageName.isNotEmpty())
             file += "package $packageName\n"
-        val scope = options["Scope"] ?: packageName
-        val spec = options["GenerateSpec"] ?: ""
+        val scope = options["Dp.Scope"] ?: packageName
+        val spec = options["Dp.GenerateSpec"] ?: ""
         val useTopLevel = spec.isEmpty()
         if (!useTopLevel) {
             // Start object $spec
             file += "object $spec{\n"
         }
-        val genFuncName = options["GeneratedFunctionName"] ?: "load"
+        val genFuncName = options["Dp.GeneratedFunctionName"] ?: "load"
         // Start function $genFuncName()
         file += "fun $genFuncName(){\n"
         val graph = DpGraph()

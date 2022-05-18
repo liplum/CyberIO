@@ -3,10 +3,13 @@ package net.liplum.blocks.cloud;
 import arc.struct.ObjectMap;
 import arc.struct.OrderedMap;
 import mindustry.Vars;
+import mindustry.core.GameState;
+import mindustry.game.EventType;
 import mindustry.game.Team;
 import mindustry.io.JsonIO;
 import net.liplum.CioMod;
 import net.liplum.Clog;
+import net.liplum.annotations.Subscribe;
 
 @SuppressWarnings("unchecked")
 public class LiplumCloud {
@@ -61,10 +64,14 @@ public class LiplumCloud {
         Read = true;
     }
 
+    @Subscribe(eventType = EventType.Trigger.update, debugOnly = true)
     public static void update() {
-        if (CurGameCloudRoom != null) {
-            for (SharedRoom room : CurGameCloudRoom.values()) {
-                room.update();
+        GameState state = Vars.state;
+        if (state.isGame() && !state.isPaused()) {
+            if (CurGameCloudRoom != null) {
+                for (SharedRoom room : CurGameCloudRoom.values()) {
+                    room.update();
+                }
             }
         }
     }

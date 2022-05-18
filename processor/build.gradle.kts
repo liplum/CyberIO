@@ -11,10 +11,16 @@ sourceSets {
         resources.srcDir("resources")
     }
 }
-// Versions are declared in 'gradle.properties' file
+val MdtHash: String by project
 
 dependencies {
     implementation(project(":annotations"))
+    // compileOnly("com.github.Anuken.Arc:arc-core:$mdtVersion")
+    // compileOnly("com.github.Anuken.Mindustry:core:$mdtVersion")
+    // Use anuke's mirror for now on https://github.com/Anuken/MindustryJitpack
+    compileOnly("com.github.Anuken.Arc:arc-core:dfcb21ce56")
+    compileOnly("com.github.anuken.mindustryjitpack:core:$MdtHash")
+    implementation("com.google.guava:guava:31.1-jre")
     implementation("com.google.devtools.ksp:symbol-processing-api:1.6.21-1.0.5")
     testImplementation("com.github.tschuchortdev:kotlin-compile-testing:1.4.8")
     testImplementation ("com.github.tschuchortdev:kotlin-compile-testing-ksp:1.4.8")

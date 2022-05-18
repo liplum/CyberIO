@@ -14,19 +14,17 @@ import net.liplum.api.cyber.StreamCenter
 import net.liplum.api.holo.IHoloEntity
 import net.liplum.blocks.cloud.LiplumCloud
 import net.liplum.blocks.cloud.SharedRoom
+import net.liplum.gen.EventRegistry
 import net.liplum.inputs.UnitTap
 import net.liplum.lib.animations.ganim.GlobalAnimation
 import net.liplum.registries.*
 import net.liplum.registries.ServerCommands.registerCioCmds
-import net.liplum.render.LinkDrawer
 import net.liplum.render.TestShader
 import net.liplum.scripts.NpcSystem
 import net.liplum.ui.CioUI
 import net.liplum.ui.DebugUI
 import net.liplum.ui.OverwrittenUI
 import net.liplum.update.Updater
-import net.liplum.render.G
-import net.liplum.render.Toaster
 import net.liplum.welcome.FirstLoaded
 import net.liplum.welcome.Welcome
 import net.liplum.welcome.WelcomeList
@@ -97,7 +95,7 @@ class CioMod : Mod() {
                     CioShaderLoader.init()
                     WelcomeList.loadList()
                     Welcome.load()
-                    DebugOnly{
+                    DebugOnly {
                         TestShader.load()
                     }
                     /* TODO: Add real story mode in v4?
@@ -139,17 +137,10 @@ class CioMod : Mod() {
         DebugOnly {
             Vars.enableConsole = true
         }
-        tintedBulletsRegistryLoad()
-        Events.run(Trigger.update) {
-            val state = Vars.state
-            if (state.isGame && !state.isPaused) {
-                LiplumCloud.update()
-            }
-        }
         DataCenter.initData()
         StreamCenter.initAndLoad()
+        EventRegistry.registerAll()
         ClientOnly {
-            GlobalAnimation.registerAll()
             CioUI.appendUI()
             DebugOnly {
                 DebugUI.appendUI()
@@ -157,11 +148,6 @@ class CioMod : Mod() {
             OverwrittenUI.overwrite()
             CioShaderLoader.loadResource()
             ResourceLoader.loadAllResources()
-            Events.run(Trigger.preDraw) {
-                G.init()
-            }
-            LinkDrawer.register()
-            Toaster.register()
             NpcSystem.register()
             Core.input.addProcessor(UnitTap)
         }

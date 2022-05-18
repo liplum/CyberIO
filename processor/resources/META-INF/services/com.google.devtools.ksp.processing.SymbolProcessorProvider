@@ -1,1 +1,2 @@
-net.liplum.processor.DpProcessorProv
+net.liplum.processor.dp.DpProcessorProv
+net.liplum.processor.events.SubscriptionProcessorProv

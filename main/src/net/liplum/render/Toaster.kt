@@ -5,6 +5,7 @@ import arc.math.Interp
 import arc.util.Time
 import mindustry.game.EventType
 import net.liplum.ClientOnly
+import net.liplum.annotations.Subscribe
 import net.liplum.utils.invoke
 
 @ClientOnly
@@ -31,6 +32,7 @@ object Toaster {
         allToasts.add(toast)
     }
     @ClientOnly
+    @Subscribe(EventType.Trigger.drawOver)
     fun drawAllToast() {
         val it = allToasts.iterator()
         while (it.hasNext()) {
@@ -44,12 +46,6 @@ object Toaster {
                 shared.curTime = curTime
                 shared.toast.task(shared)
             }
-        }
-    }
-    @ClientOnly
-    fun register() {
-        Events.run(EventType.Trigger.drawOver) {
-            drawAllToast()
         }
     }
 }
