@@ -39,6 +39,7 @@ import net.liplum.lib.entity.RadiationQueue
 import net.liplum.lib.render.HeatMeta
 import net.liplum.lib.render.drawHeat
 import net.liplum.lib.ui.bars.AddBar
+import net.liplum.render.G
 import net.liplum.utils.*
 
 /**

@@ -5,14 +5,27 @@ package net.liplum.api.cyber
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
 import arc.math.geom.Point2
+import arc.util.Align
 import mindustry.Vars
+import mindustry.gen.Building
 import mindustry.type.Item
 import mindustry.type.Liquid
 import mindustry.world.Block
+import net.liplum.ClientOnly
 import net.liplum.R
 import net.liplum.Settings
+import net.liplum.lib.bundle
+import net.liplum.render.G
+import net.liplum.render.Text
+import net.liplum.render.Toaster
+import net.liplum.render.fadeInOutPct
 import net.liplum.utils.*
 
+@ClientOnly
+val ArrowDensity: Float
+    get() = Settings.LinkArrowDensity
+var ToastTimeFadePercent = 0.1f
+var ToastTime = 180f
 fun Int.db(): IDataBuilding? =
     this.build as? IDataBuilding
 
@@ -110,13 +123,13 @@ fun Int.sh(): IStreamHost? =
     this.build as? IStreamHost
 
 fun Point2?.sn(): IStreamNode? =
-    this?.let {  this.build as? IStreamNode }
+    this?.let { this.build as? IStreamNode }
 
 fun Point2?.sc(): IStreamClient? =
-    this?.let {  this.build as? IStreamClient}
+    this?.let { this.build as? IStreamClient }
 
 fun Point2?.sh(): IStreamHost? =
-    this?.let {  this.build as? IStreamHost}
+    this?.let { this.build as? IStreamHost }
 
 val IStreamNode?.exists: Boolean
     get() = this != null && this.building.exists
@@ -133,6 +146,7 @@ object StreamCenter {
         }
     }
     @JvmStatic
+    @ClientOnly
     fun loadLiquidsColor() {
         val liquids = Vars.content.liquids()
         R.C.LiquidColors = Array(liquids.size) {
@@ -149,6 +163,7 @@ object StreamCenter {
         }
     }
     @JvmStatic
+    @ClientOnly
     fun initStreamColors() {
         R.C.HostLiquidColors = Array(R.C.LiquidColors.size) {
             R.C.LiquidColors[it].cpy().lerp(R.C.Host, 0.4f)
@@ -160,8 +175,10 @@ object StreamCenter {
     @JvmStatic
     fun initAndLoad() {
         initStream()
-        loadLiquidsColor()
-        initStreamColors()
+        ClientOnly {
+            loadLiquidsColor()
+            initStreamColors()
+        }
     }
 }
 
@@ -177,12 +194,13 @@ fun Liquid?.match(requirements: SingleLiquidArray?): Boolean {
     requirements ?: return true
     return this in requirements
 }
-
+@ClientOnly
 val Liquid?.hostColor: Color
     get() = if (this == null)
         R.C.Host
     else
         R.C.HostLiquidColors[this.ID]
+@ClientOnly
 val Liquid?.clientColor: Color
     get() = if (this == null)
         R.C.Client
@@ -192,6 +210,7 @@ val Liquid?.clientColor: Color
 fun Float.isAccepted() =
     this <= -1f || this > 0f
 @JvmOverloads
+@ClientOnly
 fun IDataSender.drawDataNetGraphic(showCircle: Boolean = true) {
     if (receiverConnectionNumber <= 0) return
     if (showCircle) {
@@ -204,6 +223,7 @@ fun IDataSender.drawDataNetGraphic(showCircle: Boolean = true) {
     }
 }
 @JvmOverloads
+@ClientOnly
 fun IDataReceiver.drawDataNetGraphic(showCircle: Boolean = true) {
     if (senderConnectionNumber <= 0) return
     if (showCircle) {
@@ -211,7 +231,7 @@ fun IDataReceiver.drawDataNetGraphic(showCircle: Boolean = true) {
     }
     this.drawSenders(connectedSenders, showCircle)
 }
-
+@ClientOnly
 fun IDataReceiver.drawRequirements() {
     val reqs = this.requirements
     if (reqs != null) {
@@ -224,6 +244,7 @@ fun IDataReceiver.drawRequirements() {
  * @param x        tile x
  * @param y        tile y
  */
+@ClientOnly
 fun Block.drawLinkedLineToReceiverWhenConfiguring(x: Int, y: Int) {
     if (!Vars.control.input.config.isShown) return
     val selected = Vars.control.input.config.selected
@@ -240,13 +261,13 @@ fun Block.drawLinkedLineToReceiverWhenConfiguring(x: Int, y: Int) {
         ArrowDensity, R.C.Receiver, alpha = opacity, size = Settings.LinkSize
     )
 }
-
+@ClientOnly
 inline fun whenNotConfiguringSender(func: () -> Unit) {
     if (!isConfiguringSender()) {
         func()
     }
 }
-
+@ClientOnly
 fun IStreamHost.drawStreamGraphic(showCircle: Boolean = true) {
     if (clientConnectionNumber <= 0) return
     if (showCircle) {
@@ -254,7 +275,7 @@ fun IStreamHost.drawStreamGraphic(showCircle: Boolean = true) {
     }
     this.drawClients(connectedClients, showCircle)
 }
-
+@ClientOnly
 fun IStreamClient.drawStreamGraphic(showCircle: Boolean = true) {
     if (hostConnectionNumber <= 0) return
     if (showCircle) {
@@ -262,7 +283,7 @@ fun IStreamClient.drawStreamGraphic(showCircle: Boolean = true) {
     }
     this.drawHosts(connectedHosts, showCircle)
 }
-
+@ClientOnly
 fun IStreamClient.drawRequirements() {
     val reqs = this.requirements
     if (reqs != null) {
@@ -275,6 +296,7 @@ fun IStreamClient.drawRequirements() {
  * @param x        tile x
  * @param y        tile y
  */
+@ClientOnly
 fun Block.drawLinkedLineToClientWhenConfiguring(x: Int, y: Int) {
     if (!Vars.control.input.config.isShown) return
     val selected = Vars.control.input.config.selected
@@ -293,18 +315,16 @@ fun Block.drawLinkedLineToClientWhenConfiguring(x: Int, y: Int) {
         alpha = opacity, size = Settings.LinkSize
     )
 }
-
+@ClientOnly
 inline fun whenNotConfiguringHost(func: () -> Unit) {
     if (!isConfiguringHost()) {
         func()
     }
 }
-
-val ArrowDensity: Float
-    get() = Settings.LinkArrowDensity
 /**
  * Called in Receiver block
  */
+@ClientOnly
 fun IDataReceiver.drawSender(sender: Int?, showCircle: Boolean = true) {
     if (sender == null) {
         return
@@ -321,19 +341,11 @@ fun IDataReceiver.drawSender(sender: Int?, showCircle: Boolean = true) {
             alpha = opacity, size = Settings.LinkSize
         )
     }
-    /* deprecated for payload
-    else {
-        if (sb is PayloadConveyor.PayloadConveyorBuild) {
-            if ((sb.payload as? BuildPayload)?.build is IDataSender) {
-                G.drawSurroundingCircle(sb.tile, R.C.Sender)
-                G.drawArrowLine(sb, this.building, ArrowDensity, R.C.Receiver)
-            }
-        }
-    }*/
 }
 /**
  * Called in Receiver block
  */
+@ClientOnly
 fun IDataReceiver.drawSenders(senders: Iterable<Int>, showCircle: Boolean = true) {
     val opacity = Settings.LinkOpacity
     for (sender in senders) {
@@ -353,6 +365,7 @@ fun IDataReceiver.drawSenders(senders: Iterable<Int>, showCircle: Boolean = true
 /**
  * Called in Sender block
  */
+@ClientOnly
 fun IDataSender.drawReceiver(receiver: Int?, showCircle: Boolean = true) {
     if (receiver == null) {
         return
@@ -370,19 +383,11 @@ fun IDataSender.drawReceiver(receiver: Int?, showCircle: Boolean = true) {
         )
         rb.drawRequirements()
     }
-    /* deprecated for payload
-    else if (rb is PayloadConveyor.PayloadConveyorBuild) {
-        val dr = (rb.payload as? BuildPayload)?.build as? IDataReceiver
-        if (dr != null) {
-            G.drawSurroundingCircle(rb.tile, R.C.Receiver)
-            G.drawArrowLine(this.building, rb, ArrowDensity, R.C.Sender)
-            dr.drawRequirements()
-        }
-    }*/
 }
 /**
  * Called in Sender block
  */
+@ClientOnly
 fun IDataSender.drawReceivers(receivers: Iterable<Int>, showCircle: Boolean = true) {
     val original = Draw.z()
     val opacity = Settings.LinkOpacity
@@ -403,7 +408,7 @@ fun IDataSender.drawReceivers(receivers: Iterable<Int>, showCircle: Boolean = tr
     }
     Draw.z(original)
 }
-
+@ClientOnly
 fun isConfiguringSender(): Boolean {
     val selected = Vars.control.input.config.selected
     return selected is IDataSender
@@ -411,6 +416,7 @@ fun isConfiguringSender(): Boolean {
 /**
  * Called in Client block
  */
+@ClientOnly
 fun IStreamClient.drawHosts(hosts: Iterable<Int>, showCircle: Boolean = true) {
     val opacity = Settings.LinkOpacity
     for (host in hosts) {
@@ -430,6 +436,7 @@ fun IStreamClient.drawHosts(hosts: Iterable<Int>, showCircle: Boolean = true) {
 /**
  * Called in Host block
  */
+@ClientOnly
 fun IStreamHost.drawClients(clients: Iterable<Int>, showCircle: Boolean = true) {
     val opacity = Settings.LinkOpacity
     for (client in clients) {
@@ -447,8 +454,19 @@ fun IStreamHost.drawClients(clients: Iterable<Int>, showCircle: Boolean = true) 
         }
     }
 }
-
+@ClientOnly
 fun isConfiguringHost(): Boolean {
     val selected = Vars.control.input.config.selected
     return selected is IStreamHost
+}
+@ClientOnly
+fun Building.drawOverRangeOn(other: Building) {
+    Toaster.post(ToastTime) {
+        Text.drawText {
+            val tip = "${block.contentType}.${block.name}.over-range".bundle
+            setText(it, tip)
+            it.color.set(R.C.RedAlert).a(fadeInOutPct(ToastTimeFadePercent))
+            it.draw(tip, other.x, other.y + 1f, Align.center)
+        }
+    }
 }

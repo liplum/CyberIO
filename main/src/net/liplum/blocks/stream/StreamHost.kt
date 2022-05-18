@@ -21,6 +21,7 @@ import net.liplum.lib.animations.Floating
 import net.liplum.lib.animations.anis.AniState
 import net.liplum.lib.animations.anis.config
 import net.liplum.persistance.intSet
+import net.liplum.render.G
 import net.liplum.utils.*
 import java.util.*
 
@@ -47,6 +48,10 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
     @JvmField var SharedClientSeq: Seq<IStreamClient> = Seq(
         if (maxConnection == -1) 10 else maxConnection
     )
+    /**
+     * The max range when trying to connect. -1f means no limit.
+     */
+    @JvmField var maxRange = -1f
 
     init {
         update = true
@@ -198,6 +203,7 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
                 }
             }.toTypedArray()
         }
+
         override fun config(): Any? {
             return genRelativeAllPos()
         }
@@ -265,7 +271,7 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
         }
 
         override fun onConfigureBuildTapped(other: Building): Boolean {
-            if (this === other) {
+            if (this == other) {
                 deselect()
                 configure(null)
                 return false
@@ -279,13 +285,17 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
                 return false
             }
             if (other is IStreamClient) {
-                if (maxConnection == 1) {
-                    deselect()
-                }
-                if (canHaveMoreClientConnection() &&
-                    other.acceptConnection(this)
-                ) {
-                    connectSync(other)
+                if (maxRange > 0f && other.dst(this) >= maxRange) {
+                    drawOverRangeOn(other)
+                } else {
+                    if (maxConnection == 1) {
+                        deselect()
+                    }
+                    if (canHaveMoreClientConnection() &&
+                        other.acceptConnection(this)
+                    ) {
+                        connectSync(other)
+                    }
                 }
                 return false
             }

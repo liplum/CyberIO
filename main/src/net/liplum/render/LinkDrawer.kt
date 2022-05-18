@@ -13,7 +13,7 @@ import net.liplum.api.cyber.drawStreamGraphic
 object LinkDrawer {
     @JvmStatic
     fun register() {
-        Events.run(EventType.Trigger.postDraw) {
+        Events.run(EventType.Trigger.drawOver) {
             draw()
         }
     }

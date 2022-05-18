@@ -31,6 +31,7 @@ import net.liplum.lib.Draw
 import net.liplum.lib.DrawSize
 import net.liplum.lib.render.HeatMeta
 import net.liplum.lib.render.drawHeat
+import net.liplum.render.G
 import net.liplum.utils.*
 
 open class Ear(name: String) : Block(name), IComponentBlock {

@@ -5,7 +5,7 @@ package net.liplum.lib
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
 import mindustry.gen.Building
-import net.liplum.utils.G
+import net.liplum.render.G
 import net.liplum.utils.TR
 
 var ALPHA: Float = 1f

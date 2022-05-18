@@ -20,6 +20,7 @@ import net.liplum.*
 import net.liplum.lib.Draw
 import net.liplum.lib.entity.RadiationArray
 import net.liplum.math.Polar
+import net.liplum.render.G
 import net.liplum.utils.*
 import kotlin.math.min
 

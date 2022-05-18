@@ -60,6 +60,10 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
         else
             Mathf.round(log2(it + 5.1f))
     }
+    /**
+     * The max range when trying to connect. -1f means no limit.
+     */
+    @JvmField var maxRange = -1f
 
     init {
         solid = true
@@ -379,19 +383,22 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
                 return false
             }
             if (other is IDataReceiver) {
-                if (!canMultipleConnect()) {
-                    deselect()
-                }
-                if (canHaveMoreReceiverConnection() &&
-                    other.acceptConnection(this)
-                ) {
-                    connectSync(other)
+                if (maxRange > 0f && other.dst(this) >= maxRange) {
+                    drawOverRangeOn(other)
+                } else {
+                    if (!canMultipleConnect()) {
+                        deselect()
+                    }
+                    if (canHaveMoreReceiverConnection() &&
+                        other.acceptConnection(this)
+                    ) {
+                        connectSync(other)
+                    }
                 }
                 return false
             }
             return true
         }
-
         @CalledBySync
         fun resolveRelativePosFromRemote(relatives: Array<Point2>) {
             for (relative in relatives) {

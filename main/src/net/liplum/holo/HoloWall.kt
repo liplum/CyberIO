@@ -19,6 +19,7 @@ import net.liplum.lib.shaders.SD
 import net.liplum.lib.shaders.use
 import net.liplum.lib.ui.bars.AddBar
 import net.liplum.lib.yesNo
+import net.liplum.render.G
 import net.liplum.utils.*
 
 open class HoloWall(name: String) : Wall(name) {

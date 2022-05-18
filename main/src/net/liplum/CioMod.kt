@@ -25,7 +25,8 @@ import net.liplum.ui.CioUI
 import net.liplum.ui.DebugUI
 import net.liplum.ui.OverwrittenUI
 import net.liplum.update.Updater
-import net.liplum.utils.G
+import net.liplum.render.G
+import net.liplum.render.Toaster
 import net.liplum.welcome.FirstLoaded
 import net.liplum.welcome.Welcome
 import net.liplum.welcome.WelcomeList
@@ -160,6 +161,7 @@ class CioMod : Mod() {
                 G.init()
             }
             LinkDrawer.register()
+            Toaster.register()
             NpcSystem.register()
             Core.input.addProcessor(UnitTap)
         }

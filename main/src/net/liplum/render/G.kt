@@ -1,6 +1,6 @@
 @file:Suppress("SpellCheckingInspection")
 
-package net.liplum.utils
+package net.liplum.render
 
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
@@ -18,6 +18,7 @@ import mindustry.graphics.Drawf
 import mindustry.graphics.Pal
 import mindustry.world.Block
 import mindustry.world.Tile
+import net.liplum.utils.*
 
 object G {
     var sin = 0f

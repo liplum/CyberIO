@@ -11,6 +11,8 @@ import net.liplum.lib.Condition
 import net.liplum.utils.format
 import java.lang.annotation.Inherited
 import kotlin.annotation.AnnotationTarget.*
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.InvocationKind
 
 /**
  * It indicates this should be called or accessed only on Physical Client.
@@ -104,6 +106,7 @@ annotation class Idempotent
 @Retention(AnnotationRetention.SOURCE)
 @MustBeDocumented
 annotation class OverwriteVanilla(val value: String = "")
+
 /**
  * Runs codes only on Physical Client
  */

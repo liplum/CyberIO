@@ -39,6 +39,7 @@ import net.liplum.lib.ui.bars.AddBar
 import net.liplum.persistance.intSet
 import net.liplum.registries.CioBulletTypes
 import net.liplum.registries.CioLiquids.cyberion
+import net.liplum.render.G
 import net.liplum.utils.*
 
 open class Stealth(name: String) : Turret(name) {

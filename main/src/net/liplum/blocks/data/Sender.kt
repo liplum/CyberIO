@@ -22,6 +22,7 @@ import net.liplum.lib.animations.anims.Animation
 import net.liplum.lib.animations.anis.AniState
 import net.liplum.lib.animations.anis.config
 import net.liplum.lib.ui.bars.AddBar
+import net.liplum.render.G
 import net.liplum.utils.*
 
 private typealias AniStateS = AniState<Sender, SenderBuild>
@@ -36,6 +37,10 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
     @JvmField var UploadAnimDuration = 30f
     @ClientOnly @JvmField var SendingTime = 60f
     @JvmField val CheckConnectionTimer = timers++
+    /**
+     * The max range when trying to connect. -1f means no limit.
+     */
+    @JvmField var maxRange = -1f
 
     init {
         solid = true
@@ -212,6 +217,9 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
         override fun drawConfigure() {
             super.drawConfigure()
             this.drawDataNetGraphic()
+            if (maxRange > 0f) {
+                G.dashCircle(x, y, maxRange, senderColor)
+            }
         }
         @ClientOnly
         override fun drawSelect() {
@@ -231,9 +239,15 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
                 return false
             }
             if (other is IDataReceiver) {
-                deselect()
-                if (other.acceptConnection(this)) {
-                    connectSync(other)
+                if (maxRange > 0f && other.dst(this) >= maxRange) {
+                    drawOverRangeOn(other)
+                } else {
+                    if (!canMultipleConnect()) {
+                        deselect()
+                    }
+                    if (other.acceptConnection(this)) {
+                        connectSync(other)
+                    }
                 }
                 return false
             }

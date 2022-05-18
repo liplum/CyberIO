@@ -22,7 +22,7 @@ import net.liplum.R
 import net.liplum.Serialized
 import net.liplum.holo.HoloProjector.HoloPBuild
 import net.liplum.registries.EntityRegistry
-import net.liplum.utils.G
+import net.liplum.render.G
 import net.liplum.utils.build
 import net.liplum.utils.exists
 import net.liplum.utils.hasShields

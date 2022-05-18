@@ -24,6 +24,7 @@ import net.liplum.lib.render.HeatMeta
 import net.liplum.lib.render.drawHeat
 import net.liplum.lib.ui.ammoStats
 import net.liplum.math.Polar
+import net.liplum.render.G
 import net.liplum.utils.*
 
 open class Eye(name: String) : PowerTurret(name), IComponentBlock {

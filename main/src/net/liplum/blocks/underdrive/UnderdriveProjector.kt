@@ -38,6 +38,7 @@ import net.liplum.Serialized
 import net.liplum.lib.bundle
 import net.liplum.lib.ui.bars.AddBar
 import net.liplum.lib.ui.bars.ReverseBar
+import net.liplum.render.G
 import net.liplum.utils.*
 import kotlin.math.max
 
