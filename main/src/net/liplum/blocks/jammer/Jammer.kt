@@ -12,7 +12,7 @@ import mindustry.world.blocks.defense.turrets.LaserTurret
 import mindustry.world.blocks.defense.turrets.Turret
 import mindustry.world.draw.DrawTurret
 import mindustry.world.meta.BlockGroup
-import net.liplum.lib.Draw
+import net.liplum.mdt.Draw
 import net.liplum.lib.Observer
 import net.liplum.mdt.animations.Floating
 import net.liplum.mdt.animations.anims.Animation

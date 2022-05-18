@@ -25,7 +25,7 @@ import net.liplum.registries.EntityRegistry
 import net.liplum.mdt.render.G
 import net.liplum.mdt.utils.build
 import net.liplum.mdt.utils.exists
-import net.liplum.utils.hasShields
+import net.liplum.mdt.utils.hasShields
 
 open class HoloUnit : UnitEntity() {
     @Serialized

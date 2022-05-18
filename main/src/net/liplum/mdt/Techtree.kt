@@ -1,4 +1,4 @@
-package net.liplum.lib
+package net.liplum.mdt
 
 import arc.struct.Seq
 import mindustry.content.TechTree

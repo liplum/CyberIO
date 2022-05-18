@@ -30,7 +30,7 @@ import net.liplum.api.brain.*
 import net.liplum.api.brain.IBrain.Companion.Mirror
 import net.liplum.api.brain.IBrain.Companion.XSign
 import net.liplum.api.brain.IBrain.Companion.YSign
-import net.liplum.lib.Draw
+import net.liplum.mdt.Draw
 import net.liplum.mdt.animations.anims.Anime
 import net.liplum.mdt.animations.anims.linearFrames
 import net.liplum.lib.delegates.Delegate
@@ -51,6 +51,7 @@ import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.utils.sheet
 import net.liplum.mdt.utils.sub
 import net.liplum.mdt.render.G
+import net.liplum.mdt.utils.MdtUnit
 import net.liplum.utils.*
 
 /**

@@ -13,8 +13,8 @@ import mindustry.world.meta.BlockGroup
 import mindustry.world.modules.ItemModule
 import net.liplum.*
 import net.liplum.api.cyber.*
-import net.liplum.lib.Draw
-import net.liplum.lib.DrawSize
+import net.liplum.mdt.Draw
+import net.liplum.mdt.DrawSize
 import net.liplum.mdt.animations.Floating
 import net.liplum.mdt.animations.anims.Animation
 import net.liplum.mdt.animations.anims.IFrameIndexer

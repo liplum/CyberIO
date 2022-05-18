@@ -16,7 +16,10 @@ import net.liplum.blocks.cloud.LiplumCloud
 import net.liplum.blocks.cloud.SharedRoom
 import net.liplum.gen.EventRegistry
 import net.liplum.inputs.UnitTap
-import net.liplum.mdt.*
+import net.liplum.mdt.ClientOnly
+import net.liplum.mdt.HeadlessOnly
+import net.liplum.mdt.NotSteam
+import net.liplum.mdt.OnlyClient
 import net.liplum.mdt.animations.ganim.GlobalAnimation
 import net.liplum.registries.*
 import net.liplum.registries.ServerCommands.registerCioCmds
@@ -145,11 +148,11 @@ class CioMod : Mod() {
             CioUI.appendUI()
             DebugOnly {
                 DebugUI.appendUI()
+                NpcSystem.register()
             }
             OverwrittenUI.overwrite()
             CioShaderLoader.loadResource()
             ResourceLoader.loadAllResources()
-            NpcSystem.register()
             Core.input.addProcessor(UnitTap)
         }
 

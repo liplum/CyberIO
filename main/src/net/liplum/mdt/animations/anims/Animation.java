@@ -2,7 +2,7 @@ package net.liplum.mdt.animations.anims;
 
 import arc.graphics.Color;
 import arc.graphics.g2d.TextureRegion;
-import net.liplum.lib.DrawT;
+import net.liplum.mdt.DrawT;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

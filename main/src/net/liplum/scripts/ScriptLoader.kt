@@ -4,8 +4,8 @@ import arc.struct.ObjectMap
 import arc.util.serialization.JsonValue
 import mindustry.io.JsonIO
 import net.liplum.lib.Res
-import net.liplum.utils.component1
-import net.liplum.utils.component2
+import net.liplum.lib.utils.component1
+import net.liplum.lib.utils.component2
 import opengal.core.NodeTree
 import opengal.nl.NodeLang
 import java.io.DataInputStream

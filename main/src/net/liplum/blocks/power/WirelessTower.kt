@@ -17,7 +17,7 @@ import mindustry.world.blocks.power.PowerBlock
 import mindustry.world.consumers.ConsumePowerCondition
 import mindustry.world.meta.Stat
 import net.liplum.*
-import net.liplum.lib.Draw
+import net.liplum.mdt.Draw
 import net.liplum.lib.math.approachR
 import net.liplum.lib.entity.RadiationArray
 import net.liplum.lib.utils.isZero

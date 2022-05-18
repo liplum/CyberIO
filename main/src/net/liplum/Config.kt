@@ -6,8 +6,8 @@ import mindustry.io.JsonIO
 import net.liplum.lib.F
 import net.liplum.mdt.HeadlessOnly
 import net.liplum.scripts.KeyNotFoundException
-import net.liplum.utils.component1
-import net.liplum.utils.component2
+import net.liplum.lib.utils.component1
+import net.liplum.lib.utils.component2
 
 @HeadlessOnly
 object Config {

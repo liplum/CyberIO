@@ -11,7 +11,7 @@ import net.liplum.lib.Res
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.DesktopOnly
 import net.liplum.mdt.Else
-import net.liplum.utils.loadDynamicAsync
+import net.liplum.lib.utils.loadDynamicAsync
 
 @ClientOnly
 object FirstLoaded {

@@ -16,7 +16,6 @@ import mindustry.world.blocks.defense.turrets.PowerTurret
 import mindustry.world.meta.Stat
 import net.liplum.*
 import net.liplum.api.brain.*
-import net.liplum.lib.*
 import net.liplum.mdt.animations.anims.Anime
 import net.liplum.mdt.animations.anims.genFramesBy
 import net.liplum.mdt.animations.anims.randomCurTime
@@ -32,6 +31,7 @@ import net.liplum.lib.TR
 import net.liplum.lib.TRs
 import net.liplum.mdt.ClientOnly
 import net.liplum.DebugOnly
+import net.liplum.mdt.Draw
 import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.utils.draw
 import net.liplum.mdt.utils.sheet

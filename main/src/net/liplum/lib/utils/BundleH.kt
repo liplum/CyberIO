@@ -201,7 +201,7 @@ interface IBundle {
     fun format(key: String, vararg args: Any): String
 }
 /**
- * If has new bundle pair, use new pair
+ * If it has new bundle pair, use new pair
  */
 class OverwriteBundle(
     val bundle: I18NBundle,

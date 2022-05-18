@@ -12,7 +12,7 @@ import mindustry.graphics.Layer
 import net.liplum.Cio
 import net.liplum.R
 import net.liplum.ResourceLoader
-import net.liplum.lib.DrawSize
+import net.liplum.mdt.DrawSize
 import net.liplum.lib.TR
 import net.liplum.lib.utils.progress
 import net.liplum.mdt.utils.sheet

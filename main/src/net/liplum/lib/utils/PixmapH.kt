@@ -1,4 +1,4 @@
-package net.liplum.utils
+package net.liplum.lib.utils
 
 import arc.Core
 import arc.graphics.Pixmap

@@ -9,7 +9,7 @@ import mindustry.graphics.Drawf
 import mindustry.type.StatusEffect
 import net.liplum.DebugOnly
 import net.liplum.R
-import net.liplum.utils.lostHp
+import net.liplum.mdt.utils.lostHp
 
 enum class DamageMode {
     MaxHP, CurHP, LostHP

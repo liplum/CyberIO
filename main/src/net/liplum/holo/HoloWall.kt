@@ -29,7 +29,7 @@ import net.liplum.mdt.utils.or
 import net.liplum.mdt.utils.seconds
 import net.liplum.mdt.utils.sub
 import net.liplum.mdt.render.G
-import net.liplum.utils.*
+import net.liplum.mdt.utils.healthPct
 
 open class HoloWall(name: String) : Wall(name) {
     @JvmField var restoreReload = 10 * 60f

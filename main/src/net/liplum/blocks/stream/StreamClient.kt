@@ -20,8 +20,8 @@ import net.liplum.DebugOnly
 import net.liplum.mdt.Serialized
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
-import net.liplum.lib.Draw
-import net.liplum.lib.DrawOn
+import net.liplum.mdt.Draw
+import net.liplum.mdt.DrawOn
 import net.liplum.mdt.animations.anis.AniState
 import net.liplum.mdt.animations.anis.config
 import net.liplum.lib.delegates.Delegate1

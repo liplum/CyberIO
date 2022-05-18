@@ -3,7 +3,7 @@ package net.liplum.scripts
 import arc.Events
 import mindustry.Vars
 import net.liplum.inputs.UnitTapEvent
-import net.liplum.utils.MdtUnit
+import net.liplum.mdt.utils.MdtUnit
 
 object NpcSystem {
     var curText =

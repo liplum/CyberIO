@@ -1,6 +1,7 @@
 package net.liplum.lib
 
 import arc.graphics.g2d.TextureRegion
+import net.liplum.mdt.DrawSize
 
 class Tx(var tr: TextureRegion) {
     /**

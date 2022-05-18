@@ -21,7 +21,7 @@ import net.liplum.R
 import net.liplum.abilites.localized
 import net.liplum.lib.shaders.SD
 import net.liplum.lib.shaders.use
-import net.liplum.utils.healthPct
+import net.liplum.mdt.utils.healthPct
 
 open class HoloForceField(
     val radius: Float, val regen: Float, val max: Float, val cooldown: Float,

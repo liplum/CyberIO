@@ -30,8 +30,8 @@ import net.liplum.lib.math.quadratic
 import net.liplum.mdt.ui.ammoStats
 import net.liplum.lib.utils.format
 import net.liplum.lib.TR
+import net.liplum.mdt.utils.lostHp
 import net.liplum.mdt.utils.sub
-import net.liplum.utils.*
 
 private val P2Alpha = quadratic(0.95f, 0.35f)
 

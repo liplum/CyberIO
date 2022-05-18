@@ -8,7 +8,6 @@ import net.liplum.blocks.prism.PrismData
 import net.liplum.blocks.prism.banInWeapon
 import net.liplum.blocks.prism.banInWeapons
 import net.liplum.blocks.prism.banNameInPrism
-import kotlin.math.roundToInt
 
 object PrismBlackList {
     @JvmStatic

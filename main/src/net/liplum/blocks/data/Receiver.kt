@@ -21,8 +21,8 @@ import net.liplum.UndebugOnly
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
 import net.liplum.blocks.data.Receiver.ReceiverBuild
-import net.liplum.lib.Draw
-import net.liplum.lib.SetColor
+import net.liplum.mdt.Draw
+import net.liplum.mdt.SetColor
 import net.liplum.mdt.animations.anims.Animation
 import net.liplum.mdt.animations.anis.AniState
 import net.liplum.mdt.animations.anis.config

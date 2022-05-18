@@ -1,10 +1,11 @@
 @file:JvmName("DrawT")
 
-package net.liplum.lib
+package net.liplum.mdt
 
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
 import mindustry.gen.Building
+import net.liplum.lib.TR
 import net.liplum.mdt.render.G
 
 var ALPHA: Float = 1f

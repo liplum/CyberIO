@@ -3,7 +3,7 @@ package net.liplum.mdt.animations.anis
 import arc.graphics.g2d.Draw
 import mindustry.gen.Building
 import mindustry.world.Block
-import net.liplum.lib.RESET_CONTEXT
+import net.liplum.mdt.RESET_CONTEXT
 
 open class AniStateM<TBlock : Block, TBuild : Building>(
     val config: AniConfig<TBlock, TBuild>,

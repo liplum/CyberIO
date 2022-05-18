@@ -34,7 +34,7 @@ import net.liplum.mdt.ClientOnly
 import net.liplum.DebugOnly
 import net.liplum.mdt.Else
 import net.liplum.mdt.utils.seconds
-import net.liplum.utils.healthPct
+import net.liplum.mdt.utils.healthPct
 import kotlin.math.min
 
 /**

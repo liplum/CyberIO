@@ -1,4 +1,4 @@
-package net.liplum.utils
+package net.liplum.lib.utils
 
 import arc.struct.ObjectMap
 import arc.util.serialization.Json

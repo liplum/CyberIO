@@ -1,4 +1,4 @@
-package net.liplum.utils
+package net.liplum.mdt.utils
 
 import mindustry.gen.*
 import mindustry.world.blocks.ControlBlock

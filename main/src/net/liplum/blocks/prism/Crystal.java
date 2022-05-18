@@ -3,11 +3,10 @@ package net.liplum.blocks.prism;
 import arc.graphics.g2d.TextureRegion;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
+import net.liplum.lib.math.Polar;
+import net.liplum.lib.persistance.RWU;
 import net.liplum.lib.utils.ByteH;
 import net.liplum.mdt.ClientOnly;
-import net.liplum.lib.math.Polar;
-import net.liplum.lib.utils.ByteH;
-import net.liplum.lib.persistance.RWU;
 
 public class Crystal {
     private static final int ClockwisePos = 0;

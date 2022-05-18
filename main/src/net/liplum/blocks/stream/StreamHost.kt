@@ -14,9 +14,9 @@ import mindustry.world.meta.BlockGroup
 import net.liplum.*
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
-import net.liplum.lib.DrawOn
-import net.liplum.lib.DrawSize
-import net.liplum.lib.SetAlpha
+import net.liplum.mdt.DrawOn
+import net.liplum.mdt.DrawSize
+import net.liplum.mdt.SetAlpha
 import net.liplum.mdt.animations.Floating
 import net.liplum.mdt.animations.anis.AniState
 import net.liplum.mdt.animations.anis.config

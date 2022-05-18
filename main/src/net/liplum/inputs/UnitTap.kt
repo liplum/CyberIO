@@ -7,7 +7,7 @@ import mindustry.Vars
 import mindustry.entities.Units
 import mindustry.gen.Player
 import net.liplum.mdt.ClientOnly
-import net.liplum.utils.MdtUnit
+import net.liplum.mdt.utils.MdtUnit
 
 @ClientOnly
 data class UnitTapEvent(val player: Player, val unit: MdtUnit)

@@ -6,7 +6,6 @@ import net.liplum.mdt.ClientOnly
 import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.blocks.AniedCrafter
-import net.liplum.lib.*
 import net.liplum.mdt.animations.anis.AniState
 import net.liplum.mdt.animations.anis.None
 import net.liplum.mdt.animations.anis.config
@@ -16,6 +15,8 @@ import net.liplum.lib.utils.bundle
 import net.liplum.lib.utils.isZero
 import net.liplum.lib.utils.percentI
 import net.liplum.lib.TR
+import net.liplum.mdt.Draw
+import net.liplum.mdt.SetAlpha
 import net.liplum.mdt.utils.sub
 import kotlin.math.sqrt
 

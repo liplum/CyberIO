@@ -13,7 +13,7 @@ import net.liplum.lib.Tx
 import net.liplum.lib.skeletal.Bone
 import net.liplum.lib.skeletal.Skeleton
 import net.liplum.lib.skeletal.Skin
-import net.liplum.utils.MdtUnit
+import net.liplum.mdt.utils.MdtUnit
 import net.liplum.mdt.utils.inMod
 
 open class Hand(name: String) : Block(name), IComponentBlock {

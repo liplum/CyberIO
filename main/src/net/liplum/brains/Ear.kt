@@ -25,8 +25,8 @@ import mindustry.world.meta.StatUnit
 import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.api.brain.*
-import net.liplum.lib.Draw
-import net.liplum.lib.DrawSize
+import net.liplum.mdt.Draw
+import net.liplum.mdt.DrawSize
 import net.liplum.lib.TR
 import net.liplum.lib.utils.invoke
 import net.liplum.lib.utils.isZero
@@ -37,7 +37,7 @@ import net.liplum.mdt.render.G
 import net.liplum.mdt.render.HeatMeta
 import net.liplum.mdt.render.drawHeat
 import net.liplum.mdt.utils.sub
-import net.liplum.utils.MdtUnit
+import net.liplum.mdt.utils.MdtUnit
 import net.liplum.utils.addBrainInfo
 
 open class Ear(name: String) : Block(name), IComponentBlock {

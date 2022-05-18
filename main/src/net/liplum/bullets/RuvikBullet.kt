@@ -12,8 +12,8 @@ import mindustry.game.Team
 import mindustry.gen.*
 import mindustry.world.blocks.ControlBlock
 import mindustry.world.blocks.defense.turrets.BaseTurret
-import net.liplum.utils.MdtUnit
-import net.liplum.utils.findPlayer
+import net.liplum.mdt.utils.MdtUnit
+import net.liplum.mdt.utils.findPlayer
 
 @Suppress("ClassName")
 enum class STEM_VERSION {
