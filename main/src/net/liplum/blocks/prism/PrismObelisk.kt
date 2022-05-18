@@ -18,10 +18,7 @@ import net.liplum.mdt.animations.anims.AnimationObj
 import net.liplum.mdt.animations.anims.pingPong
 import net.liplum.mdt.render.drawSurroundingRect
 import net.liplum.mdt.ui.bars.AddBar
-import net.liplum.mdt.utils.TE
-import net.liplum.mdt.utils.autoAnim
-import net.liplum.mdt.utils.exists
-import net.liplum.mdt.utils.isDiagonalTo
+import net.liplum.mdt.utils.*
 
 open class PrismObelisk(name: String) : Block(name) {
     @JvmField var prismType: Prism? = null
@@ -66,7 +63,7 @@ open class PrismObelisk(name: String) : Block(name) {
         drawSurroundingRect(x, y, indicateAreaExtension, if (valid) R.C.GreenSafe else R.C.RedAlert) {
             it.block == prismType && !it.isDiagonalTo(this, x, y)
         }
-        drawPlaceText("$contentType.$name.tip".bundle, x, y, valid)
+        drawPlaceText(subBundle("tip"), x, y, valid)
     }
 
     open inner class ObeliskBuild : Building() {

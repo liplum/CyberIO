@@ -52,44 +52,6 @@ annotation class SendDataPack
 @MustBeDocumented
 annotation class CalledBySync
 /**
- * It indicates this property/field should be serialized into save or datapack.
- */
-@Retention(AnnotationRetention.SOURCE)
-@Inherited
-@MustBeDocumented
-@Target(PROPERTY, FIELD)
-annotation class Serialized
-/**
- * It indicates this function use random number which may not be synchronized on Physical Server between Physical Client
- * so that you have to send data packet manually to share data.
- */
-@Retention(AnnotationRetention.SOURCE)
-@Inherited
-@MustBeDocumented
-annotation class UseRandom
-/**
- * It indicates reflection is used there. Please pay attention to the API changes between versions.
- */
-@Target(
-    FUNCTION,
-    PROPERTY_SETTER,
-    PROPERTY_GETTER,
-    CONSTRUCTOR,
-    PROPERTY,
-    EXPRESSION,
-    LOCAL_VARIABLE,
-)
-@Retention(AnnotationRetention.SOURCE)
-@MustBeDocumented
-annotation class UseReflection
-/**
- * It indicates a function is idempotent
- */
-@Target(FUNCTION)
-@Retention(AnnotationRetention.SOURCE)
-@MustBeDocumented
-annotation class Idempotent
-/**
  * It indicates something in the vanilla will be overwritten
  */
 @Retention(AnnotationRetention.SOURCE)

@@ -40,7 +40,7 @@ import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.lib.TR
 import net.liplum.mdt.ClientOnly
 import net.liplum.DebugOnly
-import net.liplum.mdt.Serialized
+import net.liplum.lib.Serialized
 import net.liplum.mdt.WhenNotPaused
 import net.liplum.lib.persistance.intSet
 import net.liplum.registries.CioBulletTypes

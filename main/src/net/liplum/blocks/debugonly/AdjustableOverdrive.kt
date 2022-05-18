@@ -10,7 +10,7 @@ import arc.util.io.Writes
 import mindustry.world.blocks.defense.OverdriveProjector
 import mindustry.world.meta.Stat
 import net.liplum.R
-import net.liplum.mdt.Serialized
+import net.liplum.lib.Serialized
 import net.liplum.lib.math.ExpLogGen
 import net.liplum.lib.math.FUNC
 import net.liplum.lib.math.shrink

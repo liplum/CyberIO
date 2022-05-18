@@ -19,19 +19,19 @@ import mindustry.world.blocks.defense.turrets.PowerTurret
 import mindustry.world.blocks.defense.turrets.Turret
 import mindustry.world.draw.DrawTurret
 import mindustry.world.meta.Stat
-import net.liplum.mdt.ClientOnly
 import net.liplum.R
 import net.liplum.api.IExecutioner
-import net.liplum.mdt.utils.draw
-import net.liplum.lib.utils.MapKeyBundle
-import net.liplum.lib.utils.bundle
-import net.liplum.mdt.mixin.shootPattern
-import net.liplum.lib.math.quadratic
-import net.liplum.mdt.ui.ammoStats
-import net.liplum.lib.utils.format
 import net.liplum.lib.TR
+import net.liplum.lib.math.quadratic
+import net.liplum.lib.utils.MapKeyBundle
+import net.liplum.lib.utils.format
+import net.liplum.mdt.ClientOnly
+import net.liplum.mdt.mixin.shootPattern
+import net.liplum.mdt.ui.ammoStats
+import net.liplum.mdt.utils.draw
 import net.liplum.mdt.utils.lostHp
 import net.liplum.mdt.utils.sub
+import net.liplum.mdt.utils.subBundle
 
 private val P2Alpha = quadratic(0.95f, 0.35f)
 
@@ -56,7 +56,9 @@ open class Deleter(name: String) : PowerTurret(name), IExecutioner {
     @ClientOnly
     protected val bundleOverwrite by lazy {
         MapKeyBundle(Core.bundle).overwrite(
-            "bullet.damage", "$contentType.${super.name}.stats.bullet.damage".bundle(
+            "bullet.damage",
+            subBundle(
+                "stats.bullet.damage",
                 "{0}",
                 (extraLostHpBounce * 100).format(1)
             )
@@ -66,16 +68,20 @@ open class Deleter(name: String) : PowerTurret(name), IExecutioner {
     override fun setStats() {
         super.setStats()
         stats.remove(Stat.ammo)
-        stats.add(Stat.ammo, ammoStats(
-            Pair(this, waveType),
-            extra = {
-                it.row()
-                it.add("$contentType.${super.name}.stats.bullet.execution".bundle(
-                    (executeProportion * 100).format(1)
-                ))
-            },
-            bundle = bundleOverwrite
-        )
+        stats.add(
+            Stat.ammo, ammoStats(
+                Pair(this, waveType),
+                extra = {
+                    it.row()
+                    it.add(
+                        subBundle(
+                            "stats.bullet.execution",
+                            (executeProportion * 100).format(1)
+                        )
+                    )
+                },
+                bundle = bundleOverwrite
+            )
         )
     }
 

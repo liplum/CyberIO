@@ -14,6 +14,7 @@ import mindustry.world.meta.BlockGroup
 import net.liplum.*
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
+import net.liplum.lib.Serialized
 import net.liplum.mdt.DrawOn
 import net.liplum.mdt.DrawSize
 import net.liplum.mdt.SetAlpha

@@ -33,18 +33,17 @@ object G {
      */
     @JvmStatic
     @Subscribe(EventType.Trigger.preDraw)
-    fun init(){
+    fun init() {
         sin = Mathf.absin(Time.time, 6f, 1f)
         tan = Mathf.tan(Time.time, 6f, 1f)
     }
     @JvmStatic
-    fun Ax(): Float {
-        return Draw.scl * Draw.xscl
-    }
+    val Ax: Float
+        get() = Draw.scl * Draw.xscl
     @JvmStatic
-    fun Ay(): Float {
-        return Draw.scl * Draw.yscl
-    }
+    val Ay: Float
+        get() = Draw.scl * Draw.yscl
+
     @JvmStatic
     fun Dw(tr: TextureRegion): Float {
         return D(tr.width.toFloat())
@@ -296,15 +295,15 @@ object G {
     @JvmOverloads
     fun circle(
         x: WorldXY, y: WorldXY, rad: Float, color: Color = Pal.power,
-        alpha: Float? = null, storke: Float = 1f
+        alpha: Float? = null, stroke: Float = 1f
     ) {
-        Lines.stroke(storke + 2f, Pal.gray)
+        Lines.stroke(stroke + 2f, Pal.gray)
         if (alpha != null) {
             Draw.alpha(alpha)
         }
         Lines.circle(x, y, rad)
 
-        Lines.stroke(storke, color)
+        Lines.stroke(stroke, color)
         if (alpha != null) {
             Draw.alpha(alpha)
         }
@@ -315,47 +314,47 @@ object G {
     @JvmOverloads
     fun drawSurroundingCircle(
         t: Tile, circleColor: Color = Pal.power,
-        alpha: Float? = null, storke: Float = 1f
+        alpha: Float? = null, stroke: Float = 1f
     ) = circle(
         t.drawx(), t.drawy(),
         (t.block().size / 2f + 1) * Vars.tilesize + sin - 2f,
-        circleColor, alpha, storke
+        circleColor, alpha, stroke
     )
     @JvmStatic
     @JvmOverloads
     fun drawSurroundingCircle(
         b: Block, x: WorldXY, y: WorldXY, circleColor: Color = Pal.power,
-        alpha: Float? = null, storke: Float = 1f
+        alpha: Float? = null, stroke: Float = 1f
     ) = circle(
         x, y,
         (b.size / 2f + 1) * Vars.tilesize + sin - 2f,
-        circleColor, alpha, storke
+        circleColor, alpha, stroke
     )
     @JvmStatic
     @JvmOverloads
     fun drawSurroundingCircle(
         b: Block, x: TileXY, y: TileXY,
         circleColor: Color = Pal.power,
-        alpha: Float? = null, storke: Float = 1f
+        alpha: Float? = null, stroke: Float = 1f
     ) = circle(
         b.toCenterWorldXY(x),
         b.toCenterWorldXY(y),
         (b.size / 2f + 1) * Vars.tilesize + sin - 2f,
-        circleColor, alpha, storke
+        circleColor, alpha, stroke
     )
     @JvmStatic
     @JvmOverloads
     fun dashCircle(
         x: WorldXY, y: WorldXY, rad: WorldXY, color: Color = Pal.power,
-        alpha: Float? = null, storke: Float = 1f
+        alpha: Float? = null, stroke: Float = 1f
     ) {
-        Lines.stroke(storke + 2f, Pal.gray)
+        Lines.stroke(stroke + 2f, Pal.gray)
         if (alpha != null) {
             Draw.alpha(alpha)
         }
         Lines.dashCircle(x, y, rad)
 
-        Lines.stroke(storke, color)
+        Lines.stroke(stroke, color)
         if (alpha != null) {
             Draw.alpha(alpha)
         }
@@ -367,25 +366,25 @@ object G {
     fun drawDashCircle(
         build: Building,
         range: WorldXY, color: Color = Pal.power,
-        alpha: Float? = null, storke: Float = 1f
-    ) = dashCircle(build.x, build.y, range + sin - 2, color, alpha, storke)
+        alpha: Float? = null, stroke: Float = 1f
+    ) = dashCircle(build.x, build.y, range + sin - 2, color, alpha, stroke)
     @JvmStatic
     @JvmOverloads
     fun drawDashCircle(
         x: WorldXY, y: WorldXY,
         range: WorldXY, color: Color = Pal.power,
-        alpha: Float? = null, storke: Float = 1f
-    ) = dashCircle(x, y, range + sin - 2, color, alpha, storke)
+        alpha: Float? = null, stroke: Float = 1f
+    ) = dashCircle(x, y, range + sin - 2, color, alpha, stroke)
     @JvmStatic
     @JvmOverloads
     fun drawDashCircle(
         b: Block, blockX: TileXYs, BlockY: TileXYs,
         range: WorldXY, color: Color = Pal.power,
-        alpha: Float? = null, storke: Float = 1f
+        alpha: Float? = null, stroke: Float = 1f
     ) = dashCircle(
         b.toCenterWorldXY(blockX),
         b.toCenterWorldXY(BlockY),
-        range + sin - 2, color, alpha, storke
+        range + sin - 2, color, alpha, stroke
     )
     @JvmStatic
     @JvmOverloads

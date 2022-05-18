@@ -17,7 +17,7 @@ import mindustry.world.blocks.ItemSelection
 import mindustry.world.meta.BlockGroup
 import net.liplum.mdt.ClientOnly
 import net.liplum.DebugOnly
-import net.liplum.mdt.Serialized
+import net.liplum.lib.Serialized
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
 import net.liplum.mdt.Draw

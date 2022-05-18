@@ -6,3 +6,4 @@ typealias TR = TextureRegion
 typealias TRs = Array<TextureRegion>
 
 val EmptyTR = TR()
+val EmptyTRs = emptyArray<TR>()

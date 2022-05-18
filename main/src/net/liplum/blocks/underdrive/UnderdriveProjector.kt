@@ -31,19 +31,20 @@ import mindustry.world.blocks.power.PowerGenerator
 import mindustry.world.meta.BlockGroup
 import mindustry.world.meta.Stat
 import mindustry.world.meta.StatUnit
-import net.liplum.mdt.ClientOnly
 import net.liplum.DebugOnly
 import net.liplum.R
-import net.liplum.mdt.Serialized
+import net.liplum.lib.Serialized
 import net.liplum.lib.utils.bundle
-import net.liplum.mdt.ui.bars.AddBar
-import net.liplum.mdt.ui.bars.ReverseBar
 import net.liplum.lib.utils.format
 import net.liplum.lib.utils.percentI
-import net.liplum.mdt.utils.sub
-import net.liplum.mdt.utils.toCenterWorldXY
+import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.render.G
-import net.liplum.utils.*
+import net.liplum.mdt.ui.bars.AddBar
+import net.liplum.mdt.ui.bars.ReverseBar
+import net.liplum.mdt.utils.sub
+import net.liplum.mdt.utils.subBundle
+import net.liplum.mdt.utils.toCenterWorldXY
+import net.liplum.utils.addRangeInfo
 import kotlin.math.max
 
 const val MagicNSpiralRate = 0.1125f
@@ -169,16 +170,21 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
         super.setStats()
         stats.remove(Stat.basePowerGeneration)
         stats.add(Stat.basePowerGeneration) {
-            it.add("$contentType.$name.stats.power-gen".bundle(
-                "${powerProduction * Time.toSeconds} ${StatUnit.powerSecond.localized()}", maxPowerEFFBlocksReq
-            ))
+            it.add(
+                subBundle(
+                    "stats.power-gen",
+                    "${powerProduction * Time.toSeconds} ${StatUnit.powerSecond.localized()}", maxPowerEFFBlocksReq
+                )
+            )
         }
         stats.add(Stat.speedIncrease) {
             val max = maxSlowDownRate
             val min = maxSlowDownRate / maxGear
-            it.add(R.Bundle.Gen("speed-increase.range").bundle(
-                -min.percentI, -max.percentI
-            ))
+            it.add(
+                R.Bundle.Gen("speed-increase.range").bundle(
+                    -min.percentI, -max.percentI
+                )
+            )
         }
         stats.add(
             Stat.range,

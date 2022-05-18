@@ -48,7 +48,7 @@ import net.liplum.lib.TRs
 import net.liplum.mdt.ClientOnly
 import net.liplum.DebugOnly
 import net.liplum.mdt.Draw
-import net.liplum.mdt.Serialized
+import net.liplum.lib.Serialized
 import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.utils.MdtUnit
 import net.liplum.mdt.utils.sheet

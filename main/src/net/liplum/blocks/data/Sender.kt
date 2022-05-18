@@ -15,6 +15,7 @@ import net.liplum.*
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
 import net.liplum.blocks.data.Sender.SenderBuild
+import net.liplum.lib.Serialized
 import net.liplum.mdt.Draw
 import net.liplum.mdt.ResetColor
 import net.liplum.mdt.SetColor

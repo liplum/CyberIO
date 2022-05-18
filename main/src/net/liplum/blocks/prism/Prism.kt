@@ -34,7 +34,8 @@ import net.liplum.lib.utils.*
 import net.liplum.lib.TR
 import net.liplum.mdt.ClientOnly
 import net.liplum.DebugOnly
-import net.liplum.mdt.Serialized
+import net.liplum.lib.TRs
+import net.liplum.lib.Serialized
 import net.liplum.mdt.render.G
 import net.liplum.mdt.utils.*
 import kotlin.math.abs
@@ -55,7 +56,7 @@ open class Prism(name: String) : Block(name) {
     @ClientOnly @JvmField var prismRotationSpeed = 0.05f
     @ClientOnly @JvmField var elevation = -1f
     @ClientOnly lateinit var BaseTR: TR
-    @ClientOnly lateinit var CrystalTRs: Array<TR>
+    @ClientOnly lateinit var CrystalTRs: TRs
     @ClientOnly @JvmField var CrystalVariants = 7
     @ClientOnly @JvmField var clockwiseColor: Color = R.C.prismClockwise
     @ClientOnly @JvmField var antiClockwiseColor: Color = R.C.prismAntiClockwise

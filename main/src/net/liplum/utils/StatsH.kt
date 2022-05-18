@@ -7,9 +7,9 @@ import mindustry.world.Block
 import mindustry.world.meta.Stat
 import mindustry.world.meta.StatCat
 import mindustry.world.meta.StatValue
-import net.liplum.mdt.UseReflection
-import net.liplum.lib.utils.bundle
+import net.liplum.lib.UseReflection
 import net.liplum.lib.utils.getF
+import net.liplum.mdt.utils.subBundle
 
 @UseReflection
 fun Block.addPowerUseStats() {
@@ -18,7 +18,7 @@ fun Block.addPowerUseStats() {
         stats.remove(Stat.powerUse)
     }
     stats.add(Stat.powerUse) {
-        val l = Label("$contentType.$name.stats.power-use".bundle)
+        val l = Label(subBundle("stats.power-use"))
         it.add(l)
     }
 }

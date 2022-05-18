@@ -11,10 +11,14 @@ import mindustry.type.Item
 import mindustry.world.blocks.power.PowerBlock
 import mindustry.world.meta.BlockGroup
 import mindustry.world.modules.ItemModule
-import net.liplum.*
+import net.liplum.DebugOnly
+import net.liplum.R
+import net.liplum.WhenRefresh
 import net.liplum.api.cyber.*
-import net.liplum.mdt.Draw
-import net.liplum.mdt.DrawSize
+import net.liplum.lib.TR
+import net.liplum.lib.delegates.Delegate1
+import net.liplum.lib.persistance.intSet
+import net.liplum.mdt.*
 import net.liplum.mdt.animations.Floating
 import net.liplum.mdt.animations.anims.Animation
 import net.liplum.mdt.animations.anims.IFrameIndexer
@@ -22,18 +26,17 @@ import net.liplum.mdt.animations.anims.ixAuto
 import net.liplum.mdt.animations.anis.AniConfig
 import net.liplum.mdt.animations.anis.AniState
 import net.liplum.mdt.animations.anis.config
-import net.liplum.lib.utils.bundle
-import net.liplum.lib.delegates.Delegate1
 import net.liplum.mdt.animations.blocks.*
+import net.liplum.mdt.render.G
+import net.liplum.mdt.render.postToastTextOn
 import net.liplum.mdt.ui.bars.removeItemsInBar
-import net.liplum.lib.TR
-import net.liplum.mdt.*
 import net.liplum.mdt.utils.autoAnim
 import net.liplum.mdt.utils.inMod
 import net.liplum.mdt.utils.sub
-import net.liplum.lib.persistance.intSet
-import net.liplum.mdt.render.G
-import net.liplum.utils.*
+import net.liplum.mdt.utils.subBundle
+import net.liplum.utils.addReceiverInfo
+import net.liplum.utils.addSenderInfo
+import net.liplum.utils.addTeamInfo
 
 private typealias Anim = Animation
 private typealias BGType = BlockGroupType<Cloud, Cloud.CloudBuild>
@@ -242,8 +245,7 @@ open class Cloud(name: String) : PowerBlock(name) {
             }
             if (other is IDataReceiver) {
                 if (other is CloudBuild) {
-                    "${block.contentType}.${block.name}.self-connect".bundle
-                        .drawTextOn(other)
+                    subBundle("self-connect").postToastTextOn(other)
                     return false
                 }
                 if (!canMultipleConnect()) {

@@ -19,11 +19,11 @@ import net.liplum.lib.utils.isZero
 import net.liplum.lib.shaders.SD
 import net.liplum.lib.shaders.use
 import net.liplum.mdt.ui.bars.AddBar
-import net.liplum.lib.utils.yesNo
+import net.liplum.utils.yesNo
 import net.liplum.lib.TR
 import net.liplum.mdt.ClientOnly
 import net.liplum.DebugOnly
-import net.liplum.mdt.Serialized
+import net.liplum.lib.Serialized
 import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.utils.or
 import net.liplum.mdt.utils.seconds

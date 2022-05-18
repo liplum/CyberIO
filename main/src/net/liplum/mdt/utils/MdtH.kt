@@ -22,6 +22,8 @@ import mindustry.world.blocks.payloads.BuildPayload
 import mindustry.world.blocks.payloads.PayloadConveyor
 import mindustry.world.blocks.payloads.PayloadSource
 import mindustry.world.blocks.payloads.UnitPayload
+import net.liplum.lib.Out
+import net.liplum.lib.math.Point2f
 
 typealias TileXY = Int
 typealias TileXYs = Short
@@ -53,6 +55,15 @@ fun buildAt(x: TileXYd, y: TileXYd): Building? =
 
 fun Block.toCenterXY(xy: TileXY): WorldXY {
     return xy.worldXY + offset
+}
+/**
+ * Get the world coordinate of building
+ * @param pos Output Parameter.
+ * @return [pos]
+ */
+fun Building.worldPos(@Out pos: Point2f): Point2f {
+    pos.set(x, y)
+    return pos
 }
 
 val Int.build: Building?

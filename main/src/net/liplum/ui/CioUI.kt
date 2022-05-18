@@ -24,7 +24,7 @@ import net.liplum.*
 import net.liplum.lib.ing
 import net.liplum.lib.utils.*
 import net.liplum.mdt.UnsteamOnly
-import net.liplum.mdt.UseReflection
+import net.liplum.lib.UseReflection
 import net.liplum.mdt.ui.ShowTextDialog
 import net.liplum.mdt.ui.addTrackTooltip
 import net.liplum.mdt.ui.settings.*

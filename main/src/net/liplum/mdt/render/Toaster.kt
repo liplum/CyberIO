@@ -1,6 +1,7 @@
 package net.liplum.mdt.render
 
 import arc.math.Interp
+import arc.math.geom.Vec2
 import arc.util.Time
 import mindustry.game.EventType
 import net.liplum.annotations.Subscribe
@@ -14,9 +15,17 @@ object Toaster {
      */
     @ClientOnly
     private val shared = ToastSpec()
-    val allToasts = HashSet<Toast>()
     /**
-     * Post a toast, it will be drawn every [EventType.Trigger.drawOver]
+     * Unmanaged toast is impossible to be removed.
+     */
+    val unmanagedToasts = HashSet<Toast>()
+    /**
+     * Managed toast can be overwritten or removed by its key.
+     */
+    val managedToast = HashMap<Any, Toast>()
+    /**
+     * Post an unmanaged toast, it will be drawn every [EventType.Trigger.drawOver].
+     * It is impossible to be removed.
      */
     @ClientOnly
     fun post(
@@ -28,35 +37,93 @@ object Toaster {
             Toast(Time.globalTime, duration, true, task)
         else
             Toast(Time.time, duration, false, task)
-        allToasts.add(toast)
+        unmanagedToasts.add(toast)
+    }
+    /**
+     * Post a managed toast, it will be drawn every [EventType.Trigger.drawOver].
+     * It can be overwritten or removed by its key.
+     */
+    @ClientOnly
+    fun post(
+        id: Any,
+        duration: Float,
+        useGlobalTime: Boolean = false,
+        task: ToastSpec.() -> Unit
+    ) {
+        val toast = if (useGlobalTime)
+            Toast(Time.globalTime, duration, true, task)
+        else
+            Toast(Time.time, duration, false, task)
+        managedToast[id] = toast
+    }
+    /**
+     * Remove a managed toast.
+     */
+    @ClientOnly
+    fun remove(id: Any): Toast? {
+        return managedToast.remove(id)
+    }
+    /**
+     * Get a managed toast or null.
+     */
+    @ClientOnly
+    operator fun get(id: Any): Toast? {
+        return managedToast[id]
     }
     /**
      * This should be called after drawing
      */
     @ClientOnly
     @Subscribe(EventType.Trigger.drawOver)
-    fun drawAllToast() {
-        val it = allToasts.iterator()
-        while (it.hasNext()) {
-            val toast = it.next()
-            val curClock = if (toast.useGlobalTime) Time.globalTime else Time.time
-            val curTime = curClock - toast.startTime
-            if (curTime >= toast.duration) {
-                it.remove()
-            } else {
-                shared.toast = toast
-                shared.curTime = curTime
-                shared.toast.task(shared)
+    fun drawAllToasts() {
+        // Draw all unmanaged toasts
+        run {
+            val it = unmanagedToasts.iterator()
+            while (it.hasNext()) {
+                val toast = it.next()
+                val curClock = if (toast.useGlobalTime) Time.globalTime else Time.time
+                val curTime = curClock - toast.startTime
+                if (curTime >= toast.duration) {
+                    it.remove()
+                } else {
+                    shared.toast = toast
+                    shared.curTime = curTime
+                    shared.toast.task(shared)
+                }
             }
         }
+        // Draw all managed toasts
+        run {
+            val it = managedToast.iterator()
+            while (it.hasNext()) {
+                val toast = it.next().value
+                val curClock = if (toast.useGlobalTime) Time.globalTime else Time.time
+                val curTime = curClock - toast.startTime
+                if (curTime >= toast.duration) {
+                    it.remove()
+                } else {
+                    shared.toast = toast
+                    shared.curTime = curTime
+                    shared.toast.task(shared)
+                }
+            }
+        }
+    }
+    /**
+     * Clear all toasts.
+     */
+    @ClientOnly
+    fun clear(){
+        unmanagedToasts.clear()
+        managedToast.clear()
     }
 }
 @ClientOnly
 class Toast(
-    val startTime: Float,
-    val duration: Float,
-    val useGlobalTime: Boolean,
-    val task: ToastSpec.() -> Unit
+    var startTime: Float,
+    var duration: Float,
+    var useGlobalTime: Boolean,
+    var task: ToastSpec.() -> Unit
 ) {
     companion object {
         val X = Toast(0f, 0f, false) {}
@@ -71,12 +138,19 @@ class ToastSpec {
     val fout: Float
         get() = 1 - curTime / toast.duration
 }
-
+/**
+ * Use the default fade-in effect from [Interp.fade]
+ */
 val ToastSpec.fadeIn: Float
     get() = Interp.fade(fin)
+/**
+ * Use the default fade-out effect from [Interp.fade]
+ */
 val ToastSpec.fadeOut: Float
     get() = Interp.fade(fout)
-
+/**
+ * @param duration the duration of fade-in&out
+ */
 fun ToastSpec.fadeInOut(
     duration: Float = toast.duration * 0.1f
 ): Float =
@@ -89,7 +163,9 @@ fun ToastSpec.fadeInOut(
     // Appear clearly
     else
         1f
-
+/**
+ * @param durationPct final fade-in&out duration = toast.duration * durationPct
+ */
 fun ToastSpec.fadeInOutPct(
     durationPct: Float = 0.1f
 ): Float {

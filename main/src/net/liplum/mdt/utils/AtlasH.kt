@@ -6,6 +6,7 @@ import arc.Core.atlas
 import mindustry.Vars
 import mindustry.ctype.MappableContent
 import net.liplum.lib.TR
+import net.liplum.lib.TRs
 import net.liplum.lib.utils.AtlasU
 
 /**
@@ -47,7 +48,7 @@ infix fun TR.or(texture: TR): TR =
  * @param start the start number of these images
  */
 @JvmOverloads
-fun MappableContent.subFrames(subName: String? = null, number: Int, start: Int = 0): Array<TR> =
+fun MappableContent.subFrames(subName: String? = null, number: Int, start: Int = 0): TRs =
     AtlasU.subFrames(if (subName != null) "$name-$subName" else name, start, number)
 /**
  * Gets an array of Texture Region from a single image named in pattern "sprites/{this}-{subName}" or "sprites/{this}" if subName is null.
@@ -59,7 +60,7 @@ fun MappableContent.sheet(
     subName: String? = null,
     number: Int,
     isHorizontal: Boolean = true,
-): Array<TR> {
+): TRs {
     val identity = name + if (subName != null) "-$subName" else ""
     return AtlasU.sheet(identity, isHorizontal, number)
 }
@@ -67,7 +68,7 @@ fun MappableContent.sheet(
 fun String.sheet(
     number: Int,
     isHorizontal: Boolean = true,
-): Array<TR> = AtlasU.sheet(this, isHorizontal, number)
+): TRs = AtlasU.sheet(this, isHorizontal, number)
 /**
  * Gets an array of Texture Region of "sprites/{this}-{subName}" or "sprites/{this}" if subName is null.
  * @param subName the following name after a hyphen. If it's null, use the {this} name
@@ -79,12 +80,12 @@ fun MappableContent.anim(
     subName: String? = null,
     isHorizontal: Boolean = true,
     number: Int,
-): Array<TR> =
+): TRs =
     AtlasU.animation(this, subName, isHorizontal, number)
 @JvmOverloads
 fun TR.slice(
     count: Int,
     isHorizontal: Boolean = true,
-): Array<TR> =
+): TRs =
     AtlasU.slice(this, count, isHorizontal)
 

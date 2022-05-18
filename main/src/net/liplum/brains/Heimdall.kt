@@ -46,7 +46,7 @@ import net.liplum.lib.TR
 import net.liplum.mdt.ClientOnly
 import net.liplum.DebugOnly
 import net.liplum.lib.utils.invoke
-import net.liplum.mdt.Serialized
+import net.liplum.lib.Serialized
 import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.utils.sheet
 import net.liplum.mdt.utils.sub

@@ -34,6 +34,7 @@ import mindustry.world.meta.BlockGroup
 import mindustry.world.meta.Stat
 import net.liplum.*
 import net.liplum.consumer.DynamicContinuousLiquidCons
+import net.liplum.lib.Serialized
 import net.liplum.mdt.Draw
 import net.liplum.lib.utils.bundle
 import net.liplum.lib.shaders.SD

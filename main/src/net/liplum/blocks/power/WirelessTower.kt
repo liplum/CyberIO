@@ -26,7 +26,7 @@ import net.liplum.lib.math.radian
 import net.liplum.lib.TR
 import net.liplum.mdt.ClientOnly
 import net.liplum.DebugOnly
-import net.liplum.mdt.Serialized
+import net.liplum.lib.Serialized
 import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.utils.sub
 import net.liplum.mdt.utils.toCenterWorldXY
@@ -145,7 +145,7 @@ open class WirelessTower(name: String) : PowerBlock(name) {
         }
 
         override fun drawSelect() {
-            G.drawDashCircle(x, y, realRange, R.C.Power, storke = (realRange / 100f).coerceAtLeast(1f))
+            G.drawDashCircle(x, y, realRange, R.C.Power, stroke = (realRange / 100f).coerceAtLeast(1f))
             forEachTargetInRange {
                 G.drawSelected(it, R.C.Power)
             }

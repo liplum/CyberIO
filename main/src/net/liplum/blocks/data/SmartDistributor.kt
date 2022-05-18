@@ -33,7 +33,7 @@ import net.liplum.mdt.ui.bars.removeItemsInBar
 import net.liplum.lib.TR
 import net.liplum.mdt.ClientOnly
 import net.liplum.DebugOnly
-import net.liplum.mdt.Serialized
+import net.liplum.lib.Serialized
 import net.liplum.UndebugOnly
 import net.liplum.lib.utils.*
 import net.liplum.mdt.utils.autoAnim
@@ -41,6 +41,7 @@ import net.liplum.mdt.utils.inMod
 import net.liplum.mdt.utils.isDiagonalTo
 import net.liplum.lib.persistance.intSet
 import net.liplum.mdt.render.drawSurroundingRect
+import net.liplum.mdt.utils.subBundle
 import net.liplum.utils.*
 import kotlin.math.log2
 
@@ -138,7 +139,7 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
                 it is ConsumeItems || it is ConsumeItemDynamic || it is ConsumeItemFilter
             } && !b.isDiagonalTo(this, x, y)
         }
-        drawPlaceText("$contentType.$name.tip".bundle, x, y, valid)
+        drawPlaceText(subBundle("tip"), x, y, valid)
     }
 
     open inner class SmartDISBuild : AniedBlock<SmartDistributor, SmartDISBuild>.AniedBuild(),

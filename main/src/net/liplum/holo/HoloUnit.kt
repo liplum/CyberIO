@@ -19,7 +19,7 @@ import mindustry.logic.LAccess
 import mindustry.world.blocks.ConstructBlock.ConstructBuild
 import net.liplum.mdt.ClientOnly
 import net.liplum.R
-import net.liplum.mdt.Serialized
+import net.liplum.lib.Serialized
 import net.liplum.holo.HoloProjector.HoloPBuild
 import net.liplum.registries.EntityRegistry
 import net.liplum.mdt.render.G

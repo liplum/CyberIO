@@ -14,8 +14,8 @@ import net.liplum.brains.FormationEffects
 import net.liplum.lib.delegates.Delegate
 import net.liplum.lib.utils.isOn
 import net.liplum.lib.utils.on
-import net.liplum.lib.utils.percent
-import net.liplum.lib.utils.value
+import net.liplum.utils.percent
+import net.liplum.utils.value
 import net.liplum.mdt.utils.*
 import kotlin.math.absoluteValue
 

@@ -29,7 +29,7 @@ import net.liplum.*
 import net.liplum.lib.utils.bundle
 import net.liplum.lib.shaders.SD
 import net.liplum.lib.shaders.use
-import net.liplum.lib.utils.time
+import net.liplum.utils.time
 import net.liplum.mdt.ClientOnly
 import net.liplum.DebugOnly
 import net.liplum.mdt.Else

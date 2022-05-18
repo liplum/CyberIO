@@ -17,7 +17,7 @@ import mindustry.ui.Bar
 import net.liplum.mdt.ClientOnly
 import net.liplum.DebugOnly
 import net.liplum.R
-import net.liplum.mdt.Serialized
+import net.liplum.lib.Serialized
 import net.liplum.api.cyber.*
 import net.liplum.mdt.DrawOn
 import net.liplum.lib.delegates.Delegate1

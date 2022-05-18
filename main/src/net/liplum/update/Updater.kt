@@ -13,7 +13,7 @@ import net.liplum.lib.replaceByteBy
 import net.liplum.lib.utils.useFakeHeader
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.HeadlessOnly
-import net.liplum.mdt.UseReflection
+import net.liplum.lib.UseReflection
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.lang.reflect.Method

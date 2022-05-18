@@ -11,8 +11,6 @@ import arc.math.geom.Vec2
 import net.liplum.lib.utils.isZero
 import kotlin.math.*
 
-typealias FUNC = (Float) -> Float
-
 /**
  * Generates a quadratic function whose domain is [0,1] and range is included in [0,1].
  * @param yWhenXIsZero the value when x=0
