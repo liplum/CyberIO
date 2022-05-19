@@ -245,14 +245,7 @@ object CioUI {
             addAny {
                 val button = TextButton("Debug Settings").apply {
                     changed {
-                        BaseDialog("Debug Settings").apply {
-                            for (setting in Debug.settings) {
-                                cont.check(setting.name, setting.getter() as? Boolean ?: false) { b ->
-                                    setting.setter(b)
-                                }.growX()
-                            }
-                            addCloseButton()
-                        }.show()
+                        DebugSettingsDialog.show()
                     }
                 }
                 it.add(button).fillX()

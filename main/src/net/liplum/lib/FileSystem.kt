@@ -1,10 +1,13 @@
 package net.liplum.lib
 
+import arc.files.Fi
 import arc.util.io.Streams
 import java.io.File
 
 @JvmInline
 value class F(val file: File) {
+    constructor(path: String) : this(File(path))
+
     val dir: Dir
         get() = Dir(file.parentFile)
     val exists: Boolean
@@ -55,8 +58,13 @@ value class F(val file: File) {
             file.mkdirs()
     }
 }
+
+fun F.toFi(): Fi =
+    Fi(file)
 @JvmInline
 value class Dir(val folder: File) {
+    constructor(path: String) : this(File(path))
+
     fun subF(subPath: String) =
         F(File(folder, subPath))
 

@@ -25,16 +25,16 @@ import mindustry.type.ItemStack
 import mindustry.type.UnitType
 import mindustry.ui.Bar
 import mindustry.world.meta.Stat
-import net.liplum.*
-import net.liplum.lib.utils.bundle
+import net.liplum.DebugOnly
+import net.liplum.R
 import net.liplum.lib.shaders.SD
 import net.liplum.lib.shaders.use
-import net.liplum.utils.time
+import net.liplum.lib.utils.bundle
 import net.liplum.mdt.ClientOnly
-import net.liplum.DebugOnly
 import net.liplum.mdt.Else
-import net.liplum.mdt.utils.seconds
 import net.liplum.mdt.utils.healthPct
+import net.liplum.mdt.utils.seconds
+import net.liplum.utils.time
 import kotlin.math.min
 
 /**
@@ -121,7 +121,6 @@ open class HoloUnitType(name: String) : UnitType(name) {
         val healthPct = unit.healthPct
         val alpha = unit.holoAlpha
         drawSoftShadow(unit, alpha)
-
         SD.Hologram.use {
             it.alpha = alpha
             it.opacityNoise *= 2f - healthPct
@@ -147,7 +146,6 @@ open class HoloUnitType(name: String) : UnitType(name) {
             drawWeapons(unit)
             drawLight(unit)
         }
-
         if (unit.shieldAlpha > 0 && drawShields) {
             drawShield(unit)
         }
@@ -160,8 +158,10 @@ open class HoloUnitType(name: String) : UnitType(name) {
                 unit.mounts[part.weaponIndex]
             else null
             if (first != null) {
-                DrawPart.params.set(first.warmup, first.reload / weapons.first().reload, first.smoothReload, first.heat, unit.x, unit.y,
-                    unit.rotation)
+                DrawPart.params.set(
+                    first.warmup, first.reload / weapons.first().reload, first.smoothReload, first.heat, unit.x, unit.y,
+                    unit.rotation
+                )
             } else {
                 DrawPart.params.set(0f, 0f, 0f, 0f, unit.x, unit.y, unit.rotation)
             }
