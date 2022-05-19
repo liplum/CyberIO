@@ -33,6 +33,7 @@ void main(){
     vec2 uv = v_texCoords.xy;
     vec4 original = texture2D(u_texture, uv);
     if (original.a < 0.01){
+        gl_FragColor = vec4(0.0);
         return;
     }
     vec3 col = original.rgb;

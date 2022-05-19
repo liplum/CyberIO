@@ -46,6 +46,7 @@ open class HoloWall(name: String) : Wall(name) {
         update = true
         hasShadow = false
         absorbLasers = true
+        insulated = true
         flashHit = false
         floating = true
         sync = true
