@@ -7,6 +7,7 @@ import mindustry.entities.bullet.*
 import mindustry.gen.Building
 import mindustry.graphics.Pal
 import net.liplum.R
+import net.liplum.api.prism.PrismRegistry.getRegistered
 import net.liplum.bullets.BBulletType
 import net.liplum.lib.utils.copyFrom
 import net.liplum.lib.utils.ArrayList
@@ -193,29 +194,6 @@ val MassDriverBolt.tinted: List<MassDriverBolt>
             this
         }
     }
-val Registry: HashMap<BulletType, List<BulletType>> = HashMap()
-fun <T : BulletType> T.registerRGB(register: T.() -> Triple<T, T, T>) {
-    val (r, g, b) = register()
-    Registry[this] = arrayListOf(r, g, b)
-}
-
-fun <T : BulletType> T.registerRGBs(register: T.() -> List<T>) {
-    Registry[this] = this.register()
-}
-
-fun <T : BulletType> T.registerRGBIndex(register: T.(Int) -> T) {
-    Registry[this] = RgbList { register(it) }
-}
-/**
- * @param registerGen a generator which accepts 0(red), 1(green) and 2(blue) and returns the corresponding [BulletType] object.
- */
-fun BulletType.registerRGBGen(registerGen: BulletType.() -> ((Int) -> BulletType)) {
-    val gen = registerGen()
-    Registry[this] = RgbList(gen)
-}
-
-fun getRegistered(b: BulletType): List<BulletType>? =
-    Registry[b]
 
 val GeneralBullets: HashMap<BulletType, List<BulletType>> = HashMap()
 val BulletType.tintGeneral: List<BulletType>

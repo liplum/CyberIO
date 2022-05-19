@@ -1024,6 +1024,8 @@ object CioBlocks {
             (Blocks.payloadRouter as PayloadRouter).payloadLimit = 10f
             (Blocks.payloadUnloader as PayloadUnloader).maxBlockSize = 10
             (Blocks.payloadPropulsionTower as PayloadMassDriver).maxPayloadSize = 10f
+            Planets.serpulo.hiddenItems.clear()
+            Planets.erekir.hiddenItems.clear()
             /*val coreBlock = Blocks.coreShard as CoreBlock
             coreBlock.unitType = CioUnitTypes.holoFighter
             coreBlock.solid = false*/

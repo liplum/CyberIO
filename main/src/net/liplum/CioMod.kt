@@ -160,6 +160,7 @@ class CioMod : Mod() {
 
         Settings.updateSettings()
         RecipeCenter.recordAllRecipes()
+        VirusUninfected.load()
         Clog.info("v${Meta.DetailedVersion} initialized.")
         Settings.LastPlayTime = System.currentTimeMillis()
     }

@@ -4,10 +4,10 @@ package net.liplum.registries
 
 import mindustry.content.UnitTypes
 import mindustry.gen.Bullet
-import net.liplum.blocks.prism.PrismData
-import net.liplum.blocks.prism.banInWeapon
-import net.liplum.blocks.prism.banInWeapons
-import net.liplum.blocks.prism.banNameInPrism
+import net.liplum.api.prism.PrismBlackList.banInWeapon
+import net.liplum.api.prism.PrismBlackList.banInWeapons
+import net.liplum.api.prism.PrismBlackList.banNameInPrism
+import net.liplum.api.prism.PrismData
 
 object PrismBlackList {
     @JvmStatic
