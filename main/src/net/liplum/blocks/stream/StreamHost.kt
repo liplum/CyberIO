@@ -15,20 +15,18 @@ import net.liplum.*
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
 import net.liplum.lib.Serialized
-import net.liplum.mdt.DrawOn
-import net.liplum.mdt.DrawSize
-import net.liplum.mdt.SetAlpha
+import net.liplum.lib.TR
+import net.liplum.lib.TRs
+import net.liplum.lib.persistance.intSet
+import net.liplum.mdt.*
 import net.liplum.mdt.animations.Floating
 import net.liplum.mdt.animations.anis.AniState
 import net.liplum.mdt.animations.anis.config
-import net.liplum.lib.TR
-import net.liplum.mdt.*
+import net.liplum.mdt.render.G
 import net.liplum.mdt.utils.buildAt
 import net.liplum.mdt.utils.inMod
 import net.liplum.mdt.utils.sub
 import net.liplum.mdt.utils.unpack
-import net.liplum.lib.persistance.intSet
-import net.liplum.mdt.render.G
 import net.liplum.utils.*
 import java.util.*
 
@@ -39,7 +37,6 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
     @JvmField var liquidColorLerp = 0.5f
     @JvmField var powerUseBase = 1f
     @JvmField var powerUsePerConnection = 1f
-    @ClientOnly lateinit var BaseTR: TR
     @ClientOnly lateinit var LiquidTR: TR
     @ClientOnly lateinit var TopTR: TR
     @ClientOnly lateinit var NoPowerAni: AniStateH
@@ -90,10 +87,13 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
 
     override fun load() {
         super.load()
-        BaseTR = this.sub("base")
         LiquidTR = this.sub("liquid")
         TopTR = this.sub("top")
         NoPowerTR = this.inMod("rs-no-power-large")
+    }
+
+    override fun icons(): TRs {
+        return arrayOf(region, TopTR)
     }
 
     open fun initPowerUse() {
@@ -348,7 +348,7 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
         }
 
         override fun fixedDraw() {
-            BaseTR.DrawOn(this)
+            region.DrawOn(this)
             Drawf.liquid(
                 LiquidTR, x, y,
                 liquids.currentAmount() / liquidCapacity,

@@ -1,6 +1,7 @@
 package net.liplum.blocks.stream
 
 import arc.graphics.Color
+import arc.graphics.g2d.TextureRegion
 import arc.scene.ui.layout.Table
 import arc.struct.ObjectSet
 import arc.struct.OrderedSet
@@ -72,6 +73,10 @@ open class StreamClient(name: String) : AniedBlock<StreamClient, StreamClient.Cl
         NoPowerTR = this.inMod("rs-no-power")
         LiquidTR = this.sub("liquid")
         TopTR = this.sub("top")
+    }
+
+    override fun icons(): Array<TextureRegion> {
+        return arrayOf(region, TopTR)
     }
 
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
