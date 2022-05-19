@@ -53,6 +53,9 @@ object Settings {
     var GitHubMirrorUrl: String
         get() = settings.getString(R.Setting.GitHubMirrorUrl, Meta.GitHubMirrorUrl)
         set(value) = settings.put(R.Setting.GitHubMirrorUrl, value)
+    var ShaderRootPath: String
+        get() = settings.getString(R.Setting.ShaderRootPath, "")
+        set(value) = settings.put(R.Setting.ShaderRootPath, value)
     val settingsMap = mapOf(
         "LinkOpacity" to Pair(R.Setting.LinkOpacity, 100),
         "AlwaysShowLink" to Pair(R.Setting.AlwaysShowLink, Vars.mobile),
@@ -66,6 +69,7 @@ object Settings {
         "FirstInstallationTime" to Pair(R.Setting.FirstInstallationTime, -1),
         "LastPlayTime" to Pair(R.Setting.LastPlayTime, -1),
         "GitHubMirrorUrl" to Pair(R.Setting.LastPlayTime, GitHubMirrorUrl),
+        "ShaderRootPath" to Pair(R.Setting.ShaderRootPath, ""),
     )
     @Suppress("UNCHECKED_CAST")
     operator fun <T> get(key: String): T =

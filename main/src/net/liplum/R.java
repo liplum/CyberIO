@@ -303,6 +303,7 @@ public class R {
                 FirstInstallationTime = Gen("first-install-time"),
                 LastPlayTime = Gen("last-play-time"),
                 GitHubMirrorUrl = Gen("github-mirror"),
+                ShaderRootPath = Gen("shader-root-path"),
                 CheckUpdate = Gen("check-update");
     }
 

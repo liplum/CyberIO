@@ -4,12 +4,10 @@ import net.liplum.mdt.shaders.CommonShader;
 import net.liplum.mdt.shaders.ProgressShader;
 import net.liplum.shaders.SurfaceShader;
 import net.liplum.shaders.TestShieldShader;
-import net.liplum.shaders.holo.HologramOldShader;
 import net.liplum.shaders.holo.HologramShader;
 
 public class CioShaders {
     public static CommonShader DynamicColor;
-    public static HologramOldShader HologramOld;
     public static HologramShader Hologram;
     public static CommonShader Monochrome;
     public static CommonShader InvertColor;

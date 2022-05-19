@@ -1,13 +1,14 @@
 package net.liplum.mdt.shaders
 
 import arc.Core
-import arc.files.Fi
 import arc.util.Time
 import mindustry.Vars
+import net.liplum.lib.shaders.FragFi
 import net.liplum.lib.shaders.ShaderBase
+import net.liplum.lib.shaders.VertFi
 
 class CommonShader(
-    vert: Fi, frag: Fi,
+    vert: VertFi, frag: FragFi,
 ) : ShaderBase(vert, frag) {
     override fun apply() {
         setUniformf("u_time", Time.time)

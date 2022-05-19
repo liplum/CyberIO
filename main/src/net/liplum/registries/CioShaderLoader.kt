@@ -1,17 +1,15 @@
 package net.liplum.registries
 
-import arc.files.Fi
 import mindustry.Vars
 import mindustry.graphics.Shaders.getShaderFi
 import net.liplum.CioMod
-import net.liplum.mdt.ClientOnly
 import net.liplum.R
 import net.liplum.lib.shaders.*
+import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.shaders.CommonShader
 import net.liplum.mdt.shaders.ProgressShader
 import net.liplum.registries.CioShaders.*
 import net.liplum.shaders.SurfaceShader
-import net.liplum.shaders.holo.HologramOldShader
 import net.liplum.shaders.holo.HologramShader
 import net.liplum.useCompatible
 
@@ -24,7 +22,6 @@ object CioShaderLoader {
 // Dynamic
 DynamicColor                = default("DynamicColor",                  ::CommonShader)
 // Hologram
-HologramOld                 = default("HologramOld",                   ::HologramOldShader)
 Hologram                    = default("Hologram",                      ::HologramShader)
 
 Monochrome                  = default("Monochrome",                    ::CommonShader)
@@ -82,7 +79,8 @@ Cyberion                    = screen("Cyberion",                       ::Surface
             } catch (_: Exception) {
             }
             throw ShaderCompileException(
-                "Can't compile shaders $vertFileName and $fragFileName\n$fragment\n", e)
+                "Can't compile shaders $vertFileName and $fragFileName\n$fragment\n", e
+            )
         }
     }
     @JvmStatic
@@ -108,8 +106,6 @@ Cyberion                    = screen("Cyberion",                       ::Surface
     private var AllShaders: HashSet<ShaderBase> = HashSet()
 }
 
-private typealias FragFi = Fi
-private typealias VertFi = Fi
 private typealias ShaderCtor<T> = (FragFi, VertFi) -> T
 
 val String.compatible: String
