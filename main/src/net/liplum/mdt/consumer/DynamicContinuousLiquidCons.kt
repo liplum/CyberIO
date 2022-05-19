@@ -1,10 +1,12 @@
-package net.liplum.consumer
+package net.liplum.mdt.consumer
 
 import arc.scene.ui.layout.Table
 import mindustry.gen.Building
 import mindustry.type.LiquidStack
 import mindustry.ui.ReqImage
 import mindustry.world.consumers.Consume
+import net.liplum.mdt.ui.LiquidImage
+
 open class DynamicContinuousLiquidCons(
     val liquids: (Building) -> LiquidStack?,
 ) : Consume() {

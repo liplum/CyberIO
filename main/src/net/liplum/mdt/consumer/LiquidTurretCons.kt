@@ -1,4 +1,4 @@
-package net.liplum.consumer
+package net.liplum.mdt.consumer
 
 import mindustry.gen.Building
 import mindustry.type.Liquid

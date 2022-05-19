@@ -245,7 +245,7 @@ open class Cloud(name: String) : PowerBlock(name) {
             }
             if (other is IDataReceiver) {
                 if (other is CloudBuild) {
-                    subBundle("self-connect").postToastTextOn(other)
+                    subBundle("self-connect").postToastTextOn(other, R.C.RedAlert)
                     return false
                 }
                 if (!canMultipleConnect()) {

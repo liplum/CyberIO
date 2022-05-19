@@ -1,7 +1,6 @@
 package net.liplum.mdt.render
 
 import arc.math.Interp
-import arc.math.geom.Vec2
 import arc.util.Time
 import mindustry.game.EventType
 import net.liplum.annotations.Subscribe
@@ -33,11 +32,13 @@ object Toaster {
         useGlobalTime: Boolean = false,
         task: ToastSpec.() -> Unit
     ) {
-        val toast = if (useGlobalTime)
-            Toast(Time.globalTime, duration, true, task)
-        else
-            Toast(Time.time, duration, false, task)
-        unmanagedToasts.add(toast)
+        ClientOnly {
+            val toast = if (useGlobalTime)
+                Toast(Time.globalTime, duration, true, task)
+            else
+                Toast(Time.time, duration, false, task)
+            unmanagedToasts.add(toast)
+        }
     }
     /**
      * Post a managed toast, it will be drawn every [EventType.Trigger.drawOver].
@@ -48,13 +49,19 @@ object Toaster {
         id: Any,
         duration: Float,
         useGlobalTime: Boolean = false,
+        overwrite: Boolean = true,
         task: ToastSpec.() -> Unit
     ) {
-        val toast = if (useGlobalTime)
-            Toast(Time.globalTime, duration, true, task)
-        else
-            Toast(Time.time, duration, false, task)
-        managedToast[id] = toast
+        ClientOnly {
+            val toast = if (useGlobalTime)
+                Toast(Time.globalTime, duration, true, task)
+            else
+                Toast(Time.time, duration, false, task)
+            if (overwrite)
+                managedToast[id] = toast
+            else
+                if (id !in managedToast) managedToast[id] = toast
+        }
     }
     /**
      * Remove a managed toast.
@@ -113,7 +120,7 @@ object Toaster {
      * Clear all toasts.
      */
     @ClientOnly
-    fun clear(){
+    fun clear() {
         unmanagedToasts.clear()
         managedToast.clear()
     }

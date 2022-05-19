@@ -14,6 +14,7 @@ import net.liplum.api.cyber.StreamCenter
 import net.liplum.api.holo.IHoloEntity
 import net.liplum.blocks.cloud.LiplumCloud
 import net.liplum.blocks.cloud.SharedRoom
+import net.liplum.blocks.decentralizer.RecipeCenter
 import net.liplum.gen.EventRegistry
 import net.liplum.inputs.UnitTap
 import net.liplum.mdt.ClientOnly
@@ -119,6 +120,7 @@ class CioMod : Mod() {
     }
 
     override fun init() {
+        Clog.info("v${Meta.DetailedVersion} initializing...")
         ClientOnly {
             Welcome.modifierModInfo()
         }
@@ -157,6 +159,7 @@ class CioMod : Mod() {
         }
 
         Settings.updateSettings()
+        RecipeCenter.recordAllRecipes()
         Clog.info("v${Meta.DetailedVersion} initialized.")
         Settings.LastPlayTime = System.currentTimeMillis()
     }

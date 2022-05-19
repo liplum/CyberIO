@@ -449,16 +449,18 @@ fun isConfiguringHost(): Boolean {
 }
 @ClientOnly
 fun Building.drawOverRangeOn(other: Building) {
-    Toaster.post(other.id, ToastTime) {
-        Text.drawText {
-            if (!p1.set(other.x, other.y).inViewField(10f)) return@post
-            val tip = block.subBundle("over-range")
-            setText(it, tip)
-            if (!other.isAdded) {
-                toast.duration *= 0.99f
+    ClientOnly {
+        Toaster.post(other.id, ToastTime) {
+            Text.drawText {
+                if (!p1.set(other.x, other.y).inViewField(10f)) return@post
+                val tip = block.subBundle("over-range")
+                setText(it, tip)
+                if (!other.isAdded) {
+                    toast.duration *= 0.99f
+                }
+                it.color.set(R.C.RedAlert).a(fadeInOutPct(ToastTimeFadePercent))
+                it.draw(tip, other.x, other.y + 1f, Align.center)
             }
-            it.color.set(R.C.RedAlert).a(fadeInOutPct(ToastTimeFadePercent))
-            it.draw(tip, other.x, other.y + 1f, Align.center)
         }
     }
 }

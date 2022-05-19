@@ -1,4 +1,4 @@
-package net.liplum.consumer
+package net.liplum.mdt.ui
 
 import arc.scene.ui.Image
 import arc.scene.ui.layout.Stack
@@ -9,6 +9,7 @@ import mindustry.ui.Styles
 import net.liplum.lib.TR
 
 open class LiquidImage() : Stack() {
+    var fontScale = 0.85f
     constructor(tr: TR, amount: Float) : this() {
         add(Table { o: Table ->
             o.left()
@@ -21,8 +22,8 @@ open class LiquidImage() : Stack() {
                 if (amount > 1000)
                     UI.formatAmount(amount.toLong())
                 else
-                    amount.toString() + ""
-            )
+                    amount.toString()
+            ).fontScale(fontScale)
             t.pack()
         })
     }
@@ -47,8 +48,8 @@ open class LiquidImage() : Stack() {
                     if (stack.amount > 1000)
                         UI.formatAmount(stack.amount.toLong())
                     else
-                        stack.amount.toString() + ""
-                ).style(Styles.outlineLabel)
+                        stack.amount.toInt().toString()
+                ).style(Styles.outlineLabel).fontScale(fontScale)
                 t.pack()
             })
         }

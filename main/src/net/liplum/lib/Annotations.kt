@@ -45,8 +45,9 @@ annotation class Idempotent
  * ## Use case:
  * 1. For mutable object: fun reflect(@Out out:Vec2)
  * This function should set any field of `out` vector
+ * 2. When it's used on extension function, the receiver is the output
  */
 @Retention(AnnotationRetention.SOURCE)
-@Target(AnnotationTarget.VALUE_PARAMETER)
+@Target(AnnotationTarget.VALUE_PARAMETER, AnnotationTarget.FUNCTION)
 @MustBeDocumented
 annotation class Out

@@ -23,30 +23,31 @@ import mindustry.world.draw.DrawTurret
 import mindustry.world.meta.Stat
 import mindustry.world.meta.StatUnit
 import mindustry.world.meta.StatValues
-import net.liplum.*
+import net.liplum.DebugOnly
+import net.liplum.R
 import net.liplum.api.cyber.*
 import net.liplum.api.holo.IHoloEntity
 import net.liplum.api.holo.IHoloEntity.Companion.minHealth
 import net.liplum.bullets.RuvikBullet
-import net.liplum.consumer.LiquidTurretCons
-import net.liplum.mdt.Draw
-import net.liplum.mdt.animations.Floating
-import net.liplum.lib.utils.bundle
+import net.liplum.lib.Serialized
+import net.liplum.lib.TR
 import net.liplum.lib.delegates.Delegate1
-import net.liplum.lib.utils.isZero
+import net.liplum.lib.persistance.intSet
 import net.liplum.lib.shaders.SD
 import net.liplum.lib.shaders.use
-import net.liplum.mdt.ui.bars.AddBar
-import net.liplum.lib.TR
+import net.liplum.lib.utils.bundle
+import net.liplum.lib.utils.isZero
 import net.liplum.mdt.ClientOnly
-import net.liplum.DebugOnly
-import net.liplum.lib.Serialized
+import net.liplum.mdt.Draw
 import net.liplum.mdt.WhenNotPaused
-import net.liplum.lib.persistance.intSet
+import net.liplum.mdt.animations.Floating
+import net.liplum.mdt.consumer.LiquidTurretCons
+import net.liplum.mdt.render.G
+import net.liplum.mdt.render.postToastTextOn
+import net.liplum.mdt.ui.bars.AddBar
+import net.liplum.mdt.utils.*
 import net.liplum.registries.CioBulletTypes
 import net.liplum.registries.CioLiquids.cyberion
-import net.liplum.mdt.render.G
-import net.liplum.mdt.utils.*
 
 open class Stealth(name: String) : Turret(name) {
     @JvmField var restoreReload = 10 * 60f
@@ -295,7 +296,11 @@ open class Stealth(name: String) : Turret(name) {
         }
 
         override fun peekAmmo() = shootType
-        override fun acceptLiquid(source: Building, liquid: Liquid) = false
+        override fun acceptLiquid(source: Building, liquid: Liquid): Boolean {
+            subBundle("unaccepted").postToastTextOn(this, R.C.RedAlert, overwrite = false)
+            return false
+        }
+
         @JvmField var onRequirementUpdated: Delegate1<IStreamClient> = Delegate1()
         override fun getOnRequirementUpdated(): Delegate1<IStreamClient> = onRequirementUpdated
         override fun getRequirements(): Array<Liquid>? = cyberion.req
