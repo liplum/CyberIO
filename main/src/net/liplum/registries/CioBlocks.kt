@@ -771,13 +771,13 @@ object CioBlocks {
     fun wirelessTower() {
         wirelessTower = WirelessTower("wireless-tower").apply {
             requirements(
-                Category.power, BuildVisibility.shown, arrayOf(
+                    Category.power, BuildVisibility.shown, arrayOf(
                     ItemStack(CioItems.ic, 2),
                     ItemStack(Items.copper, 310),
                     ItemStack(Items.lead, 20),
                     ItemStack(Items.silicon, 20),
                     ItemStack(Items.graphite, 30),
-                )
+            )
             )
             health = 600
             distributeSpeed = 10f
