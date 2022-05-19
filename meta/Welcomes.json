@@ -70,5 +70,16 @@
       "ShowPoliteWelcome": false
     },
     "Chance": 200
+  },
+  {
+    "ID": "RateUs",
+    "Template": "RateStar",
+    "Data": {
+      "StarNumber": 5,
+      "InactiveStarIconPath": "star-inactive",
+      "ActiveStarIconPath": "star",
+      "StarSize": 60.0
+    },
+    "Chance": 200
   }
 ]

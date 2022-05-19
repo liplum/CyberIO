@@ -15,6 +15,7 @@ import mindustry.gen.Building
 import mindustry.graphics.Drawf
 import mindustry.type.Liquid
 import mindustry.world.blocks.ItemSelection
+import mindustry.world.blocks.liquid.LiquidBlock
 import mindustry.world.meta.BlockGroup
 import net.liplum.mdt.ClientOnly
 import net.liplum.DebugOnly
@@ -187,11 +188,9 @@ open class StreamClient(name: String) : AniedBlock<StreamClient, StreamClient.Cl
         }
 
         override fun fixedDraw() {
-            Drawf.liquid(
-                LiquidTR, x, y,
-                liquids.currentAmount() / liquidCapacity,
-                liquids.current().color,
-                (rotation - 90).toFloat()
+            LiquidBlock.drawTiledFrames(
+                size, x, y, 0f,
+                liquids.current(), liquids.currentAmount() / liquidCapacity
             )
             TopTR.DrawOn(this)
         }

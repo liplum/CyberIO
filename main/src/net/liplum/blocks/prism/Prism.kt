@@ -118,7 +118,7 @@ open class Prism(name: String) : Block(name) {
         if (elevation < 0) {
             elevation = size / 2f
         }
-        clipSize = Agl + (prismRange * 2 * maxCrystal) + elevation
+        clipSize = Agl + (prismRange * 3 * maxCrystal) + elevation
     }
 
     override fun setBars() {

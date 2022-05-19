@@ -41,7 +41,7 @@ object Welcome {
             entity.showTip()
         }
         // For debug
-        //entity.showTipByID("OhNo")
+        //entity.showTipByID("RateUs")
     }
     @JvmStatic
     fun judgeWelcome() {
@@ -159,6 +159,11 @@ object Welcome {
             get() = indexOf(default)
     }
 
+    fun String.handleTrRefer(): TR =
+        if (startsWith('@'))
+            removePrefix("@").atlas()
+        else Cio.atlas()
+
     class Entity(
         val bundle: ReferBundleWrapper,
         val info: Info,
@@ -174,12 +179,7 @@ object Welcome {
             bundle.format("$tip", *args)
 
         val icon: TR
-            get() {
-                val path = tip.iconPath
-                return if (path.startsWith('@'))
-                    path.removePrefix("@").atlas()
-                else path.Cio.atlas()
-            }
+            get() = tip.iconPath.handleTrRefer()
 
         fun showTip() {
             tip.template.gen(this).show()

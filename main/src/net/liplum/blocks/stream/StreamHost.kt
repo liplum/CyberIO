@@ -7,9 +7,9 @@ import arc.struct.Seq
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.gen.Building
-import mindustry.graphics.Drawf
 import mindustry.logic.LAccess
 import mindustry.type.Liquid
+import mindustry.world.blocks.liquid.LiquidBlock
 import mindustry.world.meta.BlockGroup
 import net.liplum.*
 import net.liplum.api.cyber.*
@@ -349,11 +349,9 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
 
         override fun fixedDraw() {
             region.DrawOn(this)
-            Drawf.liquid(
-                LiquidTR, x, y,
-                liquids.currentAmount() / liquidCapacity,
-                liquids.current().color,
-                (rotation - 90).toFloat()
+            LiquidBlock.drawTiledFrames(
+                size, x, y, 0f,
+                liquids.current(), liquids.currentAmount() / liquidCapacity
             )
             TopTR.DrawOn(this)
         }

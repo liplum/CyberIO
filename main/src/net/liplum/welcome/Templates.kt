@@ -3,8 +3,10 @@ package net.liplum.welcome
 import arc.scene.ui.Button
 import mindustry.ui.dialogs.BaseDialog
 import net.liplum.Meta
+import net.liplum.mdt.ui.frag.RateStarPanelFrag
 import net.liplum.update.Updater
 import net.liplum.welcome.Welcome.Entity
+import net.liplum.welcome.Welcome.handleTrRefer
 
 object Templates {
     val Story = object : WelcomeTemplate("Story") {
@@ -100,6 +102,26 @@ object Templates {
                     this.setFontScale(fontSize)
                 }
                 addCloseButton(entity["read"])
+            }
+    }
+    val rateStar = object : WelcomeTemplate("RateStar") {
+        override fun gen(entity: Entity) =
+            BaseDialog(entity["title"]).apply {
+                val data = entity.tip.data
+                addPoster(entity.icon)
+                val showPoliteWelcome = data["ShowPoliteWelcome"] as? Boolean ?: true
+                if (showPoliteWelcome)
+                    addCenterText(entity.bundle.format("welcome", Meta.DetailedVersion))
+                addCenterText(entity.content)
+                val starSize = data["StarSize"] as? Float ?: 50f
+                val ratePanel = RateStarPanelFrag().apply {
+                    starNumber = 5
+                    this.starSize = starSize
+                    (data["InactiveStarIconPath"] as? String)?.let { inactiveStar = it.handleTrRefer() }
+                    (data["ActiveStarIconPath"] as? String)?.let { activeStar = it.handleTrRefer() }
+                }.build()
+                cont.add(ratePanel).row()
+                addCloseButton(entity["submit"])
             }
     }
 }
