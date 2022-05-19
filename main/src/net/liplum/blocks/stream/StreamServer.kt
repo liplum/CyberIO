@@ -197,14 +197,14 @@ open class StreamServer(name: String) : StreamHost(name) {
         }
 
         override fun fixedDraw() {
-            BaseTR.DrawOn(this)
+            region.DrawOn(this)
             Drawf.liquid(
                 LiquidTR, x, y,
                 liquids.total() / liquidCapacity,
                 mixedLiquidColor,
-                (rotation - 90).toFloat()
+                0f
             )
-            TopTR.DrawOn(this, liquidFlow)
+            TopTR.DrawOn(this)
             drawTeamTop()
         }
 
