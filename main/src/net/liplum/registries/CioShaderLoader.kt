@@ -35,8 +35,10 @@ InvertingColorRbg2HsvInRgb  = default("InvertingColorRgb2HsvInRgb",    ::Progres
 Monochromize                = default("Monochromize",                  ::ProgressShader)
 // Block Surface
 Cyberion                    = screen("Cyberion",                       ::SurfaceShader)
+// They can be used on the screen space.
 //TestShieldScreen            = screen("TestShield",                     ::TestShieldShader)
 //TestScreen                  = screen("Hologram",                       ::HologramShader)
+//Glitch                       = default("Glitch",                         ::CommonShader)
         // @formatter:on
     }
 

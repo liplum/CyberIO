@@ -57,7 +57,15 @@ object Debug {
                 VertShaderType.ScreenSpace
             ),
             { SD.Cyberion = it as SurfaceShader }
-        )
+        ),
+/*        Shader(
+            ShaderType(
+                "Glitch",
+                { v, f -> CommonShader(v, f) },
+                VertShaderType.Default
+            ),
+            { SD.Glitch = it as CommonShader }
+        )*/
     )
 
     class Shader(
