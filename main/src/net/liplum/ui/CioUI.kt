@@ -21,10 +21,10 @@ import mindustry.ui.dialogs.BaseDialog
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.CheckSetting
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.SliderSetting
 import net.liplum.*
+import net.liplum.lib.UseReflection
 import net.liplum.lib.ing
 import net.liplum.lib.utils.*
 import net.liplum.mdt.UnsteamOnly
-import net.liplum.lib.UseReflection
 import net.liplum.mdt.ui.ShowTextDialog
 import net.liplum.mdt.ui.addTrackTooltip
 import net.liplum.mdt.ui.settings.*
@@ -247,7 +247,7 @@ object CioUI {
                     changed {
                         BaseDialog("Debug Settings").apply {
                             for (setting in Debug.settings) {
-                                cont.check(setting.name, setting.getter()) { b ->
+                                cont.check(setting.name, setting.getter() as? Boolean ?: false) { b ->
                                     setting.setter(b)
                                 }.growX()
                             }

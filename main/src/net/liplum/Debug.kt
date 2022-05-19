@@ -1,3 +1,5 @@
+@file:Suppress("MoveLambdaOutsideParentheses")
+
 package net.liplum
 
 object Debug {
@@ -6,13 +8,13 @@ object Debug {
         Setting(
             "Enable Unlock Content",
             ::enableUnlockContent::get,
-            ::enableUnlockContent::set,
+            { enableUnlockContent = it as? Boolean ?: false },
         )
     )
 
     class Setting(
         val name: String,
-        val getter: () -> Boolean,
-        val setter: (Boolean) -> Unit,
+        val getter: () -> Any,
+        val setter: (Any) -> Unit,
     )
 }

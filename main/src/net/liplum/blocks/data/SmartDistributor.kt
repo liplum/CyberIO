@@ -19,37 +19,40 @@ import mindustry.world.consumers.ConsumeItemFilter
 import mindustry.world.consumers.ConsumeItems
 import mindustry.world.meta.BlockGroup
 import mindustry.world.meta.Stat
-import net.liplum.*
+import net.liplum.DebugOnly
+import net.liplum.R
+import net.liplum.UndebugOnly
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
+import net.liplum.lib.Serialized
+import net.liplum.lib.TR
+import net.liplum.lib.delegates.Delegate1
+import net.liplum.lib.persistance.intSet
+import net.liplum.lib.utils.DoMultipleBool
+import net.liplum.lib.utils.EmptyArray
+import net.liplum.lib.utils.equalsNoOrder
+import net.liplum.lib.utils.isZero
+import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.Draw
 import net.liplum.mdt.animations.anims.Animation
 import net.liplum.mdt.animations.anims.AnimationObj
 import net.liplum.mdt.animations.anis.AniState
 import net.liplum.mdt.animations.anis.config
-import net.liplum.lib.delegates.Delegate1
+import net.liplum.mdt.render.drawSurroundingRect
 import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.ui.bars.removeItemsInBar
-import net.liplum.lib.TR
-import net.liplum.mdt.ClientOnly
-import net.liplum.DebugOnly
-import net.liplum.lib.Serialized
-import net.liplum.UndebugOnly
-import net.liplum.lib.utils.*
 import net.liplum.mdt.utils.autoAnim
 import net.liplum.mdt.utils.inMod
 import net.liplum.mdt.utils.isDiagonalTo
-import net.liplum.lib.persistance.intSet
-import net.liplum.mdt.render.drawSurroundingRect
 import net.liplum.mdt.utils.subBundle
-import net.liplum.utils.*
+import net.liplum.utils.addPowerUseStats
+import net.liplum.utils.addSenderInfo
+import net.liplum.utils.genText
 import kotlin.math.log2
 
 private typealias AniStateD = AniState<SmartDistributor, SmartDistributor.SmartDISBuild>
 
 open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDistributor.SmartDISBuild>(name) {
-    @ClientOnly lateinit var DistributingAni: AniStateD
-    @ClientOnly lateinit var NoPowerAni: AniStateD
     @JvmField var maxConnection = -1
     @ClientOnly lateinit var NoPowerTR: TR
     @ClientOnly lateinit var ArrowsAnim: Animation
@@ -366,37 +369,47 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
         }
 
         override fun beforeDraw() {
-            arrowsAnimObj.spend(delta())
-            if (isDistributing) {
-                arrowsAnimObj.wakeUp()
-            } else {
-                arrowsAnimObj.sleep()
-            }
-        }
-
-        override fun fixedDraw() {
-            super.fixedDraw()
-            Draw.color(team.color)
-            arrowsAnimObj.draw(x, y)
+            if (canConsume() && isDistributing)
+                arrowsAnimObj.spend(delta())
         }
 
         override fun getConnectedSenders() = senders
         override fun maxSenderConnection() = maxConnection
     }
 
+    @ClientOnly lateinit var DistributingAni: AniStateD
+    @ClientOnly lateinit var NoPowerAni: AniStateD
+    @ClientOnly lateinit var NoDistributeAni: AniStateD
     override fun genAniConfig() {
         config {
             From(NoPowerAni) To DistributingAni When {
-                !power.status.isZero
+                !power.status.isZero && isDistributing
+            } To NoDistributeAni When {
+                !power.status.isZero && !isDistributing
             }
+
+            From(NoDistributeAni) To DistributingAni When {
+                isDistributing
+            } To NoPowerAni When {
+                power.status.isZero
+            }
+
             From(DistributingAni) To NoPowerAni When {
                 power.status.isZero
+            } To NoDistributeAni When {
+                !isDistributing
             }
         }
     }
 
     override fun genAniState() {
-        DistributingAni = addAniState("Distributing")
+        DistributingAni = addAniState("Distributing") {
+            Draw.color(team.color)
+            arrowsAnimObj.draw(x, y)
+        }
+        NoDistributeAni = addAniState("NoDistribute") {
+            arrowsAnimObj.draw(R.C.Stop, x, y)
+        }
         NoPowerAni = addAniState("NoPower") {
             NoPowerTR.Draw(x, y)
         }
