@@ -4,7 +4,6 @@ package net.liplum.api.cyber
 
 import arc.graphics.Color
 import arc.math.geom.Point2
-import arc.util.Align
 import mindustry.Vars
 import mindustry.gen.Building
 import mindustry.type.Item
@@ -15,8 +14,12 @@ import net.liplum.Settings
 import net.liplum.api.ICyberEntity
 import net.liplum.lib.math.Point2f
 import net.liplum.lib.utils.Or
+import net.liplum.lib.utils.bundle
 import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.render.*
+import net.liplum.mdt.render.G
+import net.liplum.mdt.render.inViewField
+import net.liplum.mdt.render.isLineInViewField
+import net.liplum.mdt.render.postToastTextOn
 import net.liplum.mdt.utils.*
 
 @ClientOnly
@@ -443,24 +446,28 @@ fun IStreamHost.drawClients(clients: Iterable<Int>, showCircle: Boolean = true) 
         }
     }
 }
-@ClientOnly
+
 fun isConfiguringHost(): Boolean {
     val selected = Vars.control.input.config.selected
     return selected is IStreamHost
 }
+
 fun Building.drawOverRangeOn(other: Building) {
-    ClientOnly {
-        Toaster.post(other.id, ToastTime) {
-            Text.drawText {
-                if (!p1.set(other.x, other.y).inViewField(other.block.clipSize)) return@post
-                val tip = block.subBundle("over-range")
-                setText(it, tip)
-                if (!other.isAdded) {
-                    toast.duration *= 0.99f
-                }
-                it.color.set(R.C.RedAlert).a(fadeInOutPct(ToastTimeFadePercent))
-                it.draw(tip, other.x, other.y + 1f, Align.center)
-            }
-        }
-    }
+    block.subBundle("over-range").postToastTextOn(other, R.C.RedAlert)
+}
+
+fun drawFullSenderOn(other: Building) {
+    R.Bundle.FullSender.bundle.postToastTextOn(other, R.C.RedAlert)
+}
+
+fun drawFullReceiverOn(other: Building) {
+    R.Bundle.FullReceiver.bundle.postToastTextOn(other, R.C.RedAlert)
+}
+
+fun drawFullHostOn(other: Building) {
+    R.Bundle.FullHost.bundle.postToastTextOn(other, R.C.RedAlert)
+}
+
+fun drawFullClientOn(other: Building) {
+    R.Bundle.FullClient.bundle.postToastTextOn(other, R.C.RedAlert)
 }

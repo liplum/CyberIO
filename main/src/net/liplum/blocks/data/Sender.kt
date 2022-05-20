@@ -11,25 +11,23 @@ import mindustry.graphics.Pal
 import mindustry.logic.LAccess
 import mindustry.type.Item
 import mindustry.world.meta.BlockGroup
-import net.liplum.*
+import net.liplum.DebugOnly
+import net.liplum.R
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
 import net.liplum.blocks.data.Sender.SenderBuild
 import net.liplum.lib.Serialized
-import net.liplum.mdt.Draw
-import net.liplum.mdt.ResetColor
-import net.liplum.mdt.SetColor
+import net.liplum.lib.TR
+import net.liplum.lib.utils.isZero
+import net.liplum.lib.utils.toFloat
+import net.liplum.mdt.*
 import net.liplum.mdt.animations.anims.Animation
 import net.liplum.mdt.animations.anis.AniState
 import net.liplum.mdt.animations.anis.config
-import net.liplum.lib.utils.isZero
-import net.liplum.mdt.ui.bars.AddBar
-import net.liplum.lib.utils.toFloat
-import net.liplum.lib.TR
-import net.liplum.mdt.*
-import net.liplum.mdt.utils.*
 import net.liplum.mdt.render.G
-import net.liplum.utils.*
+import net.liplum.mdt.ui.bars.AddBar
+import net.liplum.mdt.utils.*
+import net.liplum.utils.addReceiverInfo
 
 private typealias AniStateS = AniState<Sender, SenderBuild>
 
@@ -256,8 +254,14 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
                     if (!canMultipleConnect()) {
                         deselect()
                     }
-                    if (other.acceptConnection(this)) {
-                        connectSync(other)
+                    if (canHaveMoreReceiverConnection()) {
+                        if (other.acceptConnection(this)) {
+                            connectSync(other)
+                        } else {
+                            drawFullSenderOn(other)
+                        }
+                    } else {
+                        drawFullSenderOn(other)
                     }
                 }
                 return false

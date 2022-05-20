@@ -2,6 +2,7 @@ package net.liplum.mdt.render
 
 import arc.graphics.Color
 import arc.util.Align
+import mindustry.Vars
 import mindustry.gen.Building
 import net.liplum.lib.math.Point2f
 import net.liplum.mdt.ClientOnly
@@ -29,7 +30,11 @@ fun String.postToastTextOn(
                     if (faded) fadeInOutPct(ToastTimeFadePercent)
                     else 1f
                 )
-                it.draw(this@postToastTextOn, other.x, other.y + 1f, Align.center)
+                it.draw(
+                    this@postToastTextOn, other.x,
+                    other.y + other.block.size * Vars.tilesize / 2f,
+                    Align.center
+                )
             }
         }
     }

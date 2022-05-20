@@ -548,8 +548,8 @@ class Heart(name: String) : Block(name), IComponentBlock {
                 super.displayBars(table)
             }
         }
-        // Implement heat
-        override fun heat() = heat
+        // For output heat
+        override fun heat() = heat * heatMax
         override fun heatFrac() = heat / heatMax
         override fun range() = realRange
         override fun drawSelect() {

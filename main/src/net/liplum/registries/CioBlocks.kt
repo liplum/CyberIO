@@ -197,7 +197,8 @@ object CioBlocks {
                     ItemStack(Items.silicon, 180),
                 )
             )
-            health = 100
+            health = 200
+            maxConnection = 3
             consumePower(0.5f)
             replaceable = false
         }
@@ -214,7 +215,7 @@ object CioBlocks {
                     ItemStack(Items.silicon, 180),
                 )
             )
-            health = 100
+            health = 200
             consumePower(0.5f)
             replaceable = false
             squareSprite = false
@@ -237,13 +238,6 @@ object CioBlocks {
             inheritChildrenNumber = false
             mutationRate = 10
         }.globalAnim(30f, 3)
-        Blocks.air.setUninfectedFloor()
-        Blocks.space.setUninfectedFloor()
-        Blocks.water.setUninfectedFloor()
-        Blocks.deepwater.setUninfectedFloor()
-        Blocks.itemSource.setUninfected()
-        Blocks.liquidSource.setUninfected()
-        Blocks.powerSource.setUninfected()
     }
     @DependOn("CioItems.ic")
     fun landProjector() {
@@ -544,6 +538,7 @@ object CioBlocks {
                 )
             )
             health = 300
+            maxConnection = 3
             consumePower(0.7f)
             liquidCapacity = 300f
             replaceable = false
@@ -921,9 +916,15 @@ object CioBlocks {
             heart = Heart("heimdall-heart").apply {
                 requirements(
                     Category.turret, BuildVisibility.shown, arrayOf(
+                        ItemStack(CioItems.ic, 4),
+                        ItemStack(Items.graphite, 200),
+                        ItemStack(Items.metaglass, 500),
+                        ItemStack(Items.silicon, 50),
+                        ItemStack(Items.blastCompound, 200),
                     )
                 )
                 size = 4
+                health = 2000
                 convertSpeed = 8f
                 blood = Blood()
                 heartbeat.apply {

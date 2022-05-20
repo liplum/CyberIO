@@ -53,6 +53,11 @@ public class R {
                 PercentMinus = Gen("percent.minus"),
                 ValuePlus = Gen("value.plus"),
                 ValueMinus = Gen("value.minus");
+        public static final String
+                FullSender = Gen("full-sender"),
+                FullReceiver = Gen("full-receiver"),
+                FullHost = Gen("full-host"),
+                FullClient = Gen("full-client");
     }
 
     public static final class Bar {

@@ -19,7 +19,6 @@ import net.liplum.lib.TR
 import net.liplum.lib.delegates.Delegate1
 import net.liplum.lib.persistance.intSet
 import net.liplum.mdt.*
-import net.liplum.mdt.animations.Floating
 import net.liplum.mdt.animations.anims.Animation
 import net.liplum.mdt.animations.anims.IFrameIndexer
 import net.liplum.mdt.animations.anims.ixAuto
@@ -55,8 +54,8 @@ open class Cloud(name: String) : PowerBlock(name) {
     @ClientOnly lateinit var CloudAniConfig: AniConfig<Cloud, CloudBuild>
     @ClientOnly lateinit var CloudIdleAni: Ani
     @ClientOnly lateinit var CloudNoPowerAni: Ani
-    @ClientOnly @JvmField var cloudFloatRange = 1.5f
     @ClientOnly lateinit var NoPowerTR: TR
+    @JvmField var maxConnection = -1
 
     init {
         solid = true
@@ -100,7 +99,7 @@ open class Cloud(name: String) : PowerBlock(name) {
         cloud = this.sub("cloud")
         DataTransferAnim = this.autoAnim("data-transfer", 18, 50f)
         ShredderAnim = this.autoAnim("shredder", 13, 60f)
-        NoPowerTR = this.inMod("rs-no-power-large")
+        NoPowerTR = this.inMod("rs-no-power")
     }
 
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
@@ -119,7 +118,6 @@ open class Cloud(name: String) : PowerBlock(name) {
         lateinit var dataTransferIx: IFrameIndexer
         lateinit var shredderIx: IFrameIndexer
         var teamID = 0
-        @JvmField var floating: Floating = Floating(cloudFloatRange).randomXY().changeRate(2)
         @JvmField var onRequirementUpdated: Delegate1<IDataReceiver> = Delegate1()
         override fun getOnRequirementUpdated() = onRequirementUpdated
 
@@ -217,8 +215,6 @@ open class Cloud(name: String) : PowerBlock(name) {
 
         override fun draw() {
             WhenNotPaused {
-                val d = G.D(0.1f * cloudFloatRange * delta())
-                floating.move(d)
                 aniBlockGroupObj.spend(delta())
             }
             WhenRefresh {
@@ -310,23 +306,16 @@ open class Cloud(name: String) : PowerBlock(name) {
             this.info = info
         }
 
-        override fun maxSenderConnection() = -1
-        override fun maxReceiverConnection() = -1
+        override fun maxSenderConnection() = maxConnection
+        override fun maxReceiverConnection() = maxConnection
     }
 
     open fun genAnimState() {
         CloudIdleAni = AniState("Idle") {
-            cloud.Draw(
-                x + floating.dx,
-                y + floating.dy
-            )
+            cloud.Draw(x, y)
         }
         CloudNoPowerAni = AniState("NoPower") {
-            NoPowerTR.DrawSize(
-                x + floating.dx,
-                y + floating.dy,
-                1f / 7f * this@Cloud.size
-            )
+            NoPowerTR.Draw(x, y)
         }
     }
 
@@ -355,8 +344,8 @@ open class Cloud(name: String) : PowerBlock(name) {
         }
 
         override fun drawBuild() {
-            xOffset = build.floating.dx
-            yOffset = build.floating.dy
+            xOffset = 0f
+            yOffset = 0f
             cloudAniSM.drawBuilding()
         }
     }

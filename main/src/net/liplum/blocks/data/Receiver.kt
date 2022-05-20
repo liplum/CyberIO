@@ -168,7 +168,7 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
         }
 
         override fun onConfigureBuildTapped(other: Building): Boolean {
-            if (this === other) {
+            if (this == other) {
                 deselect()
                 configure(null)
                 return false

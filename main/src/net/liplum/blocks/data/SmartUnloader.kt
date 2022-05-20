@@ -17,18 +17,18 @@ import net.liplum.*
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
 import net.liplum.lib.Serialized
-import net.liplum.mdt.Draw
+import net.liplum.lib.TR
+import net.liplum.lib.persistance.intSet
+import net.liplum.lib.utils.DoMultipleBool
+import net.liplum.mdt.*
 import net.liplum.mdt.animations.anims.Animation
 import net.liplum.mdt.animations.anims.AnimationObj
 import net.liplum.mdt.animations.anis.AniState
 import net.liplum.mdt.animations.anis.config
+import net.liplum.mdt.render.postToastTextOn
 import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.ui.bars.removeItemsInBar
-import net.liplum.lib.TR
-import net.liplum.lib.utils.DoMultipleBool
-import net.liplum.mdt.*
 import net.liplum.mdt.utils.*
-import net.liplum.lib.persistance.intSet
 import net.liplum.utils.*
 import java.util.*
 import kotlin.math.absoluteValue
@@ -394,10 +394,14 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
                     if (!canMultipleConnect()) {
                         deselect()
                     }
-                    if (canHaveMoreReceiverConnection() &&
-                        other.acceptConnection(this)
-                    ) {
-                        connectSync(other)
+                    if (canHaveMoreReceiverConnection()) {
+                        if (other.acceptConnection(this)) {
+                            connectSync(other)
+                        } else {
+                            drawFullSenderOn(other)
+                        }
+                    } else {
+                        drawFullReceiverOn(other)
                     }
                 }
                 return false

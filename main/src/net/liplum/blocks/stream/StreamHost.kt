@@ -42,7 +42,6 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
     @ClientOnly lateinit var NoPowerAni: AniStateH
     @ClientOnly lateinit var NormalAni: AniStateH
     @ClientOnly lateinit var NoPowerTR: TR
-    @ClientOnly @JvmField var IconFloatingRange = 1f
     @JvmField val CheckConnectionTimer = timers++
     @JvmField val TransferTimer = timers++
     /**
@@ -89,7 +88,7 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
         super.load()
         LiquidTR = this.sub("liquid")
         TopTR = this.sub("top")
-        NoPowerTR = this.inMod("rs-no-power-large")
+        NoPowerTR = this.inMod("rs-no-power")
     }
 
     override fun icons(): TRs {
@@ -105,7 +104,6 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
     override fun init() {
         initPowerUse()
         super.init()
-        IconFloatingRange = IconFloatingRange / 8f * size
     }
 
     override fun setStats() {
@@ -135,8 +133,6 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
         var queue = LinkedList<Point2>()
         val realNetworkSpeed: Float
             get() = networkSpeed * timeScale
-        @ClientOnly @JvmField
-        var floating: Floating = Floating(IconFloatingRange).randomXY().changeRate(1)
         override fun getHostColor(): Color = liquids.current().color
         override fun updateTile() {
             checkQueue()
@@ -298,10 +294,14 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
                     if (maxConnection == 1) {
                         deselect()
                     }
-                    if (canHaveMoreClientConnection() &&
-                        other.acceptConnection(this)
-                    ) {
-                        connectSync(other)
+                    if (canHaveMoreClientConnection()) {
+                        if (other.acceptConnection(this)) {
+                            connectSync(other)
+                        } else {
+                            drawFullHostOn(other)
+                        }
+                    } else {
+                        drawFullClientOn(other)
                     }
                 }
                 return false
@@ -332,10 +332,6 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
 
         override fun maxClientConnection() = maxConnection
         override fun getConnectedClients(): OrderedSet<Int> = clients
-        override fun beforeDraw() {
-            val d = G.D(0.1f * IconFloatingRange * delta())
-            floating.move(d)
-        }
 
         override fun read(read: Reads, revision: Byte) {
             super.read(read, revision)
@@ -377,12 +373,7 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
 
     override fun genAniState() {
         NoPowerAni = addAniState("NoPower") {
-            SetAlpha(0.8f)
-            NoPowerTR.DrawSize(
-                x + floating.dx,
-                y + floating.dy,
-                1f / 7f * this@StreamHost.size
-            )
+            NoPowerTR.Draw(x, y)
         }
         NormalAni = addAniState("Normal")
     }
