@@ -16,6 +16,7 @@ object CioLiquids {
             temperature = 0.1f
             heatCapacity = 1.4f
             viscosity = 0.8f
+            boilPoint = 0.7f
             effect = StatusEffects.freezing
             lightColor = R.C.Holo.cpy().a(0.2f)
         }
@@ -28,6 +29,7 @@ object CioLiquids {
             temperature = 0.56f // room temp = 0.5f
             heatCapacity = 0.3f
             viscosity = 0.6f
+            boilPoint = 0.51f
             effect = StatusEffects.freezing
             lightColor = R.C.Holo.cpy().a(0.2f)
         }

@@ -297,7 +297,9 @@ open class Stealth(name: String) : Turret(name) {
 
         override fun peekAmmo() = shootType
         override fun acceptLiquid(source: Building, liquid: Liquid): Boolean {
-            subBundle("unaccepted").postToastTextOn(this, R.C.RedAlert, overwrite = false)
+            ClientOnly {
+                subBundle("unaccepted").postToastTextOn(this, R.C.RedAlert, overwrite = false)
+            }
             return false
         }
 

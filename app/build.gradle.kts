@@ -1,7 +1,6 @@
 import net.liplum.gradle.tasks.DownloadTask
 
 val outputJarName: String get() = extra["outputJarName"] as String
-
 val mdtVersion: String get() = extra["mdtVersion"] as String
 val mdtVersionNum: String get() = extra["mdtVersionNum"] as String
 fun getOutputJar(): File? {
@@ -36,7 +35,7 @@ tasks {
         dependsOn(":main:jar")
         doLast {
             val jarFile = getOutputJar() ?: return@doLast
-            val modsFolder = File("$rootDir/config/mods")
+            val modsFolder = File("/config/mods")
             copyJarFile(jarFile, modsFolder)
         }
     }
@@ -96,5 +95,22 @@ tasks {
         mainClass.set("-jar")
         standardInput = System.`in`
         args = listOf(gameFile.path)
+    }
+    register("runModBoth") {
+        group = "run"
+        dependsOn("downloadServer")
+        dependsOn("copyJarServer")
+        doLast {
+            val client = Thread {
+                named<JavaExec>("runMod").get().exec()
+            }
+            val server = Thread {
+                named<JavaExec>("runModServer").get().exec()
+            }
+            server.start()
+            client.start()
+            server.join()
+            client.join()
+        }
     }
 }
