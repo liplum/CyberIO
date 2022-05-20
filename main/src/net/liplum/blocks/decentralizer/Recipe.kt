@@ -9,9 +9,9 @@ import net.liplum.Clog
 import net.liplum.DebugOnly
 import net.liplum.lib.Out
 import net.liplum.lib.utils.shr
+import net.liplum.mdt.utils.ID
 import java.util.*
 import kotlin.experimental.and
-import kotlin.math.max
 
 class Recipe(
     val ingredients: Array<ItemStack>,
@@ -41,16 +41,13 @@ class Recipe(
 
     override fun toString(): String {
         val sb = StringBuilder()
-        sb.append("Recipe(")
-        sb.append("bits:$id")
-        sb.append(",")
-        sb.append("hash:$shortHash,")
+        sb.append("$shortHash:")
         sb.append("(")
-        for ((i,ing) in ingredients.withIndex()) {
+        for ((i, ing) in ingredients.withIndex()) {
             sb.append(ing.item.name)
             sb.append(",")
             sb.append(ing.amount)
-            if(i < ingredients.size - 1)
+            if (i < ingredients.size - 1)
                 sb.append(",")
         }
         sb.append(")=>(")
@@ -67,42 +64,43 @@ class Recipe(
 
     companion object {
         @JvmField var MaxBits = 0
-        @JvmField var MaxIngredientSize = 0
+        val MaxBitSetSize: Int
+            get() = MaxBits / 8
     }
 }
 
 object RecipeCenter {
-    @JvmField
-    var Hash2Recipe: Map<Int, Recipe> = emptyMap()
+    var AllRecipes: List<Recipe> = emptyList()
     @JvmStatic
     fun recordAllRecipes() {
-        var maxBitSize = 0
-        var maxIngredientSize = 0
         // Assume every item has 2 different ways to be synthesized
         val allRecipes = ArrayList<Recipe>(Vars.content.items().size * 2)
         doOnCrafter({ canBeDetected() }) {
             val itemConsumed = itemConsumed()
             if (itemConsumed != null) {
                 val rec = Recipe(itemConsumed, outputItems)
-                maxBitSize = max(maxBitSize, itemConsumed.bitSize())
-                maxIngredientSize = max(maxIngredientSize, itemConsumed.size)
                 allRecipes.add(rec)
             }
         }
-        if (maxBitSize == 0 || allRecipes.isEmpty()) {
+        if (allRecipes.isEmpty()) {
             Clog.warn("No recipe detected.")
             return
         }
-        Recipe.MaxBits = maxBitSize
-        Recipe.MaxIngredientSize = maxIngredientSize
+        // 16 stands for id, 16 stands for amount
+        Recipe.MaxBits = Vars.content.items().size * (16 + 16)
         allRecipes.forEach { it.calcuID() }
-        Hash2Recipe = allRecipes.associateBy { it.id.hashCode() }
-        DebugOnly {
-            val difference = allRecipes - Hash2Recipe.values.toSet()
-            for (recipe in difference) {
-                Clog.info(recipe)
-            }
+        AllRecipes = allRecipes.toList()
+    }
+    /**
+     * Filling an array with full item id.
+     * @receiver then add this into full item id array
+     */
+    fun Array<ItemStack>.toFull(): IntArray {
+        val res = IntArray(Vars.content.items().size)
+        for (stack in this) {
+            res[stack.item.ID] = stack.amount
         }
+        return res
     }
 
     fun GenericCrafter.canBeDetected(): Boolean {
@@ -117,23 +115,24 @@ object RecipeCenter {
     @Out
     fun Recipe.calcuID(maxBit: Int = Recipe.MaxBits) {
         ingredients.sortBy { it.item.id }
-        id = ingredients.calcuID(maxBit)
+        id = ingredients.toFull().calcuID(maxBit)
         shortHash = id.hashCode()
     }
     /**
      * Calculate the identity of ItemStack[]
      * be careful, this will raise [RuntimeException] when its *bit size* out of *max bits*
+     * @receiver must be full id array
      */
-    fun Array<ItemStack>.calcuID(maxBit: Int = Recipe.MaxBits): BitSet {
+    fun IntArray.calcuID(maxBit: Int = Recipe.MaxBits): BitSet {
         val bytes = ByteArray(maxBit / 8)
-        for ((i, stack) in this.withIndex()) {
-            val itemID = stack.item.id
-            val amount = stack.amount.toShort()
+        for ((id, amount) in this.withIndex()) {
+            val itemID = id
+            val amountS = amount.toShort()
             try {
-                bytes[i * 2] = (itemID and 0xff).toByte()
-                bytes[i * 2 + 1] = ((itemID shr 8) and 0xff).toByte()
-                bytes[i * 2 + 2] = (amount and 0xff).toByte()
-                bytes[i * 2 + 3] = ((amount shr 8) and 0xff).toByte()
+                bytes[id * 4] = (itemID and 0xff).toByte()
+                bytes[id * 4 + 1] = ((itemID shr 8) and 0xff).toByte()
+                bytes[id * 4 + 2] = (amountS and 0xff).toByte()
+                bytes[id * 4 + 3] = ((amountS shr 8) and 0xff).toByte()
             } catch (e: ArrayIndexOutOfBoundsException) {
                 throw RuntimeException("Out of range: ${bytes.size}", e)
             }

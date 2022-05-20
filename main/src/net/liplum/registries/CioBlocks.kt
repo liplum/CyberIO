@@ -15,6 +15,8 @@ import mindustry.graphics.Layer
 import mindustry.type.Category
 import mindustry.type.ItemStack
 import mindustry.type.LiquidStack
+import mindustry.world.blocks.defense.BaseShield
+import mindustry.world.blocks.defense.DirectionalForceProjector
 import mindustry.world.blocks.defense.OverdriveProjector
 import mindustry.world.blocks.environment.Floor
 import mindustry.world.blocks.payloads.*
@@ -37,6 +39,7 @@ import net.liplum.blocks.data.Sender
 import net.liplum.blocks.data.SmartDistributor
 import net.liplum.blocks.data.SmartUnloader
 import net.liplum.blocks.debugonly.AdjustableOverdrive
+import net.liplum.blocks.decentralizer.Decentralizer
 import net.liplum.blocks.deleter.Deleter
 import net.liplum.blocks.icmachine.ICMachine
 import net.liplum.blocks.icmachine.ICMachineS
@@ -58,12 +61,10 @@ import net.liplum.bullets.BBulletType
 import net.liplum.bullets.RuvikBullet
 import net.liplum.bullets.STEM_VERSION
 import net.liplum.holo.*
-import net.liplum.DebugOnly
-import net.liplum.ExperimentalOnly
 import net.liplum.mdt.animations.ganim.globalAnim
 import net.liplum.mdt.render.DrawConstruct
-import net.liplum.seffects.StaticFx
 import net.liplum.mdt.ui.DynamicContentInfoDialog.Companion.registerDynamicInfo
+import net.liplum.seffects.StaticFx
 
 object CioBlocks {
     @JvmStatic lateinit var icMachine: GenericCrafter
@@ -100,6 +101,7 @@ object CioBlocks {
     @JvmStatic lateinit var ear: Ear
     @JvmStatic lateinit var hand: Hand
     @JvmStatic lateinit var heart: Heart
+    @JvmStatic lateinit var decentralizer: Decentralizer
     @DependOn("CioItems.ic")
     fun icMachine() {
         icMachine = ICMachine("ic-machine").apply {
@@ -771,13 +773,13 @@ object CioBlocks {
     fun wirelessTower() {
         wirelessTower = WirelessTower("wireless-tower").apply {
             requirements(
-                    Category.power, BuildVisibility.shown, arrayOf(
+                Category.power, BuildVisibility.shown, arrayOf(
                     ItemStack(CioItems.ic, 2),
                     ItemStack(Items.copper, 310),
                     ItemStack(Items.lead, 20),
                     ItemStack(Items.silicon, 20),
                     ItemStack(Items.graphite, 30),
-            )
+                )
             )
             health = 600
             distributeSpeed = 10f
@@ -898,7 +900,7 @@ object CioBlocks {
             health = 300 * size * size
         }
     }
-    @DependOn("CioItems.ic")
+
     fun hand() {
         DebugOnly {
             hand = Hand("heimdall-hand").apply {
@@ -1003,9 +1005,33 @@ object CioBlocks {
             }
         }
     }
+
+    fun decentralizer() {
+        decentralizer = Decentralizer("decentralizer").apply {
+            requirements(
+                Category.crafting, BuildVisibility.shown, arrayOf()
+            )
+            size = 4
+        }
+    }
     @DependOn
     fun _overwriteVanilla() {
         DebugOnly {
+            Blocks.barrierProjector = DirectionalForceProjector("barrier-projector").apply {
+                requirements(Category.effect, ItemStack.with(Items.surgeAlloy, 100, Items.silicon, 125))
+                size = 3
+                width = 50f
+                length = 36f
+                shieldHealth = 2000f
+                cooldownNormal = 3f
+                cooldownBrokenBase = 0.35f
+                consumePower(4f)
+            }
+            Blocks.shieldProjector = BaseShield("shield-projector").apply {
+                requirements(Category.effect, BuildVisibility.shown, arrayOf())
+                size = 3
+                consumePower(5f)
+            }
             (Blocks.powerSource as PowerSource).apply {
                 buildVisibility = BuildVisibility.shown
                 health = Int.MAX_VALUE

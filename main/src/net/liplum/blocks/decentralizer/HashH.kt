@@ -3,6 +3,9 @@ package net.liplum.blocks.decentralizer
 import java.util.*
 
 object HammingDistance {
+    /**
+     * Calculate the hamming distance between 2 bitsets which are of equal size.
+     */
     @JvmStatic
     fun dst(a: BitSet, b: BitSet): Int {
         require(a.size() == b.size()) {
@@ -14,7 +17,9 @@ object HammingDistance {
         }
         return dist
     }
-
+    /**
+     * Calculate the hamming distance between 2 int(32 bits)
+     */
     @JvmStatic
     fun dst(a: Int, b: Int): Int {
         var dist = 0

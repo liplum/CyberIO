@@ -49,7 +49,7 @@ object Welcome {
         val tipsCanShow = allTips.filter { it.condition.canShow(it) }
         val allCandidates = tipsCanShow.allMaxBy { it.condition.priority(it) }
         var sumChance = 0
-        val weights = Array(allCandidates.size) {
+        val weights = IntArray(allCandidates.size) {
             val chance = allCandidates[it].chance
             sumChance += chance
             chance

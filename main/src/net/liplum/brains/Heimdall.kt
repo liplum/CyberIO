@@ -8,6 +8,7 @@ import arc.graphics.g2d.Lines
 import arc.math.Interp
 import arc.math.Mathf
 import arc.math.geom.Intersector
+import arc.math.geom.Vec2
 import arc.util.Log
 import arc.util.Time
 import arc.util.io.Reads
@@ -24,35 +25,36 @@ import mindustry.logic.Ranged
 import mindustry.world.Block
 import mindustry.world.blocks.ControlBlock
 import mindustry.world.meta.Stat
-import net.liplum.*
+import net.liplum.DebugOnly
+import net.liplum.R
 import net.liplum.api.IExecutioner
 import net.liplum.api.brain.*
 import net.liplum.api.brain.IBrain.Companion.Mirror
 import net.liplum.api.brain.IBrain.Companion.XSign
 import net.liplum.api.brain.IBrain.Companion.YSign
-import net.liplum.mdt.Draw
-import net.liplum.mdt.animations.anims.Anime
-import net.liplum.mdt.animations.anims.linearFrames
+import net.liplum.lib.Serialized
+import net.liplum.lib.TR
 import net.liplum.lib.delegates.Delegate
 import net.liplum.lib.entity.Radiation
 import net.liplum.lib.entity.RadiationQueue
+import net.liplum.lib.utils.format
+import net.liplum.lib.utils.invoke
 import net.liplum.lib.utils.isZero
+import net.liplum.lib.utils.toDouble
+import net.liplum.mdt.ClientOnly
+import net.liplum.mdt.Draw
+import net.liplum.mdt.WhenNotPaused
+import net.liplum.mdt.animations.anims.Anime
+import net.liplum.mdt.animations.anims.linearFrames
+import net.liplum.mdt.render.G
 import net.liplum.mdt.render.HeatMeta
 import net.liplum.mdt.render.drawHeat
 import net.liplum.mdt.ui.bars.AddBar
-import net.liplum.lib.utils.format
-import net.liplum.lib.utils.toDouble
-import net.liplum.lib.TR
-import net.liplum.mdt.ClientOnly
-import net.liplum.DebugOnly
-import net.liplum.lib.utils.invoke
-import net.liplum.lib.Serialized
-import net.liplum.mdt.WhenNotPaused
+import net.liplum.mdt.utils.MdtUnit
+import net.liplum.mdt.utils.atUnit
 import net.liplum.mdt.utils.sheet
 import net.liplum.mdt.utils.sub
-import net.liplum.mdt.render.G
-import net.liplum.mdt.utils.MdtUnit
-import net.liplum.utils.*
+import net.liplum.utils.addPowerUseStats
 
 /**
  * ### Since 1
@@ -328,6 +330,8 @@ open class Heimdall(name: String) : Block(name) {
                                     Call.unitCapDeath(unit)
                                     team.data().updateCount(unit.type, -1)
                                 }
+                                BrainFx.mindControlled.atUnit(unit, 3)
+                                Fx.unitSpawn.atUnit(unit)
                                 unit.heal()
                             }
                         }
@@ -621,6 +625,21 @@ open class Heimdall(name: String) : Block(name) {
                 return true
             }
             return false
+        }
+
+        val tmp = Vec2()
+        fun blockUnit(unit: MdtUnit) {
+            val overlapDst = unit.hitSize / 2f + curFieldRadius - unit.dst(this)
+
+            if (overlapDst > 0) {
+                //stop
+                unit.vel.setZero()
+                //get out
+                unit.move(tmp.set(unit).sub(this).setLength(overlapDst + 0.01f))
+                if (Mathf.chanceDelta((0.12f * Time.delta).toDouble())) {
+                    Fx.circleColorSpark.at(unit.x, unit.y, R.C.BrainWave)
+                }
+            }
         }
     }
 }

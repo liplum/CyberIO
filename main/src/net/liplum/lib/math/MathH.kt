@@ -7,6 +7,7 @@ package net.liplum.lib.math
 
 import arc.math.Angles
 import arc.math.Mathf
+import arc.math.geom.Position
 import arc.math.geom.Vec2
 import net.liplum.lib.utils.isZero
 import kotlin.math.*
@@ -203,7 +204,7 @@ fun Int.randomExcept(exception: Int): Int {
  * @param weights it.size == list.size.
  */
 fun <T> List<T>.randomByWeights(
-    weights: Array<Int>,
+    weights: IntArray,
     maxWeight: Int = weights.last()
 ): T {
     assert(weights.size == size) { "Weights' size(${weights.size}) don't match receiver's size($size)" }
@@ -237,6 +238,11 @@ fun Vec2.minus(x: Short, y: Short): Vec2 = apply {
 fun Vec2.minus(x: Float, y: Float): Vec2 = apply {
     this.x -= x
     this.y -= y
+}
+
+fun Vec2.minus(p: Position): Vec2 = apply {
+    this.x = p.x
+    this.y = p.y
 }
 
 private val temp = Vec2()
