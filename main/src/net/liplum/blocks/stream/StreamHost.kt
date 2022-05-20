@@ -19,10 +19,8 @@ import net.liplum.lib.TR
 import net.liplum.lib.TRs
 import net.liplum.lib.persistance.intSet
 import net.liplum.mdt.*
-import net.liplum.mdt.animations.Floating
 import net.liplum.mdt.animations.anis.AniState
 import net.liplum.mdt.animations.anis.config
-import net.liplum.mdt.render.G
 import net.liplum.mdt.utils.buildAt
 import net.liplum.mdt.utils.inMod
 import net.liplum.mdt.utils.sub
@@ -133,6 +131,7 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
         var queue = LinkedList<Point2>()
         val realNetworkSpeed: Float
             get() = networkSpeed * timeScale
+
         override fun getHostColor(): Color = liquids.current().color
         override fun updateTile() {
             checkQueue()
@@ -287,7 +286,8 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
                 pos.sc()?.let { disconnectSync(it) }
                 return false
             }
-            if (other is IStreamClient) {
+            val b = other.getCyberEntity<IStreamClient>()
+            if (b != null) {
                 if (maxRange > 0f && other.dst(this) >= maxRange) {
                     drawOverRangeOn(other)
                 } else {
@@ -295,8 +295,8 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
                         deselect()
                     }
                     if (canHaveMoreClientConnection()) {
-                        if (other.acceptConnection(this)) {
-                            connectSync(other)
+                        if (b.acceptConnection(this)) {
+                            connectSync(b)
                         } else {
                             drawFullHostOn(other)
                         }
@@ -332,7 +332,6 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
 
         override fun maxClientConnection() = maxConnection
         override fun getConnectedClients(): OrderedSet<Int> = clients
-
         override fun read(read: Reads, revision: Byte) {
             super.read(read, revision)
             clients = read.intSet()

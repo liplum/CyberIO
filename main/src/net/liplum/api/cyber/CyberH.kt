@@ -29,6 +29,11 @@ var ToastTimeFadePercent = 0.1f
 var ToastTime = 180f
 private val p1 = Point2f()
 private val p2 = Point2f()
+@Suppress("UNCHECKED_CAST")
+inline fun <reified T : ICyberEntity> Building.getCyberEntity(): T? {
+    return this as? T ?: CyberEntityAdapterRegistry.get(block)?.get(this) as? T
+}
+
 fun Int.db(): IDataBuilding? =
     this.build as? IDataBuilding
 

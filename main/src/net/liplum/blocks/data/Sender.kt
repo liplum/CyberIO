@@ -247,7 +247,8 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
                 configure(null)
                 return false
             }
-            if (other is IDataReceiver) {
+            val b = other.getCyberEntity<IDataReceiver>()
+            if (b != null) {
                 if (maxRange > 0f && other.dst(this) >= maxRange) {
                     drawOverRangeOn(other)
                 } else {
@@ -255,8 +256,8 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
                         deselect()
                     }
                     if (canHaveMoreReceiverConnection()) {
-                        if (other.acceptConnection(this)) {
-                            connectSync(other)
+                        if (b.acceptConnection(this)) {
+                            connectSync(b)
                         } else {
                             drawFullSenderOn(other)
                         }

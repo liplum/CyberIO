@@ -25,7 +25,6 @@ import net.liplum.mdt.animations.anims.Animation
 import net.liplum.mdt.animations.anims.AnimationObj
 import net.liplum.mdt.animations.anis.AniState
 import net.liplum.mdt.animations.anis.config
-import net.liplum.mdt.render.postToastTextOn
 import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.ui.bars.removeItemsInBar
 import net.liplum.mdt.utils.*
@@ -387,7 +386,8 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
                 pos.dr()?.let { disconnectSync(it) }
                 return false
             }
-            if (other is IDataReceiver) {
+            val b = other.getCyberEntity<IDataReceiver>()
+            if (b != null) {
                 if (maxRange > 0f && other.dst(this) >= maxRange) {
                     drawOverRangeOn(other)
                 } else {
@@ -395,8 +395,8 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
                         deselect()
                     }
                     if (canHaveMoreReceiverConnection()) {
-                        if (other.acceptConnection(this)) {
-                            connectSync(other)
+                        if (b.acceptConnection(this)) {
+                            connectSync(b)
                         } else {
                             drawFullSenderOn(other)
                         }
