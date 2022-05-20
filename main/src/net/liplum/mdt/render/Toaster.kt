@@ -31,14 +31,10 @@ object Toaster {
         duration: Float,
         useGlobalTime: Boolean = false,
         task: ToastSpec.() -> Unit
-    ) {
-        ClientOnly {
-            val toast = if (useGlobalTime)
-                Toast(Time.globalTime, duration, true, task)
-            else
-                Toast(Time.time, duration, false, task)
-            unmanagedToasts.add(toast)
-        }
+    ): Toast {
+        val toast = genToast(duration, useGlobalTime, task)
+        unmanagedToasts.add(toast)
+        return toast
     }
     /**
      * Post a managed toast, it will be drawn every [EventType.Trigger.drawOver].
@@ -51,18 +47,31 @@ object Toaster {
         useGlobalTime: Boolean = false,
         overwrite: Boolean = true,
         task: ToastSpec.() -> Unit
-    ) {
-        ClientOnly {
-            val toast = if (useGlobalTime)
-                Toast(Time.globalTime, duration, true, task)
-            else
-                Toast(Time.time, duration, false, task)
-            if (overwrite)
+    ): Toast {
+        return if (overwrite) {
+            val toast = genToast(duration, useGlobalTime, task)
+            managedToast[id] = toast
+            toast
+        } else {
+            val former = managedToast[id]
+            if (former == null) {
+                val toast = genToast(duration, useGlobalTime, task)
                 managedToast[id] = toast
-            else
-                if (id !in managedToast) managedToast[id] = toast
+                toast
+            } else {
+                former
+            }
         }
     }
+
+    private fun genToast(
+        duration: Float,
+        useGlobalTime: Boolean = false,
+        task: ToastSpec.() -> Unit
+    ) = if (useGlobalTime)
+        Toast(Time.globalTime, duration, true, task)
+    else
+        Toast(Time.time, duration, false, task)
     /**
      * Remove a managed toast.
      */
@@ -132,6 +141,10 @@ class Toast(
     var useGlobalTime: Boolean,
     var task: ToastSpec.() -> Unit
 ) {
+    val isEnd: Boolean
+        get() = if (useGlobalTime) startTime + duration <= Time.globalTime
+        else startTime + duration <= Time.time
+
     companion object {
         val X = Toast(0f, 0f, false) {}
     }

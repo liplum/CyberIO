@@ -10,35 +10,35 @@ import arc.util.Time
 import mindustry.Vars
 import mindustry.entities.bullet.BulletType
 import mindustry.gen.Bullet
+import mindustry.gen.Teamc
 import mindustry.graphics.Drawf
 import mindustry.graphics.Layer
 import mindustry.world.blocks.defense.turrets.PowerTurret
 import mindustry.world.meta.Stat
-import net.liplum.*
+import net.liplum.DebugOnly
+import net.liplum.R
 import net.liplum.api.brain.*
+import net.liplum.lib.TR
+import net.liplum.lib.TRs
+import net.liplum.lib.math.Polar
+import net.liplum.lib.math.approachR
+import net.liplum.lib.math.radian
+import net.liplum.lib.utils.EmptySounds
+import net.liplum.lib.utils.progress
+import net.liplum.mdt.ClientOnly
+import net.liplum.mdt.Draw
+import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.animations.anims.Anime
 import net.liplum.mdt.animations.anims.genFramesBy
 import net.liplum.mdt.animations.anims.randomCurTime
+import net.liplum.mdt.render.G
 import net.liplum.mdt.render.HeatMeta
 import net.liplum.mdt.render.drawHeat
 import net.liplum.mdt.ui.ammoStats
-import net.liplum.lib.math.Polar
-import net.liplum.lib.utils.EmptySounds
-import net.liplum.lib.math.approachR
-import net.liplum.lib.utils.progress
-import net.liplum.lib.math.radian
-import net.liplum.lib.TR
-import net.liplum.lib.TRs
-import net.liplum.mdt.ClientOnly
-import net.liplum.DebugOnly
-import net.liplum.mdt.Draw
-import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.utils.draw
 import net.liplum.mdt.utils.sheet
 import net.liplum.mdt.utils.sub
-import net.liplum.mdt.render.G
-import net.liplum.utils.*
-import kotlin.collections.random
+import net.liplum.utils.addBrainInfo
 
 open class Eye(name: String) : PowerTurret(name), IComponentBlock {
     lateinit var normalBullet: BulletType
@@ -69,6 +69,8 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
     @ClientOnly @JvmField var continuousShootCheckTime = 10f
     override val upgrades: MutableMap<UpgradeType, Upgrade> = HashMap()
     @ClientOnly @JvmField var maxHemorrhageShotsReq = 5
+    // Timer
+    @JvmField var conversationTimer = timers++
 
     init {
         canOverdrive = false
@@ -151,17 +153,28 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
         }
 
         override fun delta(): Float {
-            return this.timeScale * Time.delta * speedScale* (1f + heatShared)
+            return this.timeScale * Time.delta * speedScale * (1f + heatShared)
         }
 
         override fun updateTile() {
+            val conversationOn = timer(conversationTimer, 1f)
             scale.update()
             heatShared -= coolingSpeed * Time.delta
             super.updateTile()
+            val target = target
+            if (conversationOn &&
+                target != null && target is Teamc &&
+                target.team() != this.team
+            ) {
+                if (Mathf.chance(0.005)) {
+                    trigger(Trigger.eyeDetect)
+                }
+            }
         }
 
         override fun onProximityRemoved() {
             super.onProximityRemoved()
+            trigger(Trigger.partDestroyed)
             clear()
         }
 
@@ -244,7 +257,7 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
                 pupilHeatTR.Draw(pupilX, pupilY, rotationDraw)
             }
             Draw.z(Layer.turret)
-            Draw.z(Layer.turretHeat+0.1f)
+            Draw.z(Layer.turretHeat + 0.1f)
             drawHemorrhage()
             blinkAnime.draw(x, y)
             blinkFactor = 1f

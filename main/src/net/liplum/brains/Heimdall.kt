@@ -25,6 +25,7 @@ import mindustry.logic.Ranged
 import mindustry.world.Block
 import mindustry.world.blocks.ControlBlock
 import mindustry.world.meta.Stat
+import net.liplum.CioMod
 import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.api.IExecutioner
@@ -43,6 +44,7 @@ import net.liplum.lib.utils.isZero
 import net.liplum.lib.utils.toDouble
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.Draw
+import net.liplum.mdt.HeadlessOnly
 import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.animations.anims.Anime
 import net.liplum.mdt.animations.anims.linearFrames
@@ -85,6 +87,8 @@ open class Heimdall(name: String) : Block(name) {
     @ClientOnly @JvmField var BuckleDuration = 20f
     @ClientOnly @JvmField var BuckleFrameNum = 5
     @JvmField var connectedSound: Sound = Sounds.none
+    // Timer
+    @JvmField var conversationTimer = timers++
     @JvmField var formationPatterns: MutableSet<IFormationPattern> = HashSet()
     @JvmField var properties = mapOf(
         UT.Damage to damage,
@@ -226,7 +230,7 @@ open class Heimdall(name: String) : Block(name) {
         var logicControlTime: Float = -1f
         val logicControlled: Boolean
             get() = logicControlTime > 0
-
+        var justRestoreOrCreated = true
         override fun sense(sensor: LAccess): Double {
             return when (sensor) {
                 LAccess.shooting -> (reloadCounter < realReloadTime).toDouble()
@@ -287,24 +291,47 @@ open class Heimdall(name: String) : Block(name) {
         }
 
         override fun updateTile() {
-            // Brain waves
+            justRestoreOrCreated = false
+            val conversationOn = timer(conversationTimer, 1f)
+            // Update all timers
             reloadCounter += edelta()
             heatShared -= coolingSpeed * Time.delta
+            // Update brain waves moving
             brainWaves.forEach {
                 it.range += waveSpeed * Time.delta
             }
             brainWaves.pollWhen {
                 it.range >= realRange
             }
-            if (reloadCounter >= realReloadTime) {
-                reloadCounter = 0f
-                if ((isControlled && unit.isShooting) ||
-                    logicControlled || enemyNearby()
-                ) {
-                    if (brainWaves.canAdd)
-                        brainWaves.append(Radiation())
+            // Update control and shoot
+            var detectEnemy = false
+            // Client side will trigger
+            ClientOnly {
+                detectEnemy = anyEnemyNearby()
+                if (reloadCounter >= realReloadTime) {
+                    reloadCounter = 0f
+                    val isControlledShooting = (isControlled && unit.isShooting) ||
+                            logicControlled
+                    if (isControlledShooting || (!isControlled && detectEnemy)) {
+                        if (brainWaves.canAdd)
+                            brainWaves.append(Radiation())
+                    }
                 }
             }
+            // Headless side won't trigger and save performance
+            HeadlessOnly {
+                if (reloadCounter >= realReloadTime) {
+                    reloadCounter = 0f
+                    val isControlledShooting = (isControlled && unit.isShooting) ||
+                            logicControlled
+                    detectEnemy = if (!isControlledShooting) anyEnemyNearby() else false
+                    if (isControlledShooting || (!isControlled && detectEnemy)) {
+                        if (brainWaves.canAdd)
+                            brainWaves.append(Radiation())
+                    }
+                }
+            }
+            // Update brain waves damage
             val realRangeX2 = realRange * 2
             val halfWidth = realWaveWidth / 2
             Groups.unit.intersect(
@@ -332,6 +359,14 @@ open class Heimdall(name: String) : Block(name) {
                                 }
                                 BrainFx.mindControlled.atUnit(unit, 3)
                                 Fx.unitSpawn.atUnit(unit)
+                                val unitInMod = unit.type.minfo.mod
+                                if (unitInMod != null && unitInMod != CioMod.Info
+                                    && Mathf.chance(0.5)
+                                ) {
+                                    trigger(Trigger.controlInMod)
+                                } else {
+                                    trigger(Trigger.control)
+                                }
                                 unit.heal()
                             }
                         }
@@ -367,8 +402,34 @@ open class Heimdall(name: String) : Block(name) {
                 }
             }
             // Formation
-            heatMeta.drawHeat(this, HeartTR, heatShared)
             formationEffects.update(this)
+            // Trigger
+            if (conversationOn) {
+                if (isControlled) {
+                    if (detectEnemy) {
+                        if (Mathf.chance(0.008))
+                            trigger(Trigger.detectControlled)
+                    } else {
+                        if (Mathf.chance(0.005))
+                            trigger(Trigger.controlled)
+                    }
+                } else {
+                    if (detectEnemy) {
+                        if (Mathf.chance(0.005))
+                            trigger(Trigger.detect)
+                    }
+                }
+            }
+        }
+
+        override fun heal() {
+            super.heal()
+            trigger(Trigger.heal)
+        }
+
+        override fun heal(amount: Float) {
+            super.heal(amount)
+            trigger(Trigger.heal)
         }
 
         override fun remove() {
@@ -396,6 +457,7 @@ open class Heimdall(name: String) : Block(name) {
 
         override fun onProximityUpdate() {
             super.onProximityUpdate()
+            val formerComponentCount = components.size
             clear()
             for (build in proximity) {
                 if (build is IUpgradeComponent &&
@@ -405,14 +467,22 @@ open class Heimdall(name: String) : Block(name) {
                         val dire = this.sideOn(build)
                         val succeed = linkComponent(build, dire)
                         if (succeed) {
-                            connectedSound.at(tile)
-                            ClientOnly {
-                                linkAnime.restart()
+                            if (!justRestoreOrCreated) {
+                                connectedSound.at(tile)
+                                ClientOnly {
+                                    linkAnime.restart()
+                                }
                             }
                         }
                     } else if (build.brain == this) {
                         linkComponent(build, build.directionInfo)
                     }
+                }
+            }
+            if (!justRestoreOrCreated) {
+                val curComponentCount = components.size
+                if (curComponentCount > formerComponentCount) {
+                    trigger(Trigger.connect)
                 }
             }
             checkFormation()
@@ -509,7 +579,7 @@ open class Heimdall(name: String) : Block(name) {
             formationEffects.draw(this)
         }
 
-        open fun enemyNearby(): Boolean {
+        open fun anyEnemyNearby(): Boolean {
             for (unit in Groups.unit) {
                 if (unit.team != team &&
                     !unit.dead &&
@@ -523,6 +593,13 @@ open class Heimdall(name: String) : Block(name) {
 
         override fun drawSelect() {
             G.dashCircle(x, y, realRange, R.C.BrainWave)
+        }
+
+        override fun damage(damage: Float) {
+            super.damage(damage)
+            if (!dead && damage > 0f) {
+                trigger(Trigger.hit)
+            }
         }
 
         override fun canControl() = canConsume()
@@ -540,6 +617,7 @@ open class Heimdall(name: String) : Block(name) {
             shieldAmount = read.f()
             lastShieldDamageTime = read.f()
             curFieldRadius = read.f()
+            justRestoreOrCreated = true
         }
 
         override fun write(write: Writes) {
@@ -622,6 +700,7 @@ open class Heimdall(name: String) : Block(name) {
                 bullet.absorb()
                 Fx.absorb.at(bullet)
                 shieldAmount -= bullet.damage
+                trigger(Trigger.forceFieldHit)
                 return true
             }
             return false

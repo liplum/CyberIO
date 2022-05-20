@@ -1,7 +1,6 @@
-package net.liplum.brains
+package net.liplum.api.brain
 
 import net.liplum.mdt.ClientOnly
-import net.liplum.api.brain.*
 import net.liplum.lib.toLinkedString
 
 interface IFormationPattern {

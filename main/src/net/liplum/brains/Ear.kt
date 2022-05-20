@@ -4,6 +4,7 @@ import arc.graphics.Color
 import arc.graphics.g2d.Draw
 import arc.graphics.g2d.Lines
 import arc.math.Interp
+import arc.math.Mathf
 import arc.math.geom.Vec2
 import arc.util.Time
 import arc.util.Tmp
@@ -25,19 +26,19 @@ import mindustry.world.meta.StatUnit
 import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.api.brain.*
-import net.liplum.mdt.Draw
-import net.liplum.mdt.DrawSize
+import net.liplum.lib.Serialized
 import net.liplum.lib.TR
 import net.liplum.lib.utils.invoke
 import net.liplum.lib.utils.isZero
 import net.liplum.lib.utils.toDouble
 import net.liplum.mdt.ClientOnly
-import net.liplum.lib.Serialized
+import net.liplum.mdt.Draw
+import net.liplum.mdt.DrawSize
 import net.liplum.mdt.render.G
 import net.liplum.mdt.render.HeatMeta
 import net.liplum.mdt.render.drawHeat
-import net.liplum.mdt.utils.sub
 import net.liplum.mdt.utils.MdtUnit
+import net.liplum.mdt.utils.sub
 import net.liplum.utils.addBrainInfo
 
 open class Ear(name: String) : Block(name), IComponentBlock {
@@ -312,6 +313,16 @@ open class Ear(name: String) : Block(name), IComponentBlock {
                         val dst = unit.dst(it.x, it.y)
                         if (dst in it.range - halfWidth..it.range + halfWidth) {
                             unit.damageContinuous(it.damage)
+                            if (unit.dead) {
+                                if (Mathf.chance(0.3)) {
+                                    trigger(Trigger.killing)
+                                } else {
+                                    if (unit.isFlying)
+                                        trigger(Trigger.earKillingFlying)
+                                    else
+                                        trigger(Trigger.earKilling)
+                                }
+                            }
                         }
                     }
                 }
@@ -332,6 +343,7 @@ open class Ear(name: String) : Block(name), IComponentBlock {
 
         override fun onProximityRemoved() {
             super.onProximityRemoved()
+            trigger(Trigger.partDestroyed)
             clear()
         }
     }

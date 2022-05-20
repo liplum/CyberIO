@@ -15,6 +15,8 @@ import net.liplum.lib.UseReflection
 import java.io.Reader
 import java.util.*
 
+typealias BundleKey = String
+
 fun String.bundle(vararg args: Any): String = Core.bundle.format(this, *args)
 fun String.bundle(bundle: I18NBundle, vararg args: Any): String = bundle.format(this, *args)
 private val bundle2Fields: MutableMap<I18NBundle, BundleFields> = HashMap()

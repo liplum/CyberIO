@@ -12,6 +12,7 @@ import kotlin.annotation.AnnotationTarget.*
 
 /**
  * It indicates this should be called or accessed only on Physical Client.
+ * You should wrap this with [ClientOnly] or [ClientOnlyOn].
  */
 @Retention(AnnotationRetention.SOURCE)
 @Inherited
@@ -19,6 +20,7 @@ import kotlin.annotation.AnnotationTarget.*
 annotation class ClientOnly
 /**
  * It indicates this should be called or accessed only on Logical Server.
+ * You should wrap this with [ServerOnly] or [ServerOnlyOn].
  */
 @Retention(AnnotationRetention.SOURCE)
 @Inherited
@@ -26,6 +28,7 @@ annotation class ClientOnly
 annotation class ServerOnly
 /**
  * It indicates this should be called or accessed only on Physical Server.
+ * You should wrap this with [HeadlessOnly] or [HeadlessOnlyOn].
  */
 @Retention(AnnotationRetention.SOURCE)
 @Inherited

@@ -529,6 +529,17 @@ class Heart(name: String) : Block(name), IComponentBlock {
             }
         }
 
+        override fun remove() {
+            super.remove()
+            clear()
+        }
+
+        override fun onProximityRemoved() {
+            super.onProximityRemoved()
+            trigger(Trigger.partDestroyed)
+            clear()
+        }
+
         override fun displayBars(table: Table) {
             super.displayBars(table)
             this.appendDisplayLiquidsDynamic(

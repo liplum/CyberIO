@@ -12,6 +12,7 @@ import mindustry.type.Liquid
 import mindustry.world.Block
 import net.liplum.R
 import net.liplum.Settings
+import net.liplum.api.ICyberEntity
 import net.liplum.lib.math.Point2f
 import net.liplum.lib.utils.Or
 import net.liplum.mdt.ClientOnly
@@ -447,12 +448,11 @@ fun isConfiguringHost(): Boolean {
     val selected = Vars.control.input.config.selected
     return selected is IStreamHost
 }
-@ClientOnly
 fun Building.drawOverRangeOn(other: Building) {
     ClientOnly {
         Toaster.post(other.id, ToastTime) {
             Text.drawText {
-                if (!p1.set(other.x, other.y).inViewField(10f)) return@post
+                if (!p1.set(other.x, other.y).inViewField(other.block.clipSize)) return@post
                 val tip = block.subBundle("over-range")
                 setText(it, tip)
                 if (!other.isAdded) {

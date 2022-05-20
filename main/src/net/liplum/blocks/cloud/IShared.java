@@ -1,7 +1,7 @@
 package net.liplum.blocks.cloud;
 
 import mindustry.world.modules.ItemModule;
-import net.liplum.api.cyber.ICyberEntity;
+import net.liplum.api.ICyberEntity;
 import org.jetbrains.annotations.NotNull;
 
 public interface IShared extends ICyberEntity {

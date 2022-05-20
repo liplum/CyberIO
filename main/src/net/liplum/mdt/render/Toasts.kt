@@ -10,7 +10,6 @@ var ToastTimeFadePercent = 0.1f
 var ToastTime = 180f
 private val p1 = Point2f()
 @JvmOverloads
-@ClientOnly
 fun String.postToastTextOn(
     other: Building,
     color: Color,
@@ -20,7 +19,7 @@ fun String.postToastTextOn(
 ) {
     ClientOnly {
         Toaster.post(other.id, ToastTime, useGlobalTime, overwrite) {
-            if (!p1.set(other.x, other.y).inViewField(10f)) return@post
+            if (!p1.set(other.x, other.y).inViewField(other.block.clipSize)) return@post
             Text.drawText {
                 setText(it, this@postToastTextOn)
                 if (!other.isAdded) {
