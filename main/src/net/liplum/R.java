@@ -81,10 +81,6 @@ public class R {
                 EfficiencyAbsorption = Gen(EfficiencyAbsorptionN);
         public static final String TeamN = "team",
                 Team = Gen(TeamN);
-        public static final String SpiralRotationSpeedN = "spiral-rotate-speed",
-                SpiralRotationSpeed = Gen(SpiralRotationSpeedN);
-        public static final String AlphaN = "alpha",
-                Alpha = Gen(AlphaN);
         public static final String RangeN = "range",
                 Range = Gen(RangeN);
         public static final String CoolDownN = "cool-down",
@@ -281,10 +277,6 @@ public class R {
         public static String Gen(String name) {
             return "ui." + Meta.ModID + "." + name;
         }
-
-        public static final String
-                MousePositionBuild = Gen("mouse-position.build"),
-                MousePositionWorld = Gen("mouse-position.world");
     }
 
     public static final class Setting {

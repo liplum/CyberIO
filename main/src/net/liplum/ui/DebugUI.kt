@@ -29,14 +29,14 @@ object DebugUI {
             label {
                 val build = Screen.tileOnMouse()?.build
                 if (build != null)
-                    R.UI.MousePositionBuild.bundle(build.tile.x, build.tile.y)
+                    "Build:${build.tile.x},${build.tile.y}"
                 else
-                    R.UI.MousePositionBuild.bundle("X", "X")
+                    "Build:X,X"
             }.touchable(Touchable.disabled).name("mouse-position-build")
             row()
             label {
                 val pos = Screen.worldOnMouse()
-                R.UI.MousePositionWorld.bundle(pos.x.toInt(), pos.y.toInt())
+                "Build:${pos.x.toInt()},${pos.y.toInt()}"
             }.touchable(Touchable.disabled).name("mouse-position-world").uniformX()
             row()
         }

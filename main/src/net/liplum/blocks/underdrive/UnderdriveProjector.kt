@@ -209,14 +209,14 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
         )
         DebugOnly {
             AddBar<UnderdriveBuild>(
-                R.Bar.SpiralRotationSpeedN,
-                { R.Bar.SpiralRotationSpeed.bundle(realSpiralRotateSpeed.format(2)) },
+                "spiral-rotate-speed",
+                { "RotateSPD:${realSpiralRotateSpeed.format(2)}" },
                 { Pal.powerBar },
                 { realSpiralRotateSpeed / 10f }
             )
             AddBar<UnderdriveBuild>(
-                R.Bar.AlphaN,
-                { R.Bar.Alpha.bundle(alpha.format(2)) },
+                "alpha",
+                { "alpha:${alpha.format(2)}" },
                 { Color.blue },
                 { alpha / 1f }
             )

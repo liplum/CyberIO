@@ -14,7 +14,6 @@ import net.liplum.api.cyber.StreamCenter
 import net.liplum.api.holo.IHoloEntity
 import net.liplum.blocks.cloud.LiplumCloud
 import net.liplum.blocks.cloud.SharedRoom
-import net.liplum.blocks.decentralizer.RecipeCenter
 import net.liplum.gen.EventRegistry
 import net.liplum.inputs.UnitTap
 import net.liplum.mdt.ClientOnly
@@ -142,6 +141,10 @@ class CioMod : Mod() {
         }
         DebugOnly {
             Vars.enableConsole = true
+            // Unlock all blocks
+            Events.on(WorldLoadEvent::class.java) {
+                Vars.state.rules.hiddenBuildItems.clear()
+            }
         }
         DataCenter.initData()
         StreamCenter.initAndLoad()
