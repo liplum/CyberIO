@@ -1,7 +1,9 @@
 package net.liplum.mdt.ui.settings
 
+import arc.scene.Element
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.Setting
+import net.liplum.mdt.ui.addTrackTooltip
 
 class AnySetting(
     val ctor: AnySetting.(SettingsTable) -> Unit,
@@ -15,6 +17,10 @@ class AnySetting(
         table.row()
     }
 
+    override fun addDesc(elem: Element) {
+        if (description == null) return
+        elem.addTrackTooltip(description)
+    }
     companion object {
         fun SettingsTable.addAny(
             ctor: AnySetting.(SettingsTable) -> Unit,

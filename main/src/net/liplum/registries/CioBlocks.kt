@@ -106,28 +106,48 @@ object CioBlocks {
     @DependOn("CioItems.ic")
     fun icMachine() {
         icMachine = ICMachine("ic-machine").apply {
-            requirements(
-                Category.crafting, arrayOf(
-                    ItemStack(CioItems.ic, 2),
-                    ItemStack(Items.copper, 550),
-                    ItemStack(Items.lead, 280),
-                    ItemStack(Items.silicon, 150),
-                    ItemStack(Items.graphite, 250),
+            VanillaSpec {
+                requirements(
+                    Category.crafting, arrayOf(
+                        ItemStack(CioItems.ic, 2),
+                        ItemStack(Items.copper, 550),
+                        ItemStack(Items.lead, 280),
+                        ItemStack(Items.silicon, 150),
+                        ItemStack(Items.graphite, 250),
+                    )
                 )
-            )
-            health = 2000
+                health = 2000
+                consumeItems( //Total:100
+                    ItemStack(Items.copper, 50),  //50%
+                    ItemStack(Items.silicon, 20),  //20%
+                    ItemStack(Items.metaglass, 30) //30%
+                )
+                consumePower(10f)
+            }
+            ErekirSpec {
+                requirements(
+                    Category.crafting, arrayOf(
+                        ItemStack(CioItems.ic, 2),
+                        ItemStack(Items.beryllium, 250),
+                        ItemStack(Items.oxide, 80),
+                        ItemStack(Items.tungsten, 100),
+                        ItemStack(Items.thorium, 150),
+                    )
+                )
+                health = 1500
+                consumeItems( //Total:100
+                    ItemStack(Items.sand, 50),  //50%
+                    ItemStack(Items.beryllium, 20),  //20%
+                    ItemStack(Items.silicon, 30) //30%
+                )
+            }
             outputItem = ItemStack(CioItems.ic, 2)
             craftTime = 400f
             size = 3
             buildCostMultiplier = 1.5f
             craftEffect = Fx.smeltsmoke
             itemCapacity = 60
-            consumeItems( //Total:100
-                ItemStack(Items.copper, 50),  //50%
-                ItemStack(Items.silicon, 20),  //20%
-                ItemStack(Items.metaglass, 30) //30%
-            )
-            consumePower(10f)
+
         }
     }
     @DependOn("CioItems.ic")
@@ -216,6 +236,7 @@ object CioBlocks {
                     ItemStack(Items.silicon, 180),
                 )
             )
+            squareSprite = false
             health = 200
             consumePower(0.5f)
             replaceable = false
@@ -582,6 +603,7 @@ object CioBlocks {
                     ItemStack(Items.phaseFabric, 120),
                 )
             )
+            squareSprite = false
             health = 5000
             size = 3
             researchCostMultiplier = 0.7f

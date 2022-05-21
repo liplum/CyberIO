@@ -3,9 +3,7 @@ package net.liplum.lib.utils;
 import arc.Core;
 import arc.graphics.g2d.TextureRegion;
 import arc.util.Log;
-import mindustry.ctype.MappableContent;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class AtlasU {
     public static TextureRegion[] subFrames(String identity, int start, int number) {
@@ -17,13 +15,7 @@ public class AtlasU {
         return fms;
     }
 
-    public static TextureRegion[] animation(MappableContent content, @Nullable String subName, boolean isHorizontal, int number) {
-        String identity;
-        if (subName != null) {
-            identity = content.name + '-' + subName + "-anim";
-        } else {
-            identity = content.name + "-anim";
-        }
+    public static TextureRegion[] animation(String identity, boolean isHorizontal, int number) {
         TextureRegion tr = Core.atlas.find(identity);
         if (!Core.atlas.isFound(tr)) {
             String possibleName = identity.substring(0, identity.length() - 5);

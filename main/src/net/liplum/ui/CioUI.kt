@@ -62,7 +62,8 @@ object CioUI {
                 if (cioSettings == null) {
                     menu.row()
                     menu.button(
-                        Meta.Name, TextureRegionDrawable("welcome-cyber-io".inCio),
+                        Meta.Name,
+                        TextureRegionDrawable("welcome-cyber-io".inCio),
                         Styles.flatt, Vars.iconMed
                     ) {
                         prefs.clearChildren()
@@ -119,6 +120,16 @@ object CioUI {
         ).apply {
             canShow = { isMenu }
         }
+        // Select the Cyber IO specific
+        addAny {
+            val button = TextButton(ContentSpecDialog.bundle("button")).apply {
+                changed {
+                    ContentSpecDialog.show()
+                }
+            }.addTrackTooltip(ContentSpecDialog.bundle("button-tip"))
+            it.add(button).fillX()
+        }
+        // GitHub mirror and Check update
         UnsteamOnly {
             addAny {
                 val prefix = "setting.${R.Setting.GitHubMirrorUrl}"
@@ -190,8 +201,7 @@ object CioUI {
                         addCloseButton()
                     }
                     dialog.show()
-                }.addTrackTooltip(bundle("button-tooltip")).apply {
-                }
+                }.addTrackTooltip(bundle("button-tooltip"))
                 it.add(button).fillX()
             }.apply {
                 canShow = { isMenu }
@@ -239,7 +249,7 @@ object CioUI {
                             isDisabled = false
                         }
                     }
-                }
+                }.addTrackTooltip(bundle("button-tooltip"))
                 it.add(button).fillX()
             }.apply {
                 canShow = { isMenu }
@@ -251,7 +261,7 @@ object CioUI {
                     changed {
                         DebugSettingsDialog.show()
                     }
-                }
+                }.addTrackTooltip("Only for debugging.")
                 it.add(button).fillX()
             }
         }

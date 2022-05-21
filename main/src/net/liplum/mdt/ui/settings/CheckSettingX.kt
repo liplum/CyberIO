@@ -23,7 +23,8 @@ class CheckSettingX(
             onChanged(box.isChecked)
         }
         box.left()
-        addDesc(table.add(box).left().padTop(3f).get())
+        val prefTable = table.table().left().padTop(3f).get()
+        prefTable.add(box)
         table.row()
     }
 

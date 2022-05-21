@@ -80,8 +80,10 @@ fun MappableContent.anim(
     subName: String? = null,
     isHorizontal: Boolean = true,
     number: Int,
-): TRs =
-    AtlasU.animation(this, subName, isHorizontal, number)
+): TRs {
+    val identity = name + if (subName != null) "-$subName-anim" else "-anim"
+    return AtlasU.animation(identity, isHorizontal, number)
+}
 @JvmOverloads
 fun TR.slice(
     count: Int,

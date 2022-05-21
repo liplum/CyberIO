@@ -9,6 +9,7 @@ import mindustry.game.EventType.*
 import mindustry.io.JsonIO
 import mindustry.mod.Mod
 import mindustry.mod.Mods
+import net.liplum.ContentSpec.Companion.resolveContentSpec
 import net.liplum.blocks.cloud.LiplumCloud
 import net.liplum.blocks.cloud.SharedRoom
 import net.liplum.events.CioInitEvent
@@ -40,6 +41,7 @@ class CioMod : Mod() {
         @JvmField var TestGlCompatibility = false
         @JvmField var ExperimentalMode = false
         @JvmField var UpdateFrequency = 5f
+        @JvmField var ContentSpecific = ContentSpec.Vanilla
         lateinit var Info: Mods.LoadedMod
         @JvmField val jarFile = CioMod::class.java.protectionDomain?.let {
             File(it.codeSource.location.toURI().path).let { f ->
@@ -81,11 +83,11 @@ class CioMod : Mod() {
             Updater.fetchLatestVersion(Config.CheckUpdateInfoURL)
             Updater.checkHeadlessUpdate()
         }
+        ContentSpecific = Settings.ContentSpecific.resolveContentSpec()
         EventRegistry.registerAll()
         ClientOnly {
             GL.handleCompatible()
         }
-        //listen for game load event
         Events.on(ClientLoadEvent::class.java) {
             //show welcome dialog upon startup
             Time.runTask(15f) {
@@ -155,6 +157,7 @@ class CioMod : Mod() {
 
     override fun loadContent() {
         Info = Vars.mods.locateMod(Meta.ModID)
+        Info.meta.version = ContentSpecific.suffixModVersion(Info.meta.version)
         Events.fire(CioLoadContentEvent())
         Contents.load()
         CioTechTree.loadAll()

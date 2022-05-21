@@ -301,6 +301,7 @@ public class R {
                 LastPlayTime = Gen("last-play-time"),
                 GitHubMirrorUrl = Gen("github-mirror"),
                 ShaderRootPath = Gen("shader-root-path"),
+                ContentSpecific = Gen("content-specific"),
                 CheckUpdate = Gen("check-update");
     }
 

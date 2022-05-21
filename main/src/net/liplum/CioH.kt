@@ -1,4 +1,5 @@
 @file:JvmName("CioH")
+
 package net.liplum
 
 import arc.Core
@@ -6,12 +7,55 @@ import arc.util.Time
 import mindustry.Vars
 import net.liplum.lib.Condition
 import net.liplum.lib.TR
+import net.liplum.lib.utils.bundle
+import net.liplum.mdt.ClientOnly
+import net.liplum.mdt.utils.atlas
 import java.lang.annotation.Inherited
 
 val String.inCio: TR
     get() = Core.atlas.find("${Meta.ModID}-$this")
 val String.Cio: String
     get() = R.Gen(this)
+
+enum class ContentSpec(
+    val id: String
+) {
+    Vanilla("vanilla"),
+    Erekir("erekir");
+
+    fun suffixModVersion(version: String) =
+        if (this != Vanilla) "$version-$id"
+        else version
+    @ClientOnly
+    val i18nName: String
+        get() = "${Meta.ModID}.spec.$id.name".bundle
+    @ClientOnly
+    val i18nDesc: String
+        get() = "${Meta.ModID}.spec.$id.desc".bundle
+    @ClientOnly
+    val icon: TR
+        get() = R.Gen(id).atlas()
+
+    companion object {
+        @JvmStatic
+        fun String.resolveContentSpec() = when (this) {
+            "erekir" -> Erekir
+            else -> Vanilla
+        }
+    }
+}
+
+inline fun VanillaSpec(func: () -> Unit) {
+    if (CioMod.ContentSpecific == ContentSpec.Vanilla) {
+        func()
+    }
+}
+
+inline fun ErekirSpec(func: () -> Unit) {
+    if (CioMod.ContentSpecific == ContentSpec.Erekir) {
+        func()
+    }
+}
 /**
  * It indicates this should be used when debugging.
  */

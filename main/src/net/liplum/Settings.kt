@@ -25,9 +25,11 @@ object Settings {
     var ClickWelcomeTimes: Int
         get() = settings.getInt(R.Setting.ClickWelcomeTimes, 0)
         set(value) = settings.put(R.Setting.ClickWelcomeTimes, value)
-    @Deprecated("Use Settings.LastWelcomeID instead",
+    @Deprecated(
+        "Use Settings.LastWelcomeID instead",
         ReplaceWith("Settings.LastWelcomeID"),
-        level = DeprecationLevel.ERROR)
+        level = DeprecationLevel.ERROR
+    )
     var LastWelcome: Int
         get() = settings.getInt(R.Setting.LastWelcome, 0)
         set(value) = settings.put(R.Setting.LastWelcome, value)
@@ -56,6 +58,9 @@ object Settings {
     var ShaderRootPath: String
         get() = settings.getString(R.Setting.ShaderRootPath, "")
         set(value) = settings.put(R.Setting.ShaderRootPath, value)
+    var ContentSpecific: String
+        get() = settings.getString(R.Setting.ContentSpecific, ContentSpec.Vanilla.id)
+        set(value) = settings.put(R.Setting.ContentSpecific, value)
     val settingsMap = mapOf(
         "LinkOpacity" to Pair(R.Setting.LinkOpacity, 100),
         "AlwaysShowLink" to Pair(R.Setting.AlwaysShowLink, Vars.mobile),
@@ -70,6 +75,7 @@ object Settings {
         "LastPlayTime" to Pair(R.Setting.LastPlayTime, -1),
         "GitHubMirrorUrl" to Pair(R.Setting.LastPlayTime, GitHubMirrorUrl),
         "ShaderRootPath" to Pair(R.Setting.ShaderRootPath, ""),
+        "ContentSpecific" to Pair(R.Setting.ContentSpecific, ContentSpec.Vanilla.id),
     )
     @Suppress("UNCHECKED_CAST")
     operator fun <T> get(key: String): T =
