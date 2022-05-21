@@ -16,6 +16,9 @@ import mindustry.graphics.Layer
 import net.liplum.Cio
 import net.liplum.R
 import net.liplum.ResourceLoader
+import net.liplum.annotations.Only
+import net.liplum.annotations.SubscribeEvent
+import net.liplum.events.CioLoadContentEvent
 import net.liplum.lib.TR
 import net.liplum.lib.entity.FixedList
 import net.liplum.lib.entity.Radiation
@@ -63,6 +66,7 @@ object BrainFx {
         layer = Layer.bullet - 0.1f
     }
     @JvmStatic
+    @SubscribeEvent(CioLoadContentEvent::class, Only.client)
     fun load() {
         ResourceLoader += {
             bloodBulletFrames = "blood-bullet-hit".Cio.sheet(16)

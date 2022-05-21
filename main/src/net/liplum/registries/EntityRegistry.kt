@@ -8,15 +8,16 @@ import mindustry.gen.Entityc
 import net.liplum.Clog.log
 import net.liplum.Meta
 import net.liplum.OnlyDebug
-import net.liplum.mdt.OnlyServer
+import net.liplum.annotations.SubscribeEvent
+import net.liplum.events.CioLoadContentEvent
 import net.liplum.holo.HoloUnit
+import net.liplum.mdt.OnlyServer
 import net.liplum.scripts.NpcUnit
 
 object EntityRegistry {
     private val Clz2Entry = ObjectMap<Class<*>, ProvEntry>()
     val Clz2Id = ObjectMap<Class<*>, Int>()
-
-    init {
+    fun registerInCio() {
         this[HoloUnit::class.java] = { HoloUnit() }
         this[NpcUnit::class.java] = { NpcUnit() }
     }
@@ -37,7 +38,9 @@ object EntityRegistry {
         Clz2Id.put(clz, EntityMapping.register(clz.toString(), Clz2Entry[clz].prov))
     }
     @JvmStatic
+    @SubscribeEvent(CioLoadContentEvent::class)
     fun registerAll() {
+        registerInCio()
         val keys = Clz2Entry.keys().toSeq().sortComparing {
             it.name
         }

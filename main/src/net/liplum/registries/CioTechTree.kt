@@ -38,6 +38,10 @@ import net.liplum.registries.CioUnitTypes.holoMiner
 import net.liplum.registries.CioUnitTypes.holoSupporter
 
 object CioTechTree {
+    fun loadAll() {
+        loadSerpulo()
+    }
+
     fun loadSerpulo() {
         TechTree.all.withContext {
             at(silicon).sub(ic, icMachineSmall)

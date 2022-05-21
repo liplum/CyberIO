@@ -7,11 +7,14 @@ import arc.graphics.gl.GLVersion.GlType.OpenGL
 import net.liplum.Clog.log
 import net.liplum.Compatible.Hologram
 import net.liplum.Compatible.TvStatic
+import net.liplum.mdt.ClientOnly
 
+@ClientOnly
 object GL {
     @JvmStatic
     val GlVersion: GLVersion = Core.graphics.glVersion
     @JvmStatic
+    @ClientOnly
     fun handleCompatible() {
         Hologram = false
         TvStatic = useCompatible(

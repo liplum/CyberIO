@@ -21,6 +21,9 @@ import mindustry.ui.dialogs.BaseDialog
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.CheckSetting
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.SliderSetting
 import net.liplum.*
+import net.liplum.annotations.Only
+import net.liplum.annotations.SubscribeEvent
+import net.liplum.events.CioInitEvent
 import net.liplum.lib.UseReflection
 import net.liplum.lib.ing
 import net.liplum.lib.utils.*
@@ -38,6 +41,7 @@ import net.liplum.welcome.WelcomeList
 
 object CioUI {
     @JvmStatic
+    @SubscribeEvent(CioInitEvent::class, Only.client)
     fun appendUI() {
         addCyberIOSettingMenu()
     }

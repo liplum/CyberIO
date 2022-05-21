@@ -2,6 +2,8 @@ package net.liplum.registries
 
 import arc.audio.Sound
 import mindustry.gen.Sounds
+import net.liplum.annotations.SubscribeEvent
+import net.liplum.events.CioLoadContentEvent
 import net.liplum.lib.utils.EmptySounds
 import net.liplum.utils.LoadSound
 import net.liplum.utils.LoadSounds
@@ -16,6 +18,7 @@ object CioSounds {
     @JvmField var heartbeat: Sound = Sounds.none
     @JvmField var heartbeatFaster: Sound = Sounds.none
     @JvmStatic
+    @SubscribeEvent(CioLoadContentEvent::class)
     fun load() {
         tvStatic = "tv-static".LoadSound()
         jammerPreShoot = "jammer-pre-shoot".LoadSound()

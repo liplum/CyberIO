@@ -23,8 +23,24 @@ object Toaster {
     /**
      * Post an unmanaged toast, it will be drawn every [EventType.Trigger.drawOver].
      * It is impossible to be removed.
+     * This only works on Client Side without unnecessary object instantiation.
      */
     fun post(
+        duration: Float,
+        useGlobalTime: Boolean = false,
+        task: ToastSpec.() -> Unit
+    ) {
+        ClientOnly {
+            val toast = genToast(duration, useGlobalTime, task)
+            unmanagedToasts.add(toast)
+        }
+    }
+    /**
+     * Post an unmanaged toast, it will be drawn every [EventType.Trigger.drawOver].
+     * It is impossible to be removed.
+     * When this is used on Server Side, it'll at least create an [Toast].
+     */
+    fun add(
         duration: Float,
         useGlobalTime: Boolean = false,
         task: ToastSpec.() -> Unit
@@ -38,8 +54,34 @@ object Toaster {
     /**
      * Post a managed toast, it will be drawn every [EventType.Trigger.drawOver].
      * It can be overwritten or removed by its key.
+     * This only works on Client Side without unnecessary object instantiation.
      */
     fun post(
+        id: Any,
+        duration: Float,
+        useGlobalTime: Boolean = false,
+        overwrite: Boolean = true,
+        task: ToastSpec.() -> Unit
+    ) {
+        ClientOnly {
+            if (overwrite) {
+                val toast = genToast(duration, useGlobalTime, task)
+                managedToast[id] = toast
+            } else {
+                val former = managedToast[id]
+                if (former == null) {
+                    val toast = genToast(duration, useGlobalTime, task)
+                    managedToast[id] = toast
+                }
+            }
+        }
+    }
+    /**
+     * Post a managed toast, it will be drawn every [EventType.Trigger.drawOver].
+     * It can be overwritten or removed by its key.
+     * When this is used on Server Side, it'll at least create an [Toast].
+     */
+    fun add(
         id: Any,
         duration: Float,
         useGlobalTime: Boolean = false,
@@ -136,6 +178,7 @@ object Toaster {
         managedToast.clear()
     }
 }
+
 class Toast(
     var startTime: Float,
     var duration: Float,
@@ -150,6 +193,7 @@ class Toast(
         val X = Toast(0f, 0f, false) {}
     }
 }
+
 class ToastSpec {
     var toast = Toast.X
     var curTime = 0f

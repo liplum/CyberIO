@@ -4,6 +4,9 @@ import mindustry.Vars
 import mindustry.graphics.Shaders.getShaderFi
 import net.liplum.CioMod
 import net.liplum.R
+import net.liplum.annotations.Only
+import net.liplum.annotations.SubscribeEvent
+import net.liplum.events.CioInitEvent
 import net.liplum.lib.shaders.*
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.shaders.CommonShader
@@ -40,18 +43,15 @@ Cyberion                    = screen("Cyberion",                       ::Surface
 //Glitch                       = default("Glitch",                         ::CommonShader)
         // @formatter:on
     }
-
     @ClientOnly
     val String.fragFileInCio: FragFi
         get() = Vars.tree.get(R.SD.GenFrag(this.removeSuffix(".frag")))
-
     @ClientOnly
     inline fun <T : ShaderBase> default(
         fragName: String,
         ctor: ShaderCtor<T>,
         tryCompatible: Boolean = false,
     ) = wrap("default", fragName, ctor, tryCompatible)
-
     @ClientOnly
     inline fun <T : ShaderBase> screen(
         fragName: String,
@@ -90,6 +90,7 @@ Cyberion                    = screen("Cyberion",                       ::Surface
     }
     @JvmStatic
     @ClientOnly
+    @SubscribeEvent(CioInitEvent::class, Only.client)
     fun loadResource() {
         for (loadable in AllShaders) {
             loadable.loadResource()

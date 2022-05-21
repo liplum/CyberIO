@@ -9,8 +9,9 @@ import com.google.devtools.ksp.symbol.KSFunctionDeclaration
 import com.google.devtools.ksp.symbol.KSType
 import com.google.devtools.ksp.symbol.KSVisitorVoid
 import com.google.devtools.ksp.validate
-import net.liplum.processor.plusAssign
-import net.liplum.processor.simpleName
+import net.liplum.annotations.OnlySpec
+import net.liplum.processor.*
+import java.io.OutputStream
 import java.util.*
 
 class SubscriptionProcessor(
@@ -19,12 +20,22 @@ class SubscriptionProcessor(
     private val options: Map<String, String>,
 ) : SymbolProcessor {
     override fun process(resolver: Resolver): List<KSAnnotated> {
-        val subscribeFullName = options["Event.SubscribeQualifiedName"] ?: "net.liplum.annotations.Subscribe"
-        val subscribeShortName = subscribeFullName.simpleName()
-        val symbols = resolver
-            .getSymbolsWithAnnotation(subscribeFullName)
+        // Filter target
+        val triggerFName = options["Event.SubscribeQualifiedName"] ?: "net.liplum.annotations.Subscribe"
+        val triggerSName = triggerFName.simpleName()
+        val eventFName = options["Event.SubscribeEventQualifiedName"] ?: "net.liplum.annotations.SubscribeEvent"
+        val eventSName = eventFName.simpleName()
+        val triggerSymbls = resolver
+            .getSymbolsWithAnnotation(triggerFName)
             .filterIsInstance<KSFunctionDeclaration>()
-        if (!symbols.iterator().hasNext()) return emptyList()
+        val eventSymbls = resolver
+            .getSymbolsWithAnnotation(eventFName)
+            .filterIsInstance<KSFunctionDeclaration>()
+        if (
+            !triggerSymbls.iterator().hasNext() &&
+            !eventSymbls.iterator().hasNext()
+        ) return emptyList()
+        // Init file
         val packageName = options["Event.PackageName"] ?: "net.liplum.gen"
         val fileName = options["Event.FileName"] ?: "GeneratedEventFile"
         val file = codeGenerator.createNewFile(
@@ -32,6 +43,7 @@ class SubscriptionProcessor(
             packageName = packageName,
             fileName = fileName
         )
+        // File haed
         if (packageName.isNotEmpty())
             file += "package $packageName\n"
         val spec = options["Event.GenerateSpec"] ?: ""
@@ -40,80 +52,107 @@ class SubscriptionProcessor(
             // Start object $spec
             file += "object $spec{\n"
         }
-        val event2Subscribers: Multimap<String, Subscriber> = ArrayListMultimap.create()
+        // Iterate
+        val trigger2Subscribers: Multimap<TriggerType, TriggerSubscriber> = ArrayListMultimap.create()
         // Visit all functions and add them
-        class Visitor : KSVisitorVoid() {
+        class TriggerVisitor : KSVisitorVoid() {
             override fun visitFunctionDeclaration(function: KSFunctionDeclaration, data: Unit) {
                 if (function.parameters.isNotEmpty()) {
-                    logger.error("Only allow zero-argument Function in @Subscribe", function)
+                    logger.warn("Only allow zero-argument Function in @Subscribe", function)
                     return
                 }
                 val annotation = function.annotations.first {
-                    it.shortName.asString() == subscribeShortName
+                    it.shortName.asString() == triggerSName
                 }
-                val eventArg = annotation.arguments.first {
-                    it.name?.asString() == "eventType"
-                }
-
-                fun findParam(name: String) = annotation.arguments.first { it.name?.asString() == name }.value as Boolean
-                val eventTypeName = (eventArg.value as KSType).declaration.qualifiedName?.asString()
+                val triggerArg = annotation.findParam("triggerType")
+                val onlyArg = annotation.findParam("only")
+                val triggerName = (triggerArg.value as KSType).declaration.qualifiedName?.asString()
+                val only = onlyArg.value as? Int
                 val curFuncFullName = function.qualifiedName?.asString()
-                if (curFuncFullName != null && eventTypeName != null) {
-                    event2Subscribers[eventTypeName] += Subscriber(
-                        curFuncFullName,
-                        clientOnly = findParam("clientOnly"),
-                        debugOnly = findParam("debugOnly"),
-                        headlessOnly = findParam("headlessOnly"),
-                        steamOnly = findParam("steamOnly"),
-                        unsteamOnly = findParam("unsteamOnly"),
-                        desktopOnly = findParam("desktopOnly"),
-                        mobileOnly = findParam("mobileOnly"),
+                if (curFuncFullName != null && triggerName != null && only != null) {
+                    trigger2Subscribers[TriggerType(triggerName)] += TriggerSubscriber(
+                        curFuncFullName, OnlySpec(only)
                     )
-                    logger.info("Function ${function.simpleName.asString()} subscribes ${eventTypeName.simpleName()}")
+                    logger.info("Function ${function.simpleName.asString()} subscribes trigger ${triggerName.simpleName()}")
                 }
             }
         }
-        symbols.forEach { it.accept(Visitor(), Unit) }
-        val EventsName = Events::class.java.name
-        val e2s = event2Subscribers.asMap()
-        for (event in e2s.keys) {
-            file += "// $event\n"
+        triggerSymbls.forEach { it.accept(TriggerVisitor(), Unit) }
+        val event2Subscribers: Multimap<EventType, EventSubscriber> = ArrayListMultimap.create()
+
+        class EventVisitor : KSVisitorVoid() {
+            override fun visitFunctionDeclaration(function: KSFunctionDeclaration, data: Unit) {
+                val paraNumber = function.parameters.size
+                if (paraNumber != 1 && paraNumber != 0) {
+                    logger.warn("Only allow trigger-instance-argument or zero-argument Function in @SubscribeEvent", function)
+                    return
+                }
+                val annotation = function.annotations.first {
+                    it.shortName.asString() == eventSName
+                }
+                val eventArg = annotation.findParam("eventClz")
+                val onlyArg = annotation.findParam("only")
+                val eventName = (eventArg.value as KSType).declaration.qualifiedName?.asString()
+                val only = onlyArg.value as? Int
+                val curFuncFullName = function.qualifiedName?.asString()
+                if (curFuncFullName != null && eventName != null && only != null) {
+                    event2Subscribers[EventType(eventName)] += EventSubscriber(
+                        curFuncFullName, OnlySpec(only), isZeroArg = function.parameters.isEmpty()
+                    )
+                    logger.info("Function ${function.simpleName.asString()} subscribes Event ${eventName.simpleName()}")
+                }
+            }
         }
+        eventSymbls.forEach { it.accept(EventVisitor(), Unit) }
+        val EventsName = Events::class.java.name
+        // Head comments
+        val t2s = trigger2Subscribers.asMap()
+        val e2s = event2Subscribers.asMap()
+        for (trigger in t2s.keys) {
+            file += "// ${trigger.fName}\n"
+        }
+        for (event in e2s.keys) {
+            file += "// ${event.fName}\n"
+        }
+        // Add all trigger subscribers
         val funcList = LinkedList<String>()
-        // Add all subscribers
-        for ((event, subscribers) in e2s) {
-            // Start function event.name.pascalCase()
-            val registerFunc = "register${event.simpleName().pascalCase()}"
+        for ((trigger, subscribers) in t2s) {
+            // Start function trigger.name.pascalCase()
+            val registerFunc = "register${trigger.simpleName.pascalCase()}"
             file += "fun ${registerFunc}(){\n"
             funcList += registerFunc
             for (subscriber in subscribers) {
-                subscriber.apply {
-                    if (clientOnly) file += "net.liplum.mdt.ClientOnly{\n"
-                    if (debugOnly) file += "net.liplum.DebugOnly{\n"
-                    if (headlessOnly) file += "net.liplum.mdt.HeadlessOnly{\n"
-                    if (steamOnly) file += "net.liplum.mdt.SteamOnly{\n"
-                    if (unsteamOnly) file += "net.liplum.mdt.UnsteamOnly{\n"
-                    if (desktopOnly) file += "net.liplum.mdt.DesktopOnly{\n"
-                    if (mobileOnly) file += "net.liplum.mdt.MobileOnly{\n"
-                }
+                subscriber.onlySpec.addHead(file)
                 // Start subscription
-                file += "$EventsName.run(${event}){\n"
+                file += "$EventsName.run(${trigger.fName}){\n"
                 // Call the subscriber
                 file += "${subscriber.funcName}()"
                 // End subscription
                 file += "}\n"
-                subscriber.apply {
-                    if (clientOnly) file += "}\n"
-                    if (debugOnly) file += "}\n"
-                    if (headlessOnly) file += "}\n"
-                    if (steamOnly) file += "}\n"
-                    if (unsteamOnly) file += "}\n"
-                    if (desktopOnly) file += "}\n"
-                    if (mobileOnly) file += "}\n"
-                }
+                subscriber.onlySpec.addTail(file)
             }
             file += "}\n"
         }
+        // Add all event subscribers
+        for ((event, subscribers) in e2s) {
+            // Start function trigger.name.pascalCase()
+            val registerFunc = "registerOn${event.simpleName.pascalCase()}"
+            file += "fun ${registerFunc}(){\n"
+            funcList += registerFunc
+            for (subscriber in subscribers) {
+                subscriber.onlySpec.addHead(file)
+                // Start subscription
+                file += "$EventsName.on(${event.fName}::class.java){\n"
+                // Call the subscriber
+                file += if (subscriber.isZeroArg) "${subscriber.funcName}()"
+                else "${subscriber.funcName}(it)"
+                // End subscription
+                file += "}\n"
+                subscriber.onlySpec.addTail(file)
+            }
+            file += "}\n"
+        }
+        // Register all subscribers
         file += "fun registerAll(){\n"
         for (func in funcList) {
             file += "$func()\n"
@@ -124,34 +163,47 @@ class SubscriptionProcessor(
             file += "}\n"
         }
         file.close()
-        return symbols.filterNot { it.validate() }.toList()
+        return eventSymbls.filterNot { it.validate() }.toList()
     }
 }
+@JvmInline
+value class TriggerType(
+    val fName: String
+) {
+    val simpleName: String
+        get() = fName.simpleName()
+}
+@JvmInline
+value class EventType(
+    val fName: String
+) {
+    val simpleName: String
+        get() = fName.simpleName()
+}
 
-class Subscriber(
+fun OnlySpec.addHead(file: OutputStream) {
+    if (client) file += "net.liplum.mdt.ClientOnly{\n"
+    if (debug) file += "net.liplum.DebugOnly{\n"
+    if (headless) file += "net.liplum.mdt.HeadlessOnly{\n"
+    if (steam) file += "net.liplum.mdt.SteamOnly{\n"
+    if (unsteam) file += "net.liplum.mdt.UnsteamOnly{\n"
+    if (desktop) file += "net.liplum.mdt.DesktopOnly{\n"
+    if (mobile) file += "net.liplum.mdt.MobileOnly{\n"
+}
+
+fun OnlySpec.addTail(file: OutputStream) {
+    val braceNumber = only.countOneBits()
+    file += "}" * braceNumber
+    file += "\n"
+}
+
+class TriggerSubscriber(
     val funcName: String,
-    val clientOnly: Boolean,
-    val debugOnly: Boolean,
-    val headlessOnly: Boolean,
-    val steamOnly: Boolean,
-    val unsteamOnly: Boolean,
-    val desktopOnly: Boolean,
-    val mobileOnly: Boolean,
+    val onlySpec: OnlySpec
 )
 
-fun String.pascalCase(): String {
-    if (this.isEmpty()) return ""
-    val sb = StringBuilder()
-    sb += this[0].uppercase()
-    if (this.length > 1)
-        sb += this.substring(1)
-    return sb.toString()
-}
-
-operator fun StringBuilder.plusAssign(str: String) {
-    this.append(str)
-}
-
-operator fun StringBuilder.plusAssign(c: Char) {
-    this.append(c)
-}
+class EventSubscriber(
+    val funcName: String,
+    val onlySpec: OnlySpec,
+    val isZeroArg: Boolean
+)

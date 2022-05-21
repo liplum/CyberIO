@@ -9,11 +9,11 @@ import mindustry.game.EventType.*
 import mindustry.io.JsonIO
 import mindustry.mod.Mod
 import mindustry.mod.Mods
-import net.liplum.api.cyber.DataCenter
-import net.liplum.api.cyber.StreamCenter
-import net.liplum.api.holo.IHoloEntity
 import net.liplum.blocks.cloud.LiplumCloud
 import net.liplum.blocks.cloud.SharedRoom
+import net.liplum.events.CioInitEvent
+import net.liplum.events.CioLoadContentEvent
+import net.liplum.gen.Contents
 import net.liplum.gen.EventRegistry
 import net.liplum.inputs.UnitTap
 import net.liplum.mdt.ClientOnly
@@ -21,13 +21,11 @@ import net.liplum.mdt.HeadlessOnly
 import net.liplum.mdt.NotSteam
 import net.liplum.mdt.OnlyClient
 import net.liplum.mdt.animations.ganim.GlobalAnimation
-import net.liplum.registries.*
+import net.liplum.registries.CioShaderLoader
+import net.liplum.registries.CioTechTree
 import net.liplum.registries.ServerCommands.registerCioCmds
 import net.liplum.render.TestShader
 import net.liplum.scripts.NpcSystem
-import net.liplum.ui.CioUI
-import net.liplum.ui.DebugUI
-import net.liplum.ui.OverwrittenUI
 import net.liplum.update.Updater
 import net.liplum.welcome.FirstLoaded
 import net.liplum.welcome.Welcome
@@ -83,6 +81,7 @@ class CioMod : Mod() {
             Updater.fetchLatestVersion(Config.CheckUpdateInfoURL)
             Updater.checkHeadlessUpdate()
         }
+        EventRegistry.registerAll()
         ClientOnly {
             GL.handleCompatible()
         }
@@ -120,15 +119,10 @@ class CioMod : Mod() {
 
     override fun init() {
         Clog.info("v${Meta.DetailedVersion} initializing...")
-        ClientOnly {
-            Welcome.modifierModInfo()
-        }
-        UpdateFrequency = if (Vars.mobile || Vars.testMobile)
-            10f
-        else
-            5f
-        // Cloud is developing
+        UpdateFrequency = if (Vars.mobile || Vars.testMobile) 10f else 5f
+        Events.fire(CioInitEvent())
         DebugOnly {
+            // Cloud is developing
             JsonIO.json.addClassTag(SharedRoom::class.java.name, SharedRoom::class.java)
             Events.on(WorldLoadEvent::class.java) {
                 LiplumCloud.reset()
@@ -138,8 +132,6 @@ class CioMod : Mod() {
                 LiplumCloud.reset()
                 LiplumCloud.save()
             }
-        }
-        DebugOnly {
             Vars.enableConsole = true
             /*Events.on(WorldLoadEvent::class.java) {
                 CioBlocks.sender.requirements = arrayOf()
@@ -148,37 +140,24 @@ class CioMod : Mod() {
                 Vars.world
                 //Vars.state.rules.borderDarkness
             }*/
-        }
-        DataCenter.initData()
-        StreamCenter.initAndLoad()
-        EventRegistry.registerAll()
-        ClientOnly {
-            CioUI.appendUI()
-            DebugOnly {
-                DebugUI.appendUI()
+            ClientOnly {
                 NpcSystem.register()
+                Core.input.addProcessor(UnitTap)
             }
-            OverwrittenUI.overwrite()
-            CioShaderLoader.loadResource()
-            ResourceLoader.loadAllResources()
-            Core.input.addProcessor(UnitTap)
         }
 
         Settings.updateSettings()
         //RecipeCenter.recordAllRecipes()
-        VirusUninfected.load()
+        ResourceLoader.loadAllResources()
         Clog.info("v${Meta.DetailedVersion} initialized.")
         Settings.LastPlayTime = System.currentTimeMillis()
     }
 
     override fun loadContent() {
         Info = Vars.mods.locateMod(Meta.ModID)
-        CioSounds.load()
-        EntityRegistry.registerAll()
-        CioCLs.load()
-        CioContentLoader.load()
-        IHoloEntity.registerHoloEntityInitHealth()
-        PrismBlackList.load()
+        Events.fire(CioLoadContentEvent())
+        Contents.load()
+        CioTechTree.loadAll()
         GlobalAnimation.CanPlay = true
         Clog.info("v${Meta.DetailedVersion} mod's contents loaded.")
     }

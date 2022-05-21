@@ -11,7 +11,9 @@ import mindustry.type.Liquid
 import mindustry.world.Block
 import net.liplum.R
 import net.liplum.Settings
+import net.liplum.annotations.SubscribeEvent
 import net.liplum.api.ICyberEntity
+import net.liplum.events.CioInitEvent
 import net.liplum.lib.math.Point2f
 import net.liplum.lib.utils.Or
 import net.liplum.lib.utils.bundle
@@ -88,6 +90,7 @@ typealias SingleItemArray = Array<Item>
 object DataCenter {
     @JvmField var SingleItems: Array<SingleItemArray> = emptyArray()
     @JvmStatic
+    @SubscribeEvent(CioInitEvent::class)
     fun initData() {
         val items = Vars.content.items()
         SingleItems = Array(items.size) {
@@ -181,6 +184,7 @@ object StreamCenter {
         }
     }
     @JvmStatic
+    @SubscribeEvent(CioInitEvent::class)
     fun initAndLoad() {
         initStream()
         ClientOnly {
@@ -462,17 +466,17 @@ fun Building.drawOverRangeOn(other: Building) {
 }
 
 fun Building.drawFullSenderOn(other: Building) {
-    R.Bundle.FullSender.bundle.postToastTextOn(this.id,other, R.C.RedAlert)
+    R.Bundle.FullSender.bundle.postToastTextOn(this.id, other, R.C.RedAlert)
 }
 
 fun Building.drawFullReceiverOn(other: Building) {
-    R.Bundle.FullReceiver.bundle.postToastTextOn(this.id,other, R.C.RedAlert)
+    R.Bundle.FullReceiver.bundle.postToastTextOn(this.id, other, R.C.RedAlert)
 }
 
 fun Building.drawFullHostOn(other: Building) {
-    R.Bundle.FullHost.bundle.postToastTextOn(this.id,other, R.C.RedAlert)
+    R.Bundle.FullHost.bundle.postToastTextOn(this.id, other, R.C.RedAlert)
 }
 
 fun Building.drawFullClientOn(other: Building) {
-    R.Bundle.FullClient.bundle.postToastTextOn(this.id,other, R.C.RedAlert)
+    R.Bundle.FullClient.bundle.postToastTextOn(this.id, other, R.C.RedAlert)
 }

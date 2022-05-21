@@ -9,6 +9,7 @@ import mindustry.game.Team;
 import mindustry.io.JsonIO;
 import net.liplum.CioMod;
 import net.liplum.Clog;
+import net.liplum.annotations.Only;
 import net.liplum.annotations.Subscribe;
 
 @SuppressWarnings("unchecked")
@@ -64,7 +65,7 @@ public class LiplumCloud {
         Read = true;
     }
 
-    @Subscribe(eventType = EventType.Trigger.update, debugOnly = true)
+    @Subscribe(triggerType = EventType.Trigger.update, only = Only.debug)
     public static void update() {
         GameState state = Vars.state;
         if (state.isGame() && !state.isPaused()) {

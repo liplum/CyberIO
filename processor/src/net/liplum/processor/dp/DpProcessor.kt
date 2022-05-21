@@ -84,7 +84,7 @@ class DpProcessor(
                 }
             }.distinct()
             if(counter!=functions.size){
-                logger.error("There is any entry missing. Excepted: $counter != Actual: ${functions.size} ")
+                logger.warn("There is any entry missing. Excepted: $counter != Actual: ${functions.size} ")
             }
             for (qualifier in qualifiers) {
                 file += "// $qualifier\n"

@@ -4,6 +4,7 @@ import arc.func.Cons
 import arc.graphics.g2d.TextureRegion
 import arc.util.Time
 import mindustry.game.EventType
+import net.liplum.annotations.Only
 import net.liplum.mdt.ClientOnly
 import net.liplum.annotations.Subscribe
 import net.liplum.lib.utils.progress
@@ -47,7 +48,7 @@ open class GlobalAnimation(
         val updateTasks = HashSet<IGlobalAnimation>()
         @ClientOnly
         @JvmStatic
-        @Subscribe(EventType.Trigger.update, clientOnly = true)
+        @Subscribe(EventType.Trigger.update, Only.client)
         fun animate() {
             if (CanPlay) {
                 for (task in updateTasks)

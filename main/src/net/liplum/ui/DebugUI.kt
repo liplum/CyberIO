@@ -7,9 +7,10 @@ import arc.scene.ui.layout.WidgetGroup
 import mindustry.Vars
 import mindustry.gen.Tex
 import net.liplum.Debug
-import net.liplum.R
+import net.liplum.annotations.Only
+import net.liplum.annotations.SubscribeEvent
+import net.liplum.events.CioInitEvent
 import net.liplum.inputs.Screen
-import net.liplum.lib.utils.bundle
 import net.liplum.mdt.lock
 import net.liplum.mdt.ui.DatabaseSelectorDialog
 import net.liplum.mdt.ui.NewBaseDialog
@@ -17,6 +18,7 @@ import net.liplum.mdt.utils.ForEachUnlockableContent
 
 object DebugUI {
     @JvmStatic
+    @SubscribeEvent(CioInitEvent::class, Only.client or Only.debug)
     fun appendUI() {
         addMousePosition()
     }

@@ -4,13 +4,16 @@ package net.liplum.registries
 
 import mindustry.content.UnitTypes
 import mindustry.gen.Bullet
+import net.liplum.annotations.SubscribeEvent
 import net.liplum.api.prism.PrismBlackList.banInWeapon
 import net.liplum.api.prism.PrismBlackList.banInWeapons
 import net.liplum.api.prism.PrismBlackList.banNameInPrism
 import net.liplum.api.prism.PrismData
+import net.liplum.events.CioLoadContentEvent
 
 object PrismBlackList {
     @JvmStatic
+    @SubscribeEvent(CioLoadContentEvent::class)
     fun load() {
         UnitTypes.arkyid.banInWeapon("spiroct-weapon")
         UnitTypes.spiroct.banInWeapons(

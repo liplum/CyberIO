@@ -1,8 +1,8 @@
 package net.liplum.api.holo
 
-import arc.Events
 import mindustry.game.EventType
 import mindustry.gen.Healthc
+import net.liplum.annotations.SubscribeEvent
 
 interface IHoloEntity {
     fun killThoroughly()
@@ -11,13 +11,12 @@ interface IHoloEntity {
 
     companion object {
         @JvmStatic
-        fun registerHoloEntityInitHealth() {
-            Events.on(EventType.BlockBuildEndEvent::class.java) {
-                val he = it.tile.build
-                if (he is IHoloEntity) {
-                    he.restRestore = he.maxHealth
-                    he.health = he.maxHealth * he.minHealthProportion * 0.9f
-                }
+        @SubscribeEvent(EventType.BlockBuildEndEvent::class)
+        fun registerHoloEntityInitHealth(e: EventType.BlockBuildEndEvent) {
+            val he = e.tile.build
+            if (he is IHoloEntity) {
+                he.restRestore = he.maxHealth
+                he.health = he.maxHealth * he.minHealthProportion * 0.9f
             }
         }
 

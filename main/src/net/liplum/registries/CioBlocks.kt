@@ -28,6 +28,7 @@ import mindustry.world.draw.DrawMulti
 import mindustry.world.meta.BuildVisibility
 import net.liplum.*
 import net.liplum.annotations.DependOn
+import net.liplum.annotations.Only
 import net.liplum.annotations.Subscribe
 import net.liplum.api.brain.UT
 import net.liplum.api.brain.Upgrade
@@ -480,7 +481,7 @@ object CioBlocks {
             health = 250 * size * size
         }.registerDynamicInfo()
     }
-    @Subscribe(Trigger.update, clientOnly = true)
+    @Subscribe(Trigger.update, Only.client)
     fun TMTRAINER_RandomName() {
         if (Time.globalTime % CioMod.UpdateFrequency < 1f) {
             TMTRAINER.localizedName = RandomName.one(8)

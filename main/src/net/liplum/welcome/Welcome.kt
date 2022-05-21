@@ -16,7 +16,10 @@ import net.liplum.Settings.ClickWelcomeTimes
 import net.liplum.Settings.LastWelcomeID
 import net.liplum.Settings.ShouldShowWelcome
 import net.liplum.Settings.ShowUpdate
+import net.liplum.annotations.Only
+import net.liplum.annotations.SubscribeEvent
 import net.liplum.blocks.tmtrainer.RandomName
+import net.liplum.events.CioInitEvent
 import net.liplum.lib.Res
 import net.liplum.lib.TR
 import net.liplum.lib.math.randomByWeights
@@ -34,6 +37,7 @@ object Welcome {
     private var entity = genEntity()
     private var showWelcome = false
     @JvmStatic
+    @ClientOnly
     fun showWelcomeDialog() {
         checkLastVersion()
         judgeWelcome()
@@ -69,6 +73,7 @@ object Welcome {
         }
     }
     @JvmStatic
+    @SubscribeEvent(CioInitEvent::class, Only.client)
     fun modifierModInfo() {
         val meta = CioMod.Info.meta
         meta.displayName = "[#${R.C.Holo}]${meta.displayName}[]"

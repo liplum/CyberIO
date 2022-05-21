@@ -1,17 +1,19 @@
 package net.liplum.annotations
 
 import mindustry.game.EventType
+import kotlin.reflect.KClass
 
 /**
  * Subscribe the target event automatically.
  */
 annotation class Subscribe(
-    val eventType: EventType.Trigger,
-    val clientOnly: Boolean = false,
-    val debugOnly: Boolean = false,
-    val headlessOnly: Boolean = false,
-    val steamOnly: Boolean = false,
-    val unsteamOnly: Boolean = false,
-    val desktopOnly: Boolean = false,
-    val mobileOnly: Boolean = false,
+    val triggerType: EventType.Trigger,
+    val only: Int = 0
+)
+/**
+ * Subscribe the target event automatically.
+ */
+annotation class SubscribeEvent(
+    val eventClz: KClass<*>,
+    val only: Int = 0
 )

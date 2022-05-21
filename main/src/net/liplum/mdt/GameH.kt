@@ -14,6 +14,10 @@ import kotlin.annotation.AnnotationTarget.*
  * It indicates this should be called or accessed only on Physical Client.
  * You should wrap this with [ClientOnly] or [ClientOnlyOn].
  * If a certain target isn't annotated this, it can be called on Physical Server(headless) safely.
+ * ## Use case
+ * 1. On properties or fields, you shouldn't access them, it may provide wrong data or even crash the game.
+ * 2. On functions, you shouldn't call them, it can crash the game.
+ * 3. On classes or objects, you must never load them into class loader, the static initialization can crash the game.
  */
 @Retention(AnnotationRetention.SOURCE)
 @Inherited
@@ -31,6 +35,10 @@ annotation class ServerOnly
  * It indicates this should be called or accessed only on Physical Server(headless).
  * You should wrap this with [HeadlessOnly] or [HeadlessOnlyOn].
  * If a certain target isn't annotated this, it can be called on Physical Client safely.
+ * ## Use case
+ * 1. On properties or fields, you shouldn't access them, it may provide wrong data or even crash the game.
+ * 2. On functions, you shouldn't call them, it can crash the game.
+ * 3. On classes or objects, you must never load them into class loader, the static initialization can crash the game.
  */
 @Retention(AnnotationRetention.SOURCE)
 @Inherited
