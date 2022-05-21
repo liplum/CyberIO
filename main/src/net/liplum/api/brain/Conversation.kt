@@ -20,16 +20,16 @@ import net.liplum.mdt.utils.worldPos
 object ConversationManager {
     var ConversationFadeTimePercent = 0.08f
     var ConversationTime = 180f
-    var fontSize = 1.1f
+    var fontSize = 0.9f
     private val p1 = Point2f()
     @ClientOnly
     fun drawConversationOn(b: Building, text: String, color: Color) {
         Toaster.post(b.id, ConversationTime, overwrite = false) {
-            Text.drawText {
+            Text.drawTextX {
                 val curText = text.progressed(curTime / (ConversationTime * 0.4f))
                 if (!p1.set(b.x, b.y).inViewField(b.block.clipSize)) return@post
                 setText(it, curText)
-                it.data.setScale(1f / 4f * Scl.scl(fontSize))
+                it.data.setScale(1f / 4f / Scl.scl(fontSize))
                 if (!b.isAdded) toast.duration = 0f
                 it.color.set(color).a(fadeInOutPct(ConversationFadeTimePercent))
                 it.draw(
@@ -42,6 +42,7 @@ object ConversationManager {
         }
     }
 
+    @ClientOnly
     fun hasConversationWith(b: Building) =
         Toaster[b.id] != null
 

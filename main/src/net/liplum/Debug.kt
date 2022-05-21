@@ -2,11 +2,10 @@
 
 package net.liplum
 
-import net.liplum.lib.shaders.FragFi
 import net.liplum.lib.shaders.SD
 import net.liplum.lib.shaders.ShaderBase
-import net.liplum.lib.shaders.VertFi
 import net.liplum.mdt.shaders.CommonShader
+import net.liplum.registries.ShaderCtor
 import net.liplum.shaders.SurfaceShader
 import net.liplum.shaders.holo.HologramShader
 
@@ -82,7 +81,7 @@ object Debug {
 
     class ShaderType(
         val name: String,
-        val ctor: (VertFi, FragFi) -> ShaderBase,
+        val ctor: ShaderCtor<ShaderBase>,
         val vertShaderType: VertShaderType
     )
 }

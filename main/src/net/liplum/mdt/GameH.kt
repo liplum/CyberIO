@@ -13,6 +13,7 @@ import kotlin.annotation.AnnotationTarget.*
 /**
  * It indicates this should be called or accessed only on Physical Client.
  * You should wrap this with [ClientOnly] or [ClientOnlyOn].
+ * If a certain target isn't annotated this, it can be called on Physical Server(headless) safely.
  */
 @Retention(AnnotationRetention.SOURCE)
 @Inherited
@@ -27,8 +28,9 @@ annotation class ClientOnly
 @MustBeDocumented
 annotation class ServerOnly
 /**
- * It indicates this should be called or accessed only on Physical Server.
+ * It indicates this should be called or accessed only on Physical Server(headless).
  * You should wrap this with [HeadlessOnly] or [HeadlessOnlyOn].
+ * If a certain target isn't annotated this, it can be called on Physical Client safely.
  */
 @Retention(AnnotationRetention.SOURCE)
 @Inherited

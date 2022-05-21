@@ -7,12 +7,10 @@ import net.liplum.annotations.Subscribe
 import net.liplum.lib.utils.invoke
 import net.liplum.mdt.ClientOnly
 
-@ClientOnly
 object Toaster {
     /**
      * ToastSpec can be reused.
      */
-    @ClientOnly
     private val shared = ToastSpec()
     /**
      * Unmanaged toast is impossible to be removed.
@@ -26,21 +24,21 @@ object Toaster {
      * Post an unmanaged toast, it will be drawn every [EventType.Trigger.drawOver].
      * It is impossible to be removed.
      */
-    @ClientOnly
     fun post(
         duration: Float,
         useGlobalTime: Boolean = false,
         task: ToastSpec.() -> Unit
     ): Toast {
         val toast = genToast(duration, useGlobalTime, task)
-        unmanagedToasts.add(toast)
+        ClientOnly {
+            unmanagedToasts.add(toast)
+        }
         return toast
     }
     /**
      * Post a managed toast, it will be drawn every [EventType.Trigger.drawOver].
      * It can be overwritten or removed by its key.
      */
-    @ClientOnly
     fun post(
         id: Any,
         duration: Float,
@@ -50,13 +48,17 @@ object Toaster {
     ): Toast {
         return if (overwrite) {
             val toast = genToast(duration, useGlobalTime, task)
-            managedToast[id] = toast
+            ClientOnly {
+                managedToast[id] = toast
+            }
             toast
         } else {
             val former = managedToast[id]
             if (former == null) {
                 val toast = genToast(duration, useGlobalTime, task)
-                managedToast[id] = toast
+                ClientOnly {
+                    managedToast[id] = toast
+                }
                 toast
             } else {
                 former
@@ -134,7 +136,6 @@ object Toaster {
         managedToast.clear()
     }
 }
-@ClientOnly
 class Toast(
     var startTime: Float,
     var duration: Float,
@@ -149,7 +150,6 @@ class Toast(
         val X = Toast(0f, 0f, false) {}
     }
 }
-@ClientOnly
 class ToastSpec {
     var toast = Toast.X
     var curTime = 0f

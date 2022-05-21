@@ -141,10 +141,13 @@ class CioMod : Mod() {
         }
         DebugOnly {
             Vars.enableConsole = true
-            // Unlock all blocks
-            Events.on(WorldLoadEvent::class.java) {
-                Vars.state.rules.hiddenBuildItems.clear()
-            }
+            /*Events.on(WorldLoadEvent::class.java) {
+                CioBlocks.sender.requirements = arrayOf()
+                CioBlocks.receiver.requirements = arrayOf()
+                CioBlocks.sender.requirements = arrayOf()
+                Vars.world
+                //Vars.state.rules.borderDarkness
+            }*/
         }
         DataCenter.initData()
         StreamCenter.initAndLoad()

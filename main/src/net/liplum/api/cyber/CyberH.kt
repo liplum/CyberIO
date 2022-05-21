@@ -461,18 +461,18 @@ fun Building.drawOverRangeOn(other: Building) {
     block.subBundle("over-range").postToastTextOn(other, R.C.RedAlert)
 }
 
-fun drawFullSenderOn(other: Building) {
-    R.Bundle.FullSender.bundle.postToastTextOn(other, R.C.RedAlert)
+fun Building.drawFullSenderOn(other: Building) {
+    R.Bundle.FullSender.bundle.postToastTextOn(this.id,other, R.C.RedAlert)
 }
 
-fun drawFullReceiverOn(other: Building) {
-    R.Bundle.FullReceiver.bundle.postToastTextOn(other, R.C.RedAlert)
+fun Building.drawFullReceiverOn(other: Building) {
+    R.Bundle.FullReceiver.bundle.postToastTextOn(this.id,other, R.C.RedAlert)
 }
 
-fun drawFullHostOn(other: Building) {
-    R.Bundle.FullHost.bundle.postToastTextOn(other, R.C.RedAlert)
+fun Building.drawFullHostOn(other: Building) {
+    R.Bundle.FullHost.bundle.postToastTextOn(this.id,other, R.C.RedAlert)
 }
 
-fun drawFullClientOn(other: Building) {
-    R.Bundle.FullClient.bundle.postToastTextOn(other, R.C.RedAlert)
+fun Building.drawFullClientOn(other: Building) {
+    R.Bundle.FullClient.bundle.postToastTextOn(this.id,other, R.C.RedAlert)
 }

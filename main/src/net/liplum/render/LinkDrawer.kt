@@ -9,10 +9,12 @@ import net.liplum.api.cyber.IDataSender
 import net.liplum.api.cyber.IStreamHost
 import net.liplum.api.cyber.drawDataNetGraphic
 import net.liplum.api.cyber.drawStreamGraphic
+import net.liplum.mdt.ClientOnly
 
 object LinkDrawer {
     @JvmStatic
     @Subscribe(EventType.Trigger.drawOver)
+    @ClientOnly
     fun draw() {
         if (!Settings.AlwaysShowLink) return
         val curTeam = Vars.player.team()

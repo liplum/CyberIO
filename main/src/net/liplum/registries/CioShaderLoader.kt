@@ -13,7 +13,6 @@ import net.liplum.shaders.SurfaceShader
 import net.liplum.shaders.holo.HologramShader
 import net.liplum.useCompatible
 
-@ClientOnly
 object CioShaderLoader {
     @JvmStatic
     @ClientOnly
@@ -42,15 +41,18 @@ Cyberion                    = screen("Cyberion",                       ::Surface
         // @formatter:on
     }
 
+    @ClientOnly
     val String.fragFileInCio: FragFi
         get() = Vars.tree.get(R.SD.GenFrag(this.removeSuffix(".frag")))
 
+    @ClientOnly
     inline fun <T : ShaderBase> default(
         fragName: String,
         ctor: ShaderCtor<T>,
         tryCompatible: Boolean = false,
     ) = wrap("default", fragName, ctor, tryCompatible)
 
+    @ClientOnly
     inline fun <T : ShaderBase> screen(
         fragName: String,
         ctor: ShaderCtor<T>,
@@ -61,6 +63,7 @@ Cyberion                    = screen("Cyberion",                       ::Surface
      * @param fragName use fragment shader in Cyber IO's tree. Only the name is needed
      * @param ctor the constructor of shaders.
      */
+    @ClientOnly
     inline fun <T : ShaderBase> wrap(
         vertName: String,
         fragName: String,
@@ -108,7 +111,7 @@ Cyberion                    = screen("Cyberion",                       ::Surface
     private var AllShaders: HashSet<ShaderBase> = HashSet()
 }
 
-private typealias ShaderCtor<T> = (FragFi, VertFi) -> T
+typealias ShaderCtor<T> = (FragFi, VertFi) -> T
 
 val String.compatible: String
     get() = if (CioMod.TestGlCompatibility || this.useCompatible)

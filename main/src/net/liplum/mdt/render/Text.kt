@@ -14,6 +14,7 @@ import net.liplum.mdt.utils.WorldXY
 
 object Text {
     /**
+     * Draw text and underline in default size
      * @return the width of text
      */
     fun drawUnderlineText(
@@ -48,6 +49,7 @@ object Text {
         return width
     }
     /**
+     * Draw text in default size
      * @return the width of text
      */
     inline fun drawText(func: GlyphLayout.(Font) -> Unit): WorldXY {
@@ -57,6 +59,24 @@ object Text {
         val ints = font.usesIntegerPositions()
         font.setUseIntegerPositions(false)
         font.data.setScale(1f / 4f / Scl.scl(1f))
+        layout.func(font)
+        val width = layout.width
+        font.setUseIntegerPositions(ints)
+        font.color = Color.white
+        font.data.setScale(1f)
+        Draw.reset()
+        Pools.free(layout)
+        return width
+    }
+    /**
+     * @return the width of text
+     */
+    inline fun drawTextX(func: GlyphLayout.(Font) -> Unit): WorldXY {
+        if (Vars.renderer.pixelator.enabled()) return 0f
+        val font = Fonts.outline
+        val layout = Pools.obtain(GlyphLayout::class.java, ::GlyphLayout)
+        val ints = font.usesIntegerPositions()
+        font.setUseIntegerPositions(false)
         layout.func(font)
         val width = layout.width
         font.setUseIntegerPositions(ints)
