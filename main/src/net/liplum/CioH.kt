@@ -24,18 +24,6 @@ enum class ContentSpec(
     Erekir("erekir");
 
     override fun toString() = id
-    fun suffixModVersion(version: String) =
-        if (this != Vanilla) "$version-$id"
-        else version
-    @ClientOnly
-    val i18nName: String
-        get() = "${Meta.ModID}.spec.$id.name".bundle
-    @ClientOnly
-    val i18nDesc: String
-        get() = "${Meta.ModID}.spec.$id.desc".bundle
-    @ClientOnly
-    val icon: TR
-        get() = R.Gen("spec-$id").atlas()
 
     companion object {
         @JvmStatic
@@ -45,6 +33,22 @@ enum class ContentSpec(
         }
     }
 }
+
+val String.spec: String
+    get() = CioMod.ContentSpecific.suffixModVersion(this)
+
+fun ContentSpec.suffixModVersion(version: String) =
+    if (this != ContentSpec.Vanilla) "$version-$id"
+    else version
+@ClientOnly
+val ContentSpec.i18nName: String
+    get() = "${Meta.ModID}.spec.$id.name".bundle
+@ClientOnly
+val ContentSpec.i18nDesc: String
+    get() = "${Meta.ModID}.spec.$id.desc".bundle
+@ClientOnly
+val ContentSpec.icon: TR
+    get() = R.Gen("spec-$id").atlas()
 
 inline fun VanillaSpec(func: () -> Unit) {
     if (CioMod.ContentSpecific == ContentSpec.Vanilla) {

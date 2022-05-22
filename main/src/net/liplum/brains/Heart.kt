@@ -31,25 +31,22 @@ import net.liplum.CioMod.Companion.DebugMode
 import net.liplum.api.brain.*
 import net.liplum.lib.*
 import net.liplum.lib.math.FUNC
+import net.liplum.lib.utils.*
+import net.liplum.mdt.ClientOnly
+import net.liplum.mdt.Draw
+import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.animations.anims.Anime
 import net.liplum.mdt.animations.anims.linearFrames
 import net.liplum.mdt.animations.anims.randomCurTime
 import net.liplum.mdt.animations.anims.setEnd
 import net.liplum.mdt.mixin.Mover
+import net.liplum.mdt.render.G
 import net.liplum.mdt.render.HeatMeta
 import net.liplum.mdt.render.drawHeat
 import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.ui.bars.appendDisplayLiquidsDynamic
 import net.liplum.mdt.ui.bars.genAllLiquidBars
 import net.liplum.mdt.ui.bars.removeLiquidInBar
-import net.liplum.lib.utils.*
-import net.liplum.lib.TR
-import net.liplum.lib.TRs
-import net.liplum.mdt.ClientOnly
-import net.liplum.DebugOnly
-import net.liplum.mdt.Draw
-import net.liplum.lib.Serialized
-import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.utils.MdtUnit
 import net.liplum.mdt.utils.sheet
 import net.liplum.mdt.utils.sub
@@ -134,12 +131,7 @@ class Heart(name: String) : Block(name), IComponentBlock {
 
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)
-        Drawf.dashCircle(
-            x * Vars.tilesize + offset,
-            y * Vars.tilesize + offset,
-            heartbeat.range.base,
-            bloodColor
-        )
+        G.dashCircle(this, x, y, heartbeat.range.base, bloodColor)
     }
 
     override fun setBars() {

@@ -137,6 +137,11 @@ open class Heimdall(name: String) : Block(name) {
             formationPatterns.add(pattern)
     }
 
+    override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
+        super.drawPlace(x, y, rotation, valid)
+        G.dashCircle(this, x, y, range, R.C.BrainWave)
+    }
+
     override fun setStats() {
         super.setStats()
         stats.addHeimdallProperties(properties)

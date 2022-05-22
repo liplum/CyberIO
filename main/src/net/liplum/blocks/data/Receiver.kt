@@ -14,25 +14,26 @@ import mindustry.gen.Building
 import mindustry.type.Item
 import mindustry.world.blocks.ItemSelection
 import mindustry.world.meta.BlockGroup
-import net.liplum.mdt.ClientOnly
+import net.liplum.DebugOnly
 import net.liplum.R
-import net.liplum.lib.Serialized
 import net.liplum.UndebugOnly
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
 import net.liplum.blocks.data.Receiver.ReceiverBuild
+import net.liplum.lib.Serialized
+import net.liplum.lib.TR
+import net.liplum.lib.delegates.Delegate1
+import net.liplum.lib.persistance.intSet
+import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.Draw
 import net.liplum.mdt.SetColor
 import net.liplum.mdt.animations.anims.Animation
 import net.liplum.mdt.animations.anis.AniState
 import net.liplum.mdt.animations.anis.config
-import net.liplum.lib.delegates.Delegate1
 import net.liplum.mdt.ui.bars.removeItemsInBar
-import net.liplum.lib.persistance.intSet
-import net.liplum.lib.TR
-import net.liplum.utils.addSenderInfo
 import net.liplum.mdt.utils.autoAnimInMod
 import net.liplum.mdt.utils.inMod
+import net.liplum.utils.addSenderInfo
 
 private typealias AniStateR = AniState<Receiver, ReceiverBuild>
 
@@ -87,8 +88,10 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
     override fun setBars() {
         super.setBars()
         UndebugOnly {
-            addSenderInfo<ReceiverBuild>()
             removeItemsInBar()
+        }
+        DebugOnly {
+            addSenderInfo<ReceiverBuild>()
         }
     }
 

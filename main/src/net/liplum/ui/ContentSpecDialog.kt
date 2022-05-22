@@ -10,10 +10,7 @@ import arc.scene.ui.layout.Table
 import mindustry.Vars
 import mindustry.gen.Icon
 import mindustry.ui.dialogs.BaseDialog
-import net.liplum.CioMod
-import net.liplum.ContentSpec
-import net.liplum.R
-import net.liplum.Settings
+import net.liplum.*
 import net.liplum.lib.utils.bundle
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.ui.UIToast

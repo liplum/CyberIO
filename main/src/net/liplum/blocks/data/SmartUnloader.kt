@@ -25,6 +25,7 @@ import net.liplum.mdt.animations.anims.Animation
 import net.liplum.mdt.animations.anims.AnimationObj
 import net.liplum.mdt.animations.anis.AniState
 import net.liplum.mdt.animations.anis.config
+import net.liplum.mdt.render.G
 import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.ui.bars.removeItemsInBar
 import net.liplum.mdt.utils.*
@@ -127,6 +128,11 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
         addPowerUseStats()
     }
 
+    override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
+        super.drawPlace(x, y, rotation, valid)
+        if (maxRange > 0f)
+            G.dashCircle(this, x, y, maxRange, R.C.Sender)
+    }
     override fun setBars() {
         super.setBars()
         UndebugOnly {

@@ -21,6 +21,7 @@ import net.liplum.lib.persistance.intSet
 import net.liplum.mdt.*
 import net.liplum.mdt.animations.anis.AniState
 import net.liplum.mdt.animations.anis.config
+import net.liplum.mdt.render.G
 import net.liplum.mdt.utils.buildAt
 import net.liplum.mdt.utils.inMod
 import net.liplum.mdt.utils.sub
@@ -114,6 +115,12 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
         DebugOnly {
             addClientInfo<HostBuild>()
         }
+    }
+
+    override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
+        super.drawPlace(x, y, rotation, valid)
+        if (maxRange > 0f)
+            G.dashCircle(this, x, y, maxRange, R.C.Host)
     }
 
     open inner class HostBuild : AniedBuild(), IStreamHost {

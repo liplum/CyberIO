@@ -24,6 +24,7 @@ import net.liplum.mdt.*
 import net.liplum.mdt.animations.anims.Animation
 import net.liplum.mdt.animations.anis.AniState
 import net.liplum.mdt.animations.anis.config
+import net.liplum.mdt.render.G
 import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.utils.*
 import net.liplum.utils.addReceiverInfo
@@ -83,6 +84,12 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
         UnconnectedTR = this.inMod("rs-unconnected")
         NoPowerTR = this.inMod("rs-no-power")
         UploadAnim = this.autoAnimInMod("rs-up-arrow", UploadAnimFrameNumber, UploadAnimDuration)
+    }
+
+    override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
+        super.drawPlace(x, y, rotation, valid)
+        if (maxRange > 0f)
+            G.dashCircle(this, x, y, maxRange, R.C.Sender)
     }
 
     override fun setBars() {
@@ -250,6 +257,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
             if (b != null) {
                 if (maxRange > 0f && other.dst(this) >= maxRange) {
                     postOverRangeOn(other)
+                    return false
                 } else {
                     if (!canMultipleConnect()) {
                         deselect()

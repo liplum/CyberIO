@@ -43,7 +43,6 @@ object G {
     @JvmStatic
     val Ay: Float
         get() = Draw.scl * Draw.yscl
-
     @JvmStatic
     fun Dw(tr: TextureRegion): Float {
         return D(tr.width.toFloat())
@@ -340,6 +339,18 @@ object G {
         b.toCenterWorldXY(x),
         b.toCenterWorldXY(y),
         (b.size / 2f + 1) * Vars.tilesize + sin - 2f,
+        circleColor, alpha, stroke
+    )
+    @JvmStatic
+    @JvmOverloads
+    fun dashCircle(
+        b: Block, x: TileXY, y: TileXY, rad: WorldXY,
+        circleColor: Color = Pal.power,
+        alpha: Float? = null, stroke: Float = 1f
+    ) = dashCircle(
+        b.toCenterWorldXY(x),
+        b.toCenterWorldXY(y),
+        rad + sin - 2f,
         circleColor, alpha, stroke
     )
     @JvmStatic

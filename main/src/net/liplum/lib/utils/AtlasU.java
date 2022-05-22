@@ -27,7 +27,7 @@ public class AtlasU {
         return slice(tr, number, isHorizontal);
     }
 
-    public static TextureRegion[] sheet(@NotNull String identity, boolean isHorizontal, int number) {
+    public static TextureRegion[] sheet(@NotNull String identity, int number, boolean isHorizontal) {
         TextureRegion tr = Core.atlas.find(identity);
         return slice(tr, number, isHorizontal);
     }

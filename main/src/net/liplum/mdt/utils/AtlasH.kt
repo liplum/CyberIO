@@ -9,47 +9,30 @@ import net.liplum.lib.TR
 import net.liplum.lib.TRs
 import net.liplum.lib.utils.AtlasU
 
+fun String.atlas(): TR =
+    atlas.find(this)
 /**
  * Gets the Texture Region of "sprites/{this}-{subName}"
  * @param subName the following name after a hyphen
  */
 fun MappableContent.sub(subName: String): TR =
-    atlas.find("${this.name}-$subName")
+    "${this.name}-$subName".atlas()
 
 fun MappableContent.inMod(name: String): TR =
-    atlas.find("${this.minfo.mod.name}-$name")
+    "${this.minfo.mod.name}-$name".atlas()
 
-fun MappableContent.selfTR(): TR =
-    atlas.find(name)
+fun MappableContent.atlas(): TR = name.atlas()
 /**
  * In current loading mod
  */
 val String.inMod: TR
-    get() = atlas.find(Vars.content.transformName(this))
-
-fun String.atlas(): TR =
-    atlas.find(this)
-
-fun TR.orSubA(obj: MappableContent, subName: String): TR =
-    if (this.found())
-        this
-    else
-        obj.sub(subName)
+    get() = Vars.content.transformName(this).atlas()
 
 infix fun TR.or(texture: TR): TR =
     if (this.found())
         this
     else
         texture
-/**
- * Gets an array of Texture Region from a list of images named in pattern "sprites/{this}-{subName}{number}" or "sprites/{this}{number}" if subName is null.
- * @param subName the following name after a hyphen. If it's null, use the {this}-{number} name
- * @param number the amount of frames in that image. Splits it by row.
- * @param start the start number of these images
- */
-@JvmOverloads
-fun MappableContent.subFrames(subName: String? = null, number: Int, start: Int = 0): TRs =
-    AtlasU.subFrames(if (subName != null) "$name-$subName" else name, start, number)
 /**
  * Gets an array of Texture Region from a single image named in pattern "sprites/{this}-{subName}" or "sprites/{this}" if subName is null.
  * @param subName the following name after a hyphen. If it's null, use the {this} name
@@ -62,13 +45,13 @@ fun MappableContent.sheet(
     isHorizontal: Boolean = true,
 ): TRs {
     val identity = name + if (subName != null) "-$subName" else ""
-    return AtlasU.sheet(identity, isHorizontal, number)
+    return AtlasU.sheet(identity, number, isHorizontal)
 }
 
 fun String.sheet(
     number: Int,
     isHorizontal: Boolean = true,
-): TRs = AtlasU.sheet(this, isHorizontal, number)
+): TRs = AtlasU.sheet(this, number, isHorizontal)
 /**
  * Gets an array of Texture Region of "sprites/{this}-{subName}" or "sprites/{this}" if subName is null.
  * @param subName the following name after a hyphen. If it's null, use the {this} name

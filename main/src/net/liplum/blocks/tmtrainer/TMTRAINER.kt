@@ -29,7 +29,7 @@ import net.liplum.lib.math.Polar
 import net.liplum.lib.math.radian
 import net.liplum.lib.TR
 import net.liplum.mdt.utils.autoAnim
-import net.liplum.mdt.utils.selfTR
+import net.liplum.mdt.utils.atlas
 import net.liplum.mdt.utils.sub
 
 open class TMTRAINER(name: String) : ItemTurret(name) {
@@ -91,7 +91,7 @@ open class TMTRAINER(name: String) : ItemTurret(name) {
     }
 
     override fun icons() =
-        arrayOf(this.sub("base"), this.selfTR(),this.sub("head"))
+        arrayOf(this.sub("base"), this.atlas(),this.sub("head"))
 
     open inner class TMTRAINERBUILD : ItemTurretBuild() {
         @ClientOnly lateinit var coreAnimObj: AnimationObj

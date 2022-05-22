@@ -64,8 +64,9 @@ import net.liplum.bullets.RuvikBullet
 import net.liplum.bullets.STEM_VERSION
 import net.liplum.holo.*
 import net.liplum.mdt.animations.ganim.globalAnim
-import net.liplum.mdt.render.DrawConstruct
 import net.liplum.mdt.ui.DynamicContentInfoDialog.Companion.registerDynamicInfo
+import net.liplum.render.SpecDrawConstruct
+import net.liplum.render.SpecDrawDefault
 import net.liplum.seffects.StaticFx
 
 object CioBlocks {
@@ -130,7 +131,7 @@ object CioBlocks {
             ErekirSpec {
                 requirements(
                     Category.crafting, arrayOf(
-                        ItemStack(CioItems.ic, 2),
+                        ItemStack(CioItems.ic, 8),
                         ItemStack(Items.beryllium, 250),
                         ItemStack(Items.surgeAlloy, 80),
                         ItemStack(Items.tungsten, 100),
@@ -139,9 +140,9 @@ object CioBlocks {
                 )
                 health = 1500
                 consumeItems( //Total:100
-                    ItemStack(Items.sand, 40),  //50%
-                    ItemStack(Items.beryllium, 18),  //20%
-                    ItemStack(Items.silicon, 28) //30%
+                    ItemStack(Items.tungsten, 40),  //50%
+                    ItemStack(Items.beryllium, 20),  //20%
+                    ItemStack(Items.silicon, 30) //30%
                 )
                 consumePower(8f)
                 craftTime = 420f
@@ -206,6 +207,7 @@ object CioBlocks {
                     ItemStack(Items.metaglass, 5),
                 )
                 craftTime = 600f
+                drawer = DrawMulti(SpecDrawDefault(), SpecDrawConstruct())
             }
             ErekirSpec {
                 requirements(
@@ -219,17 +221,19 @@ object CioBlocks {
                 consumePower(1.1f)
                 itemCapacity = 40
                 consumeItems(
-                    ItemStack(Items.sand, 20),
-                    ItemStack(Items.beryllium, 15),
+                    ItemStack(Items.tungsten, 15),
+                    ItemStack(Items.beryllium, 20),
                     ItemStack(Items.silicon, 15)
                 )
-                craftTime = 550f
+                craftTime = 700f
+                drawer = DrawMulti(SpecDrawDefault(), SpecDrawConstruct().apply {
+                    stages = 4
+                })
             }
             fogRadius = 2
             size = 2
             outputItem = ItemStack(CioItems.ic, 1)
             craftEffect = Fx.smeltsmoke
-            drawer = DrawMulti(DrawDefault(), DrawConstruct())
         }
     }
     @DependOn("CioItems.ic")
@@ -252,7 +256,7 @@ object CioBlocks {
             ErekirSpec {
                 requirements(
                     Category.distribution, arrayOf(
-                        ItemStack(CioItems.ic, 1),
+                        ItemStack(CioItems.ic, 5),
                         ItemStack(Items.graphite, 80),
                         ItemStack(Items.tungsten, 30),
                         ItemStack(Items.silicon, 30),
@@ -284,14 +288,14 @@ object CioBlocks {
             ErekirSpec {
                 requirements(
                     Category.distribution, arrayOf(
-                        ItemStack(CioItems.ic, 1),
+                        ItemStack(CioItems.ic, 5),
                         ItemStack(Items.graphite, 120),
                         ItemStack(Items.tungsten, 50),
                         ItemStack(Items.silicon, 50),
                     )
                 )
                 health = 180
-                maxRange = 500f
+                maxRange = 550f
                 consumePower(0.8f)
             }
             replaceable = false
@@ -347,7 +351,7 @@ object CioBlocks {
             VanillaSpec {
                 requirements(
                     Category.effect, BuildVisibility.shown, arrayOf(
-                        ItemStack(CioItems.ic, 4),
+                        ItemStack(CioItems.ic, 8),
                         ItemStack(Items.copper, 300),
                         ItemStack(Items.lead, 20),
                         ItemStack(Items.silicon, 240),
@@ -371,6 +375,7 @@ object CioBlocks {
                     )
                 )
                 health = 250
+                range = 45f
                 powerProduction = 2.8f
                 maxPowerEFFBlocksReq = 20
                 maxGear = 6
@@ -441,7 +446,7 @@ object CioBlocks {
             VanillaSpec {
                 requirements(
                     Category.turret, BuildVisibility.shown, arrayOf(
-                        ItemStack(CioItems.ic, 10),
+                        ItemStack(CioItems.ic, 15),
                         ItemStack(Items.copper, 250),
                         ItemStack(Items.metaglass, 350),
                         ItemStack(Items.titanium, 50),
@@ -452,7 +457,7 @@ object CioBlocks {
             ErekirSpec {
                 requirements(
                     Category.turret, BuildVisibility.shown, arrayOf(
-                        ItemStack(CioItems.ic, 11),
+                        ItemStack(CioItems.ic, 30),
                         ItemStack(Items.carbide, 150),
                         ItemStack(Items.surgeAlloy, 250),
                         ItemStack(Items.tungsten, 150),
@@ -485,7 +490,7 @@ object CioBlocks {
             ErekirSpec {
                 requirements(
                     Category.turret, BuildVisibility.shown, arrayOf(
-                        ItemStack(CioItems.ic, 3),
+                        ItemStack(CioItems.ic, 12),
                         ItemStack(Items.beryllium, 60),
                         ItemStack(Items.surgeAlloy, 120),
                         ItemStack(Items.tungsten, 80),
@@ -522,8 +527,8 @@ object CioBlocks {
             ErekirSpec {
                 requirements(
                     Category.turret, BuildVisibility.shown, arrayOf(
-                        ItemStack(CioItems.ic, 8),
-                        ItemStack(Items.surgeAlloy, 150),
+                        ItemStack(CioItems.ic, 15),
+                        ItemStack(Items.surgeAlloy, 80),
                         ItemStack(Items.tungsten, 120),
                         ItemStack(Items.oxide, 180),
                     )
@@ -565,10 +570,9 @@ object CioBlocks {
             ErekirSpec {
                 requirements(
                     Category.defense, BuildVisibility.shown, arrayOf(
-                        ItemStack(CioItems.ic, 1),
-                        ItemStack(Items.oxide, 6),
+                        ItemStack(CioItems.ic, 3),
+                        ItemStack(Items.oxide, 8),
                         ItemStack(Items.tungsten, 12),
-                        ItemStack(Items.surgeAlloy, 10),
                     )
                 )
                 scaledHealth = 425f
@@ -599,10 +603,10 @@ object CioBlocks {
             ErekirSpec {
                 requirements(
                     Category.defense, BuildVisibility.shown, arrayOf(
-                        ItemStack(CioItems.ic, 2),
+                        ItemStack(CioItems.ic, 6),
                         ItemStack(Items.oxide, 24),
-                        ItemStack(Items.tungsten, 48),
-                        ItemStack(Items.surgeAlloy, 40),
+                        ItemStack(Items.tungsten, 40),
+                        ItemStack(Items.surgeAlloy, 10),
                     )
                 )
                 restoreReload = 20 * 60f
@@ -667,7 +671,7 @@ object CioBlocks {
     }
     @Subscribe(Trigger.update, Only.client)
     fun TMTRAINER_RandomName() {
-        if (Time.globalTime % CioMod.UpdateFrequency < 1f) {
+        if (Time.globalTime % CioMod.UpdateFrequency < 1f && CioMod.ContentLoaded) {
             TMTRAINER.localizedName = RandomName.one(8)
             TMTRAINER.description = RandomName.one(25)
         }
@@ -691,7 +695,7 @@ object CioBlocks {
             ErekirSpec {
                 requirements(
                     Category.distribution, BuildVisibility.shown, arrayOf(
-                        ItemStack(CioItems.ic, 15),
+                        ItemStack(CioItems.ic, 30),
                         ItemStack(Items.tungsten, 180),
                         ItemStack(Items.carbide, 80),
                         ItemStack(Items.surgeAlloy, 100),
@@ -760,7 +764,7 @@ object CioBlocks {
             ErekirSpec {
                 requirements(
                     Category.liquid, BuildVisibility.shown, arrayOf(
-                        ItemStack(CioItems.ic, 2),
+                        ItemStack(CioItems.ic, 6),
                         ItemStack(Items.beryllium, 40),
                         ItemStack(Items.silicon, 20),
                         ItemStack(Items.tungsten, 40),
@@ -799,11 +803,10 @@ object CioBlocks {
             ErekirSpec {
                 requirements(
                     Category.liquid, BuildVisibility.shown, arrayOf(
-                        ItemStack(CioItems.ic, 5),
+                        ItemStack(CioItems.ic, 15),
                         ItemStack(Items.tungsten, 200),
-                        ItemStack(Items.carbide, 50),
-                        ItemStack(Items.graphite, 100),
-                        ItemStack(Items.surgeAlloy, 40),
+                        ItemStack(Items.carbide, 80),
+                        ItemStack(Items.beryllium, 100),
                     )
                 )
                 scaledHealth = 350f
@@ -847,7 +850,7 @@ object CioBlocks {
                         ItemStack(CioItems.ic, 16),
                         ItemStack(Items.tungsten, 500),
                         ItemStack(Items.carbide, 400),
-                        ItemStack(Items.graphite, 800),
+                        ItemStack(Items.beryllium, 800),
                         ItemStack(Items.surgeAlloy, 320),
                         ItemStack(Items.phaseFabric, 120),
                     )
@@ -858,7 +861,7 @@ object CioBlocks {
                 researchCostMultiplier = 0.6f
                 powerUseBase = 2.5f
                 maxConnection = 8
-                maxRange = 1200f
+                maxRange = 1800f
                 powerUsePerConnection = 3.8f
             }
             squareSprite = false

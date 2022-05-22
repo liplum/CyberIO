@@ -41,6 +41,7 @@ class CioMod : Mod() {
         @JvmField var TestGlCompatibility = false
         @JvmField var ExperimentalMode = false
         @JvmField var UpdateFrequency = 5f
+        @JvmField var ContentLoaded = false
         @JvmField var ContentSpecific = ContentSpec.Vanilla
         lateinit var Info: Mods.LoadedMod
         @JvmField val jarFile = CioMod::class.java.protectionDomain?.let {
@@ -165,6 +166,7 @@ class CioMod : Mod() {
         Contents.load()
         CioTechTree.loadAll()
         GlobalAnimation.CanPlay = true
+        ContentLoaded = true
         Clog.info("v${Meta.DetailedVersion} $ContentSpecific mod's contents loaded.")
     }
     @HeadlessOnly
