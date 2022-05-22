@@ -18,18 +18,23 @@ fun Block.removeLiquidInBar() {
     this.removeBar("liquid")
 }
 
+fun Block.removeHealthInBar() {
+    this.removeBar("health")
+}
+
 inline fun <reified T : Building> Block.AddBar(
     key: String,
     crossinline name: T.() -> String,
     crossinline color: T.() -> Color,
     crossinline fraction: T.() -> Float,
+    crossinline config: Bar.() -> Unit = {},
 ) {
     addBar<T>(key) {
         Bar(
             { it.name() },
             { it.color() },
             { it.fraction() }
-        )
+        ).apply(config)
     }
 }
 
@@ -38,13 +43,14 @@ inline fun Block.addBar(
     crossinline name: Building.() -> String,
     crossinline color: Building.() -> Color,
     crossinline fraction: Building.() -> Float,
-) {
+    crossinline config: Bar.() -> Unit = {},
+    ) {
     addBar<Building>(key) {
         Bar(
             { it.name() },
             { it.color() },
             { it.fraction() }
-        )
+        ).apply(config)
     }
 }
 

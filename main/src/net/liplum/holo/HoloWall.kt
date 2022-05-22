@@ -1,5 +1,6 @@
 package net.liplum.holo
 
+import arc.graphics.Color
 import arc.graphics.g2d.Draw
 import arc.util.io.Reads
 import arc.util.io.Writes
@@ -10,26 +11,27 @@ import mindustry.graphics.Drawf
 import mindustry.graphics.Layer
 import mindustry.graphics.Pal
 import mindustry.world.blocks.defense.Wall
-import net.liplum.*
+import net.liplum.DebugOnly
+import net.liplum.R
 import net.liplum.api.holo.IHoloEntity
 import net.liplum.api.holo.IHoloEntity.Companion.minHealth
-import net.liplum.mdt.animations.Floating
-import net.liplum.lib.utils.bundle
-import net.liplum.lib.utils.isZero
+import net.liplum.lib.Serialized
+import net.liplum.lib.TR
 import net.liplum.lib.shaders.SD
 import net.liplum.lib.shaders.use
-import net.liplum.mdt.ui.bars.AddBar
-import net.liplum.utils.yesNo
-import net.liplum.lib.TR
+import net.liplum.lib.utils.isZero
+import net.liplum.lib.utils.toFloat
 import net.liplum.mdt.ClientOnly
-import net.liplum.DebugOnly
-import net.liplum.lib.Serialized
 import net.liplum.mdt.WhenNotPaused
+import net.liplum.mdt.animations.Floating
+import net.liplum.mdt.render.G
+import net.liplum.mdt.ui.bars.AddBar
+import net.liplum.mdt.ui.bars.removeItemsInBar
+import net.liplum.mdt.utils.healthPct
 import net.liplum.mdt.utils.or
 import net.liplum.mdt.utils.seconds
 import net.liplum.mdt.utils.sub
-import net.liplum.mdt.render.G
-import net.liplum.mdt.utils.healthPct
+import net.liplum.utils.yesNo
 
 open class HoloWall(name: String) : Wall(name) {
     @JvmField var restoreReload = 10 * 60f
@@ -62,24 +64,34 @@ open class HoloWall(name: String) : Wall(name) {
     override fun icons() = arrayOf(BaseTR, DyedImageTR)
     override fun setBars() {
         super.setBars()
+        removeItemsInBar()
+        removeBar("health")
+        AddBar<HoloBuild>("health",
+            { "stat.health" },
+            { R.C.Holo },
+            { healthf() }
+        ) {
+            blink(Color.white)
+        }
+
         DebugOnly {
-            AddBar<HoloBuild>(R.Bar.IsProjectingN,
-                { R.Bar.IsProjecting.bundle(isProjecting.yesNo()) },
-                { Pal.bar },
-                { if (isProjecting) 1f else 0f }
+            AddBar<HoloBuild>("is-projecting",
+                { "Is Projecting: ${isProjecting.yesNo()}" },
+                { R.C.HoloDark },
+                { isProjecting.toFloat() }
             )
-            AddBar<HoloBuild>(R.Bar.RestRestoreN,
-                { R.Bar.RestRestore.bundle(restRestore.toInt()) },
-                { Pal.bar },
+            AddBar<HoloBuild>("rest-restore",
+                { "Rest Restore: ${restRestore.toInt()}" },
+                { R.C.Holo },
                 { restRestore / maxHealth }
             )
-            AddBar<HoloBuild>(R.Bar.ChargeN,
-                { R.Bar.Charge.bundle(restoreCharge.seconds) },
+            AddBar<HoloBuild>("charge",
+                { "Charge: ${restoreCharge.seconds}s" },
                 { Pal.power },
                 { restoreCharge / restoreReload }
             )
-            AddBar<HoloBuild>(R.Bar.LastDamagedN,
-                { R.Bar.LastDamaged.bundle(lastDamagedTime.seconds) },
+            AddBar<HoloBuild>("last-damaged",
+                { "Last Damage: ${lastDamagedTime.seconds}s" },
                 { Pal.power },
                 { lastDamagedTime / restoreReload }
             )

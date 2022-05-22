@@ -27,8 +27,10 @@
     ]
   },
   "v4": {
-    "Default": "ResearchProject",
+    "Default": "ErekirDetected",
     "Parent": "common",
-    "Scene": []
+    "Scene": [
+      "ErekirDetected"
+    ]
   }
 }

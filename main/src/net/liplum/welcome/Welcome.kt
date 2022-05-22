@@ -45,7 +45,7 @@ object Welcome {
             entity.showTip()
         }
         // For debug
-        //entity.showTipByID("RateUs")
+        //entity.showTipByID("ErekirDetected")
     }
     @JvmStatic
     fun judgeWelcome() {

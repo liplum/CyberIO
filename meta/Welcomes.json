@@ -81,5 +81,10 @@
       "StarSize": 60.0
     },
     "Chance": 200
+  },
+  {
+    "ID": "ErekirDetected",
+    "Condition": "SpecialDishes",
+    "IconPath": "spec-erekir"
   }
 ]

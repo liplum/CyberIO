@@ -4,27 +4,30 @@ import arc.struct.ObjectMap
 import arc.util.serialization.JsonValue
 import mindustry.io.JsonIO
 import net.liplum.lib.F
-import net.liplum.mdt.HeadlessOnly
-import net.liplum.scripts.KeyNotFoundException
 import net.liplum.lib.utils.component1
 import net.liplum.lib.utils.component2
+import net.liplum.mdt.HeadlessOnly
 
 @HeadlessOnly
 object Config {
     val Default = """
     {
         "AutoUpdate": false,
-        "CheckUpdateInfoURL": null
+        "CheckUpdateInfoURL": null,
+        "ContentSpecific": "vanilla"
     }
     """.trimIndent()
     var metas: Map<String, ConfigEntry<*>> = mapOf(
         "AutoUpdate" to ConfigEntry(false),
         "CheckUpdateInfoURL" to ConfigEntry(null, String::class.java),
+        "ContentSpecific" to ConfigEntry(ContentSpec.Vanilla.id, String::class.java),
     )
     val AutoUpdate: Boolean
         get() = Config["AutoUpdate"] ?: false
     val CheckUpdateInfoURL: String
         get() = Config["CheckUpdateInfoURL"] ?: Meta.UpdateInfoURL
+    val ContentSpecific: String
+        get() = Config["ContentSpecific"] ?: ContentSpec.Vanilla.id
     const val configName = "config.json"
     var pairs: Map<String, Any?> = emptyMap()
     @Suppress("UNCHECKED_CAST")
@@ -35,7 +38,7 @@ object Config {
         if (key in metas) {
             return metas[key]?.default as T?
         }
-        throw KeyNotFoundException(key)
+        return null
     }
     @JvmStatic
     fun load() {

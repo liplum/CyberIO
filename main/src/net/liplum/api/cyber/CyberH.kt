@@ -4,6 +4,7 @@ package net.liplum.api.cyber
 
 import arc.graphics.Color
 import arc.math.geom.Point2
+import arc.util.Align
 import mindustry.Vars
 import mindustry.gen.Building
 import mindustry.type.Item
@@ -18,10 +19,7 @@ import net.liplum.lib.math.Point2f
 import net.liplum.lib.utils.Or
 import net.liplum.lib.utils.bundle
 import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.render.G
-import net.liplum.mdt.render.inViewField
-import net.liplum.mdt.render.isLineInViewField
-import net.liplum.mdt.render.postToastTextOn
+import net.liplum.mdt.render.*
 import net.liplum.mdt.utils.*
 
 @ClientOnly
@@ -270,13 +268,17 @@ fun Block.drawLinkedLineToReceiverWhenConfiguring(x: Int, y: Int) {
     if (sender !is IDataSender) return
     val selectedTile = sender.tile()
     val opacity = Settings.LinkOpacity
-    G.drawSurroundingCircle(this, x, y, R.C.Receiver, alpha = opacity)
+    val isOverRange = if (sender.maxRange > 0f) selectedTile.dstWorld(x, y) > sender.maxRange else false
+    val color = if (isOverRange) R.C.RedAlert else R.C.Receiver
+    G.drawSurroundingCircle(this, x, y, color, alpha = opacity)
     G.drawArrowLine(
         sender.block,
         selectedTile.x, selectedTile.y,
         this, x.toShort(), y.toShort(),
-        ArrowDensity, R.C.Receiver, alpha = opacity, size = Settings.LinkSize
+        ArrowDensity, color, alpha = opacity, size = Settings.LinkSize
     )
+    if (isOverRange)
+        this.drawOverRangeOnTile(x, y, color)
 }
 @ClientOnly
 inline fun whenNotConfiguringSender(func: () -> Unit) {
@@ -461,22 +463,51 @@ fun isConfiguringHost(): Boolean {
     return selected is IStreamHost
 }
 
-fun Building.drawOverRangeOn(other: Building) {
-    block.subBundle("over-range").postToastTextOn(other, R.C.RedAlert)
+fun Building.postOverRangeOn(other: Building) {
+    R.Bundle.OverRange.bundle.postToastTextOn(this.id, other, R.C.RedAlert)
 }
 
-fun Building.drawFullSenderOn(other: Building) {
+fun Building.postOverRangeOnTile(x: TileXY, y: TileXY) {
+    R.Bundle.OverRange.bundle.postToastTextOnXY(this.id, x.worldXY, y.worldXY, R.C.RedAlert)
+}
+
+fun Block.drawOverRangeOnTile(x: TileXY, y: TileXY, color: Color) {
+    val text = R.Bundle.OverRange.bundle
+    Text.drawText {
+        setText(it, text)
+        it.color.set(color)
+        it.draw(
+            text, toCenterWorldXY(x),
+            toCenterWorldXY(y) + size * Vars.tilesize / 2f,
+            Align.center
+        )
+    }
+}
+
+fun Building.postFullSenderOn(other: Building) {
     R.Bundle.FullSender.bundle.postToastTextOn(this.id, other, R.C.RedAlert)
 }
 
-fun Building.drawFullReceiverOn(other: Building) {
+fun Building.postFullReceiverOn(other: Building) {
     R.Bundle.FullReceiver.bundle.postToastTextOn(this.id, other, R.C.RedAlert)
 }
 
-fun Building.drawFullHostOn(other: Building) {
+fun Building.postFullHostOn(other: Building) {
     R.Bundle.FullHost.bundle.postToastTextOn(this.id, other, R.C.RedAlert)
 }
 
-fun Building.drawFullClientOn(other: Building) {
+fun Building.postFullClientOn(other: Building) {
     R.Bundle.FullClient.bundle.postToastTextOn(this.id, other, R.C.RedAlert)
+}
+
+fun IDataSender.drawMaxRange() {
+    if (maxRange > 0f) {
+        G.dashCircle(building.x, building.y, maxRange, senderColor)
+    }
+}
+
+fun IStreamHost.drawMaxRange() {
+    if (maxRange > 0f) {
+        G.dashCircle(building.x, building.y, maxRange, hostColor)
+    }
 }

@@ -113,4 +113,8 @@ public interface IDataSender extends IDataBuilding {
     default Color getSenderColor() {
         return R.C.Sender;
     }
+
+    default float getMaxRange() {
+        return -1f;
+    }
 }

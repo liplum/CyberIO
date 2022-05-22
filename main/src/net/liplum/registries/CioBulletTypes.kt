@@ -3,13 +3,15 @@ package net.liplum.registries
 import mindustry.content.Fx
 import mindustry.entities.bullet.BasicBulletType
 import mindustry.graphics.Pal
+import net.liplum.ErekirSpec
 import net.liplum.R
+import net.liplum.VanillaSpec
 import net.liplum.annotations.DependOn
 import net.liplum.bullets.RuvikBullet
 import net.liplum.bullets.STEM_VERSION
 import net.liplum.bullets.ShaderBasicBulletT
-import net.liplum.mdt.shaders.CommonShader
 import net.liplum.lib.shaders.SD
+import net.liplum.mdt.shaders.CommonShader
 import net.liplum.seffects.StaticFx
 import net.liplum.shaders.holo.HologramShader
 
@@ -57,9 +59,17 @@ object CioBulletTypes {
     }
     @DependOn("CioSEffects.infected")
     fun virus() {
-        virus = BasicBulletType(
-            2.5f, 50f, "bullet"
-        ).apply {
+        virus = BasicBulletType().apply {
+            VanillaSpec {
+                speed = 2.5f
+                damage = 50f
+            }
+            //TODO: Create a new bullet instead?
+            ErekirSpec {
+                speed = 2.8f
+                damage = 80f
+            }
+            sprite = "bullet"
             width = 10f
             height = 12f
             shrinkY = 0.1f
@@ -79,9 +89,16 @@ object CioBulletTypes {
         "CioSEffects.static"
     )
     fun radiationInterference() {
-        radiationInterference = ShaderBasicBulletT<CommonShader>(
-            2.3f, 30f, "bullet"
-        ).apply {
+        radiationInterference = ShaderBasicBulletT<CommonShader>().apply {
+            VanillaSpec {
+                speed = 2.3f
+                damage = 30f
+            }
+            ErekirSpec {
+                speed = 2.25f
+                damage = 90f
+            }
+            sprite = "bullet"
             shader = { SD.TvStatic }
             width = 15f
             height = 15f

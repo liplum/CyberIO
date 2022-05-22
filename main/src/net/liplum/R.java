@@ -57,7 +57,10 @@ public class R {
                 FullSender = Gen("full-sender"),
                 FullReceiver = Gen("full-receiver"),
                 FullHost = Gen("full-host"),
-                FullClient = Gen("full-client");
+                FullClient = Gen("full-client"),
+                OverRange = Gen("over-range");
+        public static final String
+                UnsavedChange = Gen("unsaved-change");
     }
 
     public static final class Bar {
@@ -100,15 +103,7 @@ public class R {
                 AniStateLast = Gen(AniStateLastN);
         public static final String NullN = "null",
                 Null = Gen(NullN);
-        public static final String IsProjectingN = "is-projecting",
-                IsProjecting = Gen(IsProjectingN);
-        public static final String RestRestoreN = "rest-restore",
-                RestRestore = Gen(RestRestoreN);
-        public static final String ChargeN = "charge",
-                Charge = Gen(ChargeN);
 
-        public static final String LastDamagedN = "last-damaged",
-                LastDamaged = Gen(LastDamagedN);
         public static final String ProgressN = "progress",
                 Progress = Gen(ProgressN);
         public static final String

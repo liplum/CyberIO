@@ -56,6 +56,9 @@ fun buildAt(x: TileXYd, y: TileXYd): Building? =
 fun Block.toCenterXY(xy: TileXY): WorldXY {
     return xy.worldXY + offset
 }
+
+fun Tile.dstWorld(x: TileXY, y: TileXY): WorldXY =
+    this.dst(x * Vars.tilesize.toFloat(), y * Vars.tilesize.toFloat())
 /**
  * Get the world coordinate of building
  * @param pos Output Parameter.

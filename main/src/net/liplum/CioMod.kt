@@ -80,10 +80,13 @@ class CioMod : Mod() {
         }
         HeadlessOnly {
             Config.load()
+            ContentSpecific = Config.ContentSpecific.resolveContentSpec()
             Updater.fetchLatestVersion(Config.CheckUpdateInfoURL)
             Updater.checkHeadlessUpdate()
         }
-        ContentSpecific = Settings.ContentSpecific.resolveContentSpec()
+        ClientOnly {
+            ContentSpecific = Settings.ContentSpecific.resolveContentSpec()
+        }
         EventRegistry.registerAll()
         ClientOnly {
             GL.handleCompatible()
@@ -120,7 +123,7 @@ class CioMod : Mod() {
     }
 
     override fun init() {
-        Clog.info("v${Meta.DetailedVersion} initializing...")
+        Clog.info("v${Meta.DetailedVersion} $ContentSpecific initializing...")
         UpdateFrequency = if (Vars.mobile || Vars.testMobile) 10f else 5f
         Events.fire(CioInitEvent())
         DebugOnly {
@@ -151,7 +154,7 @@ class CioMod : Mod() {
         Settings.updateSettings()
         //RecipeCenter.recordAllRecipes()
         ResourceLoader.loadAllResources()
-        Clog.info("v${Meta.DetailedVersion} initialized.")
+        Clog.info("v${Meta.DetailedVersion} $ContentSpecific initialized.")
         Settings.LastPlayTime = System.currentTimeMillis()
     }
 
@@ -162,7 +165,7 @@ class CioMod : Mod() {
         Contents.load()
         CioTechTree.loadAll()
         GlobalAnimation.CanPlay = true
-        Clog.info("v${Meta.DetailedVersion} mod's contents loaded.")
+        Clog.info("v${Meta.DetailedVersion} $ContentSpecific mod's contents loaded.")
     }
     @HeadlessOnly
     override fun registerServerCommands(handler: CommandHandler) {

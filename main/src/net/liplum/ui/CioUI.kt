@@ -27,6 +27,7 @@ import net.liplum.events.CioInitEvent
 import net.liplum.lib.UseReflection
 import net.liplum.lib.ing
 import net.liplum.lib.utils.*
+import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.UnsteamOnly
 import net.liplum.mdt.ui.ShowTextDialog
 import net.liplum.mdt.ui.addTrackTooltip
@@ -39,6 +40,7 @@ import net.liplum.welcome.Conditions
 import net.liplum.welcome.Welcome
 import net.liplum.welcome.WelcomeList
 
+@ClientOnly
 object CioUI {
     @JvmStatic
     @SubscribeEvent(CioInitEvent::class, Only.client)
@@ -126,7 +128,9 @@ object CioUI {
                 changed {
                     ContentSpecDialog.show()
                 }
-            }.addTrackTooltip(ContentSpecDialog.bundle("button-tip"))
+            }.addTrackTooltip(ContentSpecDialog.bundle("button-tip")).apply {
+                canShow = { isMenu }
+            }
             it.add(button).fillX()
         }
         // GitHub mirror and Check update
@@ -249,10 +253,10 @@ object CioUI {
                             isDisabled = false
                         }
                     }
-                }.addTrackTooltip(bundle("button-tooltip"))
+                }.addTrackTooltip(bundle("button-tooltip")).apply {
+                    canShow = { isMenu }
+                }
                 it.add(button).fillX()
-            }.apply {
-                canShow = { isMenu }
             }
         }
         DebugOnly {
@@ -261,7 +265,9 @@ object CioUI {
                     changed {
                         DebugSettingsDialog.show()
                     }
-                }.addTrackTooltip("Only for debugging.")
+                }.addTrackTooltip("Only for debugging.").apply {
+                    canShow = { isMenu }
+                }
                 it.add(button).fillX()
             }
         }

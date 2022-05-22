@@ -154,6 +154,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
 
     open inner class SmartULDBuild : AniedBlock<SmartUnloader, SmartULDBuild>.AniedBuild(),
         IDataSender {
+        override fun getMaxRange() = this@SmartUnloader.maxRange
         @Serialized
         var receivers = OrderedSet<Int>()
         /**
@@ -365,11 +366,13 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
                     drawPlaceText(needUnloadItemsText, tileX(), tileY(), true)
                 }
             }
+            drawMaxRange()
         }
 
         override fun drawConfigure() {
             super.drawConfigure()
             this.drawDataNetGraphic()
+            drawMaxRange()
         }
 
         override fun onConfigureBuildTapped(other: Building): Boolean {
@@ -389,7 +392,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
             val b = other.getCyberEntity<IDataReceiver>()
             if (b != null) {
                 if (maxRange > 0f && other.dst(this) >= maxRange) {
-                    drawOverRangeOn(other)
+                    postOverRangeOn(other)
                 } else {
                     if (!canMultipleConnect()) {
                         deselect()
@@ -398,10 +401,10 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
                         if (b.acceptConnection(this)) {
                             connectSync(b)
                         } else {
-                            drawFullSenderOn(other)
+                            postFullSenderOn(other)
                         }
                     } else {
-                        drawFullReceiverOn(other)
+                        postFullReceiverOn(other)
                     }
                 }
                 return false

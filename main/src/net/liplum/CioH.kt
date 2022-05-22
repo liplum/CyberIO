@@ -23,6 +23,7 @@ enum class ContentSpec(
     Vanilla("vanilla"),
     Erekir("erekir");
 
+    override fun toString() = id
     fun suffixModVersion(version: String) =
         if (this != Vanilla) "$version-$id"
         else version
@@ -34,7 +35,7 @@ enum class ContentSpec(
         get() = "${Meta.ModID}.spec.$id.desc".bundle
     @ClientOnly
     val icon: TR
-        get() = R.Gen(id).atlas()
+        get() = R.Gen("spec-$id").atlas()
 
     companion object {
         @JvmStatic

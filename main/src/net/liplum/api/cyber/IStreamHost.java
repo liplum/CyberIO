@@ -68,4 +68,8 @@ public interface IStreamHost extends IStreamNode {
     @NotNull
     @ClientOnly
     Color getHostColor();
+
+    default float getMaxRange() {
+        return -1f;
+    }
 }

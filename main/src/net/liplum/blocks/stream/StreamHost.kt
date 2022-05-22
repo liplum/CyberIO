@@ -117,6 +117,7 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
     }
 
     open inner class HostBuild : AniedBuild(), IStreamHost {
+        override fun getMaxRange() = this@StreamHost.maxRange
         @Serialized
         var clients = OrderedSet<Int>()
         @ClientOnly @JvmField var liquidFlow = 0f
@@ -289,7 +290,7 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
             val b = other.getCyberEntity<IStreamClient>()
             if (b != null) {
                 if (maxRange > 0f && other.dst(this) >= maxRange) {
-                    drawOverRangeOn(other)
+                    postOverRangeOn(other)
                 } else {
                     if (maxConnection == 1) {
                         deselect()
@@ -298,10 +299,10 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
                         if (b.acceptConnection(this)) {
                             connectSync(b)
                         } else {
-                            drawFullHostOn(other)
+                            postFullHostOn(other)
                         }
                     } else {
-                        drawFullClientOn(other)
+                        postFullClientOn(other)
                     }
                 }
                 return false
@@ -312,10 +313,12 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
         override fun drawConfigure() {
             super.drawConfigure()
             this.drawStreamGraphic()
+            drawMaxRange()
         }
 
         override fun drawSelect() {
             this.drawStreamGraphic()
+            drawMaxRange()
         }
         @SendDataPack
         override fun connectSync(client: IStreamClient) {

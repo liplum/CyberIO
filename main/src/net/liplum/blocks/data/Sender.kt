@@ -24,7 +24,6 @@ import net.liplum.mdt.*
 import net.liplum.mdt.animations.anims.Animation
 import net.liplum.mdt.animations.anis.AniState
 import net.liplum.mdt.animations.anis.config
-import net.liplum.mdt.render.G
 import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.utils.*
 import net.liplum.utils.addReceiverInfo
@@ -104,6 +103,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
     }
 
     open inner class SenderBuild : AniedBuild(), IDataSender {
+        override fun getMaxRange() = this@Sender.maxRange
         @ClientOnly var lastSendingTime = 0f
             set(value) {
                 field = value.coerceAtLeast(0f)
@@ -226,13 +226,12 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
         override fun drawConfigure() {
             super.drawConfigure()
             this.drawDataNetGraphic()
-            if (maxRange > 0f) {
-                G.dashCircle(x, y, maxRange, senderColor)
-            }
+            drawMaxRange()
         }
         @ClientOnly
         override fun drawSelect() {
             this.drawDataNetGraphic()
+            drawMaxRange()
         }
         @ClientOnly
         @SendDataPack
@@ -250,7 +249,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
             val b = other.getCyberEntity<IDataReceiver>()
             if (b != null) {
                 if (maxRange > 0f && other.dst(this) >= maxRange) {
-                    drawOverRangeOn(other)
+                    postOverRangeOn(other)
                 } else {
                     if (!canMultipleConnect()) {
                         deselect()
@@ -259,10 +258,10 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
                         if (b.acceptConnection(this)) {
                             connectSync(b)
                         } else {
-                            drawFullSenderOn(other)
+                            postFullSenderOn(other)
                         }
                     } else {
-                        drawFullSenderOn(other)
+                        postFullSenderOn(other)
                     }
                 }
                 return false

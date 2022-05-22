@@ -35,7 +35,6 @@ import net.liplum.lib.delegates.Delegate1
 import net.liplum.lib.persistance.intSet
 import net.liplum.lib.shaders.SD
 import net.liplum.lib.shaders.use
-import net.liplum.lib.utils.bundle
 import net.liplum.lib.utils.isZero
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.Draw
@@ -329,18 +328,18 @@ open class Stealth(name: String) : Turret(name) {
     override fun setBars() {
         super.setBars()
         DebugOnly {
-            AddBar<StealthBuild>(R.Bar.RestRestoreN,
-                { R.Bar.RestRestore.bundle(restRestore.toInt()) },
+            AddBar<StealthBuild>("rest-restore",
+                { "Rest Restore:${restRestore.toInt()}" },
                 { Pal.bar },
                 { restRestore / maxHealth }
             )
-            AddBar<StealthBuild>(R.Bar.ChargeN,
-                { R.Bar.Charge.bundle(restoreCharge.seconds) },
+            AddBar<StealthBuild>("charge",
+                { "Charge: ${restoreCharge.seconds}" },
                 { Pal.power },
                 { restoreCharge / restoreReload }
             )
-            AddBar<StealthBuild>(R.Bar.LastDamagedN,
-                { R.Bar.LastDamaged.bundle(lastDamagedTime.seconds) },
+            AddBar<StealthBuild>("last-damage",
+                { "Last Damage:${lastDamagedTime.seconds}s" },
                 { Pal.power },
                 { lastDamagedTime / restoreReload }
             )
