@@ -91,6 +91,7 @@ open class HoloUnit : UnitEntity() {
     }
 
     override fun cap(): Int {
+        team.updateHoloCapacity()
         return team.holoCapacity
     }
 

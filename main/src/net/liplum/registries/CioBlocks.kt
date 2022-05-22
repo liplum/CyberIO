@@ -1463,6 +1463,10 @@ object CioBlocks {
             size = 4
         }
     }
+    @DependOn("CioItems.ic")
+    fun DDos(){
+
+    }
     @DependOn
     fun _overwriteVanilla() {
         DebugOnly {

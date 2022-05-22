@@ -36,8 +36,6 @@ import net.liplum.mdt.ui.settings.AnySetting.Companion.addAny
 import net.liplum.mdt.ui.settings.CheckSettingX.Companion.addCheckPref
 import net.liplum.mdt.ui.settings.SliderSettingX.Companion.addSliderSettingX
 import net.liplum.update.Updater
-import net.liplum.DebugOnly
-import net.liplum.inCio
 import net.liplum.welcome.Conditions
 import net.liplum.welcome.Welcome
 import net.liplum.welcome.WelcomeList
@@ -84,7 +82,7 @@ object CioUI {
     val settings = SettingsTableX().apply {
         var isMenu = true
         genHeader = {
-            it.add("${Meta.Name} v${Meta.DetailedVersion}").row()
+            it.add("${Meta.Name} v${Meta.DetailedVersion} ${CioMod.ContentSpecific.i18nName}").row()
         }
         addSliderSettingX(R.Setting.LinkOpacity,
             100, 0, 100, 5, { "$it%" }
