@@ -21,6 +21,7 @@ import mindustry.type.ammo.PowerAmmoType
 import mindustry.world.meta.BlockFlag
 import net.liplum.Cio
 import net.liplum.R
+import net.liplum.S
 import net.liplum.annotations.DependOn
 import net.liplum.bullets.RuvikBullet
 import net.liplum.bullets.STEM_VERSION
@@ -114,8 +115,8 @@ object CioUnitTypes {
                     height = 10f
                     hitSize = 10f
                     lifetime = 240f
-                    frontColor = R.C.Holo
-                    backColor = R.C.HoloDark
+                    frontColor = S.Hologram
+                    backColor = S.HologramDark
                 }
             })
         }
@@ -201,8 +202,8 @@ object CioUnitTypes {
                     hitSound = Sounds.none
                     healPercent = 5.5f
                     collidesTeam = true
-                    backColor = R.C.Holo
-                    trailColor = R.C.HoloDark
+                    backColor = S.Hologram
+                    trailColor = S.HologramDark
                 }
             })
         }
@@ -248,12 +249,12 @@ object CioUnitTypes {
                     lifetime = 35f
                     healPercent = 8f
                     collidesTeam = true
-                    backColor = R.C.HoloDark
-                    frontColor = R.C.Holo
+                    backColor = S.HologramDark
+                    frontColor = S.Hologram
                     smokeEffect = HoloFx.hitLaser
                     hitEffect = HoloFx.hitLaser
                     despawnEffect = HoloFx.hitLaser
-                    lightColor = R.C.Holo
+                    lightColor = S.Hologram
                 }
             })
         }

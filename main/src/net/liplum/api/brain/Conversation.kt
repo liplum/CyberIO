@@ -8,6 +8,7 @@ import mindustry.Vars
 import mindustry.gen.Building
 import net.liplum.R
 import net.liplum.lib.math.Point2f
+import net.liplum.lib.math.randomExcept
 import net.liplum.lib.utils.BundleKey
 import net.liplum.lib.utils.bundle
 import net.liplum.mdt.ClientOnly
@@ -41,7 +42,6 @@ object ConversationManager {
             }
         }
     }
-
     @ClientOnly
     fun hasConversationWith(b: Building) =
         Toaster[b.id] != null
@@ -62,6 +62,7 @@ class Trigger(
 ) {
     val bundleKeyPrefix = "$prefix.$id-"
     var color: Color = R.C.BrainWave
+
     companion object {
         // @formatter:off
         var killing =           Trigger("killing",              4)
@@ -87,6 +88,7 @@ class Trigger(
         // @formatter:on
         private const val prefix = "heimdall.msg"
         private val p1 = Point2f()
+        private var lastNumber = 0
     }
 
     fun trigger(
@@ -106,8 +108,11 @@ class Trigger(
     }
 
     fun randomOne(): BundleKey {
-        val number = Mathf.random(1, variance)
-        return bundleKeyPrefix + number
+        var selected = variance.randomExcept(lastNumber)
+        if (selected == -1)
+            selected = Mathf.random(0, variance - 1)
+        lastNumber = selected
+        return bundleKeyPrefix + selected
     }
 }
 

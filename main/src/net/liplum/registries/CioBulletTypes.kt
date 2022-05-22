@@ -5,6 +5,7 @@ import mindustry.entities.bullet.BasicBulletType
 import mindustry.graphics.Pal
 import net.liplum.ErekirSpec
 import net.liplum.R
+import net.liplum.S
 import net.liplum.VanillaSpec
 import net.liplum.annotations.DependOn
 import net.liplum.bullets.RuvikBullet
@@ -33,8 +34,8 @@ object CioBulletTypes {
             lifetime = 60f
             pierce = true
             pierceCap = 5
-            backColor = R.C.HoloDark2
-            frontColor = R.C.HoloDark2
+            backColor = S.HologramDark
+            frontColor = S.HologramDark
         }
     }
     @DependOn

@@ -14,6 +14,7 @@ import net.liplum.mdt.shaders.ProgressShader
 import net.liplum.registries.CioShaders.*
 import net.liplum.shaders.SurfaceShader
 import net.liplum.shaders.holo.HologramShader
+import net.liplum.spec
 import net.liplum.useCompatible
 
 object CioShaderLoader {
@@ -24,7 +25,7 @@ object CioShaderLoader {
 // Dynamic
 DynamicColor                = default("DynamicColor",                  ::CommonShader)
 // Hologram
-Hologram                    = default("Hologram",                      ::HologramShader)
+Hologram                    = default("Hologram".spec,                          ::HologramShader)
 
 Monochrome                  = default("Monochrome",                    ::CommonShader)
 InvertColor                 = default("InvertColor",                   ::CommonShader)

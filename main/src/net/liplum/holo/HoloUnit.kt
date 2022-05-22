@@ -19,6 +19,7 @@ import mindustry.logic.LAccess
 import mindustry.world.blocks.ConstructBlock.ConstructBuild
 import net.liplum.mdt.ClientOnly
 import net.liplum.R
+import net.liplum.S
 import net.liplum.lib.Serialized
 import net.liplum.holo.HoloProjector.HoloPBuild
 import net.liplum.registries.EntityRegistry
@@ -109,7 +110,7 @@ open class HoloUnit : UnitEntity() {
                         HoloFx.shieldBreak.at(
                             x, y,
                             cacheRange,
-                            R.C.Holo, this
+                            S.Hologram, this
                         )
                     }
                 }
@@ -138,7 +139,7 @@ open class HoloUnit : UnitEntity() {
         val size = if (plan.breaking) if (active) tile.block().size else lastSize else plan.block.size
         val tx = plan.drawx()
         val ty = plan.drawy()
-        Lines.stroke(1.0f, R.C.Holo)
+        Lines.stroke(1.0f, S.Hologram)
         Draw.z(Layer.buildBeam)
         Draw.alpha(buildAlpha)
         if (!active && tile.build !is ConstructBuild) {
@@ -166,7 +167,7 @@ open class HoloUnit : UnitEntity() {
             val ex = mineTile.worldx() + Mathf.sin(Time.time + 48.0f, swingScl, swingMag)
             val ey = mineTile.worldy() + Mathf.sin(Time.time + 48.0f, swingScl + 2.0f, swingMag)
             Draw.z(115.1f)
-            Draw.color(R.C.Holo)
+            Draw.color(S.Hologram)
             Draw.alpha(0.45f)
             Drawf.laser(Core.atlas.find("minelaser"), Core.atlas.find("minelaser-end"), px, py, ex, ey, 0.75f)
             if (this.isLocal) {
@@ -191,7 +192,7 @@ open class HoloUnit : UnitEntity() {
                 ruvikTipAlpha -= 0.5f / holoType.ruvikShootingTipTime
             }
             if (ruvikTipAlpha > 0f) {
-                G.drawDashCircle(x, y, holoType.ruvikTipRange, color = R.C.Holo, alpha = ruvikTipAlpha)
+                G.drawDashCircle(x, y, holoType.ruvikTipRange, color = S.Hologram, alpha = ruvikTipAlpha)
             }
         }
     }

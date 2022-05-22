@@ -10,6 +10,7 @@ import mindustry.world.Block
 import net.liplum.Clog
 import net.liplum.DebugOnly
 import net.liplum.R
+import net.liplum.S
 import net.liplum.blocks.decentralizer.RecipeCenter.AllRecipes
 import net.liplum.blocks.decentralizer.RecipeCenter.calcuID
 import net.liplum.lib.utils.getF
@@ -138,7 +139,7 @@ open class Decentralizer(name: String) : Block(name) {
         override fun draw() {
             super.draw()
             DebugOnly {
-                "$curRecipe".postToastTextOn(this, R.C.Holo, faded = false)
+                "$curRecipe".postToastTextOn(this, S.Hologram, faded = false)
             }
         }
     }

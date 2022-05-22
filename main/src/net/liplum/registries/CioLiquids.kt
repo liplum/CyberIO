@@ -3,6 +3,7 @@ package net.liplum.registries
 import mindustry.content.StatusEffects
 import mindustry.type.Liquid
 import net.liplum.R
+import net.liplum.S
 import net.liplum.annotations.DependOn
 
 object CioLiquids {
@@ -10,7 +11,7 @@ object CioLiquids {
     @JvmStatic lateinit var tissueFluid: Liquid
     @DependOn
     fun cyberion() {
-        cyberion = Liquid(R.Liquid.Cyberion, R.C.Holo).apply {
+        cyberion = Liquid(R.Liquid.Cyberion, S.Hologram).apply {
             flammability = 0f
             explosiveness = 0f
             temperature = 0.1f
@@ -18,7 +19,7 @@ object CioLiquids {
             viscosity = 0.8f
             boilPoint = 0.7f
             effect = StatusEffects.freezing
-            lightColor = R.C.Holo.cpy().a(0.2f)
+            lightColor = S.Hologram.cpy().a(0.2f)
         }
     }
     @DependOn
@@ -31,7 +32,7 @@ object CioLiquids {
             viscosity = 0.6f
             boilPoint = 0.51f
             effect = StatusEffects.freezing
-            lightColor = R.C.Holo.cpy().a(0.2f)
+            lightColor = S.Hologram.cpy().a(0.2f)
         }
     }
 }

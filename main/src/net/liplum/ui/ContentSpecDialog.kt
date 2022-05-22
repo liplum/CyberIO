@@ -15,6 +15,10 @@ import net.liplum.lib.utils.bundle
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.ui.UIToast
 import net.liplum.mdt.ui.addTrackTooltip
+import net.liplum.ContentSpec
+import net.liplum.i18nDesc
+import net.liplum.i18nName
+import net.liplum.icon
 
 @ClientOnly
 object ContentSpecDialog {

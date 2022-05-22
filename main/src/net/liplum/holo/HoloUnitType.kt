@@ -24,9 +24,11 @@ import mindustry.graphics.Pal
 import mindustry.type.ItemStack
 import mindustry.type.UnitType
 import mindustry.ui.Bar
+import mindustry.world.meta.Env
 import mindustry.world.meta.Stat
 import net.liplum.DebugOnly
 import net.liplum.R
+import net.liplum.S
 import net.liplum.lib.shaders.SD
 import net.liplum.lib.shaders.use
 import net.liplum.lib.utils.bundle
@@ -54,18 +56,19 @@ open class HoloUnitType(name: String) : UnitType(name) {
     @JvmField var researchReq: Array<ItemStack> = emptyArray()
 
     init {
-        //outlineColor = R.C.HoloDark
-        lightColor = R.C.Holo
-        engineColor = R.C.Holo
-        healColor = R.C.Holo
-        engineColorInner = R.C.HoloDark
-        mechLegColor = R.C.HoloDark
+        //outlineColor = S.HologramDark
+        lightColor = S.Hologram
+        engineColor = S.Hologram
+        healColor = S.Hologram
+        engineColorInner = S.HologramDark
+        mechLegColor = S.HologramDark
         wreckRegions = emptyArray()
         fallEffect = Fx.none
         fallEngineEffect = Fx.none
         deathExplosionEffect = Fx.none
         canDrown = false
         immunities.addAll(Vars.content.statusEffects())
+        envDisabled = Env.none
     }
 
     open fun AutoLife(lose: Float) {
@@ -210,13 +213,13 @@ open class HoloUnitType(name: String) : UnitType(name) {
             DebugOnly {
                 bars.add(Bar(
                     { R.Bar.RestLifeFigure.bundle(unit.restLife.seconds) },
-                    { R.C.Holo },
+                    { S.Hologram },
                     { unit.restLifePercent }
                 ))
             }.Else {
                 bars.add(Bar(
                     { R.Bar.RestLife.bundle },
-                    { R.C.Holo },
+                    { S.Hologram },
                     { unit.restLifePercent }
                 ))
             }
@@ -285,7 +288,7 @@ open class HoloUnitType(name: String) : UnitType(name) {
         Fill.light(
             unit.x, unit.y, Lines.circleVertices(radius), radius,
             Color.clear,
-            Tmp.c2.set(R.C.Holo)
+            Tmp.c2.set(S.Hologram)
                 .lerp(Color.white, Mathf.clamp(unit.hitTime() / 2f))
                 .a(0.7f * alpha)
         )

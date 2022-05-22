@@ -20,6 +20,7 @@ import mindustry.world.blocks.defense.turrets.Turret
 import mindustry.world.draw.DrawTurret
 import mindustry.world.meta.Stat
 import net.liplum.R
+import net.liplum.S
 import net.liplum.api.IExecutioner
 import net.liplum.lib.TR
 import net.liplum.lib.math.quadratic
@@ -115,8 +116,8 @@ open class Deleter(name: String) : PowerTurret(name), IExecutioner {
     open inner class DeleterWave : BasicBulletType(), IExecutioner by this@Deleter {
         init {
             hitEffect = Fx.hitLancer
-            frontColor = R.C.Holo
-            backColor = R.C.HoloDark
+            frontColor = S.Hologram
+            backColor = S.HologramDark
             pierce = true
             pierceCap = 10
             lightRadius = 1f

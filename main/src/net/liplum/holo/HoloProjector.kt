@@ -47,6 +47,8 @@ import net.liplum.mdt.utils.ID
 import net.liplum.mdt.utils.ItemTypeAmount
 import net.liplum.lib.utils.percentI
 import net.liplum.mdt.*
+import net.liplum.DebugOnly
+import net.liplum.UndebugOnly
 import kotlin.math.max
 
 open class HoloProjector(name: String) : Block(name) {
@@ -303,7 +305,7 @@ open class HoloProjector(name: String) : Block(name) {
             val tx = x
             val ty = y
             Lines.stroke(1.0f)
-            Draw.color(R.C.HoloDark)
+            Draw.color(S.HologramDark)
             Draw.alpha(alpha)
             // the floating of center
             val focusLen = 3.8f + Mathf.absin(projecting, 3.0f, 0.6f)
@@ -350,6 +352,10 @@ open class HoloProjector(name: String) : Block(name) {
                     Structs.contains(curPlan.req.items) {
                         it.item === item
                     }
+        }
+
+        override fun created() {
+            team.updateHoloCapacity()
         }
 
         override fun add() {

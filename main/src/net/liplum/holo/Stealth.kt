@@ -25,6 +25,7 @@ import mindustry.world.meta.StatUnit
 import mindustry.world.meta.StatValues
 import net.liplum.DebugOnly
 import net.liplum.R
+import net.liplum.S
 import net.liplum.api.cyber.*
 import net.liplum.api.holo.IHoloEntity
 import net.liplum.api.holo.IHoloEntity.Companion.minHealth
@@ -126,7 +127,7 @@ open class Stealth(name: String) : Turret(name) {
                         it.opacityNoise *= 2f - healthPct
                         it.flickering = it.DefaultFlickering + (1f - healthPct)
                         it.blendHoloColorOpacity = 0f
-                        Draw.color(R.C.Holo)
+                        Draw.color(S.Hologram)
                         ImageTR.Draw(
                             x + recoilOffset.x + floating.dx,
                             y + recoilOffset.y + floating.dy,
@@ -142,7 +143,7 @@ open class Stealth(name: String) : Turret(name) {
                         ruvikTipAlpha -= 0.5f / ruvikShootingTipTime
                     }
                     if (ruvikTipAlpha > 0f) {
-                        G.drawDashCircle(x, y, range, color = R.C.Holo, alpha = ruvikTipAlpha)
+                        G.drawDashCircle(x, y, range, color = S.Hologram, alpha = ruvikTipAlpha)
                     }
                 }
             }
@@ -248,7 +249,7 @@ open class Stealth(name: String) : Turret(name) {
         @ClientOnly @JvmField
         var floating: Floating = Floating(FloatingRange).randomXY().changeRate(1)
         override fun drawSelect() {
-            G.dashCircle(x, y, range, R.C.HoloDark)
+            G.dashCircle(x, y, range, S.HologramDark)
             whenNotConfiguringHost {
                 this.drawStreamGraphic()
             }

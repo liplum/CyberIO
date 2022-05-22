@@ -7,6 +7,7 @@ import mindustry.Vars
 import mindustry.gen.BlockUnitc
 import mindustry.graphics.Pal
 import net.liplum.R
+import net.liplum.S
 import net.liplum.annotations.Only
 import net.liplum.annotations.SubscribeEvent
 import net.liplum.blocks.prism.AutoRGB
@@ -63,7 +64,7 @@ object OverwrittenUI {
                     val unit = Vars.player.unit()
                     siderBar.color.set(
                         if (unit is HoloUnit)
-                            R.C.Holo
+                            S.Hologram
                         else if (player.displayAmmo())
                             if (player.dead() || unit is BlockUnitc) {
                                 if (unit is BlockUnitc) {

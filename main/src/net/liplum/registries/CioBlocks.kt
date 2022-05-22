@@ -612,6 +612,7 @@ object CioBlocks {
                 restoreReload = 20 * 60f
                 scaledHealth = 450f
             }
+            squareSprite = false
             size = 2
             buildCostMultiplier = 4.5f
         }
@@ -959,7 +960,7 @@ object CioBlocks {
                 consumeItem(Items.thorium, 1)
                 consumeLiquid(Liquids.cryofluid, 0.3f)
                 // TODO: use default drawer temporarily
-                //drawer = CyberionMixerDrawer(R.C.Holo, R.C.HoloDark)
+                //drawer = CyberionMixerDrawer(S.Hologram, S.HologramDark)
                 drawer = DrawMulti(DrawLiquidTile(CioLiquids.cyberion), DrawDefault())
                 size = 3
             }
@@ -984,7 +985,7 @@ object CioBlocks {
                 overheatScale = 1.5f
                 outputLiquid = LiquidStack(CioLiquids.cyberion, 0.55f)
                 // TODO: use default drawer temporarily
-                //drawer = CyberionMixerDrawer(R.C.Holo, R.C.HoloDark)
+                //drawer = CyberionMixerDrawer(S.Hologram, S.HologramDark)
                 drawer = DrawMulti(DrawLiquidTile(CioLiquids.cyberion), DrawDefault())
                 size = 3
             }
@@ -1072,7 +1073,7 @@ object CioBlocks {
             cacheLayer = CioCLs.cyberion
             emitLight = true
             lightRadius = 30f
-            lightColor = R.C.Holo.cpy().a(0.19f)
+            lightColor = S.Hologram.cpy().a(0.19f)
         }
     }
     @DependOn(
@@ -1110,6 +1111,7 @@ object CioBlocks {
                 reload = 18f
             }
             size = 3
+            squareSprite = false
 
             shootType = RuvikBullet().apply {
                 VanillaSpec {
@@ -1126,8 +1128,8 @@ object CioBlocks {
                 hitSize = 10f
                 lifetime = 240f
                 maxRange = range
-                frontColor = R.C.Holo
-                backColor = R.C.HoloDark
+                frontColor = S.Hologram
+                backColor = S.HologramDark
             }
         }
     }
@@ -1167,6 +1169,7 @@ object CioBlocks {
                 scaledHealth = 400f
                 range = 175f
                 powerUse = 2.5f
+                damage = 8f
             }
             ErekirSpec {
                 requirements(
@@ -1182,7 +1185,7 @@ object CioBlocks {
                 range = 145f
                 powerUse = 2.4f
                 waveSpeed = 1.8f
-                damage = 6f
+                damage = 10f
                 reloadTime = 75f
             }
             size = 4

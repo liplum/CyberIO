@@ -13,12 +13,14 @@ import mindustry.graphics.Pal
 import mindustry.world.blocks.defense.Wall
 import net.liplum.DebugOnly
 import net.liplum.R
+import net.liplum.S
 import net.liplum.api.holo.IHoloEntity
 import net.liplum.api.holo.IHoloEntity.Companion.minHealth
 import net.liplum.lib.Serialized
 import net.liplum.lib.TR
 import net.liplum.lib.shaders.SD
 import net.liplum.lib.shaders.use
+import net.liplum.lib.utils.bundle
 import net.liplum.lib.utils.isZero
 import net.liplum.lib.utils.toFloat
 import net.liplum.mdt.ClientOnly
@@ -67,8 +69,8 @@ open class HoloWall(name: String) : Wall(name) {
         removeItemsInBar()
         removeBar("health")
         AddBar<HoloBuild>("health",
-            { "stat.health" },
-            { R.C.Holo },
+            { "stat.health".bundle },
+            { S.Hologram },
             { healthf() }
         ) {
             blink(Color.white)
@@ -77,12 +79,12 @@ open class HoloWall(name: String) : Wall(name) {
         DebugOnly {
             AddBar<HoloBuild>("is-projecting",
                 { "Is Projecting: ${isProjecting.yesNo()}" },
-                { R.C.HoloDark },
+                { S.HologramDark },
                 { isProjecting.toFloat() }
             )
             AddBar<HoloBuild>("rest-restore",
                 { "Rest Restore: ${restRestore.toInt()}" },
-                { R.C.Holo },
+                { S.Hologram },
                 { restRestore / maxHealth }
             )
             AddBar<HoloBuild>("charge",
@@ -152,7 +154,7 @@ open class HoloWall(name: String) : Wall(name) {
                     it.opacityNoise *= 2f - healthPct
                     it.flickering = it.DefaultFlickering + (1f - healthPct)
                     it.blendHoloColorOpacity = 0f
-                    Draw.color(R.C.Holo)
+                    Draw.color(S.Hologram)
                     Draw.rect(
                         ImageTR,
                         x + floating.dx,

@@ -25,6 +25,7 @@ import net.liplum.mdt.animations.ganim.GlobalAnimation
 import net.liplum.registries.CioShaderLoader
 import net.liplum.registries.CioTechTree
 import net.liplum.registries.ServerCommands.registerCioCmds
+import net.liplum.registries.SpecificLoader
 import net.liplum.render.TestShader
 import net.liplum.scripts.NpcSystem
 import net.liplum.update.Updater
@@ -88,6 +89,7 @@ class CioMod : Mod() {
         ClientOnly {
             ContentSpecific = Settings.ContentSpecific.resolveContentSpec()
         }
+        SpecificLoader.handle()
         EventRegistry.registerAll()
         ClientOnly {
             GL.handleCompatible()

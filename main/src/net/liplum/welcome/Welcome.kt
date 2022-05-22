@@ -7,10 +7,7 @@ import arc.util.Time
 import arc.util.serialization.JsonValue
 import mindustry.game.EventType.Trigger
 import mindustry.io.JsonIO
-import net.liplum.Cio
-import net.liplum.CioMod
-import net.liplum.Meta
-import net.liplum.R
+import net.liplum.*
 import net.liplum.Settings.CioVersion
 import net.liplum.Settings.ClickWelcomeTimes
 import net.liplum.Settings.LastWelcomeID
@@ -76,7 +73,7 @@ object Welcome {
     @SubscribeEvent(CioInitEvent::class, Only.client)
     fun modifierModInfo() {
         val meta = CioMod.Info.meta
-        meta.displayName = "[#${R.C.Holo}]${meta.displayName}[]"
+        meta.displayName = "[#${S.Hologram}]${Meta.Name}[]"
         Events.run(Trigger.update) {
             if (Time.time % 60 < 1f) {
                 val color = RandomName.oneColor()

@@ -6,7 +6,6 @@ import mindustry.world.blocks.production.GenericCrafter
 import mindustry.world.consumers.ConsumeItems
 import mindustry.world.consumers.ConsumePower
 import net.liplum.Clog
-import net.liplum.DebugOnly
 import net.liplum.lib.Out
 import net.liplum.lib.utils.shr
 import net.liplum.mdt.utils.ID
