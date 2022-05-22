@@ -40,6 +40,8 @@ import net.liplum.blocks.data.Receiver
 import net.liplum.blocks.data.Sender
 import net.liplum.blocks.data.SmartDistributor
 import net.liplum.blocks.data.SmartUnloader
+import net.liplum.blocks.ddos.DDoS
+import net.liplum.blocks.ddos.ItemBulletType
 import net.liplum.blocks.debugonly.AdjustableOverdrive
 import net.liplum.blocks.decentralizer.Decentralizer
 import net.liplum.blocks.deleter.Deleter
@@ -105,6 +107,7 @@ object CioBlocks {
     @JvmStatic lateinit var hand: Hand
     @JvmStatic lateinit var heart: Heart
     @JvmStatic lateinit var decentralizer: Decentralizer
+    @JvmStatic lateinit var DDoS: DDoS
     @DependOn("CioItems.ic")
     fun icMachine() {
         icMachine = ICMachine("ic-machine").apply {
@@ -1464,8 +1467,17 @@ object CioBlocks {
         }
     }
     @DependOn("CioItems.ic")
-    fun DDos(){
-
+    fun DDos() {
+        DDoS = DDoS("DDoS").apply {
+            requirements(
+                Category.turret, BuildVisibility.shown, arrayOf()
+            )
+            bulletType = ItemBulletType().apply {
+                speed = 2f
+                trailLength = 8
+                lifetime = 180f
+            }
+        }
     }
     @DependOn
     fun _overwriteVanilla() {

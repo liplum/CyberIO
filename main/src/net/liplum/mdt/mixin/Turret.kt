@@ -42,6 +42,16 @@ fun Bullet.copy(): Bullet {
     d.hitSize = this.hitSize
     d.damage = this.damage
     d.mover = this.mover
+    d.fdata = this.fdata
+    d.keepAlive = this.keepAlive
+    d.originX = this.originX
+    d.originY = this.originY
+    d.lastX = this.lastX
+    d.lastY = this.lastY
+    d.hit = this.hit
+    d.deltaX = this.deltaX
+    d.deltaY = this.deltaY
+    d.absorbed = this.absorbed
     //reset trail
     if (d.trail != null) {
         d.trail.clear()
