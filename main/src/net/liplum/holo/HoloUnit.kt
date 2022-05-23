@@ -199,7 +199,7 @@ open class HoloUnit : UnitEntity() {
     }
 
     override fun classId(): Int {
-        return EntityRegistry.getID(javaClass)
+        return EntityRegistry[javaClass]
     }
 
     override fun read(read: Reads) {

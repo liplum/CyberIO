@@ -8,7 +8,7 @@ import net.liplum.registries.EntityRegistry
  */
 open class NpcUnit : UnitEntity() {
     override fun classId(): Int {
-        return EntityRegistry.getID(javaClass)
+        return EntityRegistry[javaClass]
     }
     /**
      * Although a Npc is actually AI, this is done to prevent it from being controlled by player.

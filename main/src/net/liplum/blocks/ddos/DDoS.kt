@@ -32,6 +32,7 @@ class DDoS(name: String) : Turret(name) {
     var acceptTime = 120f
     var bulletType: BulletType = Bullets.placeholder
     var maxDamage = 120f
+    var hitSizer: Bullet.() -> Float = { 4f }
     var maxItemReachAttenuation = 20
     var attenuation = 0.5f
     var maxConnection = -1
@@ -116,6 +117,7 @@ class DDoS(name: String) : Turret(name) {
         override fun handleBullet(bullet: Bullet, offsetX: Float, offsetY: Float, angleOffset: Float) {
             bullet.fdata = curAcceptItem.id.toFloat()
             bullet.damage = maxDamage * (1f - attenuation * (curItemUsed.toFloat() / maxItemReachAttenuation).coerceAtMost(1f))
+            bullet.hitSize = bullet.hitSizer()
         }
 
         override fun shoot(type: BulletType) {

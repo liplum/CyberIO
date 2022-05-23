@@ -14,25 +14,24 @@ import mindustry.gen.Building
 import mindustry.graphics.Drawf
 import mindustry.graphics.Layer
 import mindustry.world.blocks.power.PowerBlock
-import mindustry.world.consumers.ConsumePowerCondition
 import mindustry.world.meta.Stat
-import net.liplum.*
-import net.liplum.mdt.Draw
-import net.liplum.lib.math.approachR
-import net.liplum.lib.entity.RadiationArray
-import net.liplum.lib.utils.isZero
-import net.liplum.lib.math.Polar
-import net.liplum.lib.math.radian
-import net.liplum.lib.TR
-import net.liplum.mdt.ClientOnly
 import net.liplum.DebugOnly
+import net.liplum.R
 import net.liplum.lib.Serialized
+import net.liplum.lib.TR
+import net.liplum.lib.entity.RadiationArray
+import net.liplum.lib.math.Polar
+import net.liplum.lib.math.approachR
+import net.liplum.lib.math.radian
+import net.liplum.lib.utils.isZero
+import net.liplum.mdt.ClientOnly
+import net.liplum.mdt.Draw
 import net.liplum.mdt.WhenNotPaused
+import net.liplum.mdt.render.G
 import net.liplum.mdt.utils.sub
 import net.liplum.mdt.utils.toCenterWorldXY
 import net.liplum.mdt.utils.worldXY
-import net.liplum.mdt.render.G
-import net.liplum.utils.*
+import net.liplum.utils.addPowerUseStats
 import kotlin.math.min
 
 open class WirelessTower(name: String) : PowerBlock(name) {
@@ -90,7 +89,8 @@ open class WirelessTower(name: String) : PowerBlock(name) {
             toCenterWorldXY(y),
             range,
             {
-                it.block.hasPower && it.block.consPower != null
+                val consPower = it.block.consPower
+                it.block.hasPower && consPower != null && consPower.buffered
             }) {
             G.drawSelected(it, R.C.Power)
         }
@@ -113,31 +113,16 @@ open class WirelessTower(name: String) : PowerBlock(name) {
 
         override fun updateTile() {
             lastNeed = 0f
-            if (power.status <= 0.999f) return
-            forEachTargetInRange {
+            if (power.status.isZero) return
+            forEachBufferedInRange {
                 val powerCons = it.block.consPower
                 val power = it.power
                 val originalStatus = power.status
-                var request = powerCons.requestedPower(it)
-                if (powerCons.buffered) {
-                    if (!request.isZero && powerCons.capacity > 0) {
-                        val provided = min(request, realSpeed)
-                        power.status = Mathf.clamp(
-                            originalStatus + provided / powerCons.capacity
-                        )
-                        lastNeed += provided * dst2CostRate(it.dst(this))
-                    }
-                } else {
-                    if (powerCons is ConsumePowerCondition)
-                        request = if (request.isZero)
-                            powerCons.usage
-                        else
-                            request
-                    if (request.isZero) return@forEachTargetInRange
-                    val rest = (1f - originalStatus) * request
-                    val provided = min(rest, realSpeed)
+                val request = powerCons.requestedPower(it)
+                if (!request.isZero && powerCons.capacity > 0) {
+                    val provided = min(request, realSpeed)
                     power.status = Mathf.clamp(
-                        originalStatus + provided / request
+                        originalStatus + provided / powerCons.capacity
                     )
                     lastNeed += provided * dst2CostRate(it.dst(this))
                 }
@@ -146,7 +131,7 @@ open class WirelessTower(name: String) : PowerBlock(name) {
 
         override fun drawSelect() {
             G.drawDashCircle(x, y, realRange, R.C.Power, stroke = (realRange / 100f).coerceAtLeast(1f))
-            forEachTargetInRange {
+            forEachBufferedInRange {
                 G.drawSelected(it, R.C.Power)
             }
         }
@@ -209,10 +194,16 @@ open class WirelessTower(name: String) : PowerBlock(name) {
             }
         }
 
-        open fun forEachTargetInRange(cons: (Building) -> Unit) {
+        open fun forEachBufferedInRange(cons: (Building) -> Unit) {
             Vars.indexer.eachBlock(
                 this, range,
-                { it.block.hasPower && it.block.consPower != null && it !is WirelessTowerBuild },
+                {
+                    if (it is WirelessTowerBuild) return@eachBlock false
+                    val consPower = it.block.consPower
+                    val power = it.power
+                    if (power == null || consPower == null) return@eachBlock false
+                    consPower.buffered && this !in power.graph.consumers
+                },
                 cons
             )
         }

@@ -1166,19 +1166,35 @@ object CioBlocks {
     @DependOn("CioItems.ic")
     fun wirelessTower() {
         wirelessTower = WirelessTower("wireless-tower").apply {
-            requirements(
-                Category.power, BuildVisibility.shown, arrayOf(
-                    ItemStack(CioItems.ic, 2),
-                    ItemStack(Items.copper, 310),
-                    ItemStack(Items.lead, 20),
-                    ItemStack(Items.silicon, 20),
-                    ItemStack(Items.graphite, 30),
+            VanillaSpec {
+                requirements(
+                    Category.power, BuildVisibility.shown, arrayOf(
+                        ItemStack(CioItems.ic, 2),
+                        ItemStack(Items.copper, 310),
+                        ItemStack(Items.lead, 20),
+                        ItemStack(Items.silicon, 20),
+                        ItemStack(Items.graphite, 30),
+                    )
                 )
-            )
-            health = 600
-            distributeSpeed = 10f
+                scaledHealth = 150f
+                distributeSpeed = 10f
+                range = 300f
+            }
+            ErekirSpec {
+                requirements(
+                    Category.power, BuildVisibility.shown, arrayOf(
+                        ItemStack(CioItems.ic, 10),
+                        ItemStack(Items.tungsten, 150),
+                        ItemStack(Items.graphite, 100),
+                        ItemStack(Items.silicon, 80),
+                        ItemStack(Items.carbide, 50),
+                    )
+                )
+                scaledHealth = 100f
+                distributeSpeed = 10f
+                range = 320f
+            }
             size = 2
-            range = 300f
         }
     }
     @DependOn("CioItems.ic")
@@ -1500,10 +1516,12 @@ object CioBlocks {
                 Category.turret, BuildVisibility.shown, arrayOf()
             )
             maxDamage = 120f
+            hitSizer = { damage / 60f * 4f }
             bulletType = ItemBulletType().apply {
                 speed = 2f
                 damage = 0f
-                sizer = { damage / 60f }
+                hitSize = 10f
+                drawSizer = { damage / 60f }
                 trailLength = 8
                 lifetime = 180f
                 trailWidth = 4f

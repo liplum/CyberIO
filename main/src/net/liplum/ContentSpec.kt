@@ -7,10 +7,11 @@ import net.liplum.mdt.utils.atlas
 
 enum class ContentSpec(
     val id: String,
-    val needSuffix: Boolean
+    val needSuffixModVersion: Boolean,
+    val needSuffixResource: Boolean,
 ) {
-    Vanilla("vanilla", false),
-    Erekir("erekir", true);
+    Vanilla("vanilla", false, false),
+    Erekir("erekir", true, true);
 
     override fun toString() = id
 
@@ -24,10 +25,14 @@ enum class ContentSpec(
 }
 
 val String.spec: String
-    get() = CioMod.ContentSpecific.suffixModVersion(this)
+    get() = CioMod.ContentSpecific.suffixResource(this)
 
 fun ContentSpec.suffixModVersion(version: String) =
-    if (needSuffix) "$version-$id"
+    if (needSuffixModVersion) "$version-$id"
+    else version
+
+fun ContentSpec.suffixResource(version: String) =
+    if (needSuffixModVersion) "$version-$id"
     else version
 @ClientOnly
 val ContentSpec.i18nName: String
