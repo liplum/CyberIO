@@ -133,6 +133,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
         if (maxRange > 0f)
             G.dashCircle(this, x, y, maxRange, R.C.Sender)
     }
+
     override fun setBars() {
         super.setBars()
         UndebugOnly {
@@ -229,10 +230,6 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
             return genRelativeAllPos()
         }
 
-        open fun checkReceiverPos() {
-            receivers.removeAll { !it.dr().exists }
-        }
-
         open fun checkQueue() {
             if (queue.isNotEmpty()) {
                 val it = queue.iterator()
@@ -240,8 +237,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
                     val pos = it.next()
                     val dr = pos.dr()
                     if (dr != null) {
-                        dr.connect(this)
-                        this.connectReceiver(dr)
+                        connectSync(dr)
                         it.remove()
                     }
                 }
@@ -255,7 +251,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
             }
             checkQueue()
             if (timer(CheckConnectionTimer, 60f)) {
-                checkReceiverPos()
+                checkReceiversPos()
             }
             ClientOnly {
                 lastUnloadTime += Time.delta

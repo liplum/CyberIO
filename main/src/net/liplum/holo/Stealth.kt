@@ -59,7 +59,7 @@ open class Stealth(name: String) : Turret(name) {
     @ClientOnly @JvmField var FloatingRange = 0.6f
     @JvmField var restoreReq = 30f
     @ClientOnly @JvmField var ruvikShootingTipTime = 60f
-
+    @JvmField val CheckConnectionTimer = timers++
     init {
         update = true
         sync = true
@@ -182,6 +182,10 @@ open class Stealth(name: String) : Turret(name) {
         @Serialized
         var hosts = OrderedSet<Int>()
         override fun updateTile() {
+            // Check connection every second
+            if (timer(CheckConnectionTimer, 60f)) {
+                checkHostsPos()
+            }
             unit.ammo(unit.type().ammoCapacity * liquids.currentAmount() / liquidCapacity)
             lastDamagedTime += delta()
             if (restoreCharge < restoreReload && !isRecovering && canRestructure) {

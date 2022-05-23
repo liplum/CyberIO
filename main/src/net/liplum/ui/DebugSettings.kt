@@ -7,14 +7,18 @@ import arc.scene.ui.TextButton
 import arc.scene.ui.layout.Table
 import arc.scene.utils.Elem
 import mindustry.Vars
+import mindustry.graphics.Pal
 import mindustry.graphics.Shaders.getShaderFi
 import mindustry.ui.dialogs.BaseDialog
 import net.liplum.Debug
 import net.liplum.Debug.SettingType
+import net.liplum.R
+import net.liplum.S
 import net.liplum.Settings
 import net.liplum.lib.Dir
 import net.liplum.lib.toFi
 import net.liplum.mdt.ui.ShowTextDialog
+import net.liplum.welcome.Welcome
 
 object DebugSettingsDialog {
     @JvmStatic
@@ -22,17 +26,25 @@ object DebugSettingsDialog {
         BaseDialog("Debug Settings").apply {
             addCloseButton()
             cont.add(ScrollPane(Table().apply {
-                add("Settings").row()
+                add("Stuff").color(Pal.ammo).row()
+                add(Table().apply {
+                    add(TextButton("Show welcome").apply {
+                        changed {
+                            Welcome.showWelcomeDialog()
+                        }
+                    }).width(300f)
+                }).pad(5f).row()
+                add("Settings").color(Pal.bulletYellowBack).row()
                 for (setting in Debug.settings) {
                     add(setting.resolveSettingType()).growX().row()
                 }
-                add("Shaders").row()
+                add("Shaders").color(S.HologramDark).row()
                 add(Table().apply {
                     add("Root Folder:")
                     field(Settings.ShaderRootPath) {
                         Settings.ShaderRootPath = it
                     }.width(300f)
-                }).row()
+                }).pad(5f).row()
                 val shaderLocator: (String) -> Fi = {
                     Dir(Settings.ShaderRootPath).subF(it).toFi()
                 }

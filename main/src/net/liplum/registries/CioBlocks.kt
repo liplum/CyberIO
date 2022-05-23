@@ -1017,6 +1017,33 @@ object CioBlocks {
                 )
                 scaledHealth = 100f
                 researchCostMultiplier = 0.8f
+                plans = Seq.with(
+                    HoloPlan(
+                        CioUnitTypes.holoMiner,
+                        Requirement(300f),
+                        15f * 60f
+                    ),
+                    HoloPlan(
+                        CioUnitTypes.holoFighter,
+                        Requirement(300f),
+                        15f * 60f
+                    ),
+                    HoloPlan(
+                        CioUnitTypes.holoGuardian,
+                        Requirement(155f),
+                        7.5f * 60f
+                    ),
+                    HoloPlan(
+                        CioUnitTypes.holoArchitect,
+                        Requirement(600f),
+                        25f * 60f
+                    ),
+                    HoloPlan(
+                        CioUnitTypes.holoSupporter,
+                        Requirement(250f),
+                        12f * 60f
+                    ),
+                )
             }
             ErekirSpec {
                 requirements(
@@ -1030,34 +1057,34 @@ object CioBlocks {
                 )
                 scaledHealth = 150f
                 researchCostMultiplier = 0.75f
+                plans = Seq.with(
+                    HoloPlan(
+                        CioUnitTypes.holoMiner,
+                        Requirement(300f),
+                        18f * 60f
+                    ),
+                    HoloPlan(
+                        CioUnitTypes.holoFighter,
+                        Requirement(300f),
+                        15f * 60f
+                    ),
+                    HoloPlan(
+                        CioUnitTypes.holoGuardian,
+                        Requirement(155f),
+                        7.5f * 60f
+                    ),
+                    HoloPlan(
+                        CioUnitTypes.holoArchitect,
+                        Requirement(600f),
+                        25f * 60f
+                    ),
+                    HoloPlan(
+                        CioUnitTypes.holoSupporter,
+                        Requirement(250f),
+                        12f * 60f
+                    ),
+                )
             }
-            plans = Seq.with(
-                HoloPlan(
-                    CioUnitTypes.holoMiner,
-                    Requirement(300f),
-                    15f * 60f
-                ),
-                HoloPlan(
-                    CioUnitTypes.holoFighter,
-                    Requirement(300f),
-                    15f * 60f
-                ),
-                HoloPlan(
-                    CioUnitTypes.holoGuardian,
-                    Requirement(155f),
-                    7.5f * 60f
-                ),
-                HoloPlan(
-                    CioUnitTypes.holoArchitect,
-                    Requirement(600f),
-                    25f * 60f
-                ),
-                HoloPlan(
-                    CioUnitTypes.holoSupporter,
-                    Requirement(250f),
-                    12f * 60f
-                ),
-            )
             size = 5
             buildCostMultiplier = 2f
         }
@@ -1472,10 +1499,14 @@ object CioBlocks {
             requirements(
                 Category.turret, BuildVisibility.shown, arrayOf()
             )
+            maxDamage = 120f
             bulletType = ItemBulletType().apply {
                 speed = 2f
+                damage = 0f
+                sizer = { damage / 60f }
                 trailLength = 8
                 lifetime = 180f
+                trailWidth = 4f
             }
         }
     }

@@ -187,7 +187,7 @@ open class Cloud(name: String) : PowerBlock(name) {
             }
         }
 
-        override fun acceptedAmount(sender: IDataSender, itme: Item): Int = -1
+        override fun acceptedAmount(sender: IDataSender, item: Item): Int = -1
         override fun acceptItem(source: Building, item: Item) = false
         override fun handleItem(source: Building, item: Item) {
         }

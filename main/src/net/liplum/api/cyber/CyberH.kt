@@ -511,3 +511,19 @@ fun IStreamHost.drawMaxRange() {
         G.dashCircle(building.x, building.y, maxRange, hostColor)
     }
 }
+
+fun IDataReceiver.checkSendersPos() {
+    connectedSenders.removeAll { !it.ds().exists }
+}
+
+fun IDataSender.checkReceiversPos() {
+    connectedReceivers.removeAll { !it.dr().exists }
+}
+
+fun IStreamHost.checkClientsPos() {
+    connectedClients.removeAll { !it.sc().exists }
+}
+
+fun IStreamClient.checkHostsPos() {
+    connectedHosts.removeAll { !it.sh().exists }
+}

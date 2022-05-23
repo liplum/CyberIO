@@ -5,6 +5,7 @@ import arc.util.Log
 import arc.util.Time
 import mindustry.Vars
 import net.liplum.CioMod
+import net.liplum.Clog
 import net.liplum.R
 import net.liplum.Settings
 import net.liplum.lib.utils.bundle
@@ -62,6 +63,22 @@ object Actions {
                         CioUI.showUpdateFailed(error)
                     }
                 })
+            }
+        }
+    }
+    val CallStaticFunction = object : Action("CallStaticFunction") {
+        override fun doAction(entity: Welcome.Entity) {
+            val data = entity.tip.data
+            val clzName = data["ClassFullName"] as? String
+            val funcName = data["StaticFunctionName"] as? String
+            if (clzName != null && funcName != null) {
+                try {
+                    val clz = Class.forName(clzName)
+                    val method = clz.getMethod(funcName)
+                    method.invoke(null)
+                } catch (e: Exception) {
+                    Clog.err(e)
+                }
             }
         }
     }

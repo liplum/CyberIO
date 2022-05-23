@@ -117,10 +117,6 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
         var lastFullDataDelta = 0f
         @Serialized
         var senders = OrderedSet<Int>()
-        open fun checkSenderPos() {
-            senders.removeAll { !it.ds().exists }
-        }
-
         @JvmField var onRequirementUpdated: Delegate1<IDataReceiver> = Delegate1()
         override fun getOnRequirementUpdated() = onRequirementUpdated
         override fun onRemoved() {
@@ -138,7 +134,7 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
         override fun updateTile() {
             // Check connection every second
             if (timer(CheckConnectionTimer, 60f)) {
-                checkSenderPos()
+                checkSendersPos()
             }
             ClientOnly {
                 lastOutputDelta += Time.delta
@@ -180,13 +176,12 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
         }
 
         override fun acceptItem(source: Building, item: Item): Boolean = false
-        override fun acceptedAmount(sender: IDataSender, itme: Item): Int {
+        override fun acceptedAmount(sender: IDataSender, item: Item): Int {
             if (!canConsume()) return 0
 
-            return if (itme == outputItem)
+            return if (item == outputItem)
                 getMaximumAccepted(outputItem) - items[outputItem]
-            else
-                0
+            else 0
         }
 
         override fun receiveData(sender: IDataSender, item: Item, amount: Int) {

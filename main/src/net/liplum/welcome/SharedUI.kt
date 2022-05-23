@@ -9,8 +9,11 @@ import arc.scene.ui.layout.Cell
 import arc.scene.ui.layout.Table
 import arc.scene.utils.Elem
 import arc.util.Scaling
-import net.liplum.mdt.DesktopOnly
+import net.liplum.CioMod
+import net.liplum.Meta
+import net.liplum.i18nName
 import net.liplum.lib.TR
+import net.liplum.mdt.DesktopOnly
 
 internal fun Dialog.addPoster(
     icon: TR,
@@ -29,6 +32,15 @@ internal fun Dialog.addPoster(
     }
     table.add(img).minSize(200f).scaling(Scaling.fill).row()
     return img
+}
+
+internal fun Dialog.addPoliteWelcome(entity: Welcome.Entity) {
+    addCenterText(
+        entity.bundle.format(
+            "welcome",
+            "${Meta.DetailedVersion} ${CioMod.ContentSpecific.i18nName}"
+        )
+    )
 }
 
 internal fun Dialog.addCenterText(

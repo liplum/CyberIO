@@ -14,21 +14,22 @@ import mindustry.graphics.Drawf
 import mindustry.logic.LAccess
 import mindustry.type.Liquid
 import mindustry.ui.Bar
-import net.liplum.mdt.ClientOnly
 import net.liplum.DebugOnly
 import net.liplum.R
-import net.liplum.lib.Serialized
 import net.liplum.api.cyber.*
-import net.liplum.mdt.DrawOn
+import net.liplum.lib.Serialized
 import net.liplum.lib.delegates.Delegate1
+import net.liplum.lib.persistance.intSet
+import net.liplum.mdt.ClientOnly
+import net.liplum.mdt.DrawOn
+import net.liplum.mdt.WhenTheSameTeam
 import net.liplum.mdt.mixin.total
 import net.liplum.mdt.ui.bars.appendDisplayLiquidsDynamic
 import net.liplum.mdt.ui.bars.genAllLiquidBars
 import net.liplum.mdt.ui.bars.removeLiquidInBar
-import net.liplum.lib.persistance.intSet
 import net.liplum.mdt.utils.ForProximity
-import net.liplum.utils.addHostInfo
 import net.liplum.mdt.utils.buildAt
+import net.liplum.utils.addHostInfo
 
 /**
  * Steam server is also a [IStreamClient].
@@ -104,10 +105,6 @@ open class StreamServer(name: String) : StreamHost(name) {
             }
         }
 
-        open fun checkHostPos() {
-            hosts.removeAll { !it.sh().exists }
-        }
-
         @JvmField protected var restored = true
         override fun updateTile() {
             if (restored) {
@@ -119,7 +116,7 @@ open class StreamServer(name: String) : StreamHost(name) {
             // Check connection every second
             if (timer(CheckConnectionTimer, 60f)) {
                 checkClientsPos()
-                checkHostPos()
+                checkHostsPos()
                 ClientOnly {
                     mixedLiquidColor = Color.white.cpy()
                     val total = liquids.total()
@@ -263,10 +260,12 @@ open class StreamServer(name: String) : StreamHost(name) {
 
         override fun displayBars(table: Table) {
             super.displayBars(table)
-            this.appendDisplayLiquidsDynamic(
-                table, allLiquidBars
-            ) {
-                super.displayBars(table)
+            WhenTheSameTeam {
+                this.appendDisplayLiquidsDynamic(
+                    table, allLiquidBars
+                ) {
+                    super.displayBars(table)
+                }
             }
         }
 

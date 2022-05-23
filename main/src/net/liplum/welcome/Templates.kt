@@ -2,7 +2,6 @@ package net.liplum.welcome
 
 import arc.scene.ui.Button
 import mindustry.ui.dialogs.BaseDialog
-import net.liplum.Meta
 import net.liplum.mdt.ui.frag.RateStarPanelFrag
 import net.liplum.update.Updater
 import net.liplum.welcome.Welcome.Entity
@@ -15,8 +14,7 @@ object Templates {
                 val data = entity.tip.data
                 addPoster(entity.icon)
                 val showPoliteWelcome = data["ShowPoliteWelcome"] as? Boolean ?: true
-                if (showPoliteWelcome)
-                    addCenterText(entity.bundle.format("welcome", Meta.DetailedVersion))
+                if (showPoliteWelcome) addPoliteWelcome(entity)
                 addCenterText(entity.content)
                 addCloseButton(entity["read"])
             }
@@ -48,11 +46,12 @@ object Templates {
         override fun gen(entity: Entity) =
             BaseDialog(entity["title"]).apply {
                 val data = entity.tip.data
+                addPoster(entity.icon)
+                val showPoliteWelcome = data["ShowPoliteWelcome"] as? Boolean ?: false
+                if (showPoliteWelcome) addPoliteWelcome(entity)
                 val yesAction = ActionRegistry[data["YesAction"]]
                 val noAction = ActionRegistry[data["NoAction"]]
-                addPoster(entity.icon)
                 addCenterText(entity.content)
-                val order = data["Order"] as? String ?: "YesNo"
                 cont.table {
                     fun addButton(vararg buttons: Button) {
                         for (b in buttons)
@@ -65,10 +64,7 @@ object Templates {
                     val no = createCloseButton(entity["no"]) {
                         noAction(entity)
                     }
-                    if (order == "NoYes")
-                        addButton(no, yes)
-                    else
-                        addButton(yes, no)
+                    addButton(yes, no)
                 }.growX()
                     .row()
             }
@@ -84,8 +80,7 @@ object Templates {
                     this.setFontScale(fontSize)
                 }
                 val showPoliteWelcome = data["ShowPoliteWelcome"] as? Boolean ?: true
-                if (showPoliteWelcome)
-                    addCenterText(entity.bundle.format("welcome", Meta.DetailedVersion))
+                if (showPoliteWelcome) addPoliteWelcome(entity)
                 addCenterText(entity.content)
                 addCloseButton(entity["read"])
             }
@@ -95,8 +90,7 @@ object Templates {
             BaseDialog(entity["title"]).apply {
                 val data = entity.tip.data
                 val showPoliteWelcome = data["ShowPoliteWelcome"] as? Boolean ?: true
-                if (showPoliteWelcome)
-                    addCenterText(entity.bundle.format("welcome", Meta.DetailedVersion))
+                if (showPoliteWelcome) addPoliteWelcome(entity)
                 val fontSize = data["FontSize"] as? Float ?: 1f
                 addCenterText(entity.content).pad(40f).get().apply {
                     this.setFontScale(fontSize)
@@ -110,8 +104,7 @@ object Templates {
                 val data = entity.tip.data
                 addPoster(entity.icon)
                 val showPoliteWelcome = data["ShowPoliteWelcome"] as? Boolean ?: true
-                if (showPoliteWelcome)
-                    addCenterText(entity.bundle.format("welcome", Meta.DetailedVersion))
+                if (showPoliteWelcome) addPoliteWelcome(entity)
                 addCenterText(entity.content)
                 val starSize = data["StarSize"] as? Float ?: 50f
                 val ratePanel = RateStarPanelFrag().apply {

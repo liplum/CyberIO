@@ -47,8 +47,7 @@
     "Template": "DoAction",
     "IconPath": "ad-block",
     "Data": {
-      "YesAction": "StopReceiveWelcome",
-      "Order": "NoYes"
+      "NoAction": "StopReceiveWelcome"
     },
     "Chance": 300
   },
@@ -86,5 +85,18 @@
     "ID": "ErekirDetected",
     "Condition": "SpecialDishes",
     "IconPath": "spec-erekir"
+  },
+  {
+    "ID": "SetOutErekir",
+    "Condition": "SettingsReq",
+    "IconPath": "spec-erekir",
+    "Template": "DoAction",
+    "Data": {
+      "ShowPoliteWelcome": true,
+      "CExpression": "@ContentSpecific == vanilla",
+      "YesAction": "CallStaticFunction",
+      "ClassFullName": "net.liplum.ui.ContentSpecDialog",
+      "StaticFunctionName": "show"
+    }
   }
 ]

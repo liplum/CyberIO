@@ -7,7 +7,10 @@ import arc.util.Time
 import arc.util.serialization.JsonValue
 import mindustry.game.EventType.Trigger
 import mindustry.io.JsonIO
-import net.liplum.*
+import net.liplum.Cio
+import net.liplum.CioMod
+import net.liplum.Meta
+import net.liplum.S
 import net.liplum.Settings.CioVersion
 import net.liplum.Settings.ClickWelcomeTimes
 import net.liplum.Settings.LastWelcomeID
@@ -41,8 +44,10 @@ object Welcome {
         if (showWelcome) {
             entity.showTip()
         }
-        // For debug
-        //entity.showTipByID("ErekirDetected")
+        //For debug
+        //val tip = WelcomeList.find { it.id == "SetOutErekir" }
+        //tip?.condition?.canShow(tip)
+        //entity.showTipByID("AdBlock")
     }
     @JvmStatic
     fun judgeWelcome() {

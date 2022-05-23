@@ -18,10 +18,10 @@ public interface IDataReceiver extends IDataBuilding {
      * -1 means any
      *
      * @param sender sender
-     * @param itme   item
+     * @param item   item
      * @return amount
      */
-    int acceptedAmount(@NotNull IDataSender sender, @NotNull Item itme);
+    int acceptedAmount(@NotNull IDataSender sender, @NotNull Item item);
 
     /**
      * Gets what this receiver wants<br/>

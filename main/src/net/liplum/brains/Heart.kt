@@ -26,15 +26,23 @@ import mindustry.ui.Bar
 import mindustry.world.Block
 import mindustry.world.blocks.ControlBlock
 import mindustry.world.blocks.heat.HeatBlock
-import net.liplum.*
 import net.liplum.CioMod.Companion.DebugMode
+import net.liplum.DebugOnly
+import net.liplum.R
 import net.liplum.api.brain.*
-import net.liplum.lib.*
+import net.liplum.lib.Serialized
+import net.liplum.lib.Smooth
+import net.liplum.lib.TR
+import net.liplum.lib.TRs
 import net.liplum.lib.math.FUNC
-import net.liplum.lib.utils.*
+import net.liplum.lib.utils.bundle
+import net.liplum.lib.utils.format
+import net.liplum.lib.utils.isZero
+import net.liplum.lib.utils.toDouble
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.Draw
 import net.liplum.mdt.WhenNotPaused
+import net.liplum.mdt.WhenTheSameTeam
 import net.liplum.mdt.animations.anims.Anime
 import net.liplum.mdt.animations.anims.linearFrames
 import net.liplum.mdt.animations.anims.randomCurTime
@@ -50,7 +58,7 @@ import net.liplum.mdt.ui.bars.removeLiquidInBar
 import net.liplum.mdt.utils.MdtUnit
 import net.liplum.mdt.utils.sheet
 import net.liplum.mdt.utils.sub
-import net.liplum.utils.*
+import net.liplum.utils.addBrainInfo
 
 class Heart(name: String) : Block(name), IComponentBlock {
     // Upgrade component
@@ -534,10 +542,12 @@ class Heart(name: String) : Block(name), IComponentBlock {
 
         override fun displayBars(table: Table) {
             super.displayBars(table)
-            this.appendDisplayLiquidsDynamic(
-                table, allLiquidBars
-            ) {
-                super.displayBars(table)
+            WhenTheSameTeam {
+                this.appendDisplayLiquidsDynamic(
+                    table, allLiquidBars
+                ) {
+                    super.displayBars(table)
+                }
             }
         }
         // For output heat

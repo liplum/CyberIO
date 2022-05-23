@@ -238,10 +238,6 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
             updateRequirements()
         }
 
-        open fun checkSendersPos() {
-            senders.removeAll { !it.ds().exists }
-        }
-
         override fun updateTile() {
             // Check connection every second
             if (timer(CheckConnectionTimer, 60f)) {

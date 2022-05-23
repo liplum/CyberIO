@@ -128,9 +128,6 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
         @Serialized
         var clients = OrderedSet<Int>()
         @ClientOnly @JvmField var liquidFlow = 0f
-        open fun checkClientsPos() {
-            clients.removeAll { !it.sc().exists }
-        }
         /**
          * When this stream host was restored by schematic, it should check whether the client was built.
          *
@@ -181,8 +178,7 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
                     val pos = it.next()
                     val dr = pos.sc()
                     if (dr != null) {
-                        dr.connect(this)
-                        this.connectClient(dr)
+                        connectSync(dr)
                         it.remove()
                     }
                 }

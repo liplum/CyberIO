@@ -66,7 +66,7 @@ dependencies {
     //compileOnly(files("$rootDir/run/Mindustry136.jar"))
     compileOnly("com.github.anuken.mindustryjitpack:core:$MdtHash")
     testImplementation("com.github.anuken.mindustryjitpack:core:$MdtHash")
-    implementation("com.github.liplum:OpenGAL:v0.4.1")
+    implementation("com.github.liplum:OpenGAL:v0.4.3")
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1")
 

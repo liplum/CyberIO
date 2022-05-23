@@ -27,10 +27,10 @@ import net.liplum.bullets.RuvikBullet
 import net.liplum.bullets.STEM_VERSION
 import net.liplum.flesh.BrainUnitType
 import net.liplum.holo.*
-import net.liplum.scripts.NpcUnitType
 import net.liplum.mdt.utils.NewUnitType
 import net.liplum.mdt.utils.registerPayloadSource
 import net.liplum.mdt.utils.registerUnitType
+import net.liplum.scripts.NpcUnitType
 
 object CioUnitTypes {
     @JvmStatic lateinit var holoMiner: HoloUnitType
@@ -51,11 +51,15 @@ object CioUnitTypes {
             AutoLife(maxHealth = 1600f, lose = 0.08f)
             health = 2000f
             speed = 2f
+            targetPriority = -1f
             aiController = Prov { MinerAI() }
             controller = Func { MinerAI() }
             lowAltitude = true
             flying = true
+            mineHardnessScaling = true
             hovering = true
+            mineWalls = true
+            mineFloor = true
             mineSpeed = 10f
             mineTier = 5
             armor = 2f
@@ -79,6 +83,7 @@ object CioUnitTypes {
             AutoLife(maxHealth = 2400f, lose = 0.19f)
             speed = 4f
             accel = 0.08f
+            targetPriority = 1f
             drag = 0.016f
             buildSpeed = 1f
             flying = true
@@ -121,7 +126,6 @@ object CioUnitTypes {
             })
         }
     }
-
     @DependOn("CioItems.ic")
     fun holoGuardian() {
         holoGuardian = NewUnitType(R.Unit.HoloGuardian, ::HoloUnitType, ::HoloUnit).apply {
@@ -131,6 +135,7 @@ object CioUnitTypes {
                     60f, 4f, 2200f, 60f * 8
                 )
             )
+            targetPriority = 5f
             aiController = Prov { DefenderAI() }
             HoloOpacity = 0.4f
             speed = 1.6f
@@ -208,7 +213,6 @@ object CioUnitTypes {
             })
         }
     }
-
     @DependOn
     fun holoSupporter() {
         holoSupporter = NewUnitType(R.Unit.HoloSupporter, ::HoloUnitType, ::HoloUnit).apply {
@@ -259,7 +263,6 @@ object CioUnitTypes {
             })
         }
     }
-
     @DependOn
     fun brain() {
         registerUnitType(R.Unit.Brain)

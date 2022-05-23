@@ -33,22 +33,19 @@ import mindustry.world.consumers.ConsumeItemDynamic
 import mindustry.world.meta.BlockGroup
 import mindustry.world.meta.Stat
 import net.liplum.*
-import net.liplum.mdt.consumer.DynamicContinuousLiquidCons
 import net.liplum.lib.Serialized
-import net.liplum.mdt.Draw
-import net.liplum.lib.utils.bundle
 import net.liplum.lib.shaders.SD
 import net.liplum.lib.shaders.use
+import net.liplum.lib.utils.bundle
+import net.liplum.lib.utils.percentI
+import net.liplum.mdt.*
+import net.liplum.mdt.consumer.DynamicContinuousLiquidCons
 import net.liplum.mdt.ui.addItemSelectorDefault
 import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.ui.bars.removeItemsInBar
-import net.liplum.registries.CioLiquids.cyberion
 import net.liplum.mdt.utils.ID
 import net.liplum.mdt.utils.ItemTypeAmount
-import net.liplum.lib.utils.percentI
-import net.liplum.mdt.*
-import net.liplum.DebugOnly
-import net.liplum.UndebugOnly
+import net.liplum.registries.CioLiquids.cyberion
 import kotlin.math.max
 
 open class HoloProjector(name: String) : Block(name) {
@@ -173,6 +170,8 @@ open class HoloProjector(name: String) : Block(name) {
         @Serialized
         var progressTime = 0f
         var commandPos: Vec2? = null
+        override fun block(): HoloProjector = this@HoloProjector
+
         val progress: Float
             get() {
                 val plan = curPlan
@@ -251,7 +250,7 @@ open class HoloProjector(name: String) : Block(name) {
                     }
                     unit.setProjector(this)
                     val commandPos = commandPos
-                    if(commandPos != null && unit.isCommandable){
+                    if (commandPos != null && unit.isCommandable) {
                         unit.command().commandPosition(commandPos)
                     }
                     Events.fire(UnitCreateEvent(unit, this))
@@ -355,22 +354,22 @@ open class HoloProjector(name: String) : Block(name) {
         }
 
         override fun created() {
-            team.updateHoloCapacity()
+            team.updateHoloCapacity(this)
         }
 
         override fun add() {
             super.add()
-            team.updateHoloCapacity()
+            team.updateHoloCapacity(this)
         }
 
         override fun updateProximity() {
             super.updateProximity()
-            team.updateHoloCapacity()
+            team.updateHoloCapacity(this)
         }
 
         override fun remove() {
             super.remove()
-            team.updateHoloCapacity()
+            team.updateHoloCapacity(this)
         }
 
         override fun read(read: Reads, revision: Byte) {

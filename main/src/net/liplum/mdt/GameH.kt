@@ -6,6 +6,7 @@ import arc.Events
 import arc.util.Log
 import mindustry.Vars
 import mindustry.game.EventType.Trigger
+import mindustry.gen.Teamc
 import net.liplum.lib.Condition
 import java.lang.annotation.Inherited
 import kotlin.annotation.AnnotationTarget.*
@@ -228,6 +229,12 @@ inline fun RunOnPostDraw(crossinline func: () -> Unit) {
 
 inline fun RunOnPreDraw(crossinline func: () -> Unit) {
     Events.run(Trigger.preDraw) {
+        func()
+    }
+}
+
+inline fun Teamc.WhenTheSameTeam(func: () -> Unit) {
+    if (team() == Vars.player.team()) {
         func()
     }
 }

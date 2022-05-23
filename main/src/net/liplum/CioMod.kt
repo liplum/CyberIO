@@ -141,13 +141,6 @@ class CioMod : Mod() {
                 LiplumCloud.save()
             }
             Vars.enableConsole = true
-            /*Events.on(WorldLoadEvent::class.java) {
-                CioBlocks.sender.requirements = arrayOf()
-                CioBlocks.receiver.requirements = arrayOf()
-                CioBlocks.sender.requirements = arrayOf()
-                Vars.world
-                //Vars.state.rules.borderDarkness
-            }*/
             ClientOnly {
                 NpcSystem.register()
                 Core.input.addProcessor(UnitTap)

@@ -186,7 +186,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
             if (waiting != null) {
                 val dr = waiting.dr()
                 if (dr != null) {
-                    receiverPos = dr.building.tilePoint()
+                    connectSync(dr)
                     queue = null
                 }
             }

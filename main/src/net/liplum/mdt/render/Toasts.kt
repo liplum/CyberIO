@@ -13,18 +13,18 @@ var ToastTime = 180f
 private val p1 = Point2f()
 @JvmOverloads
 fun String.postToastTextOn(
-    other: Building,
+    b: Building,
     color: Color,
     useGlobalTime: Boolean = false,
     overwrite: Boolean = true,
     faded: Boolean = true,
 ) {
     ClientOnly {
-        Toaster.post(other.id, ToastTime, useGlobalTime, overwrite) {
-            if (!p1.set(other.x, other.y).inViewField(other.block.clipSize)) return@post
+        Toaster.post(b.id, ToastTime, useGlobalTime, overwrite) {
+            if (!p1.set(b.x, b.y).inViewField(b.block.clipSize)) return@post
             Text.drawText {
                 setText(it, this@postToastTextOn)
-                if (!other.isAdded) {
+                if (!b.isAdded) {
                     toast.duration *= 0.99f
                 }
                 it.color.set(color).a(
@@ -32,12 +32,18 @@ fun String.postToastTextOn(
                     else 1f
                 )
                 it.draw(
-                    this@postToastTextOn, other.x,
-                    other.y + other.block.size * Vars.tilesize / 2f,
+                    this@postToastTextOn, b.x,
+                    b.y + b.block.size * Vars.tilesize / 2f,
                     Align.center
                 )
             }
         }
+    }
+}
+
+fun removeToastOn(b: Building) {
+    ClientOnly {
+        Toaster.remove(b.id)
     }
 }
 @JvmOverloads

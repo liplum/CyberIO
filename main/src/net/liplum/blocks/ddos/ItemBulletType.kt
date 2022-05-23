@@ -1,14 +1,16 @@
 package net.liplum.blocks.ddos
 
 import arc.graphics.g2d.Draw
+import arc.util.Tmp
 import mindustry.Vars
 import mindustry.content.Items
 import mindustry.entities.bullet.BulletType
 import mindustry.gen.Bullet
 import mindustry.type.Item
-import net.liplum.mdt.Draw
+import net.liplum.mdt.DrawSize
 
 class ItemBulletType : BulletType() {
+    var sizer: Bullet.() -> Float = { 1f }
     fun Bullet.item(): Item {
         val itemID = fdata.toInt()
         val all = Vars.content.items()
@@ -20,7 +22,8 @@ class ItemBulletType : BulletType() {
         super.draw(b)
         // Using fdata instead of data is for Prism
         val item = item()
-        item.fullIcon.Draw(x, y, rotation())
+        Draw.color(hitColor)
+        item.fullIcon.DrawSize(x, y, sizer(), rotation())
     }
 
     override fun drawTrail(b: Bullet) = b.run {
@@ -28,7 +31,7 @@ class ItemBulletType : BulletType() {
             val z = Draw.z()
             Draw.z(z - 0.0001f)
             val item = item()
-            trail.draw(item.color, trailWidth)
+            trail.draw(Tmp.c1.set(item.color).lerp(trailColor, 0.5f).a(item.color.a), trailWidth)
             Draw.z(z)
         }
     }

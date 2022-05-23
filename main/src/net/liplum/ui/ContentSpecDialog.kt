@@ -9,6 +9,7 @@ import arc.scene.ui.Label
 import arc.scene.ui.layout.Table
 import mindustry.Vars
 import mindustry.gen.Icon
+import mindustry.gen.Sounds
 import mindustry.ui.dialogs.BaseDialog
 import net.liplum.*
 import net.liplum.lib.utils.bundle
@@ -24,6 +25,7 @@ import net.liplum.icon
 object ContentSpecDialog {
     val prefix = "setting.${R.Setting.ContentSpecific}"
     var toastUI = UIToast()
+    var fadeDuration = 0.8f
     @JvmStatic
     fun bundle(key: String, vararg args: Any) =
         if (args.isEmpty()) "$prefix.$key".bundle
@@ -35,6 +37,7 @@ object ContentSpecDialog {
         fun changeCurSpec(new: ContentSpec) {
             if (curSpec != new) {
                 curSpec = new
+                Sounds.message.play()
                 val tipKey = if (curSpec != CioMod.ContentSpecific) "switch-to" else "switch-back"
                 toastUI.postToastOnUI(Table().apply {
                     add(bundle(tipKey, curSpec.i18nName))
@@ -50,7 +53,6 @@ object ContentSpecDialog {
                 add(Label(R.Bundle.UnsavedChange.bundle).apply {
                     setColor(R.C.RedAlert)
                 })
-                val fadeDuration = 1f
                 actions(Actions.alpha(0f))
                 update {
                     if (!changed) return@update

@@ -1,6 +1,6 @@
 package net.liplum.update
 
-data class Version2(val major: Int, val minor: Int) {
+data class Version2(val major: Int, val minor: Int) : Comparable<String> {
     operator fun compareTo(b: Version2): Int {
         if (major > b.major)
             return 1
@@ -11,6 +11,10 @@ data class Version2(val major: Int, val minor: Int) {
             minor == b.major -> 0
             else -> -1
         }
+    }
+
+    override fun compareTo(other: String): Int {
+        return this.compareTo(valueOf(other))
     }
 
     override fun toString() = "$major.$minor"

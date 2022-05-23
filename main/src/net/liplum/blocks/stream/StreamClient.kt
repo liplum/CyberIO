@@ -41,6 +41,7 @@ open class StreamClient(name: String) : AniedBlock<StreamClient, StreamClient.Cl
     @ClientOnly lateinit var TopTR: TR
     @JvmField val timerTransfer = timers++
     @JvmField var dumpScale = 2f
+    @JvmField val CheckConnectionTimer = timers++
 
     init {
         hasLiquids = true
@@ -100,10 +101,6 @@ open class StreamClient(name: String) : AniedBlock<StreamClient, StreamClient.Cl
                 }
             }
 
-        open fun checkHostPos() {
-            hosts.removeAll { !it.sh().exists }
-        }
-
         @JvmField var onRequirementUpdated: Delegate1<IStreamClient> = Delegate1()
         override fun getOnRequirementUpdated() = onRequirementUpdated
         override fun getRequirements(): Array<Liquid>? = outputLiquid.req
@@ -112,8 +109,8 @@ open class StreamClient(name: String) : AniedBlock<StreamClient, StreamClient.Cl
         override fun getClientColor(): Color = outputLiquid.clientColor
         override fun updateTile() {
             // Check connection every second
-            if (Time.time % 60f < 1) {
-                checkHostPos()
+            if (timer(CheckConnectionTimer, 60f)) {
+                checkHostsPos()
             }
             val outputLiquid = outputLiquid
             // every tick check dump

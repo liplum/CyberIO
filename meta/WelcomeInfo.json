@@ -30,7 +30,8 @@
     "Default": "ErekirDetected",
     "Parent": "common",
     "Scene": [
-      "ErekirDetected"
+      "ErekirDetected",
+      "SetOutErekir"
     ]
   }
 }
