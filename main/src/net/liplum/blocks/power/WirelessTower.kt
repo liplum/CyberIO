@@ -82,7 +82,7 @@ open class WirelessTower(name: String) : PowerBlock(name) {
     override fun icons() = arrayOf(BaseTR, SupportTR, CoilTR)
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)
-        G.drawDashCircle(x.worldXY, y.worldXY, range, R.C.Power)
+        G.drawDashCircleBreath(x.worldXY, y.worldXY, range, R.C.Power)
         Vars.indexer.eachBlock(
             Vars.player.team(),
             toCenterWorldXY(x),
@@ -92,7 +92,7 @@ open class WirelessTower(name: String) : PowerBlock(name) {
                 val consPower = it.block.consPower
                 it.block.hasPower && consPower != null && consPower.buffered
             }) {
-            G.drawSelected(it, R.C.Power)
+            G.drawWrappedSquareBreath(it)
         }
     }
 
@@ -120,7 +120,7 @@ open class WirelessTower(name: String) : PowerBlock(name) {
                 val originalStatus = power.status
                 val request = powerCons.requestedPower(it)
                 if (!request.isZero && powerCons.capacity > 0) {
-                    val provided = min(request, realSpeed)
+                    val provided = min(request, realSpeed) * Time.delta
                     power.status = Mathf.clamp(
                         originalStatus + provided / powerCons.capacity
                     )
@@ -130,9 +130,9 @@ open class WirelessTower(name: String) : PowerBlock(name) {
         }
 
         override fun drawSelect() {
-            G.drawDashCircle(x, y, realRange, R.C.Power, stroke = (realRange / 100f).coerceAtLeast(1f))
+            G.drawDashCircleBreath(x, y, realRange, R.C.Power, stroke = (realRange / 100f).coerceAtLeast(1f))
             forEachBufferedInRange {
-                G.drawSelected(it, R.C.Power)
+                G.drawWrappedSquareBreath(it)
             }
         }
         @ClientOnly
@@ -188,7 +188,7 @@ open class WirelessTower(name: String) : PowerBlock(name) {
                 G.circle(
                     x, y,
                     nonlinearProgress * realRange,
-                    R.C.Power, Renderer.laserOpacity,
+                    R.C.Power, Renderer.laserOpacity * 0.8f,
                     (realRange / 100f).coerceAtLeast(1f)
                 )
             }

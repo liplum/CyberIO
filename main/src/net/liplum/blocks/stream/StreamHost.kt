@@ -120,7 +120,7 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)
         if (maxRange > 0f)
-            G.dashCircle(this, x, y, maxRange, R.C.Host)
+            G.dashCircleBreath(this, x, y, maxRange, R.C.Host)
     }
 
     open inner class HostBuild : AniedBuild(), IStreamHost {

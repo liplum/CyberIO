@@ -18,7 +18,6 @@ import mindustry.graphics.Layer
 import mindustry.logic.LAccess
 import mindustry.world.blocks.ConstructBlock.ConstructBuild
 import net.liplum.mdt.ClientOnly
-import net.liplum.R
 import net.liplum.S
 import net.liplum.lib.Serialized
 import net.liplum.holo.HoloProjector.HoloPBuild
@@ -193,7 +192,7 @@ open class HoloUnit : UnitEntity() {
                 ruvikTipAlpha -= 0.5f / holoType.ruvikShootingTipTime
             }
             if (ruvikTipAlpha > 0f) {
-                G.drawDashCircle(x, y, holoType.ruvikTipRange, color = S.Hologram, alpha = ruvikTipAlpha)
+                G.drawDashCircleBreath(x, y, holoType.ruvikTipRange, color = S.Hologram, alpha = ruvikTipAlpha)
             }
         }
     }

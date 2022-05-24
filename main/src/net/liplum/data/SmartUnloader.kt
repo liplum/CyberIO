@@ -1,4 +1,4 @@
-package net.liplum.blocks.data
+package net.liplum.data
 
 import arc.math.Mathf
 import arc.math.geom.Point2
@@ -131,7 +131,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)
         if (maxRange > 0f)
-            G.dashCircle(this, x, y, maxRange, R.C.Sender)
+            G.dashCircleBreath(this, x, y, maxRange, R.C.Sender)
     }
 
     override fun setBars() {

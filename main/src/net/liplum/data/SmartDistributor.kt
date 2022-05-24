@@ -1,4 +1,4 @@
-package net.liplum.blocks.data
+package net.liplum.data
 
 import arc.func.Boolf
 import arc.graphics.Color

@@ -61,18 +61,18 @@ object G {
     }
     @JvmStatic
     @JvmOverloads
-    fun drawDashLineBetweenTwoBlocks(
+    fun drawDashLineBetweenTwoBlocksBreath(
         startTile: Tile, endTile: Tile,
         lineColor: Color = Pal.placing, outlineColor: Color = Pal.gray,
         alpha: Float? = null
-    ) = drawDashLineBetweenTwoBlocks(
+    ) = drawDashLineBetweenTwoBlocksBreath(
         startTile.block(), startTile.x, startTile.y,
         endTile.block(), endTile.x, endTile.y,
         lineColor, outlineColor, alpha
     )
     @JvmStatic
     @JvmOverloads
-    fun drawDashLineBetweenTwoBlocks(
+    fun drawDashLineBetweenTwoBlocksBreath(
         startBlock: Block, startBlockX: TileXYs, startBlockY: TileXYs,
         endBlock: Block, endBlockX: TileXYs, endBlockY: TileXYs,
         lineColor: Color = Pal.placing, outlineColor: Color = Pal.gray,
@@ -112,27 +112,27 @@ object G {
     }
     @JvmStatic
     @JvmOverloads
-    fun drawArrowBetweenTwoBlocks(
+    fun drawArrowBetweenTwoBlocksBreath(
         startTile: Tile, pointTile: Tile,
         alpha: Float? = null
-    ) = drawArrowBetweenTwoBlocks(
+    ) = drawArrowBetweenTwoBlocksBreath(
         startTile.block(), startTile.x, startTile.y,
         pointTile.block(), pointTile.x, pointTile.y,
         alpha = alpha
     )
     @JvmStatic
     @JvmOverloads
-    fun drawArrowBetweenTwoBlocks(
+    fun drawArrowBetweenTwoBlocksBreath(
         startTile: Tile, pointedTile: Tile,
         arrowColor: Color,
         alpha: Float? = null
-    ) = drawArrowBetweenTwoBlocks(
+    ) = drawArrowBetweenTwoBlocksBreath(
         startTile.block(), startTile.x, startTile.y, pointedTile.block(), pointedTile.x, pointedTile.y,
         arrowColor, alpha
     )
     @JvmOverloads
     @JvmStatic
-    fun drawArrowBetweenTwoBlocks(
+    fun drawArrowBetweenTwoBlocksBreath(
         startBlock: Block, startBlockX: TileXYs, startBlockY: TileXYs,
         pointedBlock: Block, pointedBlockX: TileXYs, pointedBlockY: TileXYs,
         arrowColor: Color = Pal.accent,
@@ -152,7 +152,7 @@ object G {
     }
     @JvmStatic
     @JvmOverloads
-    fun drawArrowPointingThis(
+    fun drawArrowPointingThisBreath(
         pointedBlock: Block, pointedBlockX: TileXYs, pointedBlockY: TileXYs,
         degrees: Float,
         arrowColor: Color = Pal.power,
@@ -196,7 +196,7 @@ object G {
     }
     @JvmStatic
     @JvmOverloads
-    fun drawArrowLine(
+    fun drawArrowLineBreath(
         startDrawX: WorldXY, startDrawY: WorldXY,
         endDrawX: WorldXY, endDrawY: WorldXY,
         blockSize: Int,
@@ -237,7 +237,7 @@ object G {
         alpha: Float? = null,
         size: Float = 4f,
     ) {
-        drawArrowLine(
+        drawArrowLineBreath(
             startBlockX.toWorldXY,
             startBlockY.toWorldXY,
             endBlockX.toWorldXY,
@@ -261,7 +261,7 @@ object G {
         alpha: Float? = null,
         size: Float = 4f,
     ) {
-        drawArrowLine(
+        drawArrowLineBreath(
             startBlock.toCenterWorldXY(startBlockX),
             startBlock.toCenterWorldXY(startBlockY),
             endBlock.toCenterWorldXY(endBlockX),
@@ -282,7 +282,7 @@ object G {
         arrowColor: Color = Pal.power,
         alpha: Float? = null,
         size: Float = 4f,
-    ) = drawArrowLine(
+    ) = drawArrowLineBreath(
         start.x, start.y,
         end.x, end.y,
         start.block.size,
@@ -311,7 +311,7 @@ object G {
     }
     @JvmStatic
     @JvmOverloads
-    fun drawSurroundingCircle(
+    fun drawSurroundingCircleBreath(
         t: Tile, circleColor: Color = Pal.power,
         alpha: Float? = null, stroke: Float = 1f
     ) = circle(
@@ -321,7 +321,7 @@ object G {
     )
     @JvmStatic
     @JvmOverloads
-    fun drawSurroundingCircle(
+    fun drawSurroundingCircleBreath(
         b: Block, x: WorldXY, y: WorldXY, circleColor: Color = Pal.power,
         alpha: Float? = null, stroke: Float = 1f
     ) = circle(
@@ -331,7 +331,7 @@ object G {
     )
     @JvmStatic
     @JvmOverloads
-    fun drawSurroundingCircle(
+    fun drawSurroundingCircleBreath(
         b: Block, x: TileXY, y: TileXY,
         circleColor: Color = Pal.power,
         alpha: Float? = null, stroke: Float = 1f
@@ -343,7 +343,7 @@ object G {
     )
     @JvmStatic
     @JvmOverloads
-    fun dashCircle(
+    fun dashCircleBreath(
         b: Block, x: TileXY, y: TileXY, rad: WorldXY,
         circleColor: Color = Pal.power,
         alpha: Float? = null, stroke: Float = 1f
@@ -374,21 +374,21 @@ object G {
     }
     @JvmStatic
     @JvmOverloads
-    fun drawDashCircle(
+    fun drawDashCircleBreath(
         build: Building,
         range: WorldXY, color: Color = Pal.power,
         alpha: Float? = null, stroke: Float = 1f
     ) = dashCircle(build.x, build.y, range + sin - 2, color, alpha, stroke)
     @JvmStatic
     @JvmOverloads
-    fun drawDashCircle(
+    fun drawDashCircleBreath(
         x: WorldXY, y: WorldXY,
         range: WorldXY, color: Color = Pal.power,
         alpha: Float? = null, stroke: Float = 1f
     ) = dashCircle(x, y, range + sin - 2, color, alpha, stroke)
     @JvmStatic
     @JvmOverloads
-    fun drawDashCircle(
+    fun drawDashCircleBreath(
         b: Block, blockX: TileXYs, BlockY: TileXYs,
         range: WorldXY, color: Color = Pal.power,
         alpha: Float? = null, stroke: Float = 1f
@@ -406,6 +406,7 @@ object G {
         )
     }
     @JvmStatic
+    @JvmOverloads
     fun drawMaterialIcon(
         b: Building, material: UnlockableContent,
         alpha: Float = 1f
@@ -422,6 +423,7 @@ object G {
         Draw.rect(icon, dx, dy, size, size)
     }
     @JvmStatic
+    @JvmOverloads
     fun drawMaterialIcons(
         b: Building, materials: Array<out UnlockableContent>,
         alpha: Float = 1f, maxPerRow: Int = 4
@@ -441,5 +443,19 @@ object G {
             Draw.alpha(alpha)
             Draw.rect(icon, x, y, size, size)
         }
+    }
+    @JvmStatic
+    @JvmOverloads
+    fun drawWrappedSquareBreath(
+        b: Building, color: Color = Pal.accent
+    ) {
+        Drawf.square(b.x, b.y, b.block.size * Vars.tilesize / 2f + 2.5f + sin, 0f, color)
+    }
+    @JvmStatic
+    @JvmOverloads
+    fun drawWrappedSquare(
+        b: Building, color: Color = Pal.accent
+    ) {
+        Drawf.square(b.x, b.y, b.block.size * Vars.tilesize / 2f + 2.5f, 0f, color)
     }
 }

@@ -152,7 +152,7 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
 
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)
-        G.drawDashCircle(this, x.toShort(), y.toShort(), range, color)
+        G.drawDashCircleBreath(this, x.toShort(), y.toShort(), range, color)
         Vars.indexer.eachBlock(
             Vars.player.team(),
             toCenterWorldXY(x),

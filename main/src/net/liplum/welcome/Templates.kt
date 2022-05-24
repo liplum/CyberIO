@@ -11,6 +11,7 @@ object Templates {
     val Story = object : WelcomeTemplate("Story") {
         override fun gen(entity: Entity) =
             BaseDialog(entity["title"]).apply {
+                addCloseListener()
                 val data = entity.tip.data
                 addPoster(entity.icon)
                 val showPoliteWelcome = data["ShowPoliteWelcome"] as? Boolean ?: true
@@ -22,6 +23,7 @@ object Templates {
     val ButtonABC = object : WelcomeTemplate("ButtonABC") {
         override fun gen(entity: Entity) =
             BaseDialog(entity["title"]).apply {
+                addCloseListener()
                 val data = entity.tip.data
                 val yesAction = ActionRegistry[data["ActionA"]]
                 val noAction = ActionRegistry[data["ActionB"]]
@@ -45,6 +47,7 @@ object Templates {
     val DoAction = object : WelcomeTemplate("DoAction") {
         override fun gen(entity: Entity) =
             BaseDialog(entity["title"]).apply {
+                addCloseListener()
                 val data = entity.tip.data
                 addPoster(entity.icon)
                 val showPoliteWelcome = data["ShowPoliteWelcome"] as? Boolean ?: false
@@ -72,6 +75,7 @@ object Templates {
     val TextIcon = object : WelcomeTemplate("TextIcon") {
         override fun gen(entity: Entity) =
             BaseDialog(entity["title"]).apply {
+                addCloseListener()
                 val data = entity.tip.data
                 val text = data["Text"] as? String ?: ""
                 val fontSize = data["FontSize"] as? Float ?: 1f
@@ -88,6 +92,7 @@ object Templates {
     val PlainText = object : WelcomeTemplate("PlainText") {
         override fun gen(entity: Entity) =
             BaseDialog(entity["title"]).apply {
+                addCloseListener()
                 val data = entity.tip.data
                 val showPoliteWelcome = data["ShowPoliteWelcome"] as? Boolean ?: true
                 if (showPoliteWelcome) addPoliteWelcome(entity)
@@ -101,6 +106,7 @@ object Templates {
     val rateStar = object : WelcomeTemplate("RateStar") {
         override fun gen(entity: Entity) =
             BaseDialog(entity["title"]).apply {
+                addCloseListener()
                 val data = entity.tip.data
                 addPoster(entity.icon)
                 val showPoliteWelcome = data["ShowPoliteWelcome"] as? Boolean ?: true

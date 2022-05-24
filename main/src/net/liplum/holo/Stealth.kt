@@ -143,7 +143,7 @@ open class Stealth(name: String) : Turret(name) {
                         ruvikTipAlpha -= 0.5f / ruvikShootingTipTime
                     }
                     if (ruvikTipAlpha > 0f) {
-                        G.drawDashCircle(x, y, range, color = S.Hologram, alpha = ruvikTipAlpha)
+                        G.drawDashCircleBreath(x, y, range, color = S.Hologram, alpha = ruvikTipAlpha)
                     }
                 }
             }

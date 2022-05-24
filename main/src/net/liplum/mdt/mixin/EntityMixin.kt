@@ -32,7 +32,7 @@ open class EntityMixin : Entityc {
 
     override fun serialize() = false
     override fun classId(): Int {
-        TODO("Should be impl by subclass")
+        throw NotImplementedError("Should be impl by subclass")
     }
 
     override fun id() = id

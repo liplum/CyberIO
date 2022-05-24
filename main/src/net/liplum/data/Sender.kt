@@ -1,4 +1,4 @@
-package net.liplum.blocks.data
+package net.liplum.data
 
 import arc.graphics.Color
 import arc.math.geom.Point2
@@ -15,7 +15,7 @@ import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
-import net.liplum.blocks.data.Sender.SenderBuild
+import net.liplum.data.Sender.SenderBuild
 import net.liplum.lib.Serialized
 import net.liplum.lib.TR
 import net.liplum.lib.utils.isZero
@@ -89,7 +89,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)
         if (maxRange > 0f)
-            G.dashCircle(this, x, y, maxRange, R.C.Sender)
+            G.dashCircleBreath(this, x, y, maxRange, R.C.Sender)
     }
 
     override fun setBars() {

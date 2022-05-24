@@ -8,6 +8,7 @@ import arc.math.Interp
 import arc.math.Mathf
 import arc.util.Time
 import mindustry.Vars
+import mindustry.entities.TargetPriority
 import mindustry.entities.bullet.BulletType
 import mindustry.gen.Bullet
 import mindustry.gen.Teamc
@@ -73,6 +74,7 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
     @JvmField var conversationTimer = timers++
 
     init {
+        priority = TargetPriority.turret
         canOverdrive = false
     }
 

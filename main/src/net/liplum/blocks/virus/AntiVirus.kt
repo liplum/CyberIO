@@ -116,7 +116,7 @@ open class AntiVirus(name: String) : Block(name) {
     override fun minimapColor(tile: Tile) = R.C.GreenSafe.rgba()
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)
-        G.drawDashCircle(this, x.toShort(), y.toShort(), range, uninfectedColor)
+        G.drawDashCircleBreath(this, x.toShort(), y.toShort(), range, uninfectedColor)
         Vars.indexer.eachBlock(
             Vars.player.team(),
             toCenterWorldXY(x),

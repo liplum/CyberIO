@@ -10,10 +10,7 @@ import arc.util.Tmp
 import mindustry.Vars
 import mindustry.content.Bullets
 import mindustry.content.UnitTypes
-import mindustry.entities.Effect
-import mindustry.entities.Mover
-import mindustry.entities.UnitSorts
-import mindustry.entities.Units
+import mindustry.entities.*
 import mindustry.entities.bullet.BulletType
 import mindustry.entities.pattern.ShootPattern
 import mindustry.gen.*
@@ -105,8 +102,10 @@ class Heart(name: String) : Block(name), IComponentBlock {
         update = true
         hasPower = true
         sync = true
+        attacks = true
         hasLiquids = true
         canOverdrive = false
+        priority = TargetPriority.turret
     }
 
     override fun init() {
@@ -139,7 +138,7 @@ class Heart(name: String) : Block(name), IComponentBlock {
 
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)
-        G.dashCircle(this, x, y, heartbeat.range.base, bloodColor)
+        G.dashCircleBreath(this, x, y, heartbeat.range.base, bloodColor)
     }
 
     override fun setBars() {

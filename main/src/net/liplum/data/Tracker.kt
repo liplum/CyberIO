@@ -1,4 +1,4 @@
-package net.liplum.blocks.data
+package net.liplum.data
 
 import net.liplum.api.cyber.IDataReceiver
 import kotlin.math.absoluteValue

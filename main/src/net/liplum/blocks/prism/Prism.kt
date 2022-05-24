@@ -370,7 +370,7 @@ open class Prism(name: String) : Block(name) {
 
                 DebugOnly {
                     Draw.z(Layer.power - 1f)
-                    G.drawDashCircle(priselX, priselY, prismRange, color)
+                    G.drawDashCircleBreath(priselX, priselY, prismRange, color)
                 }
             }
             Draw.reset()
@@ -379,7 +379,7 @@ open class Prism(name: String) : Block(name) {
         override fun drawSelect() {
             Draw.z(Layer.turret)
             cm.render {
-                G.drawDashCircle(
+                G.drawDashCircleBreath(
                     this@PrismBuild,
                     Agl + (prismRange * 2 * orbitPos),
                     color

@@ -17,6 +17,7 @@ import mindustry.Vars
 import mindustry.ai.types.CommandAI
 import mindustry.content.Fx
 import mindustry.content.UnitTypes
+import mindustry.entities.TargetPriority
 import mindustry.gen.*
 import mindustry.graphics.Layer
 import mindustry.graphics.Pal
@@ -110,6 +111,8 @@ open class Heimdall(name: String) : Block(name) {
         update = true
         hasPower = true
         sync = true
+        priority = TargetPriority.turret
+        attacks = true
         canOverdrive = false
     }
 
@@ -139,7 +142,7 @@ open class Heimdall(name: String) : Block(name) {
 
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)
-        G.dashCircle(this, x, y, range, R.C.BrainWave)
+        G.dashCircleBreath(this, x, y, range, R.C.BrainWave)
     }
 
     override fun setStats() {

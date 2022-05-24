@@ -2,6 +2,7 @@ package net.liplum.blocks.ddos
 
 import arc.scene.ui.layout.Table
 import arc.struct.OrderedSet
+import arc.struct.Seq
 import arc.util.Time
 import mindustry.Vars
 import mindustry.content.Bullets
@@ -17,11 +18,12 @@ import net.liplum.annotations.SubscribeEvent
 import net.liplum.api.cyber.IDataReceiver
 import net.liplum.api.cyber.IDataSender
 import net.liplum.api.cyber.req
+import net.liplum.lib.Serialized
 import net.liplum.lib.delegates.Delegate1
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.render.postToastTextOn
 import net.liplum.mdt.render.removeToastOn
-import net.liplum.mdt.ui.DynamicItemImage
+import net.liplum.mdt.ui.ItemProgressImage
 import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.utils.ID
 import net.liplum.mdt.utils.ItemTypeAmount
@@ -29,13 +31,14 @@ import net.liplum.mdt.utils.subBundle
 
 class DDoS(name: String) : Turret(name) {
     @DebugOnly @ClientOnly var itemRow = 5
-    var acceptTime = 120f
-    var bulletType: BulletType = Bullets.placeholder
-    var maxDamage = 120f
-    var hitSizer: Bullet.() -> Float = { 4f }
-    var maxItemReachAttenuation = 20
-    var attenuation = 0.5f
-    var maxConnection = -1
+    @JvmField var acceptTime = 120f
+    @JvmField var bulletType: BulletType = Bullets.placeholder
+    @JvmField var maxDamage = 120f
+    @JvmField var hitSizer: Bullet.() -> Float = { 4f }
+    @JvmField var maxItemReachAttenuation = 20
+    @JvmField var attenuation = 0.5f
+    @JvmField var maxConnection = -1
+    @JvmField var usedItemCooldownTimePreItem = 5f
 
     init {
         consumeAmmoOnce = true
@@ -67,24 +70,46 @@ class DDoS(name: String) : Turret(name) {
 
     inner class DDoSBuild : TurretBuild(),
         IDataReceiver {
+        @Serialized
         var alreadyUsed: IntArray = IntArray(ItemTypeAmount())
+        @Serialized
         var curIndex = 0
             set(value) {
                 field = value % ItemTypeAmount()
             }
+        @Serialized
         var acceptCounter = 0f
+        @Serialized
+        var usedItemCooldownCounter = 0f
+        @Serialized
+        var senders = OrderedSet<Int>()
         val curAcceptItem: Item
             get() = Vars.content.items()[curIndex]
         val curItemUsed: Int
             get() = alreadyUsed[curIndex]
-        var senders = OrderedSet<Int>()
+        val usedItemCooldownTimeInMap: Float
+            get() = usedItemCooldownTimePreItem * enabledItemsInMap.size
+
         override fun updateTile() {
             acceptCounter += Time.delta
-            if (acceptCounter > acceptTime) {
+            if (acceptCounter >= acceptTime) {
                 acceptCounter -= acceptTime
                 nextItem()
             }
+            usedItemCooldownCounter += delta()
+            if (usedItemCooldownCounter >= usedItemCooldownTimeInMap) {
+                usedItemCooldownCounter -= usedItemCooldownTimeInMap
+                coolDownUsedItems()
+            }
+            unit.ammo(unit.type().ammoCapacity * totalAmmo / maxAmmo.toFloat())
             super.updateTile()
+        }
+
+        fun coolDownUsedItems(number: Int = 1) {
+            for (enabled in enabledItemsInMap) {
+                val id = enabled.ID
+                alreadyUsed[id] = (alreadyUsed[id] - number).coerceAtLeast(0)
+            }
         }
 
         fun nextItem() {
@@ -93,7 +118,12 @@ class DDoS(name: String) : Turret(name) {
             onRequirementUpdated(this)
         }
 
-        override fun cheating() = true
+        fun peakNextItem(): Item {
+            var index = curIndex + 1 + skipTable[curIndex]
+            index %= alreadyUsed.size
+            return Vars.content.items()[index]
+        }
+
         override fun acceptItem(source: Building, item: Item): Boolean {
             return if (item == curAcceptItem) {
                 removeToastOn(this)
@@ -106,12 +136,19 @@ class DDoS(name: String) : Turret(name) {
             }
         }
 
-        override fun peekAmmo(): BulletType {
-            return bulletType
+        override fun peekAmmo(): BulletType? {
+            return if (items[curAcceptItem] > 0) bulletType else null
         }
 
         override fun hasAmmo(): Boolean {
-            return true
+            if (!canConsume()) return false
+            return items[curAcceptItem] > 0
+        }
+
+        override fun useAmmo(): BulletType {
+            if (cheating()) return bulletType
+            items.remove(curAcceptItem, 1)
+            return bulletType
         }
 
         override fun handleBullet(bullet: Bullet, offsetX: Float, offsetY: Float, angleOffset: Float) {
@@ -127,18 +164,23 @@ class DDoS(name: String) : Turret(name) {
 
         override fun display(table: Table) {
             super.display(table)
-            table.row()
-            table.add(Table().apply {
-                left()
-                for ((i, item) in Vars.content.items().withIndex()) {
-                    add(DynamicItemImage(item.uiIcon) {
-                        alreadyUsed[i]
-                    })
-                    if ((i + 1) % itemRow == 0) {
-                        row()
+            DebugOnly {
+                table.row()
+                table.add(Table().apply {
+                    left()
+                    for ((i, item) in enabledItemsInMap.withIndex()) {
+                        add(ItemProgressImage(item.uiIcon) {
+                            alreadyUsed[item.ID] / maxItemReachAttenuation.toFloat()
+                        }.apply {
+                            img.upDown = false
+                            img.alpha = 0.7f
+                        })
+                        if ((i + 1) % itemRow == 0) {
+                            row()
+                        }
                     }
-                }
-            })
+                })
+            }
         }
 
         override fun receiveData(sender: IDataSender, item: Item, amount: Int) {
@@ -157,7 +199,7 @@ class DDoS(name: String) : Turret(name) {
                 0
             }
         }
-
+        // TODO: Serialized
         override fun getRequirements(): Array<Item> = curAcceptItem.req
         @ClientOnly
         override fun isBlocked() = true
@@ -169,8 +211,13 @@ class DDoS(name: String) : Turret(name) {
 
     companion object {
         val emptySkipTable = IntArray(0)
+        var enabledItemsInMap = Seq<Item>(Vars.content.items().size)
         var skipTable = emptySkipTable
-        @SubscribeEvent(EventType.WorldLoadEvent::class)
+        fun updateEnabledItems() {
+            enabledItemsInMap.set(Vars.content.items())
+            enabledItemsInMap.removeAll { it.hidden || it in Vars.state.rules.hiddenBuildItems }
+        }
+
         fun updateSkipTable() {
             run {
                 val len = ItemTypeAmount()
@@ -182,6 +229,9 @@ class DDoS(name: String) : Turret(name) {
                 val flagTable = BooleanArray(len)
                 for (hidden in Vars.state.rules.hiddenBuildItems) {
                     flagTable[hidden.ID] = true
+                }
+                for (disabled in Vars.content.items()) {
+                    if (disabled.hidden) flagTable[disabled.ID] = true
                 }
                 var counter = 0
                 for (i in flagTable.size - 1 downTo 0) {
@@ -208,6 +258,11 @@ class DDoS(name: String) : Turret(name) {
                     }
                 }
             }
+        }
+        @SubscribeEvent(EventType.WorldLoadEvent::class)
+        fun updateItemInfoInCurrentMap() {
+            updateEnabledItems()
+            updateSkipTable()
         }
     }
 }

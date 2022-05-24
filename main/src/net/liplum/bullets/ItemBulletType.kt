@@ -1,4 +1,4 @@
-package net.liplum.blocks.ddos
+package net.liplum.bullets
 
 import arc.graphics.g2d.Draw
 import arc.util.Tmp

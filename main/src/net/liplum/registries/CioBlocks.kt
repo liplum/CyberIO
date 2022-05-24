@@ -36,12 +36,12 @@ import net.liplum.api.brain.Upgrade
 import net.liplum.api.virus.setUninfected
 import net.liplum.api.virus.setUninfectedFloor
 import net.liplum.blocks.cloud.Cloud
-import net.liplum.blocks.data.Receiver
-import net.liplum.blocks.data.Sender
-import net.liplum.blocks.data.SmartDistributor
-import net.liplum.blocks.data.SmartUnloader
+import net.liplum.data.Receiver
+import net.liplum.data.Sender
+import net.liplum.data.SmartDistributor
+import net.liplum.data.SmartUnloader
 import net.liplum.blocks.ddos.DDoS
-import net.liplum.blocks.ddos.ItemBulletType
+import net.liplum.bullets.ItemBulletType
 import net.liplum.blocks.debugonly.AdjustableOverdrive
 import net.liplum.blocks.decentralizer.Decentralizer
 import net.liplum.blocks.deleter.Deleter
@@ -1516,6 +1516,7 @@ object CioBlocks {
                 Category.turret, BuildVisibility.shown, arrayOf()
             )
             maxDamage = 120f
+            size = 4
             hitSizer = { damage / 60f * 4f }
             bulletType = ItemBulletType().apply {
                 speed = 2f

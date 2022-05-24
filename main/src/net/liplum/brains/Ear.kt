@@ -12,6 +12,7 @@ import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.Vars
 import mindustry.content.UnitTypes
+import mindustry.entities.TargetPriority
 import mindustry.entities.UnitSorts
 import mindustry.entities.Units
 import mindustry.gen.*
@@ -19,6 +20,7 @@ import mindustry.gen.Unit
 import mindustry.graphics.Drawf
 import mindustry.graphics.Layer
 import mindustry.logic.LAccess
+import mindustry.logic.Ranged
 import mindustry.world.Block
 import mindustry.world.blocks.ControlBlock
 import mindustry.world.meta.Stat
@@ -77,8 +79,10 @@ open class Ear(name: String) : Block(name), IComponentBlock {
     init {
         solid = true
         update = true
+        priority = TargetPriority.turret
         hasPower = true
         sync = true
+        attacks = true
         canOverdrive = false
     }
 
@@ -119,7 +123,8 @@ open class Ear(name: String) : Block(name), IComponentBlock {
         stats.add(Stat.powerUse, powerUse * 60f, StatUnit.powerSecond)
     }
 
-    open inner class EarBuild : Building(), IUpgradeComponent, ControlBlock {
+    open inner class EarBuild : Building(),
+        IUpgradeComponent, ControlBlock, Ranged {
         // <editor-fold desc="Heimdall">
         override val scale: SpeedScale = SpeedScale()
         override var directionInfo: Direction2 = Direction2()
@@ -176,6 +181,8 @@ open class Ear(name: String) : Block(name), IComponentBlock {
         // </editor-fold>
         // <editor-fold desc="Serialized">
         @Serialized
+        val sonicWaves = SonicWaveQueue(maxSonicWaveNum)
+        @Serialized
         var reloadCounter = 0f
         @Serialized
         var lastRadiateTime = realReloadTime + 1f
@@ -192,6 +199,8 @@ open class Ear(name: String) : Block(name), IComponentBlock {
             write.f(reloadCounter)
             write.f(lastRadiateTime)
         }
+
+        override fun range() = realRange
         // </editor-fold>
         // <editor-fold desc="Properties">
         val realReloadTime: Float
@@ -242,7 +251,6 @@ open class Ear(name: String) : Block(name), IComponentBlock {
             G.dashCircle(x, y, realRange, sonicWaveColor)
         }
         // </editor-fold>
-        val sonicWaves = SonicWaveQueue(maxSonicWaveNum)
         override fun updateTile() {
             scale.update()
             lastRadiateTime += Time.delta
