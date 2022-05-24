@@ -48,6 +48,12 @@ fun Int.ds(): IDataSender? =
 fun Int.dsOrPayload(): IDataSender? =
     this.ds() Or { this.inPayload() }
 
+fun Building.dr(): IDataReceiver? =
+    this.getCyberEntity()
+
+fun Building.ds(): IDataSender? =
+    this.getCyberEntity()
+
 fun Point2?.db(): IDataBuilding? =
     this?.let { this.build as? IDataBuilding }
 
@@ -130,6 +136,12 @@ fun Int.sc(): IStreamClient? =
 fun Int.sh(): IStreamHost? =
     this.build as? IStreamHost
 
+fun Building.sc(): IStreamClient? =
+    this.getCyberEntity()
+
+fun Building.sh(): IStreamHost? =
+    this.getCyberEntity()
+
 fun Point2?.sn(): IStreamNode? =
     this?.let { this.build as? IStreamNode }
 
@@ -190,6 +202,12 @@ object StreamCenter {
         }
     }
 }
+
+fun Int.nn(): INetworkNode? =
+    this.build as? INetworkNode
+
+fun Building.nn(): INetworkNode? =
+    this.getCyberEntity()
 
 val EmptySingleLiquidArray: SingleLiquidArray = emptyArray()
 val Liquid?.req: SingleLiquidArray

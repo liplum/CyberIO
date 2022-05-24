@@ -391,7 +391,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
                 pos.dr()?.let { disconnectSync(it) }
                 return false
             }
-            val b = other.getCyberEntity<IDataReceiver>()
+            val b = other.dr()
             if (b != null) {
                 if (maxRange > 0f && other.dst(this) >= maxRange) {
                     postOverRangeOn(other)

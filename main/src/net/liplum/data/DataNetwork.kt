@@ -1,5 +1,6 @@
 package net.liplum.data
 
+import arc.struct.IntSet
 import net.liplum.api.cyber.INetworkNode
 import java.util.*
 
@@ -8,7 +9,8 @@ class DataNetwork {
     val nodes = ArrayList<INetworkNode>()
     private val tmp1 = ArrayList<INetworkNode>()
     private val tmp2 = ArrayList<INetworkNode>()
-    val bfsQueue = LinkedList<INetworkNode>()
+    private val bfsQueue = LinkedList<INetworkNode>()
+    private val closedSet = IntSet()
     var id = lastNetworkID++
         private set
 
@@ -27,19 +29,44 @@ class DataNetwork {
     }
 
     fun add(node: INetworkNode) {
-        val dn = node.dataNetwork
-        if (dn.graph != null && dn.graph != this) {
-            dn.graph.entity.remove()
-            dn.graph = this
+        val dn = node.data
+        if (dn.network != this || !dn.init) {
+            dn.network = this
+            dn.init = true
             nodes.add(node)
             entity.add()
         }
     }
 
+    fun merge(node: INetworkNode) {
+        if (node.networkGraph == this) return
+        node.networkGraph.entity.remove()
+        // iterate its link
+        entity.add()
+        bfsQueue.clear()
+        bfsQueue.addLast(node)
+        closedSet.clear()
+        while (bfsQueue.size > 0) {
+            val child = bfsQueue.removeFirst()
+            add(child)
+            for (next in child.getNetworkConnections(tmp2)) {
+                if (closedSet.add(next.building.pos())) {
+                    bfsQueue.addLast(next)
+                }
+            }
+        }
+    }
+
     fun separate(node: INetworkNode) {
-        for (other in node.getNetworkConnections(tmp1)) {
+        val nodeConnection = node.getNetworkConnections(tmp1)
+        if (nodeConnection.isEmpty()) {
+            val newGraph = DataNetwork()
+            newGraph.add(node)
+            return
+        }
+        for (other in nodeConnection) {
             // Skip anyone isn't in the same graph
-            if (other.dataNetwork.graph != this) continue
+            if (other.data.network != this) continue
             // Create a new data network graph for this branch
             val newGraph = DataNetwork()
             newGraph.add(other)
@@ -53,19 +80,20 @@ class DataNetwork {
                 // Go through its connections
                 for (next in child.getNetworkConnections(tmp2)) {
                     // Skip self
-                    if (next != node && next.dataNetwork.graph != newGraph) {
+                    if (next != node && next.data.network != newGraph) {
                         newGraph.add(next)
                         bfsQueue.addLast(next)
                     }
                 }
             }
         }
-        // Now this graph has been separated, it's empty now.
-        entity.remove()
     }
 
     fun clear() {
         nodes.clear()
         entity.remove()
     }
+
+    override fun toString() =
+        "DataNetwork#$id"
 }

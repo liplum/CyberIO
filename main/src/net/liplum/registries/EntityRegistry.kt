@@ -9,6 +9,7 @@ import net.liplum.Clog.log
 import net.liplum.Meta
 import net.liplum.OnlyDebug
 import net.liplum.annotations.SubscribeEvent
+import net.liplum.data.DataNetworkUpdater
 import net.liplum.events.CioLoadContentEvent
 import net.liplum.holo.HoloUnit
 import net.liplum.mdt.OnlyServer
@@ -20,6 +21,7 @@ object EntityRegistry {
         this[HoloUnit::class.java] = { HoloUnit() }
         //this[MagneticField::class.java] = { MagneticField.create() }
         //this[NpcUnit::class.java] = { NpcUnit() }
+        this[DataNetworkUpdater::class.java] = { DataNetworkUpdater.create() }
     }
 
     private operator fun <T : Entityc> set(c: Class<T>, p: ProvEntry) {

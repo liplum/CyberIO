@@ -111,10 +111,8 @@ open class ZipBomb(name: String) : Block(name) {
         var curSensitive = 1
         @Serialized
         var autoDetectCounter = 0f
-        var isEnable = false
         override fun updateTile() {
-            isEnable = true
-            if (!autoDetectEnabled) return
+                if (!autoDetectEnabled) return
             autoDetectCounter += Time.delta
             if (autoDetectCounter >= autoDetectTime) {
                 autoDetectCounter %= autoDetectTime
@@ -169,9 +167,10 @@ open class ZipBomb(name: String) : Block(name) {
                     Slider(pre, 1f, pre, false).apply {
                         value = curSensitive * pre
                         moved { configGear((it * (maxSensitive + 1)).toInt().coerceIn(1, maxSensitive)) }
+                        update { isDisabled = !autoDetectEnabled }
                     },
                     Table().apply {
-                        add(Label { curSensitive.toString() }.apply {
+                        add(Label { ">=$curSensitive" }.apply {
                             color.set(Color.white)
                         })
                         defaults().center()
@@ -201,7 +200,7 @@ open class ZipBomb(name: String) : Block(name) {
         }
         @CalledBySync
         open fun onTrigger() {
-            if(isEnable && isAdded)
+            if (isAdded)
                 kill()
         }
 
@@ -223,8 +222,8 @@ open class ZipBomb(name: String) : Block(name) {
         }
         @SendDataPack
         open fun trigger() {
-            if (isEnable && isAdded)
-                configure(true)
+            if (isAdded)
+                configureAny(true)
         }
         @SendDataPack
         open fun configGear(gear: Int) {

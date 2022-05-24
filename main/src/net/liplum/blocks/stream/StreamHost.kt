@@ -290,7 +290,7 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
                 pos.sc()?.let { disconnectSync(it) }
                 return false
             }
-            val b = other.getCyberEntity<IStreamClient>()
+            val b = other.sc()
             if (b != null) {
                 if (maxRange > 0f && other.dst(this) >= maxRange) {
                     postOverRangeOn(other)

@@ -253,7 +253,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
                 configure(null)
                 return false
             }
-            val b = other.getCyberEntity<IDataReceiver>()
+            val b = other.dr()
             if (b != null) {
                 if (maxRange > 0f && other.dst(this) >= maxRange) {
                     postOverRangeOn(other)

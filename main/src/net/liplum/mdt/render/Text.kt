@@ -49,6 +49,33 @@ object Text {
         return width
     }
     /**
+     * Draw text and underline in default size
+     * @return the width of text
+     */
+    fun drawTextEasy(
+        text: String,
+        x: WorldXY,
+        y: WorldXY,
+        color: Color
+    ): WorldXY {
+        if (Vars.renderer.pixelator.enabled()) return 0f
+        val font = Fonts.outline
+        val layout = Pools.obtain(GlyphLayout::class.java, ::GlyphLayout)
+        val ints = font.usesIntegerPositions()
+        font.setUseIntegerPositions(false)
+        font.data.setScale(1f / 4f / Scl.scl(1f))
+        layout.setText(font, text)
+        val width = layout.width
+        font.color = color
+        font.draw(text, x, y + layout.height, Align.center)
+        font.setUseIntegerPositions(ints)
+        font.color = Color.white
+        font.data.setScale(1f)
+        Draw.reset()
+        Pools.free(layout)
+        return width
+    }
+    /**
      * Draw text in default size
      * @return the width of text
      */

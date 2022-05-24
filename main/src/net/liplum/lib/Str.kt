@@ -108,3 +108,14 @@ fun Collection<Any>.toLinkedString(): String {
 
 val String.ing: String
     get() = this + Strings.animated(Time.time, 4, 11f, ".")
+
+fun String.segmentLines(maxPerLine: Int): String {
+    val s = StringBuilder()
+    for ((i, c) in this.withIndex()) {
+        s.append(c)
+        if ((i + 1) % maxPerLine == 0) {
+            s.append('\n')
+        }
+    }
+    return s.toString()
+}
