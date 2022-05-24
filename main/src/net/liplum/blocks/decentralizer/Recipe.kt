@@ -7,10 +7,10 @@ import mindustry.world.consumers.ConsumeItems
 import mindustry.world.consumers.ConsumePower
 import net.liplum.Clog
 import net.liplum.lib.Out
-import net.liplum.lib.utils.shr
+import net.liplum.lib.utils.littleEndianByteB
+import net.liplum.lib.utils.bigEndianByteB
 import net.liplum.mdt.utils.ID
 import java.util.*
-import kotlin.experimental.and
 
 class Recipe(
     val ingredients: Array<ItemStack>,
@@ -125,13 +125,11 @@ object RecipeCenter {
     fun IntArray.calcuID(maxBit: Int = Recipe.MaxBits): BitSet {
         val bytes = ByteArray(maxBit / 8)
         for ((id, amount) in this.withIndex()) {
-            val itemID = id
-            val amountS = amount.toShort()
             try {
-                bytes[id * 4] = (itemID and 0xff).toByte()
-                bytes[id * 4 + 1] = ((itemID shr 8) and 0xff).toByte()
-                bytes[id * 4 + 2] = (amountS and 0xff).toByte()
-                bytes[id * 4 + 3] = ((amountS shr 8) and 0xff).toByte()
+                bytes[id * 4] = id.littleEndianByteB
+                bytes[id * 4 + 1] = id.bigEndianByteB
+                bytes[id * 4 + 2] = amount.littleEndianByteB
+                bytes[id * 4 + 3] = amount.bigEndianByteB
             } catch (e: ArrayIndexOutOfBoundsException) {
                 throw RuntimeException("Out of range: ${bytes.size}", e)
             }

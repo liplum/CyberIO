@@ -83,7 +83,7 @@ class Trigger(
             .color(R.C.RedAlert)
         var connect =           Trigger("connect",              6)
         var forceFieldHit =     Trigger("forcefield-hit",       3)
-        var heal =              Trigger("heal",                 4)
+        var heal =              Trigger("heal",                 6)
             .color(R.C.GreenSafe)
         // @formatter:on
         private const val prefix = "heimdall.msg"

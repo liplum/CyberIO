@@ -38,7 +38,7 @@ class DDoS(name: String) : Turret(name) {
     @JvmField var maxItemReachAttenuation = 20
     @JvmField var attenuation = 0.5f
     @JvmField var maxConnection = -1
-    @JvmField var usedItemCooldownTimePreItem = 5f
+    @JvmField var usedItemCooldownTimePreItem = 10f
 
     init {
         consumeAmmoOnce = true

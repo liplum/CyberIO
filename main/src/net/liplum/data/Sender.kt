@@ -63,8 +63,8 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
         /**
          * For connect
          */
-        config(Integer::class.java) { it: SenderBuild, receiverPackedPos ->
-            it.setReceiverFromRemote(receiverPackedPos.toInt())
+        config(Integer::class.java) { it: SenderBuild, receiver ->
+            it.setReceiverFromRemote(receiver.toInt())
         }
         configClear<SenderBuild> {
             it.receiverPos = null

@@ -600,7 +600,7 @@ open class Heimdall(name: String) : Block(name) {
         }
 
         override fun drawSelect() {
-            G.dashCircle(x, y, realRange, R.C.BrainWave)
+            G.dashCircleBreath(x, y, realRange, R.C.BrainWave)
         }
 
         override fun damage(damage: Float) {

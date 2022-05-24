@@ -29,7 +29,6 @@ var ToastTimeFadePercent = 0.1f
 var ToastTime = 180f
 private val p1 = Point2f()
 private val p2 = Point2f()
-@Suppress("UNCHECKED_CAST")
 inline fun <reified T : ICyberEntity> Building.getCyberEntity(): T? {
     return this as? T ?: CyberEntityAdapterRegistry.get(block)?.get(this) as? T
 }
@@ -502,13 +501,13 @@ fun Building.postFullClientOn(other: Building) {
 
 fun IDataSender.drawMaxRange() {
     if (maxRange > 0f) {
-        G.dashCircle(building.x, building.y, maxRange, senderColor)
+        G.dashCircleBreath(building.x, building.y, maxRange, senderColor)
     }
 }
 
 fun IStreamHost.drawMaxRange() {
     if (maxRange > 0f) {
-        G.dashCircle(building.x, building.y, maxRange, hostColor)
+        G.dashCircleBreath(building.x, building.y, maxRange, hostColor)
     }
 }
 

@@ -50,17 +50,13 @@ open class WirelessTower(name: String) : PowerBlock(name) {
     @ClientOnly @JvmField var rotationRadius = 0.7f
 
     init {
-        hasPower = true
         consumesPower = true
-        update = true
-        solid = true
-        canOverdrive = true
-        consumePowerDynamic<WirelessTowerBuild> {
-            it.lastNeed.coerceAtLeast(reactivePower)
-        }
     }
 
     override fun init() {
+        consumePowerDynamic<WirelessTowerBuild> {
+            it.lastNeed.coerceAtLeast(reactivePower)
+        }
         clipSize = range * 1.5f
         super.init()
     }

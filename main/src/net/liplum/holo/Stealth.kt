@@ -253,7 +253,7 @@ open class Stealth(name: String) : Turret(name) {
         @ClientOnly @JvmField
         var floating: Floating = Floating(FloatingRange).randomXY().changeRate(1)
         override fun drawSelect() {
-            G.dashCircle(x, y, range, S.HologramDark)
+            G.dashCircleBreath(x, y, range, S.HologramDark)
             whenNotConfiguringHost {
                 this.drawStreamGraphic()
             }

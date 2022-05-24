@@ -71,6 +71,7 @@ open class HoloProjector(name: String) : Block(name) {
         group = BlockGroup.units
         configurable = true
         sync = true
+        commandable = true
         config(Integer::class.java) { obj: HoloPBuild, plan ->
             obj.setPlan(plan.toInt())
         }

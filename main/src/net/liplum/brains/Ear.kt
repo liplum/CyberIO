@@ -248,7 +248,7 @@ open class Ear(name: String) : Block(name), IComponentBlock {
         }
 
         override fun drawSelect() {
-            G.dashCircle(x, y, realRange, sonicWaveColor)
+            G.dashCircleBreath(x, y, realRange, sonicWaveColor)
         }
         // </editor-fold>
         override fun updateTile() {

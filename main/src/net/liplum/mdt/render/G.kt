@@ -355,6 +355,16 @@ object G {
     )
     @JvmStatic
     @JvmOverloads
+    fun dashCircleBreath(
+        x: WorldXY, y: WorldXY, rad: WorldXY,
+        circleColor: Color = Pal.power,
+        alpha: Float? = null, stroke: Float = 1f
+    ) = dashCircle(
+        x, y, rad + sin - 2f,
+        circleColor, alpha, stroke
+    )
+    @JvmStatic
+    @JvmOverloads
     fun dashCircle(
         x: WorldXY, y: WorldXY, rad: WorldXY, color: Color = Pal.power,
         alpha: Float? = null, stroke: Float = 1f

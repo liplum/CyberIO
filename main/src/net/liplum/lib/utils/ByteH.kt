@@ -45,3 +45,55 @@ infix fun Short.shr(that: Short): Int = this.toInt().shr(that.toInt())
 infix fun Byte.and(that: Int): Int = this.toInt().and(that)
 infix fun Int.and(that: Byte): Int = this.and(that.toInt())
 infix fun Byte.and(that: Byte): Int = this.toInt().and(that.toInt())
+/**
+ * Assume this int is a short, it can get the little endian 8 bits=1 byte.
+ * ## Like
+ * - input => 52 1c
+ * - output => 1c
+ */
+val Int.littleEndianByte: Int
+    get() = this and 0xff
+/**
+ * Assume this int is a short, it can get the little endian 8 bits=1 byte.
+ * ## Use case
+ * - input => 52 1c
+ * - output => 52
+ */
+val Int.bigEndianByte: Int
+    get() = (this shr 8) and 0xff
+/**
+ * Assume this int is a short, it can get the first 8 bits=1 byte.
+ * ## Use case
+ * - input => 52 1c
+ * - output => 1c
+ */
+val Int.littleEndianByteB: Byte
+    get() = (this and 0xff).toByte()
+/**
+ * Assume this int is a short, it can get the little endian 8 bits=1 byte.
+ * ## Use case
+ * - input => 52 1c
+ * - output => 52
+ */
+val Int.bigEndianByteB: Byte
+    get() = ((this shr 8) and 0xff).toByte()
+/**
+ * @param big big endian 8 bits
+ * @param little little endian 8 bits
+ * ## Use case
+ * - input => b1=52,b2=1c
+ * - output => 1c 52
+ * - output => last first
+ */
+fun twoBytesToShort(big: Byte, little: Byte): Short =
+    (big shl 8 or (little and 0xFF)).toShort()
+/**
+ * @param big big endian 8 bits
+ * @param little little endian 8 bits
+ * ## Use case
+ * - input => b1=52,b2=1c
+ * - output => 1c 52
+ * - output => last first
+ */
+fun twoBytesToShort(big: Int, little: Int): Int =
+    big shl 8 or (little and 0xFF)

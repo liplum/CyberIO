@@ -357,17 +357,6 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
                     productionEfficiency = 0f
                 }
             }
-            /*
-            val velFactor = 1 - realSlowDown
-             forEachBulletInRange {
-                 it.vel.x *= velFactor
-                 it.vel.y *= velFactor
-             }
-             forEachUnitInRange {
-                 it.vel.x *= velFactor
-                 it.vel.y *= velFactor
-             }
-             */
         }
 
         override fun buildConfiguration(table: Table) {
@@ -387,7 +376,7 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
             forEachTargetInRange {
                 G.drawSelected(it, color)
             }
-            G.dashCircle(x, y, realRange, color)
+            G.dashCircleBreath(x, y, realRange, color)
         }
 
         override fun draw() {

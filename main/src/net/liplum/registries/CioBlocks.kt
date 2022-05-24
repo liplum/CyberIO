@@ -35,13 +35,9 @@ import net.liplum.api.brain.UT
 import net.liplum.api.brain.Upgrade
 import net.liplum.api.virus.setUninfected
 import net.liplum.api.virus.setUninfectedFloor
+import net.liplum.blocks.bomb.ZipBomb
 import net.liplum.blocks.cloud.Cloud
-import net.liplum.data.Receiver
-import net.liplum.data.Sender
-import net.liplum.data.SmartDistributor
-import net.liplum.data.SmartUnloader
 import net.liplum.blocks.ddos.DDoS
-import net.liplum.bullets.ItemBulletType
 import net.liplum.blocks.debugonly.AdjustableOverdrive
 import net.liplum.blocks.decentralizer.Decentralizer
 import net.liplum.blocks.deleter.Deleter
@@ -62,8 +58,10 @@ import net.liplum.blocks.virus.AntiVirus
 import net.liplum.blocks.virus.Virus
 import net.liplum.brains.*
 import net.liplum.bullets.BBulletType
+import net.liplum.bullets.ItemBulletType
 import net.liplum.bullets.RuvikBullet
 import net.liplum.bullets.STEM_VERSION
+import net.liplum.data.*
 import net.liplum.holo.*
 import net.liplum.mdt.animations.ganim.globalAnim
 import net.liplum.mdt.ui.DynamicContentInfoDialog.Companion.registerDynamicInfo
@@ -108,6 +106,8 @@ object CioBlocks {
     @JvmStatic lateinit var heart: Heart
     @JvmStatic lateinit var decentralizer: Decentralizer
     @JvmStatic lateinit var DDoS: DDoS
+    @JvmStatic lateinit var dataCDN: DataCDN
+    @JvmStatic lateinit var zipBomb: ZipBomb
     @DependOn("CioItems.ic")
     fun icMachine() {
         icMachine = ICMachine("ic-machine").apply {
@@ -1511,21 +1511,45 @@ object CioBlocks {
     }
     @DependOn("CioItems.ic")
     fun DDos() {
-        DDoS = DDoS("DDoS").apply {
-            requirements(
-                Category.turret, BuildVisibility.shown, arrayOf()
-            )
-            maxDamage = 120f
-            size = 4
-            hitSizer = { damage / 60f * 4f }
-            bulletType = ItemBulletType().apply {
-                speed = 2f
-                damage = 0f
-                hitSize = 10f
-                drawSizer = { damage / 60f }
-                trailLength = 8
-                lifetime = 180f
-                trailWidth = 4f
+        DebugOnly {
+            DDoS = DDoS("DDoS").apply {
+                requirements(
+                    Category.turret, BuildVisibility.shown, arrayOf()
+                )
+                maxDamage = 120f
+                size = 4
+                hitSizer = { damage / 60f * 4f }
+                bulletType = ItemBulletType().apply {
+                    speed = 2f
+                    damage = 0f
+                    hitSize = 10f
+                    drawSizer = { damage / 60f }
+                    trailLength = 8
+                    lifetime = 180f
+                    trailWidth = 4f
+                }
+            }
+        }
+    }
+    @DependOn("CioItems.ic")
+    fun dataCDN() {
+        DebugOnly {
+            dataCDN = DataCDN("data-cdn").apply {
+                requirements(
+                    Category.units, BuildVisibility.shown, arrayOf()
+                )
+                size = 5
+            }
+        }
+    }
+    @DependOn("CioItems.ic")
+    fun zipBomb() {
+        DebugOnly {
+            zipBomb = ZipBomb("zip-bomb").apply {
+                requirements(
+                    Category.effect, BuildVisibility.shown, arrayOf()
+                )
+                size = 1
             }
         }
     }
