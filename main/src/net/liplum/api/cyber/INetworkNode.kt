@@ -13,7 +13,22 @@ interface INetworkNode : ICyberEntity {
             data.network = value
         }
 
-    fun getNetworkConnections(@Out out: MutableList<INetworkNode>): List<INetworkNode> {
+    fun link(target: INetworkNode) {
+        data.links.addUnique(target.building.pos())
+        target.data.links.addUnique(this.building.pos())
+        this.data.network.merge(target)
+    }
+
+    fun unlink(target: INetworkNode) {
+        data.links.removeValue(target.building.pos())
+        target.data.links.removeValue(this.building.pos())
+        val selfNewGraph = DataNetwork()
+        selfNewGraph.reflow(this)
+        val targetNewGraph = DataNetwork()
+        targetNewGraph.reflow(target)
+    }
+
+    fun getNetworkConnections(@Out out: MutableList<INetworkNode>): MutableList<INetworkNode> {
         out.clear()
         val network: NetworkModule = data
         val links = network.links

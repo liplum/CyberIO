@@ -1,5 +1,6 @@
 package net.liplum.registries
 
+import arc.func.Prov
 import arc.graphics.Color
 import arc.graphics.Texture
 import arc.struct.Seq
@@ -150,6 +151,7 @@ object CioBlocks {
                 consumePower(8f)
                 craftTime = 420f
             }
+            buildType = Prov { ICMachineBuild() }
             fogRadius = 3
             outputItem = ItemStack(CioItems.ic, 2)
             size = 3
@@ -176,6 +178,7 @@ object CioBlocks {
                 ItemStack(Items.sand, 40),
                 ItemStack(Items.lead, 15),
             )
+            buildType = Prov { ICMachineSBuild() }
             consumePower(2f)
             outputItem = ItemStack(CioItems.ic, 1)
             fogRadius = 2
@@ -233,6 +236,7 @@ object CioBlocks {
                     stages = 4
                 })
             }
+            buildType = Prov { GenericCrafterBuild() }
             fogRadius = 2
             size = 2
             outputItem = ItemStack(CioItems.ic, 1)
@@ -269,6 +273,7 @@ object CioBlocks {
                 maxConnection = 3
                 consumePower(0.8f)
             }
+            buildType = Prov { ReceiverBuild() }
             replaceable = false
         }
     }
@@ -301,6 +306,7 @@ object CioBlocks {
                 maxRange = 550f
                 consumePower(0.8f)
             }
+            buildType = Prov { SenderBuild() }
             replaceable = false
         }
     }
@@ -314,6 +320,7 @@ object CioBlocks {
                     ItemStack(Items.pyratite, 20),
                 )
             )
+            buildType = Prov { VirusBuild() }
             buildCostMultiplier = 5f
             spreadingSpeed = 200
             maxReproductionScale = 20
@@ -337,6 +344,7 @@ object CioBlocks {
                     ItemStack(Items.silicon, 50)
                 )
             )
+            buildType = Prov { LandProjectorBuild() }
             health = 100
             size = 2
             buildCostMultiplier = 3f
@@ -383,6 +391,7 @@ object CioBlocks {
                 maxPowerEFFBlocksReq = 20
                 maxGear = 6
             }
+            buildType = Prov { UnderdriveBuild() }
             color = R.C.LightBlue
             maxSlowDownRate = 0.9f
             size = 1
@@ -399,6 +408,7 @@ object CioBlocks {
                     ItemStack(Items.silicon, 25)
                 )
             )
+            buildType = Prov { AntiVirusBuild() }
             health = 500
             consumePower(0.5f)
             size = 1
@@ -418,6 +428,7 @@ object CioBlocks {
                     ItemStack(Items.thorium, 1000),
                 )
             )
+            buildType = Prov { CloudBuild() }
             size = 3
             buildCostMultiplier = 2f
             health = 500 * size * size
@@ -433,6 +444,7 @@ object CioBlocks {
                 else BuildVisibility.sandboxOnly,
                 emptyArray()
             )
+            buildType = Prov { AOBuild() }
             size = 3
             maxBoost = 50f
             minBoost = 0.5f
@@ -468,6 +480,7 @@ object CioBlocks {
                 )
                 health = 1500
             }
+            buildType = Prov { PrismBuild() }
             buildCostMultiplier = 2f
             size = 4
         }
@@ -501,6 +514,7 @@ object CioBlocks {
                 )
                 health = 750
             }
+            buildType = Prov { ObeliskBuild() }
             size = 2
             prismType = prism
         }
@@ -546,6 +560,7 @@ object CioBlocks {
                 scaledHealth = 80f
                 executeProportion = 0.18f
             }
+            buildType = Prov { PowerTurretBuild() }
             size = 3
             buildCostMultiplier = 1.5f
             shootSound = Sounds.lasershoot
@@ -581,6 +596,7 @@ object CioBlocks {
                 scaledHealth = 425f
                 restoreReload = 15 * 60f
             }
+            buildType = Prov { HoloWallBuild() }
             size = 1
             buildCostMultiplier = 3.5f
         }
@@ -615,6 +631,7 @@ object CioBlocks {
                 restoreReload = 20 * 60f
                 scaledHealth = 450f
             }
+            buildType = Prov { HoloWallBuild() }
             squareSprite = false
             size = 2
             buildCostMultiplier = 4.5f
@@ -664,6 +681,7 @@ object CioBlocks {
                 }
                 scaledHealth = 270f
             }
+            buildType = Prov { TMTRAINERBUILD() }
             inaccuracy = 1f
             rotateSpeed = 10f
             maxAmmo = 80
@@ -708,6 +726,7 @@ object CioBlocks {
                 )
                 scaledHealth = 500f
             }
+            buildType = Prov { SmartDISBuild() }
             size = 2
             ArrowsAnimFrames = 4
             ArrowsAnimDuration = 12f
@@ -743,6 +762,7 @@ object CioBlocks {
                 maxRange = 800f
             }
             size = 2
+            buildType = Prov { SmartULDBuild() }
             ShrinkingAnimFrames = 7
             ShrinkingAnimDuration = 25f
         }
@@ -779,6 +799,7 @@ object CioBlocks {
                 consumePower(1f)
                 liquidCapacity = 80f
             }
+            buildType = Prov { ClientBuild() }
             replaceable = false
         }
     }
@@ -821,6 +842,7 @@ object CioBlocks {
                 maxConnection = 3
                 maxRange = 500f
             }
+            buildType = Prov { HostBuild() }
             size = 2
             replaceable = false
         }
@@ -868,6 +890,7 @@ object CioBlocks {
                 maxRange = 1800f
                 powerUsePerConnection = 3.8f
             }
+            buildType = Prov { ServerBuild() }
             squareSprite = false
             size = 3
             replaceable = false
@@ -905,6 +928,7 @@ object CioBlocks {
                 shootDuration = 200f
                 range = 165f
             }
+            buildType = Prov { JammerBuild() }
             size = 3
             shootEffect = StaticFx
             shootCone = 40f
@@ -955,6 +979,7 @@ object CioBlocks {
                         ItemStack(Items.metaglass, 50),
                     )
                 )
+                buildType = Prov { GenericCrafterBuild() }
                 scaledHealth = 60f
                 liquidCapacity = 20f
                 outputLiquid = LiquidStack(CioLiquids.cyberion, 0.3f)
@@ -978,6 +1003,7 @@ object CioBlocks {
                         ItemStack(Items.surgeAlloy, 80),
                     )
                 )
+                buildType = Prov { HeatCrafterBuild() }
                 scaledHealth = 100f
                 liquidCapacity = 50f
                 craftTime = 90f
@@ -1085,6 +1111,7 @@ object CioBlocks {
                     ),
                 )
             }
+            buildType = Prov { HoloPBuild() }
             size = 5
             buildCostMultiplier = 2f
         }
@@ -1140,6 +1167,8 @@ object CioBlocks {
                 recoil = 3.5f
                 reload = 18f
             }
+            val ruvikRange = range
+            buildType = Prov { StealthBuild() }
             size = 3
             squareSprite = false
 
@@ -1157,7 +1186,7 @@ object CioBlocks {
                 height = 10f
                 hitSize = 10f
                 lifetime = 240f
-                maxRange = range
+                maxRange = ruvikRange
                 frontColor = S.Hologram
                 backColor = S.HologramDark
             }
@@ -1194,6 +1223,7 @@ object CioBlocks {
                 distributeSpeed = 10f
                 range = 320f
             }
+            buildType = Prov { WirelessTowerBuild() }
             size = 2
         }
     }
@@ -1234,6 +1264,7 @@ object CioBlocks {
                 damage = 10f
                 reloadTime = 75f
             }
+            buildType = Prov { HeimdallBuild() }
             size = 4
             connectedSound = CioSounds.connected
             addFormationPatterns(
@@ -1273,6 +1304,7 @@ object CioBlocks {
                 scaledHealth = 250f
                 consumePower(2.4f)
             }
+            buildType = Prov { EyeBuild() }
             shoot.firstShotDelay = 60f
             size = 2
             moveWhileCharging = false
@@ -1371,6 +1403,7 @@ object CioBlocks {
                 Upgrade(UT.PowerUse, false, 0.35f),
                 Upgrade(UT.MaxBrainWaveNum, true, 0.15f),
             )
+            buildType = Prov { EarBuild() }
             size = 2
         }
     }
@@ -1483,6 +1516,7 @@ object CioBlocks {
                     }
                     offset = 20f // +5f when improved
                 }
+                buildType = Prov { HeartBuild() }
                 bulletType = BBulletType("blood-bullet".Cio).apply {
                     damage = 0f
                     lifetime = 0f
@@ -1528,6 +1562,7 @@ object CioBlocks {
                     lifetime = 180f
                     trailWidth = 4f
                 }
+                buildType = Prov { DDoSBuild() }
             }
         }
     }
@@ -1539,6 +1574,7 @@ object CioBlocks {
                     Category.units, BuildVisibility.shown, arrayOf()
                 )
                 size = 5
+                buildType = Prov { CdnBuild() }
             }
         }
     }
@@ -1550,6 +1586,7 @@ object CioBlocks {
                     Category.effect, BuildVisibility.shown, arrayOf()
                 )
                 size = 1
+                buildType = Prov { ZipBombBuild() }
             }
         }
     }

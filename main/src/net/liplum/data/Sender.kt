@@ -58,6 +58,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
         configurable = true
         group = BlockGroup.transportation
         canOverdrive = false
+        schematicPriority = 20
         unloadable = false
         saveConfig = true
         /**

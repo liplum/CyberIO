@@ -60,6 +60,7 @@ open class Stealth(name: String) : Turret(name) {
     @JvmField var restoreReq = 30f
     @ClientOnly @JvmField var ruvikShootingTipTime = 60f
     @JvmField val CheckConnectionTimer = timers++
+
     init {
         update = true
         sync = true
@@ -68,6 +69,7 @@ open class Stealth(name: String) : Turret(name) {
         hasShadow = false
         absorbLasers = true
         floating = true
+        teamPassable = true
         //Turret
         hasLiquids = true
         hasPower = true

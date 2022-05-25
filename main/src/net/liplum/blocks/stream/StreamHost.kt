@@ -63,6 +63,7 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
         group = BlockGroup.liquids
         noUpdateDisabled = true
         hasLiquids = true
+        schematicPriority = 20
         saveConfig = true
         canOverdrive = true
         sync = true

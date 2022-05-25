@@ -12,7 +12,6 @@ import mindustry.graphics.Layer
 import mindustry.graphics.Pal
 import mindustry.world.blocks.defense.Wall
 import net.liplum.DebugOnly
-import net.liplum.R
 import net.liplum.S
 import net.liplum.api.holo.IHoloEntity
 import net.liplum.api.holo.IHoloEntity.Companion.minHealth
@@ -52,6 +51,7 @@ open class HoloWall(name: String) : Wall(name) {
         absorbLasers = true
         insulated = true
         flashHit = false
+        teamPassable = true
         floating = true
         sync = true
     }
@@ -68,7 +68,7 @@ open class HoloWall(name: String) : Wall(name) {
         super.setBars()
         removeItemsInBar()
         removeBar("health")
-        AddBar<HoloBuild>("health",
+        AddBar<HoloWallBuild>("health",
             { "stat.health".bundle },
             { S.Hologram },
             { healthf() }
@@ -77,22 +77,22 @@ open class HoloWall(name: String) : Wall(name) {
         }
 
         DebugOnly {
-            AddBar<HoloBuild>("is-projecting",
+            AddBar<HoloWallBuild>("is-projecting",
                 { "Is Projecting: ${isProjecting.yesNo()}" },
                 { S.HologramDark },
                 { isProjecting.toFloat() }
             )
-            AddBar<HoloBuild>("rest-restore",
+            AddBar<HoloWallBuild>("rest-restore",
                 { "Rest Restore: ${restRestore.toInt()}" },
                 { S.Hologram },
                 { restRestore / maxHealth }
             )
-            AddBar<HoloBuild>("charge",
+            AddBar<HoloWallBuild>("charge",
                 { "Charge: ${restoreCharge.seconds}s" },
                 { Pal.power },
                 { restoreCharge / restoreReload }
             )
-            AddBar<HoloBuild>("last-damaged",
+            AddBar<HoloWallBuild>("last-damaged",
                 { "Last Damage: ${lastDamagedTime.seconds}s" },
                 { Pal.power },
                 { lastDamagedTime / restoreReload }
@@ -100,7 +100,7 @@ open class HoloWall(name: String) : Wall(name) {
         }
     }
 
-    open inner class HoloBuild : WallBuild(), IHoloEntity {
+    open inner class HoloWallBuild : WallBuild(), IHoloEntity {
         @Serialized
         var restoreCharge = restoreReload
         open val isProjecting: Boolean
@@ -148,7 +148,7 @@ open class HoloWall(name: String) : Wall(name) {
             Draw.z(Layer.block)
             Draw.rect(BaseTR, x, y)
             if (isProjecting) {
-                SD.Hologram.use(Layer.power) {
+                SD.Hologram.use(Layer.flyingUnit - 0.1f) {
                     val healthPct = healthPct
                     it.alpha = healthPct / 4f * 3f
                     it.opacityNoise *= 2f - healthPct

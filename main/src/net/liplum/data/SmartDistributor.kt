@@ -88,6 +88,7 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
         hasItems = true
         itemCapacity = 50
         hasPower = true
+        schematicPriority = 25
         group = BlockGroup.transportation
         noUpdateDisabled = true
         canOverdrive = true

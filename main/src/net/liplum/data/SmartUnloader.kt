@@ -4,6 +4,7 @@ import arc.math.Mathf
 import arc.math.geom.Point2
 import arc.struct.OrderedSet
 import arc.struct.Seq
+import arc.util.Structs
 import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
@@ -65,6 +66,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
         else
             Mathf.round(log2(it + 5.1f))
     }
+    @JvmField var unloaderComparator: Comparator<Building> = Structs.comparingBool { it.block.highUnloadPriority }
     /**
      * The max range when trying to connect. -1f means no limit.
      */
@@ -81,6 +83,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
         canOverdrive = true
         unloadable = false
         itemCapacity = 50
+        schematicPriority = 20
         allowConfigInventory = false
         configurable = true
         saveConfig = true
@@ -214,6 +217,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
                     nearby.add(b)
                 }
             }
+            nearby.sort(unloaderComparator)
             unloadedNearbyIndex = 0
         }
 

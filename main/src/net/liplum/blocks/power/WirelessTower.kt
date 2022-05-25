@@ -57,8 +57,8 @@ open class WirelessTower(name: String) : PowerBlock(name) {
         consumePowerDynamic<WirelessTowerBuild> {
             it.lastNeed.coerceAtLeast(reactivePower)
         }
-        clipSize = range * 1.5f
         super.init()
+        clipSize = range * 1.5f
     }
 
     override fun load() {

@@ -117,7 +117,6 @@ open class Heimdall(name: String) : Block(name) {
     }
 
     override fun init() {
-        clipSize = range * 1.5f
         if (size != 4) {
             Log.warn("Block $name's size isn't 4 but $size, so it was set as 4 automatically.")
             size = 4
@@ -126,6 +125,7 @@ open class Heimdall(name: String) : Block(name) {
             it.realPowerUse
         }
         super.init()
+        clipSize = range * 1.5f
     }
 
     override fun load() {

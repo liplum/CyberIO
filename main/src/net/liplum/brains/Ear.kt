@@ -87,12 +87,12 @@ open class Ear(name: String) : Block(name), IComponentBlock {
     }
 
     override fun init() {
-        clipSize = (range * (1f + rangeI)) + (sonicMaxRadius * (1f * rangeI))
         checkInit()
         consumePowerDynamic<EarBuild> {
             if (it.lastRadiateTime < powerConsumeTime) it.realPowerUse else 0f
         }
         super.init()
+        clipSize = (range * (1f + rangeI)) + (sonicMaxRadius * (1f * rangeI))
     }
 
     override fun load() {

@@ -18,6 +18,7 @@ import net.liplum.mdt.render.Text
 import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.utils.PackedPos
 import net.liplum.mdt.utils.build
+import kotlin.math.max
 
 class DataCDN(name: String) : Block(name) {
     @JvmField var maxLink = 3
@@ -37,8 +38,8 @@ class DataCDN(name: String) : Block(name) {
     }
 
     override fun init() {
-        clipSize = linkRange * 1.2f
         super.init()
+        clipSize = max(clipSize, linkRange * 1.2f)
     }
 
     override fun setBars() {
@@ -65,17 +66,16 @@ class DataCDN(name: String) : Block(name) {
             val contains = data.links.contains(pos)
             if (contains) {
                 // unlink it
-                data.links.removeValue(pos)
-                target.data.links.removeValue(this.pos())
-                this.networkGraph.separate(target)
-            } else if (target.building.dst(this) <= linkRange &&
-                data.links.size < maxLink
-            ) {
+                unlink(target)
+            } else if (canLink(target)) {
                 // link it
-                data.links.addUnique(pos)
-                target.data.links.addUnique(this.pos())
-                this.data.network.merge(target)
+                link(target)
             }
+        }
+
+        fun canLink(target: INetworkNode): Boolean {
+            if (data.links.size >= maxLink) return false
+            return linkRange < 0 || target.building.dst(this) <= linkRange
         }
 
         override fun created() {
@@ -94,7 +94,7 @@ class DataCDN(name: String) : Block(name) {
                 }
 
                 Text.drawTextEasy(
-                    "${data.links};\n${networkGraph.nodes}".segmentLines(50), x, y, Color.white
+                    "[red]${data.network.id}[]\n${data.links};\n${networkGraph.nodes}".segmentLines(50), x, y, Color.white
                 )
             }
         }

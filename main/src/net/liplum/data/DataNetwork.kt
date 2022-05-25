@@ -1,6 +1,8 @@
 package net.liplum.data
 
 import arc.struct.IntSet
+import mindustry.gen.Building
+import mindustry.world.blocks.power.PowerGraph
 import net.liplum.api.cyber.INetworkNode
 import java.util.*
 
@@ -56,34 +58,16 @@ class DataNetwork {
             }
         }
     }
-
-    fun separate(node: INetworkNode) {
-        val nodeConnection = node.getNetworkConnections(tmp1)
-        if (nodeConnection.isEmpty()) {
-            val newGraph = DataNetwork()
-            newGraph.add(node)
-            return
-        }
-        for (other in nodeConnection) {
-            // Skip anyone isn't in the same graph
-            if (other.data.network != this) continue
-            // Create a new data network graph for this branch
-            val newGraph = DataNetwork()
-            newGraph.add(other)
-            bfsQueue.clear()
-            bfsQueue.addLast(node)
-            while (bfsQueue.isNotEmpty()) {
-                // Pop current one
-                val child = bfsQueue.removeFirst()
-                // Add it to the new branch
-                newGraph.add(child)
-                // Go through its connections
-                for (next in child.getNetworkConnections(tmp2)) {
-                    // Skip self
-                    if (next != node && next.data.network != newGraph) {
-                        newGraph.add(next)
-                        bfsQueue.addLast(next)
-                    }
+    fun reflow(node: INetworkNode) {
+        bfsQueue.clear()
+        bfsQueue.addLast(node)
+        closedSet.clear()
+        while (bfsQueue.size > 0) {
+            val child = bfsQueue.removeFirst()
+            add(child)
+            for (next in child.getNetworkConnections(tmp2)) {
+                if (closedSet.add(next.building.pos())) {
+                    bfsQueue.addLast(next)
                 }
             }
         }

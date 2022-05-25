@@ -73,7 +73,12 @@ open class ZipBomb(name: String) : Block(name) {
         sync = true
         targetable = false
         saveConfig = true
+        rebuildable = false
+        canOverdrive = false
+        hasShadow = false
+        drawDisabled = false
         commandable = true
+        teamPassable = true
         config(java.lang.Integer::class.java) { bomb: ZipBombBuild, cmdCode ->
             bomb.handleCommandFromRemote(Command(cmdCode.toInt()))
         }

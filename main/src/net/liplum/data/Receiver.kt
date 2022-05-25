@@ -60,6 +60,7 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
         saveConfig = true
         noUpdateDisabled = true
         acceptsItems = false
+        schematicPriority = 25
         canOverdrive = false
         allowConfigInventory = false
         sync = true

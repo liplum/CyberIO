@@ -50,6 +50,7 @@ open class StreamClient(name: String) : AniedBlock<StreamClient, StreamClient.Cl
         group = BlockGroup.liquids
         outputsLiquid = true
         configurable = true
+        schematicPriority = 25
         saveConfig = true
         noUpdateDisabled = true
         canOverdrive = false
