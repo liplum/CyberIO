@@ -109,6 +109,7 @@ object CioBlocks {
     @JvmStatic lateinit var DDoS: DDoS
     @JvmStatic lateinit var dataCDN: DataCDN
     @JvmStatic lateinit var zipBomb: ZipBomb
+    @JvmStatic lateinit var serializer: Serializer
     @DependOn("CioItems.ic")
     fun icMachine() {
         icMachine = ICMachine("ic-machine").apply {
@@ -1593,6 +1594,18 @@ object CioBlocks {
                 )
                 size = 1
                 buildType = Prov { ZipBombBuild() }
+            }
+        }
+    }
+    @DependOn("CioItems.ic")
+    fun serializer() {
+        DebugOnly {
+            serializer = Serializer("serializer").apply {
+                requirements(
+                    Category.units, BuildVisibility.shown, arrayOf()
+                )
+                size = 5
+                buildType = Prov { SerializerBuild() }
             }
         }
     }

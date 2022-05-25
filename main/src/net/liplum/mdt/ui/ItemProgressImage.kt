@@ -38,7 +38,7 @@ class ProgressImage(
     var progress: () -> Float
 ) : Element() {
     var isHorizontal = false
-    var upDown = true
+    var topDown = true
     var alpha = 0.6f
     var mask = TextureRegionDrawable(image)
     private val scissor = Rect()
@@ -51,7 +51,7 @@ class ProgressImage(
             drawMask()
             return
         }
-        if (upDown)
+        if (topDown)
             scissor.set(x, y, widthDraw, heightDraw)
         else
             scissor.set(x + width - widthDraw, y + height - heightDraw, widthDraw, heightDraw)

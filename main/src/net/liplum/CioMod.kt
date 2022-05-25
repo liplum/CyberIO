@@ -156,7 +156,9 @@ class CioMod : Mod() {
 
     override fun loadContent() {
         Info = Vars.mods.locateMod(Meta.ModID)
-        Info.meta.version = ContentSpecific.suffixModVersion(Info.meta.version)
+        val meta = Info.meta
+        meta.version = ContentSpecific.suffixModVersion(meta.version)
+        meta.subtitle = "[#${S.Hologram}]${Meta.Version} ${ContentSpecific.i18nName}[]"
         Events.fire(CioLoadContentEvent())
         Contents.load()
         CioTechTree.loadAll()

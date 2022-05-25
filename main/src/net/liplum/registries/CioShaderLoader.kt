@@ -12,9 +12,10 @@ import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.shaders.CommonShader
 import net.liplum.mdt.shaders.ProgressShader
 import net.liplum.registries.CioShaders.*
+import net.liplum.shaders.HologramizeShader
+import net.liplum.shaders.HologramShader
 import net.liplum.shaders.SurfaceShader
-import net.liplum.shaders.holo.HologramShader
-import net.liplum.spec
+import net.liplum.shaders.VanishingShader
 import net.liplum.useCompatible
 
 object CioShaderLoader {
@@ -25,7 +26,7 @@ object CioShaderLoader {
 // Dynamic
 DynamicColor                = default("DynamicColor",                  ::CommonShader)
 // Hologram
-Hologram                    = default("Hologram".spec,                          ::HologramShader)
+Hologram                    = default("Hologram",                      ::HologramShader)
 
 Monochrome                  = default("Monochrome",                    ::CommonShader)
 InvertColor                 = default("InvertColor",                   ::CommonShader)
@@ -38,6 +39,9 @@ InvertingColorRbg2HsvInRgb  = default("InvertingColorRgb2HsvInRgb",    ::Progres
 Monochromize                = default("Monochromize",                  ::ProgressShader)
 // Block Surface
 Cyberion                    = screen("Cyberion",                       ::SurfaceShader)
+Vanishing                   = default("Vanishing",                     ::VanishingShader)
+Hologramize                 = default("Hologramize",                   ::HologramizeShader)
+
 // They can be used on the screen space.
 //TestShieldScreen            = screen("TestShield",                     ::TestShieldShader)
 //TestScreen                  = screen("Hologram",                       ::HologramShader)

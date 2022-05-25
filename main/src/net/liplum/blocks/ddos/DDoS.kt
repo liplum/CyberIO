@@ -172,7 +172,7 @@ class DDoS(name: String) : Turret(name) {
                         add(ItemProgressImage(item.uiIcon) {
                             alreadyUsed[item.ID] / maxItemReachAttenuation.toFloat()
                         }.apply {
-                            img.upDown = false
+                            img.topDown = false
                             img.alpha = 0.7f
                         })
                         if ((i + 1) % itemRow == 0) {

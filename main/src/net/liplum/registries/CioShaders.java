@@ -2,9 +2,7 @@ package net.liplum.registries;
 
 import net.liplum.mdt.shaders.CommonShader;
 import net.liplum.mdt.shaders.ProgressShader;
-import net.liplum.shaders.SurfaceShader;
-import net.liplum.shaders.TestShieldShader;
-import net.liplum.shaders.holo.HologramShader;
+import net.liplum.shaders.*;
 
 public class CioShaders {
     public static CommonShader DynamicColor;
@@ -14,6 +12,8 @@ public class CioShaders {
     public static CommonShader Pulse;
     @Deprecated
     public static CommonShader Glitch;
+    public static VanishingShader Vanishing;
+    public static HologramizeShader Hologramize;
     public static HologramShader Hologram;
     public static ProgressShader InvertingColorRGB;
     public static ProgressShader InvertingColorRbg2HsvInHsv;

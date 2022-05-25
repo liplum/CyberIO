@@ -6,8 +6,10 @@ import net.liplum.lib.shaders.SD
 import net.liplum.lib.shaders.ShaderBase
 import net.liplum.mdt.shaders.CommonShader
 import net.liplum.registries.ShaderCtor
+import net.liplum.shaders.HologramizeShader
+import net.liplum.shaders.VanishingShader
+import net.liplum.shaders.HologramShader
 import net.liplum.shaders.SurfaceShader
-import net.liplum.shaders.holo.HologramShader
 
 object Debug {
     var enableUnlockContent = false
@@ -36,7 +38,7 @@ object Debug {
         Shader(
             ShaderType(
                 "Hologram",
-                { v, f -> HologramShader(v, f) },
+                ::HologramShader,
                 VertShaderType.Default
             ),
             { SD.Hologram = it as HologramShader }
@@ -44,7 +46,7 @@ object Debug {
         Shader(
             ShaderType(
                 "TvStatic",
-                { v, f -> CommonShader(v, f) },
+                ::CommonShader,
                 VertShaderType.Default
             ),
             { SD.TvStatic = it as CommonShader }
@@ -52,19 +54,27 @@ object Debug {
         Shader(
             ShaderType(
                 "Cyberion",
-                { v, f -> SurfaceShader(v, f) },
+                ::SurfaceShader,
                 VertShaderType.ScreenSpace
             ),
             { SD.Cyberion = it as SurfaceShader }
         ),
-/*        Shader(
+        Shader(
             ShaderType(
-                "Glitch",
-                { v, f -> CommonShader(v, f) },
+                "Hologramize",
+                { v, f -> HologramizeShader(v, f) },
                 VertShaderType.Default
             ),
-            { SD.Glitch = it as CommonShader }
-        )*/
+            { SD.Hologramize = it as HologramizeShader }
+        ),
+        Shader(
+            ShaderType(
+                "Vanishing",
+                { v, f -> VanishingShader(v, f) },
+                VertShaderType.Default
+            ),
+            { SD.Vanishing = it as VanishingShader }
+        )
     )
 
     class Shader(

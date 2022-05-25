@@ -4,7 +4,6 @@ import mindustry.content.Fx
 import mindustry.entities.bullet.BasicBulletType
 import mindustry.graphics.Pal
 import net.liplum.ErekirSpec
-import net.liplum.R
 import net.liplum.S
 import net.liplum.VanillaSpec
 import net.liplum.annotations.DependOn
@@ -14,7 +13,7 @@ import net.liplum.bullets.ShaderBasicBulletT
 import net.liplum.lib.shaders.SD
 import net.liplum.mdt.shaders.CommonShader
 import net.liplum.seffects.StaticFx
-import net.liplum.shaders.holo.HologramShader
+import net.liplum.shaders.HologramShader
 
 object CioBulletTypes {
     @JvmStatic lateinit var virus: BasicBulletType

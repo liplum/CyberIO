@@ -265,9 +265,7 @@ object CioUI {
                     changed {
                         DebugSettingsDialog.show()
                     }
-                }.addTrackTooltip("Only for debugging.").apply {
-                    canShow = { isMenu }
-                }
+                }.addTrackTooltip("Only for debugging.")
                 it.add(button).fillX()
             }
         }
