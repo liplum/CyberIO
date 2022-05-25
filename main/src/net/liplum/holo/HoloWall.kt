@@ -2,15 +2,19 @@ package net.liplum.holo
 
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
+import arc.math.Mathf
+import arc.struct.Seq
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.Vars
+import mindustry.gen.Building
 import mindustry.gen.Bullet
 import mindustry.gen.Call
 import mindustry.graphics.Drawf
 import mindustry.graphics.Layer
 import mindustry.graphics.Pal
 import mindustry.world.blocks.defense.Wall
+import mindustry.world.meta.BlockStatus
 import net.liplum.DebugOnly
 import net.liplum.S
 import net.liplum.api.holo.IHoloEntity
@@ -33,6 +37,7 @@ import net.liplum.mdt.utils.or
 import net.liplum.mdt.utils.seconds
 import net.liplum.mdt.utils.sub
 import net.liplum.utils.yesNo
+import kotlin.math.max
 
 open class HoloWall(name: String) : Wall(name) {
     @JvmField var restoreReload = 10 * 60f
@@ -41,6 +46,15 @@ open class HoloWall(name: String) : Wall(name) {
     @ClientOnly lateinit var DyedImageTR: TR
     @JvmField var minHealthProportion = 0.05f
     @ClientOnly @JvmField var FloatingRange = 0.6f
+    @JvmField var needPower = false
+    /**
+     * Used when [needPower] is true.
+     */
+    @JvmField var powerCapacity = 1000f
+    /**
+     * Used when [needPower] is true.
+     */
+    @JvmField var powerUseForChargePreUnit = 0.1f
 
     init {
         solid = false
@@ -49,11 +63,22 @@ open class HoloWall(name: String) : Wall(name) {
         update = true
         hasShadow = false
         absorbLasers = true
-        insulated = true
         flashHit = false
         teamPassable = true
         floating = true
         sync = true
+    }
+
+    override fun init() {
+        if (needPower) {
+            insulated = false
+            hasPower = true
+            outputsPower = true
+            consumesPower = true
+            powerCapacity = max(1f, powerCapacity)
+            consumePowerBuffered(powerCapacity)
+        }
+        super.init()
     }
 
     override fun load() {
@@ -122,6 +147,14 @@ open class HoloWall(name: String) : Wall(name) {
             get() = !isProjecting || health < maxHealth
         open val isRecovering: Boolean
             get() = restRestore > 0.5f
+        /**
+         * Used when [needPower] is true.
+         */
+        var storedPower: Float
+            get() = if (hasPower) (power.status * powerCapacity).coerceIn(0f, powerCapacity) else 0f
+            set(value) {
+                if (hasPower) power.status = (value / powerCapacity).coerceIn(0f, 1f)
+            }
 
         override fun damage(damage: Float) {
             if (!this.dead()) {
@@ -172,15 +205,25 @@ open class HoloWall(name: String) : Wall(name) {
         }
 
         override fun updateTile() {
-            lastDamagedTime += delta()
+            val delta = delta()
+            lastDamagedTime += delta
             if (restoreCharge < restoreReload && !isRecovering && canRestructure) {
-                restoreCharge += delta()
+                if (needPower) {
+                    val stored = storedPower
+                    val curChargeDelta = delta * powerUseForChargePreUnit
+                    if (stored >= curChargeDelta) {
+                        storedPower -= curChargeDelta
+                        restoreCharge += delta
+                    }
+                } else {
+                    restoreCharge += delta
+                }
             }
             if (isRecovering) {
                 val restored = if (restRestore <= maxHealth * minHealthProportion)
                     restRestore
                 else
-                    restRestore * delta() * 0.01f
+                    restRestore * delta * 0.01f
                 health = health.coerceAtLeast(0f)
                 if (restored > 0.001f) {
                     heal(restored)
@@ -203,6 +246,25 @@ open class HoloWall(name: String) : Wall(name) {
 
         override fun collide(other: Bullet): Boolean = isProjecting
         override fun drawCracks() {
+        }
+
+        override fun overwrote(previous: Seq<Building>) {
+            if (needPower) {
+                for (other in previous) {
+                    if (other.power != null && other.block.consPower != null && other.block.consPower.buffered) {
+                        val amount = other.block.consPower.capacity * other.power.status
+                        power.status = Mathf.clamp(power.status + amount / consPower.capacity)
+                    }
+                }
+            }
+        }
+
+        override fun status(): BlockStatus {
+            if (needPower) {
+                if (Mathf.equal(power.status, 0f, 0.001f)) return BlockStatus.noInput
+                if (Mathf.equal(power.status, 1f, 0.001f)) return BlockStatus.active
+            }
+            return BlockStatus.noOutput
         }
 
         override fun checkSolid(): Boolean = isProjecting

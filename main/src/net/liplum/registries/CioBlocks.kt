@@ -595,6 +595,9 @@ object CioBlocks {
                 )
                 scaledHealth = 425f
                 restoreReload = 15 * 60f
+                needPower = true
+                powerCapacity = 300f
+                powerUseForChargePreUnit = 0.2f
             }
             buildType = Prov { HoloWallBuild() }
             size = 1
@@ -630,6 +633,9 @@ object CioBlocks {
                 )
                 restoreReload = 20 * 60f
                 scaledHealth = 450f
+                needPower = true
+                powerCapacity = 800f
+                powerUseForChargePreUnit = 0.3f
             }
             buildType = Prov { HoloWallBuild() }
             squareSprite = false
