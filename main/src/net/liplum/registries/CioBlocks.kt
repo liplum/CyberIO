@@ -5,6 +5,7 @@ import arc.graphics.Color
 import arc.graphics.Texture
 import arc.struct.Seq
 import arc.util.Time
+import mindustry.Vars
 import mindustry.content.*
 import mindustry.entities.bullet.LaserBulletType
 import mindustry.entities.bullet.LightningBulletType
@@ -1639,12 +1640,18 @@ object CioBlocks {
             Blocks.itemVoid.buildVisibility = BuildVisibility.shown
             Blocks.liquidVoid.buildVisibility = BuildVisibility.shown
             Blocks.payloadVoid.buildVisibility = BuildVisibility.shown
-
-            (Blocks.payloadConveyor as PayloadConveyor).payloadLimit = 10f
-            (Blocks.payloadLoader as PayloadLoader).maxBlockSize = 10
-            (Blocks.payloadRouter as PayloadRouter).payloadLimit = 10f
-            (Blocks.payloadUnloader as PayloadUnloader).maxBlockSize = 10
-            (Blocks.payloadPropulsionTower as PayloadMassDriver).maxPayloadSize = 10f
+            val blockSize = 10f
+            (Blocks.payloadConveyor as PayloadConveyor).payloadLimit = blockSize
+            (Blocks.payloadLoader as PayloadLoader).maxBlockSize = blockSize.toInt()
+            (Blocks.payloadRouter as PayloadRouter).payloadLimit = blockSize
+            (Blocks.payloadUnloader as PayloadUnloader).maxBlockSize = blockSize.toInt()
+            (Blocks.payloadPropulsionTower as PayloadMassDriver).maxPayloadSize = blockSize
+            (Blocks.payloadMassDriver as PayloadMassDriver).maxPayloadSize = blockSize
+            (Blocks.reinforcedPayloadConveyor as PayloadConveyor).payloadLimit = blockSize
+            (Blocks.reinforcedPayloadRouter as PayloadConveyor).payloadLimit = blockSize
+            UnitTypes.evoke.payloadCapacity = blockSize * blockSize * Vars.tilePayload
+            UnitTypes.incite.payloadCapacity = blockSize * blockSize * Vars.tilePayload
+            UnitTypes.emanate.payloadCapacity = blockSize * blockSize * Vars.tilePayload
             /*val coreBlock = Blocks.coreShard as CoreBlock
             coreBlock.unitType = CioUnitTypes.holoFighter
             coreBlock.solid = false*/

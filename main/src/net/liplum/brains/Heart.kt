@@ -528,6 +528,15 @@ class Heart(name: String) : Block(name), IComponentBlock {
             }
         }
 
+        override fun heal() {
+            super.heal()
+            trigger(Trigger.heal)
+        }
+
+        override fun heal(amount: Float) {
+            super.heal(amount)
+            trigger(Trigger.heal)
+        }
         override fun remove() {
             super.remove()
             clear()

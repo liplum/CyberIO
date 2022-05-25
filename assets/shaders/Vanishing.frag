@@ -14,12 +14,6 @@ uniform int u_topDown;
 uniform vec2 u_size;
 varying vec2 v_texCoords;
 
-float random(vec2 st) {
-    return fract(sin(dot(st.xy,
-    vec2(12.9898, 78.233)))*
-    43758.5453123);
-}
-
 void main() {
     // Digitalize must know the whole texture
     // Get the coordinate on atlas
@@ -30,7 +24,7 @@ void main() {
     // scanline progress
     float p = u_progress * (1.0 + u_offset);
     if (u_topDown != 0){// true: topDown; false: bottomUp
-        p = 1f - p;
+        p = 1.0 - p;
     }
     float top = clamp(p, 0.0, 1.0);
     float bottom = clamp(p - u_offset, 0.0, 1.0);

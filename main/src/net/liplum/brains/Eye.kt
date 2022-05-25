@@ -280,6 +280,15 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
                 normalSounds.random().at(tile)
         }
 
+        override fun heal() {
+            super.heal()
+            trigger(Trigger.heal)
+        }
+
+        override fun heal(amount: Float) {
+            super.heal(amount)
+            trigger(Trigger.heal)
+        }
         override fun hasAmmo() = true
         override fun useAmmo(): BulletType {
             ClientOnly {

@@ -337,6 +337,15 @@ open class Ear(name: String) : Block(name), IComponentBlock {
             }
         }
 
+        override fun heal() {
+            super.heal()
+            trigger(Trigger.heal)
+        }
+
+        override fun heal(amount: Float) {
+            super.heal(amount)
+            trigger(Trigger.heal)
+        }
         override fun delta(): Float {
             return this.timeScale * Time.delta * speedScale * (1f + heatShared)
         }

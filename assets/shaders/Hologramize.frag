@@ -46,7 +46,7 @@ void main() {
     // scanline progress
     float p = u_progress * (1.0 + u_offset);
     if (u_topDown != 0){// true: topDown; false: bottomUp
-        p = 1f - p;
+        p = 1.0 - p;
     }
     float top = clamp(p, 0.0, 1.0);
     float bottom = clamp(p - u_offset, 0.0, 1.0);

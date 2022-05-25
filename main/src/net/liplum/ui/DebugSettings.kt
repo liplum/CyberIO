@@ -12,7 +12,6 @@ import mindustry.graphics.Shaders.getShaderFi
 import mindustry.ui.dialogs.BaseDialog
 import net.liplum.Debug
 import net.liplum.Debug.SettingType
-import net.liplum.R
 import net.liplum.S
 import net.liplum.Settings
 import net.liplum.lib.Dir

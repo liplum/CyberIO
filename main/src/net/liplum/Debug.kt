@@ -6,10 +6,10 @@ import net.liplum.lib.shaders.SD
 import net.liplum.lib.shaders.ShaderBase
 import net.liplum.mdt.shaders.CommonShader
 import net.liplum.registries.ShaderCtor
-import net.liplum.shaders.HologramizeShader
-import net.liplum.shaders.VanishingShader
 import net.liplum.shaders.HologramShader
+import net.liplum.shaders.HologramizeShader
 import net.liplum.shaders.SurfaceShader
+import net.liplum.shaders.VanishingShader
 
 object Debug {
     var enableUnlockContent = false
@@ -20,7 +20,13 @@ object Debug {
             ::enableUnlockContent::get,
             { enableUnlockContent = it },
             SettingType.Check,
-        )
+        ),
+        Setting(
+            "Enable Debug Mode",
+            { CioMod.DebugMode },
+            { CioMod.DebugMode = it },
+            SettingType.Check,
+        ),
     )
 
     enum class SettingType {

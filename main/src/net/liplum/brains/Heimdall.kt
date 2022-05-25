@@ -107,6 +107,8 @@ open class Heimdall(name: String) : Block(name) {
     )
 
     init {
+        updateInUnits = true
+        alwaysUpdateInUnits = true
         solid = true
         update = true
         hasPower = true
@@ -427,6 +429,19 @@ open class Heimdall(name: String) : Block(name) {
                             trigger(Trigger.detect)
                     }
                 }
+            }
+        }
+
+        override fun updatePayload(unitHolder: MdtUnit?, buildingHolder: Building?) {
+            super.updatePayload(unitHolder, buildingHolder)
+            if (Mathf.chance(0.006)) {
+                if (unitHolder != null) {
+                    if (Mathf.chance(0.5)) {
+                        trigger(Trigger.onPayloadUnit)
+                        return
+                    }
+                }
+                trigger(Trigger.onPayload)
             }
         }
 

@@ -76,6 +76,8 @@ open class Prism(name: String) : Block(name) {
     @ClientOnly lateinit var LeftDownEndTR: TR
 
     init {
+        updateInUnits = true
+        alwaysUpdateInUnits = true
         absorbLasers = true
         update = true
         solid = true
@@ -323,6 +325,8 @@ open class Prism(name: String) : Block(name) {
         }
 
         override fun draw() {
+            val inPayload = inPayload
+            val curZ = Draw.z()
             Draw.rect(BaseTR, x, y)
             val process = cm.process
             Draw.alpha(1f - process)
@@ -337,8 +341,10 @@ open class Prism(name: String) : Block(name) {
             Draw.rect(LeftDownEndTR, x, y, -90f)
             Draw.color()
             val delta = process * G.D(15f)
-
-            Draw.z(Layer.blockOver)
+            if (inPayload)
+                Draw.z(curZ + 1f)
+            else
+                Draw.z(Layer.blockOver)
             Draw.rect(UpTR, x, y + delta)
             Draw.rect(DownTR, x, y - delta)
             Draw.rect(LeftTR, x - delta, y)
@@ -360,18 +366,19 @@ open class Prism(name: String) : Block(name) {
                     priselY - elevation * Mathf.log(3f, orbitPos + 3f) * 7f,
                     rotation.a.degree.draw
                 )
-                Draw.z(Layer.power + 1f)
+                if (inPayload)
+                    Draw.z(curZ + 2f)
+                else
+                    Draw.z(Layer.bullet - 1f)
+                DebugOnly {
+                    G.drawDashCircleBreath(priselX, priselY, prismRange, color)
+                }
                 Draw.rect(
                     img,
                     priselX,
                     priselY,
                     rotation.a.degree.draw
                 )
-
-                DebugOnly {
-                    Draw.z(Layer.power - 1f)
-                    G.drawDashCircleBreath(priselX, priselY, prismRange, color)
-                }
             }
             Draw.reset()
         }

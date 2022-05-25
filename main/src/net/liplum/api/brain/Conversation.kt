@@ -16,6 +16,7 @@ import net.liplum.mdt.render.Text
 import net.liplum.mdt.render.Toaster
 import net.liplum.mdt.render.fadeInOutPct
 import net.liplum.mdt.render.inViewField
+import net.liplum.mdt.utils.inPayload
 import net.liplum.mdt.utils.worldPos
 
 object ConversationManager {
@@ -31,7 +32,7 @@ object ConversationManager {
                 if (!p1.set(b.x, b.y).inViewField(b.block.clipSize)) return@post
                 setText(it, curText)
                 it.data.setScale(1f / 4f / Scl.scl(fontSize))
-                if (!b.isAdded) toast.duration = 0f
+                if (!b.isAdded && !b.inPayload) toast.duration = 0f
                 it.color.set(color).a(fadeInOutPct(ConversationFadeTimePercent))
                 it.draw(
                     curText,
@@ -85,6 +86,9 @@ class Trigger(
         var forceFieldHit =     Trigger("forcefield-hit",       3)
         var heal =              Trigger("heal",                 6)
             .color(R.C.GreenSafe)
+        var onPayload =         Trigger("on-payload",           5)
+        var onPayloadUnit =     Trigger("on-payload-unit",      5)
+            .color(R.C.RedAlert)
         // @formatter:on
         private const val prefix = "heimdall.msg"
         private val p1 = Point2f()
