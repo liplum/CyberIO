@@ -3,6 +3,7 @@ package net.liplum.registries
 import arc.func.Func
 import arc.func.Prov
 import arc.graphics.Color
+import mindustry.Vars
 import mindustry.ai.types.BuilderAI
 import mindustry.ai.types.DefenderAI
 import mindustry.ai.types.MinerAI
@@ -19,9 +20,7 @@ import mindustry.type.Weapon
 import mindustry.type.ammo.ItemAmmoType
 import mindustry.type.ammo.PowerAmmoType
 import mindustry.world.meta.BlockFlag
-import net.liplum.Cio
-import net.liplum.R
-import net.liplum.S
+import net.liplum.*
 import net.liplum.annotations.DependOn
 import net.liplum.bullets.RuvikBullet
 import net.liplum.bullets.STEM_VERSION
@@ -158,9 +157,17 @@ object CioUnitTypes {
     @DependOn("CioItems.ic")
     fun holoArchitect() {
         holoArchitect = NewUnitType(R.Unit.HoloArchitect, ::HoloUnitType, ::HoloUnit).apply {
-            AutoLife(maxHealth = 2200f, lose = 0.15f)
+            VanillaSpec {
+                AutoLife(maxHealth = 2200f, lose = 0.15f)
+                buildSpeed = 4.6f
+                speed = 3.5f
+            }
+            ErekirSpec {
+                AutoLife(maxHealth = 2800f, lose = 0.15f)
+                buildSpeed = 3.6f
+                speed = 3.0f
+            }
             aiController = Prov { BuilderAI() }
-            speed = 3.5f
             HoloOpacity = 0.4f
             ColorOpacity = 0.05f
             flying = true
@@ -172,7 +179,6 @@ object CioUnitTypes {
             engineOffset = 3.7f
             hitSize = 15f
             armor = 5f
-            buildSpeed = 4.6f
             ammoType = PowerAmmoType(900f)
             researchReq = arrayOf(
                 ItemStack(CioItems.ic, 3),
@@ -229,10 +235,20 @@ object CioUnitTypes {
             HoloOpacity = 0.4f
             ColorOpacity = 0.3f
             armor = 2f
-            speed = 2.5f
-            accel = 0.06f
-            drag = 0.017f
-            buildSpeed = 2.2f
+            VanillaSpec {
+                buildSpeed = 2.2f
+                speed = 2.5f
+                accel = 0.06f
+                drag = 0.017f
+            }
+            ErekirSpec {
+                buildSpeed = 1.2f
+                speed = 2.3f
+                payloadCapacity = (5f * 5f) * Vars.tilePayload
+                accel = 0.06f
+                drag = 0.05f
+                pickupUnits = true
+            }
             hitSize = 14f
             engineSize = 2f
             engineOffset = 3f
@@ -251,7 +267,12 @@ object CioUnitTypes {
                 shootCost = 20f
                 bullet = LaserBoltBulletType(5.2f, 15f).apply {
                     lifetime = 35f
-                    healPercent = 8f
+                    VanillaSpec {
+                        healPercent = 8f
+                    }
+                    ErekirSpec {
+                        healPercent = 2f
+                    }
                     collidesTeam = true
                     backColor = S.HologramDark
                     frontColor = S.Hologram

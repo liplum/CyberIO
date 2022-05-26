@@ -119,3 +119,19 @@ fun String.segmentLines(maxPerLine: Int): String {
     }
     return s.toString()
 }
+
+inline fun String.insertLineNumber(style: (Int) -> String): String {
+    val s = StringBuilder()
+    var line = 1
+    s.append(style(line))
+    for (c in this) {
+        if (c == '\n') {
+            line++
+            s.append('\n')
+            s.append(style(line))
+        } else {
+            s.append(c)
+        }
+    }
+    return s.toString()
+}

@@ -15,7 +15,7 @@ uniform vec2 u_size;
 varying vec2 v_texCoords;
 
 void main() {
-    // Digitalize must know the whole texture
+    // This shader must know the whole texture
     // Get the coordinate on atlas
     vec2 tex_uv = v_texCoords.xy;
     // Get the width and height on altas

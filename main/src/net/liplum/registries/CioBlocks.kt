@@ -450,9 +450,6 @@ object CioBlocks {
             size = 3
             maxBoost = 50f
             minBoost = 0.5f
-            UndebugOnly {
-                consumePower(50f)
-            }
             speedBoost = 50f
             range = 1000f
         }

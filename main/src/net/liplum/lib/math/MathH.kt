@@ -259,3 +259,16 @@ fun isDiagonalTo(
     val angle = temp.set(x1, y1).minus(x2, y2).angle()
     return (angle % 45f).isZero && !(angle % 90f).isZero
 }
+
+val Float.sqr: Float
+    get() = this * this
+val Float.cube: Float
+    get() = this * this * this
+val Int.sqr: Int
+    get() = this * this
+val Int.cube: Int
+    get() = this * this * this
+val Int.sqrf: Float
+    get() = (this * this).toFloat()
+val Int.cubef: Float
+    get() = (this * this * this).toFloat()

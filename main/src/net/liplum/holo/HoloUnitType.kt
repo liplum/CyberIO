@@ -69,6 +69,8 @@ open class HoloUnitType(name: String) : UnitType(name) {
         canDrown = false
         immunities.addAll(Vars.content.statusEffects())
         envDisabled = Env.none
+        isEnemy = false
+        payloadCapacity = 0f
     }
 
     open fun AutoLife(lose: Float) {
@@ -156,7 +158,7 @@ open class HoloUnitType(name: String) : UnitType(name) {
             drawItems(unit)
         }
         // TODO: need update maybe
-        for ((i, part) in parts.withIndex()) {
+        for (part in parts) {
             val first = if (unit.mounts.size > part.weaponIndex)
                 unit.mounts[part.weaponIndex]
             else null
@@ -187,9 +189,7 @@ open class HoloUnitType(name: String) : UnitType(name) {
         if (unit.hasPayload()) {
             val pay = unit.payloads().first()
             pay.set(unit.x, unit.y, unit.rotation)
-            SD.Hologram.use {
-                pay.draw()
-            }
+            pay.draw()
         }
     }
 

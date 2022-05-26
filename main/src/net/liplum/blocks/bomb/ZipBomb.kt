@@ -117,7 +117,7 @@ open class ZipBomb(name: String) : Block(name) {
         @Serialized
         var autoDetectCounter = 0f
         override fun updateTile() {
-                if (!autoDetectEnabled) return
+            if (!autoDetectEnabled) return
             autoDetectCounter += Time.delta
             if (autoDetectCounter >= autoDetectTime) {
                 autoDetectCounter %= autoDetectTime
@@ -132,6 +132,10 @@ open class ZipBomb(name: String) : Block(name) {
             if (enemyCount >= curSensitive) {
                 trigger()
             }
+        }
+
+        override fun dropped() {
+            trigger()
         }
 
         override fun unitOn(unit: Unit) {

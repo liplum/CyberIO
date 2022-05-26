@@ -38,7 +38,7 @@ vec3 blend(vec3 x, vec3 y, float opacity) {
     return z * opacity + x * (1.0 - opacity);
 }
 void main() {
-    // Digitalize must know the whole texture
+    // This shader must know the whole texture
     // Get the coordinate on atlas
     vec2 tex_uv = v_texCoords.xy;
     vec2 altasXY = v_texCoords.xy - u_uv;

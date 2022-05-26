@@ -74,6 +74,7 @@ open class Prism(name: String) : Block(name) {
     @ClientOnly lateinit var RightUpEndTR: TR
     @ClientOnly lateinit var LeftDownStartTR: TR
     @ClientOnly lateinit var LeftDownEndTR: TR
+    @ClientOnly var sizeOpen = 15f
 
     init {
         updateInUnits = true
@@ -325,8 +326,8 @@ open class Prism(name: String) : Block(name) {
         }
 
         override fun draw() {
-            val inPayload = inPayload
-            val curZ = Draw.z()
+            Draw.z(Layer.block)
+            val isInPayload = inPayload
             Draw.rect(BaseTR, x, y)
             val process = cm.process
             Draw.alpha(1f - process)
@@ -340,11 +341,9 @@ open class Prism(name: String) : Block(name) {
             Draw.rect(LeftDownEndTR, x, y)
             Draw.rect(LeftDownEndTR, x, y, -90f)
             Draw.color()
-            val delta = process * G.D(15f)
-            if (inPayload)
-                Draw.z(curZ + 1f)
-            else
-                Draw.z(Layer.blockOver)
+            val delta = process * G.D(sizeOpen)
+
+            Draw.z(Layer.blockOver)
             Draw.rect(UpTR, x, y + delta)
             Draw.rect(DownTR, x, y - delta)
             Draw.rect(LeftTR, x - delta, y)
@@ -366,8 +365,8 @@ open class Prism(name: String) : Block(name) {
                     priselY - elevation * Mathf.log(3f, orbitPos + 3f) * 7f,
                     rotation.a.degree.draw
                 )
-                if (inPayload)
-                    Draw.z(curZ + 2f)
+                if (isInPayload)
+                    Draw.z(Layer.blockOver + 1f)
                 else
                     Draw.z(Layer.bullet - 1f)
                 DebugOnly {

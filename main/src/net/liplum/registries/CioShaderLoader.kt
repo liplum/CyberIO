@@ -7,13 +7,14 @@ import net.liplum.R
 import net.liplum.annotations.Only
 import net.liplum.annotations.SubscribeEvent
 import net.liplum.events.CioInitEvent
+import net.liplum.lib.insertLineNumber
 import net.liplum.lib.shaders.*
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.shaders.CommonShader
 import net.liplum.mdt.shaders.ProgressShader
 import net.liplum.registries.CioShaders.*
-import net.liplum.shaders.HologramizeShader
 import net.liplum.shaders.HologramShader
+import net.liplum.shaders.HologramizeShader
 import net.liplum.shaders.SurfaceShader
 import net.liplum.shaders.VanishingShader
 import net.liplum.useCompatible
@@ -85,11 +86,11 @@ Hologramize                 = default("Hologramize",                   ::Hologra
         } catch (e: Exception) {
             var fragment = "Re-preprocess fragment error!"
             try {
-                fragment = preprocessFragment(fragFile)
+                fragment = preprocessFragment(fragFile).insertLineNumber { "[$it]" }
             } catch (_: Exception) {
             }
             throw ShaderCompileException(
-                "Can't compile shaders $vertFileName and $fragFileName\n$fragment\n", e
+                "Can't compile shaders $vertFileName and $fragFileName.\n$fragment\n${e.message}", e
             )
         }
     }

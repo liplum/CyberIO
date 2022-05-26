@@ -7,43 +7,57 @@ import arc.graphics.g2d.Fill
 import arc.graphics.g2d.Lines
 import arc.math.Angles
 import arc.math.Mathf
+import arc.struct.Seq
 import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.Vars
+import mindustry.ctype.Content
+import mindustry.ctype.ContentType
 import mindustry.game.EventType.UnitDestroyEvent
 import mindustry.gen.UnitEntity
 import mindustry.graphics.Drawf
 import mindustry.graphics.Layer
+import mindustry.io.TypeIO
 import mindustry.logic.LAccess
+import mindustry.type.UnitType
 import mindustry.world.blocks.ConstructBlock.ConstructBuild
-import net.liplum.mdt.ClientOnly
+import mindustry.world.blocks.payloads.Payload
+import mindustry.world.blocks.power.PowerGraph
 import net.liplum.S
-import net.liplum.lib.Serialized
 import net.liplum.holo.HoloProjector.HoloPBuild
-import net.liplum.registries.EntityRegistry
+import net.liplum.lib.Serialized
+import net.liplum.lib.persistance.*
+import net.liplum.mdt.ClientOnly
+import net.liplum.mdt.mixin.PayloadMixin
 import net.liplum.mdt.render.G
 import net.liplum.mdt.utils.build
 import net.liplum.mdt.utils.exists
 import net.liplum.mdt.utils.hasShields
+import net.liplum.registries.EntityRegistry
 
-open class HoloUnit : UnitEntity() {
+open class HoloUnit : UnitEntity(), PayloadMixin, IReverisonable {
+    override fun reversionID() = 8
+    override var payloadPower: PowerGraph? = null
+    override var payloads = Seq<Payload>()
+    override val unitType: UnitType
+        get() = super.type
     @Serialized
     @JvmField var time = 0f
-    val HoloType: HoloUnitType
+    val holoType: HoloUnitType
         get() = type as HoloUnitType
     open val lifespan: Float
-        get() = HoloType.lifespan
+        get() = holoType.lifespan
     open val overageDmgFactor: Float
-        get() = HoloType.overageDmgFactor
+        get() = holoType.overageDmgFactor
     open val lose: Float
-        get() = HoloType.lose
+        get() = holoType.lose
     open val restLifePercent: Float
         get() = (1f - (time / lifespan)).coerceIn(0f, 1f)
     open val restLife: Float
         get() = (lifespan - time).coerceIn(0f, lifespan)
     open val loseMultiplierWhereMissing: Float
-        get() = HoloType.loseMultiplierWhereMissing
+        get() = holoType.loseMultiplierWhereMissing
     @Serialized
     var projectorPos: Int = -1
     val isProjectorMissing: Boolean
@@ -54,22 +68,31 @@ open class HoloUnit : UnitEntity() {
     }
 
     override fun update() {
-        val loseMultiplier: Float
-        if (isProjectorMissing) {
-            loseMultiplier = loseMultiplierWhereMissing
-            projectorPos = -1
+        if (type is HoloUnitType) {
+            val loseMultiplier: Float
+            if (isProjectorMissing) {
+                loseMultiplier = loseMultiplierWhereMissing
+                projectorPos = -1
+            } else {
+                loseMultiplier = 1f
+            }
+            time += Time.delta * loseMultiplier
+            updateBySuper()
+            val lose = lose * loseMultiplier
+            var damage = lose
+            val overage = time - lifespan
+            if (overage > 0) {
+                damage += overage * lose * overageDmgFactor
+            }
+            damageByHoloDimming(damage)
         } else {
-            loseMultiplier = 1f
+            updateBySuper()
         }
-        time += Time.delta * loseMultiplier
+    }
+
+    open fun updateBySuper() {
         super.update()
-        val lose = lose * loseMultiplier
-        var damage = lose
-        val overage = time - lifespan
-        if (overage > 0) {
-            damage += overage * lose * overageDmgFactor
-        }
-        damageByHoloDimming(damage)
+        updatePayload()
     }
 
     override fun destroy() {
@@ -125,6 +148,11 @@ open class HoloUnit : UnitEntity() {
         drawStatusEffect()
         type.draw(this)
         drawRuvikTip()
+    }
+
+    override fun killed() {
+        super.killed()
+        dropLastPayload()
     }
 
     override fun drawBuildingBeam(px: Float, py: Float) {
@@ -184,15 +212,17 @@ open class HoloUnit : UnitEntity() {
         }
 
     open fun drawRuvikTip() {
-        val holoType = HoloType
-        if (holoType.enableRuvikTip && isLocal) {
-            if (isShooting) {
-                ruvikTipAlpha += 2f / holoType.ruvikShootingTipTime
-            } else {
-                ruvikTipAlpha -= 0.5f / holoType.ruvikShootingTipTime
-            }
-            if (ruvikTipAlpha > 0f) {
-                G.drawDashCircleBreath(x, y, holoType.ruvikTipRange, color = S.Hologram, alpha = ruvikTipAlpha)
+        if (type is HoloUnitType) {
+            val holoType = holoType
+            if (holoType.enableRuvikTip && isLocal) {
+                if (isShooting) {
+                    ruvikTipAlpha += 2f / holoType.ruvikShootingTipTime
+                } else {
+                    ruvikTipAlpha -= 0.5f / holoType.ruvikShootingTipTime
+                }
+                if (ruvikTipAlpha > 0f) {
+                    G.drawDashCircleBreath(x, y, holoType.ruvikTipRange, color = S.Hologram, alpha = ruvikTipAlpha)
+                }
             }
         }
     }
@@ -201,28 +231,114 @@ open class HoloUnit : UnitEntity() {
         return EntityRegistry[javaClass]
     }
 
+    private fun readReversion7(read: Reads) {
+        // Copy from parent reversion 7
+        abilities = TypeIO.readAbilities(read, abilities)
+        ammo = read.f()
+        controller = TypeIO.readController(read, controller)
+        elevation = read.f()
+        flag = read.d()
+        health = read.f()
+        isShooting = read.bool()
+        mineTile = TypeIO.readTile(read)
+        mounts = TypeIO.readMounts(read, mounts)
+        plans = TypeIO.readPlansQueue(read)
+        rotation = read.f()
+        shield = read.f()
+        spawnedByCore = read.bool()
+        stack = TypeIO.readItems(read, stack)
+        val statuses_LENGTH = read.i()
+        statuses.clear()
+        for (i in 0 until statuses_LENGTH) {
+            val statusItem = TypeIO.readStatus(read)
+            if (statusItem != null) {
+                statuses.add(statusItem)
+            }
+        }
+        team = TypeIO.readTeam(read)
+        type = Vars.content.getByID<Content>(ContentType.unit, read.s().toInt()) as UnitType
+        updateBuilding = read.bool()
+        vel = TypeIO.readVec2(read, vel)
+        x = read.f()
+        y = read.f()
+    }
+
     override fun read(read: Reads) {
-        super.read(read)
-        time = read.f()
-        projectorPos = read.i()
+        val REV = read.s().toInt()
+        if (REV == 7) {
+            readReversion7(read)
+            time = read.f()
+            projectorPos = read.i()
+        } else if (REV >= 8) {
+            // Since 8, use cache reader instead of vanilla
+            CacheReader.startRead(read, reversionID()) {
+                val wrap = cacheReaderWrapped.init(this)
+                readReversion7(wrap)
+                time = f()
+                projectorPos = i()
+                readPayload(wrap)
+            }
+        }
+        this.afterRead()
+    }
+
+    private fun writeUnitEntity(write: Writes) {
+        TypeIO.writeAbilities(write, abilities)
+        write.f(ammo)
+        TypeIO.writeController(write, controller)
+        write.f(elevation)
+        write.d(flag)
+        write.f(health)
+        write.bool(isShooting)
+        TypeIO.writeTile(write, mineTile)
+        TypeIO.writeMounts(write, mounts)
+        write.i(plans.size)
+        for (plan in plans) {
+            TypeIO.writePlan(write, plan)
+        }
+
+        write.f(rotation)
+        write.f(shield)
+        write.bool(spawnedByCore)
+        TypeIO.writeItems(write, stack)
+        write.i(statuses.size)
+        for (status in statuses) {
+            TypeIO.writeStatus(write, status)
+        }
+
+        TypeIO.writeTeam(write, team)
+        write.s(type.id.toInt())
+        write.bool(updateBuilding)
+        TypeIO.writeVec2(write, vel)
+        write.f(x)
+        write.f(y)
     }
 
     override fun write(write: Writes) {
-        super.write(write)
-        write.f(time)
-        write.i(projectorPos)
+        write.s(reversionID())
+        // Since 8, use cache writer instead of vanilla
+        cacheWriter.init().apply {
+            val wrap = cacheWriterWrapped.init(this)
+            writeUnitEntity(wrap)
+            f(time)
+            i(projectorPos)
+            writePayload(wrap)
+            flushAll(write, reversionID())
+        }
     }
-
+    // Sync doesn't need reversion
     override fun readSync(read: Reads) {
         super.readSync(read)
         time = read.f()
         projectorPos = read.i()
+        readPayload(read)
     }
-
+    // Sync doesn't need reversion
     override fun writeSync(write: Writes) {
         super.writeSync(write)
         write.f(time)
         write.i(projectorPos)
+        writePayload(write)
     }
 
     override fun sense(sensor: LAccess): Double {
@@ -230,5 +346,11 @@ open class HoloUnit : UnitEntity() {
             LAccess.progress -> (1f - restLifePercent).toDouble()
             else -> super.sense(sensor)
         }
+    }
+
+    companion object {
+        private val cacheWriter = CacheWriter()
+        private val cacheReaderWrapped = CacheReaderWrapped()
+        private val cacheWriterWrapped = CacheWriterWrapped()
     }
 }
