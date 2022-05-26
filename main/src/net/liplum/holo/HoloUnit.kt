@@ -22,6 +22,7 @@ import mindustry.io.TypeIO
 import mindustry.logic.LAccess
 import mindustry.type.UnitType
 import mindustry.world.blocks.ConstructBlock.ConstructBuild
+import mindustry.world.blocks.payloads.BuildPayload
 import mindustry.world.blocks.payloads.Payload
 import mindustry.world.blocks.power.PowerGraph
 import net.liplum.S
@@ -68,6 +69,7 @@ open class HoloUnit : UnitEntity(), PayloadMixin, IReverisonable {
         projectorPos = projector.pos()
     }
 
+    override fun toString() = "HoloUnit#$id"
     override fun update() {
         if (type is HoloUnitType) {
             val loseMultiplier: Float
@@ -228,6 +230,25 @@ open class HoloUnit : UnitEntity(), PayloadMixin, IReverisonable {
         }
     }
 
+    override fun updatePayload() {
+        val projector = projectorPos.build as? HoloPBuild
+        payloadPower = projector?.power?.graph
+
+        for (pay in payloads) {
+            if (pay is BuildPayload && pay.build.power != null) {
+                val payPower = payloadPower ?: PowerGraph()
+                payloadPower = payPower
+                pay.build.power.graph = null
+                payPower.add(pay.build)
+            }
+        }
+        payloadPower?.update()
+        for (pay in payloads) {
+            pay.set(x, y, rotation())
+            pay.update(self(), null)
+        }
+    }
+
     override fun classId(): Int {
         return EntityRegistry[javaClass]
     }
@@ -263,7 +284,6 @@ open class HoloUnit : UnitEntity(), PayloadMixin, IReverisonable {
         x = read.f()
         y = read.f()
     }
-
     @OverwriteVanilla("Super")
     override fun read(read: Reads) {
         val REV = read.s().toInt()

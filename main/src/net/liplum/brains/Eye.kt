@@ -8,10 +8,13 @@ import arc.math.Interp
 import arc.math.Mathf
 import arc.util.Time
 import mindustry.Vars
+import mindustry.content.Bullets
 import mindustry.entities.TargetPriority
 import mindustry.entities.bullet.BulletType
+import mindustry.gen.Building
 import mindustry.gen.Bullet
 import mindustry.gen.Teamc
+import mindustry.gen.Unit
 import mindustry.graphics.Drawf
 import mindustry.graphics.Layer
 import mindustry.world.blocks.defense.turrets.PowerTurret
@@ -22,6 +25,7 @@ import net.liplum.api.brain.*
 import net.liplum.lib.TR
 import net.liplum.lib.TRs
 import net.liplum.lib.math.Polar
+import net.liplum.lib.math.approachA
 import net.liplum.lib.math.approachR
 import net.liplum.lib.math.radian
 import net.liplum.lib.utils.EmptySounds
@@ -42,8 +46,8 @@ import net.liplum.mdt.utils.sub
 import net.liplum.utils.addBrainInfo
 
 open class Eye(name: String) : PowerTurret(name), IComponentBlock {
-    lateinit var normalBullet: BulletType
-    lateinit var improvedBullet: BulletType
+    var normalBullet: BulletType = Bullets.placeholder
+    var improvedBullet: BulletType = Bullets.placeholder
     @JvmField var normalSounds: Array<Sound> = EmptySounds
     @JvmField var improvedSounds: Array<Sound> = EmptySounds
     /**
@@ -79,8 +83,10 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
     }
 
     override fun init() {
+        updateInUnits = true
+        alwaysUpdateInUnits = true
         // To prevent accessing a null
-        shootType = normalBullet
+        shootType = Bullets.placeholder
         checkInit()
         super.init()
     }
@@ -172,12 +178,23 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
                     trigger(Trigger.eyeDetect)
                 }
             }
+            ClientOnly {
+                lastPayloadHolder = null
+            }
         }
 
         override fun onProximityRemoved() {
             super.onProximityRemoved()
             trigger(Trigger.partDestroyed)
             clear()
+        }
+        @ClientOnly
+        var lastPayloadHolder: Unit? = null
+        override fun updatePayload(unitHolder: Unit?, buildingHolder: Building?) {
+            super.updatePayload(unitHolder, buildingHolder)
+            ClientOnly {
+                lastPayloadHolder = unitHolder
+            }
         }
 
         override fun remove() {
@@ -222,28 +239,35 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
             val radiusSpeed = radiusSpeed * Time.delta
             val consValid = canConsume()
 
-            if (consValid && (isShooting || lastInCombatTime < 40f || charging())) {
-                sight.approachR(PupilMax, radiusSpeed * 3f)
-                pupilIsApproachingMin = true
-            } else {
-                sight.approachR(PupilMin, radiusSpeed)
-                if (sight.r - PupilMin <= radiusSpeed) {
-                    pupilIsApproachingMin = false
+            WhenNotPaused {
+                if (consValid && (isShooting || lastInCombatTime < 40f || charging())) {
+                    sight.approachR(PupilMax, radiusSpeed * 3f)
+                    pupilIsApproachingMin = true
+                } else {
+                    sight.approachR(PupilMin, radiusSpeed)
+                    if (sight.r - PupilMin <= radiusSpeed) {
+                        pupilIsApproachingMin = false
+                    }
                 }
             }
             DebugOnly {
                 G.dashCircle(x, y, stareAtScreenRadius, alpha = 0.2f)
             }
             WhenNotPaused {
+                val payloadHolder = lastPayloadHolder
                 if (consValid && (isShooting || isControlled || target != null || !isOutOfCombat)) {
                     sight.a = rotation.radian
                 } else {
-                    val player = Vars.player.unit()
-                    if (player.dst(this) > stareAtScreenRadius) {
-                        val targetAngle = Angles.angle(x, y, player.x, player.y)
-                        sight.a = targetAngle.radian
+                    if (payloadHolder != null) {
+                        sight.approachA(payloadHolder.rotation.radian, radiusSpeed * 3f)
                     } else {
-                        sight.approachR(0f, radiusSpeed * 3f)
+                        val player = Vars.player.unit()
+                        if (player.dst(this) > stareAtScreenRadius) {
+                            val targetAngle = Angles.angle(x, y, player.x, player.y)
+                            sight.a = targetAngle.radian
+                        } else {
+                            sight.approachR(0f, radiusSpeed * 3f)
+                        }
                     }
                 }
             }
@@ -289,6 +313,7 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
             super.heal(amount)
             trigger(Trigger.heal)
         }
+
         override fun hasAmmo() = true
         override fun useAmmo(): BulletType {
             ClientOnly {

@@ -7,6 +7,7 @@ import arc.scene.ui.TextButton
 import arc.scene.ui.layout.Table
 import arc.scene.utils.Elem
 import mindustry.Vars
+import mindustry.gen.Tex
 import mindustry.graphics.Pal
 import mindustry.graphics.Shaders.getShaderFi
 import mindustry.ui.dialogs.BaseDialog
@@ -25,31 +26,37 @@ object DebugSettingsDialog {
         BaseDialog("Debug Settings").apply {
             addCloseButton()
             cont.add(ScrollPane(Table().apply {
-                add("Stuff").color(Pal.ammo).row()
-                add(Table().apply {
-                    add(TextButton("Show welcome").apply {
-                        changed {
-                            Welcome.showWelcomeDialog()
-                        }
-                    }).width(300f)
-                }).pad(5f).row()
-                add("Settings").color(Pal.bulletYellowBack).row()
-                for (setting in Debug.settings) {
-                    add(setting.resolveSettingType()).growX().row()
-                }
-                add("Shaders").color(S.HologramDark).row()
-                add(Table().apply {
-                    add("Root Folder:")
-                    field(Settings.ShaderRootPath) {
-                        Settings.ShaderRootPath = it
-                    }.width(300f)
-                }).pad(5f).row()
-                val shaderLocator: (String) -> Fi = {
-                    Dir(Settings.ShaderRootPath).subF(it).toFi()
-                }
-                for (shader in Debug.shaders) {
-                    add(shader.resolveShader(shaderLocator)).growX().row()
-                }
+                add(Table(Tex.button).apply {
+                    add("Stuff").color(Pal.ammo).row()
+                    add(Table().apply {
+                        add(TextButton("Show welcome").apply {
+                            changed {
+                                Welcome.showWelcomeDialog()
+                            }
+                        }).width(300f)
+                    }).pad(5f).row()
+                }).fill().row()
+                add(Table(Tex.button).apply {
+                    add("Settings").color(Pal.bulletYellowBack).row()
+                    for (setting in Debug.settings) {
+                        add(setting.resolveSettingType()).growX().row()
+                    }
+                }).fill().row()
+                add(Table(Tex.button).apply {
+                    add("Shaders").color(S.HologramDark).row()
+                    add(Table().apply {
+                        add("Root Folder:")
+                        field(Settings.ShaderRootPath) {
+                            Settings.ShaderRootPath = it
+                        }.width(300f)
+                    }).pad(5f).row()
+                    val shaderLocator: (String) -> Fi = {
+                        Dir(Settings.ShaderRootPath).subF(it).toFi()
+                    }
+                    for (shader in Debug.shaders) {
+                        add(shader.resolveShader(shaderLocator)).growX().row()
+                    }
+                }).fill().row()
             }))
         }.show()
     }

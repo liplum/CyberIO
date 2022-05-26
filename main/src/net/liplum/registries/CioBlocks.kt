@@ -1101,7 +1101,7 @@ object CioBlocks {
                     ),
                     HoloPlan(
                         CioUnitTypes.holoGuardian,
-                        Requirement(155f),
+                        Requirement(205f),
                         7.5f * 60f
                     ),
                     HoloPlan(
@@ -1111,8 +1111,8 @@ object CioBlocks {
                     ),
                     HoloPlan(
                         CioUnitTypes.holoSupporter,
-                        Requirement(250f),
-                        12f * 60f
+                        Requirement(500f),
+                        18f * 60f
                     ),
                 )
             }

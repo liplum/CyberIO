@@ -1,10 +1,11 @@
 package net.liplum.ui
 
 import arc.Core
+import arc.graphics.Color
 import arc.math.Interp
 import arc.scene.actions.Actions
-import arc.scene.ui.CheckBox
 import arc.scene.ui.ImageButton
+import arc.scene.ui.ImageButton.ImageButtonStyle
 import arc.scene.ui.Label
 import arc.scene.ui.layout.Table
 import mindustry.Vars
@@ -12,14 +13,11 @@ import mindustry.gen.Icon
 import mindustry.gen.Sounds
 import mindustry.ui.dialogs.BaseDialog
 import net.liplum.*
+import net.liplum.ContentSpecXInfo.Companion.color
 import net.liplum.lib.utils.bundle
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.ui.UIToast
 import net.liplum.mdt.ui.addTrackTooltip
-import net.liplum.ContentSpec
-import net.liplum.i18nDesc
-import net.liplum.i18nName
-import net.liplum.icon
 
 @ClientOnly
 object ContentSpecDialog {
@@ -48,6 +46,7 @@ object ContentSpecDialog {
 
         fun hasUnsavedChange() =
             curSpec != CioMod.ContentSpecific
+
         BaseDialog(bundle("title")).apply {
             cont.add(Table().apply {
                 add(Label(R.Bundle.UnsavedChange.bundle).apply {
@@ -74,32 +73,39 @@ object ContentSpecDialog {
             }).row()
             cont.add(bundle("introduction")).row()
             cont.add(Table().apply {
+                val default = Core.scene.getStyle(ImageButtonStyle::class.java)
+                val style = ImageButtonStyle(default).apply {
+                    checked = default.over
+                }
                 ContentSpec.values().forEach {
-                    this.add(Table().apply {
-                        add(ImageButton(it.icon).apply {
-                            changed {
-                                changeCurSpec(it)
-                            }
-                            addTrackTooltip(it.i18nDesc)
-                        }).row()
-                        add(CheckBox(it.i18nName).apply {
-                            changed {
-                                changeCurSpec(it)
-                            }
+                    this.add(ImageButton(it.icon, style).apply {
+                        clicked {
+                            changeCurSpec(it)
+                        }
+                        update {
+                            isChecked = it == curSpec
+                        }
+                        row()
+                        add(Label(it.i18nName).apply {
                             update {
-                                isChecked = it == curSpec
+                                if (it == curSpec) setColor(it.color)
+                                else setColor(Color.white)
                             }
                         })
+                        addTrackTooltip(it.i18nDesc)
                     }).pad(5f)
                 }
             })
             addCloseButton()
             run {
-                buttons.defaults().size(210f, 64f)
                 buttons.button("@save", Icon.save) {
                     setSpec(curSpec)
                     this.hide()
-                }.size(210f, 64f)
+                }.get().apply {
+                    update {
+                        isDisabled = !hasUnsavedChange()
+                    }
+                }
             }
         }.show()
     }

@@ -2,8 +2,8 @@ package net.liplum.mdt.ui.settings
 
 import arc.Core
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable
-import net.liplum.lib.utils.bundle
 import net.liplum.lib.delegates.Delegate
+import net.liplum.lib.utils.bundle
 
 class SettingsTableX : SettingsTable() {
     val onReset = Delegate()
@@ -33,5 +33,8 @@ class SettingsTableX : SettingsTable() {
             onReset()
             rebuild()
         }.margin(14f).width(240f).pad(6f)
+        for (cell in cells) {
+            cell.pad(5f)
+        }
     }
 }

@@ -6,27 +6,28 @@ import arc.math.Interp
 import arc.scene.style.TextureRegionDrawable
 import arc.scene.ui.Dialog
 import arc.scene.ui.TextButton
-import arc.scene.ui.TextField
 import arc.scene.ui.layout.Table
 import arc.scene.utils.Elem
 import arc.util.Align
-import arc.util.Http
 import kotlinx.coroutines.launch
 import mindustry.Vars
 import mindustry.core.GameState.State.menu
 import mindustry.game.EventType
 import mindustry.game.EventType.Trigger
 import mindustry.ui.Styles
-import mindustry.ui.dialogs.BaseDialog
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.CheckSetting
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.SliderSetting
 import net.liplum.*
+import net.liplum.ContentSpecXInfo.Companion.color
 import net.liplum.annotations.Only
 import net.liplum.annotations.SubscribeEvent
 import net.liplum.events.CioInitEvent
 import net.liplum.lib.UseReflection
 import net.liplum.lib.ing
-import net.liplum.lib.utils.*
+import net.liplum.lib.utils.bundle
+import net.liplum.lib.utils.getF
+import net.liplum.lib.utils.invoke
+import net.liplum.lib.utils.randomExcept
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.UnsteamOnly
 import net.liplum.mdt.ui.ShowTextDialog
@@ -82,7 +83,7 @@ object CioUI {
     val settings = SettingsTableX().apply {
         var isMenu = true
         genHeader = {
-            it.add("${Meta.Name} v${Meta.DetailedVersion} ${CioMod.ContentSpecific.i18nName}").row()
+            it.add("[#${CioMod.ContentSpecific.color}]${Meta.Name} v${Meta.DetailedVersion} ${CioMod.ContentSpecific.i18nName}[]").row()
         }
         addSliderSettingX(R.Setting.LinkOpacity,
             100, 0, 100, 5, { "$it%" }
@@ -124,92 +125,23 @@ object CioUI {
         }
         // Select the Cyber IO specific
         addAny {
-            val button = TextButton(ContentSpecDialog.bundle("button")).apply {
-                changed {
-                    ContentSpecDialog.show()
-                }
-            }.addTrackTooltip(ContentSpecDialog.bundle("button-tip")).apply {
-                canShow = { isMenu }
-            }
-            it.add(button).fillX()
+            it.add(Elem.newButton(ContentSpecDialog.bundle("button")) {
+                ContentSpecDialog.show()
+            }.addTrackTooltip(ContentSpecDialog.bundle("button-tip")))
+                .fillX()
+            canShow = { isMenu }
         }
         // GitHub mirror and Check update
         UnsteamOnly {
+            // GitHub mirror dialog
             addAny {
-                val prefix = "setting.${R.Setting.GitHubMirrorUrl}"
-                fun bundle(key: String, vararg args: Any) =
-                    if (args.isEmpty()) "$prefix.$key".bundle
-                    else "$prefix.$key".bundle(*args)
-
-                val button = Elem.newButton(bundle("button")) {
-                    val dialog = BaseDialog(bundle("dialog")).apply {
-                        val field = TextField(
-                            Settings.GitHubMirrorUrl, Styles.defaultField
-                        ).addTrackTooltip(bundle("field-tooltip"))
-                        onSettingsReset {
-                            Settings.GitHubMirrorUrl = Meta.GitHubMirrorUrl
-                            field.text = Meta.GitHubMirrorUrl
-                        }
-                        cont.add(field).width((Core.graphics.width / 1.2f).coerceAtMost(460f)).row()
-                        cont.table { t ->
-                            fun onFailed(error: String) {
-                                ShowTextDialog(bundle("failed", field.text, error))
-                            }
-
-                            fun onSucceeded() {
-                                val url = field.text.trim('\\').trim('/')
-                                Settings.GitHubMirrorUrl = url
-                                field.text = url
-                                ShowTextDialog(bundle("success", url))
-                            }
-
-                            fun onResetDefault() {
-                                Settings.GitHubMirrorUrl = Meta.GitHubMirrorUrl
-                                field.text = Meta.GitHubMirrorUrl
-                                ShowTextDialog(bundle("reset", field.text))
-                            }
-
-                            val saveButton = TextButton("@save").apply {
-                                update {
-                                    label.setText(if (isDisabled) R.Ctrl.Validate.bundle.ing else "@save")
-                                }
-                                changed {
-                                    if (field.text.isEmpty()) {
-                                        onResetDefault()
-                                    } else {
-                                        isDisabled = true
-                                        Http.get(field.text).useFakeHeader().error { e ->
-                                            onFailed("${e.javaClass.name} ${e.message}")
-                                            isDisabled = false
-                                        }.submit { rep ->
-                                            Core.app.post {
-                                                if (rep.status == Http.HttpStatus.OK)
-                                                    onSucceeded()
-                                                else
-                                                    onFailed(rep.status.name)
-                                                isDisabled = false
-                                            }
-                                        }
-                                    }
-                                }
-                                addTrackTooltip(bundle("save-tooltip"))
-                            }
-                            t.add(saveButton).size(200f, 50f)
-                            t.button("@cancel") {
-                                field.text = Settings.GitHubMirrorUrl
-                            }.size(200f, 50f).get().apply {
-                                addTrackTooltip(bundle("cancel-tooltip"))
-                            }
-                        }
-                        cont.row()
-                        addCloseButton()
-                    }
-                    dialog.show()
-                }.addTrackTooltip(bundle("button-tooltip"))
-                it.add(button).fillX()
-            }.apply {
+                it.add(Elem.newButton(GitHubMirrorUrlDialog.bundle("button")) {
+                    GitHubMirrorUrlDialog.show(onReset)
+                }.addTrackTooltip(GitHubMirrorUrlDialog.bundle("button-tooltip")))
+                    .fillX()
                 canShow = { isMenu }
             }
+            // Check Update
             addAny {
                 fun bundle(key: String) = "setting.${R.Setting.CheckUpdate}.$key".bundle
                 val buttonI18n = bundle("button")

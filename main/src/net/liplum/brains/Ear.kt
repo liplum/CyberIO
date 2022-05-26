@@ -79,6 +79,8 @@ open class Ear(name: String) : Block(name), IComponentBlock {
     init {
         solid = true
         update = true
+        updateInUnits = true
+        alwaysUpdateInUnits = true
         priority = TargetPriority.turret
         hasPower = true
         sync = true

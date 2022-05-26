@@ -3,8 +3,6 @@ package net.liplum.render
 import mindustry.Vars
 import mindustry.game.EventType
 import mindustry.gen.Groups
-import net.liplum.DebugOnly
-import net.liplum.R
 import net.liplum.Settings
 import net.liplum.annotations.Subscribe
 import net.liplum.api.cyber.IDataSender
@@ -12,12 +10,11 @@ import net.liplum.api.cyber.IStreamHost
 import net.liplum.api.cyber.drawDataNetGraphic
 import net.liplum.api.cyber.drawStreamGraphic
 import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.render.Text
 
 object LinkDrawer {
     @JvmStatic
-    @Subscribe(EventType.Trigger.drawOver)
     @ClientOnly
+    @Subscribe(EventType.Trigger.drawOver)
     fun draw() {
         if (!Settings.AlwaysShowLink) return
         val curTeam = Vars.player.team()
@@ -27,15 +24,6 @@ object LinkDrawer {
                 it.drawDataNetGraphic(showCircle = Settings.ShowLinkCircle)
             } else if (it is IStreamHost) {
                 it.drawStreamGraphic(showCircle = Settings.ShowLinkCircle)
-            }
-            DebugOnly {
-                val power = it.power
-                if (power != null) {
-                    Text.drawTextEasy(
-                        power.graph.id.toString(),
-                        it.x, it.y, R.C.Holo
-                    )
-                }
             }
         }
     }

@@ -222,42 +222,56 @@ object CioUnitTypes {
     @DependOn
     fun holoSupporter() {
         holoSupporter = NewUnitType(R.Unit.HoloSupporter, ::HoloUnitType, ::HoloUnit).apply {
-            AutoLife(maxHealth = 4000f, lose = 0.15f)
-            abilities.add(
-                RepairFieldAbility(20f, 60f * 8, 60f).apply {
-                    healEffect = HoloFx.heal
-                    activeEffect = HoloFx.healWaveDynamic
-                }
-            )
+            VanillaSpec {
+                AutoLife(maxHealth = 3800f, lose = 0.15f)
+                buildSpeed = 2.2f
+                speed = 2.5f
+                accel = 0.06f
+                drag = 0.017f
+                ammoType = PowerAmmoType(1100f)
+                researchReq = arrayOf(
+                    ItemStack(CioItems.ic, 2),
+                    ItemStack(Items.titanium, 80),
+                    ItemStack(Items.plastanium, 120),
+                )
+                abilities.add(
+                    RepairFieldAbility(20f, 60f * 8, 60f).apply {
+                        healEffect = HoloFx.heal
+                        activeEffect = HoloFx.healWaveDynamic
+                    }
+                )
+            }
+            ErekirSpec {
+                AutoLife(maxHealth = 4000f, lose = 0.10f)
+                buildSpeed = 1.2f
+                speed = 2.25f
+                payloadCapacity = (5f * 5f) * Vars.tilePayload
+                accel = 0.06f
+                drag = 0.05f
+                pickupUnits = true
+                ammoType = PowerAmmoType(600f)
+                researchReq = arrayOf(
+                    ItemStack(CioItems.ic, 5),
+                    ItemStack(Items.titanium, 80),
+                    ItemStack(Items.plastanium, 120),
+                )
+                abilities.add(
+                    RepairFieldAbility(10f, 60f * 10, 60f).apply {
+                        healEffect = HoloFx.heal
+                        activeEffect = HoloFx.healWaveDynamic
+                    }
+                )
+            }
             aiController = Prov { RepairAI() }
             flying = true
             hovering = true
             HoloOpacity = 0.4f
             ColorOpacity = 0.3f
             armor = 2f
-            VanillaSpec {
-                buildSpeed = 2.2f
-                speed = 2.5f
-                accel = 0.06f
-                drag = 0.017f
-            }
-            ErekirSpec {
-                buildSpeed = 1.2f
-                speed = 2.3f
-                payloadCapacity = (5f * 5f) * Vars.tilePayload
-                accel = 0.06f
-                drag = 0.05f
-                pickupUnits = true
-            }
             hitSize = 14f
             engineSize = 2f
             engineOffset = 3f
-            ammoType = PowerAmmoType(1100f)
-            researchReq = arrayOf(
-                ItemStack(CioItems.ic, 2),
-                ItemStack(Items.titanium, 80),
-                ItemStack(Items.plastanium, 120),
-            )
+
             weapons.add(HoloWeapon((R.Unit.HoloSupporter + "-gun").Cio).apply {
                 shootSound = Sounds.lasershoot
                 reload = 15f
@@ -271,7 +285,7 @@ object CioUnitTypes {
                         healPercent = 8f
                     }
                     ErekirSpec {
-                        healPercent = 2f
+                        healAmount = 50f
                     }
                     collidesTeam = true
                     backColor = S.HologramDark

@@ -12,7 +12,7 @@ import net.liplum.annotations.SubscribeEvent
 import net.liplum.data.DataNetworkUpdater
 import net.liplum.events.CioLoadContentEvent
 import net.liplum.holo.HoloUnit
-import net.liplum.mdt.OnlyServer
+import net.liplum.mdt.IsServer
 
 object EntityRegistry {
     private val Clz2Entry = ObjectMap<Class<*>, ProvEntry>()
@@ -49,7 +49,7 @@ object EntityRegistry {
             it.name
         }
         keys.forEach { register(it) }
-        (OnlyDebug or OnlyServer){
+        (OnlyDebug or IsServer){
             Clz2Id.log("${Meta.Name} Unit") { clz, i ->
                 Log.info("${i}|${clz.simpleName}")
             }

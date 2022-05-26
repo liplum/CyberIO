@@ -10,6 +10,7 @@ import mindustry.io.JsonIO
 import mindustry.mod.Mod
 import mindustry.mod.Mods
 import net.liplum.ContentSpec.Companion.resolveContentSpec
+import net.liplum.ContentSpecXInfo.Companion.color
 import net.liplum.blocks.cloud.LiplumCloud
 import net.liplum.blocks.cloud.SharedRoom
 import net.liplum.events.CioInitEvent
@@ -19,8 +20,7 @@ import net.liplum.gen.EventRegistry
 import net.liplum.inputs.UnitTap
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.HeadlessOnly
-import net.liplum.mdt.NotSteam
-import net.liplum.mdt.OnlyClient
+import net.liplum.mdt.IsSteam
 import net.liplum.mdt.animations.ganim.GlobalAnimation
 import net.liplum.registries.CioShaderLoader
 import net.liplum.registries.CioTechTree
@@ -79,8 +79,9 @@ class CioMod : Mod() {
         objCreated = true
         lastPlayTime = Settings.LastPlayTime
         Clog.info("v${Meta.DetailedVersion} loading started.")
-        (OnlyClient and NotSteam) {
-            Updater.fetchLatestVersion(updateInfoFileURL = Meta.UpdateInfoURL)
+        (net.liplum.mdt.IsClient and !IsSteam) {
+            //Updater.fetchLatestVersion(updateInfoFileURL = Meta.UpdateInfoURL)
+            Updater.fetchLatestVersion(updateInfoFileURL = "E:\\MyProject\\Mindustry\\CyberIO\\update")
         }
         HeadlessOnly {
             Config.load()
@@ -161,7 +162,7 @@ class CioMod : Mod() {
         Info = Vars.mods.locateMod(Meta.ModID)
         val meta = Info.meta
         meta.version = ContentSpecific.suffixModVersion(meta.version)
-        meta.subtitle = "[#${S.Hologram}]${Meta.Version} ${ContentSpecific.i18nName}[]"
+        meta.subtitle = "[#${ContentSpecific.color}]${Meta.Version} ${ContentSpecific.i18nName}[]"
         Events.fire(CioLoadContentEvent())
         Contents.load()
         CioTechTree.loadAll()

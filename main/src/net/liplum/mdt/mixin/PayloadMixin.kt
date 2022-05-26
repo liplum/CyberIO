@@ -28,10 +28,9 @@ import mindustry.world.blocks.power.PowerGraph
 import net.liplum.lib.math.sqr
 import net.liplum.mdt.utils.MdtUnit
 
-interface PayloadMixin : Payloadc {
+interface PayloadMixin : Payloadc, PowerGraphc {
     val unitType: UnitType
     var payloads: Seq<Payload>
-    var payloadPower: PowerGraph?
     override fun payloadUsed(): Float =
         payloads.sumf { it.size().sqr }
 

@@ -112,17 +112,12 @@ inline fun <reified T> T.MobileOnlyOn(func: T.() -> Unit): T {
     return this
 }
 
-val OnlyClient = Condition {
-    !Vars.headless
-}
-val OnlyServer = Condition {
+val IsClient = Condition { !Vars.headless }
+val IsServer = Condition {
     val net = Vars.net
     net.server() || !net.active()
 }
-val OnlySteam = Condition {
-    Vars.steam
-}
-val NotSteam = !OnlySteam
+val IsSteam = Condition { Vars.steam }
 inline fun <reified T> T.ClientOnlyOn(func: T.() -> Unit): T {
     if (!Vars.headless) {
         func()

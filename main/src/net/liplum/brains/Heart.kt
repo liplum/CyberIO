@@ -102,6 +102,8 @@ class Heart(name: String) : Block(name), IComponentBlock {
         update = true
         hasPower = true
         sync = true
+        updateInUnits = true
+        alwaysUpdateInUnits = true
         attacks = true
         hasLiquids = true
         canOverdrive = false

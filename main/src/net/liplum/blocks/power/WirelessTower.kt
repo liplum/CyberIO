@@ -51,6 +51,8 @@ open class WirelessTower(name: String) : PowerBlock(name) {
 
     init {
         consumesPower = true
+        updateInUnits = true
+        alwaysUpdateInUnits = true
     }
 
     override fun init() {
@@ -109,7 +111,7 @@ open class WirelessTower(name: String) : PowerBlock(name) {
 
         override fun updateTile() {
             lastNeed = 0f
-            if (power.status.isZero) return
+            if (power.status.isZero || (power.graph.all.size == 1 && power.graph.all.first() == this)) return
             forEachBufferedInRange {
                 val powerCons = it.block.consPower
                 val power = it.power
@@ -170,7 +172,9 @@ open class WirelessTower(name: String) : PowerBlock(name) {
             CoilTR.Draw(x + offsetX, y + offsetY)
             // Render radiations
             val selfPower = this.power.status
-            if (selfPower.isZero || selfPower.isNaN()) return
+            if (selfPower.isZero || selfPower.isNaN() ||
+                (power.graph.all.size == 1 && power.graph.all.first() == this)
+            ) return
             val realRange = realRange
             val step = realRadiationSpeed * realRange
             radiations.forEach {

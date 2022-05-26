@@ -3,17 +3,19 @@ package net.liplum.update
 import arc.Core
 import arc.util.Http
 import arc.util.io.Streams
+import arc.util.serialization.Json
 import arc.util.serialization.Jval
+import arc.util.serialization.Jval.Jformat
 import kotlinx.coroutines.*
 import mindustry.Vars
 import mindustry.ui.dialogs.ModsDialog
 import net.liplum.*
-import net.liplum.lib.utils.getMethodBy
+import net.liplum.lib.UseReflection
 import net.liplum.lib.replaceByteBy
+import net.liplum.lib.utils.getMethodBy
 import net.liplum.lib.utils.useFakeHeader
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.HeadlessOnly
-import net.liplum.lib.UseReflection
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.lang.reflect.Method
@@ -31,14 +33,23 @@ private fun ModsDialog.ImportMod(repo: String, isJava: Boolean) {
 
 object Updater : CoroutineScope {
     var latestVersion: Version2 = Meta.DetailedVersion
+    var updateInfo = UpdateInfo.X
     var accessJob: Job? = null
+    var json = Json()
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO
     val ClientVersionRegex = "(?<=Client:).*".toRegex()
     val ServerVersionRegex = "(?<=Server:).*".toRegex()
-    inline fun fetchLatestVersion(
+    /**
+     * Retrieve the update info from given url or file path.
+     * It's silent when any exception is raised.
+     * So you can call this safely.
+     * @param updateInfoFileURL the url for retrieving the update info. Check order: File path ->
+     * @param onFailed when it can't fetch the latest version, this will be called.
+     */
+    fun fetchLatestVersion(
         updateInfoFileURL: String = Meta.UpdateInfoURL,
-        crossinline onFailed: (String) -> Unit = {},
+        onFailed: (String) -> Unit = {},
     ) {
         Clog.info("Update checking...")
         accessJob = launch(
@@ -54,33 +65,21 @@ object Updater : CoroutineScope {
             } else {
                 URL(updateInfoFileURL).readText()
             }
-            val allInfos = info.split('\n')
-            /*
-                Removed since 3.3
-                val versionInfo = allInfos[0]
-                latestVersion = runCatching {
-                    Version2.valueOf(versionInfo)
-                }.getOrDefault(Meta.DetailedVersion)
-            */
-
-            ClientOnly {
-                val clientV = allInfos[1]// Client
-                val client = ClientVersionRegex.find(clientV)
-                if (client != null)
-                    latestVersion = runCatching {
-                        Version2.valueOf(client.value)
-                    }.getOrDefault(Meta.DetailedVersion)
-            }
-            HeadlessOnly {
-                val serverV = allInfos[2]// Server
-                val server = ServerVersionRegex.find(serverV)
-                if (server != null)
-                    latestVersion = runCatching {
-                        Version2.valueOf(server.value)
-                    }.getOrDefault(Meta.DetailedVersion)
-            }
-
+            analyzeUpdateInfo(info)
             Clog.info("The latest version is $latestVersion")
+        }
+    }
+
+    fun analyzeUpdateInfo(text: String) {
+        val info = json.fromJson(
+            UpdateInfo::class.java,
+            Jval.read(text).toString(Jformat.plain)
+        )
+        ClientOnly {
+            latestVersion = Version2.valueOf(info.ClientLatest)
+        }
+        HeadlessOnly {
+            latestVersion = Version2.valueOf(info.ServerLatest)
         }
     }
     @HeadlessOnly
@@ -178,4 +177,17 @@ object Updater : CoroutineScope {
 
     val requireUpdate: Boolean
         get() = latestVersion > Meta.DetailedVersion
+}
+
+class UpdateInfo {
+    var Latest = ""
+    var ClientLatest = ""
+    var ServerLatest = ""
+    var Description = ""
+
+    companion object {
+        internal val X = UpdateInfo()
+        fun UpdateInfo.isDefault() =
+            this == X
+    }
 }

@@ -32,7 +32,10 @@ import mindustry.world.Block
 import mindustry.world.consumers.ConsumeItemDynamic
 import mindustry.world.meta.BlockGroup
 import mindustry.world.meta.Stat
-import net.liplum.*
+import net.liplum.DebugOnly
+import net.liplum.R
+import net.liplum.S
+import net.liplum.UndebugOnly
 import net.liplum.lib.Serialized
 import net.liplum.lib.shaders.SD
 import net.liplum.lib.shaders.use
@@ -45,6 +48,7 @@ import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.ui.bars.removeItemsInBar
 import net.liplum.mdt.utils.ID
 import net.liplum.mdt.utils.ItemTypeAmount
+import net.liplum.mdt.utils.inPayload
 import net.liplum.registries.CioLiquids.cyberion
 import kotlin.math.max
 
@@ -69,11 +73,15 @@ open class HoloProjector(name: String) : Block(name) {
         hasItems = true
         hasLiquids = true
         group = BlockGroup.units
+        saveConfig = true
         configurable = true
         sync = true
         commandable = true
         config(Integer::class.java) { obj: HoloPBuild, plan ->
             obj.setPlan(plan.toInt())
+        }
+        configClear { obj: HoloPBuild ->
+            obj.setPlan(-1)
         }
     }
 
@@ -172,7 +180,6 @@ open class HoloProjector(name: String) : Block(name) {
         var progressTime = 0f
         var commandPos: Vec2? = null
         override fun block(): HoloProjector = this@HoloProjector
-
         val progress: Float
             get() {
                 val plan = curPlan
@@ -242,7 +249,6 @@ open class HoloProjector(name: String) : Block(name) {
         }
 
         override fun config(): Any? = planOrder
-
         open fun projectUnit(unitType: HoloUnitType): Boolean {
             if (unitType.canCreateHoloUnitIn(team)) {
                 val unit = unitType.create(team)
@@ -297,7 +303,7 @@ open class HoloProjector(name: String) : Block(name) {
                 }
             }
             WhenNotPaused {
-                if (progress < 1f) {
+                if (progress < 1f && !inPayload) {
                     projecting += delta()
                 }
             }
