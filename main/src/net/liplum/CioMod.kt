@@ -63,6 +63,8 @@ class CioMod : Mod() {
                     FirstLoaded.showDialog()
                 }
             }
+            val former = Core.settings.getInt("cyber-io-clz-loaded-times", 0)
+            Core.settings.put("cyber-io-clz-loaded-times", former + 1)
         }
     }
     /**
@@ -78,12 +80,12 @@ class CioMod : Mod() {
         lastPlayTime = Settings.LastPlayTime
         Clog.info("v${Meta.DetailedVersion} loading started.")
         (OnlyClient and NotSteam) {
-            Updater.fetchLatestVersion(Meta.UpdateInfoURL)
+            Updater.fetchLatestVersion(updateInfoFileURL = Meta.UpdateInfoURL)
         }
         HeadlessOnly {
             Config.load()
             ContentSpecific = Config.ContentSpecific.resolveContentSpec()
-            Updater.fetchLatestVersion(Config.CheckUpdateInfoURL)
+            Updater.fetchLatestVersion(updateInfoFileURL = Config.CheckUpdateInfoURL)
             Updater.checkHeadlessUpdate()
         }
         ClientOnly {
@@ -152,6 +154,7 @@ class CioMod : Mod() {
         ResourceLoader.loadAllResources()
         Clog.info("v${Meta.DetailedVersion} $ContentSpecific initialized.")
         Settings.LastPlayTime = System.currentTimeMillis()
+        Settings.CyberIOLoadedTimes++
     }
 
     override fun loadContent() {

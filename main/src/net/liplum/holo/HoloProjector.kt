@@ -241,6 +241,8 @@ open class HoloProjector(name: String) : Block(name) {
             return true
         }
 
+        override fun config(): Any? = planOrder
+
         open fun projectUnit(unitType: HoloUnitType): Boolean {
             if (unitType.canCreateHoloUnitIn(team)) {
                 val unit = unitType.create(team)

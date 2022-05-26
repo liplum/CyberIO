@@ -29,6 +29,7 @@ import net.liplum.holo.HoloProjector.HoloPBuild
 import net.liplum.lib.Serialized
 import net.liplum.lib.persistance.*
 import net.liplum.mdt.ClientOnly
+import net.liplum.mdt.OverwriteVanilla
 import net.liplum.mdt.mixin.PayloadMixin
 import net.liplum.mdt.render.G
 import net.liplum.mdt.utils.build
@@ -263,6 +264,7 @@ open class HoloUnit : UnitEntity(), PayloadMixin, IReverisonable {
         y = read.f()
     }
 
+    @OverwriteVanilla("Super")
     override fun read(read: Reads) {
         val REV = read.s().toInt()
         if (REV == 7) {
@@ -313,7 +315,7 @@ open class HoloUnit : UnitEntity(), PayloadMixin, IReverisonable {
         write.f(x)
         write.f(y)
     }
-
+    @OverwriteVanilla("Super")
     override fun write(write: Writes) {
         write.s(reversionID())
         // Since 8, use cache writer instead of vanilla

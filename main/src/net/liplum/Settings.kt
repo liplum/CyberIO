@@ -33,18 +33,42 @@ object Settings {
     var LastWelcome: Int
         get() = settings.getInt(R.Setting.LastWelcome, 0)
         set(value) = settings.put(R.Setting.LastWelcome, value)
+    /**
+     * Used to prevent from displaying the same welcome words as last time
+     */
     var LastWelcomeID: String
         get() = settings.getString(R.Setting.LastWelcomeID, "")
         set(value) = settings.put(R.Setting.LastWelcomeID, value)
+    /**
+     * Represent the major version of Cyber IO
+     */
     var CioVersion: String
         get() = settings.getString(R.Setting.Version, "v0")
         set(value) = settings.put(R.Setting.Version, value)
+    /**
+     * Whether the update should show up when judging the welcome content.
+     */
     var ShowUpdate: Boolean
         get() = settings.getBool(R.Setting.ShowUpdate, !Vars.steam)
         set(value) = settings.put(R.Setting.ShowUpdate, value)
+    /**
+     * Represent the first time player installed Cyber IO
+     */
     var FirstInstallationTime: Long
         get() = settings.getLong(R.Setting.FirstInstallationTime, -1)
         set(value) = settings.put(R.Setting.FirstInstallationTime, value)
+    /**
+     * Represent how many times player loaded Cyber IO's content
+     */
+    var CyberIOLoadedTimes: Int
+        get() = settings.getInt(R.Setting.CyberIOLoadedTimes, 0)
+        set(value) = settings.put(R.Setting.CyberIOLoadedTimes, value)
+    /**
+     * Represent how many times player loaded Cyber IO's main class
+     */
+    var ClassLoadedTimes: Int
+        get() = settings.getInt(R.Setting.ClassLoadedTimes, 0)
+        set(value) = settings.put(R.Setting.ClassLoadedTimes, value)
     /**
      * It will be updated when [CioMod.init] call ends.
      * So if you want to get the real last play time, please check [CioMod.lastPlayTime].

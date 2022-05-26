@@ -157,6 +157,22 @@ inline fun ForProximity(centerTileX: TileXY, centerTileY: TileXY, tileDistance: 
     }
 }
 
+inline fun Tile.ForProximity(tileDistance: TileXY, func: (Tile) -> Unit) {
+    val minX = x - tileDistance
+    val minY = y - tileDistance
+    val maxX = x + tileDistance
+    val maxY = y + tileDistance
+    val world = Vars.world
+    for (i in minX..maxX) {
+        for (j in minY..maxY) {
+            val tile = world.tile(i, j)
+            if (tile != null) {
+                func(tile)
+            }
+        }
+    }
+}
+
 inline fun Building.ForProximity(tileDistance: TileXY, func: (Tile) -> Unit) {
     ForProximity(this.tileX(), this.tileY(), tileDistance, func)
 }
@@ -211,6 +227,9 @@ fun Block.toCenterWorldXY(xy: TileXYs): Float =
  */
 fun Block.toCenterWorldXY(xy: TileXY): Float =
     offset + xy * Vars.tilesize
+
+val WorldXY.toTileXY: TileXY
+    get() = (this / Vars.tilesize).toInt()
 /**
  * Tile xy to world xy
  */
@@ -277,3 +296,21 @@ fun Building.tileEquals(pos: Point2?): Boolean =
 
 fun Point2?.packSafe(): Int =
     this?.pack() ?: -1
+
+enum class TileOreType {
+    None, Ground, Wall
+}
+
+fun Tile.getOreType(): TileOreType {
+    val block = block()
+    return if (block == Blocks.air) {
+        // Try to check if this is a ground ore
+        val overlay = overlay()
+        if (overlay.itemDrop != null) TileOreType.Ground
+        else TileOreType.None
+    } else {
+        // Try to check if this is a wall ore
+        if (block.itemDrop != null) TileOreType.Wall
+        else TileOreType.None
+    }
+}
