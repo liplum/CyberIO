@@ -84,6 +84,8 @@ open class AntiVirus(name: String) : Block(name) {
     init {
         solid = true
         update = true
+        updateInUnits = true
+        alwaysUpdateInUnits = true
         group = BlockGroup.projectors
         hasPower = true
     }

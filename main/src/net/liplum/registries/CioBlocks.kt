@@ -86,7 +86,7 @@ object CioBlocks {
     @JvmStatic lateinit var prism: Prism
     @JvmStatic lateinit var prismObelisk: PrismObelisk
     @JvmStatic lateinit var deleter: Deleter
-    @JvmStatic lateinit var hyperOverdriveSphere: OverdriveProjector
+    @JvmStatic lateinit var hyperOverdriveSphere: AdjustableOverdrive
     @JvmStatic lateinit var holoWall: HoloWall
     @JvmStatic lateinit var holoWallLarge: HoloWall
     @JvmStatic lateinit var TMTRAINER: TMTRAINER

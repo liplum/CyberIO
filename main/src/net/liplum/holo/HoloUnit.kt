@@ -33,9 +33,11 @@ import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.OverwriteVanilla
 import net.liplum.mdt.mixin.PayloadMixin
 import net.liplum.mdt.render.G
+import net.liplum.mdt.utils.TE
 import net.liplum.mdt.utils.build
 import net.liplum.mdt.utils.exists
 import net.liplum.mdt.utils.hasShields
+import net.liplum.registries.CioLiquids
 import net.liplum.registries.EntityRegistry
 
 open class HoloUnit : UnitEntity(), PayloadMixin, IReverisonable {
@@ -231,8 +233,9 @@ open class HoloUnit : UnitEntity(), PayloadMixin, IReverisonable {
     }
 
     override fun updatePayload() {
-        val projector = projectorPos.build as? HoloPBuild
-        payloadPower = projector?.power?.graph
+        val projector = projectorPos.TE<HoloPBuild>()
+        if(projector?.power != null)
+            payloadPower = projector.power?.graph
 
         for (pay in payloads) {
             if (pay is BuildPayload && pay.build.power != null) {
@@ -245,7 +248,21 @@ open class HoloUnit : UnitEntity(), PayloadMixin, IReverisonable {
         payloadPower?.update()
         for (pay in payloads) {
             pay.set(x, y, rotation())
+            tryTransferCyberionInto(pay)
             pay.update(self(), null)
+        }
+    }
+
+    fun tryTransferCyberionInto(payload: Payload) {
+        val projector = projectorPos.TE<HoloPBuild>() ?: return
+        val type = type as? HoloUnitType ?: return
+        if (payload is BuildPayload) {
+            val build = payload.build
+            if (build.acceptLiquid(projector, CioLiquids.cyberion)) {
+                val amount = type.sacrificeCyberionAmount
+                time += type.sacrificeLifeFunc(amount)
+                build.handleLiquid(projector, CioLiquids.cyberion, amount)
+            }
         }
     }
 

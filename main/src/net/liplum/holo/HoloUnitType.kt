@@ -29,11 +29,16 @@ import mindustry.world.meta.Stat
 import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.S
+import net.liplum.holo.HoloProjector.HoloPBuild
+import net.liplum.lib.math.FUNC
 import net.liplum.lib.shaders.SD
 import net.liplum.lib.shaders.use
 import net.liplum.lib.utils.bundle
+import net.liplum.lib.utils.toFloat
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.Else
+import net.liplum.mdt.utils.MdtUnit
+import net.liplum.mdt.utils.TE
 import net.liplum.mdt.utils.healthPct
 import net.liplum.mdt.utils.seconds
 import net.liplum.utils.time
@@ -53,6 +58,11 @@ open class HoloUnitType(name: String) : UnitType(name) {
     @ClientOnly @JvmField var ruvikShootingTipTime = 30f
     @ClientOnly @JvmField var ruvikTipRange = 100f
     @ClientOnly @JvmField var enableRuvikTip = false
+    @JvmField var sacrificeCyberionAmount = 1f
+    /**
+     * Cyber amount -> Lifetime (unit:tick)
+     */
+    @JvmField var sacrificeLifeFunc: FUNC = { it * 15f }
     @JvmField var researchReq: Array<ItemStack> = emptyArray()
 
     init {
@@ -253,7 +263,7 @@ open class HoloUnitType(name: String) : UnitType(name) {
             for (ability in unit.abilities) {
                 ability.displayBars(unit, bars)
             }
-            if (unit is Payloadc) {
+            if (unit is Payloadc && canShowPayload(unit)) {
                 bars.add(
                     Bar(
                         "stat.payloadcapacity",
@@ -261,6 +271,25 @@ open class HoloUnitType(name: String) : UnitType(name) {
                     ) { unit.payloadUsed() / unit.type().payloadCapacity }
                 )
                 bars.row()
+            }
+
+            if (unit is HoloUnit) {
+                bars.add(
+                    Bar({
+                        val p = unit.projectorPos.TE<HoloPBuild>()
+                        if (p != null) "${p.tileX()},${p.tileY()}"
+                        else "${Iconc.cancel}"
+                    }, {
+                        val p = unit.projectorPos.TE<HoloPBuild>()
+                        if (p != null) S.Hologram
+                        else Color.gray
+                    }, {
+                        (unit.projectorPos.TE<HoloPBuild>() != null).toFloat()
+                    })
+                )
+                bars.row()
+            }
+            if (unit is Payloadc && canShowPayload(unit)) {
                 val count = floatArrayOf(-1f)
                 bars.table().update { t: Table? ->
                     if (count[0] != unit.payloadUsed()) {
@@ -270,7 +299,6 @@ open class HoloUnitType(name: String) : UnitType(name) {
                 }.growX().left().height(0f).pad(0f)
             }
         }.growX()
-
         if (unit.controller() is LogicAI) {
             table.row()
             table.add(Blocks.microProcessor.emoji() + " " + Core.bundle["units.processorcontrol"]).growX().wrap().left()
@@ -281,6 +309,9 @@ open class HoloUnitType(name: String) : UnitType(name) {
 
         table.row()
     }
+
+    fun <T> canShowPayload(unit: T): Boolean where T : MdtUnit, T : Payloadc =
+        unit.type().payloadCapacity > 0f
 
     override fun drawShield(unit: Unit) {
         val alpha = unit.shieldAlpha() * 0.5f

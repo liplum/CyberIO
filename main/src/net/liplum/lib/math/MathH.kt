@@ -272,3 +272,14 @@ val Int.sqrf: Float
     get() = (this * this).toFloat()
 val Int.cubef: Float
     get() = (this * this * this).toFloat()
+
+fun Float.lerp(target: Float, progress: Float): Float =
+    Mathf.lerp(this, target, progress)
+/**
+ * @return self
+ */
+fun FloatArray.lerp(target: FloatArray, progress: Float) = this.apply {
+    for (i in 0 until min(target.size, target.size)) {
+        this[i] = this[i].lerp(target[i], progress)
+    }
+}

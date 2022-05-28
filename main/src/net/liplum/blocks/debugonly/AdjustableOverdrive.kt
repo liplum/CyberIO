@@ -30,6 +30,8 @@ open class AdjustableOverdrive(name: String) : OverdriveProjector(name) {
         baseColor = Color.red
         configurable = true
         saveConfig = true
+        updateInUnits = true
+        alwaysUpdateInUnits = true
         config(Integer::class.java) { b: AOBuild, i ->
             b.setGear(i.toInt())
         }

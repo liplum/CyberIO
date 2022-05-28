@@ -45,6 +45,8 @@ open class Deleter(name: String) : PowerTurret(name), IExecutioner {
         val shootPattern = shootPattern(ShootSpread())
         shootPattern.shots = 18
         shootPattern.spread = 3f
+        updateInUnits = true
+        alwaysUpdateInUnits = true
         targetAir = true
         targetGround = true
         waveType = DeleterWave()

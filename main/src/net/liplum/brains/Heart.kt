@@ -32,10 +32,7 @@ import net.liplum.lib.Smooth
 import net.liplum.lib.TR
 import net.liplum.lib.TRs
 import net.liplum.lib.math.FUNC
-import net.liplum.lib.utils.bundle
-import net.liplum.lib.utils.format
-import net.liplum.lib.utils.isZero
-import net.liplum.lib.utils.toDouble
+import net.liplum.lib.utils.*
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.Draw
 import net.liplum.mdt.WhenNotPaused
@@ -57,7 +54,7 @@ import net.liplum.mdt.utils.sheet
 import net.liplum.mdt.utils.sub
 import net.liplum.utils.addBrainInfo
 
-class Heart(name: String) : Block(name), IComponentBlock {
+open class Heart(name: String) : Block(name), IComponentBlock {
     // Upgrade component
     override val upgrades: MutableMap<UpgradeType, Upgrade> = HashMap()
     @JvmField var bulletType: BulletType = Bullets.placeholder
@@ -65,11 +62,11 @@ class Heart(name: String) : Block(name), IComponentBlock {
     @JvmField var shootPatternInit: ShootPattern.() -> Unit = {}
     // Blood
     @JvmField var blood: Blood = Blood.X
-    @JvmField var downApproachSpeed = 0.0002f
-    @JvmField var upApproachSpeed = 0.0001f
+    @JvmField var downApproachSpeed = 0.00004f
+    @JvmField var upApproachSpeed = 0.00002f
     @JvmField var heatFactor = 5f
     @JvmField var heatMax = 2.5f
-    @JvmField var temperatureConvertFactor = 0.3f
+    @JvmField var temperatureConvertFactor = 0.1f
     @JvmField var bloodConsumePreTick = 0.2f
     // Improved by Heimdall
     @JvmField var bloodCapacity = 1000f
@@ -82,6 +79,8 @@ class Heart(name: String) : Block(name), IComponentBlock {
     @JvmField var soundPitchMax = 1.1f
     // Visual effects
     @ClientOnly @JvmField var bloodColor: Color = R.C.Blood
+    @ClientOnly @JvmField var coldColor: Color = R.C.ColdTemperature
+    @ClientOnly @JvmField var hotColor: Color = R.C.HotTemperature
     @ClientOnly lateinit var BaseTR: TR
     @ClientOnly lateinit var HeartTR: TR
     @ClientOnly lateinit var HeartBeatTRs: TRs
@@ -143,6 +142,7 @@ class Heart(name: String) : Block(name), IComponentBlock {
         G.dashCircleBreath(this, x, y, heartbeat.range.base, bloodColor)
     }
 
+    protected val temperatureColor = Color()
     override fun setBars() {
         super.setBars()
         removeLiquidInBar()
@@ -163,9 +163,9 @@ class Heart(name: String) : Block(name), IComponentBlock {
         } else {
             { R.Bar.Temperature.bundle }
         }, {
-            Pal.power
+            temperatureColor.set(coldColor).hsvLerp(hotColor, temperature)
         }, {
-            temperature / 1f
+            temperature
         })
         DebugOnly {
             AddBar<HeartBuild>("reload",
@@ -290,6 +290,8 @@ class Heart(name: String) : Block(name), IComponentBlock {
             get() = heartbeat.damage.progress(temperatureEfficiency)
         val realBulletLifeTime: Float
             get() = heartbeat.bulletLifeTime.progress(temperatureEfficiency)
+        val realBloodConsumePreTick: Float
+            get() = bloodConsumePreTick * (2f - temperature) * 1.5f
         //</editor-fold>
         //<editor-fold desc="Meta">
         val curBulletType: BulletType
@@ -503,7 +505,7 @@ class Heart(name: String) : Block(name), IComponentBlock {
         }
 
         open fun consumeBloodAsEnergy() {
-            bloodAmount -= bloodConsumePreTick
+            bloodAmount -= realBloodConsumePreTick
         }
 
         open fun bullet(type: BulletType, xOffset: Float, yOffset: Float, angleOffset: Float, mover: Mover?) {
@@ -539,6 +541,7 @@ class Heart(name: String) : Block(name), IComponentBlock {
             super.heal(amount)
             trigger(Trigger.heal)
         }
+
         override fun remove() {
             super.remove()
             clear()

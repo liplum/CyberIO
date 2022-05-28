@@ -20,6 +20,7 @@ import mindustry.Vars
 import mindustry.game.EventType.UnitCreateEvent
 import mindustry.gen.Building
 import mindustry.gen.Iconc
+import mindustry.gen.Unit
 import mindustry.graphics.Layer
 import mindustry.graphics.Pal
 import mindustry.logic.LAccess
@@ -46,9 +47,7 @@ import net.liplum.mdt.consumer.DynamicContinuousLiquidCons
 import net.liplum.mdt.ui.addItemSelectorDefault
 import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.ui.bars.removeItemsInBar
-import net.liplum.mdt.utils.ID
-import net.liplum.mdt.utils.ItemTypeAmount
-import net.liplum.mdt.utils.inPayload
+import net.liplum.mdt.utils.*
 import net.liplum.registries.CioLiquids.cyberion
 import kotlin.math.max
 
@@ -71,6 +70,8 @@ open class HoloProjector(name: String) : Block(name) {
         update = true
         hasPower = true
         hasItems = true
+        updateInUnits = true
+        alwaysUpdateInUnits = true
         hasLiquids = true
         group = BlockGroup.units
         saveConfig = true
@@ -248,6 +249,22 @@ open class HoloProjector(name: String) : Block(name) {
             return true
         }
 
+        @JvmField var lastUnitInPayload: MdtUnit? = null
+        fun findTrueHoloProjectorSource(): HoloPBuild {
+            val unit = lastUnitInPayload
+            if (unit is HoloUnit) {
+                val trueProjector = unit.projectorPos.TE<HoloPBuild>()
+                if (trueProjector != null)
+                    return trueProjector
+            }
+            return this
+        }
+
+        override fun updatePayload(unitHolder: Unit?, buildingHolder: Building?) {
+            lastUnitInPayload = unitHolder
+            super.updatePayload(unitHolder, buildingHolder)
+        }
+
         override fun config(): Any? = planOrder
         open fun projectUnit(unitType: HoloUnitType): Boolean {
             if (unitType.canCreateHoloUnitIn(team)) {
@@ -257,7 +274,7 @@ open class HoloProjector(name: String) : Block(name) {
                     ServerOnly {
                         unit.add()
                     }
-                    unit.setProjector(this)
+                    unit.setProjector(findTrueHoloProjectorSource())
                     val commandPos = commandPos
                     if (commandPos != null && unit.isCommandable) {
                         unit.command().commandPosition(commandPos)
