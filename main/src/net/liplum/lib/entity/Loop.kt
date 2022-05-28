@@ -2,7 +2,9 @@ package net.liplum.lib.entity
 
 import arc.util.io.Reads
 import arc.util.io.Writes
-import net.liplum.lib.persistance.IRWable
+import net.liplum.lib.persistence.CacheReaderSpec
+import net.liplum.lib.persistence.CacheWriter
+import net.liplum.lib.persistence.IRWable
 
 open class Progress(progress: Float = 0f) : IRWable {
     open var progress: Float = progress
@@ -14,7 +16,15 @@ open class Progress(progress: Float = 0f) : IRWable {
         progress = reader.f()
     }
 
+    override fun read(reader: CacheReaderSpec) {
+        progress = reader.f()
+    }
+
     override fun write(writer: Writes) {
+        writer.f(progress)
+    }
+
+    override fun write(writer: CacheWriter) {
         writer.f(progress)
     }
 

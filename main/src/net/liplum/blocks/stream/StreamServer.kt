@@ -19,7 +19,7 @@ import net.liplum.R
 import net.liplum.api.cyber.*
 import net.liplum.lib.Serialized
 import net.liplum.lib.delegates.Delegate1
-import net.liplum.lib.persistance.intSet
+import net.liplum.lib.persistence.intSet
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.DrawOn
 import net.liplum.mdt.WhenTheSameTeam
@@ -32,6 +32,7 @@ import net.liplum.mdt.utils.buildAt
 import net.liplum.utils.addHostInfo
 
 /**
+ * ### Since 1
  * Steam server is also a [IStreamClient].
  */
 open class StreamServer(name: String) : StreamHost(name) {
@@ -69,6 +70,7 @@ open class StreamServer(name: String) : StreamHost(name) {
     }
 
     open inner class ServerBuild : HostBuild(), IStreamClient {
+        override fun version() = 1.toByte()
         @ClientOnly @JvmField var mixedLiquidColor: Color = Color.white.cpy()
         @ClientOnly @JvmField var _hostColor: Color = R.C.Host.cpy()
         @ClientOnly
@@ -250,6 +252,11 @@ open class StreamServer(name: String) : StreamHost(name) {
         override fun read(read: Reads, revision: Byte) {
             super.read(read, revision)
             hosts = read.intSet()
+            val version = revision.toInt()
+            if (version > 0) {
+                // Since 1
+                hosts = read.intSet()
+            }
             restored = true
         }
 

@@ -2,14 +2,16 @@ package net.liplum.lib.entity
 
 import arc.util.io.Reads
 import arc.util.io.Writes
-import net.liplum.lib.persistance.IRWable
+import net.liplum.lib.persistence.CacheReaderSpec
+import net.liplum.lib.persistence.CacheWriter
+import net.liplum.lib.persistence.IRWable
 import net.liplum.lib.utils.ArrayList
 import java.util.*
 
 class FixedList<T : IRWable>(
     val size: Int = 1,
     val creator: () -> T
-) : Iterable<T> {
+) : Iterable<T>, IRWable {
     val list: ArrayList<T> = ArrayList(size) {
         creator()
     }
@@ -25,21 +27,35 @@ class FixedList<T : IRWable>(
     }
 
     override fun iterator() = list.iterator()
-    fun read(read: Reads) {
+    override fun read(reader: Reads) {
         for (i in list.indices) {
-            list[i].read(read)
+            list[i].read(reader)
         }
     }
 
-    fun write(write: Writes) {
+    override fun read(reader: CacheReaderSpec) {
+        for (i in list.indices) {
+            list[i].read(reader)
+        }
+    }
+
+    override fun write(writer: Writes) {
         for (r in list) {
-            r.write(write)
+            r.write(writer)
+        }
+    }
+
+    override fun write(writer: CacheWriter) {
+        for (r in list) {
+            r.write(writer)
         }
     }
 }
 
-class Queue<T : IRWable>(var maxSize: () -> Int = { 1 }, val creator: () -> T) : Iterable<T>,
-    IRWable {
+class Queue<T : IRWable>(
+    var maxSize: () -> Int = { 1 },
+    val creator: () -> T
+) : Iterable<T>, IRWable {
     constructor(maxSize: Int, creator: () -> T) : this({ maxSize }, creator)
 
     val list: LinkedList<T> = LinkedList()
@@ -106,6 +122,7 @@ class Queue<T : IRWable>(var maxSize: () -> Int = { 1 }, val creator: () -> T) :
             val rest = targetLen - size
             for (r in list)
                 r.read(reader)
+            // Append more until the same size
             for (i in 0 until rest)
                 list.addLast(creator().apply {
                     read(reader)
@@ -116,6 +133,37 @@ class Queue<T : IRWable>(var maxSize: () -> Int = { 1 }, val creator: () -> T) :
             for (r in list) {
                 if (i >= targetLen)
                     break
+                // Desert rest
+                r.read(reader)
+                i++
+            }
+            for (j in 0 until over)
+                list.removeLast()
+        }
+    }
+
+    override fun read(reader: CacheReaderSpec) {
+        val size = list.size
+        val targetLen = reader.i()
+        if (size == targetLen) {
+            for (r in list)
+                r.read(reader)
+        } else if (size < targetLen) {
+            val rest = targetLen - size
+            for (r in list)
+                r.read(reader)
+            // Append more until the same size
+            for (i in 0 until rest)
+                list.addLast(creator().apply {
+                    read(reader)
+                })
+        } else { // size > targetLen
+            val over = size - targetLen
+            var i = 0
+            for (r in list) {
+                if (i >= targetLen)
+                    break
+                // Desert rest
                 r.read(reader)
                 i++
             }
@@ -125,6 +173,12 @@ class Queue<T : IRWable>(var maxSize: () -> Int = { 1 }, val creator: () -> T) :
     }
 
     override fun write(writer: Writes) {
+        writer.i(list.size)
+        for (r in list)
+            r.write(writer)
+    }
+
+    override fun write(writer: CacheWriter) {
         writer.i(list.size)
         for (r in list)
             r.write(writer)

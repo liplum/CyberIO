@@ -1,4 +1,4 @@
-package net.liplum.lib.persistance;
+package net.liplum.lib.persistence;
 
 public interface IReadIntMap<TV> {
     TV read(int key);

@@ -33,7 +33,7 @@ import net.liplum.bullets.RuvikBullet
 import net.liplum.lib.Serialized
 import net.liplum.lib.TR
 import net.liplum.lib.delegates.Delegate1
-import net.liplum.lib.persistance.intSet
+import net.liplum.lib.persistence.intSet
 import net.liplum.lib.shaders.SD
 import net.liplum.lib.shaders.use
 import net.liplum.lib.utils.isZero

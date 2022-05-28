@@ -6,9 +6,9 @@ import arc.struct.Seq
 import arc.util.io.Reads
 import arc.util.io.Writes
 import net.liplum.mdt.ClientOnly
-import net.liplum.lib.persistance.intSet
-import net.liplum.lib.persistance.readSeq
-import net.liplum.lib.persistance.writeSeq
+import net.liplum.lib.persistence.intSet
+import net.liplum.lib.persistence.readSeq
+import net.liplum.lib.persistence.writeSeq
 import net.liplum.mdt.utils.TE
 import net.liplum.mdt.utils.build
 import net.liplum.mdt.utils.exists

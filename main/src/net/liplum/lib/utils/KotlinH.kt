@@ -1,4 +1,5 @@
 @file:JvmName("KotlinH")
+
 package net.liplum.lib.utils
 
 fun Double.format(digits: Int) = "%.${digits}f".format(this)
@@ -201,4 +202,9 @@ fun <T> Array<T>.progress(progress: Float): T {
 fun Int.progress(progress: Float): Int {
     val p = progress.coerceIn(0f, 1f)
     return (p * this).toInt().coerceAtMost(this - 1)
+}
+
+inline fun Int.forLoop(func: (Int) -> Unit) {
+    for (i in 0 until this)
+        func(i)
 }

@@ -23,7 +23,7 @@ import net.liplum.data.Receiver.ReceiverBuild
 import net.liplum.lib.Serialized
 import net.liplum.lib.TR
 import net.liplum.lib.delegates.Delegate1
-import net.liplum.lib.persistance.intSet
+import net.liplum.lib.persistence.intSet
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.Draw
 import net.liplum.mdt.SetColor

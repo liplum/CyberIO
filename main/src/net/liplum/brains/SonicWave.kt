@@ -4,6 +4,7 @@ import arc.util.io.Reads
 import arc.util.io.Writes
 import net.liplum.lib.entity.PosRadiation
 import net.liplum.lib.entity.Queue
+import net.liplum.lib.entity.Radiation
 
 class SonicWave(
     range: Float = 0f,
@@ -19,6 +20,14 @@ class SonicWave(
     override fun write(writer: Writes) {
         super.write(writer)
         writer.f(damage)
+    }
+
+    companion object {
+        @JvmStatic
+        fun readEmpty(reader: Reads) {
+            PosRadiation.readEmpty(reader)
+            reader.f()
+        }
     }
 }
 fun SonicWaveQueue(size: Int = 1) =

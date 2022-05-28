@@ -42,6 +42,8 @@ import net.liplum.lib.TR
 import net.liplum.lib.delegates.Delegate
 import net.liplum.lib.entity.Radiation
 import net.liplum.lib.entity.RadiationQueue
+import net.liplum.lib.persistence.ReadFromCache
+import net.liplum.lib.persistence.WriteIntoCache
 import net.liplum.lib.utils.format
 import net.liplum.lib.utils.invoke
 import net.liplum.lib.utils.isZero
@@ -65,6 +67,8 @@ import net.liplum.utils.addPowerUseStats
 /**
  * ### Since 1
  * - Heimdall's force field has stored current radius.
+ * ### Since 2
+ * - Using cache reader instead
  */
 open class Heimdall(name: String) : Block(name) {
     @JvmField var range = 150f
@@ -198,6 +202,7 @@ open class Heimdall(name: String) : Block(name) {
 
     open inner class HeimdallBuild : Building(),
         ControlBlock, IExecutioner, IBrain, Ranged {
+        override fun version() = 2.toByte()
         override val scale: SpeedScale = SpeedScale()
         override val sides: Array<Side2> = Array(4) {
             Side2(this)
@@ -638,23 +643,42 @@ open class Heimdall(name: String) : Block(name) {
             return (unit as MdtUnit)
         }
 
-        override fun read(read: Reads, revision: Byte) {
-            super.read(read, revision)
-            brainWaves.read(read)
-            reloadCounter = read.f()
-            shieldAmount = read.f()
-            lastShieldDamageTime = read.f()
-            curFieldRadius = read.f()
+        override fun read(_read_: Reads, revision: Byte) {
+            super.read(_read_, revision)
+            val version = revision.toInt()
+            if (version <= 1) {
+                brainWaves.read(_read_)
+                reloadCounter = _read_.f()
+                shieldAmount = _read_.f()
+                lastShieldDamageTime = _read_.f()
+                if (version == 1) { // Since 1
+                    curFieldRadius = _read_.f()
+                }
+            } else {
+                // Since 2
+                ReadFromCache(_read_, version().toInt()) {
+                    brainWaves.read(this)
+                    reloadCounter = f()
+                    shieldAmount = f()
+                    lastShieldDamageTime = f()
+                    curFieldRadius = f()
+                }
+            }
+        }
+
+        override fun afterRead() {
             justRestoreOrCreated = true
         }
 
-        override fun write(write: Writes) {
-            super.write(write)
-            brainWaves.write(write)
-            write.f(reloadCounter)
-            write.f(shieldAmount)
-            write.f(lastShieldDamageTime)
-            write.f(curFieldRadius)
+        override fun write(_write_: Writes) {
+            super.write(_write_)
+            WriteIntoCache(_write_, version().toInt()) {
+                brainWaves.write(this)
+                f(reloadCounter)
+                f(shieldAmount)
+                f(lastShieldDamageTime)
+                f(curFieldRadius)
+            }
         }
 
         protected val deltaUpgradePropMap = HashMap<UpgradeType, UpgradeEntry>(properties.size + 1)

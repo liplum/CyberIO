@@ -17,7 +17,7 @@ import net.liplum.blocks.AniedBlock
 import net.liplum.lib.Serialized
 import net.liplum.lib.TR
 import net.liplum.lib.TRs
-import net.liplum.lib.persistance.intSet
+import net.liplum.lib.persistence.intSet
 import net.liplum.mdt.*
 import net.liplum.mdt.animations.anis.AniState
 import net.liplum.mdt.animations.anis.config

@@ -17,7 +17,7 @@ import net.liplum.WhenRefresh
 import net.liplum.api.cyber.*
 import net.liplum.lib.TR
 import net.liplum.lib.delegates.Delegate1
-import net.liplum.lib.persistance.intSet
+import net.liplum.lib.persistence.intSet
 import net.liplum.mdt.*
 import net.liplum.mdt.animations.anims.Animation
 import net.liplum.mdt.animations.anims.IFrameIndexer

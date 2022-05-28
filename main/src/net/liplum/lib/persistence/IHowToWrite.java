@@ -1,4 +1,4 @@
-package net.liplum.lib.persistance;
+package net.liplum.lib.persistence;
 
 import arc.util.io.Writes;
 import org.jetbrains.annotations.NotNull;

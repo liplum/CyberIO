@@ -6,7 +6,6 @@ import arc.scene.ui.layout.Table
 import arc.struct.ObjectSet
 import arc.struct.OrderedSet
 import arc.util.Eachable
-import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.Vars
@@ -26,7 +25,7 @@ import net.liplum.mdt.DrawOn
 import net.liplum.mdt.animations.anis.AniState
 import net.liplum.mdt.animations.anis.config
 import net.liplum.lib.delegates.Delegate1
-import net.liplum.lib.persistance.intSet
+import net.liplum.lib.persistence.intSet
 import net.liplum.lib.TR
 import net.liplum.utils.addHostInfo
 import net.liplum.mdt.utils.inMod

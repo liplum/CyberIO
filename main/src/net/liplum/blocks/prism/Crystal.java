@@ -4,7 +4,7 @@ import arc.graphics.g2d.TextureRegion;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import net.liplum.lib.math.Polar;
-import net.liplum.lib.persistance.RWU;
+import net.liplum.lib.persistence.RWU;
 import net.liplum.lib.utils.ByteH;
 import net.liplum.mdt.ClientOnly;
 

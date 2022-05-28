@@ -1,4 +1,4 @@
-package net.liplum.lib.persistance;
+package net.liplum.lib.persistence;
 
 import arc.struct.IntMap;
 import arc.struct.ObjectSet;

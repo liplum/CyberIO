@@ -27,7 +27,7 @@ import net.liplum.blocks.AniedBlock
 import net.liplum.lib.Serialized
 import net.liplum.lib.TR
 import net.liplum.lib.delegates.Delegate1
-import net.liplum.lib.persistance.intSet
+import net.liplum.lib.persistence.intSet
 import net.liplum.lib.utils.DoMultipleBool
 import net.liplum.lib.utils.EmptyArray
 import net.liplum.lib.utils.equalsNoOrder

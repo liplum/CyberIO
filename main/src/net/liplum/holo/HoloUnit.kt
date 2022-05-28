@@ -28,7 +28,7 @@ import mindustry.world.blocks.power.PowerGraph
 import net.liplum.S
 import net.liplum.holo.HoloProjector.HoloPBuild
 import net.liplum.lib.Serialized
-import net.liplum.lib.persistance.*
+import net.liplum.lib.persistence.*
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.OverwriteVanilla
 import net.liplum.mdt.mixin.PayloadMixin
@@ -41,7 +41,7 @@ import net.liplum.registries.CioLiquids
 import net.liplum.registries.EntityRegistry
 
 open class HoloUnit : UnitEntity(), PayloadMixin, IReverisonable {
-    override fun reversionID() = 8
+    override fun revisionID() = 8
     override var payloadPower: PowerGraph? = null
     override var payloads = Seq<Payload>()
     override val unitType: UnitType
@@ -277,7 +277,7 @@ open class HoloUnit : UnitEntity(), PayloadMixin, IReverisonable {
     }
 
     private fun readReversion7(read: Reads) {
-        // Copy from parent reversion 7
+        // Copy from parent revision 7
         abilities = TypeIO.readAbilities(read, abilities)
         ammo = read.f()
         controller = TypeIO.readController(read, controller)
@@ -308,20 +308,23 @@ open class HoloUnit : UnitEntity(), PayloadMixin, IReverisonable {
         y = read.f()
     }
     @OverwriteVanilla("Super")
-    override fun read(read: Reads) {
-        val REV = read.s().toInt()
+    override fun read(_read_: Reads) {
+        val REV = _read_.s().toInt()
         if (REV == 7) {
-            readReversion7(read)
-            time = read.f()
-            projectorPos = read.i()
+            readReversion7(_read_)
+            time = _read_.f()
+            projectorPos = _read_.i()
         } else if (REV >= 8) {
             // Since 8, use cache reader instead of vanilla
-            CacheReader.startRead(read, reversionID()) {
-                val wrap = cacheReaderWrapped.init(this)
-                readReversion7(wrap)
+            ReadFromCache(_read_, revisionID()) {
+                Warp {
+                    readReversion7(this)
+                }
                 time = f()
                 projectorPos = i()
-                readPayload(wrap)
+                Warp {
+                    readPayload(this)
+                }
             }
         }
         this.afterRead()
@@ -359,26 +362,28 @@ open class HoloUnit : UnitEntity(), PayloadMixin, IReverisonable {
         write.f(y)
     }
     @OverwriteVanilla("Super")
-    override fun write(write: Writes) {
-        write.s(reversionID())
+    override fun write(_write_: Writes) {
+        _write_.s(revisionID())
         // Since 8, use cache writer instead of vanilla
-        cacheWriter.init().apply {
-            val wrap = cacheWriterWrapped.init(this)
-            writeUnitEntity(wrap)
+        WriteIntoCache(_write_, revisionID()) {
+            Wrap {
+                writeUnitEntity(this)
+            }
             f(time)
             i(projectorPos)
-            writePayload(wrap)
-            flushAll(write, reversionID())
+            Wrap {
+                writePayload(this)
+            }
         }
     }
-    // Sync doesn't need reversion
+    // Sync doesn't need revision
     override fun readSync(read: Reads) {
         super.readSync(read)
         time = read.f()
         projectorPos = read.i()
         readPayload(read)
     }
-    // Sync doesn't need reversion
+    // Sync doesn't need revision
     override fun writeSync(write: Writes) {
         super.writeSync(write)
         write.f(time)
@@ -391,11 +396,5 @@ open class HoloUnit : UnitEntity(), PayloadMixin, IReverisonable {
             LAccess.progress -> (1f - restLifePercent).toDouble()
             else -> super.sense(sensor)
         }
-    }
-
-    companion object {
-        private val cacheWriter = CacheWriter()
-        private val cacheReaderWrapped = CacheReaderWrapped()
-        private val cacheWriterWrapped = CacheWriterWrapped()
     }
 }

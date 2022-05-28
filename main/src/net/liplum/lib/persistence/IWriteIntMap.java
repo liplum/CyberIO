@@ -1,4 +1,4 @@
-package net.liplum.lib.persistance;
+package net.liplum.lib.persistence;
 
 public interface IWriteIntMap<TV> {
     int write(TV data);

@@ -19,7 +19,7 @@ import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
 import net.liplum.lib.Serialized
 import net.liplum.lib.TR
-import net.liplum.lib.persistance.intSet
+import net.liplum.lib.persistence.intSet
 import net.liplum.lib.utils.DoMultipleBool
 import net.liplum.mdt.*
 import net.liplum.mdt.animations.anims.Animation

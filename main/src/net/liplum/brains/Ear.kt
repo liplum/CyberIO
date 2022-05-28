@@ -33,6 +33,10 @@ import net.liplum.R
 import net.liplum.api.brain.*
 import net.liplum.lib.Serialized
 import net.liplum.lib.TR
+import net.liplum.lib.entity.PosRadiation
+import net.liplum.lib.persistence.ReadFromCache
+import net.liplum.lib.persistence.WriteIntoCache
+import net.liplum.lib.utils.forLoop
 import net.liplum.lib.utils.invoke
 import net.liplum.lib.utils.isZero
 import net.liplum.lib.utils.toDouble
@@ -46,6 +50,10 @@ import net.liplum.mdt.utils.MdtUnit
 import net.liplum.mdt.utils.sub
 import net.liplum.utils.addBrainInfo
 
+/**
+ * ### Since 1
+ * Use CacheReader instead.
+ */
 open class Ear(name: String) : Block(name), IComponentBlock {
     @JvmField var waveSpeed = 2.5f
     @JvmField var waveWidth = 5f
@@ -132,6 +140,7 @@ open class Ear(name: String) : Block(name), IComponentBlock {
 
     open inner class EarBuild : Building(),
         IUpgradeComponent, ControlBlock, Ranged {
+        override fun version() = 1.toByte()
         // <editor-fold desc="Heimdall">
         override val scale: SpeedScale = SpeedScale()
         override var directionInfo: Direction2 = Direction2()
@@ -193,18 +202,31 @@ open class Ear(name: String) : Block(name), IComponentBlock {
         var reloadCounter = 0f
         @Serialized
         var lastRadiateTime = realReloadTime + 1f
-        override fun read(read: Reads, revision: Byte) {
-            super.read(read, revision)
-            sonicWaves.read(read)
-            reloadCounter = read.f()
-            lastRadiateTime = read.f()
+        override fun read(_read_: Reads, revision: Byte) {
+            super.read(_read_, revision)
+            val version = revision.toInt()
+            if (version == 0) {
+                _read_.i().forLoop {
+                    PosRadiation.readEmpty(_read_)
+                }
+                reloadCounter = _read_.f()
+                lastRadiateTime = _read_.f()
+            } else { // Since 1
+                ReadFromCache(_read_, version().toInt()) {
+                    sonicWaves.read(this)
+                    reloadCounter = f()
+                    lastRadiateTime = f()
+                }
+            }
         }
 
-        override fun write(write: Writes) {
-            super.write(write)
-            sonicWaves.write(write)
-            write.f(reloadCounter)
-            write.f(lastRadiateTime)
+        override fun write(_write_: Writes) {
+            super.write(_write_)
+            WriteIntoCache(_write_, version().toInt()) {
+                sonicWaves.write(this)
+                f(reloadCounter)
+                f(lastRadiateTime)
+            }
         }
 
         override fun range() = realRange
@@ -353,6 +375,7 @@ open class Ear(name: String) : Block(name), IComponentBlock {
             super.heal(amount)
             trigger(Trigger.heal)
         }
+
         override fun delta(): Float {
             return this.timeScale * Time.delta * speedScale * (1f + heatShared)
         }

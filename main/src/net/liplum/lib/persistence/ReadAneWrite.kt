@@ -1,4 +1,4 @@
-package net.liplum.lib.persistance
+package net.liplum.lib.persistence
 
 fun < T : IRWable> T.toReader(): IHowToRead<T> =
     IHowToRead<T> { reads ->

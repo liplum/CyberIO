@@ -1,4 +1,4 @@
-package net.liplum.lib.persistance
+package net.liplum.lib.persistence
 
 import arc.util.io.Reads
 import arc.util.io.Writes
@@ -10,18 +10,18 @@ import java.io.DataOutputStream
 object CacheReader {
     inline fun startRead(
         read: Reads,
-        reverison: Int,
+        revision: Int,
         reading: CacheReaderSpec.() -> Unit
     ) {
-        // Read the reversion number
-        val readReversion = read.i()
+        // Read the revision number
+        val readRevision = read.i()
         // Read the total length of blocks, don't worry it can represent about 2 GB
         val blockLength = read.i()
-        // If reversion number doesn't match, skip all
-        if (readReversion != reverison) {
+        // If revision number doesn't match, skip all
+        if (readRevision != revision) {
             read.skip(blockLength)
         } else {
-            // If reversion number match, read all into cache
+            // If revision number match, read all into cache
             val data = read.b(blockLength)
             val cache = ByteArrayInputStream(data)
             val reader = DataInputStream(cache)
@@ -103,7 +103,7 @@ class CacheWriter {
     fun flushAll(writeIn: Writes, reverison: Int) {
         // Flush
         writer.flush()
-        // Write the reversion number
+        // Write the revision number
         writeIn.i(reverison)
         // Write the total length for skipping
         val blockLength = cache.size()
