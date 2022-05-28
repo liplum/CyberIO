@@ -5,6 +5,7 @@ import arc.graphics.Color
 import arc.math.Mathf
 import arc.math.Mathf.pow
 import arc.scene.ui.layout.Table
+import arc.struct.EnumSet
 import arc.util.Time
 import arc.util.Tmp
 import mindustry.Vars
@@ -23,6 +24,8 @@ import mindustry.ui.Bar
 import mindustry.world.Block
 import mindustry.world.blocks.ControlBlock
 import mindustry.world.blocks.heat.HeatBlock
+import mindustry.world.meta.BlockFlag
+import mindustry.world.meta.BlockGroup
 import net.liplum.CioMod.Companion.DebugMode
 import net.liplum.DebugOnly
 import net.liplum.R
@@ -107,6 +110,8 @@ open class Heart(name: String) : Block(name), IComponentBlock {
         hasLiquids = true
         canOverdrive = false
         priority = TargetPriority.turret
+        group = BlockGroup.turrets
+        flags = EnumSet.of(BlockFlag.turret)
     }
 
     override fun init() {

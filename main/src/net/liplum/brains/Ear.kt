@@ -6,6 +6,7 @@ import arc.graphics.g2d.Lines
 import arc.math.Interp
 import arc.math.Mathf
 import arc.math.geom.Vec2
+import arc.struct.EnumSet
 import arc.util.Time
 import arc.util.Tmp
 import arc.util.io.Reads
@@ -23,6 +24,8 @@ import mindustry.logic.LAccess
 import mindustry.logic.Ranged
 import mindustry.world.Block
 import mindustry.world.blocks.ControlBlock
+import mindustry.world.meta.BlockFlag
+import mindustry.world.meta.BlockGroup
 import mindustry.world.meta.Stat
 import mindustry.world.meta.StatUnit
 import net.liplum.DebugOnly
@@ -82,6 +85,8 @@ open class Ear(name: String) : Block(name), IComponentBlock {
         updateInUnits = true
         alwaysUpdateInUnits = true
         priority = TargetPriority.turret
+        group = BlockGroup.turrets
+        flags = EnumSet.of(BlockFlag.turret)
         hasPower = true
         sync = true
         attacks = true

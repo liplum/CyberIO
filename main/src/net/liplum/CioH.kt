@@ -7,9 +7,6 @@ import arc.util.Time
 import mindustry.Vars
 import net.liplum.lib.Condition
 import net.liplum.lib.TR
-import net.liplum.lib.utils.bundle
-import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.utils.atlas
 import java.lang.annotation.Inherited
 
 val String.inCio: TR

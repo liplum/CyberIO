@@ -73,6 +73,12 @@ open class HoloUnit : UnitEntity(), PayloadMixin, IReverisonable {
 
     override fun toString() = "HoloUnit#$id"
     override fun update() {
+        /* Pick up everything
+        if (isPlayer) {
+            val build = tileOn().build
+            if (build != null)
+                pickup(build)
+        }*/
         if (type is HoloUnitType) {
             val loseMultiplier: Float
             if (isProjectorMissing) {
@@ -234,7 +240,7 @@ open class HoloUnit : UnitEntity(), PayloadMixin, IReverisonable {
 
     override fun updatePayload() {
         val projector = projectorPos.TE<HoloPBuild>()
-        if(projector?.power != null)
+        if (projector?.power != null)
             payloadPower = projector.power?.graph
 
         for (pay in payloads) {

@@ -9,6 +9,7 @@ import arc.math.Interp
 import arc.math.Mathf
 import arc.math.geom.Intersector
 import arc.math.geom.Vec2
+import arc.struct.EnumSet
 import arc.util.Log
 import arc.util.Time
 import arc.util.io.Reads
@@ -25,6 +26,8 @@ import mindustry.logic.LAccess
 import mindustry.logic.Ranged
 import mindustry.world.Block
 import mindustry.world.blocks.ControlBlock
+import mindustry.world.meta.BlockFlag
+import mindustry.world.meta.BlockGroup
 import mindustry.world.meta.Stat
 import net.liplum.CioMod
 import net.liplum.DebugOnly
@@ -114,6 +117,8 @@ open class Heimdall(name: String) : Block(name) {
         hasPower = true
         sync = true
         priority = TargetPriority.turret
+        group = BlockGroup.turrets
+        flags = EnumSet.of(BlockFlag.turret)
         attacks = true
         canOverdrive = false
     }

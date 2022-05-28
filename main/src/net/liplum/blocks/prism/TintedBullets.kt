@@ -9,8 +9,8 @@ import mindustry.graphics.Pal
 import net.liplum.R
 import net.liplum.api.prism.PrismRegistry.getRegistered
 import net.liplum.bullets.BBulletType
-import net.liplum.lib.utils.copyFrom
 import net.liplum.lib.utils.ArrayList
+import net.liplum.lib.utils.copyFrom
 
 val BulletType.isTintIgnored: Boolean
     get() = this in IgnoredBullets || this::class.java in IgnoredClass
@@ -24,6 +24,7 @@ fun tintedRGB(b: BulletType): List<BulletType> {
         is BasicBulletType -> b.tinted
         is ShrapnelBulletType -> b.tinted
         is LaserBulletType -> b.tinted
+        is ContinuousFlameBulletType -> b.tinted
         is ContinuousLaserBulletType -> b.tinted
         is FireBulletType -> b.tinted
         is LiquidBulletType -> b.tinted
@@ -46,6 +47,9 @@ val AutoRGBx: (Building) -> Color = {
     rgb[((Time.time % total / total) * len).toInt().coerceIn(0, len - 1)]
 }
 
+fun Color.Lerp(target: Color, progress: Float): Color =
+    this.lerp(target, progress)
+
 inline fun <T> HashMap<T, List<T>>.rgb(
     bullet: T,
     gen: (Int) -> T,
@@ -54,11 +58,11 @@ inline fun <T> HashMap<T, List<T>>.rgb(
 }
 
 fun BulletType.commonTint(i: Int, lerp: Float = 0.3f) {
-    trailColor = FG(i).lerp(trailColor, lerp)
-    healColor = FG(i).lerp(healColor, lerp)
-    lightColor = FG(i).lerp(lightColor, lerp)
-    lightningColor = BK(i).lerp(lightningColor, lerp)
-    hitColor = BK(i).lerp(hitColor,lerp)
+    trailColor = FG(i).Lerp(trailColor, lerp)
+    healColor = FG(i).Lerp(healColor, lerp)
+    lightColor = FG(i).Lerp(lightColor, lerp)
+    lightningColor = BK(i).Lerp(lightningColor, lerp)
+    hitColor = BK(i).Lerp(hitColor, lerp)
 }
 
 internal fun FG(i: Int): Color =
@@ -73,10 +77,10 @@ val BulletType.BasicTintLerp: Float
 val BasicBulletType.tinted: List<BasicBulletType>
     get() = BasicBullets.rgb(this) {
         (this.copy() as BasicBulletType).apply {
-            frontColor = FG(it).lerp(
+            frontColor = FG(it).Lerp(
                 frontColor, BasicTintLerp
             )
-            backColor = BK(it).lerp(
+            backColor = BK(it).Lerp(
                 backColor, BasicTintLerp
             )
             commonTint(it, BasicTintLerp)
@@ -88,7 +92,7 @@ val BBulletType.BasicTintLerp: Float
 val BBulletType.tinted: List<BBulletType>
     get() = BBullets.rgb(this) {
         (this.copy() as BBulletType).apply {
-            color = FG(it).lerp(
+            color = FG(it).Lerp(
                 color, BasicTintLerp
             )
             commonTint(it, BasicTintLerp)
@@ -155,6 +159,21 @@ val ContinuousLaserBulletType.tinted: List<ContinuousLaserBulletType>
             commonTint(it, LaserTintLerp)
         }
     }
+val ContinuousFlameBullets: HashMap<ContinuousFlameBulletType, List<ContinuousFlameBulletType>> = HashMap()
+val ContinuousFlameBulletType.tinted: List<ContinuousFlameBulletType>
+    get() = ContinuousFlameBullets.rgb(this) {
+        (this.copy() as ContinuousFlameBulletType).apply {
+            colors = Array(colors.size) { i ->
+                FG(it).lerp(colors[i], LaserTintLerp)
+            }
+            flareColor = FG(it).Lerp(flareColor, LaserTintLerp)
+            hitEffect = HitMeltRgbFx[it]
+            shootEffect = HitMeltRgbFx[it]
+            smokeEffect = HitMeltRgbFx[it]
+            despawnEffect = HitMeltRgbFx[it]
+            commonTint(it, LaserTintLerp)
+        }
+    }
 val LiquidBullets: HashMap<LiquidBulletType, List<LiquidBulletType>> = HashMap()
 val BulletType.LiquidTintLerp: Float
     get() = 0.4f + Mathf.randomSeed(id.toLong(), -0.08f, 0.08f)
@@ -163,7 +182,7 @@ val LiquidBulletType.tinted: List<LiquidBulletType>
         try {
             TintLiquidBulletT(this.liquid).apply {
                 copyFrom(this)
-                tintColor = BK(it).cpy().lerp(
+                tintColor = BK(it).cpy().Lerp(
                     this@tinted.liquid.color, LiquidTintLerp
                 )
                 commonTint(it, LiquidTintLerp)
@@ -180,10 +199,10 @@ val MassDriverBolt.tinted: List<MassDriverBolt>
         try {
             MassDriverBoltT().apply {
                 copyFrom(this)
-                tintColor = FG(it).lerp(
+                tintColor = FG(it).Lerp(
                     Pal.bulletYellow, MassDriverLerp
                 )
-                tintBKColor = BK(it).lerp(
+                tintBKColor = BK(it).Lerp(
                     Pal.bulletYellowBack, MassDriverLerp
                 )
                 hitEffect = HitBulletBigRgbFx[it]
@@ -194,7 +213,6 @@ val MassDriverBolt.tinted: List<MassDriverBolt>
             this
         }
     }
-
 val GeneralBullets: HashMap<BulletType, List<BulletType>> = HashMap()
 val BulletType.tintGeneral: List<BulletType>
     get() = GeneralBullets.rgb(this) {

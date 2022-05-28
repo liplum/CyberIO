@@ -1590,7 +1590,8 @@ object CioBlocks {
                 requirements(
                     Category.effect, BuildVisibility.shown, arrayOf()
                 )
-                size = 1
+                size = 2
+                maxSensitive = 5
                 buildType = Prov { ZipBombBuild() }
             }
         }

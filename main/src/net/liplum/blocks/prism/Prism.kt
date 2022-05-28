@@ -3,8 +3,8 @@ package net.liplum.blocks.prism
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
 import arc.math.Angles
+import arc.math.Interp
 import arc.math.Mathf
-import arc.math.geom.Vec2
 import arc.struct.EnumSet
 import arc.util.Time
 import arc.util.io.Reads
@@ -20,6 +20,7 @@ import mindustry.logic.LAccess
 import mindustry.logic.Ranged
 import mindustry.world.Block
 import mindustry.world.blocks.ControlBlock
+import mindustry.world.blocks.defense.turrets.ContinuousTurret
 import mindustry.world.blocks.defense.turrets.LaserTurret
 import mindustry.world.blocks.defense.turrets.Turret
 import mindustry.world.meta.BlockFlag
@@ -36,9 +37,11 @@ import net.liplum.lib.TR
 import net.liplum.lib.TRs
 import net.liplum.lib.math.*
 import net.liplum.lib.utils.bundle
+import net.liplum.lib.utils.invoke
 import net.liplum.lib.utils.isZero
 import net.liplum.lib.utils.percentI
 import net.liplum.mdt.ClientOnly
+import net.liplum.mdt.DrawSize
 import net.liplum.mdt.mixin.copy
 import net.liplum.mdt.render.G
 import net.liplum.mdt.ui.bars.AddBar
@@ -53,19 +56,23 @@ open class Prism(name: String) : Block(name) {
      */
     @JvmField var Agl = 20f
     @JvmField var deflectionAngle = 25f
-    @JvmField var prismRange = 10f
+    @JvmField var prismRadius = 10.5f
     @JvmField var prismRevolutionSpeed = 0.05f
     @JvmField var playerControllable = true
     @JvmField var rotateSpeed = 0f
     @JvmField var maxCrystal = 3
+    @JvmField var tintBullet = true
     @ClientOnly @JvmField var prismRotationSpeed = 0.05f
     @ClientOnly @JvmField var elevation = -1f
+    @ClientOnly @JvmField var CrystalVariants = 7
+    @ClientOnly @JvmField var sizeOpen = 15f
+    @ClientOnly @JvmField var elevationHeightScale = 0.2f
+    @ClientOnly @JvmField var maxOutsideRange = -1f
+    @ClientOnly @JvmField var maxOutsideRangeFactor = 0.8f
+    @ClientOnly @JvmField var antiClockwiseColor: Color = R.C.prismAntiClockwise
+    @ClientOnly @JvmField var clockwiseColor: Color = R.C.prismClockwise
     @ClientOnly lateinit var BaseTR: TR
     @ClientOnly lateinit var CrystalTRs: TRs
-    @ClientOnly @JvmField var CrystalVariants = 7
-    @ClientOnly @JvmField var clockwiseColor: Color = R.C.prismClockwise
-    @ClientOnly @JvmField var antiClockwiseColor: Color = R.C.prismAntiClockwise
-    @JvmField var tintBullet = true
     @ClientOnly lateinit var UpTR: TR
     @ClientOnly lateinit var DownTR: TR
     @ClientOnly lateinit var LeftTR: TR
@@ -74,7 +81,6 @@ open class Prism(name: String) : Block(name) {
     @ClientOnly lateinit var RightUpEndTR: TR
     @ClientOnly lateinit var LeftDownStartTR: TR
     @ClientOnly lateinit var LeftDownEndTR: TR
-    @ClientOnly var sizeOpen = 15f
 
     init {
         updateInUnits = true
@@ -90,7 +96,7 @@ open class Prism(name: String) : Block(name) {
         sync = true
     }
 
-    open val Crystal.color: Color
+    open val Crystal.circleColor: Color
         get() = if (this.isClockwise)
             clockwiseColor
         else
@@ -118,10 +124,11 @@ open class Prism(name: String) : Block(name) {
     override fun init() {
         super.init()
         perDeflectionAngle = deflectionAngle * 2 / 3
-        if (elevation < 0) {
+        if (elevation < 0f)
             elevation = size / 2f
-        }
-        clipSize = Agl + (prismRange * 3 * maxCrystal) + elevation
+        if (maxOutsideRange < 0f)
+            maxOutsideRange = (size * tilesize * maxOutsideRangeFactor).coerceAtMost(prismRadius - 1f)
+        clipSize = Agl + (prismRadius * 3 * maxCrystal) + elevation
     }
 
     override fun setBars() {
@@ -166,7 +173,7 @@ open class Prism(name: String) : Block(name) {
             }
             addCrystalCallback = {
                 revolution = Polar(0f, 0f)
-                rotation = Polar(prismRange, 0f)
+                rotation = Polar(prismRadius, 0f)
                 isClockwise = orbitPos % 2 != 0
             }
             for (i in 0 until initCrystalCount) {
@@ -184,7 +191,7 @@ open class Prism(name: String) : Block(name) {
             get() = logicControlTime > 0f
         var logicAngle = 0f
         val realRange: Float
-            get() = Agl + (prismRange * 2 * crystalAmount)
+            get() = Agl + (prismRadius * 2 * crystalAmount)
 
         fun removeOutermostPrisel() =
             cm.tryRemoveOutermost()
@@ -214,48 +221,48 @@ open class Prism(name: String) : Block(name) {
         }
 
         override fun updateTile() {
-            cm.spend(delta())
+            val delta = delta()
+            cm.spend(delta)
             if (logicControlTime > 0f) {
                 logicControlTime -= Time.delta
             }
-            val perRevl = prismRevolutionSpeed * delta()
-            val perRota = prismRotationSpeed * delta()
-            var curPerRelv: Float
-            var curPerRota: Float
+            val perRevl = prismRevolutionSpeed * delta
+            val perRota = prismRotationSpeed * delta
 
             cm.update {
                 val ip1 = orbitPos + 1
-                curPerRelv = perRevl / ip1 * 0.8f
-                curPerRota = perRota * ip1 * 0.8f
+                val curPerRelv = perRevl / ip1 * 0.8f
+                val curPerRota = perRota * Mathf.log(2.5f, orbitPos + 2.5f)
                 if (isControlled) {
                     val ta = Polar.toA(unit.aimX() - x, unit.aimY() - y)
                     revolution.a =
                         Angles.moveToward(
                             revolution.a.degree, ta.degree,
-                            curPerRelv * 100 * delta()
+                            curPerRelv * 100 * delta
                         ).radian
                 } else if (controlByLogic) {
                     revolution.a =
                         Angles.moveToward(
                             revolution.a.degree, logicAngle,
-                            curPerRelv * 100 * delta()
+                            curPerRelv * 100 * delta
                         ).radian
                 } else {
                     revolution.a += if (isClockwise) -curPerRelv else curPerRelv
                 }
                 var revlR = revolution.r
                 var perRevlR = 0.1f * Mathf.log2((ip1 * ip1).toFloat() + 1f)
-                val totalLen = Agl + (prismRange * 2 * orbitPos)
+                val totalLen = Agl + (prismRadius * 2 * orbitPos)
                 if (isRemoved) {
                     perRevlR = PSA(perRevlR, revlR, 0f, totalLen)
-                    revlR -= perRevlR * delta()
+                    revlR -= perRevlR * delta
                 } else {
                     perRevlR = PSA(perRevlR, revlR, totalLen, totalLen)
-                    revlR += perRevlR * delta()
+                    revlR += perRevlR * delta
                 }
                 revlR = revlR.coerceIn(0f, totalLen)
                 revolution.r = revlR
-                rotation.a += if (isClockwise) -curPerRota else curPerRota
+                rotation.a += if (isClockwise) -curPerRota * delta
+                else curPerRota * delta
             }
             var priselX: Float
             var priselY: Float
@@ -272,7 +279,7 @@ open class Prism(name: String) : Block(name) {
                     priselY = revolution.y + y
                     if (it.team == team &&
                         !it.data.isDuplicate &&
-                        it.dst(priselX, priselY) <= prismRange
+                        it.dst(priselX, priselY) <= prismRadius
                     ) {
                         it.passThrough()
                     }
@@ -310,16 +317,29 @@ open class Prism(name: String) : Block(name) {
         open fun Bullet.handleDuplicate(
             angleOffset: Float = 0f
         ): Bullet {
-            val owner = owner
-            if (owner is LaserTurret.LaserTurretBuild) {
-                val bullets = owner.bullets
-                if (bullets.any()) {
-                    val first = bullets.first()
-                    bullets.add(
-                        Turret.BulletEntry(
-                            this, first.x, first.y, first.rotation + angleOffset, first.life
+            // TODO: turret sublimate
+            when (val owner = owner) {
+                is LaserTurret.LaserTurretBuild -> {
+                    val bullets = owner.bullets
+                    if (bullets.any()) {
+                        val first = bullets.first()
+                        bullets.add(
+                            Turret.BulletEntry(
+                                this, first.x, first.y, first.rotation + angleOffset, first.life
+                            )
                         )
-                    )
+                    }
+                }
+                is ContinuousTurret.ContinuousTurretBuild -> {
+                    val bullets = owner.bullets
+                    if (bullets.any()) {
+                        val first = bullets.first()
+                        bullets.add(
+                            Turret.BulletEntry(
+                                this, first.x, first.y, first.rotation + angleOffset, first.life
+                            )
+                        )
+                    }
                 }
             }
             return this
@@ -353,16 +373,20 @@ open class Prism(name: String) : Block(name) {
             Drawf.shadow(DownTR, x, y - delta)
             Drawf.shadow(LeftTR, x - delta, y)
             Drawf.shadow(RightTR, x + delta, y)
-            var priselX: Float
-            var priselY: Float
             cm.render {
-                priselX = revolution.x + x
-                priselY = revolution.y + y
+                val priselX = revolution.x + x
+                val priselY = revolution.y + y
+                var scale = 1f + Mathf.log(3f, orbitPos + 3f) * 0.2f - 0.2f
+                val perspectiveProgress = (revolution.r / maxOutsideRange).coerceIn(0f, 1f)
+                val perspective = Interp.smooth(perspectiveProgress)
+                scale *= perspective
                 Draw.z(Layer.blockOver)
                 Drawf.shadow(
                     img,
-                    priselX - elevation * Mathf.log(3f, orbitPos + 3f) * 7f,
-                    priselY - elevation * Mathf.log(3f, orbitPos + 3f) * 7f,
+                    priselX - elevation * 7f * scale,
+                    priselY - elevation * 7f * scale,
+                    G.Dw(img) * scale,
+                    G.Dh(img) * scale,
                     rotation.a.degree.draw
                 )
                 if (isInPayload)
@@ -370,12 +394,12 @@ open class Prism(name: String) : Block(name) {
                 else
                     Draw.z(Layer.bullet - 1f)
                 DebugOnly {
-                    G.drawDashCircleBreath(priselX, priselY, prismRange, color)
+                    G.drawDashCircleBreath(priselX, priselY, prismRadius, circleColor)
                 }
-                Draw.rect(
-                    img,
+                img.DrawSize(
                     priselX,
                     priselY,
+                    scale,
                     rotation.a.degree.draw
                 )
             }
@@ -383,12 +407,12 @@ open class Prism(name: String) : Block(name) {
         }
 
         override fun drawSelect() {
-            Draw.z(Layer.turret)
+            Draw.z(Layer.blockOver)
             cm.render {
                 G.drawDashCircleBreath(
                     this@PrismBuild,
-                    Agl + (prismRange * 2 * orbitPos),
-                    color
+                    Agl + (prismRadius * 2 * orbitPos),
+                    circleColor, alpha = 0.7f
                 )
             }
         }
@@ -415,17 +439,6 @@ open class Prism(name: String) : Block(name) {
                 }
             }
             super.control(type, p1, p2, p3, p4)
-        }
-
-        open fun findNearestTurret(): Vec2? {
-            var pos: Vec2? = null
-            Groups.build.each {
-                if (it is Turret.TurretBuild && it.dst(this) <= 60f && it.isActive) {
-                    pos = Vec2(it.x, it.y)
-                    return@each
-                }
-            }
-            return pos
         }
 
         override fun read(read: Reads, revision: Byte) {

@@ -255,12 +255,6 @@ object CioUnitTypes {
                     ItemStack(Items.titanium, 80),
                     ItemStack(Items.plastanium, 120),
                 )
-                abilities.add(
-                    RepairFieldAbility(10f, 60f * 10, 60f).apply {
-                        healEffect = HoloFx.heal
-                        activeEffect = HoloFx.healWaveDynamic
-                    }
-                )
             }
             aiController = Prov { RepairAI() }
             flying = true
