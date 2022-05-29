@@ -39,7 +39,7 @@ class ContentSpecXInfo(
         val ContentSpec.needSuffixResource: Boolean
             get() = ContentSpecExtraInfos[this]?.needSuffixResource ?: false
         val ContentSpec.color: Color
-            get() = ContentSpecExtraInfos[this]?.color ?: Color.white
+            get() = ContentSpecExtraInfos[this]?.color ?: Color.white.cpy()
         val ContentSpecExtraInfos by lazy {
             mapOf(
                 Erekir to ContentSpecXInfo(Erekir).apply {

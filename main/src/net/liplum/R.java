@@ -156,7 +156,8 @@ public class R {
 
     public static final class Advanced {
         public static final String
-                MapCleaner = Gen("map-cleaner");
+                MapCleaner = Gen("map-cleaner"),
+                GithubMirror = Gen("github-mirror");
 
         @NotNull
         @Contract(pure = true)

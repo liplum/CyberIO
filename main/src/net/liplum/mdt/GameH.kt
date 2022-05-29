@@ -117,6 +117,10 @@ val IsServer = Condition {
     val net = Vars.net
     net.server() || !net.active()
 }
+val IsLocal = Condition {
+    val net = Vars.net
+    !net.server() && !net.active()
+}
 val IsSteam = Condition { Vars.steam }
 inline fun <reified T> T.ClientOnlyOn(func: T.() -> Unit): T {
     if (!Vars.headless) {

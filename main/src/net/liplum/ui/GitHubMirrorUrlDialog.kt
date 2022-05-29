@@ -19,7 +19,7 @@ import net.liplum.mdt.ui.addTrackTooltip
 
 @ClientOnly
 object GitHubMirrorUrlDialog {
-    val prefix = "setting.${R.Setting.GitHubMirrorUrl}"
+    val prefix: String = R.Advanced.GithubMirror
     fun bundle(key: String, vararg args: Any) =
         if (args.isEmpty()) "$prefix.$key".bundle
         else "$prefix.$key".bundle(*args)

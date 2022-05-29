@@ -2,6 +2,7 @@ package net.liplum.registries
 
 import arc.util.CommandHandler
 import net.liplum.Config
+import net.liplum.Meta
 import net.liplum.mdt.HeadlessOnly
 import net.liplum.R
 import net.liplum.mdt.advanced.MapCleaner
@@ -33,7 +34,7 @@ object ServerCommands {
         }
         register(
             R.CMD.ClearCyberIOConetnt,
-            "Clear"
+            "Clear all contents from Cyber IO in current map."
         ) {
             MapCleaner.cleanCurrentMap(Meta.ModID)
         }

@@ -30,7 +30,9 @@ import net.liplum.lib.utils.getF
 import net.liplum.lib.utils.invoke
 import net.liplum.lib.utils.randomExcept
 import net.liplum.mdt.ClientOnly
+import net.liplum.mdt.IsLocal
 import net.liplum.mdt.UnsteamOnly
+import net.liplum.mdt.advanced.MapCleaner
 import net.liplum.mdt.ui.ShowTextDialog
 import net.liplum.mdt.ui.addTrackTooltip
 import net.liplum.mdt.ui.settings.*
@@ -134,14 +136,6 @@ object CioUI {
         }
         // GitHub mirror and Check update
         UnsteamOnly {
-            // GitHub mirror dialog
-            addAny {
-                it.add(Elem.newButton(GitHubMirrorUrlDialog.bundle("button")) {
-                    GitHubMirrorUrlDialog.show(onReset)
-                }.addTrackTooltip(GitHubMirrorUrlDialog.bundle("button-tooltip")))
-                    .fillX()
-                canShow = { isMenu }
-            }
             // Check Update
             addAny {
                 fun bundle(key: String) = "setting.${R.Setting.CheckUpdate}.$key".bundle
@@ -195,7 +189,7 @@ object CioUI {
         addAny {
             it.add(TextButton(AdvancedFunctionDialog.bundle("title")).apply {
                 clicked {
-                    AdvancedFunctionDialog.show()
+                    AdvancedFunctionDialog.show(onReset)
                 }
             }).fillX()
         }.apply {
@@ -208,11 +202,11 @@ object CioUI {
                     Sounds.message.play()
                 }
                 update {
-                    isDisabled = !(Var.EnableMapCleaner && !isMenu && OnlyLocal())
+                    isDisabled = !(Var.EnableMapCleaner && !isMenu && IsLocal())
                 }
             }).fillX()
         }.apply {
-            canShow = { Var.EnableMapCleaner && !isMenu && OnlyLocal() }
+            canShow = { Var.EnableMapCleaner && !isMenu && IsLocal() }
         }
         DebugOnly {
             addAny {
