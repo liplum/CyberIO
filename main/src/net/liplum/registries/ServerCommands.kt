@@ -3,7 +3,9 @@ package net.liplum.registries
 import arc.util.CommandHandler
 import net.liplum.Config
 import net.liplum.HeadlessOnly
+import net.liplum.Meta
 import net.liplum.R
+import net.liplum.mdt.advanced.MapCleaner
 import net.liplum.update.Updater
 
 @HeadlessOnly
@@ -29,6 +31,12 @@ object ServerCommands {
         ) {
             Updater.fetchLatestVersion(Config.CheckUpdateInfoURL)
             Updater.checkHeadlessUpdate(shouldUpdateOverride = true)
+        }
+        register(
+            R.CMD.ClearCyberIOConetnt,
+            "Clear"
+        ) {
+            MapCleaner.cleanCurrentMap(Meta.ModID)
         }
     }
 }

@@ -27,6 +27,7 @@ abstract class DownloadTask : DefaultTask() {
         val targetFile = targetFile.get()
         val sourceUrl = sourceUrl.get()
         if (!targetFile.exists() || overwrite.getOrElse(false)) {
+            targetFile.parentFile?.mkdirs()
             if (tip.isPresent) logger.lifecycle(tip.get())
             logger.lifecycle("Downloading file from $sourceUrl into ${targetFile.path}, please wait for a while.")
             ant.call {
