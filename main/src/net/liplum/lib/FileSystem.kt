@@ -29,11 +29,11 @@ value class F(val file: File) {
         return this
     }
 
-    inline fun getOrCreate(init: String, onCreated: () -> Unit): F {
+    inline fun getOrCreate(init: () -> String, onCreated: () -> Unit): F {
         dir.tryCreate()
         if (!file.exists()) {
             file.createNewFile()
-            file.writeText(init)
+            file.writeText(init())
             onCreated()
         }
         return this
@@ -41,6 +41,11 @@ value class F(val file: File) {
 
     fun delete(): F {
         file.delete()
+        return this
+    }
+
+    fun overwrite(text: String): F {
+        file.writeText(text)
         return this
     }
 

@@ -10,6 +10,7 @@ import kotlinx.coroutines.*
 import mindustry.Vars
 import mindustry.ui.dialogs.ModsDialog
 import net.liplum.*
+import net.liplum.ConfigEntry.Companion.Config
 import net.liplum.lib.UseReflection
 import net.liplum.lib.replaceByteBy
 import net.liplum.lib.utils.getMethodBy
@@ -48,9 +49,10 @@ object Updater : CoroutineScope {
      * @param onFailed when it can't fetch the latest version, this will be called.
      */
     fun fetchLatestVersion(
-        updateInfoFileURL: String = Meta.UpdateInfoURL,
+        updateInfoFileURL: String? = Meta.UpdateInfoURL,
         onFailed: (String) -> Unit = {},
     ) {
+        val url= updateInfoFileURL?:Meta.UpdateInfoURL
         CLog.info("Update checking...")
         accessJob = launch(
             CoroutineExceptionHandler { _, e ->
@@ -59,7 +61,7 @@ object Updater : CoroutineScope {
             }
         ) {
             val info: String
-            val testFile = File(updateInfoFileURL)
+            val testFile = File(url)
             info = if (testFile.isFile && testFile.exists()) {
                 testFile.readText()
             } else {

@@ -9,6 +9,7 @@ import mindustry.game.EventType.*
 import mindustry.io.JsonIO
 import mindustry.mod.Mod
 import mindustry.mod.Mods
+import net.liplum.ConfigEntry.Companion.Config
 import net.liplum.ContentSpec.Companion.resolveContentSpec
 import net.liplum.ContentSpecXInfo.Companion.color
 import net.liplum.blocks.cloud.LiplumCloud
@@ -83,9 +84,9 @@ class CioMod : Mod() {
             Updater.fetchLatestVersion(updateInfoFileURL = Meta.UpdateInfoURL)
         }
         HeadlessOnly {
-            Config.load()
+            ConfigEntry.load()
             ContentSpecific = Config.ContentSpecific.resolveContentSpec()
-            Updater.fetchLatestVersion(updateInfoFileURL = Config.CheckUpdateInfoURL)
+            Updater.fetchLatestVersion(updateInfoFileURL = Config.CheckUpdateInfoURL )
             Updater.checkHeadlessUpdate()
         }
         ClientOnly {

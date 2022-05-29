@@ -1,16 +1,12 @@
 package net.liplum.annotations
 
 /**
- * It will automatically generate another version read/write for CacheReader/CacheWriter.
+ * It will automatically generate a mirror of current file but using read/write for CacheReader/CacheWriter.
  */
+@Target(AnnotationTarget.FILE)
 annotation class CacheRW(
     /**
-     * The file where the `mirror` function locates.
+     * The mirror file name, empty as default which represents the mirror file's name is based on annotated file.
      */
-    val fileName: String,
-    /**
-     * The package where the `mirror` function locates.
-     * The same package as default
-     */
-    val packageName: String = ""
+    val fileName: String = ""
 )

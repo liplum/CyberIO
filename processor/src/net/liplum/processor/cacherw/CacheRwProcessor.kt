@@ -1,16 +1,17 @@
 package net.liplum.processor.cacherw
 
-import com.google.devtools.ksp.processing.CodeGenerator
-import com.google.devtools.ksp.processing.KSPLogger
-import com.google.devtools.ksp.processing.Resolver
-import com.google.devtools.ksp.processing.SymbolProcessor
-import com.google.devtools.ksp.symbol.*
+import com.google.devtools.ksp.processing.*
+import com.google.devtools.ksp.symbol.KSAnnotated
+import com.google.devtools.ksp.symbol.KSFile
+import com.google.devtools.ksp.symbol.KSVisitorVoid
 import com.google.devtools.ksp.validate
-import net.liplum.processor.simpleName
-import java.io.Closeable
+import net.liplum.processor.plusAssign
 import java.io.File
-import java.io.OutputStream
 
+/**
+ * arc.util.io.Reads -> net.liplum.lib.persistence.CacheReaderSpec
+ * arc.util.io.Writes -> net.liplum.lib.persistence.CacheWriter
+ */
 class CacheRwProcessor(
     private val codeGenerator: CodeGenerator,
     private val logger: KSPLogger,
@@ -19,43 +20,31 @@ class CacheRwProcessor(
     override fun process(resolver: Resolver): List<KSAnnotated> {
         // Filter target
         val rwFName = options["Cache.CacheRWQualifiedName"] ?: "net.liplum.annotations.CacheRW"
-        val rwSName = rwFName.simpleName()
+        val extension = options["Cache.Extension"] ?: "Cached"
+        val readsMapping = options["Cache.ReadsMapping"] ?: "net.liplum.lib.persistence.CacheReaderSpec"
+        val writesMapping = options["Cache.WritesMapping"] ?: "net.liplum.lib.persistence.CacheWriter"
         val rwSymbls = resolver
             .getSymbolsWithAnnotation(rwFName)
-            .filterIsInstance<KSFunctionDeclaration>()
+            .filterIsInstance<KSFile>()
         if (!rwSymbls.iterator().hasNext()) return emptyList()
-        val locator2Content = HashMap<FunctionLocator,FileContent>()
-        val fileTextCache = HashMap<String,String>()
         class RwVisitor : KSVisitorVoid() {
             override fun visitFile(file: KSFile, data: Unit) {
-                super.visitFile(file, data)
-            }
-
-            override fun visitFunctionDeclaration(function: KSFunctionDeclaration, data: Unit) {
-                val file = function.containingFile
-                if(file != null){
-                    val path = file.filePath
-                    val content = fileTextCache.getOrPut(path) {
-                        File(path).readText()
-                    }
-                }
+                val out = codeGenerator.createNewFile(
+                    dependencies = Dependencies(false),
+                    packageName = file.packageName.asString(),
+                    fileName = file.fileName.removeSuffix(".kt") + extension
+                )
+                val codes = File(file.filePath).readText()
+                // Remove the annotation to prevent infinite rounds
+                out += codes.replace("@file:CacheRW","")
+                    .replace("arc.util.io.Reads", readsMapping)
+                    .replace("arc.util.io.Writes", writesMapping)
+                    .replace("Reads", "CacheReaderSpec")
+                    .replace("Writes", "CacheWriter")
+                out.close()
             }
         }
         rwSymbls.forEach { it.accept(RwVisitor(), Unit) }
         return rwSymbls.filterNot { it.validate() }.toList()
     }
 }
-
-data class FunctionLocator(
-    val packageName: String,
-    val fileName: String,
-)
-
-class FileContent(
-    val file: OutputStream
-) : Closeable {
-    override fun close() {
-        file.close()
-    }
-}
-

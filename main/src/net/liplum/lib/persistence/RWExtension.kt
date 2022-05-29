@@ -1,75 +1,64 @@
-@file:JvmName("RWExtension")
+@file:CacheRW
 
 package net.liplum.lib.persistence
 
 import arc.struct.*
 import arc.util.io.Reads
 import arc.util.io.Writes
+import net.liplum.annotations.CacheRW
 import net.liplum.lib.utils.forEach
 
 fun IntSeq.read(reader: Reads): IntSeq {
-// Start
     this.clear()
     val length = reader.i()
     for (i in 0 until length) {
         this.add(reader.i())
     }
     return this
-// End
 }
 
 fun IntSeq.write(writer: Writes): IntSeq {
-// Start
     writer.i(size)
     for (data in this.items) {
         writer.i(data)
     }
     return this
-// End
 }
 
 fun FloatSeq.read(reader: Reads): FloatSeq {
-// Start
     this.clear()
     val length = reader.i()
     for (i in 0 until length) {
         this.add(reader.f())
     }
     return this
-// End
 }
 
 fun FloatSeq.write(writer: Writes): FloatSeq {
-// Start
     writer.i(size)
     for (data in this.items) {
         writer.f(data)
     }
     return this
-// End
 }
 
 fun IntSet.read(reader: Reads): IntSet {
-// Start
     this.clear()
     val length = reader.i()
     for (i in 0 until length) {
         this.add(reader.i())
     }
     return this
-// End
 }
 /**
  * It calls the [IntSet.iterator] function. Note this can't work in multi-thread or nested calling.
  */
 fun IntSet.write(writer: Writes): IntSet {
-// Start
     writer.i(size)
     this.forEach {
         writer.i(it)
     }
     return this
-// End
 }
 
 fun ObjectSet<Int>.read(reader: Reads): ObjectSet<Int> {
