@@ -1,3 +1,4 @@
+@file:JvmName("RWExtension")
 package net.liplum.lib.persistence
 
 import arc.struct.IntMap
@@ -8,7 +9,7 @@ import arc.util.io.Reads
 import arc.util.io.Writes
 import net.liplum.annotations.CacheRW
 import net.liplum.lib.math.Polar
-@CacheRW("net.liplum.lib.persistence")
+@CacheRW("RWExtensionCache")
 fun IntSeq.read(reader: Reads): IntSeq {
     this.clear()
     val length = reader.i()
@@ -18,7 +19,7 @@ fun IntSeq.read(reader: Reads): IntSeq {
     return this
 }
 
-@CacheRW("net.liplum.lib.persistence")
+@CacheRW("RWExtensionCache")
 fun IntSeq.write(writer: Writes): IntSeq {
     writer.i(size)
     for (data in this.items) {

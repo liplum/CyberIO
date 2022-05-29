@@ -6,6 +6,7 @@ import arc.math.Angles
 import arc.math.Interp
 import arc.math.Mathf
 import arc.struct.EnumSet
+import arc.struct.Seq
 import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
@@ -317,29 +318,18 @@ open class Prism(name: String) : Block(name) {
         open fun Bullet.handleDuplicate(
             angleOffset: Float = 0f
         ): Bullet {
-            // TODO: turret sublimate
+            fun Seq<Turret.BulletEntry>.copyFirstBulletEntry() {
+                if (any()) {
+                    val first = first()
+                    add(Turret.BulletEntry(this@handleDuplicate, first.x, first.y, first.rotation + angleOffset, first.life))
+                }
+            }
             when (val owner = owner) {
                 is LaserTurret.LaserTurretBuild -> {
-                    val bullets = owner.bullets
-                    if (bullets.any()) {
-                        val first = bullets.first()
-                        bullets.add(
-                            Turret.BulletEntry(
-                                this, first.x, first.y, first.rotation + angleOffset, first.life
-                            )
-                        )
-                    }
+                    owner.bullets.copyFirstBulletEntry()
                 }
                 is ContinuousTurret.ContinuousTurretBuild -> {
-                    val bullets = owner.bullets
-                    if (bullets.any()) {
-                        val first = bullets.first()
-                        bullets.add(
-                            Turret.BulletEntry(
-                                this, first.x, first.y, first.rotation + angleOffset, first.life
-                            )
-                        )
-                    }
+                    owner.bullets.copyFirstBulletEntry()
                 }
             }
             return this

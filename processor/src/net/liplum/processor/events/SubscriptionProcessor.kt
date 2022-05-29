@@ -43,7 +43,7 @@ class SubscriptionProcessor(
             packageName = packageName,
             fileName = fileName
         )
-        // File haed
+        // File head
         if (packageName.isNotEmpty())
             file += "package $packageName\n"
         val spec = options["Event.GenerateSpec"] ?: ""
