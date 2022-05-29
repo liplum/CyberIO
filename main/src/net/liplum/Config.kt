@@ -45,7 +45,7 @@ object Config {
         runCatching {
             tryLoad()
         }.onFailure {
-            Clog.err(
+            CLog.err(
                 "Can't load config because ${it.message}. Please check the format at ${configFile.file.path}. Or you can delete it directly and it will be regenerated next time starting up.",
                 it
             )
@@ -57,13 +57,13 @@ object Config {
     @JvmStatic
     fun resetConfigFile() {
         configFile.delete().getOrCreate(Default) {
-            Clog.info("${configFile.file.path} has created with initial config.")
+            CLog.info("${configFile.file.path} has created with initial config.")
         }
     }
     @Suppress("UNCHECKED_CAST")
     private fun tryLoad() {
         val config = configFile.getOrCreate(Default) {
-            Clog.info("${configFile.file.path} has created with initial config.")
+            CLog.info("${configFile.file.path} has created with initial config.")
         }
         val text = config.file.readText()
         val map = JsonIO.json.fromJson(ObjectMap::class.java, text) as ObjectMap<String, Any?>
@@ -83,7 +83,7 @@ object Config {
                         loaded[name] = v
                 }
             } else {
-                Clog.info("Can't recognize $name=$v in config.")
+                CLog.info("Can't recognize $name=$v in config.")
             }
         }
         pairs = loaded

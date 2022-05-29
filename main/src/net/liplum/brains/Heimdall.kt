@@ -657,7 +657,7 @@ open class Heimdall(name: String) : Block(name) {
             } else {
                 // Since 2
                 ReadFromCache(_read_, version().toInt()) {
-                    brainWaves.read(this)
+                    brainWaves.read(this.cache)
                     reloadCounter = f()
                     shieldAmount = f()
                     lastShieldDamageTime = f()

@@ -78,7 +78,7 @@ class CioMod : Mod() {
     init {
         objCreated = true
         lastPlayTime = Settings.LastPlayTime
-        Clog.info("v${Meta.DetailedVersion} loading started.")
+        CLog.info("v${Meta.DetailedVersion} loading started.")
         (net.liplum.mdt.IsClient and !IsSteam) {
             //Updater.fetchLatestVersion(updateInfoFileURL = Meta.UpdateInfoURL)
             Updater.fetchLatestVersion(updateInfoFileURL = "E:\\MyProject\\Mindustry\\CyberIO\\update")
@@ -129,7 +129,7 @@ class CioMod : Mod() {
     }
 
     override fun init() {
-        Clog.info("v${Meta.DetailedVersion} $ContentSpecific initializing...")
+        CLog.info("v${Meta.DetailedVersion} $ContentSpecific initializing...")
         UpdateFrequency = if (Vars.mobile || Vars.testMobile) 10f else 5f
         Events.fire(CioInitEvent())
         DebugOnly {
@@ -153,7 +153,7 @@ class CioMod : Mod() {
         Settings.updateSettings()
         //RecipeCenter.recordAllRecipes()
         ResourceLoader.loadAllResources()
-        Clog.info("v${Meta.DetailedVersion} $ContentSpecific initialized.")
+        CLog.info("v${Meta.DetailedVersion} $ContentSpecific initialized.")
         Settings.LastPlayTime = System.currentTimeMillis()
         Settings.CyberIOLoadedTimes++
     }
@@ -168,7 +168,7 @@ class CioMod : Mod() {
         CioTechTree.loadAll()
         GlobalAnimation.CanPlay = true
         ContentLoaded = true
-        Clog.info("v${Meta.DetailedVersion} $ContentSpecific mod's contents loaded.")
+        CLog.info("v${Meta.DetailedVersion} $ContentSpecific mod's contents loaded.")
     }
     @HeadlessOnly
     override fun registerServerCommands(handler: CommandHandler) {

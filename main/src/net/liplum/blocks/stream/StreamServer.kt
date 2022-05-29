@@ -19,7 +19,8 @@ import net.liplum.R
 import net.liplum.api.cyber.*
 import net.liplum.lib.Serialized
 import net.liplum.lib.delegates.Delegate1
-import net.liplum.lib.persistence.intSet
+import net.liplum.lib.persistence.read
+import net.liplum.lib.persistence.write
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.DrawOn
 import net.liplum.mdt.WhenTheSameTeam
@@ -251,18 +252,20 @@ open class StreamServer(name: String) : StreamHost(name) {
 
         override fun read(read: Reads, revision: Byte) {
             super.read(read, revision)
-            hosts = read.intSet()
             val version = revision.toInt()
             if (version > 0) {
                 // Since 1
-                hosts = read.intSet()
+                hosts.read(read)
             }
+        }
+
+        override fun afterRead() {
             restored = true
         }
 
         override fun write(write: Writes) {
             super.write(write)
-            write.intSet(hosts)
+            hosts.write(write)
         }
 
         override fun displayBars(table: Table) {

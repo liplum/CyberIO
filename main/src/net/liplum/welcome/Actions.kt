@@ -5,7 +5,7 @@ import arc.util.Log
 import arc.util.Time
 import mindustry.Vars
 import net.liplum.CioMod
-import net.liplum.Clog
+import net.liplum.CLog
 import net.liplum.R
 import net.liplum.Settings
 import net.liplum.lib.utils.bundle
@@ -77,7 +77,7 @@ object Actions {
                     val method = clz.getMethod(funcName)
                     method.invoke(null)
                 } catch (e: Exception) {
-                    Clog.err(e)
+                    CLog.err(e)
                 }
             }
         }

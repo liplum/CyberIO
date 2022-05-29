@@ -27,7 +27,8 @@ import net.liplum.blocks.AniedBlock
 import net.liplum.lib.Serialized
 import net.liplum.lib.TR
 import net.liplum.lib.delegates.Delegate1
-import net.liplum.lib.persistence.intSet
+import net.liplum.lib.persistence.read
+import net.liplum.lib.persistence.write
 import net.liplum.lib.utils.DoMultipleBool
 import net.liplum.lib.utils.EmptyArray
 import net.liplum.lib.utils.equalsNoOrder
@@ -340,13 +341,13 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
         override fun isBlocked() = lastDistributionTime > 30f
         override fun read(read: Reads, revision: Byte) {
             super.read(read, revision)
-            senders = read.intSet()
+            senders.read(read)
             disIndex = read.b().toInt()
         }
 
         override fun write(write: Writes) {
             super.write(write)
-            write.intSet(senders)
+            senders.write(write)
             write.b(disIndex)
         }
         @DebugOnly

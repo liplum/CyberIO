@@ -23,7 +23,8 @@ import net.liplum.data.Receiver.ReceiverBuild
 import net.liplum.lib.Serialized
 import net.liplum.lib.TR
 import net.liplum.lib.delegates.Delegate1
-import net.liplum.lib.persistence.intSet
+import net.liplum.lib.persistence.read
+import net.liplum.lib.persistence.write
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.Draw
 import net.liplum.mdt.SetColor
@@ -197,13 +198,13 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
             super.write(write)
             val outputItem = outputItem
             write.s(outputItem?.id?.toInt() ?: -1)
-            write.intSet(senders)
+            senders.write(write)
         }
 
         override fun read(read: Reads, revision: Byte) {
             super.read(read, revision)
             outputItem = Vars.content.item(read.s().toInt())
-            senders = read.intSet()
+            senders.read(read)
         }
 
         override fun getConnectedSenders() = senders

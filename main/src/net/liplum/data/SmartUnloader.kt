@@ -19,7 +19,8 @@ import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
 import net.liplum.lib.Serialized
 import net.liplum.lib.TR
-import net.liplum.lib.persistence.intSet
+import net.liplum.lib.persistence.read
+import net.liplum.lib.persistence.write
 import net.liplum.lib.utils.DoMultipleBool
 import net.liplum.mdt.*
 import net.liplum.mdt.animations.anims.Animation
@@ -517,13 +518,13 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
         override fun getConnectedReceivers(): OrderedSet<Int> = receivers
         override fun read(read: Reads, revision: Byte) {
             super.read(read, revision)
-            receivers = read.intSet()
+            receivers.read(read)
             justRestored = true
         }
 
         override fun write(write: Writes) {
             super.write(write)
-            write.intSet(receivers)
+            receivers.write(write)
         }
 
         override fun control(type: LAccess, p1: Any?, p2: Double, p3: Double, p4: Double) {

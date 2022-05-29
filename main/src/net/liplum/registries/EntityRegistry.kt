@@ -5,7 +5,7 @@ import arc.struct.ObjectMap
 import arc.util.Log
 import mindustry.gen.EntityMapping
 import mindustry.gen.Entityc
-import net.liplum.Clog.log
+import net.liplum.CLog.log
 import net.liplum.Meta
 import net.liplum.OnlyDebug
 import net.liplum.annotations.SubscribeEvent

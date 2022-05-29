@@ -31,52 +31,52 @@ object CacheReader {
     }
 }
 @JvmInline
-value class CacheReaderSpec(val reader: DataInputStream) {
+value class CacheReaderSpec(val cache: DataInputStream) {
     /** read long  */
     fun l(): Long =
-        reader.readLong()
+        cache.readLong()
     /** read int  */
     fun i(): Int =
-        reader.readInt()
+        cache.readInt()
     /** read short  */
     fun s(): Short =
-        reader.readShort()
+        cache.readShort()
     /** read unsigned short  */
     fun us(): Int =
-        reader.readUnsignedShort()
+        cache.readUnsignedShort()
     /** read byte  */
     fun b(): Byte =
-        reader.readByte()
+        cache.readByte()
     /** allocate & read byte array  */
     fun b(length: Int): ByteArray = ByteArray(length).apply {
-        reader.read(this)
+        cache.read(this)
     }
     /** read byte array  */
     fun b(array: ByteArray): ByteArray = array.apply {
-        reader.read(array)
+        cache.read(array)
     }
     /** read byte array w/ offset  */
     fun b(array: ByteArray, offset: Int, length: Int): ByteArray = array.apply {
-        reader.read(array, offset, length)
+        cache.read(array, offset, length)
     }
     /** read unsigned byte  */
     fun ub(): Int =
-        reader.readUnsignedByte()
+        cache.readUnsignedByte()
     /** read boolean  */
     fun bool(): Boolean =
-        reader.readBoolean()
+        cache.readBoolean()
     /** read float  */
     fun f(): Float =
-        reader.readFloat()
+        cache.readFloat()
     /** read double  */
     fun d(): Double =
-        reader.readDouble()
+        cache.readDouble()
     /** read string (UTF)  */
     fun str(): String =
-        reader.readUTF()
+        cache.readUTF()
     /** skip bytes  */
     fun skip(amount: Int) =
-        reader.skipBytes(amount)
+        cache.skipBytes(amount)
 
     companion object {
         val X = CacheReaderSpec(DataInputStream(ByteArrayInputStream(ByteArray(0))))

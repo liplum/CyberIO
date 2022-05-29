@@ -6,7 +6,7 @@ import mindustry.Vars
 import mindustry.core.GameState.State
 import mindustry.game.EventType.Trigger
 import net.liplum.mdt.ClientOnly
-import net.liplum.Clog
+import net.liplum.CLog
 import net.liplum.lib.Res
 import net.liplum.lib.utils.createModBundle
 import net.liplum.lib.utils.loadMoreFrom
@@ -71,11 +71,11 @@ object Script {
     @ClientOnly
     fun initInterpreter() {
         Engine.addAction("log") {
-            Clog.info("[CIO]OpeGAL:${it.toLinkedString()}")
+            CLog.info("[CIO]OpeGAL:${it.toLinkedString()}")
         }
 
         Engine.addAction("scriptLoaded") {
-            Clog.info("[CIO]OpeGAL:${it.toLinkedString()} Loaded.")
+            CLog.info("[CIO]OpeGAL:${it.toLinkedString()} Loaded.")
         }
 
         Engine.addAction("text") {

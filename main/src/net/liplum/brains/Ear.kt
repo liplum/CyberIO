@@ -213,7 +213,7 @@ open class Ear(name: String) : Block(name), IComponentBlock {
                 lastRadiateTime = _read_.f()
             } else { // Since 1
                 ReadFromCache(_read_, version().toInt()) {
-                    sonicWaves.read(this)
+                    sonicWaves.read(this.cache)
                     reloadCounter = f()
                     lastRadiateTime = f()
                 }

@@ -1,14 +1,13 @@
 package net.liplum.blocks.prism
 
-import arc.math.Mathf
+import arc.struct.ObjectSet
 import arc.struct.OrderedSet
-import arc.struct.Seq
 import arc.util.io.Reads
 import arc.util.io.Writes
+import net.liplum.lib.entity.Queue
+import net.liplum.lib.persistence.read
+import net.liplum.lib.persistence.write
 import net.liplum.mdt.ClientOnly
-import net.liplum.lib.persistence.intSet
-import net.liplum.lib.persistence.readSeq
-import net.liplum.lib.persistence.writeSeq
 import net.liplum.mdt.utils.TE
 import net.liplum.mdt.utils.build
 import net.liplum.mdt.utils.exists
@@ -30,10 +29,10 @@ open class CrystalManager(
         set(value) {
             field = value.coerceAtLeast(0)
         }
-    @JvmField var crystals: Seq<Crystal> = Seq(
-        maxAmount + Mathf.log2(maxAmount.toFloat()).toInt()
-    )
-    @JvmField var obelisks: OrderedSet<Int> = OrderedSet(
+    @JvmField var crystals: Queue<Crystal> = Queue(maxAmount) {
+        Crystal()
+    }
+    @JvmField var obelisks: ObjectSet<Int> = OrderedSet(
         maxAmount - 1
     )
     val inOrbitAmount: Int
@@ -160,8 +159,7 @@ open class CrystalManager(
     }
 
     fun findFirstRemovableOutermost(): Crystal? {
-        for (i in crystals.size - 1 downTo 0) {
-            val crystal = crystals[i]
+        for (crystal in crystals.reverseIterator()) {
             if (!crystal.isRemoved) {
                 return crystal
             }
@@ -213,17 +211,17 @@ open class CrystalManager(
     companion object {
         @JvmStatic
         fun CrystalManager.write(writes: Writes) {
-            writes.writeSeq(crystals, Crystal::write)
-            writes.intSet(obelisks)
+            crystals.write(writes)
+            obelisks.write(writes)
             writes.f(curExpendTime)
             writes.b(validAmount)
             writes.b(status.ordinal)
         }
         @JvmStatic
         fun CrystalManager.read(read: Reads) {
-            crystals = read.readSeq(Crystal::read)
+            crystals.read(read)
             genCrystalImgCallback?.let { crystals.forEach(it) }
-            obelisks = read.intSet()
+            obelisks.read(read)
             curExpendTime = read.f()
             validAmount = read.b().toInt()
             status = Status.values()[read.b().toInt()]

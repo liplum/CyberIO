@@ -1,15 +1,15 @@
 package net.liplum.blocks.cloud
 
-import arc.struct.OrderedSet
+import arc.struct.ObjectSet
 import arc.util.Time
 import mindustry.Vars
+import net.liplum.api.cyber.*
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.animations.blocks.BlockGroupObj
-import net.liplum.api.cyber.*
 
 open class CloudInfo(val sharedRoom: SharedRoom) {
-    var sendersPos = OrderedSet<Int>()
-    var receiversPos = OrderedSet<Int>()
+    var sendersPos = ObjectSet<Int>()
+    var receiversPos = ObjectSet<Int>()
     @ClientOnly lateinit var aniBlockGroupObj: BlockGroupObj<Cloud, Cloud.CloudBuild>
     @JvmField @ClientOnly var lastReceiveOrSendDataTime = 31f
     @JvmField @ClientOnly var lastShredTime = 61f

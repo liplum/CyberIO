@@ -40,7 +40,7 @@ import net.liplum.mdt.utils.hasShields
 import net.liplum.registries.CioLiquids
 import net.liplum.registries.EntityRegistry
 
-open class HoloUnit : UnitEntity(), PayloadMixin, IReverisonable {
+open class HoloUnit : UnitEntity(), PayloadMixin, IRevisionable {
     override fun revisionID() = 8
     override var payloadPower: PowerGraph? = null
     override var payloads = Seq<Payload>()

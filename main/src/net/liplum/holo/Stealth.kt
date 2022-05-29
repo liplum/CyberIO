@@ -33,7 +33,8 @@ import net.liplum.bullets.RuvikBullet
 import net.liplum.lib.Serialized
 import net.liplum.lib.TR
 import net.liplum.lib.delegates.Delegate1
-import net.liplum.lib.persistence.intSet
+import net.liplum.lib.persistence.read
+import net.liplum.lib.persistence.write
 import net.liplum.lib.shaders.SD
 import net.liplum.lib.shaders.use
 import net.liplum.lib.utils.isZero
@@ -317,7 +318,7 @@ open class Stealth(name: String) : Turret(name) {
         override fun maxHostConnection() = maxConnection
         override fun write(write: Writes) {
             super.write(write)
-            write.intSet(hosts)
+            hosts.write(write)
             write.f(restoreCharge)
             write.f(restRestore)
             write.f(lastDamagedTime)
@@ -325,7 +326,7 @@ open class Stealth(name: String) : Turret(name) {
 
         override fun read(read: Reads, revision: Byte) {
             super.read(read, revision)
-            hosts = read.intSet()
+            hosts.read(read)
             restoreCharge = read.f()
             restRestore = read.f()
             lastDamagedTime = read.f()

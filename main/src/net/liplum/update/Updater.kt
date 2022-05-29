@@ -51,10 +51,10 @@ object Updater : CoroutineScope {
         updateInfoFileURL: String = Meta.UpdateInfoURL,
         onFailed: (String) -> Unit = {},
     ) {
-        Clog.info("Update checking...")
+        CLog.info("Update checking...")
         accessJob = launch(
             CoroutineExceptionHandler { _, e ->
-                Clog.err("Can't fetch the latest version because of ${e.javaClass} ${e.message}.")
+                CLog.err("Can't fetch the latest version because of ${e.javaClass} ${e.message}.")
                 onFailed("${e.javaClass} ${e.message}")
             }
         ) {
@@ -66,7 +66,7 @@ object Updater : CoroutineScope {
                 URL(updateInfoFileURL).readText()
             }
             analyzeUpdateInfo(info)
-            Clog.info("The latest version is $latestVersion")
+            CLog.info("The latest version is $latestVersion")
         }
     }
 
@@ -89,19 +89,19 @@ object Updater : CoroutineScope {
             accessJob?.join()
             if (requireUpdate) {
                 if (Config.AutoUpdate || shouldUpdateOverride) {
-                    Clog.info("[Auto-Update ON] Now updating...")
+                    CLog.info("[Auto-Update ON] Now updating...")
                     updateSelfByReplaceFinding(
                         onFailed = { error ->
-                            Clog.err(error)
+                            CLog.err(error)
                         },
                         onSuccess = {
                             Core.app.post {
-                                Clog.info("The game will close soon to reload CyberIO.")
+                                CLog.info("The game will close soon to reload CyberIO.")
                                 Core.app.exit()
                             }
                         })
                 } else {
-                    Clog.info("[Auto-Update OFF] Current version is ${Meta.DetailedVersion} and need to be updated to $latestVersion manually.")
+                    CLog.info("[Auto-Update OFF] Current version is ${Meta.DetailedVersion} and need to be updated to $latestVersion manually.")
                 }
             }
         }
@@ -159,16 +159,16 @@ object Updater : CoroutineScope {
         if (CioMod.jarFile != null) {
             val length = req.contentLength
             val bytes = ByteArrayOutputStream()
-            Clog.info("v$latestVersion is downloading.")
+            CLog.info("v$latestVersion is downloading.")
             Streams.copyProgress(
                 req.resultAsStream,
                 bytes,
                 length, Streams.defaultBufferSize,
                 onProgress
             )
-            Clog.info("v$latestVersion downloaded successfully, replacing file.")
+            CLog.info("v$latestVersion downloaded successfully, replacing file.")
             CioMod.jarFile.replaceByteBy(bytes.toByteArray())
-            Clog.info("Updated successfully.")
+            CLog.info("Updated successfully.")
             onSuccess()
         } else {
             onFailed("Jar file not found.")

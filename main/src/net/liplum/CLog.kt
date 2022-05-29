@@ -10,7 +10,7 @@ import net.liplum.lib.buildFill
 import java.io.PrintWriter
 import java.io.StringWriter
 
-object Clog {
+object CLog {
     @JvmStatic
     fun err(text: String, vararg args: Any?) {
         Log.log(LogLevel.err, "[${Meta.NameX}]$text", *args)

@@ -5,6 +5,7 @@ import arc.util.io.Writes
 import net.liplum.lib.persistence.CacheReaderSpec
 import net.liplum.lib.persistence.CacheWriter
 import net.liplum.lib.persistence.IRWable
+import java.io.DataInputStream
 
 open class Progress(progress: Float = 0f) : IRWable {
     open var progress: Float = progress
@@ -16,8 +17,8 @@ open class Progress(progress: Float = 0f) : IRWable {
         progress = reader.f()
     }
 
-    override fun read(reader: CacheReaderSpec) {
-        progress = reader.f()
+    override fun read(reader: DataInputStream) = CacheReaderSpec(reader).run {
+        progress = f()
     }
 
     override fun write(writer: Writes) {

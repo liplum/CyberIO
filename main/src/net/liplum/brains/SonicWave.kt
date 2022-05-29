@@ -4,7 +4,9 @@ import arc.util.io.Reads
 import arc.util.io.Writes
 import net.liplum.lib.entity.PosRadiation
 import net.liplum.lib.entity.Queue
-import net.liplum.lib.entity.Radiation
+import net.liplum.lib.persistence.CacheReaderSpec
+import net.liplum.lib.persistence.CacheWriter
+import java.io.DataInputStream
 
 class SonicWave(
     range: Float = 0f,
@@ -22,6 +24,16 @@ class SonicWave(
         writer.f(damage)
     }
 
+    override fun read(reader: DataInputStream) = CacheReaderSpec(reader).run {
+        super.read(reader)
+        damage = f()
+    }
+
+    override fun write(writer: CacheWriter) {
+        super.write(writer)
+        writer.f(damage)
+    }
+
     companion object {
         @JvmStatic
         fun readEmpty(reader: Reads) {
@@ -30,5 +42,6 @@ class SonicWave(
         }
     }
 }
+
 fun SonicWaveQueue(size: Int = 1) =
     Queue(size, ::SonicWave)

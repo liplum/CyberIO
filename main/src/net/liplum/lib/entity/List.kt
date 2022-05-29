@@ -6,10 +6,13 @@ import net.liplum.lib.persistence.CacheReaderSpec
 import net.liplum.lib.persistence.CacheWriter
 import net.liplum.lib.persistence.IRWable
 import net.liplum.lib.utils.ArrayList
+import java.io.DataInputStream
 import java.util.*
 
 class FixedList<T : IRWable>(
+    @JvmField
     val size: Int = 1,
+    @JvmField
     val creator: () -> T
 ) : Iterable<T>, IRWable {
     val list: ArrayList<T> = ArrayList(size) {
@@ -33,7 +36,7 @@ class FixedList<T : IRWable>(
         }
     }
 
-    override fun read(reader: CacheReaderSpec) {
+    override fun read(reader: DataInputStream) {
         for (i in list.indices) {
             list[i].read(reader)
         }
@@ -53,16 +56,21 @@ class FixedList<T : IRWable>(
 }
 
 class Queue<T : IRWable>(
+    @JvmField
     var maxSize: () -> Int = { 1 },
+    @JvmField
     val creator: () -> T
 ) : Iterable<T>, IRWable {
     constructor(maxSize: Int, creator: () -> T) : this({ maxSize }, creator)
-
+    @JvmField
     val list: LinkedList<T> = LinkedList()
+    val size: Int
+        get() = list.size
     val canAdd: Boolean
         get() = list.size < maxSize()
 
     override fun iterator() = list.iterator()
+    fun reverseIterator(): MutableIterator<T> = list.descendingIterator()
     /**
      * Remove the first-added
      */
@@ -100,16 +108,32 @@ class Queue<T : IRWable>(
     /**
      * Add a new element at end.
      */
-    fun append(radiation: T) {
+    fun add(e: T) {
         if (canAdd)
-            list.addLast(radiation)
+            list.addLast(e)
+    }
+    /**
+     * Add a new element at end.
+     */
+    fun append(e: T) {
+        if (canAdd)
+            list.addLast(e)
     }
     /**
      * Add a new element at start.
      */
-    fun push(radiation: T) {
+    fun push(e: T) {
         if (canAdd)
-            list.addFirst(radiation)
+            list.addFirst(e)
+    }
+
+    inline fun removeAll(predicate: (T) -> Boolean) {
+        val it = iterator()
+        while (it.hasNext()) {
+            if (predicate(it.next())) {
+                it.remove()
+            }
+        }
     }
 
     override fun read(reader: Reads) {
@@ -142,9 +166,9 @@ class Queue<T : IRWable>(
         }
     }
 
-    override fun read(reader: CacheReaderSpec) {
+    override fun read(reader: DataInputStream) =  CacheReaderSpec(reader).run {
         val size = list.size
-        val targetLen = reader.i()
+        val targetLen = i()
         if (size == targetLen) {
             for (r in list)
                 r.read(reader)

@@ -2,7 +2,6 @@ package net.liplum.blocks.cloud
 
 import arc.graphics.g2d.Draw
 import arc.struct.ObjectSet
-import arc.struct.OrderedSet
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.gen.Building
@@ -17,7 +16,8 @@ import net.liplum.WhenRefresh
 import net.liplum.api.cyber.*
 import net.liplum.lib.TR
 import net.liplum.lib.delegates.Delegate1
-import net.liplum.lib.persistence.intSet
+import net.liplum.lib.persistence.read
+import net.liplum.lib.persistence.write
 import net.liplum.mdt.*
 import net.liplum.mdt.animations.anims.Animation
 import net.liplum.mdt.animations.anims.IFrameIndexer
@@ -283,18 +283,18 @@ open class Cloud(name: String) : PowerBlock(name) {
             else
                 info.receiversPos.first()
 
-        override fun getConnectedReceivers(): OrderedSet<Int> =
+        override fun getConnectedReceivers(): ObjectSet<Int> =
             info.sendersPos
 
         override fun acceptConnection(sender: IDataSender): Boolean = true
         override fun write(write: Writes) {
             super.write(write)
-            write.intSet(info.sendersPos)
+            info.sendersPos.write(write)
         }
 
         override fun read(read: Reads, revision: Byte) {
             super.read(read, revision)
-            info.sendersPos = read.intSet()
+            info.sendersPos.read(read)
         }
 
         override fun getSharedItems(): ItemModule = items

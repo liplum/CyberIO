@@ -5,7 +5,7 @@ import mindustry.type.ItemStack
 import mindustry.world.blocks.production.GenericCrafter
 import mindustry.world.consumers.ConsumeItems
 import mindustry.world.consumers.ConsumePower
-import net.liplum.Clog
+import net.liplum.CLog
 import net.liplum.lib.Out
 import net.liplum.lib.utils.littleEndianByteB
 import net.liplum.lib.utils.bigEndianByteB
@@ -82,7 +82,7 @@ object RecipeCenter {
             }
         }
         if (allRecipes.isEmpty()) {
-            Clog.warn("No recipe detected.")
+            CLog.warn("No recipe detected.")
             return
         }
         // 16 stands for id, 16 stands for amount

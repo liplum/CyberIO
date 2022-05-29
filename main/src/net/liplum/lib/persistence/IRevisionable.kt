@@ -1,5 +1,5 @@
 package net.liplum.lib.persistence
 
-interface IReverisonable {
+interface IRevisionable {
     fun revisionID(): Int
 }

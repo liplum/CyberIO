@@ -8,7 +8,7 @@ import mindustry.game.EventType;
 import mindustry.game.Team;
 import mindustry.io.JsonIO;
 import net.liplum.CioMod;
-import net.liplum.Clog;
+import net.liplum.CLog;
 import net.liplum.annotations.Only;
 import net.liplum.annotations.Subscribe;
 
@@ -40,8 +40,8 @@ public class LiplumCloud {
     public static void save() {
         String data = JsonIO.json.toJson(CurGameCloudRoom);
         if (CioMod.DebugMode) {
-            Clog.info("Flowing is save:");
-            Clog.info(data);
+            CLog.info("Flowing is save:");
+            CLog.info(data);
         }
         Vars.state.rules.tags.put("cyber-io-LiplumCloud", data);
     }
@@ -52,8 +52,8 @@ public class LiplumCloud {
         }
         String data = Vars.state.rules.tags.get("cyber-io-LiplumCloud", "{}");
         if (CioMod.DebugMode) {
-            Clog.info("Flowing is read:");
-            Clog.info(data);
+            CLog.info("Flowing is read:");
+            CLog.info(data);
         }
         OrderedMap<String, SharedRoom> strIdToRoom = JsonIO.json.fromJson(OrderedMap.class, data);
         CurGameCloudRoom = new OrderedMap<>();

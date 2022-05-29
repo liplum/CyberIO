@@ -7,9 +7,8 @@ import mindustry.graphics.Pal
 import mindustry.type.Item
 import mindustry.type.ItemStack
 import mindustry.world.Block
-import net.liplum.Clog
+import net.liplum.CLog
 import net.liplum.DebugOnly
-import net.liplum.R
 import net.liplum.S
 import net.liplum.blocks.decentralizer.RecipeCenter.AllRecipes
 import net.liplum.blocks.decentralizer.RecipeCenter.calcuID
@@ -64,7 +63,7 @@ open class Decentralizer(name: String) : Block(name) {
                     val dst = HammingDistance.dst(bitset, curTest.id)
                     tested.add(Pair(dst, curTest))
                 } catch (e: Exception) {
-                    Clog.err("cur:$bitset <=> test:${curTest.id}", e)
+                    CLog.err("cur:$bitset <=> test:${curTest.id}", e)
                 }
             }
         }

@@ -17,7 +17,8 @@ import net.liplum.blocks.AniedBlock
 import net.liplum.lib.Serialized
 import net.liplum.lib.TR
 import net.liplum.lib.TRs
-import net.liplum.lib.persistence.intSet
+import net.liplum.lib.persistence.read
+import net.liplum.lib.persistence.write
 import net.liplum.mdt.*
 import net.liplum.mdt.animations.anis.AniState
 import net.liplum.mdt.animations.anis.config
@@ -341,12 +342,12 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
         override fun getConnectedClients(): OrderedSet<Int> = clients
         override fun read(read: Reads, revision: Byte) {
             super.read(read, revision)
-            clients = read.intSet()
+            clients.read(read)
         }
 
         override fun write(write: Writes) {
             super.write(write)
-            write.intSet(clients)
+            clients.write(write)
         }
 
         override fun fixedDraw() {

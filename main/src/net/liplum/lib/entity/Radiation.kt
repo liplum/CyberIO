@@ -5,18 +5,24 @@ import arc.util.io.Writes
 import net.liplum.lib.persistence.CacheReaderSpec
 import net.liplum.lib.persistence.CacheWriter
 import net.liplum.lib.persistence.IRWable
+import java.io.DataInputStream
 
-open class Radiation(var range: Float = 0f) : IRWable {
+open class Radiation(
+    @JvmField
+    var range: Float = 0f
+) : IRWable {
     override fun read(reader: Reads) {
         range = reader.f()
     }
-    override fun read(reader: CacheReaderSpec) {
-        range = reader.f()
+
+    override fun read(reader: DataInputStream) = CacheReaderSpec(reader).run {
+        range = f()
     }
 
     override fun write(writer: Writes) {
         writer.f(range)
     }
+
     override fun write(writer: CacheWriter) {
         writer.f(range)
     }
@@ -31,7 +37,9 @@ open class Radiation(var range: Float = 0f) : IRWable {
 
 open class PosRadiation(
     range: Float = 0f,
+    @JvmField
     var x: Float = 0f,
+    @JvmField
     var y: Float = 0f
 ) : Radiation(range) {
     override fun read(reader: Reads) {
@@ -39,10 +47,11 @@ open class PosRadiation(
         x = reader.f()
         y = reader.f()
     }
-    override fun read(reader: CacheReaderSpec) {
+
+    override fun read(reader: DataInputStream) = CacheReaderSpec(reader).run {
         super.read(reader)
-        x = reader.f()
-        y = reader.f()
+        x = f()
+        y = f()
     }
 
     override fun write(writer: Writes) {
@@ -50,6 +59,7 @@ open class PosRadiation(
         writer.f(x)
         writer.f(y)
     }
+
     override fun write(writer: CacheWriter) {
         super.write(writer)
         writer.f(x)

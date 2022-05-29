@@ -4,7 +4,6 @@ import arc.graphics.Color
 import arc.graphics.g2d.TextureRegion
 import arc.scene.ui.layout.Table
 import arc.struct.ObjectSet
-import arc.struct.OrderedSet
 import arc.util.Eachable
 import arc.util.io.Reads
 import arc.util.io.Writes
@@ -15,21 +14,22 @@ import mindustry.type.Liquid
 import mindustry.world.blocks.ItemSelection
 import mindustry.world.blocks.liquid.LiquidBlock
 import mindustry.world.meta.BlockGroup
-import net.liplum.mdt.ClientOnly
 import net.liplum.DebugOnly
-import net.liplum.lib.Serialized
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
+import net.liplum.lib.Serialized
+import net.liplum.lib.TR
+import net.liplum.lib.delegates.Delegate1
+import net.liplum.lib.persistence.read
+import net.liplum.lib.persistence.write
+import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.Draw
 import net.liplum.mdt.DrawOn
 import net.liplum.mdt.animations.anis.AniState
 import net.liplum.mdt.animations.anis.config
-import net.liplum.lib.delegates.Delegate1
-import net.liplum.lib.persistence.intSet
-import net.liplum.lib.TR
-import net.liplum.utils.addHostInfo
 import net.liplum.mdt.utils.inMod
 import net.liplum.mdt.utils.sub
+import net.liplum.utils.addHostInfo
 
 private typealias AniStateC = AniState<StreamClient, StreamClient.ClientBuild>
 
@@ -91,7 +91,7 @@ open class StreamClient(name: String) : AniedBlock<StreamClient, StreamClient.Cl
 
     open inner class ClientBuild : AniedBuild(), IStreamClient {
         @Serialized
-        var hosts = OrderedSet<Int>()
+        var hosts = ObjectSet<Int>()
         @Serialized
         var outputLiquid: Liquid? = null
             set(value) {
@@ -100,7 +100,6 @@ open class StreamClient(name: String) : AniedBlock<StreamClient, StreamClient.Cl
                     onRequirementUpdated(this)
                 }
             }
-
         @JvmField var onRequirementUpdated: Delegate1<IStreamClient> = Delegate1()
         override fun getOnRequirementUpdated() = onRequirementUpdated
         override fun getRequirements(): Array<Liquid>? = outputLiquid.req
@@ -174,13 +173,13 @@ open class StreamClient(name: String) : AniedBlock<StreamClient, StreamClient.Cl
             super.write(write)
             val outputLiquid = outputLiquid
             write.s(outputLiquid?.id?.toInt() ?: -1)
-            write.intSet(hosts)
+            hosts.write(write)
         }
 
         override fun read(read: Reads, revision: Byte) {
             super.read(read, revision)
             outputLiquid = Vars.content.liquid(read.s().toInt())
-            hosts = read.intSet()
+            hosts.read(read)
         }
 
         override fun fixedDraw() {

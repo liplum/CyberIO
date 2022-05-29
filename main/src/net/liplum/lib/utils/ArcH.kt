@@ -11,10 +11,7 @@ import arc.func.Prov
 import arc.graphics.Color
 import arc.math.Interp
 import arc.math.Mathf
-import arc.struct.ObjectMap
-import arc.struct.OrderedMap
-import arc.struct.OrderedSet
-import arc.struct.Seq
+import arc.struct.*
 import net.liplum.lib.math.lerp
 
 fun <T> Seq<T>.removeT(element: T) {
@@ -75,4 +72,24 @@ fun Color.hsvLerp(target: Color, progress: Float) = this.apply {
     val hsvB = target.toHsv(hsvTemp2)
     hsvA.lerp(hsvB, progress)
     this.fromHsv(hsvA)
+}
+/**
+ * It calls the [IntSet.iterator] function. Note this can't work in multi-thread or nested calling.
+ */
+inline fun IntSet.forEach(func: (Int) -> Unit) {
+    val it = this.iterator()
+    while (it.hasNext) {
+        func(it.next())
+    }
+}
+/**
+ * It calls the [IntSet.iterator] function. Note this can't work in multi-thread or nested calling.
+ */
+inline fun IntSet.removeAll(predicate: (Int) -> Boolean) {
+    val it = this.iterator()
+    while (it.hasNext) {
+        if (predicate(it.next())) {
+            it.remove()
+        }
+    }
 }
