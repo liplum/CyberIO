@@ -77,4 +77,7 @@ open class Condition(
         }
         return false
     }
+
+    operator fun invoke(): Boolean =
+        condition()
 }

@@ -139,6 +139,7 @@ public class R {
                 Yes = Gen("yes"),
                 No = Gen("no"),
                 OK = Gen("ok"),
+                Enable = Gen("enable"),
                 Validate = Gen("validate"),
                 UpdateModSuccess = Gen("update-mod.success"),
                 UpdateModFailed = Gen("update-mod.failed");
@@ -147,6 +148,17 @@ public class R {
         @Contract(pure = true)
         public static String Gen(String content) {
             return "control." + Meta.ModID + "." + content;
+        }
+    }
+
+    public static final class Advanced {
+        public static final String
+                MapCleaner = Gen("map-cleaner");
+
+        @NotNull
+        @Contract(pure = true)
+        public static String Gen(String content) {
+            return "advanced." + Meta.ModID + "." + content;
         }
     }
 
@@ -303,6 +315,7 @@ public class R {
         public static final String
                 ResetConfig = "cio-reset-config",
                 ReloadConfig = "cio-reload-config",
-                CheckUpdate = "cio-check-update";
+                CheckUpdate = "cio-check-update",
+                ClearCyberIOConetnt = "cio-clean-map";
     }
 }

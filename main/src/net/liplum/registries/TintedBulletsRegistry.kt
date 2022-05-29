@@ -14,7 +14,6 @@ import net.liplum.ExperimentalOnly
 import net.liplum.R
 import net.liplum.blocks.prism.RgbList
 import net.liplum.blocks.prism.SmallRgbFx
-import net.liplum.blocks.prism.registerRGBIndex
 
 fun shootSmallFlameGen(lifetime: Float, clipSize: Float, fg: Color, bk: Color): Effect =
     Effect(lifetime, clipSize) { e: EffectContainer ->
@@ -61,18 +60,5 @@ val shootPyraFlameFx = RgbList {
 }
 
 fun tintedBulletsRegistryLoad() {
-    ExperimentalOnly {
-        Bullets.basicFlame.registerRGBIndex {
-            (this.copy() as BulletType).apply {
-                shootEffect = SmallRgbFx[it]
-                hitEffect = hitFlameSmallFx[it]
-            }
-        }
-        Bullets.pyraFlame.registerRGBIndex {
-            (this.copy() as BulletType).apply {
-                shootEffect = shootPyraFlameFx[it]
-                hitEffect = hitFlameSmallFx[it]
-            }
-        }
-    }
+
 }

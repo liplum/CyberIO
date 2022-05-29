@@ -15,6 +15,7 @@ import mindustry.Vars
 import mindustry.core.GameState.State.menu
 import mindustry.game.EventType
 import mindustry.game.EventType.Trigger
+import mindustry.gen.Sounds
 import mindustry.ui.Styles
 import mindustry.ui.dialogs.BaseDialog
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.CheckSetting
@@ -29,6 +30,7 @@ import net.liplum.lib.ui.settings.*
 import net.liplum.lib.ui.settings.AnySetting.Companion.addAny
 import net.liplum.lib.ui.settings.CheckSettingX.Companion.addCheckPref
 import net.liplum.lib.ui.settings.SliderSettingX.Companion.addSliderSettingX
+import net.liplum.mdt.advanced.MapCleaner
 import net.liplum.update.Updater
 import net.liplum.utils.invoke
 import net.liplum.utils.randomExcept
@@ -237,6 +239,28 @@ object CioUI {
             }.apply {
                 canShow = { isMenu }
             }
+        }
+        addAny {
+            it.add(TextButton(AdvancedFunctionDialog.bundle("title")).apply {
+                clicked {
+                    AdvancedFunctionDialog.show()
+                }
+            }).fillX()
+        }.apply {
+            canShow = { isMenu }
+        }
+        addAny {
+            it.add(TextButton(R.Advanced.MapCleaner.bundle).apply {
+                clicked {
+                    MapCleaner.cleanCurrentMap(Meta.ModID)
+                    Sounds.message.play()
+                }
+                update {
+                    isDisabled = !(Var.EnableMapCleaner && !isMenu && OnlyLocal())
+                }
+            }).fillX()
+        }.apply {
+            canShow = { Var.EnableMapCleaner && !isMenu && OnlyLocal() }
         }
         sortBy {
             when (it) {

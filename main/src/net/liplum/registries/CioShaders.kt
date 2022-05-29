@@ -16,16 +16,10 @@ import net.liplum.useCompatible
 object CioShaders {
     // @formatter:off
     lateinit var DynamicColor:                  TrShader
-    lateinit var HologramOld:                   HologramOld
     lateinit var Hologram:                      Hologram
     lateinit var Monochrome:                    TrShader
     lateinit var InvertColor:                   TrShader
     lateinit var TvStatic:                      TrShader
-    lateinit var Pulse:                         TrShader
-    lateinit var InvertingColorRGB:             ProgressShader
-    lateinit var InvertingColorRbg2HsvInHsv:    ProgressShader
-    lateinit var InvertingColorRbg2HsvInRgb:    ProgressShader
-    lateinit var Monochromize:                  ProgressShader
     var Cyberion:                               SurfaceShader? = null
     // @formatter:on
     @JvmStatic
@@ -35,18 +29,12 @@ object CioShaders {
 // Dynamic
 DynamicColor                = wrap("DynamicColor",                  ::TrShader)
 // Hologram
-HologramOld                 = wrap("HologramOld",                   ::HologramOld)
 Hologram                    = wrap("Hologram",                      ::Hologram)
 
 Monochrome                  = wrap("Monochrome",                    ::TrShader)
 InvertColor                 = wrap("InvertColor",                   ::TrShader)
 TvStatic                    = wrap("TvStatic",                      ::TrShader,     tryCompatible = true)
-Pulse                       = wrap("Pulse",                         ::TrShader)
 // Progressed
-InvertingColorRGB           = wrap("InvertingColorRgb",             ::ProgressShader)
-InvertingColorRbg2HsvInHsv  = wrap("InvertingColorRgb2HsvInHsv",    ::ProgressShader)
-InvertingColorRbg2HsvInRgb  = wrap("InvertingColorRgb2HsvInRgb",    ::ProgressShader)
-Monochromize                = wrap("Monochromize",                  ::ProgressShader)
 // Block Surface
 Cyberion                    = wrap("Cyberion",                      ::SurfaceShader)
         // @formatter:on

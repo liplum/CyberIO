@@ -136,6 +136,10 @@ val OnlyServer = Condition {
     val net = Vars.net
     net.server() || !net.active()
 }
+val OnlyLocal = Condition{
+    val net = Vars.net
+    !net.server() && !net.active()
+}
 val OnlyDebug = Condition {
     CioMod.DebugMode
 }
@@ -158,6 +162,25 @@ inline fun ServerOnly(func: () -> Unit): Boolean {
         func()
     }
     return false
+}
+
+/**
+ * Runs codes only on Logical Server
+ */
+inline fun OnlyLocal(func: () -> Unit): Boolean {
+    val net = Vars.net
+    if (!net.server() && !net.active()) {
+        func()
+    }
+    return false
+}
+
+inline fun <reified T> T.OnlyLocalOn(func: T.() -> Unit): T {
+    val net = Vars.net
+    if (!net.server() && !net.active()) {
+        func()
+    }
+    return this
 }
 
 inline fun <reified T> T.ServerOnlyOn(func: T.() -> Unit): T {
