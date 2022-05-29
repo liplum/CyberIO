@@ -20,10 +20,10 @@
   {
     "ID": "UpdateECHO",
     "IconPath": "update-icon",
-    "Template": "ButtonABC",
+    "Template": "Update",
     "Data": {
       "ActionA": "UpdateCyberIO",
-      "ActionC": "StopCheckUpdate"
+      "ActionC": "SkipThisUpdate"
     },
     "Condition": "CheckUpdate"
   },

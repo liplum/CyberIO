@@ -4,6 +4,7 @@ import arc.Core.settings
 import mindustry.Vars
 import net.liplum.mdt.ClientOnly
 import net.liplum.scripts.KeyNotFoundException
+import net.liplum.update.Version2
 
 object Settings {
     @ClientOnly @JvmField var LinkOpacity = 1f
@@ -85,6 +86,12 @@ object Settings {
     var ContentSpecific: String
         get() = settings.getString(R.Setting.ContentSpecific, ContentSpec.Vanilla.id)
         set(value) = settings.put(R.Setting.ContentSpecific, value)
+    /**
+     * Last skipped update. If it equals to current new version detected, it will skip the update dialog.
+     */
+    var LastSkippedUpdate: String
+        get() = settings.getString(R.Setting.LastSkippedUpdate, Version2.Zero.toString())
+        set(value) = settings.put(R.Setting.LastSkippedUpdate, value)
     val settingsMap = mapOf(
         "LinkOpacity" to Pair(R.Setting.LinkOpacity, 100),
         "AlwaysShowLink" to Pair(R.Setting.AlwaysShowLink, Vars.mobile),
@@ -100,6 +107,7 @@ object Settings {
         "GitHubMirrorUrl" to Pair(R.Setting.LastPlayTime, GitHubMirrorUrl),
         "ShaderRootPath" to Pair(R.Setting.ShaderRootPath, ""),
         "ContentSpecific" to Pair(R.Setting.ContentSpecific, ContentSpec.Vanilla.id),
+        "LastSkippedUpdate" to Pair(R.Setting.LastSkippedUpdate, Version2.Zero.toString()),
     )
     @Suppress("UNCHECKED_CAST")
     operator fun <T> get(key: String): T =

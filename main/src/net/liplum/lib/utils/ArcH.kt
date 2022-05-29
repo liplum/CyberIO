@@ -93,3 +93,6 @@ inline fun IntSet.removeAll(predicate: (Int) -> Boolean) {
         }
     }
 }
+
+fun String.tinted(color: Color) =
+    "[#${color}]$this[]"

@@ -80,8 +80,7 @@ class CioMod : Mod() {
         lastPlayTime = Settings.LastPlayTime
         CLog.info("v${Meta.DetailedVersion} loading started.")
         (net.liplum.mdt.IsClient and !IsSteam) {
-            //Updater.fetchLatestVersion(updateInfoFileURL = Meta.UpdateInfoURL)
-            Updater.fetchLatestVersion(updateInfoFileURL = "E:\\MyProject\\Mindustry\\CyberIO\\update")
+            Updater.fetchLatestVersion(updateInfoFileURL = Meta.UpdateInfoURL)
         }
         HeadlessOnly {
             Config.load()

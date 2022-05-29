@@ -16,7 +16,10 @@ object Conditions {
     }
     val CheckUpdate = object : Condition("CheckUpdate") {
         override fun canShow(tip: WelcomeTip): Boolean {
-            return !Vars.steam && Settings.ShowUpdate && Updater.requireUpdate
+            return !Vars.steam && Settings.ShowUpdate &&
+                    Updater.requireUpdate &&
+                    !Updater.latestVersion.equalsString(Settings.LastSkippedUpdate) &&
+                    Updater.matchMinGameVersion
         }
 
         override fun priority(tip: WelcomeTip) = 10

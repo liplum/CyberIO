@@ -81,8 +81,7 @@ object Welcome {
         meta.displayName = "[#${S.Hologram}]${Meta.Name}[]"
         Events.run(Trigger.update) {
             if (Time.time % 60 < 1f) {
-                val color = RandomName.oneColor()
-                meta.author = "$color${Meta.Author}[]"
+                meta.author = RandomName.randomTinted(Meta.Author)
             }
         }
     }

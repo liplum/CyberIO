@@ -75,6 +75,7 @@ object Updater : CoroutineScope {
             UpdateInfo::class.java,
             Jval.read(text).toString(Jformat.plain)
         )
+        updateInfo = info
         ClientOnly {
             latestVersion = Version2.valueOf(info.ClientLatest)
         }
@@ -177,6 +178,14 @@ object Updater : CoroutineScope {
 
     val requireUpdate: Boolean
         get() = latestVersion > Meta.DetailedVersion
+    val isCurrentBreakUpdate: Boolean
+        get() = latestVersion.toString() in updateInfo.BreakUpdateList
+    val hasUpdateDescription: Boolean
+        get() = updateInfo.Description.isNotEmpty()
+    val UpdateDescription: String
+        get() = updateInfo.Description
+    val matchMinGameVersion:Boolean
+        get() = updateInfo.MinGameVersion <= Meta.CurGameVersion
 }
 
 class UpdateInfo {
@@ -184,6 +193,8 @@ class UpdateInfo {
     var ClientLatest = ""
     var ServerLatest = ""
     var Description = ""
+    var MinGameVersion = 136
+    var BreakUpdateList = emptyArray<String>()
 
     companion object {
         internal val X = UpdateInfo()

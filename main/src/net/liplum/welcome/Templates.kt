@@ -2,6 +2,9 @@ package net.liplum.welcome
 
 import arc.scene.ui.Button
 import mindustry.ui.dialogs.BaseDialog
+import net.liplum.R
+import net.liplum.S
+import net.liplum.lib.utils.tinted
 import net.liplum.mdt.ui.frag.RateStarPanelFrag
 import net.liplum.update.Updater
 import net.liplum.welcome.Welcome.Entity
@@ -28,8 +31,9 @@ object Templates {
                 val yesAction = ActionRegistry[data["ActionA"]]
                 val noAction = ActionRegistry[data["ActionB"]]
                 val dontShowAction = ActionRegistry[data["ActionC"]]
+                val showPoliteWelcome = data["ShowPoliteWelcome"] as? Boolean ?: true
                 addPoster(entity.icon)
-                addCenterText(entity.content(Updater.latestVersion))
+                if (showPoliteWelcome) addPoliteWelcome(entity)
                 cont.table {
                     addCloseButton(entity["button-a"], it) {
                         yesAction(entity)
@@ -121,6 +125,34 @@ object Templates {
                 }.build()
                 cont.add(ratePanel).row()
                 addCloseButton(entity["submit"])
+            }
+    }
+    val Update = object : WelcomeTemplate("Update") {
+        override fun gen(entity: Entity) =
+            BaseDialog(entity["title"]).apply {
+                addCloseListener()
+                val data = entity.tip.data
+                val yesAction = ActionRegistry[data["ActionA"]]
+                val noAction = ActionRegistry[data["ActionB"]]
+                val dontShowAction = ActionRegistry[data["ActionC"]]
+                addPoster(entity.icon)
+                addCenterText(entity.content(Updater.latestVersion.toString().tinted(S.Hologram)))
+                if (Updater.isCurrentBreakUpdate)
+                    addCenterText(entity["break-update-warning"].tinted(R.C.RedAlert))
+                if (Updater.hasUpdateDescription)
+                    addBoxedText(Updater.UpdateDescription)
+                cont.table {
+                    addCloseButton(entity["button-a"], it) {
+                        yesAction(entity)
+                    }.size(150f, 50f)
+                    addCloseButton(entity["button-b"], it) {
+                        noAction(entity)
+                    }.size(150f, 50f)
+                    addCloseButton(entity["button-c"], it) {
+                        dontShowAction(entity)
+                    }.size(150f, 50f)
+                }.growX()
+                    .row()
             }
     }
 }

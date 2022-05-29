@@ -1,6 +1,8 @@
-{
-    "Latest": "4.0",
-    "ClientLatest": "4.0",
-    "ServerLatest": "4.0",
-    "Description": ""
-}
+Latest: "4.0"
+ClientLatest: "4.0"
+ServerLatest: "4.0"
+MinGameVersion: "136"
+Description: ""
+BreakUpdateList: [
+    "4.0"
+]

@@ -143,7 +143,8 @@ public class R {
                 OK = Gen("ok"),
                 Validate = Gen("validate"),
                 UpdateModSuccess = Gen("update-mod.success"),
-                UpdateModFailed = Gen("update-mod.failed");
+                UpdateModFailed = Gen("update-mod.failed"),
+                UpdateModBreakUpdateWarning = Gen("update-mod.break-update-warning");
 
         @NotNull
         @Contract(pure = true)
@@ -292,6 +293,7 @@ public class R {
                 LinkSize = Gen("connection-size"),
                 ShowWelcome = Gen("show-welcome"),
                 ShowUpdate = Gen("show-update"),
+                LastSkippedUpdate = Gen("last-skipped-update"),
                 Version = Gen("version"),
                 ClickWelcomeTimes = Gen("welcome-click-times"),
                 LastWelcome = Gen("last-welcome"),

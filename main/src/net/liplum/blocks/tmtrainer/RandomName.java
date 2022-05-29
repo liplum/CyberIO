@@ -29,18 +29,25 @@ public class RandomName {
         }
     }
 
+    private static final StringBuilder builder = new StringBuilder();
+
     @NotNull
     public static String one(int length) {
-        StringBuilder b = new StringBuilder();
+        builder.setLength(0);
         for (int i = 0; i < length; i++) {
-            b.append(AllColors[Mathf.random(AllColors.length - 1)]);
-            b.append(AllChars[Mathf.random(AllChars.length - 1)]);
+            builder.append(AllColors[Mathf.random(AllColors.length - 1)]);
+            builder.append(AllChars[Mathf.random(AllChars.length - 1)]);
         }
-        return b.toString();
+        return builder.toString();
     }
 
     @NotNull
     public static String oneColor() {
         return AllColors[Mathf.random(AllColors.length - 1)];
+    }
+
+    @NotNull
+    public static String randomTinted(String text) {
+        return oneColor() + text + "[]";
     }
 }

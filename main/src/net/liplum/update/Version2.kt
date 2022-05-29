@@ -13,6 +13,9 @@ data class Version2(val major: Int, val minor: Int) : Comparable<Any> {
         }
     }
 
+    fun equalsString(versionString: String) =
+        this == tryValueOf(versionString)
+
     override fun compareTo(other: Any): Int =
         when (other) {
             is String -> this.compareTo(valueOf(other))
@@ -42,6 +45,23 @@ data class Version2(val major: Int, val minor: Int) : Comparable<Any> {
                 }
             } catch (e: Exception) {
                 throw VersionParseException("Can't parse value from $str")
+            }
+        }
+        @JvmStatic
+        fun tryValueOf(str: String): Version2? {
+            val parts = str.split('.')
+            if (parts.isEmpty()) throw VersionParseException("$str doesn't have any version info.")
+            return try {
+                if (parts.size == 1) {
+                    val major = parts[0].toInt()
+                    Version2(major, 0)
+                } else {
+                    val major = parts[0].toInt()
+                    val minor = parts[1].toInt()
+                    Version2(major, minor)
+                }
+            } catch (e: Exception) {
+                null
             }
         }
     }

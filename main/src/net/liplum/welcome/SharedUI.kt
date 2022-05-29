@@ -9,6 +9,7 @@ import arc.scene.ui.layout.Cell
 import arc.scene.ui.layout.Table
 import arc.scene.utils.Elem
 import arc.util.Scaling
+import mindustry.gen.Tex
 import net.liplum.CioMod
 import net.liplum.Meta
 import net.liplum.i18nName
@@ -56,6 +57,22 @@ internal fun Dialog.addCenterText(
         }
     })
     cell.growX().row()
+    return cell
+}
+
+internal fun Dialog.addBoxedText(
+    text: String,
+    table: Table = this.cont
+): Cell<Table> {
+    val cell = table.add(Table(Tex.button).apply {
+        add(Label(text).apply {
+            DesktopOnly {
+                // On the high resolution screen, the text looks too small.
+                setFontScale(1.1f)
+            }
+        }).pad(10f)
+    })
+    cell.pad(5f).row()
     return cell
 }
 

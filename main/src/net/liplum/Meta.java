@@ -9,6 +9,7 @@ public class Meta {
     public static final String NameX = "CyberIO";
     public static final String NameAbbr = "CIO";
     public static final String Version = "v4";
+    public static final int CurGameVersion = 136;
     public static final String DefaultLang = "en";
     public static final Version2 DetailedVersion = new Version2(4, 0);
     public static final String Repo = "liplum/CyberIO";

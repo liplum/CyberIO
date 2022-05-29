@@ -4,8 +4,8 @@ import arc.Core
 import arc.util.Log
 import arc.util.Time
 import mindustry.Vars
-import net.liplum.CioMod
 import net.liplum.CLog
+import net.liplum.CioMod
 import net.liplum.R
 import net.liplum.Settings
 import net.liplum.lib.utils.bundle
@@ -34,6 +34,12 @@ object Actions {
     val StopCheckUpdate = object : Action("StopCheckUpdate") {
         override fun doAction(entity: Welcome.Entity) {
             Settings.ShowUpdate = false
+        }
+    }
+    val SkipThisUpdate = object : Action("SkipThisUpdate") {
+        override fun doAction(entity: Welcome.Entity) {
+            val latest = Updater.latestVersion
+            Settings.LastSkippedUpdate = latest.toString()
         }
     }
     val UpdateCyberIO = object : Action("UpdateCyberIO") {
