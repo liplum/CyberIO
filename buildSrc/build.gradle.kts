@@ -25,5 +25,4 @@ sourceSets {
 dependencies {
     implementation(gradleApi())
     implementation("com.beust:klaxon:5.5")
-    implementation("com.github.liplum:OpenGalPlumy:v0.1.4")
 }
