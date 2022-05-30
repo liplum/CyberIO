@@ -2,10 +2,10 @@ package net.liplum.mdt.animations.anims
 
 import arc.graphics.Color
 import arc.math.Mathf
-import net.liplum.mdt.Draw
+import net.liplum.mdt.render.Draw
 import net.liplum.lib.ITimer
-import net.liplum.mdt.Reset
-import net.liplum.mdt.SetColor
+import net.liplum.mdt.render.Reset
+import net.liplum.mdt.render.SetColor
 import net.liplum.lib.TR
 
 data class Frame(

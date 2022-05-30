@@ -26,13 +26,13 @@ import net.liplum.lib.math.approachR
 import net.liplum.lib.math.radian
 import net.liplum.lib.utils.isZero
 import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.Draw
 import net.liplum.mdt.WhenNotPaused
+import net.liplum.mdt.render.AsShadow
+import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.G
 import net.liplum.mdt.utils.sub
 import net.liplum.mdt.utils.toCenterWorldXY
 import net.liplum.mdt.utils.worldXY
-import net.liplum.registries.CioStatCats
 import net.liplum.registries.CioStats
 import net.liplum.utils.addPowerUseStats
 import kotlin.math.min
@@ -78,7 +78,7 @@ open class WirelessTower(name: String) : PowerBlock(name) {
         super.setStats()
         stats.remove(Stat.powerUse)
         addPowerUseStats()
-        stats.add(CioStats.powerTransferSpeed,distributeSpeed * 60f, StatUnit.powerSecond)
+        stats.add(CioStats.powerTransferSpeed, distributeSpeed * 60f, StatUnit.powerSecond)
     }
 
     override fun icons() = arrayOf(BaseTR, SupportTR, CoilTR)
@@ -168,7 +168,7 @@ open class WirelessTower(name: String) : PowerBlock(name) {
             val offsetY = orientation.y
             Draw.z(Layer.blockUnder)
             BaseTR.Draw(x, y)
-            Drawf.shadow(SupportTR, x - 1f, y - 1f)
+            SupportTR.AsShadow(x, y, 1.1f)
             Draw.z(Layer.blockUnder + 0.1f)
             SupportTR.Draw(x, y)
             Draw.z(Layer.block + 1f)

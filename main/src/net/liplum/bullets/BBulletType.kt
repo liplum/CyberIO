@@ -10,7 +10,7 @@ import mindustry.entities.Effect
 import mindustry.entities.Lightning
 import mindustry.entities.bullet.BulletType
 import mindustry.gen.Bullet
-import net.liplum.mdt.DrawSize
+import net.liplum.mdt.render.DrawSize
 import net.liplum.lib.EmptyTR
 import net.liplum.lib.TR
 import net.liplum.mdt.utils.atlas

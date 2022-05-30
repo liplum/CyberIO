@@ -39,7 +39,7 @@ import net.liplum.lib.shaders.SD
 import net.liplum.lib.shaders.use
 import net.liplum.lib.utils.isZero
 import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.Draw
+import net.liplum.mdt.render.Draw
 import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.animations.Floating
 import net.liplum.mdt.consumer.LiquidTurretCons

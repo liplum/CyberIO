@@ -49,7 +49,7 @@ import net.liplum.lib.utils.invoke
 import net.liplum.lib.utils.isZero
 import net.liplum.lib.utils.toDouble
 import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.Draw
+import net.liplum.mdt.render.Draw
 import net.liplum.mdt.HeadlessOnly
 import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.animations.anims.Anime

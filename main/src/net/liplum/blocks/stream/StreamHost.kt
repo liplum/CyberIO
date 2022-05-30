@@ -22,6 +22,8 @@ import net.liplum.lib.persistence.write
 import net.liplum.mdt.*
 import net.liplum.mdt.animations.anis.AniState
 import net.liplum.mdt.animations.anis.config
+import net.liplum.mdt.render.Draw
+import net.liplum.mdt.render.DrawOn
 import net.liplum.mdt.render.G
 import net.liplum.mdt.utils.buildAt
 import net.liplum.mdt.utils.inMod

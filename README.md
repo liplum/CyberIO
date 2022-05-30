@@ -9,22 +9,13 @@ A Mindustry v7 mod provides lots of cybernetic things!!!
 ___
 </div>
 
-#### How To Play
+The official website of Cyber IO is [liplum.github.io/CyberIO](https://liplum.github.io/CyberIO). To learn about playing
+Cyber IO, you can check [the wiki](https://github.com/liplum/CyberIO/wiki/Game-Guide).
 
-The official website of Cyber IO is [liplum.github.io/CyberIO](https://liplum.github.io/CyberIO).
+**For Server**: Please [check this file](Info/ForServer.md) to learn more about running Cyber IO on a server.
 
-To learn about playing Cyber IO, you can check [the wiki](https://github.com/liplum/CyberIO/wiki/Game-Guide).
-
-#### Mod Compatibility
-
-If you'd like to play a mod pack, [there is a rough test](Info/SafelyWorkWith.md) of inter-mod compatibility as a reference
-for you.
-
-*Note: Every mod could update and might break the result, please think and test on your own.*
-
-#### For Server
-
-Please [check this file](Info/ForServer.md) to learn more about running Cyber IO on a server.
+**For Contributor**: Everyone is welcome to Cyber IO. If you want to translate, programme cooperatively or build Cyber IO on your own,
+please [check this file](Info/ForContributors.md).
 ___
 
 ### IC Machine
@@ -42,15 +33,18 @@ ___
 ![Holo Projector](GFX/Holo-projecting.gif)
 ___
 
-## Author
 
-**Programmer:** Liplum
+### Mod Compatibility
 
-**Painter:** sudoudou233 (tudou#3923)
+If you'd like to play a mod pack, [there is a rough test](Info/SafelyWorkWith.md) of inter-mod compatibility as a
+reference for you.
+
+*Note: Every mod could update and might break the result, please think and test on your own.*
+
+## Acknowledgements
+
+**Main Authors:** Liplum, sudoudou233 (tudou#3923)
 ___
-
-## Acknowledgement
-
 **IN NO ORDER**
 
 * The friendly people on Discord whoever have ever helped me.
@@ -58,18 +52,11 @@ ___
 * Anyone who likes CyberIO.
 * And you.
 
-### Translation
+**Translation**
 
 - Ukrainian -> Prosta4ok_ua#6336
 - Chinese Simplified -> woodjecket#0554
 - Japanese -> 星華輝月#2243
-
-### For Contributor
-
-Everyone is welcome to contribute Cyber IO.
-
-If you want to translate or programme cooperatively. Please [check this file](Info/ForContributors.md) to learn how to join
-us.
 ___
 
 ## Licence

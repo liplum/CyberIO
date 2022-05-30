@@ -34,7 +34,7 @@ import net.liplum.lib.utils.EmptyArray
 import net.liplum.lib.utils.equalsNoOrder
 import net.liplum.lib.utils.isZero
 import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.Draw
+import net.liplum.mdt.render.Draw
 import net.liplum.mdt.animations.anims.Animation
 import net.liplum.mdt.animations.anims.AnimationObj
 import net.liplum.mdt.animations.anis.AniState

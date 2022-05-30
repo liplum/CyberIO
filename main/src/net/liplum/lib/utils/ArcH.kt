@@ -82,6 +82,32 @@ inline fun IntSet.forEach(func: (Int) -> Unit) {
         func(it.next())
     }
 }
+
+inline fun IntSeq.forEach(func: (Int) -> Unit) {
+    for (i in 0 until size) {
+        func(this[i])
+    }
+}
+/**
+ * It calls the [IntSet.iterator] function. Note this can't work in multi-thread or nested calling.
+ * @param func (Index,Element)
+ */
+inline fun IntSet.forEachIndexed(func: (Int, Int) -> Unit) {
+    val it = this.iterator()
+    var i = 0
+    while (it.hasNext) {
+        func(i, it.next())
+        i++
+    }
+}
+/**
+ * @param func (Index,Element)
+ */
+inline fun IntSeq.forEachIndexed(func: (Int, Int) -> Unit) {
+    for (i in 0 until size) {
+        func(i,this[i])
+    }
+}
 /**
  * It calls the [IntSet.iterator] function. Note this can't work in multi-thread or nested calling.
  */

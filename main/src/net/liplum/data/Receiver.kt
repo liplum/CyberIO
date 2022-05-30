@@ -26,8 +26,8 @@ import net.liplum.lib.delegates.Delegate1
 import net.liplum.lib.persistence.read
 import net.liplum.lib.persistence.write
 import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.Draw
-import net.liplum.mdt.SetColor
+import net.liplum.mdt.render.Draw
+import net.liplum.mdt.render.SetColor
 import net.liplum.mdt.animations.anims.Animation
 import net.liplum.mdt.animations.anis.AniState
 import net.liplum.mdt.animations.anis.config

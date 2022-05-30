@@ -7,7 +7,7 @@ import mindustry.content.Items
 import mindustry.entities.bullet.BulletType
 import mindustry.gen.Bullet
 import mindustry.type.Item
-import net.liplum.mdt.DrawSize
+import net.liplum.mdt.render.DrawSize
 
 class ItemBulletType : BulletType() {
     var drawSizer: Bullet.() -> Float = { 1f }

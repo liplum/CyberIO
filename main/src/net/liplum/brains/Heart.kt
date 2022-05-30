@@ -37,7 +37,7 @@ import net.liplum.lib.TRs
 import net.liplum.lib.math.FUNC
 import net.liplum.lib.utils.*
 import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.Draw
+import net.liplum.mdt.render.Draw
 import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.WhenTheSameTeam
 import net.liplum.mdt.animations.anims.Anime

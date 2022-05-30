@@ -22,7 +22,7 @@ import net.liplum.lib.delegates.Delegate1
 import net.liplum.lib.persistence.read
 import net.liplum.lib.persistence.write
 import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.DrawOn
+import net.liplum.mdt.render.DrawOn
 import net.liplum.mdt.WhenTheSameTeam
 import net.liplum.mdt.mixin.total
 import net.liplum.mdt.ui.bars.appendDisplayLiquidsDynamic
@@ -31,7 +31,6 @@ import net.liplum.mdt.ui.bars.removeLiquidInBar
 import net.liplum.mdt.utils.ForProximity
 import net.liplum.mdt.utils.buildAt
 import net.liplum.utils.addHostInfo
-import net.liplum.utils.addRangeInfo
 
 /**
  * ### Since 1

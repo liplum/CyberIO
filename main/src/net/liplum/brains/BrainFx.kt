@@ -24,7 +24,7 @@ import net.liplum.lib.entity.FixedList
 import net.liplum.lib.entity.Radiation
 import net.liplum.lib.entity.RadiationArray
 import net.liplum.lib.utils.progress
-import net.liplum.mdt.DrawSize
+import net.liplum.mdt.render.DrawSize
 import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.utils.MdtUnit
 import net.liplum.mdt.utils.NewEffect

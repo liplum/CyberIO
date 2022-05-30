@@ -42,8 +42,9 @@ import net.liplum.lib.utils.invoke
 import net.liplum.lib.utils.isZero
 import net.liplum.lib.utils.percentI
 import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.DrawSize
+import net.liplum.mdt.render.DrawSize
 import net.liplum.mdt.mixin.copy
+import net.liplum.mdt.render.AsShadow
 import net.liplum.mdt.render.G
 import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.utils.*
@@ -371,12 +372,10 @@ open class Prism(name: String) : Block(name) {
                 val perspective = Interp.smooth(perspectiveProgress)
                 scale *= perspective
                 Draw.z(Layer.blockOver)
-                Drawf.shadow(
-                    img,
+                img.AsShadow(
                     priselX - elevation * 7f * scale,
                     priselY - elevation * 7f * scale,
-                    G.Dw(img) * scale,
-                    G.Dh(img) * scale,
+                    scale,
                     rotation.a.degree.draw
                 )
                 if (isInPayload)

@@ -9,8 +9,8 @@ import net.liplum.lib.math.FUNC
 import net.liplum.lib.utils.isZero
 import net.liplum.lib.utils.percentI
 import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.Draw
-import net.liplum.mdt.SetAlpha
+import net.liplum.mdt.render.Draw
+import net.liplum.mdt.render.SetAlpha
 import net.liplum.mdt.animations.anis.AniState
 import net.liplum.mdt.animations.anis.None
 import net.liplum.mdt.animations.anis.config
