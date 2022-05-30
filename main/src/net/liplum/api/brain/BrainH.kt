@@ -1,10 +1,8 @@
-package net.liplum.brains
+package net.liplum.api.brain
 
 import mindustry.gen.Tex
 import mindustry.world.Block
 import mindustry.world.meta.Stats
-import net.liplum.api.brain.IComponentBlock
-import net.liplum.api.brain.UpgradeType
 import net.liplum.lib.utils.bundle
 import net.liplum.mdt.ui.addTooltip
 import net.liplum.registries.CioStats

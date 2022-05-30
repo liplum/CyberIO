@@ -56,6 +56,7 @@ open class Cloud(name: String) : PowerBlock(name) {
     @ClientOnly lateinit var CloudNoPowerAni: Ani
     @ClientOnly lateinit var NoPowerTR: TR
     @JvmField var maxConnection = -1
+    @JvmField var maxRange = -1f
 
     init {
         solid = true
@@ -92,6 +93,13 @@ open class Cloud(name: String) : PowerBlock(name) {
             addReceiverInfo<CloudBuild>()
             addTeamInfo()
         }
+    }
+
+    override fun setStats() {
+        super.setStats()
+        addLinkRangeStats(maxRange)
+        addMaxSenderStats(maxConnection)
+        addMaxReceiverStats(maxConnection)
     }
 
     override fun load() {

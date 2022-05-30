@@ -27,6 +27,7 @@ import net.liplum.mdt.animations.anis.config
 import net.liplum.mdt.render.G
 import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.utils.*
+import net.liplum.utils.addRangeInfo
 import net.liplum.utils.addReceiverInfo
 
 private typealias AniStateS = AniState<Sender, SenderBuild>
@@ -108,6 +109,12 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
                 { (queue != null).toFloat() }
             )
         }
+    }
+
+    override fun setStats() {
+        super.setStats()
+        addLinkRangeStats(maxRange)
+        addMaxClientStats(1)
     }
 
     open inner class SenderBuild : AniedBuild(), IDataSender {

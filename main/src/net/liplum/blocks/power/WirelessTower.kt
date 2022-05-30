@@ -15,6 +15,7 @@ import mindustry.graphics.Drawf
 import mindustry.graphics.Layer
 import mindustry.world.blocks.power.PowerBlock
 import mindustry.world.meta.Stat
+import mindustry.world.meta.StatUnit
 import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.lib.Serialized
@@ -31,6 +32,8 @@ import net.liplum.mdt.render.G
 import net.liplum.mdt.utils.sub
 import net.liplum.mdt.utils.toCenterWorldXY
 import net.liplum.mdt.utils.worldXY
+import net.liplum.registries.CioStatCats
+import net.liplum.registries.CioStats
 import net.liplum.utils.addPowerUseStats
 import kotlin.math.min
 
@@ -75,6 +78,7 @@ open class WirelessTower(name: String) : PowerBlock(name) {
         super.setStats()
         stats.remove(Stat.powerUse)
         addPowerUseStats()
+        stats.add(CioStats.powerTransferSpeed,distributeSpeed * 60f, StatUnit.powerSecond)
     }
 
     override fun icons() = arrayOf(BaseTR, SupportTR, CoilTR)

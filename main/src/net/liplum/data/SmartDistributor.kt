@@ -119,6 +119,7 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
         super.setStats()
         stats.remove(Stat.powerUse)
         addPowerUseStats()
+        addMaxSenderStats(maxConnection)
     }
 
     override fun setBars() {

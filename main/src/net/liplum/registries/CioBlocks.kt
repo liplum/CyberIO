@@ -19,7 +19,6 @@ import mindustry.type.ItemStack
 import mindustry.type.LiquidStack
 import mindustry.world.blocks.defense.BaseShield
 import mindustry.world.blocks.defense.DirectionalForceProjector
-import mindustry.world.blocks.defense.OverdriveProjector
 import mindustry.world.blocks.environment.Floor
 import mindustry.world.blocks.payloads.*
 import mindustry.world.blocks.production.GenericCrafter
@@ -929,6 +928,7 @@ object CioBlocks {
                     )
                 )
                 scaledHealth = 350f
+                coolant = consumeCoolant(0.5f)
                 consumePower(12f)
                 shootDuration = 200f
                 range = 165f

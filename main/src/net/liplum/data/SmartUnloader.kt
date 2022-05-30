@@ -130,6 +130,8 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
         super.setStats()
         stats.remove(Stat.powerUse)
         addPowerUseStats()
+        addLinkRangeStats(maxRange)
+        addMaxClientStats(1)
     }
 
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {

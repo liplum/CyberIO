@@ -1,9 +1,8 @@
 @file:JvmName("AbilityH")
 
-package net.liplum.abilites
+package net.liplum.mdt.utils
 
 import arc.Core
-import mindustry.Vars
 import mindustry.entities.abilities.Ability
 import java.util.*
 
@@ -18,6 +17,5 @@ fun <T : Ability> Class<T>.localized(modID: String): String {
         sb.append(c)
     }
     name = sb.toString().lowercase(Locale.getDefault())
-    name = Vars.content.transformName(name)
     return Core.bundle["ability.$modID-$name"]
 }

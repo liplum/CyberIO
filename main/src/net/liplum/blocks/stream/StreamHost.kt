@@ -110,6 +110,8 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
     override fun setStats() {
         super.setStats()
         addPowerUseStats()
+        addLinkRangeStats(maxRange)
+        addMaxClientStats(maxConnection)
     }
 
     override fun setBars() {

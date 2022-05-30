@@ -44,7 +44,7 @@ public class R {
             return Meta.ModID + "." + content;
         }
 
-        public static final String CyberionReq = Gen("cyberion-req");
+        public static final String Unlimited = Gen("unlimited");
         public static final String
                 CostSecond = Gen("cost.second"),
                 CostMinute = Gen("cost.minute");

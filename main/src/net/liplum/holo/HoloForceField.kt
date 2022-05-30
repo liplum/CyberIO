@@ -17,9 +17,8 @@ import mindustry.graphics.Layer
 import mindustry.graphics.Pal
 import mindustry.ui.Bar
 import net.liplum.Meta
-import net.liplum.R
 import net.liplum.S
-import net.liplum.abilites.localized
+import net.liplum.mdt.utils.localized
 import net.liplum.lib.shaders.SD
 import net.liplum.lib.shaders.use
 import net.liplum.mdt.utils.healthPct

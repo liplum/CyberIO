@@ -30,15 +30,15 @@ object AdvancedFunctionDialog {
     fun show(onReset: Delegate) {
         BaseDialog(bundle("title")).apply {
             addCloseButton()
-            // GitHub Mirror
-            add(Table(Tex.button).apply {
-                add(Elem.newButton(GitHubMirrorUrlDialog.bundle("button")) {
-                    GitHubMirrorUrlDialog.show(onReset)
-                }).applyButtonStyle().row()
-                add(GitHubMirrorUrlDialog.bundle("button-tooltip")).applyLabelStyle()
-            }).row()
-            // Map Cleaner
             cont.add(ScrollPane(Table().apply {
+                // GitHub Mirror
+                add(Table(Tex.button).apply {
+                    add(Elem.newButton(GitHubMirrorUrlDialog.bundle("button")) {
+                        GitHubMirrorUrlDialog.show(onReset)
+                    }).applyButtonStyle().row()
+                    add(GitHubMirrorUrlDialog.bundle("button-tooltip")).applyLabelStyle()
+                }).row()
+                // Map Cleaner
                 add(Table(Tex.button).apply {
                     add(TextButton(enableButtonText).apply {
                         isDisabled = Var.EnableMapCleaner

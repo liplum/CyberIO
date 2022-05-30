@@ -69,6 +69,10 @@ open class StreamClient(name: String) : AniedBlock<StreamClient, StreamClient.Cl
         }
     }
 
+    override fun setStats() {
+        super.setStats()
+        addMaxHostStats(maxConnection)
+    }
     override fun load() {
         super.load()
         NoPowerTR = this.inMod("rs-no-power")

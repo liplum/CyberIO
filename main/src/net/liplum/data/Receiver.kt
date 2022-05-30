@@ -97,6 +97,11 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
         }
     }
 
+    override fun setStats() {
+        super.setStats()
+        addMaxHostStats(1)
+    }
+
     override fun drawPlanConfig(req: BuildPlan, list: Eachable<BuildPlan>) {
         drawPlanConfigCenter(req, req.config, "center", true)
     }
