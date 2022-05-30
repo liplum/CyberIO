@@ -28,10 +28,9 @@ import net.liplum.lib.math.radian
 import net.liplum.lib.utils.isZero
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.WhenNotPaused
+import net.liplum.mdt.WhenTheSameTeam
 import net.liplum.mdt.render.*
 import net.liplum.mdt.utils.sub
-import net.liplum.mdt.utils.toCenterWorldXY
-import net.liplum.mdt.utils.worldXY
 import net.liplum.registries.CioStats
 import net.liplum.utils.addPowerUseStats
 import kotlin.math.min
@@ -52,6 +51,7 @@ open class WirelessTower(name: String) : PowerBlock(name) {
     @ClientOnly @JvmField var rotationRadius = 0.7f
     @ClientOnly @JvmField var maxSelectedCircleTime = Var.selectedCircleTime
     @JvmField var range2Stroke: (Float) -> Float = { (it / 100f).coerceAtLeast(1f) }
+    @ClientOnly @JvmField var radiationAlpha = 0.8f
 
     init {
         consumesPower = true
@@ -85,17 +85,12 @@ open class WirelessTower(name: String) : PowerBlock(name) {
     override fun icons() = arrayOf(BaseTR, SupportTR, CoilTR)
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)
-        G.drawDashCircleBreath(x.worldXY, y.worldXY, range, R.C.Power, stroke = range2Stroke(range))
-        Vars.indexer.eachBlock(
-            Vars.player.team(),
-            toCenterWorldXY(x),
-            toCenterWorldXY(y),
-            range * smoothPlacing(maxSelectedCircleTime),
-            {
-                val consPower = it.block.consPower
-                it.block.hasPower && consPower != null && consPower.buffered
-            }) {
-            G.drawWrappedSquareBreath(it)
+        val range = range * smoothPlacing(maxSelectedCircleTime)
+        drawEffectCirclePlace(x, y, R.C.Power, range, {
+            val consPower = block.consPower
+            block.hasPower && consPower != null && consPower.buffered
+        }, stroke = range2Stroke(range)) {
+            G.drawWrappedSquareBreath(this)
         }
     }
 
@@ -103,12 +98,12 @@ open class WirelessTower(name: String) : PowerBlock(name) {
         @Serialized
         @JvmField var lastNeed = 0f
         val realRange: Float
-            get() = range * Mathf.log(2f, timeScale + 1f)
+            get() = range
         val realSpeed: Float
             get() = distributeSpeed * edelta()
         @ClientOnly @JvmField
         var radiations = RadiationArray(maxRadiation) { i, r ->
-            r.range = range * i / maxRadiation
+            r.range = realRange * i / maxRadiation
         }
         @ClientOnly
         val realRadiationSpeed: Float
@@ -133,11 +128,12 @@ open class WirelessTower(name: String) : PowerBlock(name) {
         }
 
         override fun drawSelect() {
+            val range = realRange * smoothSelect(maxSelectedCircleTime)
             G.drawDashCircleBreath(
-                x, y, realRange * smoothSelect(maxSelectedCircleTime),
+                x, y, range,
                 R.C.Power, stroke = range2Stroke(this.realRange)
             )
-            forEachBufferedInRange {
+            forEachBufferedInRange(range) {
                 G.drawWrappedSquareBreath(it)
             }
         }
@@ -179,30 +175,32 @@ open class WirelessTower(name: String) : PowerBlock(name) {
             Drawf.shadow(CoilTR, x + offsetX - 0.5f, y + offsetY - 0.5f)
             CoilTR.Draw(x + offsetX, y + offsetY)
             // Render radiations
-            val selfPower = this.power.status
-            if (selfPower.isZero || selfPower.isNaN() ||
-                (power.graph.all.size == 1 && power.graph.all.first() == this)
-            ) return
-            val realRange = realRange
-            val step = realRadiationSpeed * realRange
-            radiations.forEach {
-                WhenNotPaused {
-                    it.range += step
-                    it.range %= realRange
+            WhenTheSameTeam {
+                val selfPower = this.power.status
+                if (selfPower.isZero || selfPower.isNaN() ||
+                    (power.graph.all.size == 1 && power.graph.all.first() == this)
+                ) return
+                val realRange = realRange
+                val step = realRadiationSpeed * realRange
+                radiations.forEach {
+                    WhenNotPaused {
+                        it.range += step
+                        it.range %= realRange
+                    }
+                    Draw.z(Layer.power + 1f)
+                    val progress = it.range / realRange
+                    val nonlinearProgress = Interp.pow2Out.apply(progress)
+                    G.circle(
+                        x, y,
+                        nonlinearProgress * realRange,
+                        R.C.Power, Renderer.laserOpacity * radiationAlpha,
+                        (realRange / 100f).coerceAtLeast(1f)
+                    )
                 }
-                Draw.z(Layer.power + 1f)
-                val progress = it.range / realRange
-                val nonlinearProgress = Interp.pow2Out.apply(progress)
-                G.circle(
-                    x, y,
-                    nonlinearProgress * realRange,
-                    R.C.Power, Renderer.laserOpacity * 0.8f,
-                    (realRange / 100f).coerceAtLeast(1f)
-                )
             }
         }
 
-        open fun forEachBufferedInRange(cons: (Building) -> Unit) {
+        open fun forEachBufferedInRange(range: Float = realRange, cons: (Building) -> Unit) {
             Vars.indexer.eachBlock(
                 this, range,
                 {

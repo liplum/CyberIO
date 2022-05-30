@@ -12,19 +12,15 @@ import mindustry.world.Block
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.utils.TileXY
 import net.liplum.mdt.utils.TileXYf
+import net.liplum.mdt.utils.toCenterWorldXY
 import net.liplum.mdt.utils.worldXY
 
-/**
- * @param progress only for visual effects
- */
 @ClientOnly
-@JvmOverloads
 inline fun Block.drawSurroundingRect(
     tileX: TileXY,
     tileY: TileXY,
     extension: TileXYf,
     color: Color,
-    progress: Float = 1f,
     crossinline filter: (Building) -> Boolean
 ) {
     val worldX = tileX.worldXY
@@ -34,14 +30,27 @@ inline fun Block.drawSurroundingRect(
         worldX + offset, worldY + offset,
         (size + extension).worldXY
     )
+    Drawf.dashRect(color, rect)
     Vars.indexer.eachBlock(Vars.player.team(), rect, { filter(it) }) {
         Drawf.selected(
             it, Tmp.c1.set(color).a(Mathf.absin(4f, 1f))
         )
     }
-    rect.setCentered(
-        worldX + offset, worldY + offset,
-        (size + extension * progress).worldXY
+}
+@ClientOnly
+fun Block.drawEffectCirclePlace(
+    x: TileXY, y: TileXY,
+    circleColor: Color, range: Float,
+    filter: Building.() -> Boolean = { true },
+    stroke: Float = 1f,
+    func: Building. () -> Unit,
+) {
+    G.drawDashCircleBreath(
+        toCenterWorldXY(x), toCenterWorldXY(y), range,
+        circleColor, stroke = stroke
     )
-    Drawf.dashRect(color, rect)
+    Vars.indexer.eachBlock(
+        Vars.player.team(), toCenterWorldXY(x), toCenterWorldXY(y), range,
+        filter, func
+    )
 }

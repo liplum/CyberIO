@@ -18,18 +18,22 @@ import mindustry.logic.Ranged
 import mindustry.world.Block
 import mindustry.world.Tile
 import mindustry.world.meta.BlockGroup
-import net.liplum.mdt.ClientOnly
 import net.liplum.DebugOnly
 import net.liplum.R
+import net.liplum.Var
+import net.liplum.lib.TR
 import net.liplum.lib.utils.bundle
 import net.liplum.lib.utils.isZero
+import net.liplum.mdt.ClientOnly
+import net.liplum.mdt.render.G
+import net.liplum.mdt.render.drawEffectCirclePlace
+import net.liplum.mdt.render.smoothPlacing
+import net.liplum.mdt.render.smoothSelect
 import net.liplum.mdt.ui.bars.ReverseBar
-import net.liplum.lib.TR
+import net.liplum.mdt.utils.seconds
 import net.liplum.mdt.utils.sub
 import net.liplum.mdt.utils.toCenterWorldXY
-import net.liplum.mdt.render.G
-import net.liplum.mdt.utils.seconds
-import net.liplum.utils.*
+import net.liplum.utils.addRangeInfo
 
 internal const val T2SD = 5f / 6f * Mathf.pi
 internal const val HalfPi = 1f / 2f * Mathf.pi
@@ -80,6 +84,7 @@ open class AntiVirus(name: String) : Block(name) {
     @JvmField var infectedColor: Color = R.C.RedAlert
     lateinit var unenergizedTR: TR
     lateinit var shieldTR: TR
+    @ClientOnly @JvmField var maxSelectedCircleTime = Var.selectedCircleTime
 
     init {
         solid = true
@@ -118,16 +123,9 @@ open class AntiVirus(name: String) : Block(name) {
     override fun minimapColor(tile: Tile) = R.C.GreenSafe.rgba()
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)
-        G.drawDashCircleBreath(this, x.toShort(), y.toShort(), range, uninfectedColor)
-        Vars.indexer.eachBlock(
-            Vars.player.team(),
-            toCenterWorldXY(x),
-            toCenterWorldXY(y),
-            range,
-            {
-                true
-            }) {
-            G.drawSelected(it, getOtherColor(it))
+        val range = range * smoothPlacing(maxSelectedCircleTime)
+        drawEffectCirclePlace(x,y,uninfectedColor,range){
+            G.drawSelected(this, getOtherColor(this))
         }
     }
 
@@ -205,13 +203,14 @@ open class AntiVirus(name: String) : Block(name) {
 
         override fun drawSelect() {
             if (!power.status.isZero) {
-                Vars.indexer.eachBlock(this, realRange,
+                val range = realRange * smoothSelect(maxSelectedCircleTime)
+                Vars.indexer.eachBlock(this, range,
                     {
                         true
                     }) {
                     G.drawSelected(it, getOtherColor(it))
                 }
-                Drawf.dashCircle(x, y, realRange, uninfectedColor)
+                Drawf.dashCircle(x, y, range, uninfectedColor)
             }
         }
 

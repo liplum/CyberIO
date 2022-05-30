@@ -144,9 +144,8 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
         super.drawPlace(x, y, rotation, valid)
         this.drawLinkedLineToReceiverWhenConfiguring(x, y)
         drawSurroundingRect(
-            x, y, indicateAreaExtension,
+            x, y, indicateAreaExtension * smoothPlacing(maxSelectedCircleTime),
             if (valid) R.C.GreenSafe else R.C.RedAlert,
-            smoothPlacing(maxSelectedCircleTime)
         ) { b ->
             b.block.consumers.any {
                 it is ConsumeItems || it is ConsumeItemDynamic || it is ConsumeItemFilter

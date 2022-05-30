@@ -99,9 +99,6 @@ open class Prism(name: String) : Block(name) {
         sync = true
     }
 
-    open val Crystal.circleColor: Color
-        get() = R.C.PrismRgbFG[orbitPos % 3]
-
     fun PSA(speed: Float, cur: Float, target: Float, totalLength: Float): Float {
         return speed * PS(abs(target - cur) / totalLength)
     }
@@ -193,6 +190,9 @@ open class Prism(name: String) : Block(name) {
         var logicAngle = 0f
         val realRange: Float
             get() = Agl + (prismRadius * 2 * crystalAmount)
+
+        open val Crystal.circleColor: Color
+            get() = R.C.PrismRgbFG[(orbitPos + id) % 3]
 
         fun removeOutermostPrisel() =
             cm.tryRemoveOutermost()

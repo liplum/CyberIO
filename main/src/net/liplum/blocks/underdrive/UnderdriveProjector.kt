@@ -40,13 +40,13 @@ import net.liplum.lib.utils.format
 import net.liplum.lib.utils.percentI
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.render.G
+import net.liplum.mdt.render.drawEffectCirclePlace
 import net.liplum.mdt.render.smoothPlacing
 import net.liplum.mdt.render.smoothSelect
 import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.ui.bars.ReverseBar
 import net.liplum.mdt.utils.sub
 import net.liplum.mdt.utils.subBundle
-import net.liplum.mdt.utils.toCenterWorldXY
 import net.liplum.utils.addRangeInfo
 import kotlin.math.max
 
@@ -156,17 +156,9 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
 
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)
-        G.drawDashCircleBreath(toCenterWorldXY(x), toCenterWorldXY(y), range * smoothPlacing(maxSelectedCircleTime), color)
-        Vars.indexer.eachBlock(
-            Vars.player.team(),
-            toCenterWorldXY(x),
-            toCenterWorldXY(y),
-            range,
-            {
-                it.block.canOverdrive
-            }
-        ) {
-            G.drawSelected(it, color)
+        val range = range * smoothPlacing(maxSelectedCircleTime)
+        drawEffectCirclePlace(x, y, color, range, { block.canOverdrive }) {
+            G.drawSelected(this, color)
         }
     }
 
@@ -287,7 +279,7 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
                     (1f - similarInRange * attenuationRateStep).coerceAtLeast(0f)
             }
 
-        open fun forEachTargetInRange(cons: (Building) -> Unit) {
+        open fun forEachTargetInRange(range: Float = realRange, cons: (Building) -> Unit) {
             Vars.indexer.eachBlock(
                 this, realRange,
                 { it.block.canOverdrive },
@@ -377,10 +369,11 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
 
         override fun config(): Int = curGear
         override fun drawSelect() {
-            forEachTargetInRange {
+            val range = realRange * smoothSelect(maxSelectedCircleTime)
+            forEachTargetInRange(range) {
                 G.drawSelected(it, color)
             }
-            G.dashCircleBreath(x, y, realRange * smoothSelect(maxSelectedCircleTime), color)
+            G.dashCircleBreath(x, y, range, color)
         }
 
         override fun draw() {
