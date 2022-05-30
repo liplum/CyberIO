@@ -207,9 +207,6 @@ public class R {
         public static final Color[] PrismRgbBK = {
                 PrismRedBK, PrismGreenBK, PrismBlueBK
         };
-        public static final Color
-                prismClockwise = Pal.power,
-                prismAntiClockwise = Pal.lancerLaser;
         public static final Color Stop = RedAlert;/* Color.valueOf("#dd2c00");*/
         public static final Color Unconnected = Color.white;
         public static final Color Host = RedAlert,

@@ -4,6 +4,7 @@ import arc.Core
 import arc.math.geom.Vec2
 import mindustry.Vars
 import mindustry.core.World
+import mindustry.gen.Building
 import mindustry.world.Tile
 
 object Screen {
@@ -58,4 +59,10 @@ object Screen {
     @JvmStatic
     fun worldOnMouse(): Vec2 =
         Core.input.mouseWorld()
+    @JvmStatic
+    fun buildOnMouse(): Building? {
+        val input = Vars.control.input
+        val worldXY = Core.input.mouseWorld(input.mouseX, input.mouseY)
+        return Vars.world.buildWorld(worldXY.x, worldXY.y)
+    }
 }

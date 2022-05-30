@@ -41,7 +41,7 @@ import net.liplum.registries.CioLiquids
 import net.liplum.registries.EntityRegistry
 
 open class HoloUnit : UnitEntity(), PayloadMixin, IRevisionable {
-    override fun revisionID() = 8
+    override fun getRevisionID() = 8
     override var payloadPower: PowerGraph? = null
     override var payloads = Seq<Payload>()
     override val unitType: UnitType
@@ -316,7 +316,7 @@ open class HoloUnit : UnitEntity(), PayloadMixin, IRevisionable {
             projectorPos = _read_.i()
         } else if (REV >= 8) {
             // Since 8, use cache reader instead of vanilla
-            ReadFromCache(_read_, revisionID()) {
+            ReadFromCache(_read_, revisionID) {
                 Warp {
                     readReversion7(this)
                 }
@@ -363,9 +363,9 @@ open class HoloUnit : UnitEntity(), PayloadMixin, IRevisionable {
     }
     @OverwriteVanilla("Super")
     override fun write(_write_: Writes) {
-        _write_.s(revisionID())
+        _write_.s(revisionID)
         // Since 8, use cache writer instead of vanilla
-        WriteIntoCache(_write_, revisionID()) {
+        WriteIntoCache(_write_, revisionID) {
             Wrap {
                 writeUnitEntity(this)
             }

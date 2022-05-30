@@ -29,19 +29,22 @@ class CacheRwProcessor(
         if (!rwSymbls.iterator().hasNext()) return emptyList()
         class RwVisitor : KSVisitorVoid() {
             override fun visitFile(file: KSFile, data: Unit) {
+                val originalFile = file.fileName
+                val mirrorFile = file.fileName.removeSuffix(".kt") + extension
                 val out = codeGenerator.createNewFile(
                     dependencies = Dependencies(false),
                     packageName = file.packageName.asString(),
-                    fileName = file.fileName.removeSuffix(".kt") + extension
+                    fileName = mirrorFile
                 )
                 val codes = File(file.filePath).readText()
                 // Remove the annotation to prevent infinite rounds
-                out += codes.replace("@file:CacheRW","")
+                out += codes.replace("@file:CacheRW", "")
                     .replace("arc.util.io.Reads", readsMapping)
                     .replace("arc.util.io.Writes", writesMapping)
                     .replace("Reads", "CacheReaderSpec")
                     .replace("Writes", "CacheWriter")
                 out.close()
+                logger.info("Generated a mirror of $originalFile into $mirrorFile.kt successfully.")
             }
         }
         rwSymbls.forEach { it.accept(RwVisitor(), Unit) }

@@ -42,9 +42,11 @@ import net.liplum.lib.utils.invoke
 import net.liplum.lib.utils.isZero
 import net.liplum.lib.utils.percentI
 import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.render.DrawSize
+import net.liplum.mdt.advanced.Inspector
+import net.liplum.mdt.advanced.Inspector.isSelectedByMouse
 import net.liplum.mdt.mixin.copy
 import net.liplum.mdt.render.AsShadow
+import net.liplum.mdt.render.DrawSize
 import net.liplum.mdt.render.G
 import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.utils.*
@@ -71,8 +73,7 @@ open class Prism(name: String) : Block(name) {
     @ClientOnly @JvmField var elevationHeightScale = 0.2f
     @ClientOnly @JvmField var maxOutsideRange = -1f
     @ClientOnly @JvmField var maxOutsideRangeFactor = 0.8f
-    @ClientOnly @JvmField var antiClockwiseColor: Color = R.C.prismAntiClockwise
-    @ClientOnly @JvmField var clockwiseColor: Color = R.C.prismClockwise
+    @ClientOnly @JvmField var expendingSelectCircleTime = 45f
     @ClientOnly lateinit var BaseTR: TR
     @ClientOnly lateinit var CrystalTRs: TRs
     @ClientOnly lateinit var UpTR: TR
@@ -99,10 +100,7 @@ open class Prism(name: String) : Block(name) {
     }
 
     open val Crystal.circleColor: Color
-        get() = if (this.isClockwise)
-            clockwiseColor
-        else
-            antiClockwiseColor
+        get() = R.C.PrismRgbFG[orbitPos % 3]
 
     fun PSA(speed: Float, cur: Float, target: Float, totalLength: Float): Float {
         return speed * PS(abs(target - cur) / totalLength)
@@ -163,7 +161,8 @@ open class Prism(name: String) : Block(name) {
         }
     }
 
-    open inner class PrismBuild : Building(), ControlBlock, Ranged {
+    open inner class PrismBuild : Building(),
+        ControlBlock, Ranged {
         @Serialized
         @JvmField var cm: CrystalManager = CrystalManager().apply {
             maxAmount = maxCrystal
@@ -396,11 +395,17 @@ open class Prism(name: String) : Block(name) {
         }
 
         override fun drawSelect() {
+            if (!this.isSelectedByMouse()) return
             Draw.z(Layer.blockOver)
+            val pre = expendingSelectCircleTime / cm.inOrbitAmount
             cm.render {
+                val curNeed = (orbitPos + 1) * pre
+                var progress = ((Inspector.selectingTime - curNeed) / curNeed).coerceIn(0f, 1f)
+                if(isRemoved) progress = 1f - progress
+                if (progress < 0.01f) return@render
                 G.drawDashCircleBreath(
                     this@PrismBuild,
-                    Agl + (prismRadius * 2 * orbitPos),
+                    (Agl + (prismRadius * 2 * orbitPos)) * progress,
                     circleColor, alpha = 0.7f
                 )
             }
