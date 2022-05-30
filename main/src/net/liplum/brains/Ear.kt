@@ -30,6 +30,7 @@ import mindustry.world.meta.Stat
 import mindustry.world.meta.StatUnit
 import net.liplum.DebugOnly
 import net.liplum.R
+import net.liplum.Var
 import net.liplum.api.brain.*
 import net.liplum.lib.Serialized
 import net.liplum.lib.TR
@@ -41,13 +42,11 @@ import net.liplum.lib.utils.invoke
 import net.liplum.lib.utils.isZero
 import net.liplum.lib.utils.toDouble
 import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.render.Draw
-import net.liplum.mdt.render.DrawSize
-import net.liplum.mdt.render.G
-import net.liplum.mdt.render.HeatMeta
-import net.liplum.mdt.render.drawHeat
+import net.liplum.mdt.render.*
 import net.liplum.mdt.utils.MdtUnit
+import net.liplum.mdt.utils.TileXY
 import net.liplum.mdt.utils.sub
+import net.liplum.mdt.utils.toCenterWorldXY
 import net.liplum.utils.addBrainInfo
 
 /**
@@ -77,11 +76,13 @@ open class Ear(name: String) : Block(name), IComponentBlock {
      * Cooling per tick. It should be multiplied by [Time.delta]
      */
     @JvmField var coolingSpeed = 0.01f
+    // Visual effects
     @ClientOnly lateinit var BaseTR: TR
     @ClientOnly lateinit var EarTR: TR
     @ClientOnly lateinit var BaseHeatTR: TR
     @ClientOnly lateinit var EarHeatTR: TR
-    @JvmField @ClientOnly val heatMeta = HeatMeta()
+    @ClientOnly @JvmField var maxSelectedCircleTime = Var.selectedCircleTime
+    @ClientOnly @JvmField val heatMeta = HeatMeta()
     @ClientOnly @JvmField var scaleTime = 30f
     @ClientOnly @JvmField var maxScale = 0.3f
     @ClientOnly @JvmField var sonicWaveColor: Color = R.C.SonicWave
@@ -126,9 +127,14 @@ open class Ear(name: String) : Block(name), IComponentBlock {
         }
     }
 
-    override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
+    override fun drawPlace(x: TileXY, y: TileXY, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)
-        Drawf.dashCircle(x * Vars.tilesize + offset, y * Vars.tilesize + offset, range, sonicWaveColor)
+        G.dashCircleBreath(
+            toCenterWorldXY(x),
+            toCenterWorldXY(y),
+            range * smoothPlacing(maxSelectedCircleTime),
+            sonicWaveColor
+        )
     }
 
     override fun setStats() {
@@ -277,7 +283,7 @@ open class Ear(name: String) : Block(name), IComponentBlock {
         }
 
         override fun drawSelect() {
-            G.dashCircleBreath(x, y, realRange, sonicWaveColor)
+            G.dashCircleBreath(x, y, realRange * smoothSelect(maxSelectedCircleTime), sonicWaveColor)
         }
         // </editor-fold>
         override fun updateTile() {

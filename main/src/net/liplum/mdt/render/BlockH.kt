@@ -1,3 +1,5 @@
+@file:JvmName("BlockH")
+
 package net.liplum.mdt.render
 
 import arc.graphics.Color
@@ -12,12 +14,17 @@ import net.liplum.mdt.utils.TileXY
 import net.liplum.mdt.utils.TileXYf
 import net.liplum.mdt.utils.worldXY
 
+/**
+ * @param progress only for visual effects
+ */
 @ClientOnly
+@JvmOverloads
 inline fun Block.drawSurroundingRect(
     tileX: TileXY,
     tileY: TileXY,
     extension: TileXYf,
     color: Color,
+    progress: Float = 1f,
     crossinline filter: (Building) -> Boolean
 ) {
     val worldX = tileX.worldXY
@@ -27,10 +34,14 @@ inline fun Block.drawSurroundingRect(
         worldX + offset, worldY + offset,
         (size + extension).worldXY
     )
-    Drawf.dashRect(color, rect)
     Vars.indexer.eachBlock(Vars.player.team(), rect, { filter(it) }) {
         Drawf.selected(
             it, Tmp.c1.set(color).a(Mathf.absin(4f, 1f))
         )
     }
+    rect.setCentered(
+        worldX + offset, worldY + offset,
+        (size + extension * progress).worldXY
+    )
+    Drawf.dashRect(color, rect)
 }

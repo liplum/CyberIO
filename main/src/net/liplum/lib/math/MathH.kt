@@ -6,9 +6,12 @@
 package net.liplum.lib.math
 
 import arc.math.Angles
+import arc.math.Interp
 import arc.math.Mathf
 import arc.math.geom.Position
+import arc.math.geom.Rect
 import arc.math.geom.Vec2
+import net.liplum.lib.utils.invoke
 import net.liplum.lib.utils.isZero
 import kotlin.math.*
 
@@ -283,3 +286,22 @@ fun FloatArray.lerp(target: FloatArray, progress: Float) = this.apply {
         this[i] = this[i].lerp(target[i], progress)
     }
 }
+/**
+ * Return the smooth interpolation.
+ * @receiver any number, finally is coerced in [0f,1f]
+ * @return [0f,1f]
+ */
+val Float.smooth: Float
+    get() = Interp.smooth(this.coerceIn(0f, 1f))
+/**
+ * @param growingTime the increasing number
+ * @param maxTime the max bound
+ * @return [0f,1f], increasing
+ */
+fun progressT(growingTime: Float, maxTime: Float): Float =
+    1f - ((maxTime - growingTime) / maxTime).coerceIn(0f, 1f)
+/**
+ * Return 1f - this
+ */
+val Float.reverseProgress:Float
+    get() = 1f - this

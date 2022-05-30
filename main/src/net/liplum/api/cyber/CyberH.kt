@@ -12,6 +12,7 @@ import mindustry.type.Liquid
 import mindustry.world.Block
 import net.liplum.R
 import net.liplum.Settings
+import net.liplum.Var
 import net.liplum.annotations.SubscribeEvent
 import net.liplum.api.ICyberEntity
 import net.liplum.events.CioInitEvent
@@ -519,13 +520,13 @@ fun Building.postFullClientOn(other: Building) {
 
 fun IDataSender.drawMaxRange() {
     if (maxRange > 0f) {
-        G.dashCircleBreath(building.x, building.y, maxRange, senderColor)
+        G.dashCircleBreath(building.x, building.y, maxRange * building.smoothSelect(Var.selectedCircleTime), senderColor)
     }
 }
 
 fun IStreamHost.drawMaxRange() {
     if (maxRange > 0f) {
-        G.dashCircleBreath(building.x, building.y, maxRange, hostColor)
+        G.dashCircleBreath(building.x, building.y, maxRange * building.smoothSelect(Var.selectedCircleTime), hostColor)
     }
 }
 

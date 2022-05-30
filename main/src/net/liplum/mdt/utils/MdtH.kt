@@ -53,10 +53,6 @@ fun buildAt(x: TileXYf, y: TileXYf): Building? =
 fun buildAt(x: TileXYd, y: TileXYd): Building? =
     Vars.world.build(x.toInt(), y.toInt())
 
-fun Block.toCenterXY(xy: TileXY): WorldXY {
-    return xy.worldXY + offset
-}
-
 fun Tile.dstWorld(x: TileXY, y: TileXY): WorldXY =
     this.dst(x * Vars.tilesize.toFloat(), y * Vars.tilesize.toFloat())
 /**
@@ -220,13 +216,16 @@ fun <T : ShootPattern> ShootPattern.copyAs(): T =
 /**
  * Tile xy to world xy. Take block's offset into account
  */
-fun Block.toCenterWorldXY(xy: TileXYs): Float =
+fun Block.toCenterWorldXY(xy: TileXYs): WorldXY =
     offset + xy * Vars.tilesize
 /**
  * Tile xy to world xy. Take block's offset into account
  */
-fun Block.toCenterWorldXY(xy: TileXY): Float =
+fun Block.toCenterWorldXY(xy: TileXY): WorldXY =
     offset + xy * Vars.tilesize
+
+fun Block.toCenterTileXY(xy: TileXY): TileXYf =
+    offset + xy
 
 val WorldXY.toTileXY: TileXY
     get() = (this / Vars.tilesize).toInt()
@@ -281,7 +280,7 @@ val Building.topRightY: TileXY
 
 fun Building.isDiagonalTo(other: Block, x: TileXY, y: TileXY) =
     net.liplum.lib.math.isDiagonalTo(
-        other.toCenterXY(x), other.toCenterXY(y),
+        other.toCenterWorldXY(x), other.toCenterWorldXY(y),
         this.x, this.y,
     )
 

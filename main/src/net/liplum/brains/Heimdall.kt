@@ -32,6 +32,7 @@ import mindustry.world.meta.Stat
 import net.liplum.CioMod
 import net.liplum.DebugOnly
 import net.liplum.R
+import net.liplum.Var
 import net.liplum.api.IExecutioner
 import net.liplum.api.brain.*
 import net.liplum.api.brain.IBrain.Companion.Mirror
@@ -49,14 +50,13 @@ import net.liplum.lib.utils.invoke
 import net.liplum.lib.utils.isZero
 import net.liplum.lib.utils.toDouble
 import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.render.Draw
 import net.liplum.mdt.HeadlessOnly
 import net.liplum.mdt.WhenNotPaused
+import net.liplum.mdt.advanced.Inspector.isPlacing
+import net.liplum.mdt.advanced.Inspector.isSelected
 import net.liplum.mdt.animations.anims.Anime
 import net.liplum.mdt.animations.anims.linearFrames
-import net.liplum.mdt.render.G
-import net.liplum.mdt.render.HeatMeta
-import net.liplum.mdt.render.drawHeat
+import net.liplum.mdt.render.*
 import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.utils.MdtUnit
 import net.liplum.mdt.utils.atUnit
@@ -88,10 +88,12 @@ open class Heimdall(name: String) : Block(name) {
      * Cooling per tick. It should be multiplied by [Time.delta]
      */
     @JvmField var coolingSpeed = 0.01f
+    // Visual effects
+    @ClientOnly @JvmField var maxSelectedCircleTime = Var.selectedCircleTime
     @ClientOnly lateinit var BuckleTRs: Array<TR>
     @ClientOnly lateinit var BuckleHeatTRs: Array<TR>
     @ClientOnly lateinit var HeartTR: TR
-    @JvmField @ClientOnly val heatMeta = HeatMeta()
+    @ClientOnly @JvmField val heatMeta = HeatMeta()
     @ClientOnly @JvmField var BuckleDuration = 20f
     @ClientOnly @JvmField var BuckleFrameNum = 5
     @JvmField var connectedSound: Sound = Sounds.none
@@ -153,7 +155,8 @@ open class Heimdall(name: String) : Block(name) {
 
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)
-        G.dashCircleBreath(this, x, y, range, R.C.BrainWave)
+        if (!this.isPlacing()) return
+        G.dashCircleBreath(this, x, y, range * smoothPlacing(maxSelectedCircleTime), R.C.BrainWave)
     }
 
     override fun setStats() {
@@ -625,7 +628,8 @@ open class Heimdall(name: String) : Block(name) {
         }
 
         override fun drawSelect() {
-            G.dashCircleBreath(x, y, realRange, R.C.BrainWave)
+            if (!this.isSelected()) return
+            G.dashCircleBreath(x, y, realRange * smoothSelect(maxSelectedCircleTime), R.C.BrainWave)
         }
 
         override fun damage(damage: Float) {

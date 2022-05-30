@@ -22,6 +22,7 @@ import mindustry.world.meta.Stat
 import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.UndebugOnly
+import net.liplum.Var
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
 import net.liplum.lib.Serialized
@@ -34,12 +35,13 @@ import net.liplum.lib.utils.EmptyArray
 import net.liplum.lib.utils.equalsNoOrder
 import net.liplum.lib.utils.isZero
 import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.render.Draw
 import net.liplum.mdt.animations.anims.Animation
 import net.liplum.mdt.animations.anims.AnimationObj
 import net.liplum.mdt.animations.anis.AniState
 import net.liplum.mdt.animations.anis.config
+import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.drawSurroundingRect
+import net.liplum.mdt.render.smoothPlacing
 import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.ui.bars.removeItemsInBar
 import net.liplum.mdt.utils.autoAnim
@@ -60,6 +62,7 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
     @JvmField @ClientOnly var ArrowsAnimFrames = 9
     @JvmField @ClientOnly var ArrowsAnimDuration = 70f
     @JvmField @ClientOnly var DistributionTime = 60f
+    @ClientOnly @JvmField var maxSelectedCircleTime = Var.selectedCircleTime
     /**
      * The area(tile xy) indicates the surrounding machines can be distributed.
      */
@@ -140,7 +143,11 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)
         this.drawLinkedLineToReceiverWhenConfiguring(x, y)
-        drawSurroundingRect(x, y, indicateAreaExtension, if (valid) R.C.GreenSafe else R.C.RedAlert) { b ->
+        drawSurroundingRect(
+            x, y, indicateAreaExtension,
+            if (valid) R.C.GreenSafe else R.C.RedAlert,
+            smoothPlacing(maxSelectedCircleTime)
+        ) { b ->
             b.block.consumers.any {
                 it is ConsumeItems || it is ConsumeItemDynamic || it is ConsumeItemFilter
             } && !b.isDiagonalTo(this, x, y)

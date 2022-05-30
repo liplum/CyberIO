@@ -18,6 +18,7 @@ import mindustry.world.meta.Stat
 import mindustry.world.meta.StatUnit
 import net.liplum.DebugOnly
 import net.liplum.R
+import net.liplum.Var
 import net.liplum.lib.Serialized
 import net.liplum.lib.TR
 import net.liplum.lib.entity.RadiationArray
@@ -27,9 +28,7 @@ import net.liplum.lib.math.radian
 import net.liplum.lib.utils.isZero
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.WhenNotPaused
-import net.liplum.mdt.render.AsShadow
-import net.liplum.mdt.render.Draw
-import net.liplum.mdt.render.G
+import net.liplum.mdt.render.*
 import net.liplum.mdt.utils.sub
 import net.liplum.mdt.utils.toCenterWorldXY
 import net.liplum.mdt.utils.worldXY
@@ -51,6 +50,8 @@ open class WirelessTower(name: String) : PowerBlock(name) {
     lateinit var CoreTR: TR
     lateinit var SupportTR: TR
     @ClientOnly @JvmField var rotationRadius = 0.7f
+    @ClientOnly @JvmField var maxSelectedCircleTime = Var.selectedCircleTime
+    @JvmField var range2Stroke: (Float) -> Float = { (it / 100f).coerceAtLeast(1f) }
 
     init {
         consumesPower = true
@@ -84,12 +85,12 @@ open class WirelessTower(name: String) : PowerBlock(name) {
     override fun icons() = arrayOf(BaseTR, SupportTR, CoilTR)
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)
-        G.drawDashCircleBreath(x.worldXY, y.worldXY, range, R.C.Power)
+        G.drawDashCircleBreath(x.worldXY, y.worldXY, range, R.C.Power, stroke = range2Stroke(range))
         Vars.indexer.eachBlock(
             Vars.player.team(),
             toCenterWorldXY(x),
             toCenterWorldXY(y),
-            range,
+            range * smoothPlacing(maxSelectedCircleTime),
             {
                 val consPower = it.block.consPower
                 it.block.hasPower && consPower != null && consPower.buffered
@@ -132,7 +133,10 @@ open class WirelessTower(name: String) : PowerBlock(name) {
         }
 
         override fun drawSelect() {
-            G.drawDashCircleBreath(x, y, realRange, R.C.Power, stroke = (realRange / 100f).coerceAtLeast(1f))
+            G.drawDashCircleBreath(
+                x, y, realRange * smoothSelect(maxSelectedCircleTime),
+                R.C.Power, stroke = range2Stroke(this.realRange)
+            )
             forEachBufferedInRange {
                 G.drawWrappedSquareBreath(it)
             }

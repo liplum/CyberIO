@@ -13,6 +13,7 @@ import mindustry.type.Item
 import mindustry.world.meta.BlockGroup
 import net.liplum.DebugOnly
 import net.liplum.R
+import net.liplum.Var
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
 import net.liplum.data.Sender.SenderBuild
@@ -20,14 +21,13 @@ import net.liplum.lib.Serialized
 import net.liplum.lib.TR
 import net.liplum.lib.utils.isZero
 import net.liplum.lib.utils.toFloat
-import net.liplum.mdt.*
+import net.liplum.mdt.CalledBySync
+import net.liplum.mdt.ClientOnly
+import net.liplum.mdt.SendDataPack
 import net.liplum.mdt.animations.anims.Animation
 import net.liplum.mdt.animations.anis.AniState
 import net.liplum.mdt.animations.anis.config
-import net.liplum.mdt.render.Draw
-import net.liplum.mdt.render.G
-import net.liplum.mdt.render.ResetColor
-import net.liplum.mdt.render.SetColor
+import net.liplum.mdt.render.*
 import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.utils.*
 import net.liplum.utils.addReceiverInfo
@@ -42,17 +42,14 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
     @ClientOnly lateinit var UploadAnim: Animation
     @JvmField var UploadAnimFrameNumber = 7
     @JvmField var UploadAnimDuration = 30f
-    @ClientOnly @JvmField var SendingTime = 60f
     @JvmField val CheckConnectionTimer = timers++
     @JvmField val SpeedLimitTimer = timers++
     /**
      * The max range when trying to connect. -1f means no limit.
      */
     @JvmField var maxRange = -1f
-    /**
-     * The
-     */
-    @JvmField var SpeedLimit = -1f
+    @ClientOnly @JvmField var maxSelectedCircleTime = Var.selectedCircleTime
+    @ClientOnly @JvmField var SendingTime = 60f
 
     init {
         solid = true
@@ -93,7 +90,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)
         if (maxRange > 0f)
-            G.dashCircleBreath(this, x, y, maxRange, R.C.Sender)
+            G.dashCircleBreath(this, x, y, maxRange * smoothPlacing(maxSelectedCircleTime), R.C.Sender)
     }
 
     override fun setBars() {

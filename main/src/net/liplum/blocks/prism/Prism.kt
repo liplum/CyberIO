@@ -43,7 +43,7 @@ import net.liplum.lib.utils.isZero
 import net.liplum.lib.utils.percentI
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.advanced.Inspector
-import net.liplum.mdt.advanced.Inspector.isSelectedByMouse
+import net.liplum.mdt.advanced.Inspector.isSelected
 import net.liplum.mdt.mixin.copy
 import net.liplum.mdt.render.AsShadow
 import net.liplum.mdt.render.DrawSize
@@ -377,10 +377,8 @@ open class Prism(name: String) : Block(name) {
                     scale,
                     rotation.a.degree.draw
                 )
-                if (isInPayload)
-                    Draw.z(Layer.blockOver + 1f)
-                else
-                    Draw.z(Layer.bullet - 1f)
+                if (isInPayload) Draw.z(Layer.blockOver + 1f)
+                else Draw.z(Layer.bullet - 1f)
                 DebugOnly {
                     G.drawDashCircleBreath(priselX, priselY, prismRadius, circleColor)
                 }
@@ -395,13 +393,13 @@ open class Prism(name: String) : Block(name) {
         }
 
         override fun drawSelect() {
-            if (!this.isSelectedByMouse()) return
+            if (!this.isSelected()) return
             Draw.z(Layer.blockOver)
             val pre = expendingSelectCircleTime / cm.inOrbitAmount
             cm.render {
                 val curNeed = (orbitPos + 1) * pre
-                var progress = ((Inspector.selectingTime - curNeed) / curNeed).coerceIn(0f, 1f)
-                if(isRemoved) progress = 1f - progress
+                var progress = ((Inspector.selectingTime + pre - curNeed) / curNeed).coerceIn(0f, 1f).smooth
+                if (isRemoved) progress = 1f - progress
                 if (progress < 0.01f) return@render
                 G.drawDashCircleBreath(
                     this@PrismBuild,

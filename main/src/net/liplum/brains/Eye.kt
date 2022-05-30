@@ -17,10 +17,12 @@ import mindustry.gen.Teamc
 import mindustry.gen.Unit
 import mindustry.graphics.Drawf
 import mindustry.graphics.Layer
+import mindustry.graphics.Pal
 import mindustry.world.blocks.defense.turrets.PowerTurret
 import mindustry.world.meta.Stat
 import net.liplum.DebugOnly
 import net.liplum.R
+import net.liplum.Var
 import net.liplum.api.brain.*
 import net.liplum.lib.TR
 import net.liplum.lib.TRs
@@ -31,18 +33,13 @@ import net.liplum.lib.math.radian
 import net.liplum.lib.utils.EmptySounds
 import net.liplum.lib.utils.progress
 import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.render.Draw
 import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.animations.anims.Anime
 import net.liplum.mdt.animations.anims.genFramesBy
 import net.liplum.mdt.animations.anims.randomCurTime
-import net.liplum.mdt.render.G
-import net.liplum.mdt.render.HeatMeta
-import net.liplum.mdt.render.drawHeat
+import net.liplum.mdt.render.*
 import net.liplum.mdt.ui.ammoStats
-import net.liplum.mdt.utils.draw
-import net.liplum.mdt.utils.sheet
-import net.liplum.mdt.utils.sub
+import net.liplum.mdt.utils.*
 import net.liplum.utils.addBrainInfo
 
 open class Eye(name: String) : PowerTurret(name), IComponentBlock {
@@ -54,6 +51,7 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
      * Cooling per tick. It should be multiplied by [Time.delta]
      */
     @JvmField var coolingSpeed = 0.01f
+    // Visual Effects
     @ClientOnly lateinit var BaseTR: TR
     @ClientOnly lateinit var BaseHeatTR: TR
     @ClientOnly lateinit var EyeBallTR: TR
@@ -64,7 +62,8 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
     @ClientOnly lateinit var PupilOutsideHeatTR: TR
     @ClientOnly lateinit var HemorrhageTRs: TRs
     @ClientOnly lateinit var BlinkTRs: TRs
-    @JvmField @ClientOnly val heatMeta = HeatMeta()
+    @ClientOnly @JvmField var maxSelectedCircleTime = Var.selectedCircleTime
+    @ClientOnly @JvmField val heatMeta = HeatMeta()
     @ClientOnly @JvmField var BlinkDuration = 50f
     @ClientOnly @JvmField var BlinkFrameNum = 9
     @ClientOnly @JvmField var radiusSpeed = 0.1f
@@ -121,6 +120,14 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
         stats.remove(Stat.ammo)
         stats.add(Stat.ammo, ammoStats(Pair(this, normalBullet), Pair(this, improvedBullet)))
         this.addUpgradeComponentStats()
+    }
+
+    override fun drawPlace(x: TileXY, y: TileXY, rotation: Int, valid: Boolean) {
+        drawPotentialLinks(x, y)
+        val worldX = toCenterWorldXY(x)
+        val worldY = toCenterWorldXY(y)
+        drawOverlay(worldX, worldY, rotation)
+        G.dashCircleBreath(worldX, worldY, range * smoothPlacing(maxSelectedCircleTime), Pal.placing)
     }
 
     open inner class EyeBuild : PowerTurretBuild(), IUpgradeComponent {
@@ -302,6 +309,10 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
                 improvedSounds.random().at(tile, soundPitchMin)
             else
                 normalSounds.random().at(tile)
+        }
+
+        override fun drawSelect() {
+            G.dashCircleBreath(x, y, range() * smoothSelect(maxSelectedCircleTime), team.color)
         }
 
         override fun heal() {

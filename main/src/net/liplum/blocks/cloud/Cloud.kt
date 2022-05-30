@@ -12,6 +12,7 @@ import mindustry.world.meta.BlockGroup
 import mindustry.world.modules.ItemModule
 import net.liplum.DebugOnly
 import net.liplum.R
+import net.liplum.Var
 import net.liplum.WhenRefresh
 import net.liplum.api.cyber.*
 import net.liplum.lib.TR
@@ -58,6 +59,7 @@ open class Cloud(name: String) : PowerBlock(name) {
     @ClientOnly lateinit var NoPowerTR: TR
     @JvmField var maxConnection = -1
     @JvmField var maxRange = -1f
+    @ClientOnly @JvmField var maxSelectedCircleTime = Var.selectedCircleTime
 
     init {
         solid = true

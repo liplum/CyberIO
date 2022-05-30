@@ -33,12 +33,15 @@ import mindustry.world.meta.Stat
 import mindustry.world.meta.StatUnit
 import net.liplum.DebugOnly
 import net.liplum.R
+import net.liplum.Var
 import net.liplum.lib.Serialized
 import net.liplum.lib.utils.bundle
 import net.liplum.lib.utils.format
 import net.liplum.lib.utils.percentI
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.render.G
+import net.liplum.mdt.render.smoothPlacing
+import net.liplum.mdt.render.smoothSelect
 import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.ui.bars.ReverseBar
 import net.liplum.mdt.utils.sub
@@ -94,6 +97,7 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
     @JvmField var maxPowerEFFBlocksReq = 10
     @JvmField var maxGear = 1
     lateinit var spiralTR: TextureRegion
+    @ClientOnly @JvmField var maxSelectedCircleTime = Var.selectedCircleTime
 
     init {
         solid = true
@@ -152,7 +156,7 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
 
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)
-        G.drawDashCircleBreath(this, x.toShort(), y.toShort(), range, color)
+        G.drawDashCircleBreath(toCenterWorldXY(x), toCenterWorldXY(y), range * smoothPlacing(maxSelectedCircleTime), color)
         Vars.indexer.eachBlock(
             Vars.player.team(),
             toCenterWorldXY(x),
@@ -376,7 +380,7 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
             forEachTargetInRange {
                 G.drawSelected(it, color)
             }
-            G.dashCircleBreath(x, y, realRange, color)
+            G.dashCircleBreath(x, y, realRange * smoothSelect(maxSelectedCircleTime), color)
         }
 
         override fun draw() {

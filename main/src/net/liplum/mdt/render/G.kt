@@ -130,8 +130,8 @@ object G {
         startTile.block(), startTile.x, startTile.y, pointedTile.block(), pointedTile.x, pointedTile.y,
         arrowColor, alpha
     )
-    @JvmOverloads
     @JvmStatic
+    @JvmOverloads
     fun drawArrowBetweenTwoBlocksBreath(
         startBlock: Block, startBlockX: TileXYs, startBlockY: TileXYs,
         pointedBlock: Block, pointedBlockX: TileXYs, pointedBlockY: TileXYs,
@@ -467,5 +467,20 @@ object G {
         b: Building, color: Color = Pal.accent
     ) {
         Drawf.square(b.x, b.y, b.block.size * Vars.tilesize / 2f + 2.5f, 0f, color)
+    }
+    @JvmStatic
+    @JvmOverloads
+    fun drawLineBreath(
+        color: Color, x: WorldXY, y: WorldXY, x2: WorldXY, y2: WorldXY,
+        alpha: Float? = null, stroke: Float = 1f
+    ) {
+        Lines.stroke(stroke + 2f + sin)
+        Draw.color(Pal.gray, color.a)
+        if (alpha != null) Draw.alpha(alpha)
+        Lines.line(x, y, x2, y2)
+        Lines.stroke(stroke + sin, color)
+        if (alpha != null) Draw.alpha(alpha)
+        Lines.line(x, y, x2, y2)
+        Draw.reset()
     }
 }

@@ -29,6 +29,7 @@ import mindustry.world.meta.BlockGroup
 import net.liplum.CioMod.Companion.DebugMode
 import net.liplum.DebugOnly
 import net.liplum.R
+import net.liplum.Var
 import net.liplum.api.brain.*
 import net.liplum.lib.Serialized
 import net.liplum.lib.Smooth
@@ -37,7 +38,6 @@ import net.liplum.lib.TRs
 import net.liplum.lib.math.FUNC
 import net.liplum.lib.utils.*
 import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.render.Draw
 import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.WhenTheSameTeam
 import net.liplum.mdt.animations.anims.Anime
@@ -45,9 +45,7 @@ import net.liplum.mdt.animations.anims.linearFrames
 import net.liplum.mdt.animations.anims.randomCurTime
 import net.liplum.mdt.animations.anims.setEnd
 import net.liplum.mdt.mixin.Mover
-import net.liplum.mdt.render.G
-import net.liplum.mdt.render.HeatMeta
-import net.liplum.mdt.render.drawHeat
+import net.liplum.mdt.render.*
 import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.ui.bars.appendDisplayLiquidsDynamic
 import net.liplum.mdt.ui.bars.genAllLiquidBars
@@ -84,6 +82,7 @@ open class Heart(name: String) : Block(name), IComponentBlock {
     @ClientOnly @JvmField var bloodColor: Color = R.C.Blood
     @ClientOnly @JvmField var coldColor: Color = R.C.ColdTemperature
     @ClientOnly @JvmField var hotColor: Color = R.C.HotTemperature
+    @ClientOnly @JvmField var maxSelectedCircleTime = Var.selectedCircleTime
     @ClientOnly lateinit var BaseTR: TR
     @ClientOnly lateinit var HeartTR: TR
     @ClientOnly lateinit var HeartBeatTRs: TRs
@@ -144,7 +143,7 @@ open class Heart(name: String) : Block(name), IComponentBlock {
 
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)
-        G.dashCircleBreath(this, x, y, heartbeat.range.base, bloodColor)
+        G.dashCircleBreath(this, x, y, heartbeat.range.base * smoothPlacing(maxSelectedCircleTime), bloodColor)
     }
 
     protected val temperatureColor = Color()
@@ -573,7 +572,7 @@ open class Heart(name: String) : Block(name), IComponentBlock {
         override fun heatFrac() = heat / heatMax
         override fun range() = realRange
         override fun drawSelect() {
-            Drawf.dashCircle(x, y, visualRange.value, bloodColor)
+            Drawf.dashCircle(x, y, visualRange.value * smoothSelect(maxSelectedCircleTime), bloodColor)
         }
     }
 }

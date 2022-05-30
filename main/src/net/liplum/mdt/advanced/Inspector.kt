@@ -4,24 +4,47 @@ import arc.util.Time
 import mindustry.Vars
 import mindustry.game.EventType
 import mindustry.gen.Building
+import mindustry.world.Block
 import net.liplum.annotations.Only
 import net.liplum.annotations.Subscribe
 import net.liplum.inputs.Screen
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.render.IFocusable
 
+@ClientOnly
 object Inspector {
-    @ClientOnly
     var preSelected: Building? = null
         private set
-    @ClientOnly
     var curSelected: Building? = null
         private set
-    @ClientOnly
     var selectingTime = 0f
         private set
-    @ClientOnly
+    var prePlacing: Block? = null
+    var curPlacing: Block? = null
+        private set
+    var placingTime = 0f
+        private set
     @Subscribe(EventType.Trigger.preDraw, Only.client)
+    fun updateInput() {
+        updateSelectedTile()
+        updatePlacingBlock()
+    }
+
+    fun updatePlacingBlock() {
+        if (Vars.state.isMenu) return
+        if (curPlacing != null) placingTime += Time.delta
+        else placingTime = 0f
+        setCurPlacing(Vars.control.input.block)
+    }
+
+    private fun setCurPlacing(block: Block?) {
+        if (curPlacing != block) {
+            prePlacing = curPlacing
+            curPlacing = block
+            placingTime = 0f
+        }
+    }
+
     fun updateSelectedTile() {
         if (Vars.state.isMenu) return
         // Reset the selecting time when not select any building
@@ -36,10 +59,13 @@ object Inspector {
             setCurSelected(build)
         }
     }
-    @ClientOnly
-    fun Building.isSelectedByMouse(): Boolean =
+
+    fun Building.isSelected(): Boolean =
         this == curSelected
-    @ClientOnly
+
+    fun Block.isPlacing(): Boolean =
+        this == curPlacing
+
     private fun setCurSelected(build: Building?) {
         if (curSelected != build) {
             (preSelected as? IFocusable)?.onLostFocus()

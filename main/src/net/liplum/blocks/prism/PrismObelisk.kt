@@ -9,6 +9,7 @@ import mindustry.world.Block
 import mindustry.world.meta.BlockFlag
 import mindustry.world.meta.BlockGroup
 import net.liplum.R
+import net.liplum.Var
 import net.liplum.blocks.prism.Prism.PrismBuild
 import net.liplum.lib.utils.bundle
 import net.liplum.mdt.ClientOnly
@@ -17,6 +18,7 @@ import net.liplum.mdt.animations.anims.Animation
 import net.liplum.mdt.animations.anims.AnimationObj
 import net.liplum.mdt.animations.anims.pingPong
 import net.liplum.mdt.render.drawSurroundingRect
+import net.liplum.mdt.render.smoothPlacing
 import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.utils.*
 
@@ -29,6 +31,7 @@ open class PrismObelisk(name: String) : Block(name) {
     @JvmField @ClientOnly var indicateAreaExtension = 2f
     @JvmField @ClientOnly var BlinkFrames = 6
     @JvmField @ClientOnly var BlinkDuration = 20f
+    @ClientOnly @JvmField var maxSelectedCircleTime = Var.selectedCircleTime
 
     init {
         absorbLasers = true
@@ -60,7 +63,11 @@ open class PrismObelisk(name: String) : Block(name) {
 
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)
-        drawSurroundingRect(x, y, indicateAreaExtension, if (valid) R.C.GreenSafe else R.C.RedAlert) {
+        drawSurroundingRect(
+            x, y, indicateAreaExtension,
+            if (valid) R.C.GreenSafe else R.C.RedAlert,
+            smoothPlacing(maxSelectedCircleTime)
+        ) {
             it.block == prismType && !it.isDiagonalTo(this, x, y)
         }
         drawPlaceText(subBundle("tip"), x, y, valid)

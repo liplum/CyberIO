@@ -25,6 +25,7 @@ import net.liplum.mdt.animations.anis.config
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.DrawOn
 import net.liplum.mdt.render.G
+import net.liplum.mdt.render.smoothPlacing
 import net.liplum.mdt.utils.buildAt
 import net.liplum.mdt.utils.inMod
 import net.liplum.mdt.utils.sub
@@ -39,13 +40,6 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
     @JvmField var liquidColorLerp = 0.5f
     @JvmField var powerUseBase = 1f
     @JvmField var powerUsePerConnection = 1f
-    @ClientOnly lateinit var LiquidTR: TR
-    @ClientOnly lateinit var TopTR: TR
-    @ClientOnly lateinit var NoPowerAni: AniStateH
-    @ClientOnly lateinit var NormalAni: AniStateH
-    @ClientOnly lateinit var NoPowerTR: TR
-    @JvmField val CheckConnectionTimer = timers++
-    @JvmField val TransferTimer = timers++
     /**
      * 1 networkSpeed = 60 per seconds
      */
@@ -57,6 +51,14 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
      * The max range when trying to connect. -1f means no limit.
      */
     @JvmField var maxRange = -1f
+    @ClientOnly lateinit var LiquidTR: TR
+    @ClientOnly lateinit var TopTR: TR
+    @ClientOnly lateinit var NoPowerAni: AniStateH
+    @ClientOnly lateinit var NormalAni: AniStateH
+    @ClientOnly lateinit var NoPowerTR: TR
+    @ClientOnly @JvmField var maxSelectedCircleTime = Var.selectedCircleTime
+    @JvmField val CheckConnectionTimer = timers++
+    @JvmField val TransferTimer = timers++
 
     init {
         update = true
@@ -126,7 +128,7 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)
         if (maxRange > 0f)
-            G.dashCircleBreath(this, x, y, maxRange, R.C.Host)
+            G.dashCircleBreath(this, x, y, maxRange * smoothPlacing(maxSelectedCircleTime), R.C.Host)
     }
 
     open inner class HostBuild : AniedBuild(), IStreamHost {

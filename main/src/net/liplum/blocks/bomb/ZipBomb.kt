@@ -20,6 +20,7 @@ import mindustry.gen.Unit
 import mindustry.world.Block
 import net.liplum.DebugOnly
 import net.liplum.R
+import net.liplum.Var
 import net.liplum.annotations.isOn
 import net.liplum.lib.Serialized
 import net.liplum.lib.utils.bigEndianByte
@@ -30,6 +31,8 @@ import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.SendDataPack
 import net.liplum.mdt.WhenTheSameTeam
 import net.liplum.mdt.render.G
+import net.liplum.mdt.render.smoothPlacing
+import net.liplum.mdt.render.smoothSelect
 import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.utils.subBundle
 import kotlin.math.sqrt
@@ -47,6 +50,7 @@ open class ZipBomb(name: String) : Block(name) {
     val explosionDamage: Float
         get() = damagePreUnit * Vars.tilesize
     @JvmField var circleColor: Color = R.C.RedAlert
+    @ClientOnly @JvmField var maxSelectedCircleTime = Var.selectedCircleTime
     @JvmInline
     value class Command(val value: Int) {
         val isAutoDetect: Boolean get() = value isOn AutoDetectPos
@@ -95,7 +99,7 @@ open class ZipBomb(name: String) : Block(name) {
 
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)
-        G.dashCircleBreath(this, x, y, explosionRange, circleColor)
+        G.dashCircleBreath(this, x, y, explosionRange * smoothPlacing(maxSelectedCircleTime), circleColor)
     }
 
     override fun setBars() {
@@ -156,7 +160,7 @@ open class ZipBomb(name: String) : Block(name) {
 
         override fun drawSelect() {
             super.drawSelect()
-            G.dashCircleBreath(x, y, explosionRange, circleColor)
+            G.dashCircleBreath(x, y, explosionRange * smoothSelect(maxSelectedCircleTime), circleColor)
         }
 
         override fun onCommand(target: Vec2) {

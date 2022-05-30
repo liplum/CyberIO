@@ -29,6 +29,7 @@ import net.liplum.mdt.animations.anis.AniState
 import net.liplum.mdt.animations.anis.config
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.G
+import net.liplum.mdt.render.smoothPlacing
 import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.ui.bars.removeItemsInBar
 import net.liplum.mdt.utils.*
@@ -46,11 +47,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
      */
     @JvmField var unloadSpeed = 1f
     @JvmField var maxConnection = 5
-    @JvmField @ClientOnly var SendingTime = 60f
-    @JvmField @ClientOnly var UnloadTime = 60f
     @ClientOnly lateinit var ShrinkingAnim: Animation
-    @JvmField @ClientOnly var ShrinkingAnimFrames = 13
-    @JvmField @ClientOnly var ShrinkingAnimDuration = 120f
     @ClientOnly lateinit var CoverTR: TR
     @ClientOnly lateinit var NoPowerTR: TR
     @JvmField var powerUsePerItem = 2.5f
@@ -58,6 +55,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
     @JvmField var powerUseBasic = 1.5f
     @JvmField val CheckConnectionTimer = timers++
     @JvmField val TransferTimer = timers++
+    @JvmField var unloaderComparator: Comparator<Building> = Structs.comparingBool { it.block.highUnloadPriority }
     @JvmField var boost2Count: (Float) -> Int = {
         if (it <= 1.1f)
             1
@@ -68,7 +66,11 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
         else
             Mathf.round(log2(it + 5.1f))
     }
-    @JvmField var unloaderComparator: Comparator<Building> = Structs.comparingBool { it.block.highUnloadPriority }
+    @ClientOnly @JvmField var SendingTime = 60f
+    @ClientOnly @JvmField var UnloadTime = 60f
+    @ClientOnly @JvmField var ShrinkingAnimFrames = 13
+    @ClientOnly @JvmField var ShrinkingAnimDuration = 120f
+    @ClientOnly @JvmField var maxSelectedCircleTime = Var.selectedCircleTime
     /**
      * The max range when trying to connect. -1f means no limit.
      */
@@ -138,7 +140,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)
         if (maxRange > 0f)
-            G.dashCircleBreath(this, x, y, maxRange, R.C.Sender)
+            G.dashCircleBreath(this, x, y, maxRange * smoothPlacing(maxSelectedCircleTime), R.C.Sender)
     }
 
     override fun setBars() {
