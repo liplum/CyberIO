@@ -80,6 +80,15 @@ object ForceFieldFE : IFormationPattern, IFormationEffect {
     override fun toString() = name
 }
 
+object LootAtHeartFE:IRotatedFormationPattern,IFormationEffect{
+    override fun mappedMatch(brain: IBrain, sides: Array<Side2>): IFormationEffect? {
+        TODO("Not yet implemented")
+    }
+    override val name = "LootAtHeart"
+    override val upgrades: Map<UpgradeType, Upgrade>
+        get() = TODO("Not yet implemented")
+}
+
 fun syncEyeBlink(eyeA: EyeBuild, eyeB: EyeBuild) {
     val res = findIn(eyeA, eyeB) {
         it.isShooting || it.charging()

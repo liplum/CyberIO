@@ -4,18 +4,20 @@ import mindustry.game.EventType
 import mindustry.gen.Groups
 import net.liplum.DebugOnly
 import net.liplum.R
+import net.liplum.Var
 import net.liplum.annotations.Only
 import net.liplum.annotations.Subscribe
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.mixin.PowerGraphc
 import net.liplum.mdt.render.Text
 
+@ClientOnly
 object DebugDrawer {
     @JvmStatic
     @Subscribe(EventType.Trigger.drawOver, Only.debug)
-    @ClientOnly
     fun draw() {
         DebugOnly {
+            if(!Var.ShowPowerGraphID) return
             Groups.build.each {
                 DebugOnly {
                     val power = it.power

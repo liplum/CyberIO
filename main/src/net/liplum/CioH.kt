@@ -52,7 +52,7 @@ inline fun <reified T> T.DebugOnlyOn(func: T.() -> Unit): T {
     return this
 }
 
-fun CanRefresh() = Time.time % CioMod.UpdateFrequency < 1f
+fun CanRefresh() = Time.time % Var.UpdateFrequency < 1f
 inline fun ExperimentalOnly(func: () -> Unit): Boolean {
     if (CioMod.ExperimentalMode) {
         func()
@@ -70,7 +70,7 @@ inline fun UndebugOnly(func: () -> Unit): Boolean {
 }
 
 inline fun WhenRefresh(func: () -> Unit): Boolean {
-    if (!Vars.state.isPaused && Time.time % CioMod.UpdateFrequency < 1f) {
+    if (!Vars.state.isPaused && Time.time % Var.UpdateFrequency < 1f) {
         func()
         return true
     }

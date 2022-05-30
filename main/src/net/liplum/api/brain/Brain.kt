@@ -115,6 +115,15 @@ interface IBrain : IHeimdallEntity, Iterable<IUpgradeComponent> {
     override fun iterator() = components.iterator()
 
     companion object {
+        fun Array<Side2>.getLeft(current: Int): Side2 =
+            this[(current + 1) % 4]
+
+        fun Array<Side2>.getRight(current: Int): Side2 =
+            this[(current + 3) % 4]// is -1 actually, but prevent a negative index
+
+        fun Array<Side2>.getOpposite(current: Int): Side2 =
+            this[(current + 2) % 4]
+
         inline fun IBrain.find(filter: (IUpgradeComponent) -> Boolean): IUpgradeComponent? {
             for (c in components)
                 if (filter(c))

@@ -1,7 +1,8 @@
 package net.liplum.api.brain
 
-import net.liplum.mdt.ClientOnly
 import net.liplum.lib.toLinkedString
+import net.liplum.lib.utils.rotateOnce
+import net.liplum.mdt.ClientOnly
 
 interface IFormationPattern {
     fun match(brain: IBrain): IFormationEffect?
@@ -136,3 +137,27 @@ fun analyzeSides(com: Array<out Class<out IUpgradeComponent>?>)
 
 fun List<Upgrade>.toUpgradeMap(): Map<UpgradeType, Upgrade> =
     this.associateBy { it.type }
+
+interface IRotatedFormationPattern : IFormationPattern {
+    @Suppress("UNCHECKED_CAST")
+    override fun match(brain: IBrain): IFormationEffect? {
+        val cur = brain.sides.copyInto(tmp) as Array<Side2>
+        var i = 0
+        do {
+            val matched = mappedMatch(brain, cur)
+            if (matched != null) return matched
+            if (i < 3)// only need rotate third actually
+                cur.rotateOnce()
+            i++
+        } while (i < 4)
+        return null
+    }
+    /**
+     * Overwrite this function, and use [sides] parameter instead of [IBrain.sides]
+     */
+    fun mappedMatch(brain: IBrain, sides: Array<Side2>): IFormationEffect?
+
+    companion object {
+        val tmp = arrayOfNulls<Side2>(4)
+    }
+}

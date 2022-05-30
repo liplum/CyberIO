@@ -171,11 +171,6 @@ open class Heimdall(name: String) : Block(name) {
     override fun setBars() {
         super.setBars()
         DebugOnly {
-            AddBar<HeimdallBuild>(R.Bar.FormationN,
-                { "$formationEffects" },
-                { R.C.BrainWave },
-                { if (formationEffects.isNotEmpty) 1f else 0f }
-            )
             AddBar<HeimdallBuild>("shield",
                 { "${shieldAmount.toInt()}" },
                 { R.C.BrainWave },
@@ -613,6 +608,13 @@ open class Heimdall(name: String) : Block(name) {
             Draw.reset()
             heatMeta.drawHeat(this, HeartTR, heatShared)
             formationEffects.draw(this)
+            // Draw all formation
+            DebugOnly {
+                Draw.z(Layer.blockOver)
+                if (formationEffects.isEmpty) return@DebugOnly
+                val str = formationEffects.joinToString("\n")
+                Text.drawTextEasy(str, x, y, R.C.RedAlert)
+            }
         }
 
         open fun anyEnemyNearby(): Boolean {

@@ -129,7 +129,6 @@ public class R {
                 RestLifeFigure = Gen(RestLifeN + ".figure");
         public static final String RestResurrectN = "rest-resurrect",
                 RestResurrect = Gen(RestResurrectN);
-        public static final String FormationN = "formation";
         public static final String BloodN = "blood",
                 Blood = Gen(BloodN);
         public static final String TemperatureN = "temperature",

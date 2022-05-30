@@ -2,6 +2,8 @@
 
 package net.liplum.lib.utils
 
+import net.liplum.lib.Out
+
 fun Double.format(digits: Int) = "%.${digits}f".format(this)
 fun Float.format(digits: Int) = "%.${digits}f".format(this)
 infix fun Float.coIn(abs: Float) = this.coerceIn(-abs, abs)
@@ -207,4 +209,35 @@ fun Int.progress(progress: Float): Int {
 inline fun Int.forLoop(func: (Int) -> Unit) {
     for (i in 0 until this)
         func(i)
+}
+
+fun <T> Array<T>.rotateInto(@Out out: Array<T>, rotator: Int = 1): Array<T> {
+    if (isEmpty()) throw NoSuchElementException("Array is empty.")
+    for (i in 0 until this.size) {
+        out[(i + rotator) % this.size] = this[i]
+    }
+    return out
+}
+/**
+ * Rotate current array 1 step.
+ * @param forward whether every index will increase 1
+ */
+fun <T> Array<T>.rotateOnce(forward: Boolean = true): Array<T> {
+    if (isEmpty() || size == 1) return this
+    if (forward) {
+        // the last one will be the first one
+        val last = this.last()
+        for (i in 0 until size - 1) {// stop before the last one
+            this[i + 1] = this[i]
+        }
+        this[0] = last
+    } else {
+        // the first one will be the last one
+        val first = first()
+        for (i in 1 until size) {// stop at the last one
+            this[i] = this[i + 1]
+        }
+        this[lastIndex] = first
+    }
+    return this
 }

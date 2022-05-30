@@ -42,7 +42,6 @@ class CioMod : Mod() {
         @JvmField var TestSteam = false
         @JvmField var TestGlCompatibility = false
         @JvmField var ExperimentalMode = false
-        @JvmField var UpdateFrequency = 5f
         @JvmField var ContentLoaded = false
         @JvmField var ContentSpecific = ContentSpec.Vanilla
         lateinit var Info: Mods.LoadedMod
@@ -130,7 +129,7 @@ class CioMod : Mod() {
 
     override fun init() {
         CLog.info("v${Meta.DetailedVersion} $ContentSpecific initializing...")
-        UpdateFrequency = if (Vars.mobile || Vars.testMobile) 10f else 5f
+        Var.UpdateFrequency = if (Vars.mobile || Vars.testMobile) 10f else 5f
         Events.fire(CioInitEvent())
         DebugOnly {
             // Cloud is developing

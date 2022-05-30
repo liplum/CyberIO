@@ -697,7 +697,7 @@ object CioBlocks {
     }
     @Subscribe(Trigger.update, Only.client)
     fun TMTRAINER_RandomName() {
-        if (Time.globalTime % CioMod.UpdateFrequency < 1f && CioMod.ContentLoaded) {
+        if (Time.globalTime % Var.UpdateFrequency < 1f && CioMod.ContentLoaded) {
             TMTRAINER.localizedName = RandomName.one(8)
             TMTRAINER.description = RandomName.one(25)
         }

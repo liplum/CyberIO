@@ -27,6 +27,12 @@ object Debug {
             { CioMod.DebugMode = it },
             SettingType.Check,
         ),
+        Setting(
+            "Show Power Graph ID",
+            { Var.ShowPowerGraphID },
+            { Var.ShowPowerGraphID = it },
+            SettingType.Check,
+        ),
     )
 
     enum class SettingType {
