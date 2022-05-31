@@ -435,14 +435,13 @@ object G {
     @JvmStatic
     @JvmOverloads
     fun drawMaterialIcons(
-        b: Building, materials: Array<out UnlockableContent>,
+        b: Building, materials: Iterable<UnlockableContent>,
         alpha: Float = 1f, maxPerRow: Int = 4
     ) {
         val dx = b.x - b.block.size * Vars.tilesize / 2f
         val dy = b.y + b.block.size * Vars.tilesize / 2f
         val size = Vars.iconSmall / 4f
-        for (i in materials.indices) {
-            val material = materials[i]
+        for ((i, material) in materials.withIndex()) {
             val icon = material.fullIcon
             Draw.mixcol(Color.darkGray, 1f)
             Draw.alpha(alpha)

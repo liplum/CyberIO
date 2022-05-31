@@ -2,6 +2,7 @@ package net.liplum.blocks.cloud
 
 import arc.graphics.g2d.Draw
 import arc.struct.ObjectSet
+import arc.struct.Seq
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.gen.Building
@@ -206,7 +207,7 @@ open class Cloud(name: String) : PowerBlock(name) {
         override fun handleStack(item: Item, amount: Int, source: Teamc) {
         }
 
-        override fun getRequirements(): Array<Item>? = null
+        override fun getRequirements(): Seq<Item>? = null
         @ClientOnly
         override fun isBlocked() = false
         @SendDataPack

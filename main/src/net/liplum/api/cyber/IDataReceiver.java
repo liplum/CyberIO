@@ -2,6 +2,7 @@ package net.liplum.api.cyber;
 
 import arc.graphics.Color;
 import arc.struct.ObjectSet;
+import arc.struct.Seq;
 import mindustry.type.Item;
 import net.liplum.mdt.CalledBySync;
 import net.liplum.mdt.ClientOnly;
@@ -27,12 +28,12 @@ public interface IDataReceiver extends IDataBuilding {
      * Gets what this receiver wants<br/>
      * null : Any<br/>
      * Array.Empty : Nothing<br/>
-     * An array : what's in the array<br/>
-     *
+     * An seq : all things in the array<br/>
+     * Please cache this value, this is a mutable list.
      * @return what this receiver wants
      */
     @Nullable
-    Item[] getRequirements();
+    Seq<Item> getRequirements();
 
     @NotNull
     @ClientOnly

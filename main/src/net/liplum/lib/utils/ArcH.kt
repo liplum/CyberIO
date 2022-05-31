@@ -105,7 +105,7 @@ inline fun IntSet.forEachIndexed(func: (Int, Int) -> Unit) {
  */
 inline fun IntSeq.forEachIndexed(func: (Int, Int) -> Unit) {
     for (i in 0 until size) {
-        func(i,this[i])
+        func(i, this[i])
     }
 }
 /**
@@ -122,3 +122,29 @@ inline fun IntSet.removeAll(predicate: (Int) -> Boolean) {
 
 fun String.tinted(color: Color) =
     "[#${color}]$this[]"
+
+fun <T> Seq<T>.isNotEmpty() = !isEmpty
+fun <T> Collection<T>.equalsNoOrder(other: Seq<T>): Boolean =
+    if (this.size == other.size)
+        if (this.isEmpty()) true
+        else this.containsAll(other)
+    else false
+
+fun <T> Seq<T>.containsAll(other: Collection<T>): Boolean {
+    for (e in other)
+        if (!this.contains(e))
+            return false
+    return true
+}
+
+fun <T> Seq<T>.equalsNoOrder(other: Collection<T>): Boolean =
+    if (this.size == other.size)
+        if (this.isEmpty) true
+        else this.containsAll(other)
+    else false
+
+fun <T> Seq<T>.set(other: Iterable<T>) = apply {
+    clear()
+    for (e in other)
+        this.add(e)
+}

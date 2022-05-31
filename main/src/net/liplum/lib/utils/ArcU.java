@@ -2,12 +2,21 @@ package net.liplum.lib.utils;
 /*
  * In ArcU.java, you can only import any class from [arc.*]
  */
-import arc.func.*;
+
+import arc.func.Boolf;
+import arc.func.Cons;
+import arc.func.Cons2;
+import arc.func.Prov;
 import arc.struct.*;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
 public class ArcU {
+    private static final Object[] EmptyArray = new Object[0];
     private static final Seq EmptySeq = new Seq() {
+        @Override
+        public boolean isEmpty() {
+            return true;
+        }
 
         @Override
         public Seq add(Seq array) {
@@ -163,12 +172,12 @@ public class ArcU {
 
         @Override
         public Object[] toArray() {
-            return JavaU.emptyArray(Object.class);
+            return EmptyArray;
         }
 
         @Override
         public Object[] toArray(Class type) {
-            return JavaU.emptyArray(Object.class);
+            return EmptyArray;
         }
     };
     private static final OrderedSet EmptyOrderedSet = new OrderedSet() {

@@ -5,6 +5,7 @@ import arc.graphics.Color
 import arc.graphics.g2d.Draw
 import arc.math.Mathf
 import arc.struct.OrderedSet
+import arc.struct.Seq
 import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
@@ -31,9 +32,9 @@ import net.liplum.lib.delegates.Delegate1
 import net.liplum.lib.persistence.read
 import net.liplum.lib.persistence.write
 import net.liplum.lib.utils.DoMultipleBool
-import net.liplum.lib.utils.EmptyArray
 import net.liplum.lib.utils.equalsNoOrder
 import net.liplum.lib.utils.isZero
+import net.liplum.lib.utils.set
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.animations.anims.Animation
 import net.liplum.mdt.animations.anims.AnimationObj
@@ -156,7 +157,7 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
 
     open inner class SmartDISBuild : AniedBlock<SmartDistributor, SmartDISBuild>.AniedBuild(),
         IDataReceiver {
-        @JvmField var _requirements: Array<Item> = Item::class.java.EmptyArray()
+        @JvmField var _requirements = Seq<Item>()
         @Serialized
         var senders = OrderedSet<Int>()
         @JvmField var _onRequirementUpdated: Delegate1<IDataReceiver> = Delegate1()
@@ -187,48 +188,44 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
             _onRequirementUpdated.clear()
         }
 
+        val temp = HashSet<Item>()
         open fun updateRequirements() {
-            val all = HashSet<Item>()
+            temp.clear()
             hasDynamicRequirements = false
             for (build in proximity) {
                 when (val reqs = build.block.findConsumer<Consume>(supportedConsumerFilter)) {
                     is ConsumeItems -> {
                         for (req in reqs.items) {
-                            all.add(req.item)
+                            temp.add(req.item)
                         }
                     }
                     is ConsumeItemDynamic -> {
                         for (req in reqs.items.get(build)) {
-                            all.add(req.item)
+                            temp.add(req.item)
                         }
                         hasDynamicRequirements = true
                     }
                     is ConsumeItemFilter -> {
                         for (item in Vars.content.items()) {
                             if (reqs.filter.get(item)) {
-                                all.add(item)
+                                temp.add(item)
                             }
                         }
                     }
                 }
             }
-            val newReqs = if (all.isEmpty()) {
-                Item::class.java.EmptyArray()
-            } else {
-                all.toTypedArray()
-            }
-            if (!newReqs.equalsNoOrder(_requirements)) {
-                _requirements = newReqs
+            if (!temp.equalsNoOrder(_requirements)) {
+                _requirements.set(temp)
                 DebugOnly {
                     requirementsText = genRequirementsText()
                 }
                 ClientOnly {
-                    val c = when (newReqs.size) {
+                    val c = when (_requirements.size) {
                         0 -> R.C.Receiver
-                        1 -> newReqs[0].color
-                        else -> Color.white.cpy()
+                        1 -> _requirements[0].color
+                        else -> Color.gray.cpy()
                     }
-                    for (req in newReqs) {
+                    for (req in _requirements) {
                         c.lerp(req.color, 0.5f)
                     }
                     color = c
@@ -343,7 +340,7 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
                 0
         }
 
-        override fun getRequirements(): Array<Item>? = _requirements
+        override fun getRequirements(): Seq<Item>? = _requirements
         @ClientOnly
         override fun isBlocked() = lastDistributionTime > 30f
         override fun read(read: Reads, revision: Byte) {

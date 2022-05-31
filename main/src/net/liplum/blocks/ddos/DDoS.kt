@@ -200,7 +200,7 @@ class DDoS(name: String) : Turret(name) {
             }
         }
         // TODO: Serialized
-        override fun getRequirements(): Array<Item> = curAcceptItem.req
+        override fun getRequirements(): Seq<Item> = curAcceptItem.req
         @ClientOnly
         override fun isBlocked() = true
         override fun getConnectedSenders() = senders

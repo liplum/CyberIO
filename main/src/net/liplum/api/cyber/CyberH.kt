@@ -4,6 +4,7 @@ package net.liplum.api.cyber
 
 import arc.graphics.Color
 import arc.math.geom.Point2
+import arc.struct.Seq
 import arc.util.Align
 import mindustry.Vars
 import mindustry.gen.Building
@@ -19,6 +20,7 @@ import net.liplum.events.CioInitEvent
 import net.liplum.lib.math.Point2f
 import net.liplum.lib.utils.Or
 import net.liplum.lib.utils.bundle
+import net.liplum.lib.utils.emptySeq
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.render.*
 import net.liplum.mdt.utils.*
@@ -89,7 +91,7 @@ val ICyberEntity.topRightX: Int
 val ICyberEntity.topRightY: Int
     get() = building.topRightY
 
-typealias SingleItemArray = Array<Item>
+typealias SingleItemArray = Seq<Item>
 
 object DataCenter {
     @JvmField var SingleItems: Array<SingleItemArray> = emptyArray()
@@ -98,12 +100,12 @@ object DataCenter {
     fun initData() {
         val items = Vars.content.items()
         SingleItems = Array(items.size) {
-            arrayOf(items[it])
+            Seq.with(items[it])
         }
     }
 }
 
-val EmptySingleItemArray: SingleItemArray = emptyArray()
+val EmptySingleItemArray: SingleItemArray = emptySeq()
 val Item?.req: SingleItemArray
     get() = if (this == null)
         EmptySingleItemArray
@@ -155,7 +157,7 @@ fun Point2?.sh(): IStreamHost? =
 val IStreamNode?.exists: Boolean
     get() = this != null && this.building.exists
 
-typealias SingleLiquidArray = Array<Liquid>
+typealias SingleLiquidArray = Seq<Liquid>
 
 object StreamCenter {
     @JvmField var SingleLiquid: Array<SingleLiquidArray> = emptyArray()
@@ -163,7 +165,7 @@ object StreamCenter {
     fun initStream() {
         val liquids = Vars.content.liquids()
         SingleLiquid = Array(liquids.size) {
-            arrayOf(liquids[it])
+            Seq.with(liquids[it])
         }
     }
     @JvmStatic
@@ -210,7 +212,7 @@ fun Int.nn(): INetworkNode? =
 fun Building.nn(): INetworkNode? =
     this.getCyberEntity()
 
-val EmptySingleLiquidArray: SingleLiquidArray = emptyArray()
+val EmptySingleLiquidArray: SingleLiquidArray = emptySeq()
 val Liquid?.req: SingleLiquidArray
     get() = if (this == null)
         EmptySingleLiquidArray

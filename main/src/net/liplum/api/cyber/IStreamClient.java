@@ -2,6 +2,7 @@ package net.liplum.api.cyber;
 
 import arc.graphics.Color;
 import arc.struct.ObjectSet;
+import arc.struct.Seq;
 import mindustry.type.Liquid;
 import net.liplum.mdt.CalledBySync;
 import net.liplum.mdt.ClientOnly;
@@ -24,9 +25,16 @@ public interface IStreamClient extends IStreamNode {
 
     @NotNull
     Delegate1<IStreamClient> getOnRequirementUpdated();
-
+    /**
+     * Gets what this client wants<br/>
+     * null : Any<br/>
+     * Array.Empty : Nothing<br/>
+     * An seq : all things in the array<br/>
+     * Please cache this value, this is a mutable list.
+     * @return what this client wants
+     */
     @Nullable
-    Liquid[] getRequirements();
+    Seq<Liquid> getRequirements();
 
     @CalledBySync
     default void connect(@NotNull IStreamHost host) {

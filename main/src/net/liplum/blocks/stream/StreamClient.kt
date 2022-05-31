@@ -4,6 +4,7 @@ import arc.graphics.Color
 import arc.graphics.g2d.TextureRegion
 import arc.scene.ui.layout.Table
 import arc.struct.ObjectSet
+import arc.struct.Seq
 import arc.util.Eachable
 import arc.util.io.Reads
 import arc.util.io.Writes
@@ -106,7 +107,7 @@ open class StreamClient(name: String) : AniedBlock<StreamClient, StreamClient.Cl
             }
         @JvmField var onRequirementUpdated: Delegate1<IStreamClient> = Delegate1()
         override fun getOnRequirementUpdated() = onRequirementUpdated
-        override fun getRequirements(): Array<Liquid>? = outputLiquid.req
+        override fun getRequirements(): Seq<Liquid>? = outputLiquid.req
         override fun getConnectedHosts(): ObjectSet<Int> = hosts
         override fun maxHostConnection() = maxConnection
         override fun getClientColor(): Color = outputLiquid.clientColor

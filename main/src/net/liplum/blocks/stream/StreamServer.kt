@@ -5,6 +5,7 @@ import arc.math.geom.Point2
 import arc.scene.ui.layout.Table
 import arc.struct.ObjectSet
 import arc.struct.OrderedSet
+import arc.struct.Seq
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.Vars
@@ -21,6 +22,7 @@ import net.liplum.lib.Serialized
 import net.liplum.lib.delegates.Delegate1
 import net.liplum.lib.persistence.read
 import net.liplum.lib.persistence.write
+import net.liplum.lib.utils.isNotEmpty
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.render.DrawOn
 import net.liplum.mdt.WhenTheSameTeam
@@ -286,7 +288,7 @@ open class StreamServer(name: String) : StreamHost(name) {
 
         @JvmField var onRequirementUpdated: Delegate1<IStreamClient> = Delegate1()
         override fun getOnRequirementUpdated() = onRequirementUpdated
-        override fun getRequirements(): Array<Liquid>? = null
+        override fun getRequirements(): Seq<Liquid>? = null
         override fun getConnectedHosts(): ObjectSet<Int> = hosts
         override fun maxHostConnection() = maxConnection
         override fun getClientColor(): Color = mixedLiquidColor

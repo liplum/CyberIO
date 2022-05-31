@@ -5,6 +5,7 @@ import arc.graphics.g2d.Draw
 import arc.struct.ObjectMap
 import arc.struct.ObjectSet
 import arc.struct.OrderedSet
+import arc.struct.Seq
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.Vars
@@ -312,7 +313,7 @@ open class Stealth(name: String) : Turret(name) {
 
         @JvmField var onRequirementUpdated: Delegate1<IStreamClient> = Delegate1()
         override fun getOnRequirementUpdated(): Delegate1<IStreamClient> = onRequirementUpdated
-        override fun getRequirements(): Array<Liquid>? = cyberion.req
+        override fun getRequirements(): Seq<Liquid>? = cyberion.req
         override fun getConnectedHosts(): ObjectSet<Int> = hosts
         override fun getClientColor(): Color = cyberion.color
         override fun maxHostConnection() = maxConnection

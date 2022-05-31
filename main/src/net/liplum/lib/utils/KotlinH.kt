@@ -28,14 +28,36 @@ infix fun Int.between(end: Int): IntRange {
     return IntRange(this + 1, end - 1)
 }
 
-fun <T> Class<T>.EmptyArray(): Array<T> = JavaU.emptyArray(this)
+val EmptyArrays = HashMap<Class<*>, Array<*>>()
+@Suppress("UNCHECKED_CAST")
+inline fun <reified T> Class<T>.EmptyArray(): Array<T> =
+    EmptyArrays.getOrPut(this) { emptyArray<T>() } as Array<T>
+
 val Boolean.Int: Int
     get() = if (this) 1 else 0
 val Boolean.Float: Float
     get() = if (this) 1f else 0f
-
+/**
+ * Using Shallow [Array.contentEquals]
+ */
 fun <T> Array<T>.equalsNoOrder(other: Array<T>): Boolean =
-    JavaU.equalsNoOrder(this, other)
+    if (this.size == other.size)
+        if (this.isEmpty()) true
+        else this.contentEquals(other)
+    else false
+
+fun <T> Collection<T>.equalsNoOrder(other: Collection<T>): Boolean =
+    if (this.size == other.size)
+        if (this.isEmpty()) true
+        else this.containsAll(other)
+    else false
+
+fun <T> Collection<T>.containsAll(other: Iterable<T>): Boolean {
+    for (e in other)
+        if (!this.contains(e))
+            return false
+    return true
+}
 
 val Int.isOdd: Boolean
     get() = this % 2 == 1
@@ -53,15 +75,14 @@ fun <T> Array<T>.swap(from: Int, to: Int) {
     this[from] = this[to]
     this[to] = temp
 }
-
-fun <T> Class<T>.newArray(size: Int): Array<T> {
-    return JavaU.newArray(this, size)
+@Suppress("UNCHECKED_CAST")
+inline fun <reified T> newArray(size: Int): Array<T> {
+    return arrayOfNulls<T>(size) as Array<T>
 }
 
 inline fun <reified T> Array<T>.sortManually(vararg indices: Int): Array<T> {
     assert(indices.size == this.size)
-    val clz = T::class.java
-    val res = clz.newArray(this.size)
+    val res = newArray<T>(this.size)
     for ((i, index) in indices.withIndex()) {
         res[i] = this[index]
     }
