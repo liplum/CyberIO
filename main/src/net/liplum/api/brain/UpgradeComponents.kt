@@ -1,25 +1,15 @@
 package net.liplum.api.brain
 
 import arc.util.Log
-import arc.util.Time
-import mindustry.Vars
-import mindustry.gen.Building
 import mindustry.world.Block
-import mindustry.world.meta.StatUnit.*
-import net.liplum.mdt.ClientOnly
-import net.liplum.api.brain.Direction2.Companion.Part0Pos
-import net.liplum.api.brain.Direction2.Companion.Part1Pos
-import net.liplum.api.cyber.*
-import net.liplum.lib.delegates.Delegate
+import net.liplum.lib.CoerceLength
+import net.liplum.lib.fill
 import net.liplum.lib.utils.isOn
-import net.liplum.lib.utils.on
-import net.liplum.utils.percent
-import net.liplum.utils.value
-import net.liplum.mdt.utils.*
-import kotlin.math.absoluteValue
+import net.liplum.lib.utils.rotateOnce
 
 interface IUpgradeComponent : IHeimdallEntity {
     var directionInfo: Direction2
+    val componentName: String
     val isLinkedBrain: Boolean
         get() = brain != null
     val upgrades: Map<UpgradeType, Upgrade>
@@ -116,6 +106,87 @@ interface IComponentBlock {
         }
     }
 }
+
+class Sides(
+    val sides: Array<Side2>
+) : Iterable<Side2> {
+    operator fun get(index: Int) =
+        sides[index]
+
+    operator fun set(index: Int, side: Side2) {
+        sides[index] = side
+    }
+
+    override fun iterator() = sides.iterator()
+    /**
+     * @return [destination]
+     */
+    fun copyInto(destination: Sides): Sides {
+        sides.copyInto(destination.sides)
+        return destination
+    }
+
+    val right: Side2
+        get() = this[0]
+    val top: Side2
+        get() = this[1]
+    val left: Side2
+        get() = this[2]
+    val bottom: Side2
+        get() = this[3]
+
+    fun clockwiseRotate() {
+        sides.rotateOnce(forward = false)
+        sides[1].swapComponents()
+        sides[3].swapComponents()
+    }
+
+    fun anticlockwiseRotate() {
+        sides.rotateOnce(forward = true)
+        sides[0].swapComponents()
+        sides[2].swapComponents()
+    }
+
+    val visualFormation: String
+        get() {
+            val s = StringBuilder()
+            val maxLen = 5
+            // Row 0
+            s.fill(maxLen)
+            s.append('|')
+            s.append("${top[0]?.componentName}".CoerceLength(maxLen))
+            s.append('|')
+            s.append("${top[1]?.componentName}".CoerceLength(maxLen))
+            s.append('\n')
+            // Row 1
+            s.append("${left[0]?.componentName}".CoerceLength(maxLen))
+            s.append('|')
+            s.fill(maxLen)
+            s.append('|')
+            s.fill(maxLen)
+            s.append('|')
+            s.append("${right[0]?.componentName}".CoerceLength(maxLen))
+            s.append('\n')
+            // Row 2
+            s.append("${left[1]?.componentName}".CoerceLength(maxLen))
+            s.append('|')
+            s.fill(maxLen)
+            s.append('|')
+            s.fill(maxLen)
+            s.append('|')
+            s.append("${right[1]?.componentName}".CoerceLength(maxLen))
+            s.append('\n')
+            // Row 3
+            s.fill(maxLen)
+            s.append('|')
+            s.append("${bottom[0]?.componentName}".CoerceLength(maxLen))
+            s.append('|')
+            s.append("${bottom[1]?.componentName}".CoerceLength(maxLen))
+            return s.toString()
+        }
+
+    override fun toString(): String = visualFormation
+}
 /**
  * For 2 part: 0 and 1.
  * It should be used as an array to represent 4 sides.
@@ -177,6 +248,14 @@ class Side2(val brain: IBrain) : Iterable<IUpgradeComponent> {
         for (com in components)
             com?.unlinkBrain()
     }
+
+    fun swapComponents() {
+        val tmp = components[0]
+        components[0] = components[1]
+        components[1] = tmp
+    }
+
+    override fun toString() = "[0]${components[0]?.componentName}[1]${components[1]?.componentName}"
 }
 /**
  * For 4 sides: top, bottom, left and right
@@ -209,12 +288,3 @@ value class Direction2(val value: Int = -1) {
     val occupySide: Boolean
         get() = onPart0 && onPart1
 }
-
-internal val Array<Side2>.right: Side2
-    get() = this[0]
-internal val Array<Side2>.top: Side2
-    get() = this[1]
-internal val Array<Side2>.left: Side2
-    get() = this[2]
-internal val Array<Side2>.bottom: Side2
-    get() = this[3]

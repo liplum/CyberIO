@@ -1,7 +1,6 @@
 package net.liplum.api.brain
 
 import net.liplum.lib.toLinkedString
-import net.liplum.lib.utils.rotateOnce
 import net.liplum.mdt.ClientOnly
 
 interface IFormationPattern {
@@ -81,9 +80,11 @@ class Side2Pattern(
         else
             Part1
     }
+
+    override fun toString() = "[0]${Part0?.simpleName}[1]${Part1?.simpleName}"
 }
 
-open class Formation(
+open class FixedFormation(
     var effect: IFormationEffect,
     vararg val sidePatterns: Side2Pattern,
 ) : IFormationPattern {
@@ -118,7 +119,7 @@ open class Formation(
 
 abstract class SelfFormation(
     vararg components: Class<out IUpgradeComponent>?,
-) : Formation(
+) : FixedFormation(
     EmptyFormationEffect, *analyzeSides(components)
 ), IFormationEffect {
     init {
@@ -141,13 +142,13 @@ fun List<Upgrade>.toUpgradeMap(): Map<UpgradeType, Upgrade> =
 interface IRotatedFormationPattern : IFormationPattern {
     @Suppress("UNCHECKED_CAST")
     override fun match(brain: IBrain): IFormationEffect? {
-        val cur = brain.sides.copyInto(tmp) as Array<Side2>
+        val cur = brain.sides.copyInto(tmp)
         var i = 0
         do {
             val matched = mappedMatch(brain, cur)
             if (matched != null) return matched
             if (i < 3)// only need rotate third actually
-                cur.rotateOnce()
+                cur.clockwiseRotate()
             i++
         } while (i < 4)
         return null
@@ -155,9 +156,55 @@ interface IRotatedFormationPattern : IFormationPattern {
     /**
      * Overwrite this function, and use [sides] parameter instead of [IBrain.sides]
      */
-    fun mappedMatch(brain: IBrain, sides: Array<Side2>): IFormationEffect?
+    fun mappedMatch(brain: IBrain, sides: Sides): IFormationEffect?
 
     companion object {
-        val tmp = arrayOfNulls<Side2>(4)
+        @Suppress("UNCHECKED_CAST")
+        val tmp = Sides(arrayOfNulls<Side2>(4) as Array<Side2>)
     }
+}
+
+open class FixedRotatedFormation(
+    var effect: IFormationEffect,
+    vararg val sidePatterns: Side2Pattern,
+) : IRotatedFormationPattern {
+    init {
+        assert(sidePatterns.size != 4) {
+            "${sidePatterns.size} isn't 4."
+        }
+    }
+
+    override fun mappedMatch(brain: IBrain, sides: Sides): IFormationEffect? {
+        for (i in 0..3) {
+            val s = sides[i]
+            val p = sidePatterns[i]
+            for (j in 0..1) {
+                val com = s[j]
+                val req = p[j]
+                if (req == null) {
+                    if (com != null)
+                        return null
+                } else {
+                    if (com == null)
+                        return null
+                    else if (!req.isInstance(com))
+                        return null
+                }
+            }
+        }
+        return effect
+    }
+}
+
+abstract class SelfRotatedFormation(
+    vararg components: Class<out IUpgradeComponent>?,
+) : FixedRotatedFormation(
+    EmptyFormationEffect, *analyzeSides(components)
+), IFormationEffect {
+    init {
+        effect = this
+    }
+
+    override val upgrades: Map<UpgradeType, Upgrade> = emptyMap()
+    override fun toString() = name
 }

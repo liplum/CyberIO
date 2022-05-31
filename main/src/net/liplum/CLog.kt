@@ -5,8 +5,8 @@ import arc.util.Log
 import arc.util.Log.LogLevel
 import net.liplum.lib.addLeft
 import net.liplum.lib.addRight
-import net.liplum.lib.buildCenterFillUntil
-import net.liplum.lib.buildFill
+import net.liplum.lib.BuildCenterFillUntil
+import net.liplum.lib.fill
 import java.io.PrintWriter
 import java.io.StringWriter
 
@@ -49,12 +49,12 @@ object CLog {
         level: LogLevel = LogLevel.info,
         howToLog: (TK, TV) -> Unit
     ) {
-        val infoHead = title.buildCenterFillUntil('=', length) addLeft "//" addRight "\\\\"
+        val infoHead = title.BuildCenterFillUntil('=', length) addLeft "//" addRight "\\\\"
         Log.log(level, infoHead.toString())
         this.forEach {
             howToLog(it.key, it.value)
         }
-        val infoTail = buildFill('=', length) addLeft "\\\\" addRight "//"
+        val infoTail = fill(length, '=') addLeft "\\\\" addRight "//"
         Log.log(level, infoTail.toString())
     }
     @JvmStatic
@@ -65,12 +65,12 @@ object CLog {
         level: LogLevel = LogLevel.info,
         howToLog: (TK, TV) -> Unit
     ) {
-        val infoHead = title.buildCenterFillUntil('=', length) addLeft "//" addRight "\\\\"
+        val infoHead = title.BuildCenterFillUntil('=', length) addLeft "//" addRight "\\\\"
         Log.log(level, infoHead.toString())
         for (entry in entries()) {
             howToLog(entry.key, entry.value)
         }
-        val infoTail = buildFill('=', length) addLeft "\\\\" addRight "//"
+        val infoTail = fill(length, '=') addLeft "\\\\" addRight "//"
         Log.log(level, infoTail.toString())
     }
 }

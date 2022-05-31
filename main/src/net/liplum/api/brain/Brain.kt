@@ -31,20 +31,20 @@ interface IBrain : IHeimdallEntity, Iterable<IUpgradeComponent> {
      * - 2 is [left]
      * - 3 is [bottom]
      */
-    val sides: Array<Side2>
+    val sides: Sides
     override var brain: IBrain?
         get() = this
         set(_) {}
     val components: MutableSet<IUpgradeComponent>
     val onComponentChanged: Delegate
     val right: Side2
-        get() = sides[0]
+        get() = sides.right
     val top: Side2
-        get() = sides[1]
+        get() = sides.top
     val left: Side2
-        get() = sides[2]
+        get() = sides.left
     val bottom: Side2
-        get() = sides[3]
+        get() = sides.bottom
     val Direction2.sideObj: Side2
         get() = sides[this.side]
     var formationEffects: FormationEffects
@@ -115,14 +115,24 @@ interface IBrain : IHeimdallEntity, Iterable<IUpgradeComponent> {
     override fun iterator() = components.iterator()
 
     companion object {
-        fun Array<Side2>.getLeft(current: Int): Side2 =
-            this[(current + 1) % 4]
+        fun Sides.getLeftSide(sideIndex: Int): Side2 =
+            this[(sideIndex + 1) % 4]
 
-        fun Array<Side2>.getRight(current: Int): Side2 =
-            this[(current + 3) % 4]// is -1 actually, but prevent a negative index
+        fun Sides.getRightSide(sideIndex: Int): Side2 =
+            this[(sideIndex + 3) % 4]// is -1 actually, but prevent a negative index
 
-        fun Array<Side2>.getOpposite(current: Int): Side2 =
-            this[(current + 2) % 4]
+        fun Sides.getOppositeSide(sideIndex: Int): Side2 =
+            this[(sideIndex + 2) % 4]
+
+        fun Sides.getLeftComponent(sideIndex: Int): IUpgradeComponent? =
+            if (sideIndex == 0 || sideIndex == 3) // x.1
+                getLeftSide(sideIndex)[1]
+            else getLeftSide(sideIndex)[0]// x.0
+
+        fun Sides.getRightComponent(sideIndex: Int): IUpgradeComponent? =
+            if (sideIndex == 0 || sideIndex == 3) // x.1
+                getRightSide(sideIndex)[1]
+            else getRightSide(sideIndex)[0]// x.0
 
         inline fun IBrain.find(filter: (IUpgradeComponent) -> Boolean): IUpgradeComponent? {
             for (c in components)

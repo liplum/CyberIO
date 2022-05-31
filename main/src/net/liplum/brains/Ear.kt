@@ -148,6 +148,7 @@ open class Ear(name: String) : Block(name), IComponentBlock {
         IUpgradeComponent, ControlBlock, Ranged {
         override fun version() = 1.toByte()
         // <editor-fold desc="Heimdall">
+        override val componentName="Ear"
         override val scale: SpeedScale = SpeedScale()
         override var directionInfo: Direction2 = Direction2()
         override var brain: IBrain? = null

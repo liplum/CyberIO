@@ -367,9 +367,8 @@ open class Prism(name: String) : Block(name) {
                 val priselX = revolution.x + x
                 val priselY = revolution.y + y
                 var scale = 1f + Mathf.log(3f, orbitPos + 3f) * 0.2f - 0.2f
-                val perspectiveProgress = (revolution.r / maxOutsideRange).coerceIn(0f, 1f)
-                val perspective = Interp.smooth(perspectiveProgress)
-                scale *= perspective
+                val perspectiveProgress = (revolution.r / maxOutsideRange).coerceIn(0f, 1f).smooth
+                scale *= perspectiveProgress
                 Draw.z(Layer.blockOver)
                 img.AsShadow(
                     priselX - elevation * 7f * scale,

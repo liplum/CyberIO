@@ -1,19 +1,22 @@
 package net.liplum.brains
 
-import net.liplum.mdt.ClientOnly
 import net.liplum.api.brain.*
 import net.liplum.brains.Ear.EarBuild
 import net.liplum.brains.Eye.EyeBuild
+import net.liplum.mdt.ClientOnly
 
-object FaceFE : SelfFormation(
+private val EYE = EyeBuild::class.java
+private val EAR = EarBuild::class.java
+
+object FaceFE : SelfRotatedFormation(
     // Right
-    null, EarBuild::class.java,
+    null, EAR,
     // Top
     null, null,
     // Left
-    null, EarBuild::class.java,
+    null, EAR,
     // Bottom
-    EyeBuild::class.java, EyeBuild::class.java,
+    EYE, EYE,
 ), IFormationEffect {
     override val name = "Face"
     override val upgrades: Map<UpgradeType, Upgrade> = listOf(
@@ -21,24 +24,21 @@ object FaceFE : SelfFormation(
     ).toUpgradeMap()
     @ClientOnly
     override fun draw(brain: IBrain) {
-        val sides = brain.sides
-        val bottom = sides.bottom
-        val components = bottom.components
-        val eyeLeft = components[0] as? EyeBuild
-        val eyeRight = components[1] as? EyeBuild
-        if (eyeLeft != null && eyeRight != null) {
-            syncEyeBlink(eyeLeft, eyeRight)
+        val components = brain.components
+        val eye = components.filterIsInstance<EyeBuild>()
+        if (eye.size == 2) {
+            syncEyeBlink(eye[0], eye[1])
         }
     }
 }
 
 object FunnyFaceFE : SelfFormation(
     // Right
-    null, EyeBuild::class.java,
+    null, EYE,
     // Top
     null, null,
     // Left
-    null, EyeBuild::class.java,
+    null, EYE,
     // Bottom
     null, null,
 ), IFormationEffect {
@@ -66,7 +66,7 @@ object ForceFieldFE : IFormationPattern, IFormationEffect {
         val earCount = components.count {
             it is EarBuild
         }
-        return if (eyeCount >= 1 && earCount >= 2)
+        return if (eyeCount >= 2 && earCount >= 2)
             this
         else
             null
@@ -80,13 +80,10 @@ object ForceFieldFE : IFormationPattern, IFormationEffect {
     override fun toString() = name
 }
 
-object LootAtHeartFE:IRotatedFormationPattern,IFormationEffect{
-    override fun mappedMatch(brain: IBrain, sides: Array<Side2>): IFormationEffect? {
-        TODO("Not yet implemented")
-    }
+object LootAtHeartFE : SelfRotatedFormation(
+) {
     override val name = "LootAtHeart"
-    override val upgrades: Map<UpgradeType, Upgrade>
-        get() = TODO("Not yet implemented")
+    override val upgrades: Map<UpgradeType, Upgrade> = emptyMap()
 }
 
 fun syncEyeBlink(eyeA: EyeBuild, eyeB: EyeBuild) {

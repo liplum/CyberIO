@@ -13,12 +13,23 @@ fun Fill(c: Char, number: Int): String {
     return sb.toString()
 }
 
-fun buildFill(c: Char, number: Int): StringBuilder =
-    StringBuilder().buildFill(c, number)
+fun String.CoerceLength(number: Int, filler: Char = ' '): String {
+    if (length == number) return this
+    if (length > number) return substring(0, number)
+    val sb = StringBuilder()
+    sb.append(this)
+    for (i in 0 until number - length) {
+        sb.append(filler)
+    }
+    return sb.toString()
+}
 
-fun StringBuilder.buildFill(c: Char, number: Int): StringBuilder {
+fun fill(number: Int, filler: Char): StringBuilder =
+    StringBuilder().fill(number, filler)
+
+fun StringBuilder.fill(number: Int, filler: Char = ' '): StringBuilder {
     for (i in 0 until number) {
-        append(c)
+        append(filler)
     }
     return this
 }
@@ -38,16 +49,16 @@ fun String.CenterFill(c: Char, number: Int): String {
 @Contract(pure = true)
 @JvmOverloads
 fun String.CenterFillUntil(c: Char, totalChar: Int, leftAlign: Boolean = true): String =
-    this.buildCenterFillUntil(c, totalChar, leftAlign).toString()
+    this.BuildCenterFillUntil(c, totalChar, leftAlign).toString()
 @JvmOverloads
-fun String.buildCenterFillUntil(
+fun String.BuildCenterFillUntil(
     c: Char,
     totalChar: Int,
     leftAlign: Boolean = true,
 ): StringBuilder =
-    StringBuilder().buildCenterFillUntil(this, c, totalChar, leftAlign)
+    StringBuilder().BuildCenterFillUntil(this, c, totalChar, leftAlign)
 @JvmOverloads
-fun StringBuilder.buildCenterFillUntil(
+fun StringBuilder.BuildCenterFillUntil(
     title: String,
     c: Char,
     totalChar: Int,

@@ -44,6 +44,7 @@ open class Hand(name: String) : Block(name), IComponentBlock {
     open inner class HandBuild : Building(),
         IUpgradeComponent, ControlBlock {
         //<editor-fold desc="Heimdall">
+        override val componentName="Hand"
         override val scale: SpeedScale = SpeedScale()
         override var directionInfo: Direction2 = Direction2.Empty
         override var brain: IBrain? = null

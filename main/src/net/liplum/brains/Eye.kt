@@ -132,6 +132,7 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
 
     open inner class EyeBuild : PowerTurretBuild(), IUpgradeComponent {
         //<editor-fold desc="Heimdall">
+        override val componentName="Eye"
         override val scale: SpeedScale = SpeedScale()
         override var directionInfo: Direction2 = Direction2.Empty
         override var brain: IBrain? = null

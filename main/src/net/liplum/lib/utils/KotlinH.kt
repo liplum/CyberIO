@@ -248,14 +248,14 @@ fun <T> Array<T>.rotateOnce(forward: Boolean = true): Array<T> {
     if (forward) {
         // the last one will be the first one
         val last = this.last()
-        for (i in 0 until size - 1) {// stop before the last one
-            this[i + 1] = this[i]
+        for (i in size -1 downTo  1) {// stop before the last one
+            this[i] = this[i - 1]
         }
         this[0] = last
     } else {
         // the first one will be the last one
         val first = first()
-        for (i in 1 until size) {// stop at the last one
+        for (i in 0 until size - 1) {// stop at the last one
             this[i] = this[i + 1]
         }
         this[lastIndex] = first

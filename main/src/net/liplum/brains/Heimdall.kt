@@ -202,9 +202,7 @@ open class Heimdall(name: String) : Block(name) {
         ControlBlock, IExecutioner, IBrain, Ranged {
         override fun version() = 2.toByte()
         override val scale: SpeedScale = SpeedScale()
-        override val sides: Array<Side2> = Array(4) {
-            Side2(this)
-        }
+        override val sides: Sides = Sides(Array(4) { Side2(this) })
         override var heatShared = 0f
             set(value) {
                 field = value.coerceIn(0f, 1f)
