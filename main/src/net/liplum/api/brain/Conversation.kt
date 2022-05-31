@@ -7,29 +7,26 @@ import arc.util.Align
 import mindustry.Vars
 import mindustry.gen.Building
 import net.liplum.R
-import net.liplum.lib.math.Point2f
 import net.liplum.lib.math.randomExcept
 import net.liplum.lib.utils.BundleKey
 import net.liplum.lib.utils.bundle
+import net.liplum.lib.utils.inViewField
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.render.Text
 import net.liplum.mdt.render.Toaster
 import net.liplum.mdt.render.fadeInOutPct
-import net.liplum.mdt.render.inViewField
 import net.liplum.mdt.utils.inPayload
-import net.liplum.mdt.utils.worldPos
 
 object ConversationManager {
     var ConversationFadeTimePercent = 0.08f
     var ConversationTime = 180f
     var fontSize = 0.9f
-    private val p1 = Point2f()
     @ClientOnly
     fun drawConversationOn(b: Building, text: String, color: Color) {
         Toaster.post(b.id, ConversationTime, overwrite = false) {
             Text.drawTextX {
                 val curText = text.progressed(curTime / (ConversationTime * 0.4f))
-                if (!p1.set(b.x, b.y).inViewField(b.block.clipSize)) return@post
+                if (!b.inViewField(b.block.clipSize)) return@post
                 setText(it, curText)
                 it.data.setScale(1f / 4f / Scl.scl(fontSize))
                 if (!b.isAdded && !b.inPayload) toast.duration = 0f
@@ -91,7 +88,6 @@ class Trigger(
             .color(R.C.RedAlert)
         // @formatter:on
         private const val prefix = "heimdall.msg"
-        private val p1 = Point2f()
         private var lastNumber = 0
     }
 
@@ -100,7 +96,7 @@ class Trigger(
     ) {
         ClientOnly {
             if (!ConversationManager.hasConversationWith(b)) {
-                if (b.worldPos(p1).inViewField(b.block.clipSize)) {
+                if (b.inViewField(b.block.clipSize)) {
                     val key = randomOne()
                     ConversationManager.drawConversationOn(
                         b, text = key.bundle,

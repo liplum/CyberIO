@@ -33,6 +33,18 @@ object Debug {
             { Var.ShowPowerGraphID = it },
             SettingType.Check,
         ),
+        Setting(
+            "Show Blocks' HitBox",
+            { Var.DrawBuildCollisionRect },
+            { Var.DrawBuildCollisionRect = it },
+            SettingType.Check,
+        ),
+        Setting(
+            "Show Units' HitBox",
+            { Var.DrawUnitCollisionRect },
+            { Var.DrawUnitCollisionRect = it },
+            SettingType.Check,
+        ),
     )
 
     enum class SettingType {

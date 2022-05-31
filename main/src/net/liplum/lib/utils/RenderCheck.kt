@@ -1,7 +1,8 @@
-package net.liplum.mdt.render
+package net.liplum.lib.utils
 
 import arc.Core
 import arc.math.geom.Geometry
+import arc.math.geom.Position
 import arc.math.geom.Rect
 import arc.math.geom.Vec2
 import net.liplum.lib.math.Point2f
@@ -9,6 +10,10 @@ import net.liplum.lib.math.Point2f
 private val r1 = Rect()
 private val r2 = Rect()
 fun inViewField(x: Float, y: Float, clip: Float): Boolean {
+    return Core.camera.bounds(r1).overlaps(r2.setCentered(x, y, clip))
+}
+
+fun Position.inViewField(clip: Float): Boolean {
     return Core.camera.bounds(r1).overlaps(r2.setCentered(x, y, clip))
 }
 

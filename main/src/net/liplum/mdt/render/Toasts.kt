@@ -5,6 +5,7 @@ import arc.util.Align
 import mindustry.Vars
 import mindustry.gen.Building
 import net.liplum.lib.math.Point2f
+import net.liplum.lib.utils.inViewField
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.utils.WorldXY
 
@@ -21,7 +22,7 @@ fun String.postToastTextOn(
 ) {
     ClientOnly {
         Toaster.post(b.id, ToastTime, useGlobalTime, overwrite) {
-            if (!p1.set(b.x, b.y).inViewField(b.block.clipSize)) return@post
+            if (!b.inViewField(b.block.clipSize)) return@post
             Text.drawText {
                 setText(it, this@postToastTextOn)
                 if (!b.isAdded) {

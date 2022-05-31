@@ -18,6 +18,7 @@ import mindustry.gen.Iconc
 import mindustry.gen.Sounds
 import mindustry.gen.Unit
 import mindustry.world.Block
+import mindustry.world.meta.BlockStatus
 import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.Var
@@ -253,7 +254,26 @@ open class ZipBomb(name: String) : Block(name) {
             configure(Command.genFull(!autoDetectEnabled, curSensitive))
         }
 
+        override fun drawTeamTop() {
+            WhenTheSameTeam {
+                super.drawTeamTop()
+            }
+        }
+
+        override fun status(): BlockStatus {
+            return BlockStatus.active
+        }
+
+        override fun drawStatus() {
+            WhenTheSameTeam {
+                super.drawStatus()
+            }
+        }
+
         override fun drawTeam() {
+            WhenTheSameTeam {
+                super.drawTeam()
+            }
         }
 
         override fun drawCracks() {

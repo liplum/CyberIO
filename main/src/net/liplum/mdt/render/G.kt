@@ -7,6 +7,7 @@ import arc.graphics.g2d.Lines
 import arc.graphics.g2d.TextureRegion
 import arc.math.Angles
 import arc.math.Mathf
+import arc.math.geom.Rect
 import arc.util.Time
 import arc.util.Tmp
 import mindustry.Vars
@@ -473,13 +474,40 @@ object G {
         color: Color, x: WorldXY, y: WorldXY, x2: WorldXY, y2: WorldXY,
         alpha: Float? = null, stroke: Float = 1f
     ) {
-        Lines.stroke(stroke + 2f + sin)
+        drawLine(color, x, y, x2, y2, alpha, stroke + sin)
+    }
+    @JvmStatic
+    @JvmOverloads
+    fun drawLine(
+        color: Color, x: WorldXY, y: WorldXY, x2: WorldXY, y2: WorldXY,
+        alpha: Float? = null, stroke: Float = 1f
+    ) {
+        Lines.stroke(stroke + 2f)
         Draw.color(Pal.gray, color.a)
         if (alpha != null) Draw.alpha(alpha)
         Lines.line(x, y, x2, y2)
-        Lines.stroke(stroke + sin, color)
+        Lines.stroke(stroke, color)
         if (alpha != null) Draw.alpha(alpha)
         Lines.line(x, y, x2, y2)
         Draw.reset()
+    }
+    @JvmStatic
+    @JvmOverloads
+    fun drawRect(
+        x: WorldXY, y: WorldXY, width: WorldXY, height: WorldXY,
+        color: Color = Pal.accent, alpha: Float? = null, stroke: Float = 1f
+    ) {
+        drawLine(color, x, y, x + width, y, alpha, stroke)
+        drawLine(color, x + width, y, x + width, y + height, alpha, stroke)
+        drawLine(color, x + width, y + height, x, y + height, alpha, stroke)
+        drawLine(color, x, y + height, x, y, alpha, stroke)
+    }
+    @JvmStatic
+    @JvmOverloads
+    fun drawRect(
+        rect: Rect,
+        color: Color = Pal.accent, alpha: Float? = null, stroke: Float = 1f
+    ) {
+        drawRect(rect.x, rect.y, rect.width, rect.height, color, alpha, stroke)
     }
 }

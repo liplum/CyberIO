@@ -12,4 +12,8 @@ object Var {
     var UpdateFrequency = 5f
     @JvmField
     var ShowPowerGraphID = false
+    @JvmField
+    var DrawBuildCollisionRect = false
+    @JvmField
+    var DrawUnitCollisionRect = false
 }

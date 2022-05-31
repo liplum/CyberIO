@@ -1,5 +1,6 @@
 package net.liplum.render
 
+import arc.math.geom.Rect
 import mindustry.game.EventType
 import mindustry.gen.Groups
 import net.liplum.DebugOnly
@@ -7,37 +8,47 @@ import net.liplum.R
 import net.liplum.Var
 import net.liplum.annotations.Only
 import net.liplum.annotations.Subscribe
+import net.liplum.lib.utils.inViewField
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.mixin.PowerGraphc
+import net.liplum.mdt.render.G
 import net.liplum.mdt.render.Text
 
 @ClientOnly
 object DebugDrawer {
+    private val hitBox = Rect()
     @JvmStatic
     @Subscribe(EventType.Trigger.drawOver, Only.debug)
     fun draw() {
         DebugOnly {
-            if(!Var.ShowPowerGraphID) return
             Groups.build.each {
-                DebugOnly {
-                    val power = it.power
-                    if (power != null) {
+                if (!it.inViewField(it.block.clipSize)) return@each
+                if (Var.ShowPowerGraphID) {
+                    it.power?.apply {
                         Text.drawTextEasy(
-                            power.graph.id.toString(),
+                            graph.id.toString(),
                             it.x, it.y, R.C.Holo
                         )
                     }
                 }
+                if (Var.DrawBuildCollisionRect) {
+                    it.hitbox(hitBox)
+                    G.drawRect(hitBox, stroke = 0.5f)
+                }
             }
             Groups.unit.each {
-                if (it is PowerGraphc) {
-                    val payloadPower = it.payloadPower
-                    if (payloadPower != null) {
+                if (!it.inViewField(it.clipSize())) return@each
+                if (Var.ShowPowerGraphID) {
+                    (it as? PowerGraphc)?.payloadPower?.apply {
                         Text.drawTextEasy(
-                            payloadPower.id.toString(),
+                            id.toString(),
                             it.x, it.y, R.C.GreenSafe
                         )
                     }
+                }
+                if (Var.DrawUnitCollisionRect) {
+                    it.hitbox(hitBox)
+                    G.drawRect(hitBox, stroke = 0.5f)
                 }
             }
         }

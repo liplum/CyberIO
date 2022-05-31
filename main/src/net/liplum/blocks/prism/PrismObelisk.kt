@@ -8,6 +8,7 @@ import mindustry.gen.Building
 import mindustry.world.Block
 import mindustry.world.meta.BlockFlag
 import mindustry.world.meta.BlockGroup
+import mindustry.world.meta.BlockStatus
 import net.liplum.R
 import net.liplum.Var
 import net.liplum.blocks.prism.Prism.PrismBuild
@@ -64,7 +65,7 @@ open class PrismObelisk(name: String) : Block(name) {
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)
         drawSurroundingRect(
-            x, y, indicateAreaExtension * smoothPlacing (maxSelectedCircleTime),
+            x, y, indicateAreaExtension * smoothPlacing(maxSelectedCircleTime),
             if (valid) R.C.GreenSafe else R.C.RedAlert,
         ) {
             it.block == prismType && !it.isDiagonalTo(this, x, y)
@@ -74,6 +75,8 @@ open class PrismObelisk(name: String) : Block(name) {
 
     open inner class ObeliskBuild : Building() {
         var linked: Int = -1
+        val isLinked: Boolean
+            get() = linked != -1
         /**
          * Left->Down->Right->Up
          */
