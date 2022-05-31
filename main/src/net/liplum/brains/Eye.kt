@@ -1,6 +1,7 @@
 package net.liplum.brains
 
 import arc.audio.Sound
+import arc.func.Prov
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
 import arc.math.Angles
@@ -77,6 +78,7 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
     @JvmField var conversationTimer = timers++
 
     init {
+        buildType = Prov { EyeBuild() }
         priority = TargetPriority.turret
         canOverdrive = false
     }

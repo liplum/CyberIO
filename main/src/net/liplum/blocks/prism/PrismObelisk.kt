@@ -1,5 +1,6 @@
 package net.liplum.blocks.prism
 
+import arc.func.Prov
 import arc.math.Mathf
 import arc.struct.EnumSet
 import arc.util.io.Reads
@@ -35,6 +36,7 @@ open class PrismObelisk(name: String) : Block(name) {
     @ClientOnly @JvmField var maxSelectedCircleTime = Var.selectedCircleTime
 
     init {
+        buildType = Prov { ObeliskBuild() }
         absorbLasers = true
         update = true
         solid = true

@@ -1,5 +1,6 @@
 package net.liplum.holo
 
+import arc.func.Prov
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
 import arc.math.Mathf
@@ -57,6 +58,7 @@ open class HoloWall(name: String) : Wall(name) {
     @JvmField var powerUseForChargePreUnit = 0.1f
 
     init {
+        buildType = Prov { HoloWallBuild() }
         solid = false
         solidifes = true
         canOverdrive = true

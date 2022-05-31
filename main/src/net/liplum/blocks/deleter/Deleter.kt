@@ -1,6 +1,7 @@
 package net.liplum.blocks.deleter
 
 import arc.Core
+import arc.func.Prov
 import arc.graphics.g2d.Draw
 import arc.math.Mathf
 import arc.util.Eachable
@@ -42,6 +43,7 @@ open class Deleter(name: String) : PowerTurret(name), IExecutioner {
     @JvmField var waveType: DeleterWave
 
     init {
+        buildType = Prov { PowerTurretBuild() }
         val shootPattern = shootPattern(ShootSpread())
         shootPattern.shots = 18
         shootPattern.spread = 3f

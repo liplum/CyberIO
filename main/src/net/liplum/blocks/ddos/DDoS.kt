@@ -1,5 +1,6 @@
 package net.liplum.blocks.ddos
 
+import arc.func.Prov
 import arc.scene.ui.layout.Table
 import arc.struct.OrderedSet
 import arc.struct.Seq
@@ -41,6 +42,7 @@ class DDoS(name: String) : Turret(name) {
     @JvmField var usedItemCooldownTimePreItem = 10f
 
     init {
+        buildType = Prov { DDoSBuild() }
         consumeAmmoOnce = true
         hasItems = true
         hasPower = true

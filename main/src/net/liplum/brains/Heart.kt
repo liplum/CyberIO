@@ -1,6 +1,7 @@
 package net.liplum.brains
 
 import arc.audio.Sound
+import arc.func.Prov
 import arc.graphics.Color
 import arc.math.Mathf
 import arc.math.Mathf.pow
@@ -99,6 +100,7 @@ open class Heart(name: String) : Block(name), IComponentBlock {
     @JvmField var convertOrConsumeTimer = timers++
 
     init {
+        buildType = Prov { HeartBuild() }
         solid = true
         update = true
         hasPower = true

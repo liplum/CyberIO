@@ -1,5 +1,6 @@
 package net.liplum.blocks.stream
 
+import arc.func.Prov
 import arc.graphics.Color
 import arc.math.geom.Point2
 import arc.scene.ui.layout.Table
@@ -43,6 +44,7 @@ open class StreamServer(name: String) : StreamHost(name) {
     @ClientOnly lateinit var allLiquidBars: Array<(Building) -> Bar>
 
     init {
+        buildType = Prov { ServerBuild() }
         callDefaultBlockDraw = false
         saveConfig = false
         configurations.remove(Array<Point2>::class.java)

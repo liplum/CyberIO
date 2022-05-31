@@ -1,5 +1,6 @@
 package net.liplum.data
 
+import arc.func.Prov
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
 import arc.scene.ui.layout.Table
@@ -52,6 +53,7 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
     @JvmField val TransferTimer = timers++
 
     init {
+        buildType = Prov { ReceiverBuild() }
         hasItems = true
         update = true
         solid = true

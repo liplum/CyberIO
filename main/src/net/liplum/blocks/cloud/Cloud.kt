@@ -1,5 +1,6 @@
 package net.liplum.blocks.cloud
 
+import arc.func.Prov
 import arc.graphics.g2d.Draw
 import arc.struct.ObjectSet
 import arc.struct.Seq
@@ -63,6 +64,7 @@ open class Cloud(name: String) : PowerBlock(name) {
     @ClientOnly @JvmField var maxSelectedCircleTime = Var.selectedCircleTime
 
     init {
+        buildType = Prov { CloudBuild() }
         solid = true
         update = true
         hasItems = true

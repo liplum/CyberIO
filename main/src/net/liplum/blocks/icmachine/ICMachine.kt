@@ -1,5 +1,6 @@
 package net.liplum.blocks.icmachine
 
+import arc.func.Prov
 import arc.math.Mathf
 import arc.util.Time
 import net.liplum.mdt.ClientOnly
@@ -27,6 +28,7 @@ open class ICMachine(name: String) : AniedCrafter<ICMachine, ICMachine.ICMachine
 
     init {
         hasPower = true
+        buildType = Prov { ICMachineBuild() }
     }
 
     override fun load() {

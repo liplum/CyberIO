@@ -1,5 +1,6 @@
 package net.liplum.data
 
+import arc.func.Prov
 import arc.math.Mathf
 import arc.math.geom.Point2
 import arc.struct.OrderedSet
@@ -77,6 +78,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
     @JvmField var maxRange = -1f
 
     init {
+        buildType = Prov { SmartULDBuild() }
         solid = true
         update = true
         hasPower = true

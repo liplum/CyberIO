@@ -1,5 +1,6 @@
 package net.liplum.data
 
+import arc.func.Prov
 import arc.graphics.Color
 import arc.math.geom.Geometry
 import mindustry.Vars
@@ -34,6 +35,7 @@ class DataCDN(name: String) : Block(name) {
     @ClientOnly private var expendPlacingLineTime = -1f
 
     init {
+        buildType = Prov { CdnBuild() }
         update = true
         solid = true
         configurable = true

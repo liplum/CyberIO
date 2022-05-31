@@ -1,5 +1,6 @@
 package net.liplum.blocks.virus
 
+import arc.func.Prov
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
 import arc.math.Mathf
@@ -87,6 +88,7 @@ open class AntiVirus(name: String) : Block(name) {
     @ClientOnly @JvmField var maxSelectedCircleTime = Var.selectedCircleTime
 
     init {
+        buildType = Prov { AntiVirusBuild() }
         solid = true
         update = true
         updateInUnits = true

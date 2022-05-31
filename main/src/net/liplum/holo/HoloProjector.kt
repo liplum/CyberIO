@@ -2,6 +2,7 @@ package net.liplum.holo
 
 import arc.Events
 import arc.func.Floatf
+import arc.func.Prov
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
 import arc.graphics.g2d.Fill
@@ -67,6 +68,7 @@ open class HoloProjector(name: String) : Block(name) {
     val vecs = arrayOf(Vec2(), Vec2(), Vec2(), Vec2())
 
     init {
+        buildType = Prov { HoloPBuild() }
         solid = true
         update = true
         hasPower = true

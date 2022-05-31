@@ -1,6 +1,7 @@
 package net.liplum.data
 
 import arc.func.Boolf
+import arc.func.Prov
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
 import arc.math.Mathf
@@ -88,6 +89,7 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
     }
 
     init {
+        buildType = Prov { SmartDISBuild() }
         solid = true
         update = true
         hasItems = true

@@ -1,6 +1,7 @@
 package net.liplum.blocks.power
 
 import arc.Core
+import arc.func.Prov
 import arc.graphics.g2d.Draw
 import arc.math.Angles
 import arc.math.Interp
@@ -54,6 +55,7 @@ open class WirelessTower(name: String) : PowerBlock(name) {
     @ClientOnly @JvmField var radiationAlpha = 0.8f
 
     init {
+        buildType = Prov { WirelessTowerBuild() }
         consumesPower = true
         updateInUnits = true
         alwaysUpdateInUnits = true

@@ -1,6 +1,7 @@
 package net.liplum.brains
 
 import arc.audio.Sound
+import arc.func.Prov
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
 import arc.graphics.g2d.Fill
@@ -116,6 +117,7 @@ open class Heimdall(name: String) : Block(name) {
     )
 
     init {
+        buildType = Prov { HeimdallBuild() }
         updateInUnits = true
         alwaysUpdateInUnits = true
         solid = true

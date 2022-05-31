@@ -1,5 +1,6 @@
 package net.liplum.blocks.stream
 
+import arc.func.Prov
 import arc.graphics.Color
 import arc.graphics.g2d.TextureRegion
 import arc.scene.ui.layout.Table
@@ -44,6 +45,7 @@ open class StreamClient(name: String) : AniedBlock<StreamClient, StreamClient.Cl
     @JvmField val CheckConnectionTimer = timers++
 
     init {
+        buildType = Prov { ClientBuild() }
         hasLiquids = true
         update = true
         solid = true

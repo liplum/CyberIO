@@ -1,5 +1,6 @@
 package net.liplum.blocks.jammer
 
+import arc.func.Prov
 import arc.graphics.g2d.Draw
 import arc.math.Mathf
 import arc.math.geom.Vec2
@@ -46,6 +47,7 @@ open class Jammer(name: String) : LaserTurret(name) {
     @ClientOnly var stereoSpeed = 35f
 
     init {
+        buildType = Prov { JammerBuild() }
         outlineIcon = false
         //consumes.remove(ConsumeType.liquid)
         config(Integer::class.java) { obj: JammerBuild, i ->

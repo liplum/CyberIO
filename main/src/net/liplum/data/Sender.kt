@@ -1,5 +1,6 @@
 package net.liplum.data
 
+import arc.func.Prov
 import arc.graphics.Color
 import arc.math.geom.Point2
 import arc.util.Nullable
@@ -52,6 +53,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
     @ClientOnly @JvmField var SendingTime = 60f
 
     init {
+        buildType = Prov { SenderBuild() }
         solid = true
         update = true
         acceptsItems = true

@@ -1,5 +1,6 @@
 package net.liplum.blocks.virus
 
+import arc.func.Prov
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
 import arc.graphics.g2d.TextureRegion
@@ -71,6 +72,7 @@ open class Virus(name: String) : Block(name) {
     lateinit var raceMaskTR: TextureRegion
 
     init {
+        buildType = Prov { VirusBuild() }
         solid = true
         update = true
         canOverdrive = true

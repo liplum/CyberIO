@@ -1,5 +1,6 @@
 package net.liplum.blocks.prism
 
+import arc.func.Prov
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
 import arc.math.Angles
@@ -86,6 +87,7 @@ open class Prism(name: String) : Block(name) {
     @ClientOnly lateinit var LeftDownEndTR: TR
 
     init {
+        buildType = Prov { PrismBuild() }
         updateInUnits = true
         alwaysUpdateInUnits = true
         absorbLasers = true

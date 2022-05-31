@@ -1,5 +1,6 @@
 package net.liplum.blocks.icmachine
 
+import arc.func.Prov
 import mindustry.graphics.Pal
 import mindustry.type.Item
 import net.liplum.DebugOnly
@@ -35,6 +36,9 @@ open class ICMachineS(name: String) : AniedCrafter<ICMachineS, ICMachineS.ICMach
     @ClientOnly lateinit var processIcons: Array<Item>
     @ClientOnly @JvmField var baffleMinAlpha = 0.65f
     @ClientOnly @JvmField var baffleMaxAlpha = 1f
+    init {
+        buildType = Prov { ICMachineSBuild() }
+    }
     override fun setBars() {
         super.setBars()
         DebugOnly {

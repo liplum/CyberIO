@@ -1,6 +1,7 @@
 package net.liplum.blocks.debugonly
 
 import arc.Core
+import arc.func.Prov
 import arc.graphics.Color
 import arc.math.Mathf
 import arc.scene.ui.Slider
@@ -26,6 +27,7 @@ open class AdjustableOverdrive(name: String) : OverdriveProjector(name) {
     @JvmField var maxGear = 10
 
     init {
+        buildType = Prov { AOBuild() }
         hasBoost = false
         baseColor = Color.red
         configurable = true

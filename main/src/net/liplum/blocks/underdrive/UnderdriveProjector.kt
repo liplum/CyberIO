@@ -1,5 +1,6 @@
 package net.liplum.blocks.underdrive
 
+import arc.func.Prov
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
 import arc.graphics.g2d.Lines
@@ -100,6 +101,7 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
     @ClientOnly @JvmField var maxSelectedCircleTime = Var.selectedCircleTime
 
     init {
+        buildType = Prov { UnderdriveBuild() }
         solid = true
         update = true
         group = BlockGroup.projectors

@@ -1,5 +1,6 @@
 package net.liplum.holo
 
+import arc.func.Prov
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
 import arc.struct.ObjectMap
@@ -64,6 +65,7 @@ open class Stealth(name: String) : Turret(name) {
     @JvmField val CheckConnectionTimer = timers++
 
     init {
+        buildType = Prov { StealthBuild() }
         update = true
         sync = true
         //Hologram

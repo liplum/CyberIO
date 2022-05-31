@@ -1,5 +1,6 @@
 package net.liplum.blocks.stream
 
+import arc.func.Prov
 import arc.graphics.Color
 import arc.math.geom.Point2
 import arc.struct.OrderedSet
@@ -61,6 +62,7 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
     @JvmField val TransferTimer = timers++
 
     init {
+        buildType = Prov { HostBuild() }
         update = true
         solid = true
         configurable = true

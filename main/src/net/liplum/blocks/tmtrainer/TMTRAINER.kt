@@ -1,6 +1,7 @@
 package net.liplum.blocks.tmtrainer
 
 import arc.Core
+import arc.func.Prov
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
 import arc.scene.ui.Image
@@ -42,6 +43,7 @@ open class TMTRAINER(name: String) : ItemTurret(name) {
     @JvmField var maxVirusChargeSpeedUp = 2.5f
 
     init {
+        buildType = Prov { TMTRAINERBUILD() }
         drawer = DrawMulti(
             DrawRegion("-base"),
             object : DrawRegion("-head") {
