@@ -169,6 +169,8 @@ __pycache__/
 ## Gradle :main project
 main/build
 main/src/net/liplum/gen/Contents.kt
+lib/build
+mdt/build
 buildSrc/build
 bundle/build
 processor/build

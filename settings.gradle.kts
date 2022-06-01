@@ -1,11 +1,12 @@
 rootProject.name = "cyberio"
 include(
     "main",
+    "lib",
+    "mdt",
     "app",
     "story",
-    "bundle",
     "processor",
-    "annotations"
+    "annotations",
 )
 /*
 startParameter.excludedTaskNames.add(

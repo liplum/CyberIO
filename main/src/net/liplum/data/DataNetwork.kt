@@ -4,6 +4,7 @@ import arc.struct.IntSet
 import mindustry.gen.Building
 import mindustry.world.blocks.power.PowerGraph
 import net.liplum.api.cyber.INetworkNode
+import plumy.path.Vertex
 import java.util.*
 
 class DataNetwork {

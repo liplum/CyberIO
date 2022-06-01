@@ -103,7 +103,6 @@ object CioBlocks {
     @JvmStatic lateinit var heimdall: Heimdall
     @JvmStatic lateinit var eye: Eye
     @JvmStatic lateinit var ear: Ear
-    @JvmStatic lateinit var hand: Hand
     @JvmStatic lateinit var heart: Heart
     @JvmStatic lateinit var decentralizer: Decentralizer
     @JvmStatic lateinit var DDoS: DDoS
@@ -1383,21 +1382,6 @@ object CioBlocks {
             )
             buildType = Prov { EarBuild() }
             size = 2
-        }
-    }
-
-    fun hand() {
-        DebugOnly {
-            hand = Hand("heimdall-hand").apply {
-                requirements(
-                    Category.turret, BuildVisibility.shown, arrayOf(
-                        ItemStack(CioItems.ic, 5),
-                        ItemStack(Items.copper, 80),
-                        ItemStack(Items.silicon, 40),
-                        ItemStack(Items.phaseFabric, 40),
-                    )
-                )
-            }
         }
     }
     @DependOn("CioItems.ic")

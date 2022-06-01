@@ -15,7 +15,11 @@ val mdtVersionNum: String get() = extra["mdtVersionNum"] as String
 val sdkRoot: String? by extra(System.getenv("ANDROID_HOME") ?: System.getenv("ANDROID_SDK_ROOT"))
 sourceSets {
     main {
-        java.srcDir("src")
+        java.srcDirs(
+            "src",
+            "${project(":lib").projectDir}/src",
+            "${project(":mdt").projectDir}/src",
+        )
         resources.srcDir("resources")
     }
     test {
@@ -26,7 +30,9 @@ sourceSets {
 
 kotlin.sourceSets.main {
     kotlin.srcDirs(
-        file("$buildDir/generated/ksp/main/kotlin")
+        file("$buildDir/generated/ksp/main/kotlin"),
+        file("${project(":lib").projectDir}/src"),
+        file("${project(":mdt").projectDir}/src"),
     )
 }
 
@@ -67,6 +73,7 @@ dependencies {
     compileOnly("com.github.anuken.mindustryjitpack:core:$MdtHash")
     testImplementation("com.github.anuken.mindustryjitpack:core:$MdtHash")
     implementation("com.github.liplum:OpenGAL:v0.4.3")
+    implementation("com.github.liplum.plumyjava:path:7627bbd6ec")
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1")
 

@@ -8,6 +8,8 @@ buildscript {
     }
 }
 allprojects {
+    group = "net.liplum"
+    version = "4.0"
     val mdtVersion by extra(property("MindustryVersion") as String)
     extra["outputJarName"] = property("OutputJarName") as String
     extra["mdtVersion"] = mdtVersion
