@@ -11,7 +11,7 @@ import mindustry.entities.bullet.ContinuousLaserBulletType
 import mindustry.gen.Bullet
 import mindustry.graphics.Drawf
 import net.liplum.lib.shaders.ShaderBase
-import net.liplum.lib.shaders.onWith
+import net.liplum.lib.shaders.use
 
 open class ShaderCLaserT<TS : ShaderBase>(damage: Float) : ContinuousLaserBulletType(damage) {
     constructor() : this(0f)
@@ -19,7 +19,7 @@ open class ShaderCLaserT<TS : ShaderBase>(damage: Float) : ContinuousLaserBullet
     @JvmField var preShader: (TS, Bullet) -> Unit = { _, _ -> }
     lateinit var shader: () -> TS
     override fun draw(b: Bullet) {
-        shader().onWith(layer) { it ->
+        shader().use(layer) {
             preShader(it, b)
             val realLength = Damage.findLaserLength(b, length)
             val fout = Mathf.clamp(
@@ -67,7 +67,7 @@ open class ShaderBasicBulletT<TS : ShaderBase> : BasicBulletType {
     constructor() : this(1f, 1f, "bullet")
 
     override fun draw(b: Bullet) {
-        shader().onWith(layer) { it ->
+        shader().use(layer) {
             preShader(it, b)
             super.draw(b)
         }

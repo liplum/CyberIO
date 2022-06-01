@@ -17,6 +17,7 @@ import mindustry.gen.Building
 import mindustry.gen.Iconc
 import mindustry.gen.Sounds
 import mindustry.gen.Unit
+import mindustry.graphics.Drawf
 import mindustry.world.Block
 import mindustry.world.meta.BlockStatus
 import net.liplum.DebugOnly
@@ -36,11 +37,12 @@ import net.liplum.mdt.render.smoothPlacing
 import net.liplum.mdt.render.smoothSelect
 import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.utils.subBundle
+import net.liplum.mdt.utils.worldXY
 import kotlin.math.sqrt
 
 open class ZipBomb(name: String) : Block(name) {
     @JvmField var explodeEffect: Effect = Fx.reactorExplosion
-    @JvmField var damagePreUnit = 1200f
+    @JvmField var damagePreUnit = 400f
     @JvmField var rangePreUnit = 10f
     @JvmField var shake = 6f
     @JvmField var shakeDuration = 16f
@@ -115,6 +117,7 @@ open class ZipBomb(name: String) : Block(name) {
     }
 
     open inner class ZipBombBuild : Building() {
+        // TODO: Serialization
         @Serialized
         var autoDetectEnabled = true
         @Serialized
@@ -207,6 +210,7 @@ open class ZipBomb(name: String) : Block(name) {
         }
 
         override fun draw() {
+            Drawf.shadow(x, y, size.worldXY * 1.5f)
             // only players in the same team can find this
             WhenTheSameTeam {
                 super.draw()
