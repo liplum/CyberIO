@@ -7,8 +7,8 @@ import arc.math.Mathf
 import mindustry.entities.Effect
 import mindustry.gen.Unit
 import mindustry.type.StatusEffect
-import net.liplum.lib.shaders.SD
 import net.liplum.lib.shaders.onWith
+import net.liplum.registries.SD
 
 val StaticFx = Effect(40f) {
     SD.TvStatic.onWith { _ ->

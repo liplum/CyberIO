@@ -1,3 +1,5 @@
+@file:Suppress("SpellCheckingInspection")
+
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.io.ByteArrayOutputStream
@@ -10,6 +12,7 @@ plugins {
 val settings = net.liplum.gradle.settings.Settings.get(rootDir)
 val OutputJarName: String by project
 val MdtHash: String by project
+val PlumyHash: String by project
 val mdtVersion: String get() = extra["mdtVersion"] as String
 val mdtVersionNum: String get() = extra["mdtVersionNum"] as String
 val sdkRoot: String? by extra(System.getenv("ANDROID_HOME") ?: System.getenv("ANDROID_SDK_ROOT"))
@@ -17,7 +20,6 @@ sourceSets {
     main {
         java.srcDirs(
             "src",
-            "${project(":lib").projectDir}/src",
             "${project(":mdt").projectDir}/src",
         )
         resources.srcDir("resources")
@@ -31,7 +33,6 @@ sourceSets {
 kotlin.sourceSets.main {
     kotlin.srcDirs(
         file("$buildDir/generated/ksp/main/kotlin"),
-        file("${project(":lib").projectDir}/src"),
         file("${project(":mdt").projectDir}/src"),
     )
 }
@@ -63,6 +64,7 @@ tasks.withType<KotlinCompile>().configureEach {
 }
 dependencies {
     implementation(project(":annotations"))
+    implementation(project(":lib"))
     ksp(project(":processor"))
     ksp("com.github.anuken.mindustryjitpack:core:$MdtHash")
 //    compileOnly("com.github.Anuken.Arc:arc-core:$mdtVersion")
@@ -73,7 +75,7 @@ dependencies {
     compileOnly("com.github.anuken.mindustryjitpack:core:$MdtHash")
     testImplementation("com.github.anuken.mindustryjitpack:core:$MdtHash")
     implementation("com.github.liplum:OpenGAL:v0.4.3")
-    implementation("com.github.liplum.plumyjava:path:7627bbd6ec")
+    implementation("com.github.liplum.plumyjava:path-kt:$PlumyHash")
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1")
 

@@ -37,7 +37,6 @@ import net.liplum.lib.TR
 import net.liplum.lib.delegates.Delegate1
 import net.liplum.lib.persistence.read
 import net.liplum.lib.persistence.write
-import net.liplum.lib.shaders.SD
 import net.liplum.lib.shaders.use
 import net.liplum.lib.utils.isZero
 import net.liplum.mdt.ClientOnly
@@ -51,6 +50,7 @@ import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.utils.*
 import net.liplum.registries.CioBulletTypes
 import net.liplum.registries.CioLiquids.cyberion
+import net.liplum.registries.SD
 
 open class Stealth(name: String) : Turret(name) {
     @JvmField var restoreReload = 10 * 60f

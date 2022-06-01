@@ -10,7 +10,6 @@ import net.liplum.annotations.DependOn
 import net.liplum.bullets.RuvikBullet
 import net.liplum.bullets.STEM_VERSION
 import net.liplum.bullets.ShaderBasicBulletT
-import net.liplum.lib.shaders.SD
 import net.liplum.mdt.shaders.CommonShader
 import net.liplum.seffects.StaticFx
 import net.liplum.shaders.HologramShader

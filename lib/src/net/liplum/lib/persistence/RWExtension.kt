@@ -2,6 +2,7 @@
 
 package net.liplum.lib.persistence
 
+import arc.math.geom.Vec2
 import arc.struct.*
 import arc.util.io.Reads
 import arc.util.io.Writes
@@ -117,5 +118,17 @@ inline fun <reified C, reified T> C.write(
     for (data in this) {
         writer.writing(data)
     }
+    return this
+}
+
+fun Vec2.read(reader: Reads): Vec2 {
+    x = reader.f()
+    y = reader.f()
+    return this
+}
+
+fun Vec2.write(writer: Writes): Vec2 {
+    writer.f(x)
+    writer.f(y)
     return this
 }

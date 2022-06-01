@@ -18,6 +18,7 @@ import net.liplum.shaders.HologramizeShader
 import net.liplum.shaders.SurfaceShader
 import net.liplum.shaders.VanishingShader
 import net.liplum.useCompatible
+typealias SD = CioShaders
 
 object CioShaderLoader {
     @JvmStatic

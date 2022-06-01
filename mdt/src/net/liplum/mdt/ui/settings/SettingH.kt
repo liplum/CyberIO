@@ -6,7 +6,6 @@ import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.CheckSetting
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.Setting
 import mindustry.ui.dialogs.SettingsMenuDialog.StringProcessor
-import net.liplum.scripts.KeyNotFoundException
 import net.liplum.lib.utils.insertAfter
 import net.liplum.lib.utils.insertBefore
 
@@ -96,7 +95,7 @@ fun SettingsTable.insertCheckPrefFirst(
 
 fun SettingsTable.sort(priority: Map<Class<out Setting>, Int>) {
     settings.sortComparing {
-        priority[it.javaClass] ?: throw KeyNotFoundException("${it.javaClass}")
+        priority[it.javaClass] ?: throw RuntimeException("Class ${it.javaClass} not found.")
     }
     rebuild()
 }

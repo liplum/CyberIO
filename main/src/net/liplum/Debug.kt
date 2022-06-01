@@ -2,9 +2,9 @@
 
 package net.liplum
 
-import net.liplum.lib.shaders.SD
 import net.liplum.lib.shaders.ShaderBase
 import net.liplum.mdt.shaders.CommonShader
+import net.liplum.registries.SD
 import net.liplum.registries.ShaderCtor
 import net.liplum.shaders.HologramShader
 import net.liplum.shaders.HologramizeShader

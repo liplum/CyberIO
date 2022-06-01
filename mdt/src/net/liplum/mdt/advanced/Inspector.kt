@@ -7,7 +7,7 @@ import mindustry.gen.Building
 import mindustry.world.Block
 import net.liplum.annotations.Only
 import net.liplum.annotations.Subscribe
-import net.liplum.inputs.Screen
+import net.liplum.mdt.Screen
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.render.IFocusable
 

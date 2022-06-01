@@ -39,7 +39,6 @@ import net.liplum.R
 import net.liplum.S
 import net.liplum.UndebugOnly
 import net.liplum.lib.Serialized
-import net.liplum.lib.shaders.SD
 import net.liplum.lib.shaders.use
 import net.liplum.lib.utils.bundle
 import net.liplum.lib.utils.percentI
@@ -51,6 +50,7 @@ import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.ui.bars.removeItemsInBar
 import net.liplum.mdt.utils.*
 import net.liplum.registries.CioLiquids.cyberion
+import net.liplum.registries.SD
 import kotlin.math.max
 
 open class HoloProjector(name: String) : Block(name) {

@@ -1,4 +1,4 @@
-package net.liplum.inputs
+package net.liplum.mdt
 
 import arc.Core
 import arc.math.geom.Vec2

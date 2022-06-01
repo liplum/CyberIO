@@ -31,10 +31,15 @@ typealias TileXYf = Float
 typealias TileXYd = Double
 typealias WorldXY = Float
 typealias PackedPos = Int
+typealias Pos = Point2
 
-fun PackedPos.unpack(): Point2 =
+fun PackedPos.unpack(): Pos =
     Point2.unpack(this)
 
+val Pos.isEmpty: Boolean
+    get() = x < 0 || y < 0
+
+fun NewEmptyPos() = Pos(-1, -1)
 fun tileAt(x: TileXY, y: TileXY): Tile? =
     Vars.world.tile(x, y)
 

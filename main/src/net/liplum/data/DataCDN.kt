@@ -9,6 +9,7 @@ import mindustry.Vars.world
 import mindustry.gen.Building
 import mindustry.graphics.Pal
 import mindustry.world.Block
+import mindustry.world.blocks.payloads.Payload
 import mindustry.world.meta.Env
 import net.liplum.DebugOnly
 import net.liplum.api.cyber.INetworkNode
@@ -24,6 +25,7 @@ import net.liplum.mdt.render.G
 import net.liplum.mdt.render.Text
 import net.liplum.mdt.render.smoothPlacing
 import net.liplum.mdt.ui.bars.AddBar
+import net.liplum.mdt.utils.NewEmptyPos
 import net.liplum.mdt.utils.PackedPos
 import net.liplum.mdt.utils.build
 import kotlin.math.max
@@ -41,7 +43,7 @@ class DataCDN(name: String) : Block(name) {
         configurable = true
         envEnabled = envEnabled or Env.space
         config(Integer::class.java) { b: CdnBuild, i ->
-            b.linkCommandNodeFromRemote(i.toInt())
+            b.linkNodeFromRemote(i.toInt())
         }
         configClear { b: CdnBuild ->
             b.clearLinks()
@@ -59,7 +61,7 @@ class DataCDN(name: String) : Block(name) {
         super.setBars()
         DebugOnly {
             AddBar<CdnBuild>("network",
-                { data.network.toString() },
+                { dataMod.network.toString() },
                 { Pal.power },
                 { networkGraph.entity.isAdded.toFloat() }
             )
@@ -67,6 +69,7 @@ class DataCDN(name: String) : Block(name) {
     }
 
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
+        // Draw a cross
         if (!this.isPlacing()) return
         val team = Vars.player.team()
         val range = (linkRange / tilesize).toInt()
@@ -108,23 +111,33 @@ class DataCDN(name: String) : Block(name) {
     }
 
     inner class CdnBuild : Building(), INetworkNode {
+        // TODO: Serialization
         @Serialized
-        override var data = NetworkModule()
+        override val data = PayloadData()
+        @Serialized
+        override val currentOriented = NewEmptyPos()
+        @Serialized
+        override var routine: DataNetwork.Path? = null
+        @Serialized
+        override var sendingProgress = 0f
+            set(value) {
+                field = value.coerceIn(0f, 1f)
+            }
+        @Serialized
+        override var dataMod = NetworkModule()
         @CalledBySync
-        fun linkCommandNodeFromRemote(pos: PackedPos) {
+        fun linkNodeFromRemote(pos: PackedPos) {
             val target = pos.nn() ?: return
-            val contains = data.links.contains(pos)
+            val contains = dataMod.links.contains(pos)
             if (contains) {
-                // unlink it
                 unlink(target)
-            } else if (canLink(target)) {
-                // link it
+            } else if (canLink(target)) { // Try to link to it
                 link(target)
             }
         }
 
         fun canLink(target: INetworkNode): Boolean {
-            if (data.links.size >= maxLink) return false
+            if (dataMod.links.size >= maxLink) return false
             return linkRange < 0 || target.building.dst(this) <= linkRange
         }
 
@@ -136,15 +149,15 @@ class DataCDN(name: String) : Block(name) {
         override fun draw() {
             super.draw()
             DebugOnly {
-                for (i in 0 until data.links.size) {
-                    val link = data.links[i]
+                for (i in 0 until dataMod.links.size) {
+                    val link = dataMod.links[i]
                     val linkB = link.build
                     if (linkB != null)
                         G.drawDashLineBetweenTwoBlocksBreath(this.tile, linkB.tile)
                 }
 
                 Text.drawTextEasy(
-                    "[red]${data.network.id}[]\n${data.links};\n${networkGraph.nodes}".segmentLines(50), x, y, Color.white
+                    "[red]${dataMod.network.id}[]\n${dataMod.links};\n${networkGraph.nodes}".segmentLines(50), x, y, Color.white
                 )
             }
         }
@@ -171,7 +184,7 @@ class DataCDN(name: String) : Block(name) {
         }
         @CalledBySync
         fun clearLinks() {
-            data.links.clear()
+            dataMod.links.clear()
         }
 
         override fun onConfigureBuildTapped(other: Building): Boolean {

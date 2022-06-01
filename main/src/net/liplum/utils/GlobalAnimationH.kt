@@ -1,4 +1,4 @@
-package net.liplum.mdt.animations.ganim
+package net.liplum.utils
 
 import arc.graphics.g2d.TextureRegion
 import arc.scene.style.TextureRegionDrawable
@@ -6,6 +6,7 @@ import mindustry.ctype.UnlockableContent
 import mindustry.world.Block
 import net.liplum.ResourceLoader
 import net.liplum.mdt.ClientOnly
+import net.liplum.mdt.animations.ganim.GlobalAnimation
 import net.liplum.mdt.animations.ganim.GlobalAnimation.Companion.register
 import net.liplum.mdt.utils.anim
 import net.liplum.mdt.utils.sheet

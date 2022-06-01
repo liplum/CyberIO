@@ -31,7 +31,6 @@ import net.liplum.R
 import net.liplum.S
 import net.liplum.holo.HoloProjector.HoloPBuild
 import net.liplum.lib.math.FUNC
-import net.liplum.lib.shaders.SD
 import net.liplum.lib.shaders.use
 import net.liplum.lib.utils.bundle
 import net.liplum.lib.utils.toFloat
@@ -41,6 +40,7 @@ import net.liplum.mdt.utils.MdtUnit
 import net.liplum.mdt.utils.TE
 import net.liplum.mdt.utils.healthPct
 import net.liplum.mdt.utils.seconds
+import net.liplum.registries.SD
 import net.liplum.utils.time
 import kotlin.math.min
 
@@ -67,6 +67,7 @@ open class HoloUnitType(name: String) : UnitType(name) {
 
     init {
         //outlineColor = S.HologramDark
+        allowedInPayloads = false
         lightColor = S.Hologram
         engineColor = S.Hologram
         healColor = S.Hologram

@@ -10,7 +10,7 @@ import net.liplum.Debug
 import net.liplum.annotations.Only
 import net.liplum.annotations.SubscribeEvent
 import net.liplum.events.CioInitEvent
-import net.liplum.inputs.Screen
+import net.liplum.mdt.Screen
 import net.liplum.mdt.lock
 import net.liplum.mdt.ui.DatabaseSelectorDialog
 import net.liplum.mdt.ui.NewBaseDialog

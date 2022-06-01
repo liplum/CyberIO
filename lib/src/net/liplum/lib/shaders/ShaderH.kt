@@ -1,9 +1,6 @@
 package net.liplum.lib.shaders
 
 import arc.graphics.g2d.Draw
-import net.liplum.registries.CioShaders
-
-typealias SD = CioShaders
 
 inline fun <T : ShaderBase> T?.onWith(
     zIndex: Float = Draw.z(),

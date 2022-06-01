@@ -22,7 +22,6 @@ import net.liplum.api.holo.IHoloEntity
 import net.liplum.api.holo.IHoloEntity.Companion.minHealth
 import net.liplum.lib.Serialized
 import net.liplum.lib.TR
-import net.liplum.lib.shaders.SD
 import net.liplum.lib.shaders.use
 import net.liplum.lib.utils.bundle
 import net.liplum.lib.utils.isZero
@@ -37,6 +36,7 @@ import net.liplum.mdt.utils.healthPct
 import net.liplum.mdt.utils.or
 import net.liplum.mdt.utils.seconds
 import net.liplum.mdt.utils.sub
+import net.liplum.registries.SD
 import net.liplum.utils.yesNo
 import kotlin.math.max
 

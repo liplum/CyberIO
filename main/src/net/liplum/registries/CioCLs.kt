@@ -3,7 +3,6 @@ package net.liplum.registries
 import mindustry.graphics.CacheLayer
 import net.liplum.annotations.SubscribeEvent
 import net.liplum.events.CioLoadContentEvent
-import net.liplum.lib.shaders.SD
 
 object CioCLs {
     private var registered = false
