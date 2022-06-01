@@ -4,6 +4,7 @@ plugins {
     kotlin("jvm") version "1.6.10"
     id("com.google.devtools.ksp") version "1.6.20-1.0.5"
     java
+    `maven-publish`
 }
 val settings = net.liplum.gradle.settings.Settings.get(rootDir)
 
@@ -48,7 +49,6 @@ dependencies {
     // annotationProcessor "com.github.Anuken:jabel:$jabelVersion"
 }
 
-
 tasks.withType<Test>().configureEach {
     useJUnitPlatform {
         includeTags("fast")
@@ -57,5 +57,21 @@ tasks.withType<Test>().configureEach {
     testLogging {
         exceptionFormat = TestExceptionFormat.FULL
         showStandardStreams = true
+    }
+}
+val sourcesJar by tasks.creating(Jar::class) {
+    dependsOn(JavaPlugin.CLASSES_TASK_NAME)
+    archiveClassifier.set("sources")
+    from(sourceSets["main"].allSource)
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            from(components["java"])
+            afterEvaluate {
+                artifact(sourcesJar)
+            }
+        }
     }
 }

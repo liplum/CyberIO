@@ -1,6 +1,5 @@
 package net.liplum.data
 
-import arc.Core
 import arc.graphics.g2d.Draw
 import mindustry.graphics.Layer
 import mindustry.world.blocks.payloads.Payload
@@ -71,14 +70,15 @@ class Serializer(name: String) : PayloadBlock(name) {
 
         override fun updateTile() {
             // Don't update payload
+            data.data = null
             moveInPayload(false)
             val payload = payload
-            if (!hasArrived() || payload == null) return
-            //if (!hasArrived() || !data.isEmpty || payload == null) return
+            if (!hasArrived() || !data.isEmpty || payload == null) return
             serializingProgress += delta() * serializationSpeed
             if (serializingProgress >= 1f) {
                 this.payload = null
                 data.data = payload
+                serializingProgress = 0f
             }
         }
     }

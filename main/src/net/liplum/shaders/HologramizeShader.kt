@@ -12,7 +12,7 @@ class HologramizeShader(
     frag: Fi
 ) : ShaderBase(vert, frag) {
     var progress = 0f
-    var offset = 1f
+    var scanlineWidthPct = 0.1f // [0f,1f] <= 0.2 is better
     var region = TR()
     var isTopDown = true
     var opacityNoise = 0.2f
@@ -22,7 +22,7 @@ class HologramizeShader(
     var holoColor = Color(S.Hologram)
     override fun apply() {
         setUniformf("u_time", Time.time)
-        setUniformf("u_offset", offset)
+        setUniformf("u_scanline_width", scanlineWidthPct)
         setUniformf("u_progress", progress)
         setUniformf("u_uv", region.u, region.v)
         setUniformf("u_uv2", region.u2, region.v2)
@@ -41,7 +41,7 @@ class HologramizeShader(
 
     override fun reset() {
         progress = 0f
-        offset = 1f
+        scanlineWidthPct = 0.1f
         opacityNoise = 0.2f
         flickering = DefaultFlickering
         blendHoloColorOpacity = DefaultBlendHoloColorOpacity

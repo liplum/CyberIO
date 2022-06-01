@@ -7,8 +7,8 @@ uniform float u_time;
 uniform sampler2D u_texture;
 uniform vec2 u_uv;
 uniform vec2 u_uv2;
-// The height of scan line
-uniform float u_offset;
+// The width precent relative to whole patch of scan line
+uniform float u_scanline_width;// [0f,1f]
 uniform float u_progress;
 // 1 means true, the scan line moves from top to bottom.
 // 0 means false, the scan line moves from bottom to top.
@@ -44,22 +44,23 @@ void main() {
     vec2 altasXY = v_texCoords.xy - u_uv;
     vec2 coords = altasXY / (u_uv2 - u_uv);// belongs to [0f,1f]
     // scanline progress
-    float p = u_progress * (1.0 + u_offset);
-    if (u_topDown != 0){// true: topDown; false: bottomUp
+    float p = u_progress * (1.0 + u_scanline_width);
+    bool isTopDown = u_topDown != 0;// true: topDown; false: bottomUp
+    if (isTopDown){
         p = 1.0 - p;
     }
     float top = clamp(p, 0.0, 1.0);
-    float bottom = clamp(p - u_offset, 0.0, 1.0);
+    float bottom = clamp(p - u_scanline_width, 0.0, 1.0);
     // height progress
     float height = 1.0 - coords.y;
     // The color on original texture by patch coordinate
     vec4 res = texture2D(u_texture, tex_uv);
-    if (height >= top){ // upon scanline
+    if (height >= top || height >= bottom){ // upon scanline
         // Scanline is invisible
         //res.a = 0.0;
         vec3 col = res.rgb;
         if (u_blendFormerColorOpacity > 0.01){
-            col = blend(col, v_color.rgb, u_blendFormerColorOpacity);
+            col = blend(col, v_color.rgb, u_blendFormerColorOpacity);// Opacity * 0.5 looks like golden
         }
         if (u_blendHoloColorOpacity > 0.01){
             col = blend(col, u_holo_color.rgb, u_blendHoloColorOpacity);
@@ -71,10 +72,20 @@ void main() {
         col += col * scanlines * OpacityScanline;
         col += col * vec3(random(tex_uv * u_time)) * u_opacityNoise;
         col += col * sin(110.0 * u_time) * u_flickering;
-        res.rgb = col;
-    } else if (height >= bottom){ // under scanline
-        // Set color of scanline
-        res.rgb = u_holo_color.rgb;
+        if (height>= top){
+            res.rgb = col;
+        } else if (height >= bottom){
+            // Set color of scanline
+            float width = top - bottom;
+            float rest = height - bottom;
+            float alpha = 0.8 * rest / width;
+            if (isTopDown){
+                alpha = 1.0 - alpha;
+                res.rgb = blend(res.rgb, col.rgb, alpha);
+            } else {
+                res.rgb = blend(col.rgb, res.rgb, alpha);
+            }
+        }
     }
 
     gl_FragColor = res;
