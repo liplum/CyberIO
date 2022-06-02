@@ -158,6 +158,10 @@ open class Ear(name: String) : Block(name), IComponentBlock {
             set(value) {
                 field = value.coerceIn(0f, 1f)
             }
+        override fun afterPickedUp() {
+            super.afterPickedUp()
+            unlinkBrain()
+        }
         // </editor-fold>
         // <editor-fold desc="Controllable">
         var unit = UnitTypes.block.create(team) as BlockUnitc

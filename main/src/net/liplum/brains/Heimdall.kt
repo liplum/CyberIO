@@ -441,6 +441,11 @@ open class Heimdall(name: String) : Block(name) {
             }
         }
 
+        override fun afterPickedUp() {
+            super.afterPickedUp()
+            checkComponentsNearby()
+        }
+
         override fun updatePayload(unitHolder: MdtUnit?, buildingHolder: Building?) {
             super.updatePayload(unitHolder, buildingHolder)
             if (Mathf.chance(0.006)) {
@@ -489,6 +494,9 @@ open class Heimdall(name: String) : Block(name) {
 
         override fun onProximityUpdate() {
             super.onProximityUpdate()
+            checkComponentsNearby()
+        }
+        open fun checkComponentsNearby(){
             val formerComponentCount = components.size
             clear()
             for (build in proximity) {
@@ -593,17 +601,18 @@ open class Heimdall(name: String) : Block(name) {
             Draw.reset()
             // Force field
             if (shieldAmount > 0) {
+                val curFieldRadiusDraw = curFieldRadius + G.sin // breath effect
                 Draw.z(Layer.shields)
                 if (Vars.renderer.animateShields) {
                     Draw.color(R.C.BrainWave)
-                    Fill.poly(x, y, 6, curFieldRadius)
+                    Fill.poly(x, y, 6, curFieldRadiusDraw)
                 } else {
                     Draw.color(R.C.BrainWave, Color.white, forcePct.coerceIn(0f, 1f) * 0.5f)
                     Lines.stroke(1.5f)
                     Draw.alpha(0.09f)
-                    Fill.poly(x, y, 6, curFieldRadius)
+                    Fill.poly(x, y, 6, curFieldRadiusDraw)
                     Draw.alpha(1f)
-                    Lines.poly(x, y, 6, curFieldRadius)
+                    Lines.poly(x, y, 6, curFieldRadiusDraw)
                 }
             }
             Draw.reset()

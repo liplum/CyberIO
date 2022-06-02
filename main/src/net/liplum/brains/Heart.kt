@@ -89,6 +89,8 @@ open class Heart(name: String) : Block(name), IComponentBlock {
     @ClientOnly lateinit var HeatTRs: TRs
     @ClientOnly @JvmField var HeartbeatDuration = 60f
     @ClientOnly @JvmField var HeartbeatFrameNum = 20
+    /** The Higher, the weaker scale*/
+    @ClientOnly @JvmField var BreathIntensity = 45f
     @ClientOnly lateinit var allLiquidBars: Array<(Building) -> Bar>
     @ClientOnly @JvmField val heatMeta = HeatMeta()
     @JvmField var TemperatureEFF2ASpeed: FUNC = {
@@ -211,6 +213,11 @@ open class Heart(name: String) : Block(name), IComponentBlock {
             set(value) {
                 field = value.coerceIn(0f, 1f)
             }
+
+        override fun afterPickedUp() {
+            super.afterPickedUp()
+            unlinkBrain()
+        }
         //</editor-fold>
         //<editor-fold desc="Controllable">
         var unit = UnitTypes.block.create(team) as BlockUnitc
@@ -298,6 +305,9 @@ open class Heart(name: String) : Block(name), IComponentBlock {
             get() = heartbeat.bulletLifeTime.progress(temperatureEfficiency)
         val realBloodConsumePreTick: Float
             get() = bloodConsumePreTick * (2f - temperature) * 1.5f
+        @ClientOnly
+        val realBreathIntensity: Float
+            get() = BreathIntensity - if (isLinkedBrain) 5f else 0f
         //</editor-fold>
         //<editor-fold desc="Meta">
         val curBulletType: BulletType
@@ -484,7 +494,10 @@ open class Heart(name: String) : Block(name), IComponentBlock {
                 visualRange.update(delta())
             }
             BaseTR.Draw(x, y)
-            heartbeatAnime.draw(x, y)
+            //heartbeatAnime.draw(x, y)
+            heartbeatAnime.draw {
+                it.DrawSize(x, y, 1f + G.sin / realBreathIntensity)
+            }
             heatMeta.drawHeat(this, HeatTRs[heartbeatAnime.index])
         }
         /**

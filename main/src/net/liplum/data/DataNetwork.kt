@@ -20,6 +20,8 @@ class EmptyNetworkNode : INetworkNode {
     override val currentOriented: Pos = NewEmptyPos()
     override val sendingProgress: Float = 0f
     override var routine: DataNetwork.Path? = DataNetwork.Path()
+    override val linkRange =0f
+    override val maxLink = 0
 }
 
 class DataNetwork {

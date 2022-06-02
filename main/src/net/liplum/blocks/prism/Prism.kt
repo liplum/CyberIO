@@ -4,7 +4,6 @@ import arc.func.Prov
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
 import arc.math.Angles
-import arc.math.Interp
 import arc.math.Mathf
 import arc.struct.EnumSet
 import arc.struct.Seq
@@ -39,7 +38,6 @@ import net.liplum.lib.TR
 import net.liplum.lib.TRs
 import net.liplum.lib.math.*
 import net.liplum.lib.utils.bundle
-import net.liplum.lib.utils.invoke
 import net.liplum.lib.utils.isZero
 import net.liplum.lib.utils.percentI
 import net.liplum.mdt.ClientOnly
@@ -56,9 +54,7 @@ import kotlin.math.log2
 
 open class Prism(name: String) : Block(name) {
     var PS: FUNC = quadratic(1.2f, 0.2f)
-    /**
-     * Above ground level.
-     */
+    /** Above ground level.*/
     @JvmField var Agl = 20f
     @JvmField var deflectionAngle = 25f
     @JvmField var prismRadius = 10.5f
@@ -192,7 +188,6 @@ open class Prism(name: String) : Block(name) {
         var logicAngle = 0f
         val realRange: Float
             get() = Agl + (prismRadius * 2 * crystalAmount)
-
         open val Crystal.circleColor: Color
             get() = R.C.PrismRgbFG[(orbitPos + id) % 3]
 
@@ -200,10 +195,18 @@ open class Prism(name: String) : Block(name) {
             cm.tryRemoveOutermost()
 
         override fun onRemoved() =
-            cm.unlinkAllObelisks()
+            cm.clearObelisk()
+
+        override fun dropped() {
+            checkObelisk()
+        }
 
         override fun onProximityUpdate() {
             super.onProximityUpdate()
+            checkObelisk()
+        }
+
+        open fun checkObelisk() {
             cm.removeNonexistentObelisk()
             if (cm.canAdd) {
                 for (b in proximity) {

@@ -2,11 +2,11 @@ package net.liplum.mdt.animations.anims
 
 import arc.graphics.Color
 import arc.math.Mathf
-import net.liplum.mdt.render.Draw
 import net.liplum.lib.ITimer
+import net.liplum.lib.TR
+import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.Reset
 import net.liplum.mdt.render.SetColor
-import net.liplum.lib.TR
 
 data class Frame(
     val image: TR,
@@ -32,7 +32,6 @@ class Anime(
             field = value.coerceIn(0, frames.size - 1)
         }
     var curTime = 0f
-
     var isForward = { true }
     val curDuration: Float
         get() = frames[index].duration
@@ -55,7 +54,7 @@ class Anime(
         if (isEnd) {
             onEnd()
             // If it still ends, just skip
-            if(isEnd)
+            if (isEnd)
                 return
         }
         if (isForward()) {
@@ -93,6 +92,10 @@ class Anime(
         Reset()
     }
 
+    inline fun draw(draw: (TR) -> Unit) {
+        draw(curImage)
+    }
+
     override fun draw(howToRender: IHowToRender) {
         howToRender.render(curImage)
         Reset()
@@ -104,15 +107,18 @@ class Anime(
         howToRender.render(curImage)
     }
 }
+
 fun Anime.randomCurTime(): Anime {
     curTime = Mathf.random(curDuration)
     return this
 }
+
 fun Anime.setEnd(): Anime {
     isEnd = true
-    index = frames.size -1
+    index = frames.size - 1
     return this
 }
+
 fun Anime.loop(): Anime {
     onEnd = {
         isEnd = false

@@ -134,7 +134,7 @@ open class ZipBomb(name: String) : Block(name) {
                 if (autoDetectCounter >= autoDetectTime) {
                     autoDetectCounter %= autoDetectTime
                     if (countEnemyNearby() >= curSensitive) {
-                        trigger()
+                        triggerSync()
                     }
                 }
             }
@@ -146,7 +146,7 @@ open class ZipBomb(name: String) : Block(name) {
                 if (autoDetectCounter >= autoDetectTime) {
                     autoDetectCounter %= autoDetectTime
                     if (countEnemyNearby() >= curSensitive) {
-                        trigger()
+                        triggerSync()
                     }
                 } else {
                     countEnemyNearby(explosionRange * warningRangeFactor)
@@ -168,7 +168,7 @@ open class ZipBomb(name: String) : Block(name) {
         }
 
         override fun dropped() {
-            trigger()
+            triggerSync()
         }
 
         override fun unitOn(unit: Unit) {
@@ -193,7 +193,7 @@ open class ZipBomb(name: String) : Block(name) {
         }
 
         override fun onCommand(target: Vec2) {
-            trigger()
+            triggerSync()
         }
 
         override fun onDestroyed() {
@@ -208,7 +208,7 @@ open class ZipBomb(name: String) : Block(name) {
                 table.add(Stack(
                     Slider(pre, 1f, pre, false).apply {
                         value = curSensitive * pre
-                        moved { configGear((it * (maxSensitive + 1)).toInt().coerceIn(1, maxSensitive)) }
+                        moved { configGearSync((it * (maxSensitive + 1)).toInt().coerceIn(1, maxSensitive)) }
                         update { isDisabled = !autoDetectEnabled }
                     },
                     Table().apply {
@@ -222,7 +222,7 @@ open class ZipBomb(name: String) : Block(name) {
             }
             table.add(TextButton("").apply {
                 label.setText { getCurrentAutoDetectButton() }
-                changed { switchAutoDetect() }
+                changed { switchAutoDetectSync() }
             }).width(250f).grow()
             table.defaults().growX()
         }
@@ -276,12 +276,12 @@ open class ZipBomb(name: String) : Block(name) {
             curSensitive = int
         }
         @SendDataPack
-        open fun trigger() {
+        open fun triggerSync() {
             if (isAdded)
                 configureAny(true)
         }
         @SendDataPack
-        open fun configGear(gear: Int) {
+        open fun configGearSync(gear: Int) {
             configure(Command.genFull(autoDetectEnabled, gear))
         }
 
@@ -291,7 +291,7 @@ open class ZipBomb(name: String) : Block(name) {
             }
         }
         @SendDataPack
-        open fun switchAutoDetect() {
+        open fun switchAutoDetectSync() {
             configure(Command.genFull(!autoDetectEnabled, curSensitive))
         }
 

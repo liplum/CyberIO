@@ -89,6 +89,37 @@ inline fun IntSeq.forEach(func: (Int) -> Unit) {
     }
 }
 /**
+ * Only used in single thread.
+ */
+val tempIntSeq = IntSeq(64)
+/**
+ * Only used in single thread.
+ * It uses [tempIntSeq] as temporary [IntSeq]
+ */
+inline fun IntSeq.snapshotForEach(func: (Int) -> Unit) {
+    snapShot(tempIntSeq).run {
+        for (i in 0 until size) {
+            func(this[i])
+        }
+    }
+}
+/**
+ * @return [temp]
+ */
+fun IntSeq.snapShot(temp: IntSeq): IntSeq {
+    temp.copyFrom(this)
+    return temp
+}
+
+fun IntSeq.copyFrom(other: IntSeq) {
+    this.ordered = other.ordered
+    if (size < other.size) {
+        items = IntArray(other.size)
+    }
+    size = other.size
+    System.arraycopy(other.items, 0, items, 0, size)
+}
+/**
  * It calls the [IntSet.iterator] function. Note this can't work in multi-thread or nested calling.
  * @param func (Index,Element)
  */

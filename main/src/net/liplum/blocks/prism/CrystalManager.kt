@@ -9,8 +9,6 @@ import net.liplum.lib.persistence.read
 import net.liplum.lib.persistence.write
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.utils.TE
-import net.liplum.mdt.utils.build
-import net.liplum.mdt.utils.exists
 
 enum class Status {
     Shrinking, Expending
@@ -113,10 +111,21 @@ open class CrystalManager(
             if (it == null) {
                 false
             } else {
-                val build = it.build
-                !build.exists || (build as? Obelisk)?.linked != prism.pos()
+                val build = it.TE<Obelisk>()
+                if (build == null) true
+                else if (build.linked != prism.pos()) {
+                    build.unlink()
+                    true
+                } else false
             }
         }
+    }
+
+    fun clearObelisk() {
+        obelisks.forEach {
+            it.TE<Obelisk>()?.unlink()
+        }
+        obelisks.clear()
     }
 
     fun updateObelisk() {

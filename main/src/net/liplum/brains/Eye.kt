@@ -170,6 +170,11 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
             }
         }
 
+        override fun afterPickedUp() {
+            super.afterPickedUp()
+            unlinkBrain()
+        }
+
         override fun delta(): Float {
             return this.timeScale * Time.delta * speedScale * (1f + heatShared)
         }
