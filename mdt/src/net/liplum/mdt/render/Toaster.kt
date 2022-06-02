@@ -2,6 +2,8 @@ package net.liplum.mdt.render
 
 import arc.math.Interp
 import arc.util.Time
+import arc.util.pooling.Pool
+import arc.util.pooling.Pools
 import mindustry.game.EventType
 import net.liplum.annotations.Subscribe
 import net.liplum.lib.utils.invoke
@@ -20,6 +22,7 @@ object Toaster {
      * Managed toast can be overwritten or removed by its key.
      */
     val managedToast = HashMap<Any, Toast>()
+    val toastPool: Pool<Toast> = Pools.get(Toast::class.java, ::Toast)
     /**
      * Post an unmanaged toast, it will be drawn every [EventType.Trigger.drawOver].
      * It is impossible to be removed.
@@ -113,9 +116,9 @@ object Toaster {
         useGlobalTime: Boolean = false,
         task: ToastSpec.() -> Unit
     ) = if (useGlobalTime)
-        Toast(Time.globalTime, duration, true, task)
+        Toast.create(Time.globalTime, duration, true, task)
     else
-        Toast(Time.time, duration, false, task)
+        Toast.create(Time.time, duration, false, task)
     /**
      * Remove a managed toast.
      */
@@ -179,18 +182,36 @@ object Toaster {
     }
 }
 
-class Toast(
-    var startTime: Float,
-    var duration: Float,
-    var useGlobalTime: Boolean,
-    var task: ToastSpec.() -> Unit
-) {
+class Toast : Pool.Poolable {
+    var startTime: Float = 0f
+    var duration: Float = 0f
+    var useGlobalTime: Boolean = false
+    var task: ToastSpec.() -> Unit = emptyTask
     val isEnd: Boolean
         get() = if (useGlobalTime) startTime + duration <= Time.globalTime
         else startTime + duration <= Time.time
 
     companion object {
-        val X = Toast(0f, 0f, false) {}
+        val emptyTask: ToastSpec.() -> Unit = {}
+        val X = Toast()
+        fun create(
+            startTime: Float,
+            duration: Float,
+            useGlobalTime: Boolean,
+            task: ToastSpec.() -> Unit
+        ): Toast = Toaster.toastPool.obtain().apply {
+            this.startTime = startTime
+            this.duration = duration
+            this.useGlobalTime = useGlobalTime
+            this.task = task
+        }
+    }
+
+    override fun reset() {
+        startTime = 0f
+        duration = 0f
+        useGlobalTime = false
+        task = emptyTask
     }
 }
 

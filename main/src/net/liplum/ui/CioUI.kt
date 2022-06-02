@@ -33,6 +33,7 @@ import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.IsLocal
 import net.liplum.mdt.UnsteamOnly
 import net.liplum.mdt.advanced.MapCleaner
+import net.liplum.mdt.ui.MainMenus
 import net.liplum.mdt.ui.ShowTextDialog
 import net.liplum.mdt.ui.addTrackTooltip
 import net.liplum.mdt.ui.settings.*
@@ -46,12 +47,15 @@ import net.liplum.welcome.WelcomeList
 
 @ClientOnly
 object CioUI {
+    val icon by lazy {
+        TextureRegionDrawable("welcome-cyber-io".inCio)
+    }
     @JvmStatic
     @SubscribeEvent(CioInitEvent::class, Only.client)
     fun appendUI() {
         addCyberIOSettingMenu()
+        addCyberIOMenu()
     }
-    @JvmStatic
     @UseReflection
     fun addCyberIOSettingMenu() {
         val uiSettings = Vars.ui.settings
@@ -69,7 +73,7 @@ object CioUI {
                     menu.row()
                     menu.button(
                         Meta.Name,
-                        TextureRegionDrawable("welcome-cyber-io".inCio),
+                        icon,
                         Styles.flatt, Vars.iconMed
                     ) {
                         prefs.clearChildren()
@@ -78,6 +82,17 @@ object CioUI {
                         name = SettingButtonName
                     }
                 }
+            }
+        }
+    }
+    @UseReflection
+    fun addCyberIOMenu() {
+        val cioMenuID = "cyber-io-menu"
+        if (!Vars.mobile) {
+            MainMenus.appendDesktopMenu("Cyber IO", icon, cioMenuID) {
+            }
+        } else {
+            MainMenus.appendMobileMenu("Cyber IO", icon, cioMenuID) {
             }
         }
     }
