@@ -1,6 +1,7 @@
 package net.liplum.registries
 
 import net.liplum.annotations.DependOn
+import net.liplum.mdt.animations.ganim.GlobalAnimation.Companion.randomSelectIndexr
 import net.liplum.seffects.Infected
 import net.liplum.seffects.Static
 import net.liplum.seffects.Vulnerable

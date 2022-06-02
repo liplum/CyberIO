@@ -2,6 +2,7 @@ package net.liplum.mdt.animations.ganim
 
 import arc.func.Cons
 import arc.graphics.g2d.TextureRegion
+import arc.math.Mathf
 import arc.util.Time
 import mindustry.game.EventType
 import net.liplum.annotations.Only
@@ -16,7 +17,7 @@ open class GlobalAnimation(
     val setTR: Cons<TextureRegion>,
 ) : IGlobalAnimation {
     var allFrames: Array<TextureRegion>? = null
-    val frames:Array<TextureRegion>
+    val frames: Array<TextureRegion>
         get() = allFrames!!
     var frameIndexer: GlobalAnimationIndexer = loopIndexer
     override val canUpdate: Boolean
@@ -43,7 +44,7 @@ open class GlobalAnimation(
         }
         // TODO: that's too random.
         val randomSelectIndexr: GlobalAnimationIndexer = {
-            frames.random()
+            frames[Mathf.randomSeed((Time.globalTime / 3f).toLong(), 0, frames.size - 1)]
         }
         var CanPlay = false
         val updateTasks = HashSet<IGlobalAnimation>()

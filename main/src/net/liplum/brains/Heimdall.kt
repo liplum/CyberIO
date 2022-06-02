@@ -326,6 +326,7 @@ open class Heimdall(name: String) : Block(name) {
             // Client side will trigger
             ClientOnly {
                 detectEnemy = anyEnemyNearby()
+                // If it's still charging, do nothing
                 if (reloadCounter >= realReloadTime) {
                     reloadCounter = 0f
                     val isControlledShooting = (isControlled && unit.isShooting) ||

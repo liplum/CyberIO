@@ -34,11 +34,11 @@ inline fun ErekirSpec(func: () -> Unit) {
 annotation class DebugOnly
 
 val OnlyDebug = Condition {
-    CioMod.DebugMode
+    Var.DebugMode
 }
 
 inline fun DebugOnly(func: () -> Unit): Boolean {
-    if (CioMod.DebugMode) {
+    if (Var.DebugMode) {
         func()
         return true
     }
@@ -46,7 +46,7 @@ inline fun DebugOnly(func: () -> Unit): Boolean {
 }
 
 inline fun <reified T> T.DebugOnlyOn(func: T.() -> Unit): T {
-    if (CioMod.DebugMode) {
+    if (Var.DebugMode) {
         func()
     }
     return this
@@ -54,7 +54,7 @@ inline fun <reified T> T.DebugOnlyOn(func: T.() -> Unit): T {
 
 fun CanRefresh() = Time.time % Var.UpdateFrequency < 1f
 inline fun ExperimentalOnly(func: () -> Unit): Boolean {
-    if (CioMod.ExperimentalMode) {
+    if (Var.ExperimentalMode) {
         func()
         return true
     }
@@ -62,7 +62,7 @@ inline fun ExperimentalOnly(func: () -> Unit): Boolean {
 }
 
 inline fun UndebugOnly(func: () -> Unit): Boolean {
-    if (!CioMod.DebugMode) {
+    if (!Var.DebugMode) {
         func()
         return true
     }

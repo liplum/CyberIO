@@ -5,6 +5,7 @@ import mindustry.gen.Building
 import mindustry.world.Block
 import net.liplum.CanRefresh
 import net.liplum.CioMod
+import net.liplum.Var
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.animations.anis.*
@@ -22,8 +23,7 @@ abstract class AniedBlock<
         TBuild : AniedBlock<TBlock, TBuild>.AniedBuild
         >(
     name: String
-) :
-    Block(name), IAniSMed<TBlock, TBuild> {
+) : Block(name), IAniSMed<TBlock, TBuild> {
     @ClientOnly
     protected val name2AniStates = HashMap<String, AniState<TBlock, TBuild>>()
     @ClientOnly
@@ -40,7 +40,7 @@ abstract class AniedBlock<
 
     override fun setBars() {
         super.setBars()
-        if (CioMod.DebugMode) {
+        if (Var.DebugMode) {
             addAniStateInfo<AniedBuild>()
         }
     }

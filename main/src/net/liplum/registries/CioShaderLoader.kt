@@ -4,6 +4,7 @@ import mindustry.Vars
 import mindustry.graphics.Shaders.getShaderFi
 import net.liplum.CioMod
 import net.liplum.R
+import net.liplum.Var
 import net.liplum.annotations.Only
 import net.liplum.annotations.SubscribeEvent
 import net.liplum.events.CioInitEvent
@@ -122,7 +123,7 @@ Hologramize                 = default("Hologramize",                   ::Hologra
 typealias ShaderCtor<T> = (FragFi, VertFi) -> T
 
 val String.compatible: String
-    get() = if (CioMod.TestGlCompatibility || this.useCompatible)
+    get() = if (Var.TestGlCompatibility || this.useCompatible)
         "$this-compatible"
     else
         this

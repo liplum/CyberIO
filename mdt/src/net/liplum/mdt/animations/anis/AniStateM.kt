@@ -5,6 +5,9 @@ import mindustry.gen.Building
 import mindustry.world.Block
 import net.liplum.mdt.render.RESET_CONTEXT
 
+interface ISwitchAniStateListener<TBlock : Block, TBuild : Building> {
+    fun onSwitch(block: TBlock, build: TBuild, from: AniState<TBlock, TBuild>, to: AniState<TBlock, TBuild>)
+}
 open class AniStateM<TBlock : Block, TBuild : Building>(
     val config: AniConfig<TBlock, TBuild>,
     val block: TBlock,

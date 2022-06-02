@@ -110,7 +110,7 @@ open class AniConfig<TBlock : Block, TBuild : Building> {
         canEnter: TBuild.() -> Boolean,
     ): AniConfig<TBlock, TBuild> {
         checkBuilt()
-        if (from === to || from.stateName == to.stateName) {
+        if (from == to || from.stateName == to.stateName) {
             throw CannotEnterSelfException(this.toString())
         }
         curConfiguringFromState = from
@@ -181,7 +181,7 @@ open class AniConfig<TBlock : Block, TBuild : Building> {
         if (curConfiguringToState == null) {
             throw NoToStateException(this.toString())
         }
-        if (curConfiguringFromState === curConfiguringToState || curConfiguringFromState!!.stateName == curConfiguringToState!!.stateName) {
+        if (curConfiguringFromState == curConfiguringToState || curConfiguringFromState!!.stateName == curConfiguringToState!!.stateName) {
             throw CannotEnterSelfException(this.toString())
         }
         val key = getKey(

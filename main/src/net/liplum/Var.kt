@@ -16,4 +16,13 @@ object Var {
     var DrawBuildCollisionRect = false
     @JvmField
     var DrawUnitCollisionRect = false
+    @JvmStatic
+    var DebugMode = Meta.EnableDebug
+        set(value) {
+            field = Meta.EnableDebug && value
+        }
+    @JvmField
+    var ExperimentalMode = false
+    @JvmField
+    var TestGlCompatibility = false
 }

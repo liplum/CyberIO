@@ -27,7 +27,6 @@ import mindustry.world.blocks.ControlBlock
 import mindustry.world.blocks.heat.HeatBlock
 import mindustry.world.meta.BlockFlag
 import mindustry.world.meta.BlockGroup
-import net.liplum.CioMod.Companion.DebugMode
 import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.Var
@@ -155,7 +154,7 @@ open class Heart(name: String) : Block(name), IComponentBlock {
         DebugOnly {
             addBrainInfo<HeartBuild>()
         }
-        AddBar<HeartBuild>(R.Bar.BloodN, if (DebugMode) {
+        AddBar<HeartBuild>(R.Bar.BloodN, if (Var.DebugMode) {
             { "${R.Bar.Blood.bundle}: ${bloodAmount.toInt()}" }
         } else {
             { R.Bar.Blood.bundle }
@@ -164,7 +163,7 @@ open class Heart(name: String) : Block(name), IComponentBlock {
         }, {
             bloodAmount / realBloodCapacity
         })
-        AddBar<HeartBuild>(R.Bar.TemperatureN, if (DebugMode) {
+        AddBar<HeartBuild>(R.Bar.TemperatureN, if (Var.DebugMode) {
             { "${R.Bar.Temperature.bundle}: ${temperature.format(2)}" }
         } else {
             { R.Bar.Temperature.bundle }
@@ -199,7 +198,7 @@ open class Heart(name: String) : Block(name), IComponentBlock {
     open inner class HeartBuild : Building(),
         IUpgradeComponent, ControlBlock, HeatBlock, Ranged {
         //<editor-fold desc="Heimdall">
-        override val componentName="Heart"
+        override val componentName = "Heart"
         override val scale: SpeedScale = SpeedScale()
         override var directionInfo: Direction2 = Direction2()
         override var brain: IBrain? = null

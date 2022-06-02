@@ -23,8 +23,8 @@ object Debug {
         ),
         Setting(
             "Enable Debug Mode",
-            { CioMod.DebugMode },
-            { CioMod.DebugMode = it },
+            { Var.DebugMode },
+            { Var.DebugMode = it },
             SettingType.Check,
         ),
         Setting(

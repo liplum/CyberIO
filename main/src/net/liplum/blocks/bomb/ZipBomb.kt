@@ -1,6 +1,7 @@
 package net.liplum.blocks.bomb
 
 import arc.graphics.Color
+import arc.graphics.g2d.Draw
 import arc.math.geom.Vec2
 import arc.scene.ui.Label
 import arc.scene.ui.Slider
@@ -25,13 +26,11 @@ import net.liplum.R
 import net.liplum.Var
 import net.liplum.annotations.isOn
 import net.liplum.lib.Serialized
+import net.liplum.lib.math.smooth
 import net.liplum.lib.utils.bigEndianByte
 import net.liplum.lib.utils.on
 import net.liplum.lib.utils.twoBytesToShort
-import net.liplum.mdt.CalledBySync
-import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.SendDataPack
-import net.liplum.mdt.WhenTheSameTeam
+import net.liplum.mdt.*
 import net.liplum.mdt.render.G
 import net.liplum.mdt.render.smoothPlacing
 import net.liplum.mdt.render.smoothSelect
@@ -48,6 +47,7 @@ open class ZipBomb(name: String) : Block(name) {
     @JvmField var shakeDuration = 16f
     @JvmField var maxSensitive = 10
     @JvmField var autoDetectTime = 240f
+    @JvmField var warningRangeFactor = 2f
     val explosionRange: Float
         get() = rangePreUnit * Vars.tilesize
     val explosionDamage: Float
@@ -116,6 +116,8 @@ open class ZipBomb(name: String) : Block(name) {
         }
     }
 
+    val tmp = ArrayList<Unit>()
+
     open inner class ZipBombBuild : Building() {
         // TODO: Serialization
         @Serialized
@@ -125,21 +127,44 @@ open class ZipBomb(name: String) : Block(name) {
         @Serialized
         var autoDetectCounter = 0f
         override fun updateTile() {
-            if (!autoDetectEnabled) return
-            autoDetectCounter += Time.delta
-            if (autoDetectCounter >= autoDetectTime) {
-                autoDetectCounter %= autoDetectTime
-                detectEnemyAndDetonate()
+            HeadlessOnly {
+                // Headless don't need to check enemy nearby every tick
+                if (!autoDetectEnabled) return
+                autoDetectCounter += Time.delta
+                if (autoDetectCounter >= autoDetectTime) {
+                    autoDetectCounter %= autoDetectTime
+                    if (countEnemyNearby() >= curSensitive) {
+                        trigger()
+                    }
+                }
+            }
+            ClientOnly {
+                // Client should check enemy nearby every tick for animation
+                if (autoDetectEnabled)
+                    autoDetectCounter += Time.delta
+                // If auto-detect is charging, just detect the enemy without trigger
+                if (autoDetectCounter >= autoDetectTime) {
+                    autoDetectCounter %= autoDetectTime
+                    if (countEnemyNearby() >= curSensitive) {
+                        trigger()
+                    }
+                } else {
+                    countEnemyNearby(explosionRange * warningRangeFactor)
+                }
             }
         }
 
-        open fun detectEnemyAndDetonate() {
-            val enemyCount = Units.count(x, y, explosionRange) {
-                it.team != team
+        var nearestEnemyDst2: Float? = null
+        /**
+         * @return
+         */
+        open fun countEnemyNearby(range: Float = explosionRange): Int {
+            tmp.clear()
+            Units.nearbyEnemies(team, x, y, range) {
+                tmp.add(it)
             }
-            if (enemyCount >= curSensitive) {
-                trigger()
-            }
+            nearestEnemyDst2 = tmp.minOfOrNull { it.dst2(this) }
+            return tmp.size
         }
 
         override fun dropped() {
@@ -210,10 +235,22 @@ open class ZipBomb(name: String) : Block(name) {
         }
 
         override fun draw() {
-            Drawf.shadow(x, y, size.worldXY * 1.5f)
-            // only players in the same team can find this
             WhenTheSameTeam {
-                super.draw()
+                // only players in the same team can find this
+                Drawf.shadow(x, y, size.worldXY * 1.5f)
+                Draw.rect(block.region, x, y, drawrot())
+            }.Else {
+                val dst2 = nearestEnemyDst2
+                if (dst2 != null) {
+                    val alpha = (1f - (sqrt(dst2) / (explosionRange * warningRangeFactor)).coerceIn(0f, 1f)).smooth
+                    Drawf.shadow(x, y, size.worldXY * 1.5f, alpha)
+                    Draw.alpha(alpha)
+                    Draw.rect(block.region, x, y, drawrot())
+                }
+            }
+            DebugOnly {
+                G.dashCircleBreath(x, y, explosionRange * warningRangeFactor, circleColor)
+                G.dashCircleBreath(x, y, explosionRange, circleColor)
             }
         }
         @CalledBySync
@@ -282,6 +319,5 @@ open class ZipBomb(name: String) : Block(name) {
 
         override fun drawCracks() {
         }
-        // TODO: Serialized.
     }
 }

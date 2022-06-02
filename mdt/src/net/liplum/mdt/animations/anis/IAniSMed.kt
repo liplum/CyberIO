@@ -78,3 +78,7 @@ interface IAniSMed<TBlock : Block, TBuild : Building> {
         return addAniState(AniState(name))
     }
 }
+
+interface IAniSMedBuild<TBlock : Block, TBuild : Building> {
+    val aniStateM: AniStateM<TBlock, TBuild>
+}

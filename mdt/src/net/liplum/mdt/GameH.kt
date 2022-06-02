@@ -138,7 +138,6 @@ inline fun ServerOnly(func: () -> Unit): Boolean {
     }
     return false
 }
-
 /**
  * Runs codes only on Logical Server
  */
@@ -251,8 +250,10 @@ inline fun RunOnPreDraw(crossinline func: () -> Unit) {
     }
 }
 
-inline fun Teamc.WhenTheSameTeam(func: () -> Unit) {
+inline fun Teamc.WhenTheSameTeam(func: () -> Unit): Boolean {
     if (team() == Vars.player.team()) {
         func()
+        return true
     }
+    return false
 }

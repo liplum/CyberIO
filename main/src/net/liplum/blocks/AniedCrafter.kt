@@ -4,6 +4,7 @@ import mindustry.Vars
 import mindustry.world.blocks.production.GenericCrafter
 import net.liplum.CanRefresh
 import net.liplum.CioMod
+import net.liplum.Var
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.animations.anis.*
 import net.liplum.utils.addAniStateInfo
@@ -33,7 +34,7 @@ abstract class AniedCrafter<
 
     override fun setBars() {
         super.setBars()
-        if (CioMod.DebugMode) {
+        if (Var.DebugMode) {
             addProgressInfo<GenericCrafterBuild>()
             addAniStateInfo<AniedCrafterBuild>()
         }

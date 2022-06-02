@@ -329,7 +329,7 @@ object CioBlocks {
         landProjector = LandProjector("land-projector").apply {
             requirements(
                 Category.effect,
-                if (CioMod.DebugMode)
+                if (Var.DebugMode)
                     BuildVisibility.sandboxOnly
                 else
                     BuildVisibility.hidden, arrayOf(
@@ -411,7 +411,7 @@ object CioBlocks {
         cloud = Cloud("cloud").apply {
             requirements(
                 Category.effect,
-                if (CioMod.DebugMode)
+                if (Var.DebugMode)
                     BuildVisibility.sandboxOnly
                 else
                     BuildVisibility.hidden, arrayOf(
@@ -431,7 +431,7 @@ object CioBlocks {
         hyperOverdriveSphere = AdjustableOverdrive("hyper-overdrive-sphere").apply {
             requirements(
                 Category.effect,
-                if (CioMod.DebugMode) BuildVisibility.shown
+                if (Var.DebugMode) BuildVisibility.shown
                 else BuildVisibility.sandboxOnly,
                 emptyArray()
             )
