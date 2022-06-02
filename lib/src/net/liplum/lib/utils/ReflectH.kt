@@ -26,7 +26,7 @@ fun <T> Any.getFIn(clz: Class<*>, name: String): T =
 fun <T> Class<*>.getF(name: String): T =
     ReflectU.get(this, name)
 
-fun <T> T.copyFrom(from: T) {
+fun <T> T.copyFieldsFrom(from: T) {
     ReflectU.copyFields(from, this)
 }
 

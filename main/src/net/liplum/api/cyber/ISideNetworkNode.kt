@@ -33,7 +33,7 @@ interface ISideNetworkNode : INetworkNode {
 
     fun canSideLink(target: ISideNetworkNode, side: Int): Boolean {
         return sideLinks[side] < 0 &&
-                target.sideLinks[sideReverse(side)] < 0 &&
+                target.sideLinks[reflect(side)] < 0 &&
                 super.canLink(target)
     }
 }

@@ -1,14 +1,13 @@
 package net.liplum.api.cyber
 
 import mindustry.Vars
-import mindustry.gen.Building
 import mindustry.world.Block
 import net.liplum.api.ICyberEntity
+import net.liplum.api.cyber.SideLinks.Companion.reflect
 import net.liplum.data.DataNetwork
 import net.liplum.data.PayloadData
 import net.liplum.lib.Out
 import net.liplum.lib.Serialized
-import net.liplum.lib.utils.forEach
 import net.liplum.lib.utils.snapshotForEach
 import net.liplum.mdt.CalledBySync
 import net.liplum.mdt.SendDataPack
@@ -17,12 +16,9 @@ import plumy.pathkt.IVertex
 
 interface INetworkNode : ICyberEntity, IVertex<INetworkNode> {
     @Serialized
-    var dataMod: NetworkModule
-    var networkGraph: DataNetwork
-        get() = dataMod.network
-        set(value) {
-            dataMod.network = value
-        }
+    var network: DataNetwork
+    var init: Boolean
+    var links: SideLinks
     @Serialized
     val data: PayloadData
     @Serialized
@@ -36,6 +32,8 @@ interface INetworkNode : ICyberEntity, IVertex<INetworkNode> {
 
     companion object {
         private val tempList = ArrayList<INetworkNode>()
+        private val tempSideLinksBytes = ByteArray(SideLinks.dataSize)
+        private val linksForSync = SideLinks()
     }
 
     fun canTransferTo(other: INetworkNode): Boolean =
@@ -43,31 +41,73 @@ interface INetworkNode : ICyberEntity, IVertex<INetworkNode> {
 
     override val linkedVertices: Iterable<INetworkNode>
         get() = getNetworkConnections(tempList)
-
-    fun isLinkedWith(other: INetworkNode) =
-        other.building.pos() in dataMod.links
     /**
-     * Using [Building.configure] (packedPos:Int) as default
+     * The [copy] is only used for sync, any change should be based on it.
+     * @see [receiveSideLinksBytes]
      */
     @SendDataPack
-    fun linkSync(target: INetworkNode) {
-        building.configure(target.building.pos())
+    fun sendSideLinks(copy: SideLinks) {
+        copy.write(tempSideLinksBytes)
+        sendSideLinksBytes(tempSideLinksBytes)
+    }
+    /**
+     * @see [receiveSideLinksBytes]
+     */
+    @SendDataPack
+    fun sendSideLinksBytes(bytes: ByteArray)
+    /**
+     * Receive the side links.
+     * It will deal with the graph merging and link each other
+     */
+    @CalledBySync
+    fun receiveSideLinksBytes(bytes: ByteArray) {
+        links.readAndJustify(bytes, onAdded = {added ->
+            added.TEAny<INetworkNode>()?.let {
+                it
+                this.network.merge(it)
+            }
+        }, onRemoved = { removed ->
+            removed.TEAny<INetworkNode>()?.let {
+                network.reflow(this)
+                val targetNewGraph = DataNetwork()
+                targetNewGraph.reflow(it)
+            }
+        })
     }
 
-    fun link(target: INetworkNode) {
-        dataMod.links.addUnique(target.building.pos())
-        target.dataMod.links.addUnique(this.building.pos())
-        this.dataMod.network.merge(target)
-    }
+    fun isLinkedWith(side: Side, other: INetworkNode) =
+        other.building.pos() == links[side]
 
-    fun unlink(target: INetworkNode) {
-        if (!this.isLinkedWith(target)) return
-        dataMod.links.removeValue(target.building.pos())
-        target.dataMod.links.removeValue(this.building.pos())
-        val selfNewGraph = DataNetwork()
-        selfNewGraph.reflow(this)
-        val targetNewGraph = DataNetwork()
-        targetNewGraph.reflow(target)
+    fun isLinkedWith(other: INetworkNode) =
+        other.building.pos() in links
+    /**
+     * Link to [target] relative to self's [side].
+     * From [target] side, it's the reflection.
+     * This doesn't take whether the side is empty into account.
+     * It should be considered before calling this.
+     * It will sync the side links.
+     */
+    @SendDataPack
+    fun linkSync(side: Side, target: INetworkNode) {
+        linksForSync.copyFrom(links)
+        linksForSync[side] = target
+        links.whenDirty {
+            sendSideLinks(linksForSync)
+        }
+        // don't need to change [target]'s links, sync will solve this.
+        // target.links[side.reflect] = this
+    }
+    /**
+     * Unlink to [target] relative to self's [side].
+     * From [target] side, it's the reflection.
+     * This doesn't take whether the side is empty into account.
+     * It should be considered before calling this.
+     * It will sync the side links.
+     */
+    @SendDataPack
+    fun unlinkSync(side: Side, target: INetworkNode) {
+        linksForSync.copyFrom(links)
+        linksForSync[side] = -1
     }
 
     fun onRemovedInWorld() {
@@ -82,17 +122,10 @@ interface INetworkNode : ICyberEntity, IVertex<INetworkNode> {
     /**
      * @return [out]
      */
-    fun getNetworkConnections(@Out out: MutableList<INetworkNode>): MutableList<INetworkNode> {
+    fun getNetworkConnections(@Out out: MutableList<INetworkNode>):
+            MutableList<INetworkNode> {
         out.clear()
-        dataMod.links.forEach {
-            val link = Vars.world.tile(it)
-            val b = link?.build
-            if (b != null && b.team == building.team) {
-                val node = b.nn()
-                if (node != null)
-                    out.add(node)
-            }
-        }
+        links.forEachNode { out.add(it) }
         return out
     }
 
@@ -123,7 +156,9 @@ interface INetworkNode : ICyberEntity, IVertex<INetworkNode> {
     }
     @CalledBySync
     fun clearLinks() {
-        dataMod.links.clear()
+        links.forEachNode {
+            unlink(it)
+        }
     }
 }
 
@@ -137,6 +172,7 @@ interface INetworkBlock {
     fun initDataNetworkRemoteConfig() {
         block.config(Integer::class.java) { b: INetworkNode, i ->
             b.linkNodeFromRemote(i.toInt())
+            b.building.configure()
         }
         block.configClear { b: INetworkNode ->
             b.clearLinks()

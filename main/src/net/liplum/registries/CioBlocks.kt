@@ -1607,6 +1607,7 @@ object CioBlocks {
             /*val coreBlock = Blocks.coreShard as CoreBlock
             coreBlock.unitType = CioUnitTypes.holoFighter
             coreBlock.solid = false*/
+            Liquids.neoplasm.hidden = false
         }
         ExperimentalOnly {
             Blocks.conveyor.sync = true

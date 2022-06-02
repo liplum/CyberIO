@@ -107,11 +107,11 @@ inline fun IntSeq.snapshotForEach(func: (Int) -> Unit) {
  * @return [temp]
  */
 fun IntSeq.snapShot(temp: IntSeq): IntSeq {
-    temp.copyFrom(this)
+    temp.copyFieldsFrom(this)
     return temp
 }
 
-fun IntSeq.copyFrom(other: IntSeq) {
+fun IntSeq.copyFieldsFrom(other: IntSeq) {
     this.ordered = other.ordered
     if (size < other.size) {
         items = IntArray(other.size)

@@ -10,7 +10,7 @@ import net.liplum.R
 import net.liplum.api.prism.PrismRegistry.getRegistered
 import net.liplum.bullets.BBulletType
 import net.liplum.lib.utils.ArrayList
-import net.liplum.lib.utils.copyFrom
+import net.liplum.lib.utils.copyFieldsFrom
 
 val BulletType.isTintIgnored: Boolean
     get() = this in IgnoredBullets || this::class.java in IgnoredClass
@@ -181,7 +181,7 @@ val LiquidBulletType.tinted: List<LiquidBulletType>
     get() = LiquidBullets.rgb(this) {
         try {
             TintLiquidBulletT(this.liquid).apply {
-                copyFrom(this)
+                copyFieldsFrom(this)
                 tintColor = BK(it).cpy().Lerp(
                     this@tinted.liquid.color, LiquidTintLerp
                 )
@@ -198,7 +198,7 @@ val MassDriverBolt.tinted: List<MassDriverBolt>
     get() = MassDriverBolts.rgb(this) {
         try {
             MassDriverBoltT().apply {
-                copyFrom(this)
+                copyFieldsFrom(this)
                 tintColor = FG(it).Lerp(
                     Pal.bulletYellow, MassDriverLerp
                 )

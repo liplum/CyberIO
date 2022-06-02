@@ -97,3 +97,115 @@ fun twoBytesToShort(big: Byte, little: Byte): Short =
  */
 fun twoBytesToShort(big: Int, little: Int): Int =
     big shl 8 or (little and 0xFF)
+/**
+ * Little Endian
+ * Write a byte into the byte array at the offset
+ * @param offset the offset start to write
+ * @param value the byte to be written
+ * @return the new offset after writing [value].
+ * And with the new offset, you can continue to write more.
+ */
+fun ByteArray.writeByte(value: Byte, offset: Int = 0): Int {
+    this[offset] = value
+    return offset + 1
+}
+/**
+ * Little Endian
+ * Write a short into the byte array at the offset
+ * @param offset the offset start to write
+ * @param value the short to be written
+ * @return the new offset after writing [value].
+ * And with the new offset, you can continue to write more.
+ */
+fun ByteArray.writeShort(value: Short, offset: Int = 0): Int {
+    for (i in 0 until 2) {
+        this[offset + i] = (value shr (8 * i)).toByte()
+    }
+    return offset + 2
+}
+/**
+ * Little Endian
+ * Write an int into the byte array at the offset
+ * @param offset the offset start to write
+ * @param value the int to be written
+ * @return the new offset after writing [value].
+ * And with the new offset, you can continue to write more.
+ */
+fun ByteArray.writeInt(value: Int, offset: Int = 0): Int {
+    for (i in 0 until 4) {
+        this[offset + i] = (value shr (8 * i)).toByte()
+    }
+    return offset + 4
+}
+/**
+ * Little Endian
+ * Write a long into the byte array at the offset
+ * @param offset the offset start to write
+ * @param value the long to be written
+ * @return the new offset after writing [value].
+ * And with the new offset, you can continue to write more.
+ */
+fun ByteArray.writeLong(value: Long, offset: Int = 0): Int {
+    for (i in 0 until 8) {
+        this[offset + i] = (value shr (8 * i)).toByte()
+    }
+    return offset + 8
+}
+/**
+ * Little Endian
+ * Read a byte from the byte array at the offset
+ * @param offset the offset start to read
+ * @param cons to consume this byte
+ * @return the new offset after reading.
+ * And with the new offset, you can continue to read more.
+ */
+inline fun ByteArray.readByte(offset: Int = 0, cons: (Byte) -> Unit): Int {
+    cons(this[offset])
+    return offset + 1
+}
+/**
+ * Little Endian
+ * Read a short from the byte array at the offset
+ * @param offset the offset start to read
+ * @param cons to consume this short
+ * @return the new offset after reading.
+ * And with the new offset, you can continue to read more.
+ */
+inline fun ByteArray.readShort(offset: Int = 0, cons: (Short) -> Unit): Int {
+    cons(((this[offset] and 0xff) or (this[offset + 1] shr 8) and 0xff).toShort())
+    return offset + 1
+}
+/**
+ * Little Endian
+ * Read an int from the byte array at the offset
+ * @param offset the offset start to read
+ * @param cons to consume this int
+ * @return the new offset after reading.
+ * And with the new offset, you can continue to read more.
+ */
+inline fun ByteArray.readInt(offset: Int = 0, cons: (Int) -> Unit): Int {
+    var result = 0
+    for (i in 0 until 8) {
+        result = result shl 8
+        result = result or (this[offset + i] and 0xFF)
+    }
+    cons(result)
+    return offset + 4
+}
+/**
+ * Little Endian
+ * Read a long from the byte array at the offset
+ * @param offset the offset start to read
+ * @param cons to consume this long
+ * @return the new offset after reading.
+ * And with the new offset, you can continue to read more.
+ */
+inline fun ByteArray.readLong(offset: Int = 0, cons: (Long) -> Unit): Int {
+    var result: Long = 0
+    for (i in 0 until 8) {
+        result = result shl 8
+        result = result or (this[offset + i] and 0xFF).toLong()
+    }
+    cons(result)
+    return offset + 8
+}

@@ -49,7 +49,7 @@ fun INetworkNode.updateCardinalDirections() = building.run {
 /**
  * Get the reflected side index in [Geometry.d4]
  */
-fun sideReverse(original: Int): Int =
+fun reflect(original: Int): Int =
     (original + 2) % 4
 
 fun ISideNetworkNode.updateCardinalDirections() = building.run {

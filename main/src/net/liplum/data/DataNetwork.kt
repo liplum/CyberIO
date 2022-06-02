@@ -5,8 +5,7 @@ import arc.util.pooling.Pool
 import arc.util.pooling.Pools
 import mindustry.world.blocks.payloads.Payload
 import net.liplum.api.cyber.INetworkNode
-import net.liplum.api.cyber.NetworkModule
-import net.liplum.lib.delegates.Delegate
+import net.liplum.api.cyber.SideLinks
 import net.liplum.mdt.utils.NewEmptyPos
 import net.liplum.mdt.utils.Pos
 import plumy.pathkt.BFS
@@ -14,13 +13,15 @@ import plumy.pathkt.EasyBFS
 import plumy.pathkt.LinkedPath
 import java.util.*
 
-class EmptyNetworkNode : INetworkNode {
-    override var dataMod = NetworkModule()
+object EmptyNetworkNode : INetworkNode {
+    override var network = DataNetwork()
+    override var init = true
+    override var links = SideLinks()
     override val data = PayloadData()
     override val currentOriented: Pos = NewEmptyPos()
     override val sendingProgress: Float = 0f
     override var routine: DataNetwork.Path? = DataNetwork.Path()
-    override val linkRange =0f
+    override val linkRange = 0f
     override val maxLink = 0
 }
 
@@ -44,11 +45,10 @@ class DataNetwork {
         other.nodes.forEach(::add)
     }
 
-    fun add(node: INetworkNode) {
-        val dn = node.dataMod
-        if (dn.network != this || !dn.init) {
-            dn.network = this
-            dn.init = true
+    private fun add(node: INetworkNode) {
+        if (node.network != this || !node.init) {
+            node.network = this
+            node.init = true
             nodes.add(node)
             entity.add()
             onNetworkNodeChanged()
@@ -56,8 +56,8 @@ class DataNetwork {
     }
 
     fun merge(node: INetworkNode) {
-        if (node.networkGraph == this) return
-        node.networkGraph.entity.remove()
+        if (node.network == this) return
+        node.network.entity.remove()
         // iterate its link
         entity.add()
         bfsQueue.clear()
@@ -115,10 +115,10 @@ class DataNetwork {
 
     class Pointer : BFS.IPointer<INetworkNode>, Pool.Poolable {
         override var previous: BFS.IPointer<INetworkNode>? = null
-        override var self: INetworkNode = emptyNode
+        override var self: INetworkNode = EmptyNetworkNode
         override fun reset() {
             previous = null
-            self = emptyNode
+            self = EmptyNetworkNode
         }
     }
 
@@ -135,7 +135,6 @@ class DataNetwork {
         private val closedSet = IntSet()
         @JvmStatic
         private var lastNetworkID = 0
-        private val emptyNode = EmptyNetworkNode()
         fun genStart2DestinationKey(start: INetworkNode, dest: INetworkNode): Any =
             start.building.id * 31 + dest.building.id
     }

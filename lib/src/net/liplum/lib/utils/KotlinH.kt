@@ -248,7 +248,7 @@ fun <T> Array<T>.rotateOnce(forward: Boolean = true): Array<T> {
     if (forward) {
         // the last one will be the first one
         val last = this.last()
-        for (i in size -1 downTo  1) {// stop before the last one
+        for (i in size - 1 downTo 1) {// stop before the last one
             this[i] = this[i - 1]
         }
         this[0] = last
@@ -261,4 +261,8 @@ fun <T> Array<T>.rotateOnce(forward: Boolean = true): Array<T> {
         this[lastIndex] = first
     }
     return this
+}
+
+fun IntArray.copyFrom(other: IntArray) {
+    System.arraycopy(other, 0, this, 0, this.size)
 }
