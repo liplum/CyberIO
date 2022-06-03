@@ -160,7 +160,7 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
         super.drawPlace(x, y, rotation, valid)
         val range = range * smoothPlacing(maxSelectedCircleTime)
         drawEffectCirclePlace(x, y, color, range, { block.canOverdrive }) {
-            G.drawSelected(this, color)
+            G.selected(this, color)
         }
     }
 
@@ -373,7 +373,7 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
         override fun drawSelect() {
             val range = realRange * smoothSelect(maxSelectedCircleTime)
             forEachTargetInRange(range) {
-                G.drawSelected(it, color)
+                G.selected(it, color)
             }
             G.dashCircleBreath(x, y, range, color)
         }

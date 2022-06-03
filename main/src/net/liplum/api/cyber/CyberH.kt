@@ -249,7 +249,7 @@ fun ICyberEntity.canShowSelfCircle(): Boolean =
 fun IDataSender.drawDataNetGraphic(showCircle: Boolean = true) {
     if (receiverConnectionNumber <= 0) return
     if (showCircle && this.canShowSelfCircle()) {
-        G.drawSurroundingCircleBreath(tile, R.C.Sender, alpha = Settings.LinkOpacity)
+        G.surroundingCircleBreath(tile, R.C.Sender, alpha = Settings.LinkOpacity)
     }
     if (canMultipleConnect()) {
         this.drawReceivers(connectedReceivers, showCircle)
@@ -262,7 +262,7 @@ fun IDataSender.drawDataNetGraphic(showCircle: Boolean = true) {
 fun IDataReceiver.drawDataNetGraphic(showCircle: Boolean = true) {
     if (senderConnectionNumber <= 0) return
     if (showCircle && this.canShowSelfCircle()) {
-        G.drawSurroundingCircleBreath(tile, R.C.Receiver, alpha = Settings.LinkOpacity)
+        G.surroundingCircleBreath(tile, R.C.Receiver, alpha = Settings.LinkOpacity)
     }
     this.drawSenders(connectedSenders, showCircle)
 }
@@ -270,7 +270,7 @@ fun IDataReceiver.drawDataNetGraphic(showCircle: Boolean = true) {
 fun IDataReceiver.drawRequirements() {
     val reqs = this.requirements
     if (reqs != null) {
-        G.drawMaterialIcons(this.building, reqs, Settings.LinkOpacity * 0.8f)
+        G.materialIcons(this.building, reqs, Settings.LinkOpacity * 0.8f)
     }
 }
 /**
@@ -288,8 +288,8 @@ fun Block.drawLinkedLineToReceiverWhenConfiguring(x: Int, y: Int) {
     val opacity = Settings.LinkOpacity
     val isOverRange = if (sender.maxRange > 0f) selectedTile.dstWorld(x, y) > sender.maxRange else false
     val color = if (isOverRange) R.C.RedAlert else R.C.Receiver
-    G.drawSurroundingCircleBreath(this, x, y, color, alpha = opacity)
-    G.drawArrowLine(
+    G.surroundingCircleBreath(this, x, y, color, alpha = opacity)
+    G.arrowLine(
         sender.block,
         selectedTile.x, selectedTile.y,
         this, x.toShort(), y.toShort(),
@@ -308,7 +308,7 @@ inline fun whenNotConfiguringSender(func: () -> Unit) {
 fun IStreamHost.drawStreamGraphic(showCircle: Boolean = true) {
     if (clientConnectionNumber <= 0) return
     if (showCircle && this.canShowSelfCircle()) {
-        G.drawSurroundingCircleBreath(tile, hostColor, alpha = Settings.LinkOpacity)
+        G.surroundingCircleBreath(tile, hostColor, alpha = Settings.LinkOpacity)
     }
     this.drawClients(connectedClients, showCircle)
 }
@@ -316,7 +316,7 @@ fun IStreamHost.drawStreamGraphic(showCircle: Boolean = true) {
 fun IStreamClient.drawStreamGraphic(showCircle: Boolean = true) {
     if (hostConnectionNumber <= 0) return
     if (showCircle && this.canShowSelfCircle()) {
-        G.drawSurroundingCircleBreath(tile, clientColor, alpha = Settings.LinkOpacity)
+        G.surroundingCircleBreath(tile, clientColor, alpha = Settings.LinkOpacity)
     }
     this.drawHosts(connectedHosts, showCircle)
 }
@@ -324,7 +324,7 @@ fun IStreamClient.drawStreamGraphic(showCircle: Boolean = true) {
 fun IStreamClient.drawRequirements() {
     val reqs = this.requirements
     if (reqs != null) {
-        G.drawMaterialIcons(this.building, reqs, Settings.LinkOpacity * 0.8f)
+        G.materialIcons(this.building, reqs, Settings.LinkOpacity * 0.8f)
     }
 }
 /**
@@ -340,8 +340,8 @@ fun Block.drawLinkedLineToClientWhenConfiguring(x: Int, y: Int) {
     if (host !is IStreamHost) return
     val selectedTile = host.tile()
     val opacity = Settings.LinkOpacity
-    G.drawSurroundingCircleBreath(this, x, y, R.C.Client, alpha = opacity)
-    G.drawArrowLine(
+    G.surroundingCircleBreath(this, x, y, R.C.Client, alpha = opacity)
+    G.arrowLine(
         host.block,
         selectedTile.x, selectedTile.y,
         this, x.toShort(), y.toShort(),
@@ -365,9 +365,9 @@ fun IDataReceiver.drawSender(sender: Int?, showCircle: Boolean = true) {
     val s = sender.ds() ?: return
     if (this.toOtherInViewField(s)) {
         if (showCircle && s.canShowSelfCircle()) {
-            G.drawSurroundingCircleBreath(s.tile, s.senderColor, alpha = opacity)
+            G.surroundingCircleBreath(s.tile, s.senderColor, alpha = opacity)
         }
-        G.drawArrowLine(
+        G.arrowLine(
             s.building, this.building, ArrowDensity, this.receiverColor,
             alpha = opacity, size = Settings.LinkSize
         )
@@ -383,9 +383,9 @@ fun IDataReceiver.drawSenders(senders: Iterable<Int>, showCircle: Boolean = true
         val s = sender.ds() ?: continue
         if (this.toOtherInViewField(s)) {
             if (showCircle && s.canShowSelfCircle()) {
-                G.drawSurroundingCircleBreath(s.tile, s.senderColor, alpha = opacity)
+                G.surroundingCircleBreath(s.tile, s.senderColor, alpha = opacity)
             }
-            G.drawArrowLine(
+            G.arrowLine(
                 s.building, this.building, ArrowDensity, this.receiverColor,
                 alpha = opacity, size = Settings.LinkSize
             )
@@ -402,9 +402,9 @@ fun IDataSender.drawReceiver(receiver: Int?, showCircle: Boolean = true) {
     val r = receiver.dr() ?: return
     if (this.toOtherInViewField(r)) {
         if (showCircle && r.canShowSelfCircle()) {
-            G.drawSurroundingCircleBreath(r.tile, r.receiverColor, alpha = opacity)
+            G.surroundingCircleBreath(r.tile, r.receiverColor, alpha = opacity)
         }
-        G.drawArrowLine(
+        G.arrowLine(
             this.building, r.building, ArrowDensity, this.senderColor,
             alpha = opacity, size = Settings.LinkSize
         )
@@ -421,9 +421,9 @@ fun IDataSender.drawReceivers(receivers: Iterable<Int>, showCircle: Boolean = tr
         val r = receiver.dr() ?: continue
         if (this.toOtherInViewField(r)) {
             if (showCircle && r.canShowSelfCircle()) {
-                G.drawSurroundingCircleBreath(r.tile, r.receiverColor, alpha = opacity)
+                G.surroundingCircleBreath(r.tile, r.receiverColor, alpha = opacity)
             }
-            G.drawArrowLine(
+            G.arrowLine(
                 this.building, r.building, ArrowDensity, this.senderColor,
                 alpha = opacity, size = Settings.LinkSize
             )
@@ -446,9 +446,9 @@ fun IStreamClient.drawHosts(hosts: Iterable<Int>, showCircle: Boolean = true) {
         val h = host.sh() ?: continue
         if (this.toOtherInViewField(h)) {
             if (showCircle && h.canShowSelfCircle()) {
-                G.drawSurroundingCircleBreath(h.tile, h.hostColor, alpha = opacity)
+                G.surroundingCircleBreath(h.tile, h.hostColor, alpha = opacity)
             }
-            G.drawArrowLine(
+            G.arrowLine(
                 h.building, this.building, ArrowDensity, this.clientColor,
                 alpha = opacity, size = Settings.LinkSize
             )
@@ -465,9 +465,9 @@ fun IStreamHost.drawClients(clients: Iterable<Int>, showCircle: Boolean = true) 
         val c = client.sc() ?: continue
         if (this.toOtherInViewField(c)) {
             if (showCircle && c.canShowSelfCircle()) {
-                G.drawSurroundingCircleBreath(c.tile, c.clientColor, alpha = opacity)
+                G.surroundingCircleBreath(c.tile, c.clientColor, alpha = opacity)
             }
-            G.drawArrowLine(
+            G.arrowLine(
                 this.building, c.building, ArrowDensity, this.hostColor,
                 alpha = opacity, size = Settings.LinkSize
             )

@@ -33,7 +33,7 @@ object DebugDrawer {
                 }
                 if (Var.DrawBuildCollisionRect) {
                     it.hitbox(hitBox)
-                    G.drawRect(hitBox, stroke = 0.5f)
+                    G.rect(hitBox, stroke = 0.5f)
                 }
             }
             Groups.unit.each {
@@ -48,7 +48,7 @@ object DebugDrawer {
                 }
                 if (Var.DrawUnitCollisionRect) {
                     it.hitbox(hitBox)
-                    G.drawRect(hitBox, stroke = 0.5f)
+                    G.rect(hitBox, stroke = 0.5f)
                 }
             }
         }

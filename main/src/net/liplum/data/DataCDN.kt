@@ -11,6 +11,7 @@ import net.liplum.api.cyber.SideLinks.Companion.enableAllSides
 import net.liplum.lib.Serialized
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.render.G
+import net.liplum.mdt.render.smoothSelect
 import net.liplum.mdt.utils.NewEmptyPos
 import kotlin.math.max
 
@@ -21,6 +22,7 @@ class DataCDN(name: String) :
     @ClientOnly @JvmField var expendingPlacingLineTimePreRange = 60f / 500f
     @ClientOnly override var expendPlacingLineTime = -1f
     override val sideEnable = enableAllSides
+    override var dataCapacity = 2
 
     init {
         buildType = Prov { CdnBuild() }
@@ -49,7 +51,7 @@ class DataCDN(name: String) :
         INetworkNode {
         // TODO: Serialization
         @Serialized
-        override val data = PayloadData()
+        override val dataList = PayloadDataList(dataCapacity)
         @Serialized
         override val currentOriented = NewEmptyPos()
         @Serialized
@@ -90,7 +92,7 @@ class DataCDN(name: String) :
         override fun drawSelect() {
             super.drawSelect()
             drawSelectingCardinalDirections()
-            G.circle(x, y, linkRange)
+            drawRangeCircle(alpha = smoothSelect(expendSelectingLineTime))
             DebugOnly {
                 drawNetworkInfo()
             }

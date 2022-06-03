@@ -118,11 +118,11 @@ fun INetworkNode.drawSelectingCardinalDirections() = building.run {
         if (dest != null) {
             val raycastReach = maxLen >= dest.building.dst(this) - dest.block.size.worldXY
             val color = if (raycastReach) R.C.GreenSafe else Pal.placing
-            G.drawLineBreath(x1, y1, x2, y2, color, stroke = 2f)
+            G.lineBreath(x1, y1, x2, y2, color, stroke = 2f)
             if (raycastReach)
-                G.drawWrappedSquareBreath(dest.building, color = color)
+                G.wrappedSquareBreath(dest.building, color = color)
         } else {
-            G.drawLineBreath(x1, y1, x2, y2, Pal.placing, stroke = 2f)
+            G.lineBreath(x1, y1, x2, y2, Pal.placing, stroke = 2f)
         }
     }
 }
@@ -172,11 +172,11 @@ fun INetworkBlock.drawPlaceCardinalDirections(
         if (dest != null) {
             val raycastReach = maxLen >= dest.building.dst(worldX, worldY) - dest.block.size.worldXY
             val color = if (raycastReach) R.C.GreenSafe else Pal.placing
-            G.drawLineBreath(x1, y1, x2, y2, color, stroke = 2f)
+            G.lineBreath(x1, y1, x2, y2, color, stroke = 2f)
             if (raycastReach)
-                G.drawWrappedSquareBreath(dest.building, color = color)
+                G.wrappedSquareBreath(dest.building, color = color)
         } else {
-            G.drawLineBreath(x1, y1, x2, y2, Pal.placing, stroke = 2f)
+            G.lineBreath(x1, y1, x2, y2, Pal.placing, stroke = 2f)
         }
     }
 }
@@ -188,7 +188,7 @@ fun INetworkNode.drawLinkInfo() = building.run {
             val link = links[side]
             val linkB = link.build
             if (linkB != null)
-                G.drawDashLineBetweenTwoBlocksBreath(this.tile, linkB.tile)
+                G.dashLineBetweenTwoBlocksBreath(this.tile, linkB.tile)
         }
 
         Text.drawTextEasy("${network.id}", x, y + 5f, R.C.RedAlert)
@@ -217,12 +217,17 @@ fun INetworkNode.drawNetworkInfo() = building.run {
     }
 }
 
+fun INetworkNode.drawRangeCircle(alpha:Float) = building.run {
+    G.circleBreath(x, y, linkRange, alpha = alpha)
+}
+
 fun INetworkNode.buildNetworkDataList(table: Table) {
     table.add(ScrollPane(Table(Tex.wavepane).apply {
-        network.forEachData { node, payload ->
+        network.forEachDataIndexed { i, node, payload ->
             add(Table(Tex.button).apply {
                 buildPayloadDataInfo(node, payload)
             }).margin(5f).grow().size(Vars.iconXLarge * 2.5f)
+            if ((i + 1) % 4 == 0) row()
         }
     }, Styles.defaultPane))
 }

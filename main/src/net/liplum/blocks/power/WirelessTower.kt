@@ -92,7 +92,7 @@ open class WirelessTower(name: String) : PowerBlock(name) {
             val consPower = block.consPower
             block.hasPower && consPower != null && consPower.buffered
         }, stroke = range2Stroke(range)) {
-            G.drawWrappedSquareBreath(this)
+            G.wrappedSquareBreath(this)
         }
     }
 
@@ -136,7 +136,7 @@ open class WirelessTower(name: String) : PowerBlock(name) {
                 R.C.Power, stroke = range2Stroke(this.realRange)
             )
             forEachBufferedInRange(range) {
-                G.drawWrappedSquareBreath(it)
+                G.wrappedSquareBreath(it)
             }
         }
         @ClientOnly

@@ -33,7 +33,6 @@ import net.liplum.mdt.render.smoothSelect
 import net.liplum.mdt.ui.bars.ReverseBar
 import net.liplum.mdt.utils.seconds
 import net.liplum.mdt.utils.sub
-import net.liplum.mdt.utils.toCenterWorldXY
 import net.liplum.utils.addRangeInfo
 
 internal const val T2SD = 5f / 6f * Mathf.pi
@@ -127,7 +126,7 @@ open class AntiVirus(name: String) : Block(name) {
         super.drawPlace(x, y, rotation, valid)
         val range = range * smoothPlacing(maxSelectedCircleTime)
         drawEffectCirclePlace(x,y,uninfectedColor,range){
-            G.drawSelected(this, getOtherColor(this))
+            G.selected(this, getOtherColor(this))
         }
     }
 
@@ -210,7 +209,7 @@ open class AntiVirus(name: String) : Block(name) {
                     {
                         true
                     }) {
-                    G.drawSelected(it, getOtherColor(it))
+                    G.selected(it, getOtherColor(it))
                 }
                 Drawf.dashCircle(x, y, range, uninfectedColor)
             }

@@ -405,7 +405,7 @@ open class Prism(name: String) : Block(name) {
                 var progress = ((Inspector.selectingTime + pre - curNeed) / curNeed).coerceIn(0f, 1f).smooth
                 if (isRemoved) progress = 1f - progress
                 if (progress < 0.01f) return@render
-                G.drawDashCircleBreath(
+                G.dashCircleBreath(
                     this@PrismBuild,
                     (Agl + (prismRadius * 2 * orbitPos)) * progress,
                     circleColor, alpha = 0.7f

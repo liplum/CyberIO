@@ -266,3 +266,22 @@ fun <T> Array<T>.rotateOnce(forward: Boolean = true): Array<T> {
 fun IntArray.copyFrom(other: IntArray) {
     System.arraycopy(other, 0, this, 0, this.size)
 }
+
+fun <T> MutableCollection<T>.swap(other: MutableCollection<T>, temp: MutableCollection<T>) {
+    temp.clear()
+    temp.addAll(this)
+    this.clear()
+    this.addAll(other)
+    other.clear()
+    other.addAll(temp)
+}
+
+inline fun <T> MutableList<T>.shrinkTo(
+    targetSize: Int,
+    removing: MutableList<T>.() -> Unit = { this.removeLast() }
+) {
+    if (size <= targetSize) return
+    for (i in 0 until targetSize - size) {
+        this.removing()
+    }
+}

@@ -2,14 +2,15 @@ package net.liplum.data
 
 import mindustry.world.blocks.payloads.Payload
 
-class PayloadData {
-    var data: Payload? = null
+class PayloadDataList(
+    var capacity: Int = 1
+) {
+    var allData = ArrayList<Payload>()
     val isEmpty: Boolean
-        get() = data == null
-
-    fun swap(other: PayloadData) {
-        val tmp = data
-        data = other.data
-        other.data = tmp
-    }
+        get() = allData.isEmpty()
+    val canAddMore :Boolean
+        get() = allData.size < capacity
 }
+
+val PayloadDataList.isNotEmpty: Boolean
+    get() = !isEmpty

@@ -282,7 +282,7 @@ open class Cloud(name: String) : PowerBlock(name) {
         }
 
         open fun drawDataNetGraphic() {
-            G.drawSurroundingCircleBreath(tile, R.C.Cloud)
+            G.surroundingCircleBreath(tile, R.C.Cloud)
 
             this.drawSenders(info.sendersPos)
             this.drawReceivers(info.receiversPos)

@@ -82,17 +82,20 @@ class DataNetwork {
     }
 
     inline fun forEachDataIndexed(func: (Int, INetworkNode, Payload) -> Unit) {
-        for ((i, node) in nodes.withIndex()) {
-            val data = node.data.data
-            if (data != null)
+        var i = 0
+        for (node in nodes) {
+            val dataList = node.dataList.allData
+            for (data in dataList) {
                 func(i, node, data)
+                i++
+            }
         }
     }
 
     inline fun forEachData(func: (INetworkNode, Payload) -> Unit) {
         for (node in nodes) {
-            val data = node.data.data
-            if (data != null)
+            val dataList = node.dataList.allData
+            for (data in dataList)
                 func(node, data)
         }
     }

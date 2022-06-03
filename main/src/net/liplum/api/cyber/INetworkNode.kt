@@ -4,7 +4,7 @@ import mindustry.Vars
 import mindustry.world.Block
 import net.liplum.api.ICyberEntity
 import net.liplum.api.cyber.SideLinks.Companion.reflect
-import net.liplum.data.PayloadData
+import net.liplum.data.PayloadDataList
 import net.liplum.lib.Out
 import net.liplum.lib.Serialized
 import net.liplum.mdt.ClientOnly
@@ -17,7 +17,7 @@ interface INetworkNode : ICyberEntity, IVertex<INetworkNode> {
     var init: Boolean
     var links: SideLinks
     @Serialized
-    val data: PayloadData
+    val dataList: PayloadDataList
     @Serialized
     val currentOriented: Pos
     /**
@@ -132,6 +132,7 @@ interface INetworkBlock {
     val tileLinkRange: TileXY
         get() = (linkRange / Vars.tilesize).toInt()
     val block: Block
+    val dataCapacity: Int
     @ClientOnly
     val expendPlacingLineTime: Float
     val sideEnable: SideEnable
@@ -155,7 +156,7 @@ object EmptyNetworkNode : INetworkNode {
     override var network = DataNetwork()
     override var init = true
     override var links = SideLinks()
-    override val data = PayloadData()
+    override val dataList: PayloadDataList = PayloadDataList()
     @ClientOnly
     override val expendSelectingLineTime = 0f
     override val currentOriented: Pos = NewEmptyPos()

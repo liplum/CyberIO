@@ -15,6 +15,7 @@ import net.liplum.lib.Serialized
 import net.liplum.lib.shaders.use
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.render.Draw
+import net.liplum.mdt.render.smoothSelect
 import net.liplum.mdt.utils.NewEmptyPos
 import net.liplum.mdt.utils.WorldXY
 import net.liplum.mdt.utils.worldXY
@@ -27,6 +28,7 @@ class Serializer(name: String) :
     override val block = this
     @ClientOnly override var expendPlacingLineTime = Var.selectedCircleTime
     override val sideEnable = enableAllSides
+    override var dataCapacity = 3
 
     init {
         outputsPayload = false
@@ -52,7 +54,7 @@ class Serializer(name: String) :
         override var init: Boolean = false
         override var links = SideLinks()
         @Serialized
-        override val data = PayloadData()
+        override val dataList = PayloadDataList(dataCapacity)
         @Serialized
         override val currentOriented = NewEmptyPos()
         @Serialized
@@ -74,10 +76,10 @@ class Serializer(name: String) :
         override fun draw() {
             DebugOnly {
                 drawLinkInfo()
-                val data = data.data
-                if (data != null) {
-                    data.set(x, y + size.worldXY, payloadRotation)
-                    data.draw()
+                if (dataList.isNotEmpty) {
+                    val cur = dataList.allData.first()
+                    cur.set(x, y + size.worldXY, payloadRotation)
+                    cur.draw()
                 }
             }
             Draw.rect(region, x, y)
@@ -117,11 +119,11 @@ class Serializer(name: String) :
             // Don't update payload
             moveInPayload(false)
             val payload = payload
-            if (!hasArrived() || !data.isEmpty || payload == null) return
+            if (!hasArrived() || !dataList.canAddMore || payload == null) return
             serializingProgress += delta() * serializationSpeed
             if (serializingProgress >= 1f) {
                 this.payload = null
-                data.data = payload
+                dataList.allData.add(payload)
                 serializingProgress = 0f
             }
         }
@@ -132,6 +134,8 @@ class Serializer(name: String) :
 
         override fun drawSelect() {
             super.drawSelect()
+            drawSelectingCardinalDirections()
+            drawRangeCircle(alpha = smoothSelect(expendSelectingLineTime))
             DebugOnly {
                 drawNetworkInfo()
             }
