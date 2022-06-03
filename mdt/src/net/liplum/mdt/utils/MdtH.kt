@@ -237,14 +237,14 @@ val WorldXY.toTileXY: TileXY
 /**
  * Tile xy to world xy
  */
-val TileXYs.toWorldXY: Float
+val TileXYs.toWorldXY: WorldXY
     get() = this.toFloat() * Vars.tilesize
 /**
  * Tile xy to world xy
  */
-val TileXY.worldXY: Float
+val TileXY.worldXY: WorldXY
     get() = this.toFloat() * Vars.tilesize
-val TileXYf.worldXY: Float
+val TileXYf.worldXY: WorldXY
     get() = this * Vars.tilesize
 @JvmOverloads
 fun Tile.left(distance: TileXY = 1): Tile? {

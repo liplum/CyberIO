@@ -7,7 +7,6 @@ import arc.graphics.g2d.Draw
 import arc.math.geom.Geometry
 import mindustry.Vars
 import mindustry.Vars.world
-import mindustry.gen.Building
 import mindustry.graphics.Layer
 import mindustry.graphics.Pal
 import net.liplum.DebugOnly
@@ -52,11 +51,8 @@ fun INetworkNode.updateCardinalDirections() = building.run {
             if (dest.building.pos() != pre) {// if not the previous one
                 if (canLink(side, dest)) {
                     link(side, dest)
-                } else {
-                    // reached is invalid -> do nothing
-                    //clearSide(side)
-                }
-            }// is previous one, do nothing
+                }// else : reached is invalid -> do nothing
+            }// is previous one -> do nothing
         } else {
             // doesn't reach any node -> clear current side
             clearSide(side)
@@ -77,9 +73,9 @@ fun INetworkBlock.drawPlaceCardinalDirections(
     val team = Vars.player.team()
     val range = tileLinkRange
     for (i in 0..3) {
-        var maxLen = range + size / 2f
+        var maxLen = (range + size / 2f).worldXY
         var limit = -1f
-        var dest: Building? = null
+        var dest: INetworkNode? = null
         val dir = Geometry.d4[i]
         val dx = dir.x
         val dy = dir.y
@@ -87,24 +83,38 @@ fun INetworkBlock.drawPlaceCardinalDirections(
         for (j in 1 + offset..range + offset) {
             val other = world.build(x + j * dir.x, y + j * dir.y)
             if (other != null && other.team == team && other is INetworkNode) {
-                limit = j.toFloat()
+                limit = j.worldXY
                 dest = other
                 break
             }
         }
         maxLen *= smoothPlacing(expendPlacingLineTime)
         if (limit > 0f) maxLen = maxLen.coerceAtMost(limit)
-        val worldX = x * Vars.tilesize
-        val worldY = y * Vars.tilesize
-        val blockOffset = Vars.tilesize * size / 2f + 2
+        val worldX = x.worldXY
+        val worldY = y.worldXY
+        val blockOffset = (size / 2f + 2).worldXY
         val x1 = worldX + dx * blockOffset
         val y1 = worldY + dy * blockOffset
-        val x2 = worldX + dx * maxLen * Vars.tilesize
-        val y2 = worldY + dy * maxLen * Vars.tilesize
-        G.drawLineBreath(Pal.placing, x1, y1, x2, y2, stroke = 2f)
-
+        val x2 = worldX + dx * maxLen
+        val y2 = worldY + dy * maxLen
+        DebugOnly {
+            for (side in RIGHT..BOTTOM) {
+                Text.drawTextEasy(
+                    "$maxLen",
+                    worldX + size * 2 * dir.x,
+                    worldY + size * 2 * dir.y,
+                    R.C.GreenSafe
+                )
+            }
+        }
         if (dest != null) {
-            G.drawWrappedSquareBreath(dest)
+            val raycastReach = maxLen >= dest.building.dst(worldX, worldY) - dest.block.size.worldXY
+            val color = if (raycastReach) R.C.GreenSafe else Pal.placing
+            G.drawLineBreath(x1, y1, x2, y2, color, stroke = 2f)
+            if (raycastReach)
+                G.drawWrappedSquareBreath(dest.building, color = color)
+        } else {
+            G.drawLineBreath(x1, y1, x2, y2, Pal.placing, stroke = 2f)
         }
     }
 }

@@ -9,7 +9,16 @@ Every data network node(is hereinafter referred to as Node) can only link with o
 2->Left
 
 3->Right
-
+```
+         ▲
+        1│y
+         │
+ 2       │       0
+─────────┼─────────►
+         │         x
+         │
+        3│
+```
 Every side can only link with one another node.
 
 ## Sync

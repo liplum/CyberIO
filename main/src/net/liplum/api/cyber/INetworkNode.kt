@@ -62,14 +62,22 @@ interface INetworkNode : ICyberEntity, IVertex<INetworkNode> {
         }
     }
 
+    fun isSideFull(side: Side) =
+        links[side] != -1
+
     val linkRange: WorldXY
     val tileLinkRange: TileXY
         get() = (linkRange / Vars.tilesize).toInt()
     /**
-     * It will merge [target] into self's network
+     * It will merge [target] into self's network.
+     * It will clear the old sides of each other
      * @param side relative to self's side
      */
     fun link(side: Side, target: INetworkNode) {
+        // clear the old one
+        clearSide(side)
+        target.clearSide(side.reflect)
+
         this.links[side] = target
         target.links[side.reflect] = this
         this.network.merge(target)
@@ -82,12 +90,12 @@ interface INetworkNode : ICyberEntity, IVertex<INetworkNode> {
         if (target.building.dst(building) > linkRange) return false
         val thisOld = this.links[side]
         val targetOld = target.links[side.reflect]
-        if (thisOld != -1 || targetOld != -1) return false
+        if (thisOld != -1 && targetOld != -1) return false
         return true
     }
     /**
      * Clear this side and reflow the network.
-     * If the side already held a node, create a new network for it.
+     * If the side already held a node, reset its [INetworkNode.links] and create a new network for it.
      * it doesn't consider the enabled side
      */
     fun clearSide(side: Side) {

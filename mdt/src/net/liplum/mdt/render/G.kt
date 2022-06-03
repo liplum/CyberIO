@@ -471,15 +471,15 @@ object G {
     @JvmStatic
     @JvmOverloads
     fun drawLineBreath(
-        color: Color, x: WorldXY, y: WorldXY, x2: WorldXY, y2: WorldXY,
+        x: WorldXY, y: WorldXY, x2: WorldXY, y2: WorldXY, color: Color = Pal.accent,
         alpha: Float? = null, stroke: Float = 1f
     ) {
-        drawLine(color, x, y, x2, y2, alpha, stroke + sin)
+        drawLine(x, y, x2, y2, color, alpha, stroke + sin)
     }
     @JvmStatic
     @JvmOverloads
     fun drawLine(
-        color: Color, x: WorldXY, y: WorldXY, x2: WorldXY, y2: WorldXY,
+        x: WorldXY, y: WorldXY, x2: WorldXY, y2: WorldXY, color: Color = Pal.accent,
         alpha: Float? = null, stroke: Float = 1f
     ) {
         Lines.stroke(stroke + 2f)
@@ -497,10 +497,10 @@ object G {
         x: WorldXY, y: WorldXY, width: WorldXY, height: WorldXY,
         color: Color = Pal.accent, alpha: Float? = null, stroke: Float = 1f
     ) {
-        drawLine(color, x, y, x + width, y, alpha, stroke)
-        drawLine(color, x + width, y, x + width, y + height, alpha, stroke)
-        drawLine(color, x + width, y + height, x, y + height, alpha, stroke)
-        drawLine(color, x, y + height, x, y, alpha, stroke)
+        drawLine(x, y, x + width, y, color, alpha, stroke)
+        drawLine(x + width, y, x + width, y + height, color, alpha, stroke)
+        drawLine(x + width, y + height, x, y + height, color, alpha, stroke)
+        drawLine(x, y + height, x, y, color, alpha, stroke)
     }
     @JvmStatic
     @JvmOverloads
