@@ -63,7 +63,7 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
     @ClientOnly lateinit var PupilOutsideHeatTR: TR
     @ClientOnly lateinit var HemorrhageTRs: TRs
     @ClientOnly lateinit var BlinkTRs: TRs
-    @ClientOnly @JvmField var maxSelectedCircleTime = Var.selectedCircleTime
+    @ClientOnly @JvmField var maxSelectedCircleTime = Var.SelectedCircleTime
     @ClientOnly @JvmField val heatMeta = HeatMeta()
     @ClientOnly @JvmField var BlinkDuration = 50f
     @ClientOnly @JvmField var BlinkFrameNum = 9

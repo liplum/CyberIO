@@ -207,7 +207,7 @@ inline fun <reified K, reified V, reified R : Comparable<R>> Map<out K, V>.allMa
     return entries.allMaxBy(selector)
 }
 
-val Any.directSuperClz: Class<*>
+val Any.directSuperClass: Class<*>
     get() {
         val clz = javaClass
         return if (clz.isAnonymousClass) clz.superclass else clz

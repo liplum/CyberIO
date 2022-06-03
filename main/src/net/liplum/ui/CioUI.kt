@@ -101,7 +101,7 @@ object CioUI {
     val settings = SettingsTableX().apply {
         var isMenu = true
         genHeader = {
-            it.add("[#${CioMod.ContentSpecific.color}]${Meta.Name} v${Meta.DetailedVersion} ${CioMod.ContentSpecific.i18nName}[]").row()
+            it.add("[#${Var.ContentSpecific.color}]${Meta.Name} v${Meta.DetailedVersion} ${Var.ContentSpecific.i18nName}[]").row()
         }
         addSliderSettingX(R.Setting.LinkOpacity,
             100, 0, 100, 5, { "$it%" }

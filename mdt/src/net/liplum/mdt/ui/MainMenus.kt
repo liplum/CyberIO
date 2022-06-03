@@ -13,6 +13,7 @@ import mindustry.gen.Icon
 import mindustry.gen.Tex
 import mindustry.ui.MobileButton
 import mindustry.ui.Styles
+import net.liplum.lib.ui.NewIconTextButton
 import net.liplum.lib.utils.bundle
 
 object MainMenus {

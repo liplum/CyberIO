@@ -9,7 +9,6 @@ import mindustry.gen.Building
 import mindustry.world.Block
 import mindustry.world.meta.BlockFlag
 import mindustry.world.meta.BlockGroup
-import mindustry.world.meta.BlockStatus
 import net.liplum.R
 import net.liplum.Var
 import net.liplum.blocks.prism.Prism.PrismBuild
@@ -33,7 +32,7 @@ open class PrismObelisk(name: String) : Block(name) {
     @JvmField @ClientOnly var indicateAreaExtension = 2f
     @JvmField @ClientOnly var BlinkFrames = 6
     @JvmField @ClientOnly var BlinkDuration = 20f
-    @ClientOnly @JvmField var maxSelectedCircleTime = Var.selectedCircleTime
+    @ClientOnly @JvmField var maxSelectedCircleTime = Var.SelectedCircleTime
 
     init {
         buildType = Prov { ObeliskBuild() }

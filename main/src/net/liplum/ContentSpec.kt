@@ -56,7 +56,7 @@ class ContentSpecXInfo(
 }
 
 val String.spec: String
-    get() = CioMod.ContentSpecific.suffixResource(this)
+    get() = Var.ContentSpecific.suffixResource(this)
 
 fun ContentSpec.suffixModVersion(version: String) =
     if (needSuffixModVersion) "$version-$id"

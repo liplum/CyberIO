@@ -84,7 +84,7 @@ open class AntiVirus(name: String) : Block(name) {
     @JvmField var infectedColor: Color = R.C.RedAlert
     lateinit var unenergizedTR: TR
     lateinit var shieldTR: TR
-    @ClientOnly @JvmField var maxSelectedCircleTime = Var.selectedCircleTime
+    @ClientOnly @JvmField var maxSelectedCircleTime = Var.SelectedCircleTime
 
     init {
         buildType = Prov { AntiVirusBuild() }

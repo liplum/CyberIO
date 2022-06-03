@@ -1,15 +1,27 @@
 package net.liplum.ui
 
 import arc.Core
+import arc.scene.Group
 import arc.scene.event.Touchable
+import arc.scene.ui.Image
+import arc.scene.ui.ScrollPane
+import arc.scene.ui.TextField
 import arc.scene.ui.layout.Table
 import arc.scene.ui.layout.WidgetGroup
+import arc.util.Interval
 import mindustry.Vars
+import mindustry.gen.Entityc
+import mindustry.gen.Groups
+import mindustry.gen.Icon
 import mindustry.gen.Tex
-import net.liplum.Debug
+import mindustry.graphics.Pal
+import net.liplum.Var
 import net.liplum.annotations.Only
 import net.liplum.annotations.SubscribeEvent
 import net.liplum.events.CioInitEvent
+import net.liplum.lib.ui.autoLoseFocus
+import net.liplum.lib.utils.directSuperClass
+import net.liplum.lib.utils.tinted
 import net.liplum.mdt.Screen
 import net.liplum.mdt.lock
 import net.liplum.mdt.ui.DatabaseSelectorDialog
@@ -21,6 +33,13 @@ object DebugUI {
     @SubscribeEvent(CioInitEvent::class, Only.client or Only.debug)
     fun appendUI() {
         addMousePosition()
+        val debug = WidgetGroup().apply {
+            setFillParent(true)
+            touchable = Touchable.childrenOnly
+        }
+        Core.scene.add(debug)
+        addUnlockContent(debug)
+        addEntityInspector(debug)
     }
 
     fun addMousePosition() {
@@ -42,11 +61,12 @@ object DebugUI {
             }.touchable(Touchable.disabled).name("mouse-position-world").uniformX()
             row()
         }
-        val debug = WidgetGroup()
-        Core.scene.add(debug)
+    }
+
+    fun addUnlockContent(debug: Group) {
         debug.addChildAt(0, Table().apply {
             visible {
-                Debug.enableUnlockContent
+                Var.EnableUnlockContent
             }
             button("Lock") {
                 NewBaseDialog.apply {
@@ -74,6 +94,7 @@ object DebugUI {
                     addCloseButton()
                 }.show()
             }.width(150f)
+            // Unlock
             button("Unlock") {
                 NewBaseDialog.apply {
                     cont.table(Tex.button) { t ->
@@ -103,5 +124,79 @@ object DebugUI {
             bottom()
             left()
         })
+    }
+
+    val entityList = ArrayList<Entityc>(16)
+    val timer = Interval(10)
+    var timerID = 0
+    val updateEntityListTimer = timerID++
+    fun addEntityInspector(debug: Group) {
+        val listView = Table()
+        lateinit var search: TextField
+        fun rebuild() {
+            if (!Vars.state.isGame) return
+            val searchText = search.text.lowercase()
+            if (searchText.isEmpty()) return
+            listView.clearChildren()
+            entityList.clear()
+            Groups.all.each {
+                if (searchText == "*")// wildcard
+                    entityList.add(it)
+                else {
+                    if (it.javaClass.directSuperClass.name.lowercase().contains(searchText) ||
+                        it.toString().lowercase().contains(searchText)
+                    ) {
+                        entityList.add(it)
+                    }
+                }
+            }
+            entityList.sortBy { it.javaClass.simpleName }
+            entityList.forEach {
+                listView.add(Table(Tex.button).apply {
+                    add(it.javaClass.simpleName.tinted(Pal.accent)).row()
+                    add("$it").row()
+                }).fill()
+                listView.row()
+            }
+        }
+        debug.fill { t ->
+            t.left()
+            t.add(Table(Tex.wavepane).apply {
+                visible {
+                    Var.EnableEntityInspector
+                }
+                add(Table().apply {
+                    image(Icon.zoom).padRight(8f)
+                    search = field(null) {
+                        rebuild()
+                    }.apply {
+                        growX()
+                        minWidth(80f)
+                    }.get().apply {
+                        messageText = "@players.search"
+                    }
+                    listView.update {
+                        if (timer.get(updateEntityListTimer, 10f)) {
+                            rebuild()
+                        }
+                    }
+                    button(Icon.refresh) {
+                        rebuild()
+                    }.right()
+                })
+                row()
+                add(ScrollPane(listView).apply {
+                    autoLoseFocus()
+                }).apply {
+                    minWidth(100f)
+                    maxHeight(600f)
+                    fill()
+                }
+            }).apply {
+                left()
+                center()
+            }
+            t.visible { Vars.state.isGame }
+        }
     }
 }

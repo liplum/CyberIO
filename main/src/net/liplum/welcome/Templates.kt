@@ -5,7 +5,7 @@ import mindustry.ui.dialogs.BaseDialog
 import net.liplum.R
 import net.liplum.S
 import net.liplum.lib.utils.tinted
-import net.liplum.mdt.ui.frag.RateStarPanelFrag
+import net.liplum.lib.ui.RateStarPanelBuilder
 import net.liplum.update.Updater
 import net.liplum.welcome.Welcome.Entity
 import net.liplum.welcome.Welcome.handleTrRefer
@@ -117,7 +117,7 @@ object Templates {
                 if (showPoliteWelcome) addPoliteWelcome(entity)
                 addCenterText(entity.content)
                 val starSize = data["StarSize"] as? Float ?: 50f
-                val ratePanel = RateStarPanelFrag().apply {
+                val ratePanel = RateStarPanelBuilder().apply {
                     starNumber = 5
                     this.starSize = starSize
                     (data["InactiveStarIconPath"] as? String)?.let { inactiveStar = it.handleTrRefer() }

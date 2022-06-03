@@ -1,4 +1,4 @@
-package net.liplum.mdt.ui
+package net.liplum.lib.ui
 
 import arc.Core
 import arc.scene.style.Drawable

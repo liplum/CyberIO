@@ -5,6 +5,7 @@ import mindustry.gen.Building
 import mindustry.world.Block
 import net.liplum.CanRefresh
 import net.liplum.CioMod
+import net.liplum.Meta
 import net.liplum.Var
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.WhenNotPaused
@@ -40,7 +41,7 @@ abstract class AniedBlock<
 
     override fun setBars() {
         super.setBars()
-        if (Var.DebugMode) {
+        if (Meta.EnableDebug) {
             addAniStateInfo<AniedBuild>()
         }
     }

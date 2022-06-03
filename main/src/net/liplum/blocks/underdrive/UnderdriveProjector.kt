@@ -98,7 +98,7 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
     @JvmField var maxPowerEFFBlocksReq = 10
     @JvmField var maxGear = 1
     lateinit var spiralTR: TextureRegion
-    @ClientOnly @JvmField var maxSelectedCircleTime = Var.selectedCircleTime
+    @ClientOnly @JvmField var maxSelectedCircleTime = Var.SelectedCircleTime
 
     init {
         buildType = Prov { UnderdriveBuild() }

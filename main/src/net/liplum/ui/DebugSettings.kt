@@ -2,6 +2,7 @@ package net.liplum.ui
 
 import arc.files.Fi
 import arc.scene.Element
+import arc.scene.ui.Label
 import arc.scene.ui.ScrollPane
 import arc.scene.ui.TextButton
 import arc.scene.ui.layout.Table
@@ -62,20 +63,23 @@ object DebugSettingsDialog {
     }
     @Suppress("UNCHECKED_CAST")
     fun <T> Debug.Setting<T>.resolveSettingType(): Element = when (type) {
-        SettingType.Check -> Elem.newCheck(name) { setter(it as T) }.apply {
+        SettingType.Check -> Elem.newCheck("") { setter(it as T) }.apply {
+            update {
+                setText(this@resolveSettingType.name())
+            }
             isChecked = getter() as? Boolean ?: false
         }
         SettingType.Text -> Table().apply {
-            add(name)
+            add(Label(this@resolveSettingType.name))
             field(getter() as? String ?: "") {
                 setter(it as T)
             }
         }
         SettingType.SliderBar -> Table().apply {
-            add(name)
-            slider(0f, 100f, 5f) {
+            add(Label(this@resolveSettingType.name)).pad(5f)
+            slider(0f, 100f, 5f, getter() as Float) {
                 setter(it as T)
-            }
+            }.width(150f).pad(5f)
         }
     }
 

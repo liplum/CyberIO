@@ -90,7 +90,7 @@ open class Heimdall(name: String) : Block(name) {
      */
     @JvmField var coolingSpeed = 0.01f
     // Visual effects
-    @ClientOnly @JvmField var maxSelectedCircleTime = Var.selectedCircleTime
+    @ClientOnly @JvmField var maxSelectedCircleTime = Var.SelectedCircleTime
     @ClientOnly lateinit var BuckleTRs: Array<TR>
     @ClientOnly lateinit var BuckleHeatTRs: Array<TR>
     @ClientOnly lateinit var HeartTR: TR

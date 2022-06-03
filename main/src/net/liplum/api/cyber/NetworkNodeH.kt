@@ -11,6 +11,7 @@ import arc.scene.ui.ScrollPane
 import arc.scene.ui.layout.Table
 import mindustry.Vars
 import mindustry.Vars.world
+import mindustry.gen.Iconc
 import mindustry.gen.Tex
 import mindustry.graphics.Layer
 import mindustry.graphics.Pal
@@ -210,14 +211,23 @@ fun INetworkNode.drawLinkInfo() = building.run {
 fun INetworkNode.drawNetworkInfo() = building.run {
     DrawLayer {
         Draw.z(Layer.overlayUI)
+        val text: String
+        val color: Color
+        if (network.entity.isAdded) {
+            text = network.nodes.joinToString("\n")
+            color = Color.white
+        } else {
+            text = Iconc.cancel.toString()
+            color = R.C.RedAlert
+        }
         Text.drawTextEasy(
-            network.nodes.joinToString("\n"),
-            x, y + block.size.worldXY, Color.white
+            text,
+            x, y + block.size.worldXY, color
         )
     }
 }
 
-fun INetworkNode.drawRangeCircle(alpha:Float) = building.run {
+fun INetworkNode.drawRangeCircle(alpha: Float) = building.run {
     G.circleBreath(x, y, linkRange, alpha = alpha)
 }
 

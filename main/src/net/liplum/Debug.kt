@@ -2,6 +2,7 @@
 
 package net.liplum
 
+import net.liplum.lib.CoerceLength
 import net.liplum.lib.shaders.ShaderBase
 import net.liplum.mdt.shaders.CommonShader
 import net.liplum.registries.SD
@@ -12,47 +13,61 @@ import net.liplum.shaders.SurfaceShader
 import net.liplum.shaders.VanishingShader
 
 object Debug {
-    var enableUnlockContent = false
     var testText = ""
     var settings: List<Setting<out Any>> = listOf(
         Setting(
-            "Enable Unlock Content",
-            ::enableUnlockContent::get,
-            { enableUnlockContent = it },
+            { "Enable Unlock Content" },
+            { Var.EnableUnlockContent },
+            { Var.EnableUnlockContent = it },
             SettingType.Check,
         ),
         Setting(
-            "Enable Debug Mode",
-            { Var.DebugMode },
-            { Var.DebugMode = it },
-            SettingType.Check,
+            { "Debug Level ${Var.CurDebugLevel}".CoerceLength(25) },
+            { Var.CurDebugLevel.level.toFloat() * (100f / DebugLevel.size) },
+            {
+                val old = Var.CurDebugLevel
+                Var.CurDebugLevel = DebugLevel.valueOf((it / (100f / DebugLevel.size)).toInt())
+                if (old != Var.CurDebugLevel)
+                    CLog.info("Debug Level is changed to ${Var.CurDebugLevel}")
+            },
+            SettingType.SliderBar,
         ),
         Setting(
-            "Show Power Graph ID",
+            { "Show Power Graph ID" },
             { Var.ShowPowerGraphID },
             { Var.ShowPowerGraphID = it },
             SettingType.Check,
         ),
         Setting(
-            "Show Blocks' HitBox",
+            { "Show Blocks' HitBox" },
             { Var.DrawBuildCollisionRect },
             { Var.DrawBuildCollisionRect = it },
             SettingType.Check,
         ),
         Setting(
-            "Show Units' HitBox",
+            { "Show Units' HitBox" },
             { Var.DrawUnitCollisionRect },
             { Var.DrawUnitCollisionRect = it },
+            SettingType.Check,
+        ),
+        Setting(
+            { "Entity Inspector" },
+            { Var.EnableEntityInspector },
+            { Var.EnableEntityInspector = it },
             SettingType.Check,
         ),
     )
 
     enum class SettingType {
-        Check, Text, SliderBar
+        Check, Text,
+        /**
+         * Range: `[0f,100f]`
+         */
+        SliderBar
     }
 
     class Setting<T>(
-        val name: String,
+        val name: () -> String,
         val getter: () -> T,
         val setter: (T) -> Unit,
         val type: SettingType

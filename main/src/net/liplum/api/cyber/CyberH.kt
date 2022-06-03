@@ -520,13 +520,13 @@ fun Building.postFullClientOn(other: Building) {
 
 fun IDataSender.drawMaxRange() {
     if (maxRange > 0f) {
-        G.dashCircleBreath(building.x, building.y, maxRange * building.smoothSelect(Var.selectedCircleTime), senderColor)
+        G.dashCircleBreath(building.x, building.y, maxRange * building.smoothSelect(Var.SelectedCircleTime), senderColor)
     }
 }
 
 fun IStreamHost.drawMaxRange() {
     if (maxRange > 0f) {
-        G.dashCircleBreath(building.x, building.y, maxRange * building.smoothSelect(Var.selectedCircleTime), hostColor)
+        G.dashCircleBreath(building.x, building.y, maxRange * building.smoothSelect(Var.SelectedCircleTime), hostColor)
     }
 }
 

@@ -49,7 +49,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
      * The max range when trying to connect. -1f means no limit.
      */
     @JvmField var maxRange = -1f
-    @ClientOnly @JvmField var maxSelectedCircleTime = Var.selectedCircleTime
+    @ClientOnly @JvmField var maxSelectedCircleTime = Var.SelectedCircleTime
     @ClientOnly @JvmField var SendingTime = 60f
 
     init {
@@ -208,9 +208,8 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
             }
         }
 
-        override fun toString(): String {
-            return super.toString() + "(receiverPos:" + receiverPos + ")"
-        }
+        override fun toString() =
+            "Sender#$id(->$receiverPos)"
         @Nullable
         override fun getConnectedReceiver(): Int? {
             return receiverPos?.pack()

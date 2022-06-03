@@ -4,7 +4,7 @@ import mindustry.entities.bullet.BulletType
 import mindustry.gen.Bullet
 import mindustry.type.UnitType
 import net.liplum.blocks.prism.RgbList
-import net.liplum.lib.utils.directSuperClz
+import net.liplum.lib.utils.directSuperClass
 
 enum class PrismData {
     Duplicate
@@ -56,7 +56,7 @@ object PrismBlackList {
     @JvmStatic
     val BulletType.canDisperse: Boolean
         get() = this !in BlackList &&
-                this.directSuperClz.name !in PrismClzNameBlackList
+                this.directSuperClass.name !in PrismClzNameBlackList
     @JvmStatic
     fun String.banNameInPrism() {
         PrismClzNameBlackList.add(this)

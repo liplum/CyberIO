@@ -50,7 +50,7 @@ open class WirelessTower(name: String) : PowerBlock(name) {
     lateinit var CoreTR: TR
     lateinit var SupportTR: TR
     @ClientOnly @JvmField var rotationRadius = 0.7f
-    @ClientOnly @JvmField var maxSelectedCircleTime = Var.selectedCircleTime
+    @ClientOnly @JvmField var maxSelectedCircleTime = Var.SelectedCircleTime
     @JvmField var range2Stroke: (Float) -> Float = { (it / 100f).coerceAtLeast(1f) }
     @ClientOnly @JvmField var radiationAlpha = 0.8f
 

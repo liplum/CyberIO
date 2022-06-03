@@ -28,6 +28,7 @@ import mindustry.world.blocks.heat.HeatBlock
 import mindustry.world.meta.BlockFlag
 import mindustry.world.meta.BlockGroup
 import net.liplum.DebugOnly
+import net.liplum.IfDebugOr
 import net.liplum.R
 import net.liplum.Var
 import net.liplum.api.brain.*
@@ -82,7 +83,7 @@ open class Heart(name: String) : Block(name), IComponentBlock {
     @ClientOnly @JvmField var bloodColor: Color = R.C.Blood
     @ClientOnly @JvmField var coldColor: Color = R.C.ColdTemperature
     @ClientOnly @JvmField var hotColor: Color = R.C.HotTemperature
-    @ClientOnly @JvmField var maxSelectedCircleTime = Var.selectedCircleTime
+    @ClientOnly @JvmField var maxSelectedCircleTime = Var.SelectedCircleTime
     @ClientOnly lateinit var BaseTR: TR
     @ClientOnly lateinit var HeartTR: TR
     @ClientOnly lateinit var HeartBeatTRs: TRs
@@ -156,20 +157,17 @@ open class Heart(name: String) : Block(name), IComponentBlock {
         DebugOnly {
             addBrainInfo<HeartBuild>()
         }
-        AddBar<HeartBuild>(R.Bar.BloodN, if (Var.DebugMode) {
-            { "${R.Bar.Blood.bundle}: ${bloodAmount.toInt()}" }
-        } else {
-            { R.Bar.Blood.bundle }
-        }, {
+        AddBar<HeartBuild>(R.Bar.BloodN, IfDebugOr(
+            { { "${R.Bar.Blood.bundle}: ${bloodAmount.toInt()}" } },
+            { { R.Bar.Blood.bundle } }), {
             bloodColor
         }, {
             bloodAmount / realBloodCapacity
         })
-        AddBar<HeartBuild>(R.Bar.TemperatureN, if (Var.DebugMode) {
-            { "${R.Bar.Temperature.bundle}: ${temperature.format(2)}" }
-        } else {
-            { R.Bar.Temperature.bundle }
-        }, {
+
+        AddBar<HeartBuild>(R.Bar.TemperatureN, IfDebugOr(
+            { { "${R.Bar.Temperature.bundle}: ${temperature.format(2)}" } },
+            { { R.Bar.Temperature.bundle } }), {
             temperatureColor.set(coldColor).hsvLerp(hotColor, temperature)
         }, {
             temperature

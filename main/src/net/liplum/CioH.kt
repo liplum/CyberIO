@@ -15,13 +15,13 @@ val String.Cio: String
     get() = R.Gen(this)
 
 inline fun VanillaSpec(func: () -> Unit) {
-    if (CioMod.ContentSpecific == ContentSpec.Vanilla) {
+    if (Var.ContentSpecific == ContentSpec.Vanilla) {
         func()
     }
 }
 
 inline fun ErekirSpec(func: () -> Unit) {
-    if (CioMod.ContentSpecific == ContentSpec.Erekir) {
+    if (Var.ContentSpecific == ContentSpec.Erekir) {
         func()
     }
 }
@@ -34,11 +34,49 @@ inline fun ErekirSpec(func: () -> Unit) {
 annotation class DebugOnly
 
 val OnlyDebug = Condition {
-    Var.DebugMode
+    Meta.EnableDebug
 }
 
 inline fun DebugOnly(func: () -> Unit): Boolean {
-    if (Var.DebugMode) {
+    if (Meta.EnableDebug) {
+        func()
+        return true
+    }
+    return false
+}
+
+inline fun <R> IfDebugOr(
+    onDebug: () -> R, onNotDebug: () -> R
+): R = if (Meta.EnableDebug) onDebug() else onNotDebug()
+
+enum class DebugLevel(
+    val level: Int
+) {
+    Any(0), Inspector(1), Important(2);
+    /**
+     * ## Use case:
+     * ```
+     * A = Current logging task level : 1
+     * B = Global debug level : 2
+     * `B.isIncluding(A) => 2 <= 1` is false
+     * So run the logging task
+     * ```
+     */
+    fun isIncluding(other: DebugLevel): Boolean =
+        this.level <= other.level
+
+    companion object {
+        @JvmStatic
+        fun valueOf(level: Int): DebugLevel =
+            values()[level.coerceIn(0, values().size - 1)]
+
+        val size: Int
+            get() = values().size
+    }
+}
+
+inline fun DebugOnly(level: DebugLevel, func: () -> Unit): Boolean {
+    if (Meta.EnableDebug && Var.CurDebugLevel.isIncluding(level)) {
         func()
         return true
     }
@@ -46,15 +84,15 @@ inline fun DebugOnly(func: () -> Unit): Boolean {
 }
 
 inline fun <reified T> T.DebugOnlyOn(func: T.() -> Unit): T {
-    if (Var.DebugMode) {
+    if (Meta.EnableDebug) {
         func()
     }
     return this
 }
 
-fun CanRefresh() = Time.time % Var.UpdateFrequency < 1f
+fun CanRefresh() = Time.time % Var.AnimUpdateFrequency < 1f
 inline fun ExperimentalOnly(func: () -> Unit): Boolean {
-    if (Var.ExperimentalMode) {
+    if (Meta.EnableDebug) {
         func()
         return true
     }
@@ -62,7 +100,7 @@ inline fun ExperimentalOnly(func: () -> Unit): Boolean {
 }
 
 inline fun UndebugOnly(func: () -> Unit): Boolean {
-    if (!Var.DebugMode) {
+    if (!Meta.EnableDebug) {
         func()
         return true
     }
@@ -70,7 +108,7 @@ inline fun UndebugOnly(func: () -> Unit): Boolean {
 }
 
 inline fun WhenRefresh(func: () -> Unit): Boolean {
-    if (!Vars.state.isPaused && Time.time % Var.UpdateFrequency < 1f) {
+    if (!Vars.state.isPaused && Time.time % Var.AnimUpdateFrequency < 1f) {
         func()
         return true
     }

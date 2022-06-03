@@ -329,10 +329,9 @@ object CioBlocks {
         landProjector = LandProjector("land-projector").apply {
             requirements(
                 Category.effect,
-                if (Var.DebugMode)
-                    BuildVisibility.sandboxOnly
-                else
-                    BuildVisibility.hidden, arrayOf(
+                IfDebugOr(
+                    { BuildVisibility.sandboxOnly },
+                    { BuildVisibility.hidden }), arrayOf(
                     ItemStack(CioItems.ic, 5),
                     ItemStack(Items.graphite, 80),
                     ItemStack(Items.thorium, 100),
@@ -411,10 +410,10 @@ object CioBlocks {
         cloud = Cloud("cloud").apply {
             requirements(
                 Category.effect,
-                if (Var.DebugMode)
-                    BuildVisibility.sandboxOnly
-                else
-                    BuildVisibility.hidden, arrayOf(
+                IfDebugOr(
+                    { BuildVisibility.sandboxOnly },
+                    { BuildVisibility.hidden }),
+                arrayOf(
                     ItemStack(CioItems.ic, 10),
                     ItemStack(Items.titanium, 1000),
                     ItemStack(Items.thorium, 1000),
@@ -431,8 +430,11 @@ object CioBlocks {
         hyperOverdriveSphere = AdjustableOverdrive("hyper-overdrive-sphere").apply {
             requirements(
                 Category.effect,
-                if (Var.DebugMode) BuildVisibility.shown
-                else BuildVisibility.sandboxOnly,
+                IfDebugOr({
+                    BuildVisibility.shown
+                }, {
+                    BuildVisibility.sandboxOnly
+                }),
                 emptyArray()
             )
             size = 3
@@ -680,7 +682,7 @@ object CioBlocks {
     }
     @Subscribe(Trigger.update, Only.client)
     fun TMTRAINER_RandomName() {
-        if (Time.globalTime % Var.UpdateFrequency < 1f && CioMod.ContentLoaded) {
+        if (Time.globalTime % Var.AnimUpdateFrequency < 1f && CioMod.ContentLoaded) {
             TMTRAINER.localizedName = RandomName.one(8)
             TMTRAINER.description = RandomName.one(25)
         }

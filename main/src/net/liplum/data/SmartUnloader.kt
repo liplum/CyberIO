@@ -71,7 +71,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
     @ClientOnly @JvmField var UnloadTime = 60f
     @ClientOnly @JvmField var ShrinkingAnimFrames = 13
     @ClientOnly @JvmField var ShrinkingAnimDuration = 120f
-    @ClientOnly @JvmField var maxSelectedCircleTime = Var.selectedCircleTime
+    @ClientOnly @JvmField var maxSelectedCircleTime = Var.SelectedCircleTime
     /**
      * The max range when trying to connect. -1f means no limit.
      */

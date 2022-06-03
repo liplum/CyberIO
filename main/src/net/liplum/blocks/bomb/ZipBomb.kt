@@ -53,7 +53,7 @@ open class ZipBomb(name: String) : Block(name) {
     val explosionDamage: Float
         get() = damagePreUnit * Vars.tilesize
     @JvmField var circleColor: Color = R.C.RedAlert
-    @ClientOnly @JvmField var maxSelectedCircleTime = Var.selectedCircleTime
+    @ClientOnly @JvmField var maxSelectedCircleTime = Var.SelectedCircleTime
     @JvmInline
     value class Command(val value: Int) {
         val isAutoDetect: Boolean get() = value isOn AutoDetectPos

@@ -26,7 +26,7 @@ class Serializer(name: String) :
     var serializationSpeed = 1f / 240f
     override var linkRange: WorldXY = 500f
     override val block = this
-    @ClientOnly override var expendPlacingLineTime = Var.selectedCircleTime
+    @ClientOnly override var expendPlacingLineTime = Var.SelectedCircleTime
     override val sideEnable = enableAllSides
     override var dataCapacity = 3
 
@@ -69,7 +69,7 @@ class Serializer(name: String) :
             }
         @ClientOnly
         override val expendSelectingLineTime = this@Serializer.expendPlacingLineTime
-        override var routine: DataNetwork.Path? = null
+        override var transferTask = TransferTask()
         override val linkRange = this@Serializer.linkRange
         override val sideEnable = this@Serializer.sideEnable
         var lastTileChange = -2
@@ -77,7 +77,7 @@ class Serializer(name: String) :
             DebugOnly {
                 drawLinkInfo()
                 if (dataList.isNotEmpty) {
-                    val cur = dataList.allData.first()
+                    val cur = dataList.first()
                     cur.set(x, y + size.worldXY, payloadRotation)
                     cur.draw()
                 }
@@ -123,7 +123,7 @@ class Serializer(name: String) :
             serializingProgress += delta() * serializationSpeed
             if (serializingProgress >= 1f) {
                 this.payload = null
-                dataList.allData.add(payload)
+                dataList.add(payload)
                 serializingProgress = 0f
             }
         }

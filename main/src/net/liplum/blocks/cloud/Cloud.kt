@@ -61,7 +61,7 @@ open class Cloud(name: String) : PowerBlock(name) {
     @ClientOnly lateinit var NoPowerTR: TR
     @JvmField var maxConnection = -1
     @JvmField var maxRange = -1f
-    @ClientOnly @JvmField var maxSelectedCircleTime = Var.selectedCircleTime
+    @ClientOnly @JvmField var maxSelectedCircleTime = Var.SelectedCircleTime
 
     init {
         buildType = Prov { CloudBuild() }

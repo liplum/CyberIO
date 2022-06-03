@@ -11,18 +11,21 @@ import arc.scene.ui.layout.Table
 import mindustry.Vars
 import mindustry.gen.Icon
 import mindustry.gen.Sounds
+import mindustry.gen.Tex
 import mindustry.ui.dialogs.BaseDialog
 import net.liplum.*
 import net.liplum.ContentSpecXInfo.Companion.color
 import net.liplum.lib.utils.bundle
 import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.ui.UIToast
+import net.liplum.lib.ui.UIToast
 import net.liplum.mdt.ui.addTrackTooltip
 
 @ClientOnly
 object ContentSpecDialog {
     val prefix = "setting.${R.Setting.ContentSpecific}"
-    var toastUI = UIToast()
+    var toastUI = UIToast().apply {
+        background = Tex.button
+    }
     var fadeDuration = 0.8f
     @JvmStatic
     fun bundle(key: String, vararg args: Any) =
@@ -30,13 +33,13 @@ object ContentSpecDialog {
         else "$prefix.$key".bundle(*args)
     @JvmStatic
     fun show() {
-        var curSpec = CioMod.ContentSpecific
-        var changed = curSpec != CioMod.ContentSpecific
+        var curSpec = Var.ContentSpecific
+        var changed = curSpec != Var.ContentSpecific
         fun changeCurSpec(new: ContentSpec) {
             if (curSpec != new) {
                 curSpec = new
                 Sounds.message.play()
-                val tipKey = if (curSpec != CioMod.ContentSpecific) "switch-to" else "switch-back"
+                val tipKey = if (curSpec != Var.ContentSpecific) "switch-to" else "switch-back"
                 toastUI.postToastOnUI(Table().apply {
                     add(bundle(tipKey, curSpec.i18nName))
                 })
@@ -45,7 +48,7 @@ object ContentSpecDialog {
         }
 
         fun hasUnsavedChange() =
-            curSpec != CioMod.ContentSpecific
+            curSpec != Var.ContentSpecific
 
         BaseDialog(bundle("title")).apply {
             cont.add(Table().apply {
@@ -111,7 +114,7 @@ object ContentSpecDialog {
     }
     @JvmStatic
     fun setSpec(spec: ContentSpec) {
-        if (CioMod.ContentSpecific == spec) return
+        if (Var.ContentSpecific == spec) return
         Settings.ContentSpecific = spec.id
         Vars.ui.showInfoOnHidden(bundle("restart", spec.i18nName)) {
             Core.app.exit()

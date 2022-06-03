@@ -119,12 +119,18 @@ object Toaster {
         Toast.create(Time.globalTime, duration, true, task)
     else
         Toast.create(Time.time, duration, false, task)
+
+    private fun freeToast(toast: Toast) {
+        toastPool.free(toast)
+    }
     /**
      * Remove a managed toast.
      */
     @ClientOnly
     fun remove(id: Any): Toast? {
-        return managedToast.remove(id)
+        return managedToast.remove(id)?.apply {
+            freeToast(this)
+        }
     }
     /**
      * Get a managed toast or null.
@@ -147,6 +153,7 @@ object Toaster {
                 val curClock = if (toast.useGlobalTime) Time.globalTime else Time.time
                 val curTime = curClock - toast.startTime
                 if (curTime >= toast.duration) {
+                    freeToast(toast)
                     it.remove()
                 } else {
                     shared.toast = toast
@@ -163,6 +170,7 @@ object Toaster {
                 val curClock = if (toast.useGlobalTime) Time.globalTime else Time.time
                 val curTime = curClock - toast.startTime
                 if (curTime >= toast.duration) {
+                    freeToast(toast)
                     it.remove()
                 } else {
                     shared.toast = toast

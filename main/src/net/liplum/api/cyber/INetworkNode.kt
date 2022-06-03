@@ -25,7 +25,7 @@ interface INetworkNode : ICyberEntity, IVertex<INetworkNode> {
      */
     @Serialized
     val sendingProgress: Float
-    var routine: DataNetwork.Path?
+    var transferTask: TransferTask
     val sideEnable: SideEnable
 
     companion object {
@@ -33,7 +33,7 @@ interface INetworkNode : ICyberEntity, IVertex<INetworkNode> {
     }
 
     fun canTransferTo(other: INetworkNode): Boolean =
-        routine != null && routine == other.routine
+        transferTask == other.transferTask
 
     override val linkedVertices: Iterable<INetworkNode>
         get() = getNetworkConnections(tempList)
@@ -109,8 +109,9 @@ interface INetworkNode : ICyberEntity, IVertex<INetworkNode> {
             it.links[side.reflect] = -1
             if (it.network == this.network) {
                 val newNetwork = DataNetwork()
-                it.network.remove()
-                it.network = newNetwork
+                val oldNetwork = it.network
+                // MUSTN'T: it.network = newNetwork
+                oldNetwork.remove()
                 newNetwork.reflow(it)
             }
         }
@@ -161,7 +162,7 @@ object EmptyNetworkNode : INetworkNode {
     override val expendSelectingLineTime = 0f
     override val currentOriented: Pos = NewEmptyPos()
     override val sendingProgress: Float = 0f
-    override var routine: DataNetwork.Path? = DataNetwork.Path()
+    override var transferTask = TransferTask()
     override val sideEnable = SideEnable(4) { false }
     override val linkRange = 0f
 }

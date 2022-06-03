@@ -10,8 +10,8 @@ import arc.scene.ui.layout.Table
 import arc.scene.utils.Elem
 import arc.util.Scaling
 import mindustry.gen.Tex
-import net.liplum.CioMod
 import net.liplum.Meta
+import net.liplum.Var
 import net.liplum.i18nName
 import net.liplum.lib.TR
 import net.liplum.mdt.DesktopOnly
@@ -39,7 +39,7 @@ internal fun Dialog.addPoliteWelcome(entity: Welcome.Entity) {
     addCenterText(
         entity.bundle.format(
             "welcome",
-            "${Meta.DetailedVersion} ${CioMod.ContentSpecific.i18nName}"
+            "${Meta.DetailedVersion} ${Var.ContentSpecific.i18nName}"
         )
     )
 }

@@ -1,17 +1,20 @@
-package net.liplum.mdt.ui
+package net.liplum.lib.ui
 
 import arc.Core
 import arc.math.Interp
 import arc.scene.actions.Actions
+import arc.scene.style.Drawable
 import arc.scene.ui.layout.Table
-import mindustry.gen.Tex
 
 class UIToast {
     var lastToastTable: Table? = null
     var lastToastLayout: Table? = null
     var lastToast: Long = 0
+    var background: Drawable? = null
     fun postToastOnUI(content: Table) {
-        val table = Table(Tex.button)
+        val table = Table().apply {
+            this@UIToast.background?.let { background(it) }
+        }
         table.margin(12f)
         //add to table
         table.add(content)

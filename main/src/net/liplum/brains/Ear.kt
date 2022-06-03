@@ -18,7 +18,6 @@ import mindustry.entities.UnitSorts
 import mindustry.entities.Units
 import mindustry.gen.*
 import mindustry.gen.Unit
-import mindustry.graphics.Drawf
 import mindustry.graphics.Layer
 import mindustry.logic.LAccess
 import mindustry.logic.Ranged
@@ -81,7 +80,7 @@ open class Ear(name: String) : Block(name), IComponentBlock {
     @ClientOnly lateinit var EarTR: TR
     @ClientOnly lateinit var BaseHeatTR: TR
     @ClientOnly lateinit var EarHeatTR: TR
-    @ClientOnly @JvmField var maxSelectedCircleTime = Var.selectedCircleTime
+    @ClientOnly @JvmField var maxSelectedCircleTime = Var.SelectedCircleTime
     @ClientOnly @JvmField val heatMeta = HeatMeta()
     @ClientOnly @JvmField var scaleTime = 30f
     @ClientOnly @JvmField var maxScale = 0.3f

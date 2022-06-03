@@ -84,8 +84,7 @@ class DataNetwork {
     inline fun forEachDataIndexed(func: (Int, INetworkNode, Payload) -> Unit) {
         var i = 0
         for (node in nodes) {
-            val dataList = node.dataList.allData
-            for (data in dataList) {
+            for (data in node.dataList) {
                 func(i, node, data)
                 i++
             }
@@ -94,34 +93,19 @@ class DataNetwork {
 
     inline fun forEachData(func: (INetworkNode, Payload) -> Unit) {
         for (node in nodes) {
-            val dataList = node.dataList.allData
-            for (data in dataList)
+            for (data in node.dataList)
                 func(node, data)
         }
     }
 
-    class Path : LinkedPath<INetworkNode>(), Pool.Poolable {
-        override fun reset() {
-            path.clear()
-        }
-    }
-
-    class Pointer : BFS.IPointer<INetworkNode>, Pool.Poolable {
-        override var previous: BFS.IPointer<INetworkNode>? = null
-        override var self: INetworkNode = EmptyNetworkNode
-        override fun reset() {
-            previous = null
-            self = EmptyNetworkNode
-        }
-    }
 
     override fun toString() =
         "DataNetwork#$id"
 
     companion object {
         private val bfs = EasyBFS<INetworkNode, Path>(
-            { Pools.obtain(Pointer::class.java, DataNetwork::Pointer) },
-            { Pools.obtain(Path::class.java, DataNetwork::Path) },
+            { Pools.obtain(Pointer::class.java, ::Pointer) },
+            { Pools.obtain(Path::class.java, ::Path) },
         )
         private val tmp1 = ArrayList<INetworkNode>()
         private val bfsQueue = LinkedList<INetworkNode>()

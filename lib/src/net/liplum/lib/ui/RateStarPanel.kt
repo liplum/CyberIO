@@ -1,11 +1,11 @@
-package net.liplum.mdt.ui.frag
+package net.liplum.lib.ui
 
 import arc.scene.style.TextureRegionDrawable
 import arc.scene.ui.ImageButton
 import arc.scene.ui.layout.Table
 import net.liplum.lib.TR
 
-class RateStarPanelFrag {
+class RateStarPanelBuilder {
     var starNumber = 5
     var starSize = 50f
     var inactiveStar: TR = TR()

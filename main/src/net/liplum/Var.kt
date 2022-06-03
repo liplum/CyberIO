@@ -2,25 +2,28 @@ package net.liplum
 
 object Var {
     @JvmField
+    var ContentSpecific = ContentSpec.Vanilla
+    @JvmField
     var EnableMapCleaner = false
+    @JvmField
+    var CurDebugLevel = DebugLevel.Any
+    @JvmField
+    var EnableUnlockContent = false
     /**
      * How much time to reach max selected circle
      */
     @JvmField
-    var selectedCircleTime = 60f
+    var SelectedCircleTime = 60f
     @JvmField
-    var UpdateFrequency = 5f
+    var AnimUpdateFrequency = 5f
     @JvmField
     var ShowPowerGraphID = false
     @JvmField
     var DrawBuildCollisionRect = false
     @JvmField
     var DrawUnitCollisionRect = false
-    @JvmStatic
-    var DebugMode = Meta.EnableDebug
-        set(value) {
-            field = Meta.EnableDebug && value
-        }
+    @JvmField
+    var EnableEntityInspector = false
     @JvmField
     var ExperimentalMode = false
     @JvmField

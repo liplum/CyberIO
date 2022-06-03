@@ -12,6 +12,7 @@ import mindustry.mod.Mods
 import net.liplum.ConfigEntry.Companion.Config
 import net.liplum.ContentSpec.Companion.resolveContentSpec
 import net.liplum.ContentSpecXInfo.Companion.color
+import net.liplum.Var.ContentSpecific
 import net.liplum.blocks.cloud.LiplumCloud
 import net.liplum.blocks.cloud.SharedRoom
 import net.liplum.events.CioInitEvent
@@ -39,7 +40,6 @@ class CioMod : Mod() {
     companion object {
         @JvmField val IsClient = !Vars.headless
         @JvmField var ContentLoaded = false
-        @JvmField var ContentSpecific = ContentSpec.Vanilla
         lateinit var Info: Mods.LoadedMod
         @JvmField val jarFile = CioMod::class.java.protectionDomain?.let {
             File(it.codeSource.location.toURI().path).let { f ->
@@ -125,7 +125,7 @@ class CioMod : Mod() {
 
     override fun init() {
         CLog.info("v${Meta.DetailedVersion} $ContentSpecific initializing...")
-        Var.UpdateFrequency = if (Vars.mobile || Vars.testMobile) 10f else 5f
+        Var.AnimUpdateFrequency = if (Vars.mobile || Vars.testMobile) 10f else 5f
         Events.fire(CioInitEvent())
         DebugOnly {
             // Cloud is developing

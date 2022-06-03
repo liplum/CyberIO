@@ -57,7 +57,7 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
     @ClientOnly lateinit var NoPowerAni: AniStateH
     @ClientOnly lateinit var NormalAni: AniStateH
     @ClientOnly lateinit var NoPowerTR: TR
-    @ClientOnly @JvmField var maxSelectedCircleTime = Var.selectedCircleTime
+    @ClientOnly @JvmField var maxSelectedCircleTime = Var.SelectedCircleTime
     @JvmField val CheckConnectionTimer = timers++
     @JvmField val TransferTimer = timers++
 
