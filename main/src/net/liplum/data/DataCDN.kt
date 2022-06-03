@@ -27,6 +27,7 @@ class DataCDN(name: String) :
         update = true
         solid = true
         envEnabled = envEnabled or Env.space
+        initNetworkNodeSettings()
     }
 
     override fun init() {
@@ -63,6 +64,8 @@ class DataCDN(name: String) :
         override var init: Boolean = false
         override var links = SideLinks()
         override val sideEnable = this@DataCDN.sideEnable
+        @ClientOnly
+        override val expendSelectingLineTime = this@DataCDN.expendPlacingLineTime
         override val linkRange = this@DataCDN.linkRange
         var lastTileChange = -2
         override fun updateTile() {
@@ -86,6 +89,7 @@ class DataCDN(name: String) :
 
         override fun drawSelect() {
             super.drawSelect()
+            drawSelectingCardinalDirections()
             G.circle(x, y, linkRange)
             DebugOnly {
                 drawNetworkInfo()

@@ -232,7 +232,7 @@ fun Block.toCenterWorldXY(xy: TileXY): WorldXY =
 fun Block.toCenterTileXY(xy: TileXY): TileXYf =
     offset + xy
 
-val WorldXY.toTileXY: TileXY
+val WorldXY.tileXY: TileXY
     get() = (this / Vars.tilesize).toInt()
 /**
  * Tile xy to world xy

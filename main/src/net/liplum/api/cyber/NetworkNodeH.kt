@@ -5,18 +5,27 @@ package net.liplum.api.cyber
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
 import arc.math.geom.Geometry
+import arc.scene.ui.Image
+import arc.scene.ui.Label
+import arc.scene.ui.ScrollPane
+import arc.scene.ui.layout.Table
 import mindustry.Vars
 import mindustry.Vars.world
+import mindustry.gen.Tex
 import mindustry.graphics.Layer
 import mindustry.graphics.Pal
+import mindustry.ui.Styles
+import mindustry.world.blocks.payloads.Payload
 import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.api.cyber.SideLinks.Companion.coordinates
 import net.liplum.lib.utils.DrawLayer
 import net.liplum.mdt.advanced.Inspector.isPlacing
+import net.liplum.mdt.advanced.Inspector.isSelected
 import net.liplum.mdt.render.G
 import net.liplum.mdt.render.Text
 import net.liplum.mdt.render.smoothPlacing
+import net.liplum.mdt.render.smoothSelect
 import net.liplum.mdt.utils.TEAny
 import net.liplum.mdt.utils.TileXY
 import net.liplum.mdt.utils.build
@@ -65,6 +74,59 @@ fun INetworkNode.updateCardinalDirections() = building.run {
 fun reflect(original: Int): Int =
     (original + 2) % 4
 
+fun INetworkNode.drawSelectingCardinalDirections() = building.run {
+    // Draw a cross
+    if (!this.isSelected()) return
+    val team = Vars.player.team()
+    val range = tileLinkRange
+    val size = block.size
+    val tileX = tile.x
+    val tileY = tile.y
+    for (i in 0..3) {
+        var maxLen = (range + size / 2f).worldXY
+        var limit = -1f
+        var dest: INetworkNode? = null
+        val dir = Geometry.d4[i]
+        val dx = dir.x
+        val dy = dir.y
+        val offset = size / 2
+        for (j in 1 + offset..range + offset) {
+            val other = world.build(tileX + j * dir.x, tileY + j * dir.y)
+            if (other != null && other.team == team && other is INetworkNode) {
+                limit = j.worldXY
+                dest = other
+                break
+            }
+        }
+        maxLen *= smoothSelect(expendSelectingLineTime)
+        if (limit > 0f) maxLen = maxLen.coerceAtMost(limit)
+        val blockOffset = (size / 2f + 2).worldXY
+        val x1 = x + dx * blockOffset
+        val y1 = y + dy * blockOffset
+        val x2 = x + dx * maxLen
+        val y2 = y + dy * maxLen
+        DebugOnly {
+            for (side in RIGHT..BOTTOM) {
+                Text.drawTextEasy(
+                    "${maxLen.toInt()}",
+                    x + size * 2 * dir.x,
+                    y + size * 2 * dir.y,
+                    R.C.GreenSafe
+                )
+            }
+        }
+        if (dest != null) {
+            val raycastReach = maxLen >= dest.building.dst(this) - dest.block.size.worldXY
+            val color = if (raycastReach) R.C.GreenSafe else Pal.placing
+            G.drawLineBreath(x1, y1, x2, y2, color, stroke = 2f)
+            if (raycastReach)
+                G.drawWrappedSquareBreath(dest.building, color = color)
+        } else {
+            G.drawLineBreath(x1, y1, x2, y2, Pal.placing, stroke = 2f)
+        }
+    }
+}
+
 fun INetworkBlock.drawPlaceCardinalDirections(
     x: TileXY, y: TileXY
 ) = block.run {
@@ -100,7 +162,7 @@ fun INetworkBlock.drawPlaceCardinalDirections(
         DebugOnly {
             for (side in RIGHT..BOTTOM) {
                 Text.drawTextEasy(
-                    "$maxLen",
+                    "${maxLen.toInt()}",
                     worldX + size * 2 * dir.x,
                     worldY + size * 2 * dir.y,
                     R.C.GreenSafe
@@ -153,4 +215,20 @@ fun INetworkNode.drawNetworkInfo() = building.run {
             x, y + block.size.worldXY, Color.white
         )
     }
+}
+
+fun INetworkNode.buildNetworkDataList(table: Table) {
+    table.add(ScrollPane(Table(Tex.wavepane).apply {
+        network.forEachData { node, payload ->
+            add(Table(Tex.button).apply {
+                buildPayloadDataInfo(node, payload)
+            }).margin(5f).grow().size(Vars.iconXLarge * 2.5f)
+        }
+    }, Styles.defaultPane))
+}
+
+fun Table.buildPayloadDataInfo(node: INetworkNode, data: Payload) {
+    add(Image(data.icon())).size(Vars.iconXLarge * 1.5f).row()
+    val tile = node.tile
+    add(Label { "${tile.x},${tile.y}" })
 }

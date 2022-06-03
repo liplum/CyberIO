@@ -7,6 +7,7 @@ import net.liplum.api.cyber.SideLinks.Companion.reflect
 import net.liplum.data.PayloadData
 import net.liplum.lib.Out
 import net.liplum.lib.Serialized
+import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.utils.*
 import plumy.pathkt.IVertex
 
@@ -64,7 +65,8 @@ interface INetworkNode : ICyberEntity, IVertex<INetworkNode> {
 
     fun isSideFull(side: Side) =
         links[side] != -1
-
+    @ClientOnly
+    val expendSelectingLineTime: Float
     val linkRange: WorldXY
     val tileLinkRange: TileXY
         get() = (linkRange / Vars.tilesize).toInt()
@@ -130,8 +132,14 @@ interface INetworkBlock {
     val tileLinkRange: TileXY
         get() = (linkRange / Vars.tilesize).toInt()
     val block: Block
+    @ClientOnly
     val expendPlacingLineTime: Float
     val sideEnable: SideEnable
+    fun initNetworkNodeSettings() {
+        block.apply {
+            configurable = true
+        }
+    }
 }
 /**
  * Only iterate the enabled sides
@@ -148,6 +156,8 @@ object EmptyNetworkNode : INetworkNode {
     override var init = true
     override var links = SideLinks()
     override val data = PayloadData()
+    @ClientOnly
+    override val expendSelectingLineTime = 0f
     override val currentOriented: Pos = NewEmptyPos()
     override val sendingProgress: Float = 0f
     override var routine: DataNetwork.Path? = DataNetwork.Path()
