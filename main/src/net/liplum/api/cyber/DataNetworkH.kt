@@ -12,37 +12,54 @@ import mindustry.graphics.Layer
 import mindustry.graphics.Pal
 import net.liplum.DebugOnly
 import net.liplum.R
-import net.liplum.lib.segmentLines
-import net.liplum.lib.utils.forEach
+import net.liplum.api.cyber.SideLinks.Companion.coordinates
+import net.liplum.lib.utils.DrawLayer
 import net.liplum.mdt.advanced.Inspector.isPlacing
 import net.liplum.mdt.render.G
 import net.liplum.mdt.render.Text
 import net.liplum.mdt.render.smoothPlacing
+import net.liplum.mdt.utils.TEAny
 import net.liplum.mdt.utils.TileXY
 import net.liplum.mdt.utils.build
 import net.liplum.mdt.utils.worldXY
 
 val destinations = arrayOfNulls<INetworkNode>(4)
+/**
+ * Update the link in four cardinal directions.
+ * This function may add link or remove link.
+ * # Add or Remove
+ * `Add link` will affect two nodes.
+ * `Remove link` will only affect who calls this function.
+ */
 fun INetworkNode.updateCardinalDirections() = building.run {
-    if (!canLinkMore) return@run
     val offset = block.size / 2
     val tileX = tile.x.toInt()
     val tileY = tile.y.toInt()
     val range = tileLinkRange
-    for (i in 0..3) {
-        val dir = Geometry.d4[i]
-        destinations[i] = null
-        for (j in 1 + offset..range + offset) {
+    forEachEnabledSide { side ->
+        val pre = links[side]
+        val dir = coordinates[side]
+        destinations[side] = null
+        for (j in 1 + offset..range + offset) { // expending
             val b = world.build(tileX + j * dir.x, tileY + j * dir.y)
             if (b is INetworkNode) {
-                if (canLink(b))
-                    destinations[i] = b
+                destinations[side] = b
                 break
             }
         }
-        val dest = destinations[i]
-        if (dest != null && !isLinkedWith(dest) && canLink(dest)) {
-            link(dest)
+        val dest = destinations[side]
+        if (dest != null) { // reach a node
+            if (dest.building.pos() != pre) {// if not the previous one
+                if (canLink(side, dest)) {
+                    link(side, dest)
+                } else {
+                    // reached is invalid -> do nothing
+                    //clearSide(side)
+                }
+            }// is previous one, do nothing
+        } else {
+            // doesn't reach any node -> clear current side
+            clearSide(side)
         }
     }
 }
@@ -51,47 +68,6 @@ fun INetworkNode.updateCardinalDirections() = building.run {
  */
 fun reflect(original: Int): Int =
     (original + 2) % 4
-
-fun ISideNetworkNode.updateCardinalDirections() = building.run {
-    if (!canLinkMore) return@run
-    val offset = block.size / 2
-    val tileX = tile.x.toInt()
-    val tileY = tile.y.toInt()
-    val range = tileLinkRange
-    var found = false // whether it finds a node that could be linked with
-    for (i in 0..3) {
-        val previous = sideLinks[i]
-        val dir = Geometry.d4[i]
-        destinations[i] = null
-        for (j in 1 + offset..range + offset) {
-            when (val b = world.build(tileX + j * dir.x, tileY + j * dir.y)) {
-                is INetworkNode -> {
-                    // It can't be the previous one or out of range
-                    if (b.building.pos() != previous && canLink(b))
-                        destinations[i] = b
-                    found = true
-                    break
-                }
-                is ISideNetworkNode -> {
-                    // It can't be the previous one or out of range
-                    if (b.building.pos() != previous && canSideLink(b, i))
-                        destinations[i] = b
-                    found = true
-                    break
-                }
-            }
-        }
-        if (found) {// if found, try to link with it
-            val dest = destinations[i]
-            // Only link a new node. `dest == null` mean can't link it, or it's old node
-            if (dest != null) {
-                linkSide(i, dest)
-            }
-        } else {// if not found, unlink this side
-            unlinkSide(i)
-        }
-    }
-}
 
 fun INetworkBlock.drawPlaceCardinalDirections(
     x: TileXY, y: TileXY
@@ -133,36 +109,38 @@ fun INetworkBlock.drawPlaceCardinalDirections(
     }
 }
 @DebugOnly
-fun INetworkNode.drawNetworkInfo() = building.run {
-    val originalZ = Draw.z()
-    Draw.z(Layer.overlayUI)
-    for (i in 0 until dataMod.links.size) {
-        val link = dataMod.links[i]
-        val linkB = link.build
-        if (linkB != null)
-            G.drawDashLineBetweenTwoBlocksBreath(this.tile, linkB.tile)
-    }
-    Text.drawTextEasy("${dataMod.network.id}", x, y + block.size.worldXY / 2f, R.C.RedAlert)
-    val tmp = ArrayList<String>()
-    dataMod.links.forEach {i ->
-        i.build?.let {
-            tmp.add("${it.tileX()},${it.tileY()}")
+fun INetworkNode.drawLinkInfo() = building.run {
+    DrawLayer {
+        Draw.z(Layer.overlayUI)
+        forEachEnabledSide { side ->
+            val link = links[side]
+            val linkB = link.build
+            if (linkB != null)
+                G.drawDashLineBetweenTwoBlocksBreath(this.tile, linkB.tile)
         }
-    }
-    Text.drawTextEasy(
-        "${tmp}\n${networkGraph.nodes}".segmentLines(50),
-        x, y, Color.white
-    )
-    if (this is ISideNetworkNode) {
-        val size = block.size.worldXY / 2f
-        for (i in 0..3) {
-            val dir = Geometry.d4[i]
+
+        Text.drawTextEasy("${network.id}", x, y + 5f, R.C.RedAlert)
+        Text.drawTextEasy("${building.id}", x, y - 5f, R.C.Holo)
+        for (side in RIGHT..BOTTOM) {
+            val size = block.size.worldXY / 2f
+            val dir = coordinates[side]
+            val pos = links[side]
+            val text = pos.TEAny<INetworkNode>()?.let { "${it.tile.x},${it.tile.y}" } ?: "-1"
             Text.drawTextEasy(
-                "${sideLinks[i]}",
+                text,
                 x + size * dir.x, y + size * dir.y,
                 R.C.GreenSafe
             )
         }
     }
-    Draw.z(originalZ)
+}
+@DebugOnly
+fun INetworkNode.drawNetworkInfo() = building.run {
+    DrawLayer {
+        Draw.z(Layer.overlayUI)
+        Text.drawTextEasy(
+            network.nodes.joinToString("\n"),
+            x, y + block.size.worldXY, Color.white
+        )
+    }
 }

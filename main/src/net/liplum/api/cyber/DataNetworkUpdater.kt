@@ -1,4 +1,4 @@
-package net.liplum.data
+package net.liplum.api.cyber
 
 import net.liplum.mdt.mixin.EntityMixin
 

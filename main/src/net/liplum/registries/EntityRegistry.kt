@@ -9,7 +9,7 @@ import net.liplum.CLog.log
 import net.liplum.Meta
 import net.liplum.OnlyDebug
 import net.liplum.annotations.SubscribeEvent
-import net.liplum.data.DataNetworkUpdater
+import net.liplum.api.cyber.DataNetworkUpdater
 import net.liplum.events.CioLoadContentEvent
 import net.liplum.holo.HoloUnit
 import net.liplum.mdt.IsServer

@@ -1,29 +1,13 @@
-package net.liplum.data
+package net.liplum.api.cyber
 
 import arc.struct.IntSet
 import arc.util.pooling.Pool
 import arc.util.pooling.Pools
 import mindustry.world.blocks.payloads.Payload
-import net.liplum.api.cyber.INetworkNode
-import net.liplum.api.cyber.SideLinks
-import net.liplum.mdt.utils.NewEmptyPos
-import net.liplum.mdt.utils.Pos
 import plumy.pathkt.BFS
 import plumy.pathkt.EasyBFS
 import plumy.pathkt.LinkedPath
 import java.util.*
-
-object EmptyNetworkNode : INetworkNode {
-    override var network = DataNetwork()
-    override var init = true
-    override var links = SideLinks()
-    override val data = PayloadData()
-    override val currentOriented: Pos = NewEmptyPos()
-    override val sendingProgress: Float = 0f
-    override var routine: DataNetwork.Path? = DataNetwork.Path()
-    override val linkRange = 0f
-    override val maxLink = 0
-}
 
 class DataNetwork {
     val entity = DataNetworkUpdater.create()
@@ -39,13 +23,19 @@ class DataNetwork {
     fun update() {
     }
 
+    fun remove() {
+        entity.remove()
+        nodes.clear()
+        routineCache.clear()
+    }
+
     fun addNetwork(other: DataNetwork) {
         if (other == this) return
         other.entity.remove()
         other.nodes.forEach(::add)
     }
 
-    private fun add(node: INetworkNode) {
+    fun add(node: INetworkNode) {
         if (node.network != this || !node.init) {
             node.network = this
             node.init = true
@@ -127,8 +117,8 @@ class DataNetwork {
 
     companion object {
         private val bfs = EasyBFS<INetworkNode, Path>(
-            { Pools.obtain(Pointer::class.java, ::Pointer) },
-            { Pools.obtain(Path::class.java, ::Path) },
+            { Pools.obtain(Pointer::class.java, DataNetwork::Pointer) },
+            { Pools.obtain(Path::class.java, DataNetwork::Path) },
         )
         private val tmp1 = ArrayList<INetworkNode>()
         private val bfsQueue = LinkedList<INetworkNode>()

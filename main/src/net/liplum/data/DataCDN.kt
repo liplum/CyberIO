@@ -3,33 +3,30 @@ package net.liplum.data
 import arc.func.Prov
 import mindustry.Vars.world
 import mindustry.gen.Building
-import mindustry.graphics.Pal
 import mindustry.world.Block
 import mindustry.world.meta.Env
 import net.liplum.DebugOnly
 import net.liplum.api.cyber.*
+import net.liplum.api.cyber.SideLinks.Companion.enableAllSides
 import net.liplum.lib.Serialized
-import net.liplum.lib.utils.toFloat
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.render.G
-import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.utils.NewEmptyPos
 import kotlin.math.max
 
 class DataCDN(name: String) :
     Block(name), INetworkBlock {
-    override var maxLink = 4
     override var linkRange = 500f
     override val block = this
     @ClientOnly @JvmField var expendingPlacingLineTimePreRange = 60f / 500f
     @ClientOnly override var expendPlacingLineTime = -1f
+    override val sideEnable = enableAllSides
 
     init {
         buildType = Prov { CdnBuild() }
         update = true
         solid = true
         envEnabled = envEnabled or Env.space
-        initDataNetworkRemoteConfig()
     }
 
     override fun init() {
@@ -37,17 +34,6 @@ class DataCDN(name: String) :
         clipSize = max(clipSize, linkRange * 1.2f)
         if (expendPlacingLineTime < 0f)
             expendPlacingLineTime = expendingPlacingLineTimePreRange * linkRange
-    }
-
-    override fun setBars() {
-        super.setBars()
-        DebugOnly {
-            AddBar<CdnBuild>("network",
-                { dataMod.network.toString() },
-                { Pal.power },
-                { networkGraph.entity.isAdded.toFloat() }
-            )
-        }
     }
 
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
@@ -59,7 +45,7 @@ class DataCDN(name: String) :
     }
 
     inner class CdnBuild : Building(),
-        ISideNetworkNode {
+        INetworkNode {
         // TODO: Serialization
         @Serialized
         override val data = PayloadData()
@@ -73,10 +59,11 @@ class DataCDN(name: String) :
                 field = value.coerceIn(0f, 1f)
             }
         @Serialized
-        override var dataMod = NetworkModule()
-        override val sideLinks = IntArray(4) { -1 }
+        override var network = DataNetwork()
+        override var init: Boolean = false
+        override var links = SideLinks()
+        override val sideEnable = this@DataCDN.sideEnable
         override val linkRange = this@DataCDN.linkRange
-        override val maxLink = this@DataCDN.maxLink
         var lastTileChange = -2
         override fun updateTile() {
             if (lastTileChange != world.tileChanges) {
@@ -87,49 +74,42 @@ class DataCDN(name: String) :
 
         override fun created() {
             super.created()
-            networkGraph.add(this)
+            network.add(this)
         }
 
         override fun draw() {
             super.draw()
             DebugOnly {
-                drawNetworkInfo()
+                drawLinkInfo()
             }
-        }
-
-        fun updateNetwork() {
-            for (other in getNetworkConnections(tempNodes)) {
-                other.networkGraph.addNetwork(this.networkGraph)
-            }
-        }
-
-        override fun onProximityAdded() {
-            super.onProximityAdded()
-            updateNetwork()
         }
 
         override fun drawSelect() {
             super.drawSelect()
             G.circle(x, y, linkRange)
+            DebugOnly {
+                drawNetworkInfo()
+            }
         }
 
         override fun drawConfigure() {
             super.drawConfigure()
             G.circle(x, y, linkRange)
         }
+
         override fun onRemoved() {
             super.onRemoved()
-            onRemovedInWorld()
+            onRemoveFromGround()
         }
 
         override fun onProximityRemoved() {
             super.onProximityRemoved()
-            onRemovedInWorld()
+            onRemoveFromGround()
         }
 
         override fun afterPickedUp() {
             super.afterPickedUp()
-            onRemovedInWorld()
+            onRemoveFromGround()
         }
 
         override fun toString() = "DataCDN#$id"

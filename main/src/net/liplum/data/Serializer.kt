@@ -8,6 +8,7 @@ import mindustry.world.blocks.payloads.PayloadBlock
 import net.liplum.DebugOnly
 import net.liplum.Var
 import net.liplum.api.cyber.*
+import net.liplum.api.cyber.SideLinks.Companion.enableAllSides
 import net.liplum.lib.Serialized
 import net.liplum.lib.shaders.use
 import net.liplum.mdt.ClientOnly
@@ -20,9 +21,9 @@ class Serializer(name: String) :
     PayloadBlock(name), INetworkBlock {
     var serializationSpeed = 1f / 240f
     override var linkRange: WorldXY = 500f
-    override var maxLink = 4
     override val block = this
     @ClientOnly override var expendPlacingLineTime = Var.selectedCircleTime
+    override val sideEnable = enableAllSides
 
     init {
         outputsPayload = false
@@ -33,7 +34,6 @@ class Serializer(name: String) :
         payloadSpeed = 1.2f
         //make sure to display large units.
         clipSize = 120f
-        initDataNetworkRemoteConfig()
     }
 
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
@@ -41,9 +41,11 @@ class Serializer(name: String) :
     }
 
     inner class SerializerBuild : PayloadBlockBuild<Payload>(),
-        ISideNetworkNode {
+        INetworkNode {
         @Serialized
-        override var dataMod = NetworkModule()
+        override var network = DataNetwork()
+        override var init: Boolean = false
+        override var links = SideLinks()
         @Serialized
         override val data = PayloadData()
         @Serialized
@@ -58,14 +60,13 @@ class Serializer(name: String) :
             set(value) {
                 field = value.coerceIn(0f, 1f)
             }
-        override val sideLinks = IntArray(4) { -1 }
         override var routine: DataNetwork.Path? = null
         override val linkRange = this@Serializer.linkRange
-        override val maxLink = this@Serializer.maxLink
+        override val sideEnable = this@Serializer.sideEnable
         var lastTileChange = -2
         override fun draw() {
             DebugOnly {
-                drawNetworkInfo()
+                drawLinkInfo()
             }
             Draw.rect(region, x, y)
             //draw input
@@ -106,19 +107,26 @@ class Serializer(name: String) :
             }
         }
 
+        override fun drawSelect() {
+            super.drawSelect()
+            DebugOnly {
+                drawNetworkInfo()
+            }
+        }
+
         override fun onRemoved() {
             super.onRemoved()
-            onRemovedInWorld()
+            onRemoveFromGround()
         }
 
         override fun onProximityRemoved() {
             super.onProximityRemoved()
-            onRemovedInWorld()
+            onRemoveFromGround()
         }
 
         override fun afterPickedUp() {
             super.afterPickedUp()
-            onRemovedInWorld()
+            onRemoveFromGround()
         }
 
         override fun toString() = "Serializer#$id"
