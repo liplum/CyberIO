@@ -1,0 +1,74 @@
+{
+  "Package": "net.liplum",
+  "Class": "Meta",
+  "Fields": [
+    {
+      "Name": "EnableDebug",
+      "Value": {
+        "dev": true,
+        "prod": false
+      }
+    },
+    {
+      "Name": "ModID",
+      "Value": "cyber-io"
+    },
+    {
+      "Name": "Author",
+      "Value": "Liplum"
+    },
+    {
+      "Name": "Name",
+      "Value": "Cyber IO"
+    },
+    {
+      "Name": "NameX",
+      "Value": "CyberIO"
+    },
+    {
+      "Name": "Version",
+      "Value": "v4"
+    },
+    {
+      "Name": "CurGameVersion",
+      "Value": 136
+    },
+    {
+      "Name": "DefaultLang",
+      "Value": "en"
+    },
+    {
+      "Name": "DetailedVersion",
+      "Value": "4.0",
+      "Converter": "Version2"
+    },
+    {
+      "Name": "Repo",
+      "Value": "liplum/CyberIO"
+    },
+    {
+      "Name": "RepoInSettingsKey",
+      "Value": "mod-cyber-io-repo"
+    },
+    {
+      "Name": "Discord",
+      "Value": "https://discord.gg/PDwyxM3waw"
+    },
+    {
+      "Name": "LatestRelease",
+      "Value": "https://api.github.com/repos/liplum/CyberIO/releases/latest"
+    },
+    {
+      "Name": "UpdateInfoURL",
+      "Value": "https://raw.githubusercontent.com/liplum/CyberIO/master/update"
+    },
+    {
+      "Name": "GitHubMirrorUrl",
+      "Value": "https://github.com"
+    },
+    {
+      "Name": "GitHubJarDownloadFragment",
+      "Value": "/releases/download/AUTOR/CyberIO.jar"
+    }
+  ]
+}

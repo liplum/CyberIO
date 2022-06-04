@@ -1,5 +1,6 @@
 @file:Suppress("SpellCheckingInspection")
 
+import net.liplum.gradle.gen.IConvertContext
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.io.ByteArrayOutputStream
@@ -21,6 +22,7 @@ sourceSets {
         java.srcDirs(
             "src",
             "${project(":mdt").projectDir}/src",
+            "$buildDir/generated/classGen",
         )
         resources.srcDir("resources")
     }
@@ -34,6 +36,7 @@ kotlin.sourceSets.main {
     kotlin.srcDirs(
         file("$buildDir/generated/ksp/main/kotlin"),
         file("${project(":mdt").projectDir}/src"),
+        file("$buildDir/generated/classGen"),
     )
 }
 
@@ -166,6 +169,29 @@ tasks {
                 )
             }
         }
+    }
+    register<net.liplum.gradle.tasks.GenerateStaticClassTask>("genMetaClass") {
+        group = "build"
+        jsonPath.set("$rootDir/meta/Meta.json")
+        args.set(
+            mapOf(
+                "Condition" to settings.env
+            )
+        )
+        converters.set(
+            mapOf(
+                "Version2" to object : net.liplum.gradle.gen.ClassConverter("net.liplum.update.Version2") {
+                    override fun convert(context: IConvertContext, value: Any): String =
+                        context.newObject(qualifiedClassName, *(value as String).split(".").toTypedArray())
+                }
+            )
+        )
+    }
+    named("compileJava") {
+        dependsOn("genMetaClass")
+    }
+    named("compileKotlin") {
+        dependsOn("genMetaClass")
     }
 }
 
