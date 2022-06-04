@@ -18,6 +18,7 @@ import net.liplum.R
 import net.liplum.annotations.SubscribeEvent
 import net.liplum.api.cyber.IDataReceiver
 import net.liplum.api.cyber.IDataSender
+import net.liplum.api.cyber.drawLinkedLineToReceiverWhenConfiguring
 import net.liplum.api.cyber.req
 import net.liplum.lib.Serialized
 import net.liplum.lib.delegates.Delegate1
@@ -68,6 +69,11 @@ class DDoS(name: String) : Turret(name) {
                 { curIndex.toFloat() / (alreadyUsed.size - 1) }
             )
         }
+    }
+
+    override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
+        super.drawPlace(x, y, rotation, valid)
+        this.drawLinkedLineToReceiverWhenConfiguring(x, y)
     }
 
     inner class DDoSBuild : TurretBuild(),

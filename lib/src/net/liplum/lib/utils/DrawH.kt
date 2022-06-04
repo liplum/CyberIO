@@ -9,3 +9,10 @@ inline fun DrawLayer(draw: () -> Unit) {
     draw()
     Draw.z(original)
 }
+
+inline fun DrawLayer(layer: Float, draw: () -> Unit) {
+    val original = Draw.z()
+    Draw.z(layer)
+    draw()
+    Draw.z(original)
+}

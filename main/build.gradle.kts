@@ -52,10 +52,9 @@ ksp {
 version = "4.0"
 group = "net.liplum"
 tasks.whenTaskAdded {
-    if (name == "kspKotlin") {
-        if (settings.env == "dev") {
-            enabled = false
-        }
+    when (name) {
+        "kspKotlin" -> if (settings.env == "dev") enabled = false
+        "genMetaClass" -> if (settings.env == "dev") enabled = false
     }
 }
 java {

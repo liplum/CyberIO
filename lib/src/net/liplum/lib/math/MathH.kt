@@ -8,8 +8,8 @@ package net.liplum.lib.math
 import arc.math.Angles
 import arc.math.Interp
 import arc.math.Mathf
+import arc.math.Rand
 import arc.math.geom.Position
-import arc.math.geom.Rect
 import arc.math.geom.Vec2
 import net.liplum.lib.utils.invoke
 import net.liplum.lib.utils.isZero
@@ -303,5 +303,13 @@ fun progressT(growingTime: Float, maxTime: Float): Float =
 /**
  * Return 1f - this
  */
-val Float.reverseProgress:Float
+val Float.reverseProgress: Float
     get() = 1f - this
+/**
+ * @return self
+ */
+fun Polar.random(radiusRange: Float, random: Rand = Mathf.rand): Polar {
+    angle = random.random(360f)
+    r = random.random(0f, radiusRange)
+    return this
+}

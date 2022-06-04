@@ -3,7 +3,8 @@ package net.liplum.ui
 import arc.Core
 import arc.scene.Group
 import arc.scene.event.Touchable
-import arc.scene.ui.Image
+import arc.scene.ui.ImageButton
+import arc.scene.ui.Label
 import arc.scene.ui.ScrollPane
 import arc.scene.ui.TextField
 import arc.scene.ui.layout.Table
@@ -27,6 +28,7 @@ import net.liplum.mdt.lock
 import net.liplum.mdt.ui.DatabaseSelectorDialog
 import net.liplum.mdt.ui.NewBaseDialog
 import net.liplum.mdt.utils.ForEachUnlockableContent
+import net.liplum.render.Shapes
 
 object DebugUI {
     @JvmStatic
@@ -126,7 +128,8 @@ object DebugUI {
         })
     }
 
-    val entityList = ArrayList<Entityc>(16)
+    val entityList = ArrayList<Entityc>(64)
+    val starList = ArrayList<Entityc>(8)
     val timer = Interval(10)
     var timerID = 0
     val updateEntityListTimer = timerID++
@@ -140,6 +143,7 @@ object DebugUI {
             listView.clearChildren()
             entityList.clear()
             Groups.all.each {
+                if (it in starList) return@each
                 if (searchText == "*")// wildcard
                     entityList.add(it)
                 else {
@@ -150,11 +154,41 @@ object DebugUI {
                     }
                 }
             }
+            starList.forEach {
+                listView.add(Table(Tex.button).apply {
+                    add(Table().apply {
+                        add(ImageButton(Shapes.starActive).apply {
+                            clicked {
+                                starList.remove(it)
+                                rebuild()
+                            }
+                            getCell(image).size(Vars.iconSmall)
+                        })
+                    }).left()
+                    add(Table().apply {
+                        val label = Label(it.javaClass.simpleName.tinted(if (it.isAdded) Pal.accent else Pal.gray))
+                        add(label).row()
+                        add("$it").row()
+                    }).grow().right()
+                }).fill()
+                listView.row()
+            }
             entityList.sortBy { it.javaClass.simpleName }
             entityList.forEach {
                 listView.add(Table(Tex.button).apply {
-                    add(it.javaClass.simpleName.tinted(Pal.accent)).row()
-                    add("$it").row()
+                    add(Table().apply {
+                        add(ImageButton(Shapes.starInactive).apply {
+                            clicked {
+                                starList.add(it)
+                                rebuild()
+                            }
+                            getCell(image).size(Vars.iconSmall)
+                        })
+                    }).left()
+                    add(Table().apply {
+                        add(it.javaClass.simpleName.tinted(Pal.accent)).row()
+                        add("$it").row()
+                    }).grow().right()
                 }).fill()
                 listView.row()
             }
@@ -188,7 +222,7 @@ object DebugUI {
                 add(ScrollPane(listView).apply {
                     autoLoseFocus()
                 }).apply {
-                    minWidth(100f)
+                    minWidth(120f)
                     maxHeight(600f)
                     fill()
                 }

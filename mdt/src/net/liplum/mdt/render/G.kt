@@ -239,10 +239,10 @@ object G {
         size: Float = 4f,
     ) {
         arrowLineBreath(
-            startBlockX.toWorldXY,
-            startBlockY.toWorldXY,
-            endBlockX.toWorldXY,
-            endBlockY.toWorldXY,
+            startBlockX.worldXY,
+            startBlockY.worldXY,
+            endBlockX.worldXY,
+            endBlockY.worldXY,
             2,
             density,
             arrowColor,

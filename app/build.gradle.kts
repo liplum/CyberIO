@@ -27,6 +27,8 @@ tasks {
                 val APPDATA = System.getenv("APPDATA")
                 val modsFolder = File("$APPDATA/Mindustry/mods")
                 modsFolder.mkdirs()
+                File(modsFolder,"$outputJarName.jar").delete()
+                File(modsFolder,"${outputJarName}Desktop.jar").delete()
                 copyJarFile(jarFile, modsFolder)
             }
         }

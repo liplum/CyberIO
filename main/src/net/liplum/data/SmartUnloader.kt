@@ -274,7 +274,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
 
             unloadTimer += delta()
             if (unloadTimer >= unloadSpeed) {
-                unloadTimer = 0f
+                unloadTimer %= unloadSpeed
                 val unloaded = DoMultipleBool(canOverdrive, boost2Count(timeScale), this::unload)
                 ClientOnly {
                     if (unloaded) {

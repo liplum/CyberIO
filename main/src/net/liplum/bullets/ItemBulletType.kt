@@ -9,7 +9,7 @@ import mindustry.gen.Bullet
 import mindustry.type.Item
 import net.liplum.mdt.render.DrawSize
 
-class ItemBulletType : BulletType() {
+open class ItemBulletType : BulletType() {
     var drawSizer: Bullet.() -> Float = { 1f }
     fun Bullet.item(): Item {
         val itemID = fdata.toInt()

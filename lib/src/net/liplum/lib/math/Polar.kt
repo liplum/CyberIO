@@ -31,6 +31,11 @@ class Polar(
         return this
     }
 
+    var angle: Float
+        get() = a * Mathf.radiansToDegrees
+        set(value) {
+            a = (value % 360f) * Mathf.degreesToRadians
+        }
     val x: Float
         get() = r * Mathf.cos(a)
     val y: Float

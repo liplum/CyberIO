@@ -60,3 +60,11 @@ fun Bullet.copy(): Bullet {
     d.add()
     return d
 }
+
+fun Bullet.rebirth(): Bullet {
+    val d = this.copy()
+    d.time = 0f
+    d.hit = false
+    d.absorbed = false
+    return d
+}

@@ -5,6 +5,7 @@ package net.liplum.mdt.utils
 
 import arc.math.Mathf
 import arc.math.geom.Point2
+import arc.math.geom.Position
 import mindustry.Vars
 import mindustry.content.Blocks
 import mindustry.ctype.Content
@@ -237,7 +238,7 @@ val WorldXY.tileXY: TileXY
 /**
  * Tile xy to world xy
  */
-val TileXYs.toWorldXY: WorldXY
+val TileXYs.worldXY: WorldXY
     get() = this.toFloat() * Vars.tilesize
 /**
  * Tile xy to world xy
@@ -317,4 +318,20 @@ fun Tile.getOreType(): TileOreType {
         if (block.itemDrop != null) TileOreType.Wall
         else TileOreType.None
     }
+}
+
+fun worldWidth(): Float =
+    Vars.world.tiles.width * Vars.tilesize + Vars.finalWorldBounds
+
+fun worldHeight(): Float =
+    Vars.world.tiles.height * Vars.tilesize + Vars.finalWorldBounds
+
+fun Position.inWorld(): Boolean {
+    if (x < -Vars.finalWorldBounds ||
+        y < -Vars.finalWorldBounds
+    ) return false
+    if (x > Vars.world.tiles.height * Vars.tilesize + Vars.finalWorldBounds * 2 ||
+        y > Vars.world.tiles.height * Vars.tilesize + Vars.finalWorldBounds
+    ) return false
+    return true
 }

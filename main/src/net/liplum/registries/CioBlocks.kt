@@ -23,6 +23,8 @@ import mindustry.world.blocks.environment.Floor
 import mindustry.world.blocks.payloads.*
 import mindustry.world.blocks.production.GenericCrafter
 import mindustry.world.blocks.production.HeatCrafter
+import mindustry.world.blocks.sandbox.ItemSource
+import mindustry.world.blocks.sandbox.LiquidSource
 import mindustry.world.blocks.sandbox.PowerSource
 import mindustry.world.draw.DrawDefault
 import mindustry.world.draw.DrawLiquidTile
@@ -34,6 +36,7 @@ import net.liplum.annotations.Only
 import net.liplum.annotations.Subscribe
 import net.liplum.api.brain.UT
 import net.liplum.api.brain.Upgrade
+import net.liplum.api.bullets.MultiBulletAbility
 import net.liplum.api.virus.setUninfected
 import net.liplum.api.virus.setUninfectedFloor
 import net.liplum.blocks.bomb.ZipBomb
@@ -58,10 +61,7 @@ import net.liplum.blocks.underdrive.UnderdriveProjector
 import net.liplum.blocks.virus.AntiVirus
 import net.liplum.blocks.virus.Virus
 import net.liplum.brains.*
-import net.liplum.bullets.BBulletType
-import net.liplum.bullets.ItemBulletType
-import net.liplum.bullets.RuvikBullet
-import net.liplum.bullets.STEM_VERSION
+import net.liplum.bullets.*
 import net.liplum.data.*
 import net.liplum.holo.*
 import net.liplum.mdt.ui.DynamicContentInfoDialog.Companion.registerDynamicInfo
@@ -1515,15 +1515,30 @@ object CioBlocks {
                 )
                 maxDamage = 120f
                 size = 4
-                hitSizer = { damage / 60f * 4f }
-                bulletType = ItemBulletType().apply {
+                hitSizer = { damage / 80f * 4f }
+                bulletType = AbilityItemBulletType().apply bullet@{
+                    ability = MultiBulletAbility(
+                        ProvidenceBA(),
+                        SlowDownBA(),
+                        InfiniteBA(),
+                        TeleportBA(),
+                        BlackHoleBA(),
+                        RestrictedAreaBA(),
+                    ).apply {
+                        bulletType = this@bullet
+                    }
                     speed = 2f
                     damage = 0f
                     hitSize = 10f
-                    drawSizer = { damage / 60f }
+                    pierce = true
+                    pierceCap = 5
+                    drawSizer = { damage / 80f }
                     trailLength = 8
                     lifetime = 180f
                     trailWidth = 4f
+                }
+                DebugOnly {
+                    health = Int.MAX_VALUE
                 }
             }
         }
@@ -1586,10 +1601,18 @@ object CioBlocks {
                 buildVisibility = BuildVisibility.shown
                 health = Int.MAX_VALUE
             }
-            Blocks.itemSource.buildVisibility = BuildVisibility.shown
-            Blocks.liquidSource.buildVisibility = BuildVisibility.shown
-            Blocks.payloadSource.buildVisibility = BuildVisibility.shown
-
+            (Blocks.itemSource as ItemSource).apply {
+                buildVisibility = BuildVisibility.shown
+                health = Int.MAX_VALUE
+            }
+            (Blocks.liquidSource as LiquidSource).apply {
+                buildVisibility = BuildVisibility.shown
+                health = Int.MAX_VALUE
+            }
+            (Blocks.payloadSource as PayloadSource).apply {
+                buildVisibility = BuildVisibility.shown
+                health = Int.MAX_VALUE
+            }
             Blocks.powerVoid.buildVisibility = BuildVisibility.shown
             Blocks.itemVoid.buildVisibility = BuildVisibility.shown
             Blocks.liquidVoid.buildVisibility = BuildVisibility.shown
