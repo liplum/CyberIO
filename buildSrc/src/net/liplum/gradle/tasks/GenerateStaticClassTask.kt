@@ -17,10 +17,19 @@ import java.io.OutputStream
 abstract class GenerateStaticClassTask : DefaultTask() {
     @get:Input
     abstract val jsonPath: Property<String>
+    /**
+     * If enabled parallel, it doesn't guarantee the order of fields.
+     */
+    abstract val useParallel: Property<Boolean>
+        @Optional @Input get
     abstract val args: MapProperty<String, String>
         @Optional @Input get
     abstract val converters: MapProperty<String, IClassConvert>
         @Optional @Input get
+
+    init {
+        useParallel.convention(false)
+    }
     @TaskAction
     fun generate() {
         val path = jsonPath.get()
@@ -45,6 +54,7 @@ abstract class GenerateStaticClassTask : DefaultTask() {
                             outputStream()
                         }
                 }
+                override val useParallel = this@GenerateStaticClassTask.useParallel.get()
                 override val converters = genConverters
                 override val args = genArgs
             })

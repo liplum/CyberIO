@@ -8,7 +8,7 @@ import net.liplum.lib.UseReflection
 import net.liplum.lib.utils.setFIn
 
 @UseReflection
-fun UnlockableContent.lock(): UnlockableContent {
+fun UnlockableContent.lock() {
     val isUnlocked = Core.settings.getBool("$name-unlocked", true)
     if (isUnlocked) {
         Core.settings.put("$name-unlocked", false)
@@ -17,7 +17,6 @@ fun UnlockableContent.lock(): UnlockableContent {
         Events.fire(LockEvent(this))
         this.techNode?.reset()
     }
-    return this
 }
 
 class LockEvent(val content: UnlockableContent)

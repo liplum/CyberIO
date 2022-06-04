@@ -11,6 +11,7 @@ import arc.scene.ui.layout.Table
 import arc.scene.ui.layout.WidgetGroup
 import arc.util.Interval
 import mindustry.Vars
+import mindustry.ctype.UnlockableContent
 import mindustry.gen.Entityc
 import mindustry.gen.Groups
 import mindustry.gen.Icon
@@ -20,14 +21,15 @@ import net.liplum.Var
 import net.liplum.annotations.Only
 import net.liplum.annotations.SubscribeEvent
 import net.liplum.events.CioInitEvent
+import net.liplum.lib.ui.and
 import net.liplum.lib.ui.autoLoseFocus
+import net.liplum.lib.ui.dragToMove
+import net.liplum.lib.ui.isMouseOver
 import net.liplum.lib.utils.directSuperClass
 import net.liplum.lib.utils.tinted
 import net.liplum.mdt.Screen
 import net.liplum.mdt.lock
-import net.liplum.mdt.ui.DatabaseSelectorDialog
-import net.liplum.mdt.ui.NewBaseDialog
-import net.liplum.mdt.utils.ForEachUnlockableContent
+import net.liplum.mdt.ui.`lock or unlock`
 import net.liplum.render.Shapes
 
 object DebugUI {
@@ -70,61 +72,8 @@ object DebugUI {
             visible {
                 Var.EnableUnlockContent
             }
-            button("Lock") {
-                NewBaseDialog.apply {
-                    cont.table(Tex.button) { t ->
-                        t.button("Lock All") {
-                            ForEachUnlockableContent {
-                                it.lock()
-                            }
-                        }.growX().row()
-                        t.button("Select One To Lock") {
-                            DatabaseSelectorDialog.apply {
-                                onClick = {
-                                    NewBaseDialog.apply {
-                                        cont.add("Confirm lock ${it.localizedName} ?").row()
-                                        cont.button("Lock") {
-                                            it.lock()
-                                            hide()
-                                        }.width(150f)
-                                        addCloseButton()
-                                    }.show()
-                                }
-                            }.show()
-                        }.growX().row()
-                    }.width(300f)
-                    addCloseButton()
-                }.show()
-            }.width(150f)
-            // Unlock
-            button("Unlock") {
-                NewBaseDialog.apply {
-                    cont.table(Tex.button) { t ->
-                        t.button("Unlock All") {
-                            ForEachUnlockableContent {
-                                it.unlock()
-                            }
-                        }.growX().row()
-                        t.button("Select One To Unlock") {
-                            DatabaseSelectorDialog.apply {
-                                onClick = {
-                                    NewBaseDialog.apply {
-                                        cont.add("Confirm unlock ${it.localizedName} ?").row()
-                                        cont.button("Unlock") {
-                                            it.unlock()
-                                            hide()
-                                        }.width(150f)
-                                        addCloseButton()
-                                    }.show()
-                                }
-                            }.show()
-                        }.growX().row()
-                    }.width(300f)
-                    addCloseButton()
-                }.show()
-            }.width(150f)
-            bottom()
-            left()
+            `lock or unlock`("Lock", UnlockableContent::lock)
+            `lock or unlock`("Unlock", UnlockableContent::unlock)
         })
     }
 
@@ -133,9 +82,11 @@ object DebugUI {
     val timer = Interval(10)
     var timerID = 0
     val updateEntityListTimer = timerID++
+    var inspectedEntity: Entityc? = null
     fun addEntityInspector(debug: Group) {
         val listView = Table()
         lateinit var search: TextField
+        lateinit var listPanel: Table
         fun rebuild() {
             if (!Vars.state.isGame) return
             val searchText = search.text.lowercase()
@@ -193,8 +144,12 @@ object DebugUI {
                 listView.row()
             }
         }
+
         debug.fill { t ->
+            listPanel = t
             t.left()
+            t.dragToMove()
+            val isMouseOver: Boolean by t.isMouseOver()
             t.add(Table(Tex.wavepane).apply {
                 visible {
                     Var.EnableEntityInspector
@@ -206,11 +161,11 @@ object DebugUI {
                     }.apply {
                         growX()
                         minWidth(80f)
-                    }.get().apply {
+                    }.and {
                         messageText = "@players.search"
                     }
                     listView.update {
-                        if (timer.get(updateEntityListTimer, 10f)) {
+                        if (!isMouseOver && timer.get(updateEntityListTimer, 10f)) {
                             rebuild()
                         }
                     }
@@ -219,17 +174,14 @@ object DebugUI {
                     }.right()
                 })
                 row()
-                add(ScrollPane(listView).apply {
-                    autoLoseFocus()
-                }).apply {
-                    minWidth(120f)
-                    maxHeight(600f)
-                    fill()
-                }
-            }).apply {
-                left()
-                center()
-            }
+                add(Table().apply {
+                    add(ScrollPane(listView)).autoLoseFocus().apply {
+                        minWidth(120f)
+                        maxHeight(600f)
+                        fill()
+                    }
+                })
+            })
             t.visible { Vars.state.isGame }
         }
     }

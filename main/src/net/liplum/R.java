@@ -180,6 +180,8 @@ public class R {
         public static final Color Blood = Color.valueOf("#8a0303");
         public static final Color ColdTemperature = Color.valueOf("#242f9b");
         public static final Color HotTemperature = Color.valueOf("#e02401");
+        public static final Color Providence = Color.valueOf("#fff799");
+        public static final Color Black = new Color(Color.black);
         public static final Color IsAive = GreenSafe;
         public static final Color CoolDown = Color.gray;
         public static final Color Sender = RedAlert,

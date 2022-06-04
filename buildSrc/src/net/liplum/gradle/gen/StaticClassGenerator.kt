@@ -18,7 +18,7 @@ class StaticClassGenerator {
         val condition = context.args["Condition"]
         context.fileHandler.createJavaFile(packageName, className).use { file ->
             FieldGenerator(file, indent).declarePackage(packageName).wrapClass(className) {
-                fields.stream().parallel().forEach {
+                fields.stream().run { if(context.useParallel) parallel() else this }.forEach {
                     val field = it as JSONObject
                     val name = field["Name"] as String
                     val value = when (val maybeValue = field["Value"]) {
@@ -94,6 +94,7 @@ class FieldGenerator(
 
 interface IGeneratorContext {
     val fileHandler: IFileHandler
+    val useParallel: Boolean
     val converters: Map<String, IClassConvert>
     val args: Map<String, String>
 }

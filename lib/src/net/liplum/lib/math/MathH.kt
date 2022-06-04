@@ -313,3 +313,6 @@ fun Polar.random(radiusRange: Float, random: Rand = Mathf.rand): Polar {
     r = random.random(0f, radiusRange)
     return this
 }
+
+operator fun Vec2.component1(): Float = x
+operator fun Vec2.component2(): Float = y

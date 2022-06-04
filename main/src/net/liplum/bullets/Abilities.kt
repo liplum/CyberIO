@@ -16,6 +16,7 @@ import mindustry.gen.Bullet
 import mindustry.gen.Unit
 import mindustry.graphics.Layer
 import net.liplum.DebugOnly
+import net.liplum.R
 import net.liplum.api.bullets.BulletAbility
 import net.liplum.lib.utils.DrawLayer
 import net.liplum.mdt.render.G
@@ -26,10 +27,10 @@ import net.liplum.render.CioFx
 import net.liplum.render.Shapes
 
 open class ProvidenceBA : BulletAbility() {
-    var range = 20f
+    var range = 25f
     var damage = 1f
     var lightAlpha = 0.4f
-    var lightColor: Color = Color.valueOf("#fff799")
+    var lightColor: Color = R.C.Providence
     protected var actionOnUnit: Cons<MdtUnit> = Cons {
         it.damageContinuousPierce(damage)
     }
@@ -63,7 +64,7 @@ open class SlowDownBA : BulletAbility() {
     var range = 60f
     var slowDown = 0.2f
     var darkAlpha = 0.7f
-    var darkColor: Color = Color(Color.black)
+    var darkColor: Color = R.C.Black
     protected var actionOnUnit: Cons<MdtUnit> = Cons {
         val original = it.vel.len()
         val new = original * slowDown
@@ -174,7 +175,7 @@ open class BlackHoleBA : BulletAbility() {
 
     override fun draw(b: Bullet) = b.run {
         DrawLayer(Layer.bullet - 0.1f) {
-            Draw.color(Color.black)
+            Draw.color(R.C.Black)
             Draw.alpha(0.5f)
             val range = range * (1f + G.sin / 9f) * 2f
             Draw.rect(Shapes.motionCircle, x, y, range, range)
@@ -188,6 +189,7 @@ open class BlackHoleBA : BulletAbility() {
     override fun preInit(type: BulletType) = type.run {
         drawSize = drawSize.coerceAtLeast(range)
         ammoMultiplier = 4f
+        speed *= 0.5f
     }
 }
 

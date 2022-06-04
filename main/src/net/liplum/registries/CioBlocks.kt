@@ -1521,7 +1521,7 @@ object CioBlocks {
                         ProvidenceBA(),
                         SlowDownBA(),
                         InfiniteBA(),
-                        TeleportBA(),
+                        //TeleportBA(),
                         BlackHoleBA(),
                         RestrictedAreaBA(),
                     ).apply {
