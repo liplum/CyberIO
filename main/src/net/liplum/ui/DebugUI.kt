@@ -29,7 +29,7 @@ import net.liplum.lib.utils.directSuperClass
 import net.liplum.lib.utils.tinted
 import net.liplum.mdt.Screen
 import net.liplum.mdt.lock
-import net.liplum.mdt.ui.`lock or unlock`
+import net.liplum.mdt.ui.`lockOrUnlock`
 import net.liplum.render.Shapes
 
 object DebugUI {
@@ -72,8 +72,8 @@ object DebugUI {
             visible {
                 Var.EnableUnlockContent
             }
-            `lock or unlock`("Lock", UnlockableContent::lock)
-            `lock or unlock`("Unlock", UnlockableContent::unlock)
+            `lockOrUnlock`("Lock", UnlockableContent::lock)
+            `lockOrUnlock`("Unlock", UnlockableContent::unlock)
         })
     }
 

@@ -6,7 +6,7 @@ import mindustry.gen.Tex
 import net.liplum.mdt.lock
 import net.liplum.mdt.utils.ForEachUnlockableContent
 
-fun Table.`lock or unlock`(text: String, action: UnlockableContent.() -> Unit) {
+fun Table.lockOrUnlock(text: String, action: UnlockableContent.() -> Unit) {
     this.button(text) {
         NewBaseDialog.apply {
             cont.table(Tex.button) { t ->
