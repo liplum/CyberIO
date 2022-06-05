@@ -2,34 +2,82 @@ package net.liplum.api.cyber
 
 import mindustry.Vars
 import mindustry.world.Block
+import mindustry.world.blocks.payloads.Payload
 import net.liplum.api.ICyberEntity
 import net.liplum.api.cyber.SideLinks.Companion.reflect
 import net.liplum.data.PayloadDataList
 import net.liplum.lib.Out
 import net.liplum.lib.Serialized
 import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.utils.*
+import net.liplum.mdt.utils.TEAny
+import net.liplum.mdt.utils.TileXY
+import net.liplum.mdt.utils.WorldXY
 import plumy.pathkt.IVertex
 
 interface INetworkNode : ICyberEntity, IVertex<INetworkNode> {
-    @Serialized
     var network: DataNetwork
     var init: Boolean
     var links: SideLinks
     @Serialized
     val dataList: PayloadDataList
+    /**
+     * It represents which next node this wants to send.
+     */
     @Serialized
-    val currentOriented: Pos
+    val currentOriented: Side
     /**
      * [0f,1f]
      */
     @Serialized
     val sendingProgress: Float
+    @Serialized
     var transferTask: TransferTask
     val sideEnable: SideEnable
-
-    companion object {
-        private val tempList = ArrayList<INetworkNode>()
+    val hasTransferTask: Boolean
+        get() = transferTask.isActive
+    val canReceiveMoreData: Boolean
+        get() = dataList.canAddMore
+    /**
+     * If this couldn't contain more, just desert it.
+     * Note: even if unsync, the [dataList] will correct the result.
+     */
+    fun receiveData(payload: Payload) {
+        if (dataList.canAddMore) {
+            dataList.add(payload)
+        }
+    }
+    /**
+     * Send the data in current [transferTask].
+     * If sent, remove the data.
+     * @return whether a node on the [side] received the data
+     */
+    fun sendTaskDataToNextNode(side: Side): Boolean {
+        links[side].TEAny<INetworkNode>()?.let {
+            val payload = transferTask.curData ?: return false
+            return sendDataToNextNode(payload, it)
+        }
+        return false
+    }
+    /**
+     * Send the data in current [transferTask].
+     * If sent, remove the data.
+     * @param payload it doesn't check whether the [payload] is in this node.
+     * The caller should guarantee that.
+     * @return whether the [node] received the [payload]
+     */
+    fun sendDataToNextNode(payload: Payload, node: INetworkNode): Boolean {
+        if (node.canReceiveMoreData) {
+            node.receiveData(payload)
+            dataList.remove(payload)
+            return true
+        }
+        return false
+    }
+    /**
+     * Post a data transfer request.
+     */
+    fun postRequest(subject: INetworkNode, application: Payload) {
+        network.postRequest(this, subject, application)
     }
 
     fun canTransferTo(other: INetworkNode): Boolean =
@@ -56,11 +104,12 @@ interface INetworkNode : ICyberEntity, IVertex<INetworkNode> {
      * Call this function when self is removed from the ground.
      * It will correct the network
      */
-    fun onRemoveFromGround() {
+    fun onRemovedFromGround() {
         links.forEachSide { side ->
             // If this is a node existed on this side, separate the network
             clearSide(side)
         }
+        transferTask.finish()
     }
 
     fun isSideFull(side: Side) =
@@ -117,6 +166,10 @@ interface INetworkNode : ICyberEntity, IVertex<INetworkNode> {
         }
         this.network.reflow(this)
     }
+
+    companion object {
+        private val tempList = ArrayList<INetworkNode>()
+    }
 }
 /**
  * Only iterate the enabled sides
@@ -160,9 +213,12 @@ object EmptyNetworkNode : INetworkNode {
     override val dataList: PayloadDataList = PayloadDataList()
     @ClientOnly
     override val expendSelectingLineTime = 0f
-    override val currentOriented: Pos = NewEmptyPos()
+    override val currentOriented: Side = -1
     override val sendingProgress: Float = 0f
     override var transferTask = TransferTask()
     override val sideEnable = SideEnable(4) { false }
     override val linkRange = 0f
 }
+
+fun INetworkNode.inTheSameNetwork(other: INetworkNode): Boolean =
+    this.network == other.network

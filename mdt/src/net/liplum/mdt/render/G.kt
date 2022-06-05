@@ -7,6 +7,7 @@ import arc.graphics.g2d.Lines
 import arc.graphics.g2d.TextureRegion
 import arc.math.Angles
 import arc.math.Mathf
+import arc.math.geom.QuadTree
 import arc.math.geom.Rect
 import arc.util.Time
 import arc.util.Tmp
@@ -201,7 +202,7 @@ object G {
         startDrawX: WorldXY, startDrawY: WorldXY,
         endDrawX: WorldXY, endDrawY: WorldXY,
         blockSize: Int,
-        density: Float,
+        density: Float = 15f,
         arrowColor: Color = Pal.power,
         alpha: Float? = null,
         size: Float = 4f,
@@ -230,10 +231,10 @@ object G {
     }
     @JvmStatic
     @JvmOverloads
-    fun arrowLine(
+    fun arrowLineBreath(
         startBlockX: TileXYs, startBlockY: TileXYs,
         endBlockX: TileXYs, endBlockY: TileXYs,
-        density: Float,
+        density: Float = 15f,
         arrowColor: Color = Pal.power,
         alpha: Float? = null,
         size: Float = 4f,
@@ -252,7 +253,7 @@ object G {
     }
     @JvmStatic
     @JvmOverloads
-    fun arrowLine(
+    fun arrowLineBreath(
         startBlock: Block,
         startBlockX: TileXYs, startBlockY: TileXYs,
         endBlock: Block,
@@ -276,10 +277,10 @@ object G {
     }
     @JvmStatic
     @JvmOverloads
-    fun arrowLine(
+    fun arrowLineBreath(
         start: Building,
         end: Building,
-        density: Float,
+        density: Float = 15f,
         arrowColor: Color = Pal.power,
         alpha: Float? = null,
         size: Float = 4f,
@@ -350,28 +351,6 @@ object G {
     )
     @JvmStatic
     @JvmOverloads
-    fun dashCircleBreath(
-        b: Block, x: TileXY, y: TileXY, rad: WorldXY,
-        circleColor: Color = Pal.power,
-        alpha: Float? = null, stroke: Float = 1f
-    ) = dashCircle(
-        b.toCenterWorldXY(x),
-        b.toCenterWorldXY(y),
-        rad + sin - 2f,
-        circleColor, alpha, stroke
-    )
-    @JvmStatic
-    @JvmOverloads
-    fun dashCircleBreath(
-        x: WorldXY, y: WorldXY, rad: WorldXY,
-        circleColor: Color = Pal.power,
-        alpha: Float? = null, stroke: Float = 1f
-    ) = dashCircle(
-        x, y, rad + sin - 2f,
-        circleColor, alpha, stroke
-    )
-    @JvmStatic
-    @JvmOverloads
     fun dashCircle(
         x: WorldXY, y: WorldXY, rad: WorldXY, color: Color = Pal.power,
         alpha: Float? = null, stroke: Float = 1f
@@ -392,17 +371,32 @@ object G {
     @JvmStatic
     @JvmOverloads
     fun dashCircleBreath(
+        b: Block, x: TileXY, y: TileXY, rad: WorldXY,
+        circleColor: Color = Pal.power,
+        alpha: Float? = null, stroke: Float = 1f
+    ) = dashCircle(
+        b.toCenterWorldXY(x),
+        b.toCenterWorldXY(y),
+        rad + sin - 2f,
+        circleColor, alpha, stroke
+    )
+    @JvmStatic
+    @JvmOverloads
+    fun dashCircleBreath(
+        x: WorldXY, y: WorldXY, rad: WorldXY,
+        color: Color = Pal.power,
+        alpha: Float? = null, stroke: Float = 1f
+    ) = dashCircle(
+        x, y, rad + sin - 2f,
+        color, alpha, stroke
+    )
+    @JvmStatic
+    @JvmOverloads
+    fun dashCircleBreath(
         build: Building,
         range: WorldXY, color: Color = Pal.power,
         alpha: Float? = null, stroke: Float = 1f
     ) = dashCircle(build.x, build.y, range + sin - 2, color, alpha, stroke)
-    @JvmStatic
-    @JvmOverloads
-    fun drawDashCircleBreath(
-        x: WorldXY, y: WorldXY,
-        range: WorldXY, color: Color = Pal.power,
-        alpha: Float? = null, stroke: Float = 1f
-    ) = dashCircle(x, y, range + sin - 2, color, alpha, stroke)
     @JvmStatic
     @JvmOverloads
     fun dashCircleBreath(
@@ -514,6 +508,16 @@ object G {
         rect: Rect,
         color: Color = Pal.accent, alpha: Float? = null, stroke: Float = 1f
     ) {
+        rect(rect.x, rect.y, rect.width, rect.height, color, alpha, stroke)
+    }
+    @JvmStatic
+    @JvmOverloads
+    fun rect(
+        hitboxEntity: QuadTree.QuadTreeObject,
+        color: Color = Pal.accent, alpha: Float? = null, stroke: Float = 1f
+    ) {
+        hitboxEntity.hitbox(Tmp.r1)
+        val rect = Tmp.r1
         rect(rect.x, rect.y, rect.width, rect.height, color, alpha, stroke)
     }
 }

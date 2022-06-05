@@ -285,3 +285,10 @@ inline fun <T> MutableList<T>.shrinkTo(
         this.removing()
     }
 }
+
+inline fun <T> coherentApply(
+    o1: T, o2: T, func: T.() -> Unit
+) {
+    o1.func()
+    o2.func()
+}

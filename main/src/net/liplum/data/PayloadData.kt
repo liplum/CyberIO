@@ -12,11 +12,23 @@ class PayloadDataList(
     val canAddMore: Boolean
         get() = allData.size < capacity
 
+    operator fun get(index: Int): Payload =
+        allData[index]
+
     fun add(payload: Payload) {
         allData.add(payload)
     }
+
+    fun remove(payload: Payload) {
+        allData.remove(payload)
+    }
+
     fun first(): Payload = allData.first()
-    override fun iterator(): Iterator<Payload> = allData.iterator()
+    override fun iterator(): Iterator<Payload> =
+        allData.iterator()
+
+    fun indexPayload(payload: Payload): Int =
+        allData.indexOf(payload, true)
 }
 
 val PayloadDataList.isNotEmpty: Boolean

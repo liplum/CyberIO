@@ -22,7 +22,7 @@ object Debug {
             SettingType.Check,
         ),
         Setting(
-            { "Debug Level ${Var.CurDebugLevel}".CoerceLength(25) },
+            { "Debug:${Var.CurDebugLevel}".CoerceLength(15) },
             { Var.CurDebugLevel.level.toFloat() * (100f / DebugLevel.size) },
             {
                 val old = Var.CurDebugLevel

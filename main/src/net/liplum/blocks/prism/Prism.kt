@@ -384,7 +384,7 @@ open class Prism(name: String) : Block(name) {
                 if (isInPayload) Draw.z(Layer.blockOver + 1f)
                 else Draw.z(Layer.bullet - 1f)
                 DebugOnly {
-                    G.drawDashCircleBreath(priselX, priselY, prismRadius, circleColor)
+                    G.dashCircleBreath(priselX, priselY, prismRadius, circleColor)
                 }
                 img.DrawSize(
                     priselX,

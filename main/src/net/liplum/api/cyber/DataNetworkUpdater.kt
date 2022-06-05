@@ -6,21 +6,20 @@ import net.liplum.DebugLevel
 import net.liplum.DebugOnly
 import net.liplum.mdt.mixin.EntityMixin
 
-class DataNetworkUpdater : EntityMixin() {
+class DataNetworkUpdater : EntityMixin()
+//    , SimpleSyncMixin
+{
     var network: DataNetwork? = null
+    //override var lastUpdate: Long = 0
+    //override var updateSpacing: Long = 0
     override fun update() {
         network?.update()
-    }
-
-    companion object {
-        @JvmStatic
-        fun create() =
-            DataNetworkUpdater()
     }
 
     override fun add() {
         if (!this.added) {
             Groups.all.add(this)
+            //    Groups.sync.add(this)
             this.added = true
             DebugOnly(DebugLevel.Inspector) {
                 CLog.info("$this added")
@@ -31,6 +30,7 @@ class DataNetworkUpdater : EntityMixin() {
     override fun remove() {
         if (added) {
             Groups.all.remove(this)
+            //      Groups.sync.remove(this)
             added = false
             DebugOnly(DebugLevel.Inspector) {
                 CLog.info("$this removed")
@@ -39,4 +39,10 @@ class DataNetworkUpdater : EntityMixin() {
     }
 
     override fun toString() = "DataNetworkUpdater#$id"
+
+    companion object {
+        @JvmStatic
+        fun create() =
+            DataNetworkUpdater()
+    }
 }

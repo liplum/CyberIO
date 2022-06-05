@@ -232,7 +232,7 @@ open class HoloUnit : UnitEntity(), PayloadMixin, IRevisionable {
                     ruvikTipAlpha -= 0.5f / holoType.ruvikShootingTipTime
                 }
                 if (ruvikTipAlpha > 0f) {
-                    G.drawDashCircleBreath(x, y, holoType.ruvikTipRange, color = S.Hologram, alpha = ruvikTipAlpha)
+                    G.dashCircleBreath(x, y, holoType.ruvikTipRange, color = S.Hologram, alpha = ruvikTipAlpha)
                 }
             }
         }

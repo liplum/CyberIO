@@ -16,10 +16,10 @@ import net.liplum.lib.shaders.use
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.smoothSelect
-import net.liplum.mdt.utils.NewEmptyPos
 import net.liplum.mdt.utils.WorldXY
 import net.liplum.mdt.utils.worldXY
 import net.liplum.registries.SD
+import net.liplum.utils.addSendingProgress
 
 class Serializer(name: String) :
     PayloadBlock(name), INetworkBlock {
@@ -43,6 +43,13 @@ class Serializer(name: String) :
         initNetworkNodeSettings()
     }
 
+    override fun setBars() {
+        super.setBars()
+        DebugOnly {
+            addSendingProgress<SerializerBuild>()
+        }
+    }
+
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
         drawPlaceCardinalDirections(x, y)
     }
@@ -56,7 +63,7 @@ class Serializer(name: String) :
         @Serialized
         override val dataList = PayloadDataList(dataCapacity)
         @Serialized
-        override val currentOriented = NewEmptyPos()
+        override val currentOriented: Side = -1
         @Serialized
         override var sendingProgress = 0f
             set(value) {
@@ -76,6 +83,7 @@ class Serializer(name: String) :
         override fun draw() {
             DebugOnly {
                 drawLinkInfo()
+                drawRoutine()
                 if (dataList.isNotEmpty) {
                     val cur = dataList.first()
                     cur.set(x, y + size.worldXY, payloadRotation)
@@ -143,17 +151,17 @@ class Serializer(name: String) :
 
         override fun onRemoved() {
             super.onRemoved()
-            onRemoveFromGround()
+            onRemovedFromGround()
         }
 
         override fun onProximityRemoved() {
             super.onProximityRemoved()
-            onRemoveFromGround()
+            onRemovedFromGround()
         }
 
         override fun afterPickedUp() {
             super.afterPickedUp()
-            onRemoveFromGround()
+            onRemovedFromGround()
         }
 
         override fun toString() = "Serializer#$id"

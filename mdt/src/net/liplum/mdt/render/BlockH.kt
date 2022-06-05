@@ -45,7 +45,7 @@ fun Block.drawEffectCirclePlace(
     stroke: Float = 1f,
     func: Building. () -> Unit,
 ) {
-    G.drawDashCircleBreath(
+    G.dashCircleBreath(
         toCenterWorldXY(x), toCenterWorldXY(y), range,
         circleColor, stroke = stroke
     )

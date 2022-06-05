@@ -1,6 +1,7 @@
 package net.liplum.data
 
 import arc.func.Prov
+import arc.scene.ui.layout.Table
 import mindustry.Vars.world
 import mindustry.gen.Building
 import mindustry.world.Block
@@ -12,7 +13,7 @@ import net.liplum.lib.Serialized
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.render.G
 import net.liplum.mdt.render.smoothSelect
-import net.liplum.mdt.utils.NewEmptyPos
+import net.liplum.utils.addSendingProgress
 import kotlin.math.max
 
 class DataCDN(name: String) :
@@ -43,8 +44,11 @@ class DataCDN(name: String) :
         drawPlaceCardinalDirections(x, y)
     }
 
-    companion object {
-        val tempNodes = ArrayList<INetworkNode>()
+    override fun setBars() {
+        super.setBars()
+        DebugOnly {
+            addSendingProgress<CdnBuild>()
+        }
     }
 
     inner class CdnBuild : Building(),
@@ -53,7 +57,7 @@ class DataCDN(name: String) :
         @Serialized
         override val dataList = PayloadDataList(dataCapacity)
         @Serialized
-        override val currentOriented = NewEmptyPos()
+        override val currentOriented: Side = -1
         override var transferTask = TransferTask()
         @Serialized
         override var sendingProgress = 0f
@@ -81,10 +85,15 @@ class DataCDN(name: String) :
             network.add(this)
         }
 
+        override fun buildConfiguration(table: Table) {
+            buildNetworkDataListSelector(table)
+        }
+
         override fun draw() {
             super.draw()
             DebugOnly {
                 drawLinkInfo()
+                drawRoutine()
             }
         }
 
@@ -104,17 +113,17 @@ class DataCDN(name: String) :
 
         override fun onRemoved() {
             super.onRemoved()
-            onRemoveFromGround()
+            onRemovedFromGround()
         }
 
         override fun onProximityRemoved() {
             super.onProximityRemoved()
-            onRemoveFromGround()
+            onRemovedFromGround()
         }
 
         override fun afterPickedUp() {
             super.afterPickedUp()
-            onRemoveFromGround()
+            onRemovedFromGround()
         }
 
         override fun toString() = "DataCDN#$id"

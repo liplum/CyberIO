@@ -131,7 +131,7 @@ open class WirelessTower(name: String) : PowerBlock(name) {
 
         override fun drawSelect() {
             val range = realRange * smoothSelect(maxSelectedCircleTime)
-            G.drawDashCircleBreath(
+            G.dashCircleBreath(
                 x, y, range,
                 R.C.Power, stroke = range2Stroke(this.realRange)
             )

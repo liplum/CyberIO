@@ -11,13 +11,10 @@ import mindustry.world.Block
 import mindustry.world.blocks.production.GenericCrafter
 import net.liplum.R
 import net.liplum.api.brain.IUpgradeComponent
-import net.liplum.api.cyber.IDataReceiver
-import net.liplum.api.cyber.IDataSender
-import net.liplum.api.cyber.IStreamClient
-import net.liplum.api.cyber.IStreamHost
+import net.liplum.api.cyber.*
+import net.liplum.lib.utils.*
 import net.liplum.mdt.animations.anis.IAniSMedBuild
 import net.liplum.mdt.ui.bars.AddBar
-import net.liplum.lib.utils.*
 
 fun Block.addTeamInfo() {
     AddBar<Building>(R.Bar.TeamN,
@@ -131,6 +128,14 @@ inline fun <reified T> Block.addBrainInfo() where T : Building, T : IUpgradeComp
         { R.Bar.Linked.bundle(isLinkedBrain) },
         { R.C.Host },
         { isLinkedBrain.toFloat() }
+    )
+}
+
+inline fun <reified T> Block.addSendingProgress() where T : Building, T : INetworkNode {
+    AddBar<T>(R.Bar.ProgressN,
+        { R.Bar.Progress.bundle(sendingProgress) },
+        { R.C.Power },
+        { sendingProgress / 1f }
     )
 }
 
