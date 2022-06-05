@@ -2,7 +2,10 @@
 
 package net.liplum.lib.utils
 
+import net.liplum.lib.Out
+import java.lang.reflect.Field
 import java.lang.reflect.Method
+import java.util.*
 import kotlin.reflect.KProperty
 
 fun Any?.setF(name: String, value: Any?) {
@@ -44,4 +47,33 @@ class ReflectObj<T>(
     operator fun setValue(thisRef: Any?, property: KProperty<*>, value: T?) {
         obj.setF(property.name, value)
     }
+}
+
+inline fun Class<*>.allFieldsIncludeParents(
+    @Out out: MutableCollection<Field>,
+    filter: (Field) -> Boolean = { true },
+) {
+    val entry = ReflectU.getEntry(this)
+    val cur = entry.allFieldsIncludeParents
+    if (cur != null) out.apply {
+        cur.forEach {
+            if (filter(it))
+                out.add(it)
+        }
+        return
+    }
+    val fields = LinkedList<Field>()
+    var curClz = if (isAnonymousClass) superclass else this
+    while (curClz != null) {
+        val allFields = ReflectU.getEntry(curClz).getAllFields()
+        for (f in allFields) {
+            f.isAccessible = true
+            fields.add(f)
+            if (filter(f)) {
+                out.add(f)
+            }
+        }
+        curClz = curClz.superclass
+    }
+    entry.allFieldsIncludeParents = fields
 }

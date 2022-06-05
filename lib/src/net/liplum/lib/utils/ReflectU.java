@@ -92,7 +92,7 @@ public class ReflectU {
         return fields;
     }
 
-    private static Entry getEntry(Class<?> clz) {
+    public static Entry getEntry(Class<?> clz) {
         return AllClasses.computeIfAbsent(clz, Entry::new);
     }
 

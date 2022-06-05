@@ -1,6 +1,7 @@
 package net.liplum.ui
 
 import arc.Core
+import arc.Events
 import arc.scene.Group
 import arc.scene.event.Touchable
 import arc.scene.ui.ImageButton
@@ -12,25 +13,23 @@ import arc.scene.ui.layout.WidgetGroup
 import arc.util.Interval
 import mindustry.Vars
 import mindustry.ctype.UnlockableContent
-import mindustry.gen.Entityc
-import mindustry.gen.Groups
-import mindustry.gen.Icon
-import mindustry.gen.Tex
+import mindustry.game.EventType
+import mindustry.gen.*
 import mindustry.graphics.Pal
+import net.liplum.CLog
 import net.liplum.Var
 import net.liplum.annotations.Only
 import net.liplum.annotations.SubscribeEvent
 import net.liplum.events.CioInitEvent
-import net.liplum.lib.ui.and
-import net.liplum.lib.ui.autoLoseFocus
-import net.liplum.lib.ui.dragToMove
-import net.liplum.lib.ui.isMouseOver
+import net.liplum.lib.ui.*
+import net.liplum.lib.utils.allFieldsIncludeParents
 import net.liplum.lib.utils.directSuperClass
 import net.liplum.lib.utils.tinted
 import net.liplum.mdt.Screen
 import net.liplum.mdt.lock
-import net.liplum.mdt.ui.`lockOrUnlock`
+import net.liplum.mdt.ui.lockOrUnlock
 import net.liplum.render.Shapes
+import java.lang.reflect.Field
 
 object DebugUI {
     @JvmStatic
@@ -72,24 +71,73 @@ object DebugUI {
             visible {
                 Var.EnableUnlockContent
             }
-            `lockOrUnlock`("Lock", UnlockableContent::lock)
-            `lockOrUnlock`("Unlock", UnlockableContent::unlock)
+            lockOrUnlock("Lock", UnlockableContent::lock)
+            lockOrUnlock("Unlock", UnlockableContent::unlock)
         })
     }
 
     val entityList = ArrayList<Entityc>(64)
     val starList = ArrayList<Entityc>(8)
+    val entityClz2Field = HashMap<Class<out Entityc>, ArrayList<Field>>()
     val timer = Interval(10)
     var timerID = 0
     val updateEntityListTimer = timerID++
     var inspectedEntity: Entityc? = null
     fun addEntityInspector(debug: Group) {
         val listView = Table()
+        val inspectorPanel = Table()
         lateinit var search: TextField
-        lateinit var listPanel: Table
-        fun rebuild() {
+        fun rebuildInspectorPanel() {
+            inspectorPanel.clearChildren()
+            val entity = inspectedEntity ?: return
+            val fields = entityClz2Field.getOrPut(entity.javaClass) {
+                ArrayList<Field>().apply {
+                    entity.javaClass.allFieldsIncludeParents(this) {
+                        it.type == String::class.java ||
+                                it.type == Int::class.java ||
+                                it.type == Float::class.java
+                    }
+                }
+            }
+            inspectorPanel.add(Table().apply {
+                button(Icon.refresh) {
+                    rebuildInspectorPanel()
+                }.pad(5f)
+                button(Icon.cancel) {
+                    when (entity) {
+                        is Healthc -> entity.kill()
+                        else -> entity.remove()
+                    }
+                    inspectedEntity = null
+                }.pad(5f)
+            }).row()
+            for (field in fields) {
+                inspectorPanel.add(Table().apply {
+                    var newValue = field.get(entity)?.toString() ?: "null"
+                    add(field.name).pad(5f).grow()
+                    this.field(newValue) {
+                        newValue = it
+                    }.pad(5f).grow()
+                    this.button(Icon.pencil) {
+                        try {
+                            val value = when (field.type) {
+                                String::class.java -> newValue
+                                Int::class.java -> newValue.toInt()
+                                Float::class.java -> newValue.toFloat()
+                                else -> return@button
+                            }
+                            field.set(entity, value)
+                        } catch (e: Exception) {
+                            CLog.err(e)
+                        }
+                    }
+                }).grow().row()
+            }
+        }
+
+        fun rebuildEntityList() {
             if (!Vars.state.isGame) return
-            val searchText = search.text.lowercase()
+            val searchText = search.text.lowercase().trim()
             if (searchText.isEmpty()) return
             listView.clearChildren()
             entityList.clear()
@@ -98,7 +146,7 @@ object DebugUI {
                 if (searchText == "*")// wildcard
                     entityList.add(it)
                 else {
-                    if (it.javaClass.directSuperClass.name.lowercase().contains(searchText) ||
+                    if (it.directSuperClass.name.lowercase().contains(searchText) ||
                         it.toString().lowercase().contains(searchText)
                     ) {
                         entityList.add(it)
@@ -111,12 +159,16 @@ object DebugUI {
                         add(ImageButton(Shapes.starActive).apply {
                             clicked {
                                 starList.remove(it)
-                                rebuild()
+                                rebuildEntityList()
                             }
                             getCell(image).size(Vars.iconSmall)
                         })
                     }).left()
                     add(Table().apply {
+                        clicked {
+                            inspectedEntity = if(it.isAdded) it else null
+                            rebuildInspectorPanel()
+                        }
                         val label = Label(it.javaClass.simpleName.tinted(if (it.isAdded) Pal.accent else Pal.gray))
                         add(label).row()
                         add("$it").row()
@@ -131,12 +183,18 @@ object DebugUI {
                         add(ImageButton(Shapes.starInactive).apply {
                             clicked {
                                 starList.add(it)
-                                rebuild()
+                                rebuildEntityList()
                             }
                             getCell(image).size(Vars.iconSmall)
                         })
                     }).left()
                     add(Table().apply {
+                        clicked {
+                            inspectedEntity = if(it.isAdded) it else null
+                            starList.add(it)
+                            rebuildEntityList()
+                            rebuildInspectorPanel()
+                        }
                         add(it.javaClass.simpleName.tinted(Pal.accent)).row()
                         add("$it").row()
                     }).grow().right()
@@ -146,7 +204,6 @@ object DebugUI {
         }
 
         debug.fill { t ->
-            listPanel = t
             t.left()
             t.dragToMove()
             val isMouseOver: Boolean by t.isMouseOver()
@@ -157,7 +214,7 @@ object DebugUI {
                 add(Table().apply {
                     image(Icon.zoom).padRight(8f)
                     search = field(null) {
-                        rebuild()
+                        rebuildEntityList()
                     }.apply {
                         growX()
                         minWidth(80f)
@@ -166,11 +223,11 @@ object DebugUI {
                     }
                     listView.update {
                         if (!isMouseOver && timer.get(updateEntityListTimer, 10f)) {
-                            rebuild()
+                            rebuildEntityList()
                         }
                     }
                     button(Icon.refresh) {
-                        rebuild()
+                        rebuildEntityList()
                     }.right()
                 })
                 row()
@@ -180,9 +237,28 @@ object DebugUI {
                         maxHeight(600f)
                         fill()
                     }
+                    add(ScrollPane(Table().apply {
+                        update {
+                            inspectedEntity = if (inspectedEntity?.isAdded == true)
+                                inspectedEntity else null
+                        }
+                        add(inspectorPanel)
+                        rebuildInspectorPanel()
+                    })).apply {
+                        maxHeight(600f)
+                        grow()
+                    }.then {
+                        visible { inspectedEntity != null }
+                        autoLoseFocus()
+                    }
                 })
             })
             t.visible { Vars.state.isGame }
+        }
+        Events.on(EventType.WorldLoadEvent::class.java){
+            entityList.clear()
+            inspectedEntity = null
+            starList.clear()
         }
     }
 }
