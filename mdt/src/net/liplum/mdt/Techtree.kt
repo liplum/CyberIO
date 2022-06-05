@@ -8,7 +8,7 @@ import mindustry.game.Objectives.Objective
 import mindustry.game.Objectives.Research
 import mindustry.type.ItemStack
 
-fun Seq<TechNode>.withContext(
+inline fun Seq<TechNode>.withContext(
     func: Techtree.() -> Unit,
 ) {
     Techtree(this).func()

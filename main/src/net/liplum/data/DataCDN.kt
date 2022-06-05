@@ -58,7 +58,6 @@ class DataCDN(name: String) :
         override val dataList = PayloadDataList(dataCapacity)
         @Serialized
         override val currentOriented: Side = -1
-        override var transferTask = TransferTask()
         @Serialized
         override var sendingProgress = 0f
             set(value) {
@@ -93,7 +92,6 @@ class DataCDN(name: String) :
             super.draw()
             DebugOnly {
                 drawLinkInfo()
-                drawRoutine()
             }
         }
 

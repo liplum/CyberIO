@@ -5,6 +5,7 @@ import mindustry.world.Block
 import mindustry.world.blocks.payloads.Payload
 import net.liplum.api.ICyberEntity
 import net.liplum.api.cyber.SideLinks.Companion.reflect
+import net.liplum.data.PayloadData
 import net.liplum.data.PayloadDataList
 import net.liplum.lib.Out
 import net.liplum.lib.Serialized
@@ -30,42 +31,24 @@ interface INetworkNode : ICyberEntity, IVertex<INetworkNode> {
      */
     @Serialized
     val sendingProgress: Float
-    @Serialized
-    var transferTask: TransferTask
     val sideEnable: SideEnable
-    val hasTransferTask: Boolean
-        get() = transferTask.isActive
     val canReceiveMoreData: Boolean
         get() = dataList.canAddMore
     /**
      * If this couldn't contain more, just desert it.
      * Note: even if unsync, the [dataList] will correct the result.
      */
-    fun receiveData(payload: Payload) {
+    fun receiveData(payload: PayloadData) {
         if (dataList.canAddMore) {
             dataList.add(payload)
         }
     }
     /**
-     * Send the data in current [transferTask].
-     * If sent, remove the data.
-     * @return whether a node on the [side] received the data
-     */
-    fun sendTaskDataToNextNode(side: Side): Boolean {
-        links[side].TEAny<INetworkNode>()?.let {
-            val payload = transferTask.curData ?: return false
-            return sendDataToNextNode(payload, it)
-        }
-        return false
-    }
-    /**
-     * Send the data in current [transferTask].
-     * If sent, remove the data.
      * @param payload it doesn't check whether the [payload] is in this node.
      * The caller should guarantee that.
      * @return whether the [node] received the [payload]
      */
-    fun sendDataToNextNode(payload: Payload, node: INetworkNode): Boolean {
+    fun sendDataToNextNode(payload: PayloadData, node: INetworkNode): Boolean {
         if (node.canReceiveMoreData) {
             node.receiveData(payload)
             dataList.remove(payload)
@@ -73,15 +56,6 @@ interface INetworkNode : ICyberEntity, IVertex<INetworkNode> {
         }
         return false
     }
-    /**
-     * Post a data transfer request.
-     */
-    fun postRequest(subject: INetworkNode, application: Payload) {
-        network.postRequest(this, subject, application)
-    }
-
-    fun canTransferTo(other: INetworkNode): Boolean =
-        transferTask == other.transferTask
 
     override val linkedVertices: Iterable<INetworkNode>
         get() = getNetworkConnections(tempList)
@@ -109,7 +83,6 @@ interface INetworkNode : ICyberEntity, IVertex<INetworkNode> {
             // If this is a node existed on this side, separate the network
             clearSide(side)
         }
-        transferTask.finish()
     }
 
     fun isSideFull(side: Side) =
@@ -215,7 +188,6 @@ object EmptyNetworkNode : INetworkNode {
     override val expendSelectingLineTime = 0f
     override val currentOriented: Side = -1
     override val sendingProgress: Float = 0f
-    override var transferTask = TransferTask()
     override val sideEnable = SideEnable(4) { false }
     override val linkRange = 0f
 }

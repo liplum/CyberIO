@@ -9,7 +9,9 @@ import arc.scene.style.TextureRegionDrawable
 import arc.scene.ui.Image
 import arc.scene.ui.Label
 import arc.scene.ui.ScrollPane
+import arc.scene.ui.layout.Stack
 import arc.scene.ui.layout.Table
+import arc.scene.utils.Elem
 import mindustry.Vars
 import mindustry.Vars.world
 import mindustry.gen.Iconc
@@ -17,10 +19,10 @@ import mindustry.gen.Tex
 import mindustry.graphics.Layer
 import mindustry.graphics.Pal
 import mindustry.ui.Styles
-import mindustry.world.blocks.payloads.Payload
 import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.api.cyber.SideLinks.Companion.coordinates
+import net.liplum.data.PayloadData
 import net.liplum.lib.utils.DrawLayer
 import net.liplum.mdt.advanced.Inspector.isPlacing
 import net.liplum.mdt.advanced.Inspector.isSelected
@@ -130,7 +132,7 @@ fun INetworkNode.drawSelectingCardinalDirections() = building.run {
 }
 
 fun INetworkBlock.drawPlaceCardinalDirections(
-    x: TileXY, y: TileXY
+    x: TileXY, y: TileXY,
 ) = block.run {
     // Draw a cross
     if (!this.isPlacing()) return
@@ -227,26 +229,6 @@ fun INetworkNode.drawNetworkInfo() = building.run {
         )
     }
 }
-@DebugOnly
-fun INetworkNode.drawRoutine() = building.run {
-    val routine = transferTask.routine ?: return@run
-    if(routine.start != this@drawRoutine) return@run
-    DrawLayer {
-        Draw.z(Layer.overlayUI)
-        G.rect(routine.start.building, color = R.C.Sender)
-        G.rect(routine.destination.building, color = R.C.Receiver)
-        var pre: INetworkNode? = null
-        for (node in routine) {
-            if (pre == null) {
-                pre = node
-                continue
-            } else {
-                G.arrowLineBreath(pre.building, node.building, 20f, arrowColor = R.C.Holo)
-                pre = node
-            }
-        }
-    }
-}
 
 fun INetworkNode.drawRangeCircle(alpha: Float) = building.run {
     G.circleBreath(x, y, linkRange, alpha = alpha)
@@ -254,36 +236,45 @@ fun INetworkNode.drawRangeCircle(alpha: Float) = building.run {
 
 fun INetworkNode.buildNetworkDataList(table: Table) {
     table.add(ScrollPane(Table(Tex.wavepane).apply {
-        network.forEachDataIndexed { i, node, payload ->
+        network.forEachDataIndexed { i, node, data ->
             add(Table(Tex.button).apply {
-                buildPayloadDataInfo(node, payload)
+                buildPayloadDataInfo(node, data)
             }).margin(5f).grow().size(Vars.iconXLarge * 2.5f)
             if ((i + 1) % 4 == 0) row()
         }
     }, Styles.defaultPane))
 }
 
-fun Table.buildPayloadDataInfo(node: INetworkNode, data: Payload) {
-    add(Image(data.icon())).size(Vars.iconXLarge * 1.5f).row()
+fun Table.buildPayloadDataInfo(node: INetworkNode, data: PayloadData) {
+    add(Stack(
+        Image(data.payload.icon()),
+        Label("${data.id}"),
+    )
+    ).size(Vars.iconXLarge * 1.5f).row()
     val tile = node.tile
     add(Label { "${tile.x},${tile.y}" })
 }
 
 fun INetworkNode.buildNetworkDataListSelector(table: Table) {
     table.add(ScrollPane(Table(Tex.wavepane).apply {
-        network.forEachDataIndexed { i, node, payload ->
+        network.forEachDataIndexed { i, node, data ->
             add(Table(Tex.button).apply {
-                buildPayloadDataInfoSelectorItem(this@buildNetworkDataListSelector, node, payload)
+                buildPayloadDataInfoSelectorItem(this@buildNetworkDataListSelector, node, data)
             }).margin(5f).grow().size(Vars.iconXLarge * 2.5f)
             if ((i + 1) % 4 == 0) row()
         }
     }, Styles.defaultPane))
 }
 
-fun Table.buildPayloadDataInfoSelectorItem(cur: INetworkNode, node: INetworkNode, data: Payload) {
-    button(TextureRegionDrawable(data.icon())) {
-        cur.postRequest(node, data)
-    }.size(Vars.iconXLarge * 1.5f).row()
+fun Table.buildPayloadDataInfoSelectorItem(cur: INetworkNode, node: INetworkNode, data: PayloadData) {
+    add(
+        Stack(
+            Elem.newImageButton(TextureRegionDrawable(data.payload.icon())) {
+                //cur.postRequest(node, data)
+            },
+            Label("${data.id}"),
+        )
+    ).size(Vars.iconXLarge * 1.5f).row()
     val tile = node.tile
     add(Label { "${tile.x},${tile.y}" })
 }

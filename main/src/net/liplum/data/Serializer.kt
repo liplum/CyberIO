@@ -76,18 +76,16 @@ class Serializer(name: String) :
             }
         @ClientOnly
         override val expendSelectingLineTime = this@Serializer.expendPlacingLineTime
-        override var transferTask = TransferTask()
         override val linkRange = this@Serializer.linkRange
         override val sideEnable = this@Serializer.sideEnable
         var lastTileChange = -2
         override fun draw() {
             DebugOnly {
                 drawLinkInfo()
-                drawRoutine()
                 if (dataList.isNotEmpty) {
                     val cur = dataList.first()
-                    cur.set(x, y + size.worldXY, payloadRotation)
-                    cur.draw()
+                    cur.payload.set(x, y + size.worldXY, payloadRotation)
+                    cur.payload.draw()
                 }
             }
             Draw.rect(region, x, y)
@@ -131,7 +129,7 @@ class Serializer(name: String) :
             serializingProgress += delta() * serializationSpeed
             if (serializingProgress >= 1f) {
                 this.payload = null
-                dataList.add(payload)
+                dataList.add(PayloadData(payload,DataNetwork.assignDataID()))
                 serializingProgress = 0f
             }
         }

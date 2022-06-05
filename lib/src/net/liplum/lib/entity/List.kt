@@ -13,7 +13,7 @@ class FixedList<T : IRWable>(
     @JvmField
     val size: Int = 1,
     @JvmField
-    val creator: () -> T
+    val creator: () -> T,
 ) : Iterable<T>, IRWable {
     val list: ArrayList<T> = ArrayList(size) {
         creator()
@@ -22,7 +22,7 @@ class FixedList<T : IRWable>(
     constructor(
         size: Int = 1,
         creator: () -> T,
-        init: (Int, T) -> Unit
+        init: (Int, T) -> Unit,
     ) : this(size, creator) {
         for ((i, r) in list.withIndex()) {
             init(i, r)
@@ -59,7 +59,7 @@ class Queue<T : IRWable>(
     @JvmField
     var maxSize: () -> Int = { 1 },
     @JvmField
-    val creator: () -> T
+    val creator: () -> T,
 ) : Iterable<T>, IRWable {
     constructor(maxSize: Int, creator: () -> T) : this({ maxSize }, creator)
     @JvmField
@@ -166,7 +166,7 @@ class Queue<T : IRWable>(
         }
     }
 
-    override fun read(reader: DataInputStream) =  CacheReaderSpec(reader).run {
+    override fun read(reader: DataInputStream) = CacheReaderSpec(reader).run {
         val size = list.size
         val targetLen = i()
         if (size == targetLen) {

@@ -3,11 +3,13 @@ package net.liplum.api.cyber
 import arc.struct.IntSet
 import arc.util.pooling.Pool
 import arc.util.pooling.Pools
+import mindustry.game.EventType
 import mindustry.world.blocks.payloads.Payload
 import net.liplum.CLog
+import net.liplum.annotations.SubscribeEvent
+import net.liplum.data.PayloadData
 import net.liplum.data.PayloadDataList
 import net.liplum.lib.Serialized
-import net.liplum.lib.utils.coherentApply
 import net.liplum.mdt.utils.PackedPos
 import plumy.pathkt.BFS
 import plumy.pathkt.EasyBFS
@@ -27,34 +29,6 @@ class DataNetwork {
     }
 
     fun update() {
-    }
-    /**
-     * Post a data transfer request
-     * @param applicant who need the data. Destination of data transfer.
-     * @param subject who has the data. Start point of data transfer.
-     * @param application the data info
-     */
-    fun postRequest(
-        applicant: INetworkNode,
-        subject: INetworkNode,
-        application: Payload,
-    ) {
-        if (subject == applicant) return // Don't send to self
-        if (applicant.inTheSameNetwork(subject)) { // Only can send data in the same network
-            val path = findPath(subject, applicant) ?: return // impossible not to find a path
-            if (path.start != subject || path.destination != applicant) return // Can't find the correct way
-            val startPos = subject.building.pos()
-            val destPost = applicant.building.pos()
-            coherentApply(subject, applicant) {
-                transferTask.let {
-                    it.start = startPos
-                    it.destination = destPost
-                    it.routine = path
-                    path.bind(it)
-                }
-            }
-            subject.transferTask.curData = application
-        }
     }
     /**
      * Find a path from [start] to [destination].
@@ -138,7 +112,7 @@ class DataNetwork {
         onNetworkNodeChanged()
     }
 
-    inline fun forEachDataIndexed(func: (Int, INetworkNode, Payload) -> Unit) {
+    inline fun forEachDataIndexed(func: (Int, INetworkNode, PayloadData) -> Unit) {
         var i = 0
         for (node in nodes) {
             for (data in node.dataList) {
@@ -148,7 +122,7 @@ class DataNetwork {
         }
     }
 
-    inline fun forEachData(func: (INetworkNode, Payload) -> Unit) {
+    inline fun forEachData(func: (INetworkNode, PayloadData) -> Unit) {
         for (node in nodes) {
             for (data in node.dataList)
                 func(node, data)
@@ -183,6 +157,14 @@ class DataNetwork {
         private var lastNetworkID = 0
         fun genStart2DestinationKey(start: INetworkNode, dest: INetworkNode): Any =
             start.building.id * 31 + dest.building.id
+
+        var curPayloadDataID = 0
+        fun assignDataID(): Int =
+            curPayloadDataID++
+        @SubscribeEvent(EventType.WorldLoadEvent::class)
+        fun resetPayloadDataID() {
+            curPayloadDataID = 0
+        }
     }
 }
 
