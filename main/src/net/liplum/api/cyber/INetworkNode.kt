@@ -2,9 +2,10 @@ package net.liplum.api.cyber
 
 import mindustry.Vars
 import mindustry.world.Block
-import mindustry.world.blocks.payloads.Payload
 import net.liplum.api.ICyberEntity
 import net.liplum.api.cyber.SideLinks.Companion.reflect
+import net.liplum.data.DataID
+import net.liplum.data.EmptyDataID
 import net.liplum.data.PayloadData
 import net.liplum.data.PayloadDataList
 import net.liplum.lib.Out
@@ -20,12 +21,14 @@ interface INetworkNode : ICyberEntity, IVertex<INetworkNode> {
     var init: Boolean
     var links: SideLinks
     @Serialized
+    var request: DataID
+    @Serialized
     val dataList: PayloadDataList
     /**
      * It represents which next node this wants to send.
      */
     @Serialized
-    val currentOriented: Side
+    var currentOriented: Side
     /**
      * [0f,1f]
      */
@@ -42,6 +45,17 @@ interface INetworkNode : ICyberEntity, IVertex<INetworkNode> {
         if (dataList.canAddMore) {
             dataList.add(payload)
         }
+    }
+
+    fun setOriented(next: INetworkNode): Boolean {
+        val nextPos = next.building.pos()
+        links.forEachPosWithSide { side, pos ->
+            if (pos == nextPos) {
+                currentOriented = side
+                return true
+            }
+        }
+        return false
     }
     /**
      * @param payload it doesn't check whether the [payload] is in this node.
@@ -104,7 +118,7 @@ interface INetworkNode : ICyberEntity, IVertex<INetworkNode> {
 
         this.links[side] = target
         target.links[side.reflect] = this
-        this.network.merge(target)
+        DataNetwork.mergeToLagerNetwork(this, target)
     }
     /**
      * It takes the side into account.
@@ -163,12 +177,17 @@ interface INetworkBlock {
     @ClientOnly
     val expendPlacingLineTime: Float
     val sideEnable: SideEnable
-    fun initNetworkNodeSettings() {
+    fun setupNetworkNodeSettings() {
         block.apply {
+            update = true
             configurable = true
+            sync = true
         }
     }
 }
+
+fun INetworkNode.hasData(id: DataID): Boolean =
+    dataList.hasData(id)
 /**
  * Only iterate the enabled sides
  */
@@ -183,10 +202,11 @@ object EmptyNetworkNode : INetworkNode {
     override var network = DataNetwork()
     override var init = true
     override var links = SideLinks()
+    override var request: DataID = EmptyDataID
     override val dataList: PayloadDataList = PayloadDataList()
     @ClientOnly
     override val expendSelectingLineTime = 0f
-    override val currentOriented: Side = -1
+    override var currentOriented: Side = -1
     override val sendingProgress: Float = 0f
     override val sideEnable = SideEnable(4) { false }
     override val linkRange = 0f

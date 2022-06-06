@@ -1,34 +1,147 @@
 package net.liplum.api.cyber
 
+import arc.struct.IntMap
 import arc.struct.IntSet
+import arc.struct.Seq
 import arc.util.pooling.Pool
 import arc.util.pooling.Pools
 import mindustry.game.EventType
-import mindustry.world.blocks.payloads.Payload
-import net.liplum.CLog
+import mindustry.gen.Building
 import net.liplum.annotations.SubscribeEvent
+import net.liplum.data.DataID
+import net.liplum.data.EmptyDataID
 import net.liplum.data.PayloadData
 import net.liplum.data.PayloadDataList
 import net.liplum.lib.Serialized
-import net.liplum.mdt.utils.PackedPos
-import plumy.pathkt.BFS
-import plumy.pathkt.EasyBFS
-import plumy.pathkt.LinkedPath
-import plumy.pathkt.findPath
+import net.liplum.lib.utils.Index
+import net.liplum.lib.utils.forLoop
+import net.liplum.lib.utils.set
+import plumy.pathkt.*
 import java.util.*
 
 class DataNetwork {
     val entity = DataNetworkUpdater.create()
-    val nodes = ArrayList<INetworkNode>()
+    val nodes = Seq<INetworkNode>()
     val routineCache = HashMap<Any, Path>()
     var id = lastNetworkID++
         private set
-
+    val size: Int
+        get() = nodes.size
+    val dataId2Task = IntMap<TransferTask>()
     fun onNetworkNodeChanged() {
         clearRoutineCache()
     }
 
     fun update() {
+        for (node in nodes) {
+            val request = node.request
+            if(request == EmptyDataID) continue
+            val task: TransferTask? = dataId2Task[request]
+            if (task == null) {
+                val holder = findWhoHasDataByID(request)
+                if (holder != null) {
+                    addNewTask(node, holder, request)
+                }
+            }
+        }
+        val tasks = dataId2Task.values()
+        while (tasks.hasNext()) {
+            val task = tasks.next()
+            val progress = task.curProgress
+            val path = task.routine ?: continue
+            if (task.validate(path, progress)) {
+                if (progress == path.size - 1) {
+                    // the data reached the destination
+                    tasks.remove()
+                } else {
+                    // the data doesn't reach the destination, including just one node remaining
+                    val curNode = path[progress]
+                    val nextNode = path[progress + 1]
+                    curNode.setOriented(nextNode)
+                }
+            } else { // if the progress is not accurate
+                val curProgress = path.refindNode {
+                    it.hasData(task.request)
+                }
+                if (curProgress < 0) {
+                    // I don't know what happened, but the data may have reached the destination or disappear.
+                    tasks.remove()
+                } else {
+                    task.curProgress = curProgress
+                }
+            }
+        }
+    }
+
+    private fun TransferTask.validate(path: Path, progress: Index): Boolean {
+        if (progress in 0 until path.size) {
+            return path[progress].hasData(request)
+        }
+        return false
+    }
+
+    private inline fun Path.refindNode(predicate: (INetworkNode) -> Boolean): Index =
+        path.indexOfFirst(predicate)
+
+    private fun addNewTask(
+        applicant: INetworkNode,
+        holder: INetworkNode,
+        request: DataID,
+    ) {
+        val task = taskPool.obtain().apply {
+            start = holder
+            destination = applicant
+            this.request = request
+            routine = generatePath(holder, applicant)
+            if (routine != null)
+                curProgress = 0
+        }
+        dataId2Task[request] = task
+    }
+
+    private fun generatePath(start: INetworkNode, destination: INetworkNode): Path? {
+        val toKey = genStart2DestinationKey(start, destination)
+        var toPath = routineCache[toKey]
+        if (toPath != null) {
+            return toPath
+        } else {
+            val fromPath = routineCache[destination, start]
+            return if (fromPath != null) {
+                toPath = fromPath.reversedPath()
+                routineCache[toKey] = toPath
+                toPath
+            } else {
+                // Or using the shortest path?
+                val path = bfs.findFirstPath(start, destination)
+                if (path.isEmpty()) {
+                    path.free()
+                    null
+                } else {
+                    routineCache[toKey] = path
+                    path
+                }
+            }
+        }
+    }
+
+    private operator fun HashMap<Any, Path>.set(
+        start: INetworkNode,
+        destination: INetworkNode,
+        path: Path,
+    ) {
+        this[genStart2DestinationKey(start, destination)] = path
+    }
+
+    private operator fun HashMap<Any, Path>.get(
+        start: INetworkNode,
+        destination: INetworkNode,
+    ): Path? = this[genStart2DestinationKey(start, destination)]
+
+    private fun findWhoHasDataByID(id: DataID): INetworkNode? {
+        nodes.forLoop {
+            if (it.hasData(id)) return it
+        }
+        return null
     }
     /**
      * Find a path from [start] to [destination].
@@ -55,18 +168,26 @@ class DataNetwork {
 
     private fun clearRoutineCache() {
         routineCache.forEach { (_, path) ->
-            path.tryDeconstruct()
+            path.free()
         }
         routineCache.clear()
     }
-
-    fun addNetwork(other: DataNetwork) {
+    @Deprecated("Unused", ReplaceWith("DataNetwork.merge"))
+    fun mergeNetwork(other: DataNetwork) {
         if (other == this) return
         other.entity.remove()
         other.nodes.forEach(::add)
     }
-
-    fun add(node: INetworkNode) {
+    /**
+     * Initialize a node, used in [Building.create]
+     */
+    fun initNode(node: INetworkNode) {
+        add(node)
+    }
+    /**
+     * Add a node into this network and initialize it.
+     */
+    private fun add(node: INetworkNode) {
         if (node.network != this || !node.init) {
             node.network = this
             node.init = true
@@ -75,8 +196,10 @@ class DataNetwork {
             onNetworkNodeChanged()
         }
     }
-
-    fun merge(node: INetworkNode) {
+    /**
+     * Merge a node into this network
+     */
+    private fun merge(node: INetworkNode) {
         if (node.network == this) return
         node.network.entity.remove()
         // iterate its link
@@ -133,6 +256,7 @@ class DataNetwork {
         "DataNetwork#$id"
 
     companion object {
+        val taskPool: Pool<TransferTask> = Pools.get(TransferTask::class.java, ::TransferTask)
         /**
          * Only used in pathfinder. it can be safely removed when reset.
          */
@@ -155,7 +279,7 @@ class DataNetwork {
         private val closedSet = IntSet()
         @JvmStatic
         private var lastNetworkID = 0
-        fun genStart2DestinationKey(start: INetworkNode, dest: INetworkNode): Any =
+        private fun genStart2DestinationKey(start: INetworkNode, dest: INetworkNode): Any =
             start.building.id * 31 + dest.building.id
 
         var curPayloadDataID = 0
@@ -165,14 +289,22 @@ class DataNetwork {
         fun resetPayloadDataID() {
             curPayloadDataID = 0
         }
+
+        fun mergeToLagerNetwork(a: INetworkNode, b: INetworkNode) {
+            if (a.network.size >= b.network.size) {
+                a.network.merge(b)
+            } else {
+                b.network.merge(a)
+            }
+        }
     }
 }
 
-class TransferTask {
+class TransferTask : Pool.Poolable {
     @Serialized
-    var start: PackedPos = -1
+    var start: INetworkNode? = null
     @Serialized
-    var destination: PackedPos = -1
+    var destination: INetworkNode? = null
     /**
      * The routine will be calculated locally by [start] and [destination]
      */
@@ -181,41 +313,27 @@ class TransferTask {
      * It indicates a payload to be sent in [PayloadDataList] in current node.
      */
     @Serialized
-    var curData: Payload? = null
-    val isActive: Boolean
-        get() = start != -1 || destination != -1
+    var request: DataID = EmptyDataID
+    @Serialized
+    var curProgress: Index = -1
+    fun free() {
+        DataNetwork.taskPool.free(this)
+    }
 
-    fun finish() {
-        start = -1
-        destination = -1
-        curData = null
-        routine?.release()
+    override fun reset() {
+        start = null
+        destination = null
+        request = EmptyDataID
+        routine?.free()
         routine = null
     }
 }
 
-class Path : LinkedPath<INetworkNode>(), Pool.Poolable {
-    var ownerCounter = 0
-    fun tryDeconstruct() {
-        if (ownerCounter == 0) {
-            DataNetwork.pathPool.free(this)
-        } else if (ownerCounter < 0) {
-            CLog.warn("Path(${path.joinToString(",")}) has negative owner counter.")
-        }
-    }
-    @Suppress("UNUSED_PARAMETER")
-    fun bind(any: Any) {
-        ownerCounter++
+class Path : ReversedArrayPath<INetworkNode>(), Pool.Poolable {
+    fun free() {
+        DataNetwork.pathPool.free(this)
     }
 
-    fun release() {
-        ownerCounter--
-    }
-    @Deprecated(
-        "This is called by object pool, don't use this",
-        ReplaceWith("path.tryDeconstruct()"),
-        level = DeprecationLevel.ERROR
-    )
     override fun reset() {
         path.clear()
     }

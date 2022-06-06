@@ -10,6 +10,7 @@ import arc.scene.ui.ScrollPane
 import arc.scene.ui.TextField
 import arc.scene.ui.layout.Table
 import arc.scene.ui.layout.WidgetGroup
+import arc.struct.Seq
 import arc.util.Interval
 import mindustry.Vars
 import mindustry.ctype.UnlockableContent
@@ -77,7 +78,7 @@ object DebugUI {
     }
 
     val entityList = ArrayList<Entityc>(64)
-    val starList = ArrayList<Entityc>(8)
+    val starList = Seq<Entityc>(8)
     val entityClz2Field = HashMap<Class<out Entityc>, ArrayList<Field>>()
     val timer = Interval(10)
     var timerID = 0

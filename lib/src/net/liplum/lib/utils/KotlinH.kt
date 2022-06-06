@@ -4,6 +4,8 @@ package net.liplum.lib.utils
 
 import net.liplum.lib.Out
 
+typealias Index = Int
+
 fun Double.format(digits: Int) = "%.${digits}f".format(this)
 fun Float.format(digits: Int) = "%.${digits}f".format(this)
 infix fun Float.coIn(abs: Float) = this.coerceIn(-abs, abs)
@@ -278,7 +280,7 @@ fun <T> MutableCollection<T>.swap(other: MutableCollection<T>, temp: MutableColl
 
 inline fun <T> MutableList<T>.shrinkTo(
     targetSize: Int,
-    removing: MutableList<T>.() -> Unit = { this.removeLast() }
+    removing: MutableList<T>.() -> Unit = { this.removeLast() },
 ) {
     if (size <= targetSize) return
     for (i in 0 until targetSize - size) {
@@ -287,7 +289,7 @@ inline fun <T> MutableList<T>.shrinkTo(
 }
 
 inline fun <T> coherentApply(
-    o1: T, o2: T, func: T.() -> Unit
+    o1: T, o2: T, func: T.() -> Unit,
 ) {
     o1.func()
     o2.func()

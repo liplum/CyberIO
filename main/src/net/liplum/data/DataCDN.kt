@@ -26,11 +26,10 @@ class DataCDN(name: String) :
     override var dataCapacity = 2
 
     init {
-        buildType = Prov { CdnBuild() }
-        update = true
         solid = true
+        buildType = Prov { CdnBuild() }
         envEnabled = envEnabled or Env.space
-        initNetworkNodeSettings()
+        setupNetworkNodeSettings()
     }
 
     override fun init() {
@@ -57,7 +56,9 @@ class DataCDN(name: String) :
         @Serialized
         override val dataList = PayloadDataList(dataCapacity)
         @Serialized
-        override val currentOriented: Side = -1
+        override var currentOriented: Side = -1
+        @Serialized
+        override var request: DataID = EmptyDataID
         @Serialized
         override var sendingProgress = 0f
             set(value) {
@@ -81,7 +82,7 @@ class DataCDN(name: String) :
 
         override fun created() {
             super.created()
-            network.add(this)
+            network.initNode(this)
         }
 
         override fun buildConfiguration(table: Table) {

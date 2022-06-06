@@ -8,6 +8,7 @@ import arc.util.io.Reads
 import arc.util.io.Writes
 import net.liplum.annotations.CacheRW
 import net.liplum.lib.utils.forEach
+import net.liplum.lib.utils.shrinkTo
 
 fun IntSeq.read(reader: Reads): IntSeq {
     this.clear()
@@ -80,7 +81,7 @@ fun ObjectSet<Int>.write(writer: Writes): ObjectSet<Int> {
 }
 
 inline fun <reified C, reified T> C.read(
-    reader: Reads, reading: Reads.() -> T
+    reader: Reads, reading: Reads.() -> T,
 ): C where C : ObjectSet<T> {
     this.clear()
     val length: Int = reader.i()
@@ -91,7 +92,7 @@ inline fun <reified C, reified T> C.read(
 }
 
 inline fun <reified C, reified T> C.write(
-    writer: Writes, writing: Writes.(T) -> Unit
+    writer: Writes, writing: Writes.(T) -> Unit,
 ): C where C : ObjectSet<T> {
     writer.i(this.size)
     for (data in this) {
@@ -101,7 +102,7 @@ inline fun <reified C, reified T> C.write(
 }
 
 inline fun <reified C, reified T> C.read(
-    reader: Reads, reading: Reads.() -> T
+    reader: Reads, reading: Reads.() -> T,
 ): C where C : Seq<T> {
     this.clear()
     val length: Int = reader.i()
@@ -111,8 +112,33 @@ inline fun <reified C, reified T> C.read(
     return this
 }
 
+inline fun <reified C, reified T> C.readOverwrite(
+    reader: Reads, ctor: () -> T, reading: Reads.(T) -> Unit,
+): C where C : Seq<T> {
+    val targetLen: Int = reader.i()
+    val curLen = this.size
+    if (curLen > targetLen) {
+        for (i in 0 until targetLen) {
+            reader.reading(this[i])
+        }
+        this.shrinkTo(targetLen)
+    } else if (curLen == targetLen) {
+        for (i in 0 until targetLen) {
+            reader.reading(this[i])
+        }
+    } else { // curLen < targetLen
+        for (i in 0 until targetLen) {
+            reader.reading(this[i])
+        }
+        for (i in 0 until targetLen - curLen){
+            this.add(ctor())
+        }
+    }
+    return this
+}
+
 inline fun <reified C, reified T> C.write(
-    writer: Writes, writing: Writes.(T) -> Unit
+    writer: Writes, writing: Writes.(T) -> Unit,
 ): C where C : Seq<T> {
     writer.i(this.size)
     for (data in this) {
@@ -130,5 +156,27 @@ fun Vec2.read(reader: Reads): Vec2 {
 fun Vec2.write(writer: Writes): Vec2 {
     writer.f(x)
     writer.f(y)
+    return this
+}
+
+inline fun <reified C, reified T> C.read(
+    reader: Reads, reading: Reads.() -> T,
+): C where C : IntMap<T> {
+    this.clear()
+    val length: Int = reader.i()
+    for (i in 0 until length) {
+        put(reader.i(), reader.reading())
+    }
+    return this
+}
+
+inline fun <reified C, reified T> C.write(
+    writer: Writes, writing: Writes.(T) -> Unit,
+): C where C : IntMap<T> {
+    writer.i(this.size)
+    for (entry in this) {
+        writer.i(entry.key)
+        writer.writing(entry.value)
+    }
     return this
 }

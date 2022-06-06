@@ -39,10 +39,8 @@ class CacheRwProcessor(
                 val codes = File(file.filePath).readText()
                 // Remove the annotation to prevent infinite rounds
                 out += codes.replace("@file:CacheRW", "")
-                    .replace("arc.util.io.Reads", readsMapping)
-                    .replace("arc.util.io.Writes", writesMapping)
-                    .replace("Reads", "CacheReaderSpec")
-                    .replace("Writes", "CacheWriter")
+                    .replace("Reads", readsMapping)
+                    .replace("Writes", writesMapping)
                 out.close()
                 logger.info("Generated a mirror of $originalFile into $mirrorFile.kt successfully.")
             }

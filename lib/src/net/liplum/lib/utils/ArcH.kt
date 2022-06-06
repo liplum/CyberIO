@@ -179,3 +179,43 @@ fun <T> Seq<T>.set(other: Iterable<T>) = apply {
     for (e in other)
         this.add(e)
 }
+/**
+ * Using index instead of iterator.
+ */
+inline fun <T> Seq<T>.forLoop(func: (T) -> Unit) = apply {
+    for (i in 0 until this.size) {
+        func(this[i])
+    }
+}
+
+fun <T> Seq<T>.shrinkTo(targetSize: Int) = apply {
+    if (size > targetSize) {
+        removeLastRange(size - targetSize)
+    }
+}
+/**
+ * It doesn't break the order if this [Seq] ordered.
+ */
+fun <T> Seq<T>.removeLast() = apply {
+    check(size != 0) { "Array is empty." }
+    this.items[size - 1] = null
+    --size
+}
+/**
+ * It doesn't break the order if this [Seq] ordered.
+ */
+fun <T> Seq<T>.removeLastRange(length: Int) = apply {
+    if (length > size) throw IndexOutOfBoundsException("length can't be > size: $length > $size")
+    if (length == size) this.clear()
+    else {
+        for (i in 0 until size - length) {
+            this.items[size - 1] = null
+            --size
+        }
+    }
+}
+
+operator fun <T> IntMap<T>.set(key: Int, value: T) {
+    put(key, value)
+}
+
