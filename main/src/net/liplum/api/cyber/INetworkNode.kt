@@ -37,6 +37,24 @@ interface INetworkNode : ICyberEntity, IVertex<INetworkNode> {
     val sideEnable: SideEnable
     val canReceiveMoreData: Boolean
         get() = dataList.canAddMore
+    val railWidth: Float
+        get() = Vars.tilesize.toFloat()
+    /**
+     * 4 sides
+     * [0f,1f]
+     */
+    @ClientOnly
+    val warmUp: FloatArray
+    fun updateAsNode() {
+        links.forEachSide {
+            if (links.isEmpty(it)) warmUp[it] = 0f
+            else warmUp[it] = (warmUp[it] + deltaAsNode() * 0.008f
+                    ).coerceIn(0f, 1f)
+        }
+    }
+
+    fun deltaAsNode(): Float =
+        building.delta()
     /**
      * If this couldn't contain more, just desert it.
      * Note: even if unsync, the [dataList] will correct the result.
@@ -140,9 +158,11 @@ interface INetworkNode : ICyberEntity, IVertex<INetworkNode> {
         val old = links[side]
         if (old == -1) return
         links[side] = -1
+        warmUp[side] = 0f
         old.TEAny<INetworkNode>()?.let {
             // If this is a node existed on this side, separate the network
             it.links[side.reflect] = -1
+            it.warmUp[side.reflect] = 0f
             if (it.network == this.network) {
                 val newNetwork = DataNetwork()
                 val oldNetwork = it.network
@@ -209,6 +229,7 @@ object EmptyNetworkNode : INetworkNode {
     override var currentOriented: Side = -1
     override val sendingProgress: Float = 0f
     override val sideEnable = SideEnable(4) { false }
+    override val warmUp = FloatArray(4)
     override val linkRange = 0f
 }
 

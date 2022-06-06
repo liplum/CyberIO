@@ -5,6 +5,7 @@ package net.liplum.api.cyber
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
 import arc.math.geom.Geometry
+import arc.scene.event.Touchable
 import arc.scene.style.TextureRegionDrawable
 import arc.scene.ui.Image
 import arc.scene.ui.Label
@@ -16,13 +17,16 @@ import mindustry.Vars
 import mindustry.Vars.world
 import mindustry.gen.Iconc
 import mindustry.gen.Tex
+import mindustry.graphics.Drawf
 import mindustry.graphics.Layer
 import mindustry.graphics.Pal
 import mindustry.ui.Styles
 import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.api.cyber.SideLinks.Companion.coordinates
+import net.liplum.data.EmptyDataID
 import net.liplum.data.PayloadData
+import net.liplum.lib.TR
 import net.liplum.lib.utils.DrawLayer
 import net.liplum.mdt.advanced.Inspector.isPlacing
 import net.liplum.mdt.advanced.Inspector.isSelected
@@ -34,6 +38,7 @@ import net.liplum.mdt.utils.TEAny
 import net.liplum.mdt.utils.TileXY
 import net.liplum.mdt.utils.build
 import net.liplum.mdt.utils.worldXY
+import kotlin.math.absoluteValue
 
 val destinations = arrayOfNulls<INetworkNode>(4)
 /**
@@ -205,9 +210,14 @@ fun INetworkNode.drawLinkInfo() = building.run {
             Text.drawTextEasy(
                 text,
                 x + size * dir.x, y + size * dir.y,
-                R.C.GreenSafe
+                if (currentOriented == side) R.C.BrainWave else R.C.GreenSafe
             )
         }
+        val req = if (request == EmptyDataID) "?" else "$request"
+        Text.drawTextEasy(
+            req,
+            x, y + block.size.worldXY / 3f, R.C.VirusBK
+        )
     }
 }
 @DebugOnly
@@ -270,11 +280,49 @@ fun Table.buildPayloadDataInfoSelectorItem(cur: INetworkNode, node: INetworkNode
     add(
         Stack(
             Elem.newImageButton(TextureRegionDrawable(data.payload.icon())) {
-                //cur.postRequest(node, data)
+                cur.request = data.id
             },
-            Label("${data.id}"),
+            Label("${data.id}").apply {
+                touchable = Touchable.disabled
+            },
         )
     ).size(Vars.iconXLarge * 1.5f).row()
     val tile = node.tile
     add(Label { "${tile.x},${tile.y}" })
+}
+
+fun INetworkNode.drawRail(beamTR: TR, beamEndTR: TR) {
+    val thisOffset = block.size * Vars.tilesize / 2f
+    val ox = this.building.x
+    val oy = this.building.y
+    val widthHalf = railWidth / 2f
+    val thickness = 0.2f
+    links.forEachNodeWithSide { side, t ->
+        val pn = 1f - warmUp[side]
+        val dir = coordinates[side]
+        val tx = t.building.x
+        val ty = t.building.y
+        val x = (ox + tx) / 2f
+        val y = (oy + ty) / 2f
+        val tOffset = t.block.size * Vars.tilesize / 2f
+        if (side % 2 == 1) {
+            val thisY = oy + dir.y * thisOffset
+            var targY = ty - dir.y * tOffset
+            val x1 = x - widthHalf
+            val x2 = x + widthHalf
+            val len = (targY - thisY).absoluteValue
+            targY -= dir.y * pn * len
+            Drawf.laser(beamTR, beamEndTR, x1, thisY, x1, targY, thickness)
+            Drawf.laser(beamTR, beamEndTR, x2, thisY, x2, targY, thickness)
+        } else {
+            val thisX = ox + dir.x * thisOffset
+            var targX = tx - dir.x * tOffset
+            val y1 = y - widthHalf
+            val y2 = y + widthHalf
+            val len = (targX - thisX).absoluteValue
+            targX -= dir.x * pn * len
+            Drawf.laser(beamTR, beamEndTR, thisX, y1, targX, y1, thickness)
+            Drawf.laser(beamTR, beamEndTR, thisX, y2, targX, y2, thickness)
+        }
+    }
 }

@@ -12,11 +12,13 @@ import net.liplum.Var
 import net.liplum.api.cyber.*
 import net.liplum.api.cyber.SideLinks.Companion.enableAllSides
 import net.liplum.lib.Serialized
+import net.liplum.lib.TR
 import net.liplum.lib.shaders.use
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.smoothSelect
 import net.liplum.mdt.utils.WorldXY
+import net.liplum.mdt.utils.atlas
 import net.liplum.mdt.utils.worldXY
 import net.liplum.registries.SD
 import net.liplum.utils.addSendingProgress
@@ -29,6 +31,8 @@ class Serializer(name: String) :
     @ClientOnly override var expendPlacingLineTime = Var.SelectedCircleTime
     override val sideEnable = enableAllSides
     override var dataCapacity = 3
+    @ClientOnly @JvmField var railTR = TR()
+    @ClientOnly @JvmField var rialEndTR = TR()
 
     init {
         outputsPayload = false
@@ -41,6 +45,12 @@ class Serializer(name: String) :
         //make sure to display large units.
         clipSize = 120f
         setupNetworkNodeSettings()
+    }
+
+    override fun load() {
+        super.load()
+        railTR.set("power-beam".atlas())
+        rialEndTR.set("power-beam-end".atlas())
     }
 
     override fun setBars() {
@@ -80,6 +90,8 @@ class Serializer(name: String) :
         override val expendSelectingLineTime = this@Serializer.expendPlacingLineTime
         override val linkRange = this@Serializer.linkRange
         override val sideEnable = this@Serializer.sideEnable
+        @ClientOnly
+        override val warmUp = FloatArray(4)
         var lastTileChange = -2
         override fun draw() {
             DebugOnly {
@@ -117,6 +129,7 @@ class Serializer(name: String) :
                     drawPayload()
                 }
             }
+            drawRail(railTR, rialEndTR)
         }
 
         override fun updateTile() {
@@ -124,6 +137,7 @@ class Serializer(name: String) :
                 lastTileChange = Vars.world.tileChanges
                 updateCardinalDirections()
             }
+            updateAsNode()
             // Don't update payload
             moveInPayload(false)
             val payload = payload
@@ -131,7 +145,7 @@ class Serializer(name: String) :
             serializingProgress += delta() * serializationSpeed
             if (serializingProgress >= 1f) {
                 this.payload = null
-                dataList.add(PayloadData(payload,DataNetwork.assignDataID()))
+                dataList.add(PayloadData(payload, DataNetwork.assignDataID()))
                 serializingProgress = 0f
             }
         }

@@ -20,7 +20,9 @@ import plumy.pathkt.*
 import java.util.*
 
 class DataNetwork {
-    val entity = DataNetworkUpdater.create()
+    val entity = DataNetworkUpdater.create().apply {
+        network = this@DataNetwork
+    }
     val nodes = Seq<INetworkNode>()
     val routineCache = HashMap<Any, Path>()
     var id = lastNetworkID++
@@ -33,6 +35,7 @@ class DataNetwork {
     }
 
     fun update() {
+        if(nodes.size <= 0) return // if no node here, do nothing
         for (node in nodes) {
             val request = node.request
             if(request == EmptyDataID) continue
@@ -44,6 +47,7 @@ class DataNetwork {
                 }
             }
         }
+        if(dataId2Task.size <= 0) return
         val tasks = dataId2Task.values()
         while (tasks.hasNext()) {
             val task = tasks.next()
@@ -52,6 +56,7 @@ class DataNetwork {
             if (task.validate(path, progress)) {
                 if (progress == path.size - 1) {
                     // the data reached the destination
+                    task.free()
                     tasks.remove()
                 } else {
                     // the data doesn't reach the destination, including just one node remaining
@@ -65,6 +70,7 @@ class DataNetwork {
                 }
                 if (curProgress < 0) {
                     // I don't know what happened, but the data may have reached the destination or disappear.
+                    task.free()
                     tasks.remove()
                 } else {
                     task.curProgress = curProgress
@@ -113,6 +119,7 @@ class DataNetwork {
             } else {
                 // Or using the shortest path?
                 val path = bfs.findFirstPath(start, destination)
+                path.reverse() // It uses [ReversedArrayPath]
                 if (path.isEmpty()) {
                     path.free()
                     null
