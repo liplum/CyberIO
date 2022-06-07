@@ -7,6 +7,7 @@ import arc.util.Time
 import mindustry.game.EventType
 import net.liplum.annotations.Only
 import net.liplum.annotations.Subscribe
+import net.liplum.lib.math.progress
 import net.liplum.lib.utils.progress
 import net.liplum.mdt.ClientOnly
 

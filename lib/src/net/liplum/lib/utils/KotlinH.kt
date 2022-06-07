@@ -220,14 +220,6 @@ fun <T> Array<T>.progress(progress: Float): T {
     val index = (p * size).toInt().coerceAtMost(size - 1)
     return this[index]
 }
-/**
- * @receiver max
- * @return current progress in [0,max)
- */
-fun Int.progress(progress: Float): Int {
-    val p = progress.coerceIn(0f, 1f)
-    return (p * this).toInt().coerceAtMost(this - 1)
-}
 
 inline fun Int.forLoop(func: (Int) -> Unit) {
     for (i in 0 until this)

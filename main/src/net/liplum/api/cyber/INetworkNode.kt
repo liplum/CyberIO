@@ -10,6 +10,7 @@ import net.liplum.data.PayloadData
 import net.liplum.data.PayloadDataList
 import net.liplum.lib.Out
 import net.liplum.lib.Serialized
+import net.liplum.lib.math.Progress
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.utils.TEAny
 import net.liplum.mdt.utils.TileXY
@@ -23,34 +24,68 @@ interface INetworkNode : ICyberEntity, IVertex<INetworkNode> {
     @Serialized
     var request: DataID
     @Serialized
+    var dataBeingSent: DataID
+    @Serialized
     val dataList: PayloadDataList
     /**
      * It represents which next node this wants to send.
      */
     @Serialized
     var currentOriented: Side
+    val currentOrientedNode: INetworkNode?
+        get() = links[currentOriented].TEAny()
     /**
      * [0f,1f]
      */
     @Serialized
-    val sendingProgress: Float
+    var sendingProgress: Progress
     val sideEnable: SideEnable
     val canReceiveMoreData: Boolean
         get() = dataList.canAddMore
-    val railWidth: Float
-        get() = Vars.tilesize.toFloat()
     /**
      * 4 sides
      * [0f,1f]
      */
     @ClientOnly
-    val warmUp: FloatArray
+    val linkingTime: FloatArray
     fun updateAsNode() {
-        links.forEachSide {
-            if (links.isEmpty(it)) warmUp[it] = 0f
-            else warmUp[it] = (warmUp[it] + deltaAsNode() * 0.008f
-                    ).coerceIn(0f, 1f)
+        links.forEach {
+            if (links.isEmpty(it)) linkingTime[it] = 0f
+            else linkingTime[it] += deltaAsNode()
         }
+        getData(dataBeingSent)?.let {
+            sendingProgress += getDataSendingIncrement(it)
+            sendingProgress = sendingProgress.coerceIn(0f, 1f)
+            if (sendingProgress >= 1f) {
+                val next = currentOrientedNode
+                if (next != null && trySendDataTo(next, it)) {
+                    sendingProgress = 0f
+                    advanceProgress()
+                }
+            }
+        }
+    }
+
+    fun trySendDataTo(next: INetworkNode, data: PayloadData): Boolean {
+        if (next.canReceiveMoreData) {
+            next.receiveData(data)
+            dataList.remove(data)
+            return true
+        }
+        return false
+    }
+
+    fun advanceProgress(){
+        network.advanceProgress(dataBeingSent)
+        dataBeingSent = EmptyDataID
+        currentOriented = -1
+    }
+    /**
+     * Each [WorldXY] unit size requires 10 ticks to be sent as default.
+     */
+    fun getDataSendingIncrement(payload: PayloadData): Progress {
+        val totalTime = payload.payload.size() * 10f
+        return deltaAsNode() / totalTime
     }
 
     fun deltaAsNode(): Float =
@@ -158,11 +193,9 @@ interface INetworkNode : ICyberEntity, IVertex<INetworkNode> {
         val old = links[side]
         if (old == -1) return
         links[side] = -1
-        warmUp[side] = 0f
         old.TEAny<INetworkNode>()?.let {
             // If this is a node existed on this side, separate the network
             it.links[side.reflect] = -1
-            it.warmUp[side.reflect] = 0f
             if (it.network == this.network) {
                 val newNetwork = DataNetwork()
                 val oldNetwork = it.network
@@ -189,7 +222,7 @@ inline fun INetworkNode.forEachEnabledSide(func: (Side) -> Unit) {
 }
 
 interface INetworkBlock {
-    val linkRange: WorldXY
+    var linkRange: WorldXY
     val tileLinkRange: TileXY
         get() = (linkRange / Vars.tilesize).toInt()
     val block: Block
@@ -197,6 +230,9 @@ interface INetworkBlock {
     @ClientOnly
     val expendPlacingLineTime: Float
     val sideEnable: SideEnable
+    /**
+     * Call this in [Block]'s constructor.
+     */
     fun setupNetworkNodeSettings() {
         block.apply {
             update = true
@@ -204,10 +240,19 @@ interface INetworkBlock {
             sync = true
         }
     }
+    /**
+     * Call this in [Block.init] before super one.
+     */
+    fun initNetworkNodeSettings() {
+        linkRange += block.size / 2f
+    }
 }
 
 fun INetworkNode.hasData(id: DataID): Boolean =
     dataList.hasData(id)
+
+fun INetworkNode.getData(id: DataID): PayloadData? =
+    dataList.getData(id)
 /**
  * Only iterate the enabled sides
  */
@@ -223,13 +268,14 @@ object EmptyNetworkNode : INetworkNode {
     override var init = true
     override var links = SideLinks()
     override var request: DataID = EmptyDataID
+    override var dataBeingSent: DataID = EmptyDataID
     override val dataList: PayloadDataList = PayloadDataList()
     @ClientOnly
     override val expendSelectingLineTime = 0f
     override var currentOriented: Side = -1
-    override val sendingProgress: Float = 0f
+    override var sendingProgress: Float = 0f
     override val sideEnable = SideEnable(4) { false }
-    override val warmUp = FloatArray(4)
+    override val linkingTime = FloatArray(4)
     override val linkRange = 0f
 }
 

@@ -2,6 +2,7 @@ package net.liplum
 
 import arc.math.Rand
 import mindustry.Vars
+import net.liplum.mdt.utils.WorldXY
 
 object Var {
     @JvmField var ContentSpecific = ContentSpec.Vanilla
@@ -21,4 +22,7 @@ object Var {
     @JvmField var TestGlCompatibility = false
     @JvmField val Rand = Rand()
     @JvmField var ParticleEffectNumber = if (Vars.mobile) 64 else 128
+    @JvmField var NetworkNodeChannelWidth: WorldXY = Vars.tilesize.toFloat()
+    /** [WorldXY] pre tick */
+    @JvmField var NetworkNodeRailSpeed: WorldXY = 0.5f * Vars.tilesize
 }

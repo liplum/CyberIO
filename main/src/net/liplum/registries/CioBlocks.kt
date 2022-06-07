@@ -1550,7 +1550,7 @@ object CioBlocks {
                 requirements(
                     Category.units, BuildVisibility.shown, arrayOf()
                 )
-                size = 5
+                size = 4
             }
         }
     }

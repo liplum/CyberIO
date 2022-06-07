@@ -32,6 +32,7 @@ import net.liplum.lib.math.approachA
 import net.liplum.lib.math.approachR
 import net.liplum.lib.math.radian
 import net.liplum.lib.utils.EmptySounds
+import net.liplum.lib.math.progress
 import net.liplum.lib.utils.progress
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.WhenNotPaused

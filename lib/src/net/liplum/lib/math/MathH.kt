@@ -316,3 +316,11 @@ fun Polar.random(radiusRange: Float, random: Rand = Mathf.rand): Polar {
 
 operator fun Vec2.component1(): Float = x
 operator fun Vec2.component2(): Float = y
+/**
+ * @receiver max
+ * @return current progress in [0,max)
+ */
+fun Int.progress(progress: Progress): Int {
+    val p = progress.coerceIn(0f, 1f)
+    return (p * this).toInt().coerceAtMost(this - 1)
+}

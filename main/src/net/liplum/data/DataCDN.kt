@@ -38,6 +38,7 @@ class DataCDN(name: String) :
     }
 
     override fun init() {
+        initNetworkNodeSettings()
         super.init()
         clipSize = max(clipSize, linkRange * 1.2f)
         if (expendPlacingLineTime < 0f)
@@ -71,6 +72,8 @@ class DataCDN(name: String) :
         @Serialized
         override var request: DataID = EmptyDataID
         @Serialized
+        override var dataBeingSent: DataID = EmptyDataID
+        @Serialized
         override var sendingProgress = 0f
             set(value) {
                 field = value.coerceIn(0f, 1f)
@@ -81,7 +84,7 @@ class DataCDN(name: String) :
         override var links = SideLinks()
         override val sideEnable = this@DataCDN.sideEnable
         @ClientOnly
-        override val warmUp = FloatArray(4)
+        override val linkingTime = FloatArray(4)
         @ClientOnly
         override val expendSelectingLineTime = this@DataCDN.expendPlacingLineTime
         override val linkRange = this@DataCDN.linkRange
@@ -119,7 +122,6 @@ class DataCDN(name: String) :
         override fun drawSelect() {
             super.drawSelect()
             drawSelectingCardinalDirections()
-            drawRangeCircle(alpha = smoothSelect(expendSelectingLineTime))
             DebugOnly {
                 drawNetworkInfo()
             }
@@ -134,7 +136,10 @@ class DataCDN(name: String) :
             super.onRemoved()
             onRemovedFromGround()
         }
-
+        override fun onProximityAdded() {
+            super.onProximityAdded()
+            updateCardinalDirections()
+        }
         override fun onProximityRemoved() {
             super.onProximityRemoved()
             onRemovedFromGround()

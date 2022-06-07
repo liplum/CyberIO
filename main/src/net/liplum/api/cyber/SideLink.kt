@@ -138,6 +138,15 @@ class SideLinks {
         }
     }
     /**
+     * Only iterate [Side] on the any side no matter whether it's empty.
+     * In order of [RIGHT] to [BOTTOM]
+     */
+    inline fun forEach(cons: (Side) -> Unit) {
+        for (side in RIGHT..BOTTOM) {
+            cons(side)
+        }
+    }
+    /**
      * Only iterate [PackedPos] on the non-empty sides.
      * In order of [RIGHT] to [BOTTOM]
      */

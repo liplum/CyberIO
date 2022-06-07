@@ -4,6 +4,7 @@ package net.liplum.api.cyber
 
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
+import arc.graphics.g2d.Fill
 import arc.math.geom.Geometry
 import arc.scene.event.Touchable
 import arc.scene.style.TextureRegionDrawable
@@ -23,10 +24,13 @@ import mindustry.graphics.Pal
 import mindustry.ui.Styles
 import net.liplum.DebugOnly
 import net.liplum.R
+import net.liplum.S
+import net.liplum.Var
 import net.liplum.api.cyber.SideLinks.Companion.coordinates
 import net.liplum.data.EmptyDataID
 import net.liplum.data.PayloadData
 import net.liplum.lib.TR
+import net.liplum.lib.math.smooth
 import net.liplum.lib.utils.DrawLayer
 import net.liplum.mdt.advanced.Inspector.isPlacing
 import net.liplum.mdt.advanced.Inspector.isSelected
@@ -34,10 +38,7 @@ import net.liplum.mdt.render.G
 import net.liplum.mdt.render.Text
 import net.liplum.mdt.render.smoothPlacing
 import net.liplum.mdt.render.smoothSelect
-import net.liplum.mdt.utils.TEAny
-import net.liplum.mdt.utils.TileXY
-import net.liplum.mdt.utils.build
-import net.liplum.mdt.utils.worldXY
+import net.liplum.mdt.utils.*
 import kotlin.math.absoluteValue
 
 val destinations = arrayOfNulls<INetworkNode>(4)
@@ -59,7 +60,7 @@ fun INetworkNode.updateCardinalDirections() = building.run {
         destinations[side] = null
         for (j in 1 + offset..range + offset) { // expending
             val b = world.build(tileX + j * dir.x, tileY + j * dir.y)
-            if (b is INetworkNode) {
+            if (b != null && b.team == team && b is INetworkNode) {
                 destinations[side] = b
                 break
             }
@@ -91,15 +92,15 @@ fun INetworkNode.drawSelectingCardinalDirections() = building.run {
     val size = block.size
     val tileX = tile.x
     val tileY = tile.y
-    for (i in 0..3) {
-        var maxLen = (range + size / 2f).worldXY
+    val offset = size / 2
+    for (side in RIGHT..BOTTOM) {
+        var maxLen = range.worldXY
         var limit = -1f
         var dest: INetworkNode? = null
-        val dir = Geometry.d4[i]
+        val dir = coordinates[side]
         val dx = dir.x
         val dy = dir.y
-        val offset = size / 2
-        for (j in 1 + offset..range + offset) {
+        for (j in 1 + offset..range) {
             val other = world.build(tileX + j * dir.x, tileY + j * dir.y)
             if (other != null && other.team == team && other is INetworkNode) {
                 limit = j.worldXY
@@ -109,20 +110,18 @@ fun INetworkNode.drawSelectingCardinalDirections() = building.run {
         }
         maxLen *= smoothSelect(expendSelectingLineTime)
         if (limit > 0f) maxLen = maxLen.coerceAtMost(limit)
-        val blockOffset = (size / 2f + 2).worldXY
+        val blockOffset = (size / 2f).worldXY
         val x1 = x + dx * blockOffset
         val y1 = y + dy * blockOffset
         val x2 = x + dx * maxLen
         val y2 = y + dy * maxLen
         DebugOnly {
-            for (side in RIGHT..BOTTOM) {
-                Text.drawTextEasy(
-                    "${maxLen.toInt()}",
-                    x + size * 2 * dir.x,
-                    y + size * 2 * dir.y,
-                    R.C.GreenSafe
-                )
-            }
+            Text.drawTextEasy(
+                "${maxLen.toInt()}",
+                x + size * 2 * dir.x,
+                y + size * 2 * dir.y,
+                R.C.GreenSafe
+            )
         }
         if (dest != null) {
             val raycastReach = maxLen >= dest.building.dst(this) - dest.block.size.worldXY
@@ -134,6 +133,7 @@ fun INetworkNode.drawSelectingCardinalDirections() = building.run {
             G.lineBreath(x1, y1, x2, y2, Pal.placing, stroke = 2f)
         }
     }
+    drawRangeCircle(alpha = smoothSelect(expendSelectingLineTime))
 }
 
 fun INetworkBlock.drawPlaceCardinalDirections(
@@ -143,15 +143,15 @@ fun INetworkBlock.drawPlaceCardinalDirections(
     if (!this.isPlacing()) return
     val team = Vars.player.team()
     val range = tileLinkRange
-    for (i in 0..3) {
-        var maxLen = (range + size / 2f).worldXY
+    val offset = size / 2
+    for (side in RIGHT..BOTTOM) {
+        var maxLen = range.worldXY
         var limit = -1f
         var dest: INetworkNode? = null
-        val dir = Geometry.d4[i]
+        val dir = coordinates[side]
         val dx = dir.x
         val dy = dir.y
-        val offset = size / 2
-        for (j in 1 + offset..range + offset) {
+        for (j in 1 + offset..range) {
             val other = world.build(x + j * dir.x, y + j * dir.y)
             if (other != null && other.team == team && other is INetworkNode) {
                 limit = j.worldXY
@@ -163,20 +163,18 @@ fun INetworkBlock.drawPlaceCardinalDirections(
         if (limit > 0f) maxLen = maxLen.coerceAtMost(limit)
         val worldX = x.worldXY
         val worldY = y.worldXY
-        val blockOffset = (size / 2f + 2).worldXY
+        val blockOffset = (size / 2f).worldXY
         val x1 = worldX + dx * blockOffset
         val y1 = worldY + dy * blockOffset
         val x2 = worldX + dx * maxLen
         val y2 = worldY + dy * maxLen
         DebugOnly {
-            for (side in RIGHT..BOTTOM) {
-                Text.drawTextEasy(
-                    "${maxLen.toInt()}",
-                    worldX + size * 2 * dir.x,
-                    worldY + size * 2 * dir.y,
-                    R.C.GreenSafe
-                )
-            }
+            Text.drawTextEasy(
+                "${maxLen.toInt()}",
+                worldX + size * 2 * dir.x,
+                worldY + size * 2 * dir.y,
+                R.C.GreenSafe
+            )
         }
         if (dest != null) {
             val raycastReach = maxLen >= dest.building.dst(worldX, worldY) - dest.block.size.worldXY
@@ -188,11 +186,19 @@ fun INetworkBlock.drawPlaceCardinalDirections(
             G.lineBreath(x1, y1, x2, y2, Pal.placing, stroke = 2f)
         }
     }
+    drawRangeCircle(x, y, alpha = smoothPlacing(expendPlacingLineTime))
 }
 @DebugOnly
 fun INetworkNode.drawLinkInfo() = building.run {
     DrawLayer {
         Draw.z(Layer.overlayUI)
+        if (sendingProgress > 0f) {
+            val width = 25f
+            Fill.rect(x, y, width, 5f)
+            Draw.color(S.Hologram)
+            Fill.rect(x - width * (1f - sendingProgress) / 2f, y, width * sendingProgress, 5f)
+            Draw.color()
+        }
         forEachEnabledSide { side ->
             val link = links[side]
             val linkB = link.build
@@ -201,7 +207,7 @@ fun INetworkNode.drawLinkInfo() = building.run {
         }
 
         Text.drawTextEasy("${network.id}", x, y + 5f, R.C.RedAlert)
-        Text.drawTextEasy("${building.id}", x, y - 5f, R.C.Holo)
+        Text.drawTextEasy("${building.id}", x, y - 7f, R.C.Holo)
         for (side in RIGHT..BOTTOM) {
             val size = block.size.worldXY / 2f
             val dir = coordinates[side]
@@ -242,6 +248,10 @@ fun INetworkNode.drawNetworkInfo() = building.run {
 
 fun INetworkNode.drawRangeCircle(alpha: Float) = building.run {
     G.circleBreath(x, y, linkRange, alpha = alpha)
+}
+
+fun INetworkBlock.drawRangeCircle(x: TileXY, y: TileXY, alpha: Float) = block.run {
+    G.circleBreath(toCenterWorldXY(x), toCenterWorldXY(y), linkRange, alpha = alpha)
 }
 
 fun INetworkNode.buildNetworkDataList(table: Table) {
@@ -295,10 +305,11 @@ fun INetworkNode.drawRail(beamTR: TR, beamEndTR: TR) {
     val thisOffset = block.size * Vars.tilesize / 2f
     val ox = this.building.x
     val oy = this.building.y
-    val widthHalf = railWidth / 2f
+    val widthHalf = Var.NetworkNodeChannelWidth / 2f
     val thickness = 0.2f
+    Draw.color(S.Hologram)
     links.forEachNodeWithSide { side, t ->
-        val pn = 1f - warmUp[side]
+        val time = linkingTime[side]
         val dir = coordinates[side]
         val tx = t.building.x
         val ty = t.building.y
@@ -311,7 +322,9 @@ fun INetworkNode.drawRail(beamTR: TR, beamEndTR: TR) {
             val x1 = x - widthHalf
             val x2 = x + widthHalf
             val len = (targY - thisY).absoluteValue
-            targY -= dir.y * pn * len
+            val linerShrink = time * Var.NetworkNodeRailSpeed.coerceAtMost(len)
+            val shrink = (linerShrink / len).smooth * len
+            targY -= dir.y * (len - shrink)
             Drawf.laser(beamTR, beamEndTR, x1, thisY, x1, targY, thickness)
             Drawf.laser(beamTR, beamEndTR, x2, thisY, x2, targY, thickness)
         } else {
@@ -320,9 +333,12 @@ fun INetworkNode.drawRail(beamTR: TR, beamEndTR: TR) {
             val y1 = y - widthHalf
             val y2 = y + widthHalf
             val len = (targX - thisX).absoluteValue
-            targX -= dir.x * pn * len
+            val linerShrink = time * Var.NetworkNodeRailSpeed.coerceAtMost(len)
+            val shrink = (linerShrink / len).smooth * len
+            targX -= dir.x * (len - shrink)
             Drawf.laser(beamTR, beamEndTR, thisX, y1, targX, y1, thickness)
             Drawf.laser(beamTR, beamEndTR, thisX, y2, targX, y2, thickness)
         }
     }
+    Draw.color()
 }

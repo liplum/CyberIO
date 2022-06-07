@@ -60,6 +60,13 @@ class PayloadDataList(
         return false
     }
 
+    fun getData(id: DataID): PayloadData? {
+        allData.forLoop {
+            if (it.id == id) return it
+        }
+        return null
+    }
+
     override fun read(reader: Reads) {
         allData.read(reader) {
             PayloadData(EmptyPayload, EmptyDataID).apply {

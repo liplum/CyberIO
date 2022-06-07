@@ -30,6 +30,7 @@ class Serializer(name: String) :
     override val block = this
     @ClientOnly override var expendPlacingLineTime = Var.SelectedCircleTime
     override val sideEnable = enableAllSides
+    /** how much data it can store. This number will be increased by one to prevent from blocking transfer */
     override var dataCapacity = 3
     @ClientOnly @JvmField var railTR = TR()
     @ClientOnly @JvmField var rialEndTR = TR()
@@ -53,6 +54,12 @@ class Serializer(name: String) :
         rialEndTR.set("power-beam-end".atlas())
     }
 
+    override fun init() {
+        dataCapacity += 1 // to prevent from blocking transfer
+        initNetworkNodeSettings()
+        super.init()
+    }
+
     override fun setBars() {
         super.setBars()
         DebugOnly {
@@ -73,6 +80,8 @@ class Serializer(name: String) :
         @Serialized
         override var request: DataID = EmptyDataID
         @Serialized
+        override var dataBeingSent: DataID = EmptyDataID
+        @Serialized
         override val dataList = PayloadDataList(dataCapacity)
         @Serialized
         override var currentOriented: Side = -1
@@ -91,7 +100,7 @@ class Serializer(name: String) :
         override val linkRange = this@Serializer.linkRange
         override val sideEnable = this@Serializer.sideEnable
         @ClientOnly
-        override val warmUp = FloatArray(4)
+        override val linkingTime = FloatArray(4)
         var lastTileChange = -2
         override fun draw() {
             DebugOnly {
@@ -132,6 +141,9 @@ class Serializer(name: String) :
             drawRail(railTR, rialEndTR)
         }
 
+        val canAddMoreData: Boolean
+            get() = dataList.size < dataList.capacity - 1
+
         override fun updateTile() {
             if (lastTileChange != Vars.world.tileChanges) {
                 lastTileChange = Vars.world.tileChanges
@@ -141,7 +153,7 @@ class Serializer(name: String) :
             // Don't update payload
             moveInPayload(false)
             val payload = payload
-            if (!hasArrived() || !dataList.canAddMore || payload == null) return
+            if (!hasArrived() || !canAddMoreData || payload == null) return
             serializingProgress += delta() * serializationSpeed
             if (serializingProgress >= 1f) {
                 this.payload = null
@@ -171,6 +183,11 @@ class Serializer(name: String) :
         override fun onRemoved() {
             super.onRemoved()
             onRemovedFromGround()
+        }
+
+        override fun onProximityAdded() {
+            super.onProximityAdded()
+            updateCardinalDirections()
         }
 
         override fun onProximityRemoved() {

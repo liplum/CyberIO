@@ -24,21 +24,17 @@ class DataNetwork {
         network = this@DataNetwork
     }
     val nodes = Seq<INetworkNode>()
-    val routineCache = HashMap<Any, Path>()
+    val routineCache by lazy { HashMap<Any, Path>() }
     var id = lastNetworkID++
         private set
     val size: Int
         get() = nodes.size
-    val dataId2Task = IntMap<TransferTask>()
-    fun onNetworkNodeChanged() {
-        clearRoutineCache()
-    }
-
+    val dataId2Task by lazy { IntMap<TransferTask>() }
     fun update() {
-        if(nodes.size <= 0) return // if no node here, do nothing
+        if (nodes.size <= 0) return // if no node here, do nothing
         for (node in nodes) {
             val request = node.request
-            if(request == EmptyDataID) continue
+            if (request == EmptyDataID) continue
             val task: TransferTask? = dataId2Task[request]
             if (task == null) {
                 val holder = findWhoHasDataByID(request)
@@ -47,7 +43,7 @@ class DataNetwork {
                 }
             }
         }
-        if(dataId2Task.size <= 0) return
+        if (dataId2Task.size <= 0) return
         val tasks = dataId2Task.values()
         while (tasks.hasNext()) {
             val task = tasks.next()
@@ -63,6 +59,7 @@ class DataNetwork {
                     val curNode = path[progress]
                     val nextNode = path[progress + 1]
                     curNode.setOriented(nextNode)
+                    curNode.dataBeingSent = task.request
                 }
             } else { // if the progress is not accurate
                 val curProgress = path.refindNode {
@@ -76,6 +73,16 @@ class DataNetwork {
                     task.curProgress = curProgress
                 }
             }
+        }
+    }
+
+    fun onNetworkNodeChanged() {
+        clearRoutineCache()
+    }
+
+    fun advanceProgress(requestID: DataID) {
+        dataId2Task[requestID]?.let {
+            it.curProgress++
         }
     }
 
@@ -118,15 +125,12 @@ class DataNetwork {
                 toPath
             } else {
                 // Or using the shortest path?
-                val path = bfs.findFirstPath(start, destination)
-                path.reverse() // It uses [ReversedArrayPath]
-                if (path.isEmpty()) {
-                    path.free()
-                    null
-                } else {
+                val path = findPath(start, destination)
+                if (path != null) {
+                    path.reverse() // It uses [ReversedArrayPath]
                     routineCache[toKey] = path
                     path
-                }
+                } else null
             }
         }
     }
@@ -159,12 +163,16 @@ class DataNetwork {
         val cached = routineCache[toKey]
         if (cached != null) return cached
         val fromKey = genStart2DestinationKey(destination, start)
-        bfs.findPath(start, destination) { path ->
-            routineCache[toKey] = path
-            routineCache[fromKey] = path.reversedPath()
-            return path
+        bfsContainer.findPathBFS(start, destination).let { path ->
+            return if (path.isEmpty()) {
+                path.free()
+                null
+            } else {
+                routineCache[toKey] = path
+                routineCache[fromKey] = path.reversedPath()
+                path
+            }
         }
-        return null
     }
 
     fun remove() {
@@ -272,13 +280,21 @@ class DataNetwork {
          * It will
          */
         val pathPool: Pool<Path> = Pools.get(Path::class.java, ::Path)
-        private val bfs = EasyBFS<INetworkNode, Path>(
+        private val bfsContainer = object : EasyContainer<INetworkNode, Path>(
             { pointerPool.obtain() },
             { pathPool.obtain() },
-        ).apply {
-            clearSeen = {
-                seen.forEach { pointerPool.free(it as Pointer) }
-                seen.clear()
+        ) {
+            init {
+                clearSeen = {
+                    seen.forEach { pointerPool.free(it as Pointer) }
+                    seen.clear()
+                }
+            }
+
+            override fun createPath(): Path {
+                return super.createPath().apply {
+                    isFree = false
+                }
             }
         }
         private val tmp1 = ArrayList<INetworkNode>()
@@ -336,9 +352,20 @@ class TransferTask : Pool.Poolable {
     }
 }
 
-class Path : ReversedArrayPath<INetworkNode>(), Pool.Poolable {
+class Path internal constructor() : ReversedArrayPath<INetworkNode>(), Pool.Poolable {
+    var isFree = true
+    /**
+     * Use this to initialize the object.
+     */
+    inline fun use(func: Path.() -> Unit): Path {
+        func()
+        isFree = false
+        return this
+    }
+
     fun free() {
-        DataNetwork.pathPool.free(this)
+        if (!isFree)
+            DataNetwork.pathPool.free(this)
     }
 
     override fun reset() {
@@ -353,8 +380,8 @@ fun Path.reversedPath(): Path {
     return reversed
 }
 
-class Pointer : BFS.IPointer<INetworkNode>, Pool.Poolable {
-    override var previous: BFS.IPointer<INetworkNode>? = null
+class Pointer internal constructor() : IPointer<INetworkNode>, Pool.Poolable {
+    override var previous: IPointer<INetworkNode>? = null
     override var self: INetworkNode = EmptyNetworkNode
     override fun reset() {
         previous = null
