@@ -6,6 +6,8 @@ import arc.graphics.Color
 import arc.graphics.g2d.Draw
 import mindustry.gen.Building
 import net.liplum.lib.TR
+import net.liplum.mdt.render.G.realHeight
+import net.liplum.mdt.render.G.realWidth
 
 var ALPHA: Float = 1f
     set(value) {
@@ -29,7 +31,7 @@ fun TR.DrawSize(
     rotation: Float = 0f
 ) {
     Draw.alpha(Draw.getColor().a * ALPHA)
-    Draw.rect(this, x, y, G.Dw(this) * size, G.Dh(this) * size, rotation)
+    Draw.rect(this, x, y, this.realWidth * size, this.realHeight * size, rotation)
 }
 @JvmOverloads
 fun TR.DrawOn(build: Building, rotation: Float = 0f) {
@@ -45,7 +47,7 @@ fun TR.Draw(
 @JvmOverloads
 fun TR.DrawAny(
     x: Float, y: Float,
-    width: Float = G.Dw(this), height: Float = G.Dh(this),
+    width: Float = this.realWidth, height: Float = this.realHeight,
     rotation: Float = 0f
 ) {
     Draw.alpha(Draw.getColor().a * ALPHA)

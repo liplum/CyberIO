@@ -31,14 +31,13 @@ import net.liplum.api.cyber.SideLinks.Companion.coordinates
 import net.liplum.data.EmptyDataID
 import net.liplum.data.PayloadData
 import net.liplum.lib.TR
+import net.liplum.lib.math.Progress
+import net.liplum.lib.math.between
 import net.liplum.lib.math.smooth
 import net.liplum.lib.utils.DrawLayer
 import net.liplum.mdt.advanced.Inspector.isPlacing
 import net.liplum.mdt.advanced.Inspector.isSelected
-import net.liplum.mdt.render.G
-import net.liplum.mdt.render.Text
-import net.liplum.mdt.render.smoothPlacing
-import net.liplum.mdt.render.smoothSelect
+import net.liplum.mdt.render.*
 import net.liplum.mdt.utils.*
 import kotlin.math.absoluteValue
 
@@ -190,6 +189,14 @@ fun INetworkBlock.drawPlaceCardinalDirections(
     drawRangeCircle(x, y, alpha = smoothPlacing(expendPlacingLineTime))
 }
 @DebugOnly
+fun INetworkNode.drawPayloadList() = building.run {
+    DrawLayer(Layer.blockOver) {
+        dataList.forEachIndexed { i, it ->
+            it.payload.icon().Draw(x - dataList.size * 2f + i * 4f, y + block.size.worldXY, payloadRotation)
+        }
+    }
+}
+@DebugOnly
 fun INetworkNode.drawLinkInfo() = building.run {
     DrawLayer {
         Draw.z(Layer.overlayUI)
@@ -303,14 +310,123 @@ fun Table.buildPayloadDataInfoSelectorItem(cur: INetworkNode, node: INetworkNode
 }
 
 fun INetworkNode.drawRail(beamTR: TR, beamEndTR: TR) {
+    DrawLayer(Layer.blockOver) {
+        val thisOffset = block.size * Vars.tilesize / 2f
+        val ox = this.building.x
+        val oy = this.building.y
+        val widthHalf = Var.NetworkNodeChannelWidth / 2f
+        val thickness = Var.NetworkRailThickness
+        Draw.color(S.Hologram)
+        links.forEachNodeWithSide { side, t ->
+            val time = linkingTime[side]
+            val dir = coordinates[side]
+            val tx = t.building.x
+            val ty = t.building.y
+            val x = (ox + tx) / 2f
+            val y = (oy + ty) / 2f
+            val tOffset = t.block.size * Vars.tilesize / 2f
+            if (side % 2 == 1) { // Top or Bottom
+                val thisY = oy + dir.y * thisOffset
+                var targY = ty - dir.y * tOffset
+                val x1 = x - widthHalf
+                val x2 = x + widthHalf
+                val len = (targY - thisY).absoluteValue
+                val linerShrink = time * Var.NetworkNodeRailSpeed.coerceAtMost(len)
+                val shrink = (linerShrink / len).smooth * len
+                targY -= dir.y * (len - shrink)
+                lastRailEntry[side].let {
+                    it.center = x
+                    it.curLength = (targY - thisY).absoluteValue
+                    it.totalLength = len
+                }
+                Drawf.laser(beamTR, beamEndTR, x1, thisY, x1, targY, thickness)
+                Drawf.laser(beamTR, beamEndTR, x2, thisY, x2, targY, thickness)
+            } else { // Right or Left
+                val thisX = ox + dir.x * thisOffset
+                var targX = tx - dir.x * tOffset
+                val y1 = y - widthHalf
+                val y2 = y + widthHalf
+                val len = (targX - thisX).absoluteValue
+                val linerShrink = time * Var.NetworkNodeRailSpeed.coerceAtMost(len)
+                val shrink = (linerShrink / len).smooth * len
+                targX -= dir.x * (len - shrink)
+                lastRailEntry[side].let {
+                    it.center = y
+                    it.curLength = (targX - thisX).absoluteValue
+                    it.totalLength = len
+                }
+                Drawf.laser(beamTR, beamEndTR, thisX, y1, targX, y1, thickness)
+                Drawf.laser(beamTR, beamEndTR, thisX, y2, targX, y2, thickness)
+            }
+        }
+        links.forEachUnlinkSide { side ->
+            val dir = coordinates[side]
+            val rail = lastRailEntry[side]
+            if (rail.curLength <= 0f) return@forEachUnlinkSide
+            rail.curLength = (rail.curLength - Var.NetworkNodeRailSpeed * Time.delta).coerceAtLeast(0f)
+            val progress = (rail.curLength / rail.totalLength).smooth
+            if (side % 2 == 1) {// Top or Bottom
+                val thisY = oy + dir.y * thisOffset
+                val x = rail.center
+                val targY = thisY + dir.y * rail.totalLength * progress
+                val x1 = x - widthHalf
+                val x2 = x + widthHalf
+                Drawf.laser(beamTR, beamEndTR, x1, thisY, x1, targY, thickness)
+                Drawf.laser(beamTR, beamEndTR, x2, thisY, x2, targY, thickness)
+            } else { // Right or Left
+                val thisX = ox + dir.x * thisOffset
+                val y = rail.center
+                val targX = thisX + dir.x * rail.totalLength * progress
+                val y1 = y - widthHalf
+                val y2 = y + widthHalf
+                Drawf.laser(beamTR, beamEndTR, thisX, y1, targX, y1, thickness)
+                Drawf.laser(beamTR, beamEndTR, thisX, y2, targX, y2, thickness)
+            }
+        }
+        Draw.color()
+    }
+}
+
+fun INetworkNode.drawCurrentDataInSending() {
+    currentOrientedNode?.let { oriented ->
+        getData(dataInSending)?.let { data ->
+            drawDataInSending(data, currentOriented, sendingProgress, oriented)
+        }
+    }
+}
+
+fun INetworkNode.calcuDistanceTo(
+    t: INetworkNode, side: Side = this.getSide(t),
+): Float {
     val thisOffset = block.size * Vars.tilesize / 2f
+    val tOffset = t.block.size * Vars.tilesize / 2f
+    val dir = coordinates[side]
     val ox = this.building.x
     val oy = this.building.y
-    val widthHalf = Var.NetworkNodeChannelWidth / 2f
-    val thickness = Var.NetworkRailThickness
-    Draw.color(S.Hologram)
-    links.forEachNodeWithSide { side, t ->
-        val time = linkingTime[side]
+    val tx = t.building.x
+    val ty = t.building.y
+    return if (side % 2 == 1) {// Top or Bottom
+        val thisY = oy + dir.y * thisOffset
+        val targY = ty - dir.y * tOffset
+        (targY - thisY).absoluteValue
+    } else { // Right or Left
+        val thisX = ox + dir.x * thisOffset
+        val targX = tx - dir.x * tOffset
+        (targX - thisX).absoluteValue
+    }
+}
+
+fun INetworkNode.drawDataInSending(
+    data: PayloadData,
+    side: Side,
+    progress: Progress,
+    t: INetworkNode,
+) {
+    DrawLayer(Layer.blockOver + 0.1f) {
+        val payload = data.payload
+        val thisOffset = block.size * Vars.tilesize / 2f
+        val ox = this.building.x
+        val oy = this.building.y
         val dir = coordinates[side]
         val tx = t.building.x
         val ty = t.building.y
@@ -319,61 +435,18 @@ fun INetworkNode.drawRail(beamTR: TR, beamEndTR: TR) {
         val tOffset = t.block.size * Vars.tilesize / 2f
         if (side % 2 == 1) { // Top or Bottom
             val thisY = oy + dir.y * thisOffset
-            var targY = ty - dir.y * tOffset
-            val x1 = x - widthHalf
-            val x2 = x + widthHalf
-            val len = (targY - thisY).absoluteValue
-            val linerShrink = time * Var.NetworkNodeRailSpeed.coerceAtMost(len)
-            val shrink = (linerShrink / len).smooth * len
-            targY -= dir.y * (len - shrink)
-            lastRailEntry[side].let {
-                it.center = x
-                it.curLength = (targY - thisY).absoluteValue
-                it.totalLength = len
-            }
-            Drawf.laser(beamTR, beamEndTR, x1, thisY, x1, targY, thickness)
-            Drawf.laser(beamTR, beamEndTR, x2, thisY, x2, targY, thickness)
+            val targY = ty - dir.y * tOffset
+            payload.icon().DrawAny(
+                x, progress.between(thisY, targY),
+                width = Var.NetworkNodeChannelWidth, height = Var.NetworkNodeChannelWidth,
+            )
         } else { // Right or Left
             val thisX = ox + dir.x * thisOffset
-            var targX = tx - dir.x * tOffset
-            val y1 = y - widthHalf
-            val y2 = y + widthHalf
-            val len = (targX - thisX).absoluteValue
-            val linerShrink = time * Var.NetworkNodeRailSpeed.coerceAtMost(len)
-            val shrink = (linerShrink / len).smooth * len
-            targX -= dir.x * (len - shrink)
-            lastRailEntry[side].let {
-                it.center = y
-                it.curLength = (targX - thisX).absoluteValue
-                it.totalLength = len
-            }
-            Drawf.laser(beamTR, beamEndTR, thisX, y1, targX, y1, thickness)
-            Drawf.laser(beamTR, beamEndTR, thisX, y2, targX, y2, thickness)
+            val targX = tx - dir.x * tOffset
+            payload.icon().DrawAny(
+                progress.between(thisX, targX), y,
+                width = Var.NetworkNodeChannelWidth, height = Var.NetworkNodeChannelWidth,
+            )
         }
     }
-    links.forEachUnlinkSide { side ->
-        val dir = coordinates[side]
-        val rail = lastRailEntry[side]
-        if (rail.curLength <= 0f) return@forEachUnlinkSide
-        rail.curLength = (rail.curLength - Var.NetworkNodeRailSpeed * Time.delta).coerceAtLeast(0f)
-        val progress = (rail.curLength / rail.totalLength).smooth
-        if (side % 2 == 1) {// Top or Bottom
-            val thisY = oy + dir.y * thisOffset
-            val x = rail.center
-            val targY = thisY + dir.y * rail.totalLength * progress
-            val x1 = x - widthHalf
-            val x2 = x + widthHalf
-            Drawf.laser(beamTR, beamEndTR, x1, thisY, x1, targY, thickness)
-            Drawf.laser(beamTR, beamEndTR, x2, thisY, x2, targY, thickness)
-        } else { // Right or Left
-            val thisX = ox + dir.x * thisOffset
-            val y = rail.center
-            val targX = thisX + dir.x * rail.totalLength * progress
-            val y1 = y - widthHalf
-            val y2 = y + widthHalf
-            Drawf.laser(beamTR, beamEndTR, thisX, y1, targX, y1, thickness)
-            Drawf.laser(beamTR, beamEndTR, thisX, y2, targX, y2, thickness)
-        }
-    }
-    Draw.color()
 }

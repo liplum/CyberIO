@@ -54,6 +54,7 @@ class PayloadDataList(
     }
 
     fun hasData(id: DataID): Boolean {
+        if (id == EmptyDataID) return false
         allData.forLoop {
             if (it.id == id) return true
         }
@@ -61,6 +62,7 @@ class PayloadDataList(
     }
 
     fun getData(id: DataID): PayloadData? {
+        if (id == EmptyDataID) return null
         allData.forLoop {
             if (it.id == id) return it
         }

@@ -1,7 +1,9 @@
 package net.liplum.api.cyber
 
+import arc.math.geom.Vec2
 import mindustry.Vars
 import mindustry.world.Block
+import net.liplum.Var
 import net.liplum.api.ICyberEntity
 import net.liplum.api.cyber.SideLinks.Companion.reflect
 import net.liplum.data.DataID
@@ -24,7 +26,7 @@ interface INetworkNode : ICyberEntity, IVertex<INetworkNode> {
     @Serialized
     var request: DataID
     @Serialized
-    var dataBeingSent: DataID
+    var dataInSending: DataID
     @Serialized
     val dataList: PayloadDataList
     /**
@@ -35,11 +37,11 @@ interface INetworkNode : ICyberEntity, IVertex<INetworkNode> {
     val currentOrientedNode: INetworkNode?
         get() = if (currentOriented == -1) null
         else links[currentOriented].TEAny()
-    /**
-     * [0f,1f]
-     */
-    @Serialized
     var sendingProgress: Progress
+        get() = curSendingLength / totalSendingDistance
+        set(value) {
+            curSendingLength = totalSendingDistance * value
+        }
     val sideEnable: SideEnable
     val canReceiveMoreData: Boolean
         get() = dataList.canAddMore
@@ -53,19 +55,22 @@ interface INetworkNode : ICyberEntity, IVertex<INetworkNode> {
      */
     @ClientOnly
     val lastRailEntry: Array<RailEntry>
+    var totalSendingDistance: Float
+    var curSendingLength: Float
     fun updateAsNode() {
         links.forEach {
             if (links.isEmpty(it)) linkingTime[it] = 0f
             else linkingTime[it] += deltaAsNode()
         }
-        getData(dataBeingSent)?.let {
-            sendingProgress += getDataSendingIncrement(it)
-            sendingProgress = sendingProgress.coerceIn(0f, 1f)
-            if (sendingProgress >= 1f) {
-                val next = currentOrientedNode
-                if (next != null && trySendDataTo(next, it)) {
-                    sendingProgress = 0f
-                    advanceProgress()
+        if (currentOriented != -1) {
+            getData(dataInSending)?.let {
+                curSendingLength = (curSendingLength + getDataSendingDstDelta(it)).coerceIn(0f, totalSendingDistance)
+                val nextNode = currentOrientedNode
+                if (nextNode != null) {
+                    if (sendingProgress >= 1f && trySendDataTo(nextNode, it)) {
+                        sendingProgress = 0f
+                        advanceProgress()
+                    }
                 }
             }
         }
@@ -79,18 +84,19 @@ interface INetworkNode : ICyberEntity, IVertex<INetworkNode> {
         }
         return false
     }
-
+    /**
+     * Reset [currentOriented] and [dataInSending]
+     */
     fun advanceProgress() {
-        network.advanceProgress(dataBeingSent)
-        dataBeingSent = EmptyDataID
+        network.advanceProgress(dataInSending)
+        dataInSending = EmptyDataID
         currentOriented = -1
     }
     /**
      * Each [WorldXY] unit size requires 10 ticks to be sent as default.
      */
-    fun getDataSendingIncrement(payload: PayloadData): Progress {
-        val totalTime = payload.payload.size() * 3f
-        return deltaAsNode() / totalTime
+    fun getDataSendingDstDelta(payload: PayloadData): Progress {
+        return deltaAsNode() * Var.NetworkNodeSendingSpeed
     }
 
     fun deltaAsNode(): Float =
@@ -102,7 +108,7 @@ interface INetworkNode : ICyberEntity, IVertex<INetworkNode> {
     fun receiveData(payload: PayloadData) {
         if (dataList.canAddMore) {
             dataList.add(payload)
-            if(payload.id == request)
+            if (payload.id == request)
                 request = EmptyDataID
         }
     }
@@ -111,11 +117,23 @@ interface INetworkNode : ICyberEntity, IVertex<INetworkNode> {
         val nextPos = next.building.pos()
         links.forEachPosWithSide { side, pos ->
             if (pos == nextPos) {
-                currentOriented = side
+                if (currentOriented != side) {
+                    currentOriented = side
+                    totalSendingDistance = this.calcuDistanceTo(next)
+                    curSendingLength = 0f
+                }
                 return true
             }
         }
         return false
+    }
+
+    fun getSide(next: INetworkNode): Side {
+        val nextPos = next.building.pos()
+        links.forEachPosWithSide { side, pos ->
+            if (pos == nextPos) return side
+        }
+        return -1
     }
     /**
      * @param payload it doesn't check whether the [payload] is in this node.
@@ -216,6 +234,7 @@ interface INetworkNode : ICyberEntity, IVertex<INetworkNode> {
 
     companion object {
         private val tempList = ArrayList<INetworkNode>()
+        private val tempVec = Vec2()
     }
 }
 
@@ -283,7 +302,7 @@ object EmptyNetworkNode : INetworkNode {
     override var init = true
     override var links = SideLinks()
     override var request: DataID = EmptyDataID
-    override var dataBeingSent: DataID = EmptyDataID
+    override var dataInSending: DataID = EmptyDataID
     override val dataList: PayloadDataList = PayloadDataList()
     @ClientOnly
     override val expendSelectingLineTime = 0f
@@ -292,6 +311,8 @@ object EmptyNetworkNode : INetworkNode {
     override val sideEnable = SideEnable(4) { false }
     override val linkingTime = FloatArray(4)
     override val lastRailEntry = Array(4) { RailEntry() }
+    override var totalSendingDistance = 0f
+    override var curSendingLength = 0f
     override val linkRange = 0f
 }
 

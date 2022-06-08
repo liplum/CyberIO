@@ -43,7 +43,7 @@ fun quadratic(yWhenXIs1: Float, yWhenXIsZero: Float): FUNC {
  */
 fun rangeAdaptor(
     func: FUNC,
-    minX: Float = 0f, maxX: Float
+    minX: Float = 0f, maxX: Float,
 ): FUNC {
     val d = abs(maxX - minX)
     return {
@@ -61,7 +61,7 @@ fun rangeAdaptor(
  */
 fun shrink(
     func: FUNC, rfunc: FUNC,
-    minY: Float, maxY: Float
+    minY: Float, maxY: Float,
 ): FUNC {
     val minYx = rfunc(minY)
     val maxYx = rfunc(maxY)
@@ -208,7 +208,7 @@ fun Int.randomExcept(exception: Int): Int {
  */
 fun <T> List<T>.randomByWeights(
     weights: IntArray,
-    maxWeight: Int = weights.last()
+    maxWeight: Int = weights.last(),
 ): T {
     assert(weights.size == size) { "Weights' size(${weights.size}) don't match receiver's size($size)" }
     var pos = Mathf.random(maxWeight - 1)
@@ -323,4 +323,18 @@ operator fun Vec2.component2(): Float = y
 fun Int.progress(progress: Progress): Int {
     val p = progress.coerceIn(0f, 1f)
     return (p * this).toInt().coerceAtMost(this - 1)
+}
+/**
+ * @receiver the progress in [0f,1f]
+ * @param from this value
+ * @param to to this value
+ * @return a value from [from] to [to] in [progress]
+ */
+fun Progress.between(from: Float, to: Float): Float {
+    if (from > to) {
+        return from - (from - to) * this
+    } else if (from < to) {
+        return from + (to - from) * this
+    }
+    return from
 }

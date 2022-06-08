@@ -48,7 +48,10 @@ class DataNetwork {
         while (tasks.hasNext()) {
             val task = tasks.next()
             val progress = task.curProgress
-            val path = task.routine ?: continue
+            val path = task.routine ?: task.run {
+                reload()
+                routine
+            } ?: continue // If the path still doesn't exist, skip it.
             if (task.validate(path, progress)) {
                 if (progress == path.size - 1) {
                     // the data reached the destination
@@ -59,7 +62,7 @@ class DataNetwork {
                     val curNode = path[progress]
                     val nextNode = path[progress + 1]
                     curNode.setOriented(nextNode)
-                    curNode.dataBeingSent = task.request
+                    curNode.dataInSending = task.request
                 }
             } else { // if the progress is not accurate
                 val curProgress = path.refindNode {
@@ -115,7 +118,20 @@ class DataNetwork {
         }
         dataId2Task[request] = task
     }
-
+    /**
+     * It's useful when the task is synchronized from remote.
+     * It will re-generate the path if needed.
+     */
+    private fun TransferTask.reload() {
+        val destination = destination
+        val start = start
+        if (routine == null && start != null && destination != null) {
+            routine = generatePath(start, destination)
+        }
+    }
+    /**
+     * Generate a path and cache it.
+     */
     private fun generatePath(start: INetworkNode, destination: INetworkNode): Path? {
         val toKey = genStart2DestinationKey(start, destination)
         var toPath = routineCache[toKey]
@@ -162,16 +178,13 @@ class DataNetwork {
      * Caller should ensure the path exists.
      */
     fun findPath(start: INetworkNode, destination: INetworkNode): Path? {
-        val toKey = genStart2DestinationKey(start, destination)
-        bfsContainer.findPathBFS(start, destination).let { path ->
-            return if (path.isEmpty()) {
-                path.free()
-                null
-            } else {
-                routineCache[toKey] = path
-                path.reverse()// It uses [ReversedArrayPath]
-                path
-            }
+        val path = bfsContainer.findPathBFS(start, destination)
+        return if (path.isEmpty()) {
+            path.free()
+            null
+        } else {
+            path.reverse()// It uses [ReversedArrayPath]
+            path
         }
     }
 

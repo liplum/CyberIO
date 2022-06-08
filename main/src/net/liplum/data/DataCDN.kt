@@ -3,20 +3,21 @@ package net.liplum.data
 import arc.func.Prov
 import arc.scene.ui.layout.Table
 import mindustry.Vars.world
+import mindustry.content.UnitTypes
+import mindustry.gen.BlockUnitc
 import mindustry.gen.Building
-import mindustry.graphics.Layer
 import mindustry.world.Block
+import mindustry.world.blocks.ControlBlock
 import mindustry.world.meta.Env
 import net.liplum.DebugOnly
 import net.liplum.api.cyber.*
 import net.liplum.api.cyber.SideLinks.Companion.enableAllSides
 import net.liplum.lib.Serialized
 import net.liplum.lib.TR
-import net.liplum.lib.utils.DrawLayer
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.render.G
+import net.liplum.mdt.utils.MdtUnit
 import net.liplum.mdt.utils.atlas
-import net.liplum.mdt.utils.worldXY
 import net.liplum.utils.addSendingProgress
 import kotlin.math.max
 
@@ -64,7 +65,7 @@ class DataCDN(name: String) :
     }
 
     inner class CdnBuild : Building(),
-        INetworkNode {
+        INetworkNode, ControlBlock {
         // TODO: Serialization
         @Serialized
         override val dataList = PayloadDataList(dataCapacity)
@@ -73,12 +74,7 @@ class DataCDN(name: String) :
         @Serialized
         override var request: DataID = EmptyDataID
         @Serialized
-        override var dataBeingSent: DataID = EmptyDataID
-        @Serialized
-        override var sendingProgress = 0f
-            set(value) {
-                field = value.coerceIn(0f, 1f)
-            }
+        override var dataInSending: DataID = EmptyDataID
         @Serialized
         override var network = DataNetwork()
         override var init: Boolean = false
@@ -88,6 +84,8 @@ class DataCDN(name: String) :
         override val linkingTime = FloatArray(4)
         @ClientOnly
         override val lastRailEntry = Array(4) { RailEntry() }
+        override var totalSendingDistance= 0f
+        override var curSendingLength= 0f
         @ClientOnly
         override val expendSelectingLineTime = this@DataCDN.expendPlacingLineTime
         override val linkRange = this@DataCDN.linkRange
@@ -113,14 +111,10 @@ class DataCDN(name: String) :
             super.draw()
             DebugOnly {
                 drawLinkInfo()
-                DrawLayer(Layer.blockOver) {
-                    dataList.forEachIndexed { i, it ->
-                        it.payload.set(x - dataList.size * 2f + i * 4f, y + size.worldXY, payloadRotation)
-                        it.payload.draw()
-                    }
-                }
+                drawPayloadList()
             }
             drawRail(railTR, railEndTR)
+            drawCurrentDataInSending()
         }
 
         override fun drawSelect() {
@@ -157,5 +151,12 @@ class DataCDN(name: String) :
         }
 
         override fun toString() = "DataCDN#$id"
+        var unit = UnitTypes.block.create(team) as BlockUnitc
+        override fun unit(): MdtUnit {
+            //make sure stats are correct
+            unit.tile(this)
+            unit.team(team)
+            return (unit as MdtUnit)
+        }
     }
 }

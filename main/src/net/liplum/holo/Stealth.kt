@@ -119,7 +119,7 @@ open class Stealth(name: String) : Turret(name) {
 
             override fun draw(build: Building) = (build as StealthBuild).run {
                 WhenNotPaused {
-                    val d = G.D(0.1f * FloatingRange * delta() * (2f - healthPct))
+                    val d = (0.1f * FloatingRange * delta() * (2f - healthPct)) * G.sclx
                     floating.move(d)
                 }
                 Draw.z(Layer.blockUnder)

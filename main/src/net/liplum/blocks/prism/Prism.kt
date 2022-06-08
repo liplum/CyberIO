@@ -356,7 +356,7 @@ open class Prism(name: String) : Block(name) {
             Draw.rect(LeftDownEndTR, x, y)
             Draw.rect(LeftDownEndTR, x, y, -90f)
             Draw.color()
-            val delta = process * G.D(sizeOpen)
+            val delta = process * sizeOpen * G.sclx
 
             Draw.z(Layer.blockOver)
             Draw.rect(UpTR, x, y + delta)

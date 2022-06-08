@@ -202,7 +202,7 @@ open class HoloWall(name: String) : Wall(name) {
         }
         @ClientOnly
         open fun updateFloating() {
-            val d = G.D(0.1f * FloatingRange * delta() * (2f - healthPct))
+            val d = (0.1f * FloatingRange * delta() * (2f - healthPct)) * G.sclx
             floating.move(d)
         }
 

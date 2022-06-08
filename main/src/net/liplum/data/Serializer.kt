@@ -3,7 +3,10 @@ package net.liplum.data
 import arc.graphics.g2d.Draw
 import arc.scene.ui.layout.Table
 import mindustry.Vars
+import mindustry.content.UnitTypes
+import mindustry.gen.BlockUnitc
 import mindustry.graphics.Layer
+import mindustry.world.blocks.ControlBlock
 import mindustry.world.blocks.payloads.Payload
 import mindustry.world.blocks.payloads.PayloadBlock
 import mindustry.world.meta.Env
@@ -14,13 +17,12 @@ import net.liplum.api.cyber.SideLinks.Companion.enableAllSides
 import net.liplum.lib.Serialized
 import net.liplum.lib.TR
 import net.liplum.lib.shaders.use
-import net.liplum.lib.utils.DrawLayer
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.smoothSelect
+import net.liplum.mdt.utils.MdtUnit
 import net.liplum.mdt.utils.WorldXY
 import net.liplum.mdt.utils.atlas
-import net.liplum.mdt.utils.worldXY
 import net.liplum.registries.SD
 import net.liplum.utils.addSendingProgress
 
@@ -73,7 +75,7 @@ class Serializer(name: String) :
     }
 
     inner class SerializerBuild : PayloadBlockBuild<Payload>(),
-        INetworkNode {
+        INetworkNode, ControlBlock {
         @Serialized
         override var network = DataNetwork()
         override var init: Boolean = false
@@ -81,21 +83,18 @@ class Serializer(name: String) :
         @Serialized
         override var request: DataID = EmptyDataID
         @Serialized
-        override var dataBeingSent: DataID = EmptyDataID
+        override var dataInSending: DataID = EmptyDataID
         @Serialized
         override val dataList = PayloadDataList(dataCapacity)
         @Serialized
         override var currentOriented: Side = -1
         @Serialized
-        override var sendingProgress = 0f
-            set(value) {
-                field = value.coerceIn(0f, 1f)
-            }
-        @Serialized
         var serializingProgress = 0f
             set(value) {
                 field = value.coerceIn(0f, 1f)
             }
+        override var totalSendingDistance= 0f
+        override var curSendingLength= 0f
         @ClientOnly
         override val expendSelectingLineTime = this@Serializer.expendPlacingLineTime
         override val linkRange = this@Serializer.linkRange
@@ -108,12 +107,7 @@ class Serializer(name: String) :
         override fun draw() {
             DebugOnly {
                 drawLinkInfo()
-                DrawLayer(Layer.blockOver) {
-                    dataList.forEachIndexed { i, it ->
-                        it.payload.set(x - dataList.size * 2f + i * 4f, y + size.worldXY, payloadRotation)
-                        it.payload.draw()
-                    }
-                }
+                drawPayloadList()
             }
             Draw.rect(region, x, y)
             //draw input
@@ -143,6 +137,7 @@ class Serializer(name: String) :
                 }
             }
             drawRail(railTR, rialEndTR)
+            drawCurrentDataInSending()
         }
 
         val canAddMoreData: Boolean
@@ -202,6 +197,14 @@ class Serializer(name: String) :
         override fun afterPickedUp() {
             super.afterPickedUp()
             onRemovedFromGround()
+        }
+
+        var unit = UnitTypes.block.create(team) as BlockUnitc
+        override fun unit(): MdtUnit {
+            //make sure stats are correct
+            unit.tile(this)
+            unit.team(team)
+            return (unit as MdtUnit)
         }
 
         override fun toString() = "Serializer#$id"

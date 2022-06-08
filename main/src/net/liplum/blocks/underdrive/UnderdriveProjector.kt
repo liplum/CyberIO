@@ -41,6 +41,8 @@ import net.liplum.lib.utils.format
 import net.liplum.lib.utils.percentI
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.render.G
+import net.liplum.mdt.render.G.realHeight
+import net.liplum.mdt.render.G.realWidth
 import net.liplum.mdt.render.drawEffectCirclePlace
 import net.liplum.mdt.render.smoothPlacing
 import net.liplum.mdt.render.smoothSelect
@@ -73,8 +75,8 @@ val SpiralShrink: Effect = Effect(20f) {
     val s = up.spiralTR
     Draw.rect(
         s, it.x, it.y,
-        G.Dw(s) * sr + srm,
-        G.Dh(s) * sr + srm,
+        s.realWidth * sr + srm,
+        s.realHeight * sr + srm,
         Time.time * upb.realSpiralRotateSpeed
     )
 }.layer(Layer.shields)
@@ -421,8 +423,8 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
                 val srm = realRange * MagicNSpiralMin
                 Draw.rect(
                     spiralTR, x, y,
-                    G.Dw(spiralTR) * sr + srm,
-                    G.Dh(spiralTR) * sr + srm,
+                    spiralTR.realWidth * sr + srm,
+                    spiralTR.realHeight * sr + srm,
                     Time.time * realSpiralRotateSpeed
                 )
             }

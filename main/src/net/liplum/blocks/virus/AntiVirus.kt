@@ -27,6 +27,8 @@ import net.liplum.lib.utils.bundle
 import net.liplum.lib.utils.isZero
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.render.G
+import net.liplum.mdt.render.G.realHeight
+import net.liplum.mdt.render.G.realWidth
 import net.liplum.mdt.render.drawEffectCirclePlace
 import net.liplum.mdt.render.smoothPlacing
 import net.liplum.mdt.render.smoothSelect
@@ -64,8 +66,8 @@ val ShieldExpand: Effect = Effect(ShieldExpandEffectDuration) {
     val scale = avb.realRange / 15f
     Draw.rect(
         s, it.x, it.y,
-        G.Dw(s) * d2s * scale,
-        G.Dh(s) * d2s * scale
+        s.realWidth * d2s * scale,
+        s.realHeight * d2s * scale
     )
 }.layer(Layer.power)
 

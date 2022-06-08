@@ -26,4 +26,6 @@ object Var {
     @JvmField var NetworkRailThickness = 0.2f
     /** [WorldXY] pre tick */
     @JvmField var NetworkNodeRailSpeed: WorldXY = 0.5f * Vars.tilesize
+    /** [WorldXY] pre tick */
+    @JvmField var NetworkNodeSendingSpeed: WorldXY = 0.5f * Vars.tilesize
 }
