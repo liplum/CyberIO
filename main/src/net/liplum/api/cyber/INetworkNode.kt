@@ -33,7 +33,8 @@ interface INetworkNode : ICyberEntity, IVertex<INetworkNode> {
     @Serialized
     var currentOriented: Side
     val currentOrientedNode: INetworkNode?
-        get() = links[currentOriented].TEAny()
+        get() = if (currentOriented == -1) null
+        else links[currentOriented].TEAny()
     /**
      * [0f,1f]
      */
@@ -44,10 +45,14 @@ interface INetworkNode : ICyberEntity, IVertex<INetworkNode> {
         get() = dataList.canAddMore
     /**
      * 4 sides
-     * [0f,1f]
      */
     @ClientOnly
     val linkingTime: FloatArray
+    /**
+     * 4 sides
+     */
+    @ClientOnly
+    val lastRailEntry: Array<RailEntry>
     fun updateAsNode() {
         links.forEach {
             if (links.isEmpty(it)) linkingTime[it] = 0f
@@ -75,7 +80,7 @@ interface INetworkNode : ICyberEntity, IVertex<INetworkNode> {
         return false
     }
 
-    fun advanceProgress(){
+    fun advanceProgress() {
         network.advanceProgress(dataBeingSent)
         dataBeingSent = EmptyDataID
         currentOriented = -1
@@ -84,7 +89,7 @@ interface INetworkNode : ICyberEntity, IVertex<INetworkNode> {
      * Each [WorldXY] unit size requires 10 ticks to be sent as default.
      */
     fun getDataSendingIncrement(payload: PayloadData): Progress {
-        val totalTime = payload.payload.size() * 10f
+        val totalTime = payload.payload.size() * 3f
         return deltaAsNode() / totalTime
     }
 
@@ -97,6 +102,8 @@ interface INetworkNode : ICyberEntity, IVertex<INetworkNode> {
     fun receiveData(payload: PayloadData) {
         if (dataList.canAddMore) {
             dataList.add(payload)
+            if(payload.id == request)
+                request = EmptyDataID
         }
     }
 
@@ -211,6 +218,14 @@ interface INetworkNode : ICyberEntity, IVertex<INetworkNode> {
         private val tempList = ArrayList<INetworkNode>()
     }
 }
+
+class RailEntry(
+    /** Center X or Y  */
+    var center: Float = 0f,
+    /** current length  */
+    var curLength: Float = 0f,
+    var totalLength: Float = 0f,
+)
 /**
  * Only iterate the enabled sides
  */
@@ -276,6 +291,7 @@ object EmptyNetworkNode : INetworkNode {
     override var sendingProgress: Float = 0f
     override val sideEnable = SideEnable(4) { false }
     override val linkingTime = FloatArray(4)
+    override val lastRailEntry = Array(4) { RailEntry() }
     override val linkRange = 0f
 }
 

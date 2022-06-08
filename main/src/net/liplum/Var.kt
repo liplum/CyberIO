@@ -23,6 +23,7 @@ object Var {
     @JvmField val Rand = Rand()
     @JvmField var ParticleEffectNumber = if (Vars.mobile) 64 else 128
     @JvmField var NetworkNodeChannelWidth: WorldXY = Vars.tilesize.toFloat()
+    @JvmField var NetworkRailThickness = 0.2f
     /** [WorldXY] pre tick */
     @JvmField var NetworkNodeRailSpeed: WorldXY = 0.5f * Vars.tilesize
 }

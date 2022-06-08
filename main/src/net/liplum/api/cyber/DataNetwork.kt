@@ -83,6 +83,10 @@ class DataNetwork {
     fun advanceProgress(requestID: DataID) {
         dataId2Task[requestID]?.let {
             it.curProgress++
+            if (it.curProgress >= (it.routine?.size ?: 0)) {
+                it.free()
+                dataId2Task.remove(it.request)
+            }
         }
     }
 
@@ -127,7 +131,6 @@ class DataNetwork {
                 // Or using the shortest path?
                 val path = findPath(start, destination)
                 if (path != null) {
-                    path.reverse() // It uses [ReversedArrayPath]
                     routineCache[toKey] = path
                     path
                 } else null
@@ -160,16 +163,13 @@ class DataNetwork {
      */
     fun findPath(start: INetworkNode, destination: INetworkNode): Path? {
         val toKey = genStart2DestinationKey(start, destination)
-        val cached = routineCache[toKey]
-        if (cached != null) return cached
-        val fromKey = genStart2DestinationKey(destination, start)
         bfsContainer.findPathBFS(start, destination).let { path ->
             return if (path.isEmpty()) {
                 path.free()
                 null
             } else {
                 routineCache[toKey] = path
-                routineCache[fromKey] = path.reversedPath()
+                path.reverse()// It uses [ReversedArrayPath]
                 path
             }
         }
@@ -285,15 +285,9 @@ class DataNetwork {
             { pathPool.obtain() },
         ) {
             init {
-                clearSeen = {
-                    seen.forEach { pointerPool.free(it as Pointer) }
-                    seen.clear()
-                }
-            }
-
-            override fun createPath(): Path {
-                return super.createPath().apply {
-                    isFree = false
+                clearVert2Pointer = {
+                    vert2Pointer.values.forEach { pointerPool.free(it as Pointer) }
+                    vert2Pointer.clear()
                 }
             }
         }
@@ -347,25 +341,14 @@ class TransferTask : Pool.Poolable {
         start = null
         destination = null
         request = EmptyDataID
-        routine?.free()
+        // Mustn't call `routine?.free()`, the path is cached somewhere
         routine = null
     }
 }
 
 class Path internal constructor() : ReversedArrayPath<INetworkNode>(), Pool.Poolable {
-    var isFree = true
-    /**
-     * Use this to initialize the object.
-     */
-    inline fun use(func: Path.() -> Unit): Path {
-        func()
-        isFree = false
-        return this
-    }
-
     fun free() {
-        if (!isFree)
-            DataNetwork.pathPool.free(this)
+        DataNetwork.pathPool.free(this)
     }
 
     override fun reset() {

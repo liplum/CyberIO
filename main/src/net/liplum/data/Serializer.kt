@@ -14,6 +14,7 @@ import net.liplum.api.cyber.SideLinks.Companion.enableAllSides
 import net.liplum.lib.Serialized
 import net.liplum.lib.TR
 import net.liplum.lib.shaders.use
+import net.liplum.lib.utils.DrawLayer
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.smoothSelect
@@ -101,14 +102,17 @@ class Serializer(name: String) :
         override val sideEnable = this@Serializer.sideEnable
         @ClientOnly
         override val linkingTime = FloatArray(4)
+        @ClientOnly
+        override val lastRailEntry = Array(4) { RailEntry() }
         var lastTileChange = -2
         override fun draw() {
             DebugOnly {
                 drawLinkInfo()
-                if (dataList.isNotEmpty) {
-                    val cur = dataList.first()
-                    cur.payload.set(x, y + size.worldXY, payloadRotation)
-                    cur.payload.draw()
+                DrawLayer(Layer.blockOver) {
+                    dataList.forEachIndexed { i, it ->
+                        it.payload.set(x - dataList.size * 2f + i * 4f, y + size.worldXY, payloadRotation)
+                        it.payload.draw()
+                    }
                 }
             }
             Draw.rect(region, x, y)

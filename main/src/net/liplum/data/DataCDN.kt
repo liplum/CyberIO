@@ -4,6 +4,7 @@ import arc.func.Prov
 import arc.scene.ui.layout.Table
 import mindustry.Vars.world
 import mindustry.gen.Building
+import mindustry.graphics.Layer
 import mindustry.world.Block
 import mindustry.world.meta.Env
 import net.liplum.DebugOnly
@@ -11,9 +12,9 @@ import net.liplum.api.cyber.*
 import net.liplum.api.cyber.SideLinks.Companion.enableAllSides
 import net.liplum.lib.Serialized
 import net.liplum.lib.TR
+import net.liplum.lib.utils.DrawLayer
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.render.G
-import net.liplum.mdt.render.smoothSelect
 import net.liplum.mdt.utils.atlas
 import net.liplum.mdt.utils.worldXY
 import net.liplum.utils.addSendingProgress
@@ -86,6 +87,8 @@ class DataCDN(name: String) :
         @ClientOnly
         override val linkingTime = FloatArray(4)
         @ClientOnly
+        override val lastRailEntry = Array(4) { RailEntry() }
+        @ClientOnly
         override val expendSelectingLineTime = this@DataCDN.expendPlacingLineTime
         override val linkRange = this@DataCDN.linkRange
         var lastTileChange = -2
@@ -110,10 +113,11 @@ class DataCDN(name: String) :
             super.draw()
             DebugOnly {
                 drawLinkInfo()
-                if (dataList.isNotEmpty) {
-                    val cur = dataList.first()
-                    cur.payload.set(x, y + size.worldXY, payloadRotation)
-                    cur.payload.draw()
+                DrawLayer(Layer.blockOver) {
+                    dataList.forEachIndexed { i, it ->
+                        it.payload.set(x - dataList.size * 2f + i * 4f, y + size.worldXY, payloadRotation)
+                        it.payload.draw()
+                    }
                 }
             }
             drawRail(railTR, railEndTR)
@@ -136,10 +140,12 @@ class DataCDN(name: String) :
             super.onRemoved()
             onRemovedFromGround()
         }
+
         override fun onProximityAdded() {
             super.onProximityAdded()
             updateCardinalDirections()
         }
+
         override fun onProximityRemoved() {
             super.onProximityRemoved()
             onRemovedFromGround()

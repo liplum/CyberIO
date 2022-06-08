@@ -188,7 +188,18 @@ class SideLinks {
                 cons(side, node)
         }
     }
+    /**
+     * Only iterate [PackedPos] on the non-empty sides.
+     * In order of [RIGHT] to [BOTTOM]
+     */
+    inline fun forEachUnlinkSide(cons: (Side) -> Unit) {
+        for (side in RIGHT..BOTTOM) {
+            if(links[side] == -1)
+                cons(side)
+        }
+    }
 
+    override fun toString() = links.toString()
     companion object {
         /**
          * Get the reflected side index in [Geometry.d4]
