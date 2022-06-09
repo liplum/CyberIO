@@ -321,12 +321,10 @@ fun INetworkNode.drawRail(beamTR: TR, beamEndTR: TR) {
                 val shrink = (linerShrink / len).pow3InIntrp * len
                 targY -= dir.y * (len - shrink)
                 if (this.livingTime <= t.livingTime) {
-                    val p: Float
                     lastRailTrail[side].let {
                         it.center = x
                         it.curLength = (targY - thisY).absoluteValue
                         it.totalLength = len
-                        p = (it.curLength / (it.totalLength / 2f)).pow3InIntrp
                     }
                     Drawf.laser(beamTR, beamEndTR, x1, thisY, x1, targY, thickness)
                     Drawf.laser(beamTR, beamEndTR, x2, thisY, x2, targY, thickness)
@@ -349,12 +347,10 @@ fun INetworkNode.drawRail(beamTR: TR, beamEndTR: TR) {
                 targX -= dir.x * (len - shrink)
 
                 if (this.livingTime <= t.livingTime) {
-                    val p: Float
                     lastRailTrail[side].let {
                         it.center = y
                         it.curLength = (targX - thisX).absoluteValue
                         it.totalLength = len
-                        p = (it.curLength / (it.totalLength / 2f)).pow3InIntrp
                     }
                     Drawf.laser(beamTR, beamEndTR, thisX, y1, targX, y1, thickness)
                     Drawf.laser(beamTR, beamEndTR, thisX, y2, targX, y2, thickness)

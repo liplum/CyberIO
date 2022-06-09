@@ -43,7 +43,6 @@ open class GlobalAnimation(
             val progress = Time.globalTime % duration / duration //percent
             frames.progress(progress)
         }
-        // TODO: that's too random.
         val randomSelectIndexr: GlobalAnimationIndexer = {
             frames[Mathf.randomSeed((Time.globalTime / 3f).toLong(), 0, frames.size - 1)]
         }

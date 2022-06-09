@@ -30,6 +30,16 @@ Cyber IO project is separated from several parts.
 
 Cyber IO uses Gradle Kts as DSL of build scripts.
 
+### Conventions
+1. If a class contains a mutable collection, pool it.
+2. Use typealias instead of Int, meaningless name, or long name, for embedded more information.
+3. Use Kotlin style functions as much as you can. Do not use any lambda without inline function.
+4. Annotate everything you write as much as possible, which provides more meta information for other programmers.
+5. Use ksp to generate code. And write event subscriber (by @SubscribeEvent and @Subscribe) as near logic as you can.
+6. Use mutable object in serialization instead of creating them once again.
+7. Use R.xxx to share global resources.
+8. Use Var to share global variables
+
 ## For translator
 
 WIP

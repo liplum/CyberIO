@@ -295,24 +295,14 @@ class DataNetwork {
     companion object {
         val taskPool: Pool<TransferTask> = Pools.get(TransferTask::class.java, ::TransferTask)
         /**
-         * Only used in pathfinder. it can be safely removed when reset.
-         */
-        val pointerPool: Pool<Pointer> = Pools.get(Pointer::class.java, ::Pointer)
-        /**
          * It will
          */
         val pathPool: Pool<Path> = Pools.get(Path::class.java, ::Path)
-        private val bfsContainer = object : EasyContainer<INetworkNode, Path>(
-            { pointerPool.obtain() },
+        @Suppress("MoveLambdaOutsideParentheses")
+        private val bfsContainer = EasyContainer<INetworkNode, Path>(
+            ::Pointer,
             { pathPool.obtain() },
-        ) {
-            init {
-                clearVert2Pointer = {
-                    vert2Pointer.values.forEach { pointerPool.free(it as Pointer) }
-                    vert2Pointer.clear()
-                }
-            }
-        }
+        )
         private val tmp1 = ArrayList<INetworkNode>()
         private val bfsQueue = LinkedList<INetworkNode>()
         private val closedSet = IntSet()
@@ -384,12 +374,10 @@ fun Path.reversedPath(): Path {
     reversed.path.reverse()
     return reversed
 }
-
-class Pointer internal constructor() : IPointer<INetworkNode>, Pool.Poolable {
+/**
+ * Pointer object is small, there is no need to pool it.
+ */
+class Pointer internal constructor() : IPointer<INetworkNode> {
     override var previous: IPointer<INetworkNode>? = null
     override var self: INetworkNode = EmptyNetworkNode
-    override fun reset() {
-        previous = null
-        self = EmptyNetworkNode
-    }
 }

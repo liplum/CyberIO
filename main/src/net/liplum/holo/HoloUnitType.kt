@@ -168,7 +168,6 @@ open class HoloUnitType(name: String) : UnitType(name) {
         if (drawItems) {
             drawItems(unit)
         }
-        // TODO: need update maybe
         for (part in parts) {
             val first = if (unit.mounts.size > part.weaponIndex)
                 unit.mounts[part.weaponIndex]

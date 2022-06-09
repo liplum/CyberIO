@@ -106,7 +106,7 @@ interface IComponentBlock {
         }
     }
 }
-
+// TODO: Rewrite this.
 class Sides(
     val sides: Array<Side2>
 ) : Iterable<Side2> {
