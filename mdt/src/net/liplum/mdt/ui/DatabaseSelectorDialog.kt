@@ -79,7 +79,7 @@ open class DatabaseSelectorDialog : BaseDialog("") {
                     image.addListener(Tooltip { t: Table ->
                         t.background(Tex.button).add(
                             unlock.localizedName +
-                                    if (Vars.enableConsole) "\n[gray]${unlock.name}" else ""
+                                    if (Core.settings.getBool("console")) "\n[gray]${unlock.name}" else ""
                         )
                     })
                     if ((count + 1) % cols == 0) {

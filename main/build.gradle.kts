@@ -51,12 +51,7 @@ ksp {
 }
 version = "4.0"
 group = "net.liplum"
-tasks.whenTaskAdded {
-    when (name) {
-        "kspKotlin" -> if (settings.env == "dev") enabled = false
-        "genMetaClass" -> if (settings.env == "dev") enabled = false
-    }
-}
+
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8

@@ -7,6 +7,7 @@ buildscript {
         }
     }
 }
+val settings = net.liplum.gradle.settings.Settings.get(rootDir)
 allprojects {
     group = "net.liplum"
     version = "4.0"
@@ -18,6 +19,14 @@ allprojects {
         mavenCentral()
         maven {
             url = uri("https://www.jitpack.io")
+        }
+    }
+    tasks.whenTaskAdded {
+        tasks.whenTaskAdded {
+            when (name) {
+                "kspKotlin" -> if (settings.env == "dev") enabled = false
+                "genMetaClass" -> if (settings.env == "dev") enabled = false
+            }
         }
     }
 }

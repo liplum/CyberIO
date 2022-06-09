@@ -138,7 +138,6 @@ class CioMod : Mod() {
                 LiplumCloud.reset()
                 LiplumCloud.save()
             }
-            Vars.enableConsole = true
             ClientOnly {
                 NpcSystem.register()
                 Core.input.addProcessor(UnitTap)

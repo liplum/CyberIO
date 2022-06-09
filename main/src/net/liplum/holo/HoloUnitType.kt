@@ -180,12 +180,14 @@ open class HoloUnitType(name: String) : UnitType(name) {
                     first.smoothReload,
                     first.heat,
                     first.recoil,
+                    first.charge,
                     unit.x,
                     unit.y,
                     unit.rotation
                 )
             } else {
-                DrawPart.params.set(0f, 0f, 0f, 0f, 0f, unit.x, unit.y, unit.rotation)
+                DrawPart.params.set(0f, 0f, 0f, 0f, 0f, 0f,
+                    unit.x, unit.y, unit.rotation)
             }
             if (unit is Scaled) {
                 DrawPart.params.life = unit.fin()

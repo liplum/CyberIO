@@ -25,13 +25,6 @@ kotlin.sourceSets.main {
     )
 }
 
-tasks.whenTaskAdded {
-    if (name == "kspKotlin") {
-        if (settings.env == "dev") {
-            enabled = false
-        }
-    }
-}
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
