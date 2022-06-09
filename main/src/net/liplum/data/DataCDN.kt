@@ -82,8 +82,9 @@ class DataCDN(name: String) :
         override val sideEnable = this@DataCDN.sideEnable
         @ClientOnly
         override val linkingTime = FloatArray(4)
+        override var livingTime = 0f
         @ClientOnly
-        override val lastRailEntry = Array(4) { RailEntry() }
+        override val lastRailTrail = Array(4) { RailTrail() }
         override var totalSendingDistance= 0f
         override var curSendingLength= 0f
         @ClientOnly

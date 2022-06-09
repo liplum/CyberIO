@@ -13,9 +13,11 @@ import net.liplum.data.EmptyDataID
 import net.liplum.data.PayloadData
 import net.liplum.data.PayloadDataList
 import net.liplum.lib.Serialized
+import net.liplum.lib.delegates.Delegate
 import net.liplum.lib.utils.Index
 import net.liplum.lib.utils.forLoop
 import net.liplum.lib.utils.set
+import net.liplum.mdt.ClientOnly
 import plumy.pathkt.*
 import java.util.*
 
@@ -30,6 +32,8 @@ class DataNetwork {
     val size: Int
         get() = nodes.size
     val dataId2Task by lazy { IntMap<TransferTask>() }
+    @ClientOnly
+    val onDataInventoryChangedEvent = Delegate()
     fun update() {
         if (nodes.size <= 0) return // if no node here, do nothing
         for (node in nodes) {
@@ -79,8 +83,13 @@ class DataNetwork {
         }
     }
 
+    fun onDataInventoryChanged() {
+        onDataInventoryChangedEvent()
+    }
+
     fun onNetworkNodeChanged() {
         clearRoutineCache()
+        onDataInventoryChanged()
     }
 
     fun advanceProgress(requestID: DataID) {

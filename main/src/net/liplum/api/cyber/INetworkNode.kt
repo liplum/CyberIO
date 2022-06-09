@@ -1,10 +1,13 @@
 package net.liplum.api.cyber
 
+import arc.math.geom.Rect
 import arc.math.geom.Vec2
 import mindustry.Vars
 import mindustry.world.Block
+import net.liplum.CLog
 import net.liplum.Var
 import net.liplum.api.ICyberEntity
+import net.liplum.api.cyber.SideLinks.Companion.coordinates
 import net.liplum.api.cyber.SideLinks.Companion.reflect
 import net.liplum.data.DataID
 import net.liplum.data.EmptyDataID
@@ -13,6 +16,8 @@ import net.liplum.data.PayloadDataList
 import net.liplum.lib.Out
 import net.liplum.lib.Serialized
 import net.liplum.lib.math.Progress
+import net.liplum.lib.utils.isEven
+import net.liplum.lib.utils.raycastInThis
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.utils.TEAny
 import net.liplum.mdt.utils.TileXY
@@ -50,17 +55,22 @@ interface INetworkNode : ICyberEntity, IVertex<INetworkNode> {
      */
     @ClientOnly
     val linkingTime: FloatArray
+    var livingTime :Float
     /**
      * 4 sides
      */
     @ClientOnly
-    val lastRailEntry: Array<RailEntry>
+    val lastRailTrail: Array<RailTrail>
+    @Serialized
     var totalSendingDistance: Float
+    @Serialized
     var curSendingLength: Float
     fun updateAsNode() {
+        val delta = deltaAsNode()
+        livingTime += delta
         links.forEach {
             if (links.isEmpty(it)) linkingTime[it] = 0f
-            else linkingTime[it] += deltaAsNode()
+            else linkingTime[it] += delta
         }
         if (currentOriented != -1) {
             getData(dataInSending)?.let {
@@ -78,7 +88,7 @@ interface INetworkNode : ICyberEntity, IVertex<INetworkNode> {
 
     fun trySendDataTo(next: INetworkNode, data: PayloadData): Boolean {
         if (next.canReceiveMoreData) {
-            next.receiveData(data)
+            next.addData(data)
             dataList.remove(data)
             return true
         }
@@ -105,12 +115,17 @@ interface INetworkNode : ICyberEntity, IVertex<INetworkNode> {
      * If this couldn't contain more, just desert it.
      * Note: even if unsync, the [dataList] will correct the result.
      */
-    fun receiveData(payload: PayloadData) {
+    fun addData(payload: PayloadData) {
         if (dataList.canAddMore) {
             dataList.add(payload)
             if (payload.id == request)
                 request = EmptyDataID
+            network.onDataInventoryChanged()
         }
+    }
+
+    fun receiveData(payload: PayloadData) {
+        addData(payload)
     }
 
     fun setOriented(next: INetworkNode): Boolean {
@@ -176,6 +191,21 @@ interface INetworkNode : ICyberEntity, IVertex<INetworkNode> {
             clearSide(side)
         }
     }
+    /**
+     * Check whether the [other] is in this link bound
+     * @return true if this can link to it.
+     * Note: It doesn't guarantee [other] can link this.
+     */
+    fun isInLinkBound(side: Side, other: INetworkNode) :Boolean{
+        this.building.hitbox(rect)
+        return rect.raycastInThis(
+            tempVec.set(other.building),
+            tempVec2.set(tempVec).add(
+                coordinates[side].x * this.linkRange,
+                coordinates[side].y * this.linkRange
+            ),
+        ) != null
+    }
 
     fun isSideFull(side: Side) =
         links[side] != -1
@@ -190,9 +220,9 @@ interface INetworkNode : ICyberEntity, IVertex<INetworkNode> {
      * @param side relative to self's side
      */
     fun link(side: Side, target: INetworkNode) {
-        // clear the old one
-        clearSide(side)
-        target.clearSide(side.reflect)
+        // There is no need to clear old nodes, because `merge` can iterate all nodes existed.
+        // clearSide(side)
+        // target.clearSide(side.reflect)
 
         this.links[side] = target
         target.links[side.reflect] = this
@@ -235,10 +265,12 @@ interface INetworkNode : ICyberEntity, IVertex<INetworkNode> {
     companion object {
         private val tempList = ArrayList<INetworkNode>()
         private val tempVec = Vec2()
+        private val tempVec2 = Vec2()
+        private val rect = Rect()
     }
 }
 
-class RailEntry(
+class RailTrail(
     /** Center X or Y  */
     var center: Float = 0f,
     /** current length  */
@@ -278,6 +310,10 @@ interface INetworkBlock {
      * Call this in [Block.init] before super one.
      */
     fun initNetworkNodeSettings() {
+        if(block.size.isEven){
+            CLog.warn("[$this]It only allow an odd size of a NetworkNode block but ${block.size} is given, and now it's revised to ${block.size + 1}.")
+            block.size += 1
+        }
         linkRange += block.size / 2f
     }
 }
@@ -310,7 +346,8 @@ object EmptyNetworkNode : INetworkNode {
     override var sendingProgress: Float = 0f
     override val sideEnable = SideEnable(4) { false }
     override val linkingTime = FloatArray(4)
-    override val lastRailEntry = Array(4) { RailEntry() }
+    override var livingTime = 0f
+    override val lastRailTrail = Array(4) { RailTrail() }
     override var totalSendingDistance = 0f
     override var curSendingLength = 0f
     override val linkRange = 0f

@@ -29,7 +29,7 @@ import net.liplum.utils.addSendingProgress
 class Serializer(name: String) :
     PayloadBlock(name), INetworkBlock {
     var serializationSpeed = 1f / 240f
-    override var linkRange: WorldXY = 500f
+    override var linkRange: WorldXY = 64f * Vars.tilesize
     override val block = this
     @ClientOnly override var expendPlacingLineTime = Var.SelectedCircleTime
     override val sideEnable = enableAllSides
@@ -101,8 +101,9 @@ class Serializer(name: String) :
         override val sideEnable = this@Serializer.sideEnable
         @ClientOnly
         override val linkingTime = FloatArray(4)
+        override var livingTime = 0f
         @ClientOnly
-        override val lastRailEntry = Array(4) { RailEntry() }
+        override val lastRailTrail = Array(4) { RailTrail() }
         var lastTileChange = -2
         override fun draw() {
             DebugOnly {
@@ -156,7 +157,7 @@ class Serializer(name: String) :
             serializingProgress += delta() * serializationSpeed
             if (serializingProgress >= 1f) {
                 this.payload = null
-                dataList.add(PayloadData(payload, DataNetwork.assignDataID()))
+                addData(PayloadData(payload, DataNetwork.assignDataID()))
                 serializingProgress = 0f
             }
         }

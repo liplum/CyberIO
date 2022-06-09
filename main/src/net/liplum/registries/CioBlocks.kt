@@ -1550,7 +1550,7 @@ object CioBlocks {
                 requirements(
                     Category.units, BuildVisibility.shown, arrayOf()
                 )
-                size = 4
+                size = 3
             }
         }
     }
@@ -1575,6 +1575,7 @@ object CioBlocks {
                     Category.units, BuildVisibility.shown, arrayOf()
                 )
                 size = 5
+                linkRange = 30f * Vars.tilesize
                 buildType = Prov { SerializerBuild() }
             }
         }

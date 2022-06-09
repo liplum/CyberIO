@@ -291,8 +291,50 @@ fun FloatArray.lerp(target: FloatArray, progress: Float) = this.apply {
  * @receiver any number, finally is coerced in [0f,1f]
  * @return [0f,1f]
  */
-val Float.smooth: Float
+val Progress.smooth: Progress
     get() = Interp.smooth(this.coerceIn(0f, 1f))
+/**
+ * Return the power2 interpolation.
+ * @receiver any number, finally is coerced in [0f,1f]
+ * @return [0f,1f]
+ */
+val Progress.pow2Intrp: Progress
+    get() = Interp.pow2(this.coerceIn(0f, 1f))
+/**
+ * Return the power3 interpolation.
+ * @receiver any number, finally is coerced in [0f,1f]
+ * @return [0f,1f]
+ */
+val Progress.pow3Intrp: Progress
+    get() = Interp.pow3(this.coerceIn(0f, 1f))
+/**
+ * Return the power2 Out interpolation.
+ * @receiver any number, finally is coerced in [0f,1f]
+ * @return [0f,1f]
+ */
+val Progress.pow2OutIntrp: Progress
+    get() = Interp.pow2Out(this.coerceIn(0f, 1f))
+/**
+ * Return the power3 Out interpolation.
+ * @receiver any number, finally is coerced in [0f,1f]
+ * @return [0f,1f]
+ */
+val Progress.pow3OutIntrp: Progress
+    get() = Interp.pow3Out(this.coerceIn(0f, 1f))
+/**
+ * Return the power2 In interpolation.
+ * @receiver any number, finally is coerced in [0f,1f]
+ * @return [0f,1f]
+ */
+val Progress.pow2InIntrp: Progress
+    get() = Interp.pow2In(this.coerceIn(0f, 1f))
+/**
+ * Return the power3 In interpolation.
+ * @receiver any number, finally is coerced in [0f,1f]
+ * @return [0f,1f]
+ */
+val Progress.pow3InIntrp: Progress
+    get() = Interp.pow3In(this.coerceIn(0f, 1f))
 /**
  * @param growingTime the increasing number
  * @param maxTime the max bound

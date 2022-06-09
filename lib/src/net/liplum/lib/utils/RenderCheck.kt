@@ -27,7 +27,16 @@ fun Point2f.inViewField(clip: Float): Boolean {
  * @return the raycast vector or null if the raycast line can't be seen
  */
 fun raycastInViewField(start: Point2f, end: Point2f): Vec2? {
-    return Geometry.raycastRect(start.x, start.y, end.x, end.y, Core.camera.bounds(r1))
+    return Core.camera.bounds(r1).raycastInThis(start, end)
+}
+/**
+ * Get the raycast between two points in the rect given
+ * @param start the start point
+ * @param end the ebd point
+ * @return the raycast vector or null if the raycast line can't be seen
+ */
+fun Rect.raycastInThis(start: Point2f, end: Point2f): Vec2? {
+    return Geometry.raycastRect(start.x, start.y, end.x, end.y, this)
 }
 /**
  * Get whether the line between two point can be seen in the view field
