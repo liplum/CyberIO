@@ -8,31 +8,36 @@ import arc.scene.ui.ImageButton
 import arc.scene.ui.ImageButton.ImageButtonStyle
 import arc.scene.ui.Label
 import arc.scene.ui.layout.Table
+import arc.util.Align
 import mindustry.Vars
 import mindustry.gen.Icon
 import mindustry.gen.Sounds
 import mindustry.gen.Tex
-import mindustry.ui.dialogs.BaseDialog
 import net.liplum.*
 import net.liplum.ContentSpecXInfo.Companion.color
+import net.liplum.lib.ui.NewIconTextButton
+import net.liplum.lib.ui.UIToast
+import net.liplum.lib.ui.then
 import net.liplum.lib.utils.bundle
 import net.liplum.mdt.ClientOnly
-import net.liplum.lib.ui.UIToast
 import net.liplum.mdt.ui.addTrackTooltip
 
 @ClientOnly
-object ContentSpecDialog {
+object ContentSpecFrag {
     val prefix = "setting.${R.Setting.ContentSpecific}"
     var toastUI = UIToast().apply {
         background = Tex.button
     }
+    val title: String
+        get() = bundle("title")
     var fadeDuration = 0.8f
     @JvmStatic
     fun bundle(key: String, vararg args: Any) =
         if (args.isEmpty()) "$prefix.$key".bundle
         else "$prefix.$key".bundle(*args)
     @JvmStatic
-    fun show() {
+    fun build(cont: Table) {
+        // Main
         var curSpec = Var.ContentSpecific
         var changed = curSpec != Var.ContentSpecific
         fun changeCurSpec(new: ContentSpec) {
@@ -49,9 +54,9 @@ object ContentSpecDialog {
 
         fun hasUnsavedChange() =
             curSpec != Var.ContentSpecific
-
-        BaseDialog(bundle("title")).apply {
-            cont.add(Table().apply {
+        // Tip
+        cont.add(Table().apply {
+            add(Table().apply {
                 add(Label(R.Bundle.UnsavedChange.bundle).apply {
                     setColor(R.C.RedAlert)
                 })
@@ -74,8 +79,9 @@ object ContentSpecDialog {
                     }
                 }
             }).row()
-            cont.add(bundle("introduction")).row()
-            cont.add(Table().apply {
+            // Options
+            add(bundle("introduction")).row()
+            add(Table().apply {
                 val default = Core.scene.getStyle(ImageButtonStyle::class.java)
                 val style = ImageButtonStyle(default).apply {
                     checked = default.over
@@ -99,18 +105,19 @@ object ContentSpecDialog {
                     }).pad(5f)
                 }
             })
-            addCloseButton()
-            run {
-                buttons.button("@save", Icon.save) {
-                    setSpec(curSpec)
-                    this.hide()
-                }.get().apply {
-                    update {
-                        isDisabled = !hasUnsavedChange()
-                    }
+        }).grow()
+        cont.row()
+        // Buttons
+        cont.add(Table().apply {
+            add(NewIconTextButton("@save", Icon.save) {
+                setSpec(curSpec)
+            }).then {
+                update {
+                    isDisabled = !hasUnsavedChange()
                 }
-            }
-        }.show()
+                align(Align.bottom)
+            }.width(150f).row()
+        })
     }
     @JvmStatic
     fun setSpec(spec: ContentSpec) {

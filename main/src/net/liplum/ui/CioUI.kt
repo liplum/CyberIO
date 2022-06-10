@@ -90,6 +90,7 @@ object CioUI {
         val cioMenuID = "cyber-io-menu"
         if (!Vars.mobile) {
             MainMenus.appendDesktopMenu("Cyber IO", icon, cioMenuID) {
+                CyberIODialog.show()
             }
         } else {
             MainMenus.appendMobileMenu("Cyber IO", icon, cioMenuID) {
@@ -139,14 +140,6 @@ object CioUI {
         addCheckPref(
             R.Setting.ShowWelcome, true
         ).apply {
-            canShow = { isMenu }
-        }
-        // Select the Cyber IO specific
-        addAny {
-            it.add(Elem.newButton(ContentSpecDialog.bundle("button")) {
-                ContentSpecDialog.show()
-            }.addTrackTooltip(ContentSpecDialog.bundle("button-tip")))
-                .fillX()
             canShow = { isMenu }
         }
         // GitHub mirror and Check update
