@@ -25,7 +25,6 @@ allprojects {
         tasks.whenTaskAdded {
             when (name) {
                 "kspKotlin" -> if (settings.env == "dev") enabled = false
-                "genMetaClass" -> if (settings.env == "dev") enabled = false
             }
         }
     }

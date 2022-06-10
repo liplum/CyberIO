@@ -26,12 +26,13 @@ import net.liplum.lib.TR
 import net.liplum.lib.math.Progress
 import net.liplum.lib.math.between
 import net.liplum.lib.math.pow3InIntrp
-import net.liplum.lib.math.smooth
+import net.liplum.lib.shaders.use
 import net.liplum.lib.utils.DrawLayer
 import net.liplum.mdt.advanced.Inspector.isPlacing
 import net.liplum.mdt.advanced.Inspector.isSelected
 import net.liplum.mdt.render.*
 import net.liplum.mdt.utils.*
+import net.liplum.registries.SD
 import kotlin.math.absoluteValue
 
 /**
@@ -93,8 +94,9 @@ fun INetworkNode.updateCardinalDirections() = building.run body@{
                         }// else : reached is invalid -> do nothing
                     }
                     return@iterateCurSide
-                }// is previous one -> do nothing
-            }
+                }
+            }// is previous one -> do nothing
+            return@iterateCurSide
         } else {
             // doesn't reach any node -> clear current side
             clearSide(side)
@@ -126,7 +128,9 @@ fun INetworkNode.drawSelectingCardinalDirections() = building.run {
         val dy = dir.y
         for (j in 1 + offset..range) {
             val other = world.build(tileX + j * dir.x, tileY + j * dir.y)
-            if (other != null && other.team == team && other is INetworkNode) {
+            if (other != null && other.team == team && other is INetworkNode &&
+                this@drawSelectingCardinalDirections.isLinkedWith(side, other)
+            ) {
                 limit = j.worldXY
                 dest = other
                 break
@@ -299,8 +303,8 @@ fun INetworkNode.drawRail(beamTR: TR, beamEndTR: TR) {
         val thisOffset = block.size * Vars.tilesize / 2f
         val ox = this.building.x
         val oy = this.building.y
-        val widthHalf = Var.NetworkNodeChannelWidth / 2f
-        val thickness = Var.NetworkRailThickness * (1f + G.sin / 5f)
+        val widthHalf = Var.NetworkNodeRailWidth / 2f
+        val thickness = Var.NetworkRailThickness
         Draw.color(S.Hologram)
         links.forEachNodeWithSide { side, t ->
             val time = linkingTime[side]
@@ -370,7 +374,6 @@ fun INetworkNode.drawRail(beamTR: TR, beamEndTR: TR) {
             if (trail.curLength <= 0f) return@forEachUnlinkSide
             trail.curLength = (trail.curLength - Var.NetworkNodeRailSpeed * Time.delta).coerceAtLeast(0f)
             val progress = (trail.curLength / trail.totalLength).pow3InIntrp
-            val p = (trail.curLength / (trail.totalLength / 2f)).pow3InIntrp
             if (side % 2 == 1) {// Top or Bottom
                 val thisY = oy + dir.y * thisOffset
                 val x = trail.center
@@ -428,7 +431,8 @@ fun INetworkNode.drawDataInSending(
     progress: Progress,
     t: INetworkNode,
 ) {
-    DrawLayer(Layer.blockOver + 0.1f) {
+    SD.Hologram.use(Layer.effect) {
+        it.blendFormerColorOpacity *= 0.5f
         val payload = data.payload
         val thisOffset = block.size * Vars.tilesize / 2f
         val ox = this.building.x
@@ -444,14 +448,14 @@ fun INetworkNode.drawDataInSending(
             val targY = ty - dir.y * tOffset
             payload.icon().DrawAny(
                 x, progress.between(thisY, targY),
-                width = Var.NetworkNodeChannelWidth, height = Var.NetworkNodeChannelWidth,
+                width = Var.NetworkPayloadSizeInRail, height = Var.NetworkPayloadSizeInRail,
             )
         } else { // Right or Left
             val thisX = ox + dir.x * thisOffset
             val targX = tx - dir.x * tOffset
             payload.icon().DrawAny(
                 progress.between(thisX, targX), y,
-                width = Var.NetworkNodeChannelWidth, height = Var.NetworkNodeChannelWidth,
+                width = Var.NetworkPayloadSizeInRail, height = Var.NetworkPayloadSizeInRail,
             )
         }
     }

@@ -11,17 +11,42 @@ import arc.scene.utils.Elem
 import mindustry.Vars
 import mindustry.gen.Tex
 import mindustry.ui.Styles
+import net.liplum.Var.DataListItemMargin
+import net.liplum.Var.DataListItemSize
+import net.liplum.Var.DataListMaxItemInRow
 import net.liplum.data.PayloadData
+import net.liplum.lib.ui.autoLoseFocus
+import net.liplum.lib.ui.onHidden
+import net.liplum.lib.ui.then
 
 fun INetworkNode.buildNetworkDataList(table: Table) {
-    table.add(ScrollPane(Table(Tex.wavepane).apply {
-        network.forEachDataIndexed { i, node, data ->
-            add(Table(Tex.button).apply {
-                buildPayloadDataInfo(node, data)
-            }).margin(5f).grow().size(Vars.iconXLarge * 2.5f)
-            if ((i + 1) % 4 == 0) row()
+    val list = Table(Tex.wavepane)
+    table.add(
+        Table().apply {
+            add(ScrollPane(list, Styles.defaultPane)).apply {
+                minWidth(Vars.iconXLarge * 2.5f * 4f)
+                minHeight(Vars.iconXLarge * 2.5f)
+                grow()
+            }
         }
-    }, Styles.defaultPane))
+    )
+    fun rebuild() {
+        list.clearChildren()
+        network.forEachDataIndexed { i, node, data ->
+            list.add(Table(Tex.button).apply {
+                buildPayloadDataInfo(node, data)
+            }).margin(5f).grow().size(DataListItemSize)
+            if ((i + 1) % 4 == 0)
+                list.row()
+        }
+    }
+    rebuild()
+    network.onDataInventoryChangedEvent += {
+        rebuild()
+    }
+    table.onHidden {
+        network.onDataInventoryChangedEvent.clear()
+    }
 }
 
 fun Table.buildPayloadDataInfo(node: INetworkNode, data: PayloadData) {
@@ -35,14 +60,42 @@ fun Table.buildPayloadDataInfo(node: INetworkNode, data: PayloadData) {
 }
 
 fun INetworkNode.buildNetworkDataListSelector(table: Table) {
-    table.add(ScrollPane(Table(Tex.wavepane).apply {
+    val list = Table(Tex.wavepane).apply {
+        left()
+    }
+    val sizePreItem = DataListItemSize + DataListItemMargin
+    table.add(
+        ScrollPane(list)
+    ).apply {
+        minWidth(sizePreItem * DataListMaxItemInRow)
+        minHeight(sizePreItem)
+        maxHeight(sizePreItem * DataListMaxItemInRow)
+        fill()
+    }.then {
+        autoLoseFocus()
+        setFadeScrollBars(true)
+    }
+    fun rebuild() {
+        list.clearChildren()
+        var count = 0
         network.forEachDataIndexed { i, node, data ->
-            add(Table(Tex.button).apply {
+            count++
+            list.add(Table(Tex.button).apply {
                 buildPayloadDataInfoSelectorItem(this@buildNetworkDataListSelector, node, data)
-            }).margin(5f).grow().size(Vars.iconXLarge * 2.5f)
-            if ((i + 1) % 4 == 0) row()
+            }).margin(DataListItemMargin).size(DataListItemSize)
+            if ((i + 1) % DataListMaxItemInRow == 0)
+                list.row()
         }
-    }, Styles.defaultPane))
+        for (i in 0 until 4 - count)
+            list.add(Table(Tex.button)).margin(DataListItemMargin).size(DataListItemSize)
+    }
+    rebuild()
+    network.onDataInventoryChangedEvent += {
+        rebuild()
+    }
+    table.onHidden {
+        network.onDataInventoryChangedEvent.clear()
+    }
 }
 
 fun Table.buildPayloadDataInfoSelectorItem(cur: INetworkNode, node: INetworkNode, data: PayloadData) {

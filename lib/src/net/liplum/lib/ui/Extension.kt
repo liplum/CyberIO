@@ -5,6 +5,7 @@ import arc.graphics.Color
 import arc.scene.Element
 import arc.scene.event.InputEvent
 import arc.scene.event.InputListener
+import arc.scene.event.VisibilityListener
 import arc.scene.style.Drawable
 import arc.scene.ui.Label
 import arc.scene.ui.ScrollPane
@@ -52,7 +53,7 @@ fun <T : ScrollPane> Cell<T>.autoLoseFocus(): Cell<T> {
     return this
 }
 
-fun <T : Element> T.addTooltip(
+fun <T : Element> T.addEasyTooltip(
     text: String,
     background: Drawable,
 ): T {
@@ -119,4 +120,13 @@ fun <T : Element> T.isMouseOver(): ReadOnlyProperty<Any?, Boolean> {
         }
     })
     return ReadOnlyProperty { _, _ -> isMouseOver }
+}
+
+inline fun <T:Element> T.onHidden(crossinline func: T.() -> Unit){
+    addListener(object : VisibilityListener() {
+        override fun hidden(): Boolean {
+            func()
+            return false
+        }
+    })
 }

@@ -6,6 +6,7 @@ import arc.scene.ui.layout.Table
 import mindustry.ui.Styles
 import mindustry.ui.dialogs.BaseDialog
 import net.liplum.lib.ui.addTooltip
+import net.liplum.lib.ui.addEasyTooltip
 import net.liplum.lib.ui.addTrackTooltip
 
 val NewBaseDialog: BaseDialog
@@ -38,7 +39,7 @@ fun ShowTextDialog(
 }
 
 fun <T : Element> T.addTooltip(text: String): T =
-    addTooltip(text, Styles.black8)
+    addEasyTooltip(text, Styles.black8)
 
 inline fun <T : Element> T.addTooltip(
     crossinline ctor: T.(Table) -> Unit,

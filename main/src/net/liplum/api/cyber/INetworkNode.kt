@@ -55,7 +55,7 @@ interface INetworkNode : ICyberEntity, IVertex<INetworkNode> {
      */
     @ClientOnly
     val linkingTime: FloatArray
-    var livingTime :Float
+    var livingTime: Float
     /**
      * 4 sides
      */
@@ -190,13 +190,28 @@ interface INetworkNode : ICyberEntity, IVertex<INetworkNode> {
             // If this is a node existed on this side, separate the network
             clearSide(side)
         }
+        clearStatus()
+    }
+    fun clearStatus(){
+        livingTime = 0f
+        curSendingLength = 0f
+        totalSendingDistance = 0f
+        ClientOnly {
+            lastRailTrail.forEach {
+                it.curLength = 0f
+                it.totalLength = 0f
+            }
+            for (i in linkingTime.indices) {
+                linkingTime[i] = 0f
+            }
+        }
     }
     /**
      * Check whether the [other] is in this link bound
      * @return true if this can link to it.
      * Note: It doesn't guarantee [other] can link this.
      */
-    fun isInLinkBound(side: Side, other: INetworkNode) :Boolean{
+    fun isInLinkBound(side: Side, other: INetworkNode): Boolean {
         this.building.hitbox(rect)
         return rect.raycastInThis(
             tempVec.set(other.building),
@@ -220,9 +235,9 @@ interface INetworkNode : ICyberEntity, IVertex<INetworkNode> {
      * @param side relative to self's side
      */
     fun link(side: Side, target: INetworkNode) {
-        // There is no need to clear old nodes, because `merge` can iterate all nodes existed.
-        // clearSide(side)
-        // target.clearSide(side.reflect)
+        // This is necessary, otherwise, you will see two nodes linking to a node on one side.
+        clearSide(side)
+        target.clearSide(side.reflect)
 
         this.links[side] = target
         target.links[side.reflect] = this
@@ -248,6 +263,10 @@ interface INetworkNode : ICyberEntity, IVertex<INetworkNode> {
         val old = links[side]
         if (old == -1) return
         links[side] = -1
+        lastRailTrail[side].let {
+            it.curLength = 0f
+            it.totalLength = 0f
+        }
         old.TEAny<INetworkNode>()?.let {
             // If this is a node existed on this side, separate the network
             it.links[side.reflect] = -1
@@ -310,7 +329,7 @@ interface INetworkBlock {
      * Call this in [Block.init] before super one.
      */
     fun initNetworkNodeSettings() {
-        if(block.size.isEven){
+        if (block.size.isEven) {
             CLog.warn("[$this]It only allow an odd size of a NetworkNode block but ${block.size} is given, and now it's revised to ${block.size + 1}.")
             block.size += 1
         }
