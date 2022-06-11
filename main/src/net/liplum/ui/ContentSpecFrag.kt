@@ -18,23 +18,20 @@ import net.liplum.ContentSpecXInfo.Companion.color
 import net.liplum.lib.ui.NewIconTextButton
 import net.liplum.lib.ui.UIToast
 import net.liplum.lib.ui.then
+import net.liplum.lib.utils.Bundlable
 import net.liplum.lib.utils.bundle
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.ui.addTrackTooltip
 
 @ClientOnly
-object ContentSpecFrag {
-    val prefix = "setting.${R.Setting.ContentSpecific}"
+object ContentSpecFrag : Bundlable {
+    override val bundlePrefix = "setting.${R.Setting.ContentSpecific}"
     var toastUI = UIToast().apply {
         background = Tex.button
     }
     val title: String
         get() = bundle("title")
     var fadeDuration = 0.8f
-    @JvmStatic
-    fun bundle(key: String, vararg args: Any) =
-        if (args.isEmpty()) "$prefix.$key".bundle
-        else "$prefix.$key".bundle(*args)
     @JvmStatic
     fun build(cont: Table) {
         // Main
@@ -116,7 +113,7 @@ object ContentSpecFrag {
                     isDisabled = !hasUnsavedChange()
                 }
                 align(Align.bottom)
-            }.width(150f).row()
+            }.width(200f).row()
         })
     }
     @JvmStatic

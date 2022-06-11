@@ -189,17 +189,6 @@ tasks {
     }
 }
 
-tasks.withType<Test>().configureEach {
-    useJUnitPlatform {
-        includeTags("fast")
-        excludeTags("slow")
-    }
-    testLogging {
-        exceptionFormat = TestExceptionFormat.FULL
-        showStandardStreams = true
-    }
-}
-
 tasks.named<Jar>("jar") {
     //dependsOn("compileGAL")
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE

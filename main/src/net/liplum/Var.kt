@@ -2,6 +2,7 @@ package net.liplum
 
 import arc.math.Rand
 import mindustry.Vars
+import net.liplum.lib.ui.NavigationService
 import net.liplum.mdt.utils.WorldXY
 
 object Var {
@@ -34,4 +35,5 @@ object Var {
     @JvmField var NetworkNodeRailSpeed: WorldXY = 0.5f * Vars.tilesize
     /** [WorldXY] pre tick */
     @JvmField var NetworkNodeSendingSpeed: WorldXY = 0.5f * Vars.tilesize
+    @JvmField val Navigation = NavigationService()
 }

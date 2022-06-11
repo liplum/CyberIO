@@ -29,11 +29,3 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.6.21")
     testImplementation("org.jetbrains.kotlin:kotlin-reflect:1.6.21")
 }
-tasks.withType<Test>().configureEach {
-    useJUnitPlatform {
-    }
-    testLogging {
-        exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
-        showStandardStreams = true
-    }
-}

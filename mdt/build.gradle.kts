@@ -36,17 +36,6 @@ dependencies {
     // annotationProcessor "com.github.Anuken:jabel:$jabelVersion"
 }
 
-
-tasks.withType<Test>().configureEach {
-    useJUnitPlatform {
-        includeTags("fast")
-        excludeTags("slow")
-    }
-    testLogging {
-        exceptionFormat = TestExceptionFormat.FULL
-        showStandardStreams = true
-    }
-}
 val sourcesJar by tasks.creating(Jar::class) {
     dependsOn(JavaPlugin.CLASSES_TASK_NAME)
     archiveClassifier.set("sources")

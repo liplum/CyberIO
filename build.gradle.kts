@@ -21,6 +21,16 @@ allprojects {
             url = uri("https://www.jitpack.io")
         }
     }
+
+    tasks.withType<Test>().configureEach {
+        useJUnitPlatform {
+            excludeTags("slow")
+        }
+        testLogging {
+            exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+            showStandardStreams = true
+        }
+    }
     tasks.whenTaskAdded {
         tasks.whenTaskAdded {
             when (name) {

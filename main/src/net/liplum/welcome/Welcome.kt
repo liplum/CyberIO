@@ -28,6 +28,7 @@ import net.liplum.lib.utils.allMaxBy
 import net.liplum.lib.utils.randomExcept
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.utils.atlas
+import net.liplum.welcome.Welcome.Entity.Companion.showTipByID
 
 @ClientOnly
 object Welcome {
@@ -45,9 +46,9 @@ object Welcome {
             entity.showTip()
         }
         //For debug
-        //val tip = WelcomeList.find { it.id == "SetOutErekir" }
-        //tip?.condition?.canShow(tip)
-        //entity.showTipByID("AdBlock")
+        /*val tip = WelcomeList.find { it.id == "SetOutErekir" }
+        tip?.condition?.canShow(tip)*/
+        //entity.showTipByID("SetOutErekir")
     }
     @JvmStatic
     fun judgeWelcome() {

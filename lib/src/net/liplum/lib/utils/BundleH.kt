@@ -302,3 +302,10 @@ value class ReferBundleWrapper(
             ReferBundleWrapper(createModBundle())
     }
 }
+
+interface Bundlable {
+    val bundlePrefix: String
+    fun bundle(key: String, vararg args: Any) =
+        if (args.isEmpty()) "${bundlePrefix}.$key".bundle
+        else "${bundlePrefix}.$key".bundle(*args)
+}

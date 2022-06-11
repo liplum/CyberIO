@@ -7,7 +7,6 @@ import arc.scene.style.TextureRegionDrawable
 import arc.scene.ui.Dialog
 import arc.scene.ui.TextButton
 import arc.scene.ui.layout.Table
-import arc.scene.utils.Elem
 import arc.util.Align
 import kotlinx.coroutines.launch
 import mindustry.Vars
@@ -94,6 +93,7 @@ object CioUI {
             }
         } else {
             MainMenus.appendMobileMenu("Cyber IO", icon, cioMenuID) {
+                CyberIODialog.show()
             }
         }
     }

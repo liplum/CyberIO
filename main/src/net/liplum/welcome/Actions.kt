@@ -4,10 +4,8 @@ import arc.Core
 import arc.util.Log
 import arc.util.Time
 import mindustry.Vars
-import net.liplum.CLog
-import net.liplum.CioMod
-import net.liplum.R
-import net.liplum.Settings
+import net.liplum.*
+import net.liplum.lib.ui.Navigator
 import net.liplum.lib.utils.bundle
 import net.liplum.ui.CioUI
 import net.liplum.update.Updater
@@ -83,8 +81,18 @@ object Actions {
                     val method = clz.getMethod(funcName)
                     method.invoke(null)
                 } catch (e: Exception) {
-                    CLog.err(e)
+                    CLog.err("In action [$id]",e)
                 }
+            }
+        }
+    }
+    val Navigation = object : Action("Navigation") {
+        override fun doAction(entity: Welcome.Entity) {
+            val data = entity.tip.data
+            val locatorText = data["Locator"] as? String
+            if (locatorText != null) {
+                val locator = Navigator.by(locatorText)
+                Var.Navigation.navigate(locator)
             }
         }
     }

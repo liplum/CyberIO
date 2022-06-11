@@ -94,9 +94,8 @@
     "Data": {
       "ShowPoliteWelcome": true,
       "CExpression": "@ContentSpecific == vanilla",
-      "YesAction": "CallStaticFunction",
-      "ClassFullName": "net.liplum.ui.ContentSpecDialog",
-      "StaticFunctionName": "show"
+      "YesAction": "Navigation",
+      "Locator": "/CyberIO/ContentSpecific"
     }
   }
 ]
