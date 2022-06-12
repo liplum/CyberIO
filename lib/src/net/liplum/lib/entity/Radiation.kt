@@ -4,13 +4,13 @@ import arc.util.io.Reads
 import arc.util.io.Writes
 import net.liplum.lib.persistence.CacheReaderSpec
 import net.liplum.lib.persistence.CacheWriter
-import net.liplum.lib.persistence.IRWable
+import net.liplum.lib.persistence.IRWableX
 import java.io.DataInputStream
 
 open class Radiation(
     @JvmField
     var range: Float = 0f
-) : IRWable {
+) : IRWableX {
     override fun read(reader: Reads) {
         range = reader.f()
     }

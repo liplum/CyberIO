@@ -6,14 +6,14 @@ import net.liplum.lib.TR
 import net.liplum.lib.math.Polar
 import net.liplum.lib.persistence.CacheReaderSpec
 import net.liplum.lib.persistence.CacheWriter
-import net.liplum.lib.persistence.IRWable
+import net.liplum.lib.persistence.IRWableX
 import net.liplum.lib.utils.isOn
 import net.liplum.lib.utils.off
 import net.liplum.lib.utils.on
 import net.liplum.mdt.ClientOnly
 import java.io.DataInputStream
 
-class Crystal : IRWable {
+class Crystal : IRWableX {
     var revolution = Polar()
     var rotation = Polar()
     @ClientOnly

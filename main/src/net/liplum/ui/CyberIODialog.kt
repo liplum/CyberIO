@@ -5,6 +5,7 @@ import net.liplum.Var
 import net.liplum.annotations.Only
 import net.liplum.annotations.SubscribeEvent
 import net.liplum.events.CioInitEvent
+import net.liplum.heimdall.HeimdallProjectGame
 import net.liplum.lib.ui.INavigable
 import net.liplum.lib.ui.INavigator
 import net.liplum.lib.ui.NavigateKind
@@ -23,21 +24,26 @@ object CyberIODialog : INavigable {
     var allTabs = TabView().apply {
         // Select the Cyber IO specific
         addTab(TabItem("ContentSpecific").apply {
-            buildIcon = {
+            buildIcon {
                 add(ContentSpecFrag.title)
                     .tooltip(ContentSpecFrag.bundle("button-tip"))
             }
-            buildContent = ContentSpecFrag::build
+            buildContent {
+                ContentSpecFrag.build(this)
+            }
         })
         addTab(TabItem("Heimdall").apply {
-            buildIcon = {
-                add(HeimdallProjectFrag.title)
-                    .tooltip(HeimdallProjectFrag.bundle("button-tip"))
+            buildIcon {
+                add(HeimdallProjectGame.title)
+                    .tooltip(HeimdallProjectGame.bundle("button-tip"))
             }
-            buildContent = HeimdallProjectFrag::build
+            buildContent {
+                HeimdallProjectGame.build(this)
+            }
         })
         navigationService = { Var.Navigation }
-        rememberBuilt = true
+        //rememberBuilt = true
+        rememberBuilt = false
     }
     override val navigateFragment = "CyberIO"
     private val sharedLocator = Navigator()
@@ -45,9 +51,9 @@ object CyberIODialog : INavigable {
         if (locator.kind == NavigateKind.Global) {
             return Var.Navigation.navigate(locator)
         } else {
-            sharedLocator.copyFrom(locator)
-            val frags = sharedLocator.fragments
+            val frags = locator.fragments
             if (frags.isNotEmpty()) {
+                sharedLocator.copyFrom(locator)
                 if (allTabs.navigate(sharedLocator)) {
                     show()
                     return true

@@ -16,7 +16,7 @@ const val EmptyDataID = Int.MIN_VALUE
 
 class PayloadDataList(
     var capacity: Int = 1,
-) : Iterable<PayloadData>, IRWable {
+) : Iterable<PayloadData>, IRWableX {
     @Serialized
     var allData = Seq<PayloadData>()
     val isEmpty: Boolean
@@ -104,7 +104,7 @@ data class PayloadData(
     var payload: Payload,
     @Serialized
     var id: DataID,
-) : IRWable {
+) : IRWableX {
     override fun read(reader: Reads) {
         id = reader.i()
         payload = Payload.read(reader)

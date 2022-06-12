@@ -305,7 +305,17 @@ value class ReferBundleWrapper(
 
 interface Bundlable {
     val bundlePrefix: String
+    val parentBundle: Bundlable?
+        get() = null
+
     fun bundle(key: String, vararg args: Any) =
-        if (args.isEmpty()) "${bundlePrefix}.$key".bundle
-        else "${bundlePrefix}.$key".bundle(*args)
+        if (args.isEmpty()) {
+            val parent = parentBundle
+            if (parent != null) "${parent.bundlePrefix}.${bundlePrefix}.$key".bundle
+            else "${bundlePrefix}.$key".bundle
+        } else {
+            val parent = parentBundle
+            if (parent != null) "${parent.bundlePrefix}.${bundlePrefix}.$key".bundle(*args)
+            else "${bundlePrefix}.$key".bundle(*args)
+        }
 }

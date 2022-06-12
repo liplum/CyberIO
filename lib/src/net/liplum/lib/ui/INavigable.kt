@@ -17,7 +17,7 @@ interface INavigationService : INavigable {
     /**
      * Navigation in [NavigateKind.Global].
      */
-    override fun navigate(locator: INavigator):Boolean
+    override fun navigate(locator: INavigator): Boolean
 }
 
 enum class NavigateKind {
@@ -103,7 +103,7 @@ class NavigationService : INavigationService {
         frag2Navigator[navigable.navigateFragment] = navigable
     }
 
-    override fun navigate(locator: INavigator):Boolean {
+    override fun navigate(locator: INavigator): Boolean {
         // whatever the kind of locator, pretend it's global
         val frags = locator.fragments
         if (frags.isNotEmpty()) {
@@ -120,4 +120,9 @@ class NavigationService : INavigationService {
     }
 
     override val navigateFragment = "."
+}
+
+object EmptyNavigable : INavigable {
+    override val navigateFragment = ""
+    override fun navigate(locator: INavigator) = true
 }

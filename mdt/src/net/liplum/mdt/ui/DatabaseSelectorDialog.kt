@@ -19,6 +19,7 @@ import mindustry.gen.Icon
 import mindustry.gen.Tex
 import mindustry.graphics.Pal
 import mindustry.ui.dialogs.BaseDialog
+import net.liplum.lib.ui.addTable
 
 open class DatabaseSelectorDialog : BaseDialog("") {
     companion object : DatabaseSelectorDialog()
@@ -56,13 +57,13 @@ open class DatabaseSelectorDialog : BaseDialog("") {
             all.row()
             all.image().growX().pad(5f).padLeft(0f).padRight(0f).height(3f).color(Pal.accent)
             all.row()
-            all.table { list: Table ->
-                list.left()
+            all.addTable {
+                left()
                 val cols = Mathf.clamp((Core.graphics.width - Scl.scl(30f)) / Scl.scl((32 + 10).toFloat()), 1f, 22f).toInt()
                 for ((count, i) in (0 until array.size).withIndex()) {
                     val unlock = array[i] as UnlockableContent
                     val image = Image(unlock.uiIcon).setScaling(Scaling.fit)
-                    list.add(image).size((8 * 4).toFloat()).pad(3f)
+                    add(image).size((8 * 4).toFloat()).pad(3f)
                     val listener = ClickListener()
                     image.addListener(listener)
                     if (!Vars.mobile) {
@@ -83,7 +84,7 @@ open class DatabaseSelectorDialog : BaseDialog("") {
                         )
                     })
                     if ((count + 1) % cols == 0) {
-                        list.row()
+                        row()
                     }
                 }
             }.growX().left().padBottom(10f)

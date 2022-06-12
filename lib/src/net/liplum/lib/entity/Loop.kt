@@ -4,10 +4,10 @@ import arc.util.io.Reads
 import arc.util.io.Writes
 import net.liplum.lib.persistence.CacheReaderSpec
 import net.liplum.lib.persistence.CacheWriter
-import net.liplum.lib.persistence.IRWable
+import net.liplum.lib.persistence.IRWableX
 import java.io.DataInputStream
 
-open class Progress(progress: Float = 0f) : IRWable {
+open class Progress(progress: Float = 0f) : IRWableX {
     open var progress: Float = progress
         set(value) {
             field = value.coerceIn(0f, 1f)

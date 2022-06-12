@@ -4,17 +4,17 @@ import arc.util.io.Reads
 import arc.util.io.Writes
 import net.liplum.lib.persistence.CacheReaderSpec
 import net.liplum.lib.persistence.CacheWriter
-import net.liplum.lib.persistence.IRWable
+import net.liplum.lib.persistence.IRWableX
 import net.liplum.lib.utils.ArrayList
 import java.io.DataInputStream
 import java.util.*
 
-class FixedList<T : IRWable>(
+class FixedList<T : IRWableX>(
     @JvmField
     val size: Int = 1,
     @JvmField
     val creator: () -> T,
-) : Iterable<T>, IRWable {
+) : Iterable<T>, IRWableX {
     val list: ArrayList<T> = ArrayList(size) {
         creator()
     }
@@ -55,12 +55,12 @@ class FixedList<T : IRWable>(
     }
 }
 
-class Queue<T : IRWable>(
+class Queue<T : IRWableX>(
     @JvmField
     var maxSize: () -> Int = { 1 },
     @JvmField
     val creator: () -> T,
-) : Iterable<T>, IRWable {
+) : Iterable<T>, IRWableX {
     constructor(maxSize: Int, creator: () -> T) : this({ maxSize }, creator)
     @JvmField
     val list: LinkedList<T> = LinkedList()

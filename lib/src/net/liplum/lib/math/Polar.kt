@@ -7,7 +7,7 @@ import arc.util.io.Reads
 import arc.util.io.Writes
 import net.liplum.lib.persistence.CacheReaderSpec
 import net.liplum.lib.persistence.CacheWriter
-import net.liplum.lib.persistence.IRWable
+import net.liplum.lib.persistence.IRWableX
 import java.io.DataInputStream
 import kotlin.math.atan2
 
@@ -19,7 +19,7 @@ class Polar(
     var r: Float = 0f,
     @JvmField
     var a: Float = 0f,
-) : IRWable {
+) : IRWableX {
     fun fromXY(x: Float, y: Float): Polar {
         r = Mathf.sqrt(x * x + y * y)
         a = atan2(y.toDouble(), x.toDouble()).toFloat()

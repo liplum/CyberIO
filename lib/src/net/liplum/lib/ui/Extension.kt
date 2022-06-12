@@ -122,11 +122,17 @@ fun <T : Element> T.isMouseOver(): ReadOnlyProperty<Any?, Boolean> {
     return ReadOnlyProperty { _, _ -> isMouseOver }
 }
 
-inline fun <T:Element> T.onHidden(crossinline func: T.() -> Unit){
+inline fun <T : Element> T.onHidden(crossinline func: T.() -> Unit) {
     addListener(object : VisibilityListener() {
         override fun hidden(): Boolean {
             func()
             return false
         }
     })
+}
+
+fun Table.addSeparatorLine(
+    color: Color = Color.white,
+) {
+    this.image().growX().pad(5f).padLeft(0f).padRight(0f).height(3f).color(color).row()
 }
