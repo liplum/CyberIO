@@ -1,13 +1,11 @@
 @file:Suppress("SpellCheckingInspection")
-
 import net.liplum.gradle.gen.IConvertContext
-import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.io.ByteArrayOutputStream
 
 plugins {
-    kotlin("jvm") version "1.6.10"
-    id("com.google.devtools.ksp") version "1.6.20-1.0.5"
+    kotlin("jvm") version "1.6.21"
+    id("com.google.devtools.ksp") version "1.7.0-1.0.6"
     java
 }
 val settings = net.liplum.gradle.settings.Settings.get(rootDir)
@@ -39,6 +37,13 @@ kotlin.sourceSets.main {
         file("$buildDir/generated/classGen"),
     )
 }
+
+val compileKotlin: KotlinCompile by tasks
+
+compileKotlin.kotlinOptions.freeCompilerArgs = listOf(
+    "-Xcontext-receivers",
+    "-XXLanguage:+KotlinFunInterfaceConstructorReference"
+)
 
 ksp {
     arg("Event.FileName", "EventRegistry")

@@ -5,6 +5,7 @@ import arc.struct.OrderedSet
 import arc.util.io.Reads
 import arc.util.io.Writes
 import net.liplum.lib.entity.Queue
+import net.liplum.lib.math.Progress
 import net.liplum.lib.persistence.read
 import net.liplum.lib.persistence.write
 import net.liplum.mdt.ClientOnly
@@ -45,7 +46,7 @@ open class CrystalManager(
             field = value.coerceIn(0f, expendRequirement)
         }
     @JvmField var inited: Boolean = false
-    val process: Float
+    val progress: Progress
         get() = curExpendTime / expendRequirement
     val canAdd: Boolean
         get() = validAmount < maxAmount
@@ -81,7 +82,7 @@ open class CrystalManager(
             Status.Expending -> curExpendTime += delta
             Status.Shrinking -> curExpendTime -= delta
         }
-        if (process >= 0.999f && anyInQueue) {
+        if (progress >= 0.999f && anyInQueue) {
             retrieveAll()
             if (canReleaseMore) {
                 releaseAll()

@@ -5,6 +5,7 @@ import arc.graphics.Color
 import arc.graphics.g2d.Draw
 import arc.math.Angles
 import arc.math.Mathf
+import arc.math.geom.Geometry
 import arc.struct.EnumSet
 import arc.struct.Seq
 import arc.util.Time
@@ -14,7 +15,6 @@ import mindustry.Vars.tilesize
 import mindustry.content.UnitTypes
 import mindustry.entities.TargetPriority
 import mindustry.gen.*
-import mindustry.graphics.Drawf
 import mindustry.graphics.Layer
 import mindustry.graphics.Pal
 import mindustry.logic.LAccess
@@ -28,14 +28,14 @@ import mindustry.world.meta.BlockFlag
 import mindustry.world.meta.BlockGroup
 import net.liplum.DebugOnly
 import net.liplum.R
+import net.liplum.api.cyber.BOTTOM
+import net.liplum.api.cyber.RIGHT
 import net.liplum.api.prism.PrismBlackList.canDisperse
 import net.liplum.api.prism.PrismRegistry.isDuplicate
 import net.liplum.api.prism.PrismRegistry.setDuplicate
 import net.liplum.blocks.prism.CrystalManager.Companion.read
 import net.liplum.blocks.prism.CrystalManager.Companion.write
-import net.liplum.lib.Serialized
-import net.liplum.lib.TR
-import net.liplum.lib.TRs
+import net.liplum.lib.*
 import net.liplum.lib.math.*
 import net.liplum.lib.utils.bundle
 import net.liplum.lib.utils.isZero
@@ -45,6 +45,7 @@ import net.liplum.mdt.advanced.Inspector
 import net.liplum.mdt.advanced.Inspector.isSelected
 import net.liplum.mdt.mixin.copy
 import net.liplum.mdt.render.AsShadow
+import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.DrawSize
 import net.liplum.mdt.render.G
 import net.liplum.mdt.ui.bars.AddBar
@@ -81,6 +82,7 @@ open class Prism(name: String) : Block(name) {
     @ClientOnly lateinit var RightUpEndTR: TR
     @ClientOnly lateinit var LeftDownStartTR: TR
     @ClientOnly lateinit var LeftDownEndTR: TR
+    @ClientOnly var Right2BottomTRs = EmptyTRs
 
     init {
         buildType = Prov { PrismBuild() }
@@ -113,6 +115,7 @@ open class Prism(name: String) : Block(name) {
         RightUpEndTR = this.sub("rightup-end")
         LeftDownStartTR = this.sub("leftdown-start")
         LeftDownEndTR = this.sub("leftdown-end")
+        Right2BottomTRs = arrayOf(RightTR, UpTR, LeftTR, DownTR)
     }
 
     var perDeflectionAngle = 0f
@@ -139,9 +142,9 @@ open class Prism(name: String) : Block(name) {
         )
         DebugOnly {
             AddBar<PrismBuild>(R.Bar.ProgressN,
-                { R.Bar.Progress.bundle(cm.process.percentI) },
+                { R.Bar.Progress.bundle(cm.progress.percentI) },
                 { Pal.power },
-                { cm.process / 1f }
+                { cm.progress / 1f }
             )
             AddBar<PrismBuild>(R.Bar.StatusN,
                 { cm.status.toString() },
@@ -321,7 +324,7 @@ open class Prism(name: String) : Block(name) {
         }
 
         open fun Bullet.handleDuplicate(
-            angleOffset: Float = 0f
+            angleOffset: Float = 0f,
         ): Bullet {
             fun Seq<Turret.BulletEntry>.copyFirstBulletEntry() {
                 if (any()) {
@@ -344,30 +347,27 @@ open class Prism(name: String) : Block(name) {
             Draw.z(Layer.block)
             val isInPayload = inPayload
             Draw.rect(BaseTR, x, y)
-            val process = cm.process
-            Draw.alpha(1f - process)
+            val progress = cm.progress.smooth
+            Draw.alpha(1f - progress)
             Draw.rect(RightUpStartTR, x, y)
             Draw.rect(RightUpStartTR, x, y, 90f)
             Draw.rect(LeftDownStartTR, x, y)
             Draw.rect(LeftDownStartTR, x, y, -90f)
-            Draw.alpha(process)
+            Draw.alpha(progress)
             Draw.rect(RightUpEndTR, x, y)
             Draw.rect(RightUpEndTR, x, y, 90f)
             Draw.rect(LeftDownEndTR, x, y)
             Draw.rect(LeftDownEndTR, x, y, -90f)
             Draw.color()
-            val delta = process * sizeOpen * G.sclx
+            val delta = progress * sizeOpen * G.sclx
 
             Draw.z(Layer.blockOver)
-            Draw.rect(UpTR, x, y + delta)
-            Draw.rect(DownTR, x, y - delta)
-            Draw.rect(LeftTR, x - delta, y)
-            Draw.rect(RightTR, x + delta, y)
 
-            Drawf.shadow(UpTR, x, y + delta)
-            Drawf.shadow(DownTR, x, y - delta)
-            Drawf.shadow(LeftTR, x - delta, y)
-            Drawf.shadow(RightTR, x + delta, y)
+            for (side in RIGHT..BOTTOM) {
+                val dir = Geometry.d4[side]
+                Right2BottomTRs[side].Draw(x + delta * dir.x, y + delta * dir.y)
+                Right2BottomTRs[side].AsShadow(x + delta * dir.x, y + delta * dir.y)
+            }
             cm.render {
                 val priselX = revolution.x + x
                 val priselY = revolution.y + y

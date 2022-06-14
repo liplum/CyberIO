@@ -48,6 +48,7 @@ import net.liplum.mdt.render.smoothPlacing
 import net.liplum.mdt.render.smoothSelect
 import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.ui.bars.ReverseBar
+import net.liplum.mdt.utils.NewEffect
 import net.liplum.mdt.utils.sub
 import net.liplum.mdt.utils.subBundle
 import net.liplum.utils.addRangeInfo
@@ -64,21 +65,24 @@ enum class AttenuationType {
 }
 private typealias UnitC = mindustry.gen.Unit
 
-val SpiralShrink: Effect = Effect(20f) {
-    val upb = it.data as UnderdriveProjector.UnderdriveBuild
+val SpiralShrink: Effect = NewEffect(30f) {
+    val upb = data as UnderdriveProjector.UnderdriveBuild
     val up = upb.block as UnderdriveProjector
-    Draw.color(it.color, it.fout())
+    Draw.color(color, fout())
     val scale = Mathf.lerp(1f, G.sin, 0.5f)
     val realRange = upb.realRange
-    val sr = scale * MagicNSpiralRate * realRange * it.fout()
+    val sr = scale * MagicNSpiralRate * realRange * fout()
     val srm = realRange * MagicNSpiralMin
     val s = up.spiralTR
     Draw.rect(
-        s, it.x, it.y,
+        s, x, y,
         s.realWidth * sr + srm,
         s.realHeight * sr + srm,
         Time.time * upb.realSpiralRotateSpeed
     )
+    Draw.z(Layer.weather)
+    Drawf.shadow(x, y, realRange, 1f * fout())
+    Draw.z()
 }.layer(Layer.shields)
 
 fun UnderdriveProjector.UnderdriveBuild.spiralShrinking() {

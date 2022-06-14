@@ -2,6 +2,7 @@ package net.liplum.blocks.bomb
 
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
+import arc.math.Mathf
 import arc.math.geom.Vec2
 import arc.scene.ui.Label
 import arc.scene.ui.Slider
@@ -31,12 +32,11 @@ import net.liplum.lib.utils.bigEndianByte
 import net.liplum.lib.utils.on
 import net.liplum.lib.utils.twoBytesToShort
 import net.liplum.mdt.*
-import net.liplum.mdt.render.G
-import net.liplum.mdt.render.smoothPlacing
-import net.liplum.mdt.render.smoothSelect
+import net.liplum.mdt.render.*
 import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.utils.subBundle
 import net.liplum.mdt.utils.worldXY
+import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
 open class ZipBomb(name: String) : Block(name) {
@@ -46,7 +46,7 @@ open class ZipBomb(name: String) : Block(name) {
     @JvmField var shake = 6f
     @JvmField var shakeDuration = 16f
     @JvmField var maxSensitive = 10
-    @JvmField var autoDetectTime = 240f
+    @JvmField var autoDetectTime = 300f
     @JvmField var warningRangeFactor = 2f
     val explosionRange: Float
         get() = rangePreUnit * Vars.tilesize
@@ -156,7 +156,9 @@ open class ZipBomb(name: String) : Block(name) {
 
         var nearestEnemyDst2: Float? = null
         /**
-         * @return
+         * ### Side effects:
+         * 1. set the [nearestEnemyDst2] as the distance between the nearest enemy
+         * @return how many enemies nearby
          */
         open fun countEnemyNearby(range: Float = explosionRange): Int {
             tmp.clear()
@@ -235,17 +237,21 @@ open class ZipBomb(name: String) : Block(name) {
         }
 
         override fun draw() {
+            val dst2 = nearestEnemyDst2
+            val progress = if (dst2 != null) (1f - (sqrt(dst2) / (explosionRange * warningRangeFactor)).coerceIn(0f, 1f)).smooth else 0f
+            val breathWeak = if (dst2 != null)
+                (11f - 10f * progress).roundToInt().toFloat()
+            else 18f
+            val scl = Mathf.absin(Time.time, breathWeak, 1f) / 8f
             WhenTheSameTeam {
                 // only players in the same team can find this
                 Drawf.shadow(x, y, size.worldXY * 1.5f)
-                Draw.rect(block.region, x, y, drawrot())
+                block.region.DrawSize(x, y, 1f + scl, drawrot())
             }.Else {
-                val dst2 = nearestEnemyDst2
                 if (dst2 != null) {
-                    val alpha = (1f - (sqrt(dst2) / (explosionRange * warningRangeFactor)).coerceIn(0f, 1f)).smooth
-                    Drawf.shadow(x, y, size.worldXY * 1.5f, alpha)
-                    Draw.alpha(alpha)
-                    Draw.rect(block.region, x, y, drawrot())
+                    Drawf.shadow(x, y, size.worldXY * 1.5f, progress)
+                    Draw.alpha(progress)
+                    block.region.DrawSize(x, y, 1f + scl, drawrot())
                 }
             }
             DebugOnly {
