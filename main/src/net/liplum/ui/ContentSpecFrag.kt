@@ -18,13 +18,13 @@ import net.liplum.ContentSpecXInfo.Companion.color
 import net.liplum.lib.ui.NewIconTextButton
 import net.liplum.lib.ui.UIToast
 import net.liplum.lib.ui.then
-import net.liplum.lib.utils.Bundlable
+import net.liplum.lib.utils.IBundlable
 import net.liplum.lib.utils.bundle
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.ui.addTrackTooltip
 
 @ClientOnly
-object ContentSpecFrag : Bundlable {
+object ContentSpecFrag : IBundlable {
     override val bundlePrefix = "setting.${R.Setting.ContentSpecific}"
     var toastUI = UIToast().apply {
         background = Tex.button

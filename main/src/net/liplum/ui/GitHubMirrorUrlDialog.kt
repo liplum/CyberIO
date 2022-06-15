@@ -11,6 +11,7 @@ import net.liplum.R
 import net.liplum.Settings
 import net.liplum.lib.delegates.Delegate
 import net.liplum.lib.ing
+import net.liplum.lib.utils.IBundlable
 import net.liplum.lib.utils.bundle
 import net.liplum.lib.utils.useFakeHeader
 import net.liplum.mdt.ClientOnly
@@ -18,11 +19,8 @@ import net.liplum.mdt.ui.ShowTextDialog
 import net.liplum.mdt.ui.addTrackTooltip
 
 @ClientOnly
-object GitHubMirrorUrlDialog {
-    val prefix: String = R.Advanced.GithubMirror
-    fun bundle(key: String, vararg args: Any) =
-        if (args.isEmpty()) "$prefix.$key".bundle
-        else "$prefix.$key".bundle(*args)
+object GitHubMirrorUrlDialog : IBundlable {
+    override val bundlePrefix: String = R.Advanced.GithubMirror
     @JvmStatic
     fun show(onReset: Delegate) {
         BaseDialog(bundle("dialog")).apply {

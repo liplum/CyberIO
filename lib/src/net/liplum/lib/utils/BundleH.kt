@@ -303,9 +303,9 @@ value class ReferBundleWrapper(
     }
 }
 
-interface Bundlable {
+interface IBundlable {
     val bundlePrefix: String
-    val parentBundle: Bundlable?
+    val parentBundle: IBundlable?
         get() = null
 
     fun bundle(key: String, vararg args: Any) =

@@ -81,7 +81,7 @@ class CioMod : Mod() {
         HeadlessOnly {
             ConfigEntry.load()
             ContentSpecific = Config.ContentSpecific.resolveContentSpec()
-            Updater.fetchLatestVersion(updateInfoFileURL = Config.CheckUpdateInfoURL )
+            Updater.fetchLatestVersion(updateInfoFileURL = Config.CheckUpdateInfoURL)
             Updater.checkHeadlessUpdate()
         }
         ClientOnly {

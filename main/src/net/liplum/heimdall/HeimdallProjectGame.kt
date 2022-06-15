@@ -10,13 +10,13 @@ import net.liplum.lib.ui.INavigable
 import net.liplum.lib.ui.TRD
 import net.liplum.lib.ui.UIToast
 import net.liplum.lib.ui.addTable
-import net.liplum.lib.utils.Bundlable
+import net.liplum.lib.utils.IBundlable
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.ui.tabview.TabItem
 import net.liplum.mdt.ui.tabview.TabView
 
 @ClientOnly
-object HeimdallProjectGame : Bundlable {
+object HeimdallProjectGame : IBundlable {
     val data = HeimdallData()
     val op = HeimdallOp(data)
     var mining = MiningModule()

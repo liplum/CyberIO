@@ -1,9 +1,9 @@
 package net.liplum.heimdall
 
 import arc.scene.ui.layout.Table
-import net.liplum.lib.utils.Bundlable
+import net.liplum.lib.utils.IBundlable
 
-class InventoryModule : Bundlable {
+class InventoryModule : IBundlable {
     lateinit var op: HeimdallOp
     fun build(t: Table) {
 

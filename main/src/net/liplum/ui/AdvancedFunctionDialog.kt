@@ -6,7 +6,6 @@ import arc.scene.ui.ScrollPane
 import arc.scene.ui.TextButton
 import arc.scene.ui.layout.Cell
 import arc.scene.ui.layout.Table
-import arc.scene.utils.Elem
 import mindustry.gen.Iconc
 import mindustry.gen.Sounds
 import mindustry.gen.Tex
@@ -14,40 +13,38 @@ import mindustry.ui.dialogs.BaseDialog
 import net.liplum.R
 import net.liplum.Var
 import net.liplum.lib.delegates.Delegate
+import net.liplum.lib.utils.IBundlable
 import net.liplum.lib.utils.bundle
 
-object AdvancedFunctionDialog {
-    val prefix = "setting.${R.Gen("advanced-function")}"
-    @JvmStatic
-    fun bundle(key: String, vararg args: Any) =
-        if (args.isEmpty()) "$prefix.$key".bundle
-        else "$prefix.$key".bundle(*args)
-
-    val enableButtonText: String
-        get() = if (!Var.EnableMapCleaner) R.Ctrl.Enable.bundle(R.Advanced.MapCleaner.bundle)
-        else "${R.Advanced.MapCleaner.bundle} ${Iconc.ok}"
+object AdvancedFunctionDialog : IBundlable {
+    override val bundlePrefix = "setting.${R.Gen("advanced-function")}"
     @JvmStatic
     fun show(onReset: Delegate) {
         BaseDialog(bundle("title")).apply {
             addCloseButton()
             cont.add(ScrollPane(Table().apply {
                 // GitHub Mirror
-                add(Table(Tex.button).apply {
-                    add(Elem.newButton(GitHubMirrorUrlDialog.bundle("button")) {
-                        GitHubMirrorUrlDialog.show(onReset)
+                addFunction {
+                    add(TextButton(GitHubMirrorUrlDialog.bundle("button")).apply {
+                        changed {
+                            GitHubMirrorUrlDialog.show(onReset)
+                        }
                     }).applyButtonStyle().row()
                     add(GitHubMirrorUrlDialog.bundle("button-tooltip")).applyLabelStyle()
-                }).row()
+                }
                 // Map Cleaner
-                add(Table(Tex.button).apply {
-                    add(TextButton(enableButtonText).apply {
+                addFunction {
+                    fun enableButtonText() =
+                        if (!Var.EnableMapCleaner) R.Ctrl.Enable.bundle(R.Advanced.MapCleaner.bundle)
+                        else "${R.Advanced.MapCleaner.bundle} ${Iconc.ok}"
+                    add(TextButton(enableButtonText()).apply {
                         isDisabled = Var.EnableMapCleaner
                         fun updateButtonState() {
                             isDisabled = Var.EnableMapCleaner
                             Sounds.message.play()
-                            setText(enableButtonText)
+                            setText(enableButtonText())
                         }
-                        clicked {
+                        changed {
                             Var.EnableMapCleaner = true
                             updateButtonState()
                         }
@@ -57,10 +54,13 @@ object AdvancedFunctionDialog {
                         }
                     }).applyButtonStyle().row()
                     add("${R.Advanced.MapCleaner}.description".bundle).applyLabelStyle()
-                })
+                }
             }))
         }.show()
     }
+
+    inline fun Table.addFunction(func: Table.() -> Unit): Cell<Table> =
+        add(Table(Tex.button).apply(func)).apply { row() }
 
     fun <T : Button> Cell<T>.applyButtonStyle() = apply {
         pad(5f).fillX()

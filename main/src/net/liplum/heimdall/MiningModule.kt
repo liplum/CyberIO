@@ -13,9 +13,9 @@ import net.liplum.lib.TR
 import net.liplum.lib.ui.TimeH
 import net.liplum.lib.ui.addProgressTable
 import net.liplum.lib.ui.addSeparatorLine
-import net.liplum.lib.utils.Bundlable
+import net.liplum.lib.utils.IBundlable
 
-class MiningModule : Bundlable {
+class MiningModule : IBundlable {
     var curSector = Sector.X
     lateinit var op: HeimdallOp
     fun build(t: Table) {
