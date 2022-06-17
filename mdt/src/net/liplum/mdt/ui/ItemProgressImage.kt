@@ -9,14 +9,14 @@ import arc.scene.style.TextureRegionDrawable
 import arc.scene.ui.Image
 import arc.scene.ui.layout.Stack
 import arc.scene.ui.layout.Table
-import net.liplum.lib.EmptyTR
-import net.liplum.lib.TR
-import net.liplum.lib.utils.isZero
+import net.liplum.lib.assets.EmptyTR
+import net.liplum.lib.assets.TR
+import net.liplum.lib.math.isZero
 
 class ItemProgressImage(
     region: TR,
     size: Float = 32f,
-    progress: () -> Float
+    progress: () -> Float,
 ) : Stack() {
     val img: ProgressImage = ProgressImage(region, progress)
 
@@ -35,7 +35,7 @@ class ItemProgressImage(
 
 class ProgressImage(
     image: TR = EmptyTR,
-    var progress: () -> Float
+    var progress: () -> Float,
 ) : Element() {
     var isHorizontal = false
     var topDown = true

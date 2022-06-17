@@ -16,8 +16,8 @@ import net.liplum.Debug
 import net.liplum.Debug.SettingType
 import net.liplum.S
 import net.liplum.Settings
-import net.liplum.lib.Dir
-import net.liplum.lib.toFi
+import net.liplum.common.Dir
+import net.liplum.common.toFi
 import net.liplum.mdt.ui.ShowTextDialog
 import net.liplum.welcome.Welcome
 

@@ -12,7 +12,7 @@ import mindustry.graphics.Layer
 import mindustry.world.Block
 import mindustry.world.blocks.payloads.Payload
 import mindustry.world.blocks.payloads.PayloadBlock
-import net.liplum.lib.persistence.*
+import net.liplum.common.persistence.*
 import java.io.DataInputStream
 
 interface PayloadBlockMixin<T : Payload> {

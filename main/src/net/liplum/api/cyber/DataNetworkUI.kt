@@ -15,9 +15,9 @@ import net.liplum.Var.DataListItemMargin
 import net.liplum.Var.DataListItemSize
 import net.liplum.Var.DataListMaxItemInRow
 import net.liplum.data.PayloadData
-import net.liplum.lib.ui.autoLoseFocus
-import net.liplum.lib.ui.onHidden
-import net.liplum.lib.ui.then
+import net.liplum.ui.autoLoseFocus
+import net.liplum.ui.onHidden
+import net.liplum.ui.then
 
 fun INetworkNode.buildNetworkDataList(table: Table) {
     val list = Table(Tex.wavepane)

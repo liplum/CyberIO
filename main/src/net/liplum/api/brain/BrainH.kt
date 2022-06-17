@@ -3,7 +3,7 @@ package net.liplum.api.brain
 import mindustry.gen.Tex
 import mindustry.world.Block
 import mindustry.world.meta.Stats
-import net.liplum.lib.utils.bundle
+import net.liplum.common.utils.bundle
 import net.liplum.mdt.ui.addTooltip
 import net.liplum.registries.CioStats
 

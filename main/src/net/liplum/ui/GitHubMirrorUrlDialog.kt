@@ -9,11 +9,11 @@ import mindustry.ui.dialogs.BaseDialog
 import net.liplum.Meta
 import net.liplum.R
 import net.liplum.Settings
-import net.liplum.lib.delegates.Delegate
-import net.liplum.lib.ing
-import net.liplum.lib.utils.IBundlable
-import net.liplum.lib.utils.bundle
-import net.liplum.lib.utils.useFakeHeader
+import net.liplum.common.delegates.Delegate
+import net.liplum.common.ing
+import net.liplum.common.utils.IBundlable
+import net.liplum.common.utils.bundle
+import net.liplum.common.utils.useFakeHeader
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.ui.ShowTextDialog
 import net.liplum.mdt.ui.addTrackTooltip

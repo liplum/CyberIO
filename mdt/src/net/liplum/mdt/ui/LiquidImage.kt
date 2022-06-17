@@ -6,7 +6,7 @@ import arc.scene.ui.layout.Table
 import mindustry.core.UI
 import mindustry.type.LiquidStack
 import mindustry.ui.Styles
-import net.liplum.lib.TR
+import net.liplum.lib.assets.TR
 
 open class LiquidImage() : Stack() {
     var fontScale = 0.85f

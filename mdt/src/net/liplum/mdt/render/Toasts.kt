@@ -4,8 +4,8 @@ import arc.graphics.Color
 import arc.util.Align
 import mindustry.Vars
 import mindustry.gen.Building
+import net.liplum.common.utils.inViewField
 import net.liplum.lib.math.Point2f
-import net.liplum.lib.utils.inViewField
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.utils.WorldXY
 

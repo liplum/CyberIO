@@ -9,11 +9,11 @@ import mindustry.content.Items
 import mindustry.ctype.UnlockableContent
 import mindustry.gen.Tex
 import mindustry.graphics.Pal
-import net.liplum.lib.TR
-import net.liplum.lib.ui.TimeH
-import net.liplum.lib.ui.addProgressTable
-import net.liplum.lib.ui.addSeparatorLine
-import net.liplum.lib.utils.IBundlable
+import net.liplum.lib.assets.TR
+import net.liplum.common.TimeH
+import net.liplum.common.ui.addProgressTable
+import net.liplum.common.utils.IBundlable
+import net.liplum.ui.addSeparatorLine
 
 class MiningModule : IBundlable {
     var curSector = Sector.X

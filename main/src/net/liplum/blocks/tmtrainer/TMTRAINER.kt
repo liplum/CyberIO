@@ -26,9 +26,9 @@ import net.liplum.mdt.animations.anims.ITimeModifier
 import net.liplum.mdt.mixin.drawRotation
 import net.liplum.mdt.mixin.drawX
 import net.liplum.mdt.mixin.drawY
-import net.liplum.lib.math.Polar
+import net.liplum.common.math.PolarX
+import net.liplum.lib.assets.TR
 import net.liplum.lib.math.radian
-import net.liplum.lib.TR
 import net.liplum.mdt.utils.autoAnim
 import net.liplum.mdt.utils.atlas
 import net.liplum.mdt.utils.sub
@@ -98,8 +98,8 @@ open class TMTRAINER(name: String) : ItemTurret(name) {
     open inner class TMTRAINERBUILD : ItemTurretBuild() {
         @ClientOnly lateinit var coreAnimObj: AnimationObj
         @ClientOnly lateinit var emptyCoreAnimObj: AnimationObj
-        @ClientOnly var targetPol: Polar =
-            Polar(headMax, 0f)
+        @ClientOnly var targetPol: PolarX =
+            PolarX(headMax, 0f)
         open var virusCharge = 0f
             set(value) {
                 field = value.coerceIn(0f, 60f)

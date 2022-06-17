@@ -18,11 +18,11 @@ import mindustry.world.meta.Stat
 import net.liplum.*
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
-import net.liplum.lib.Serialized
-import net.liplum.lib.TR
-import net.liplum.lib.persistence.read
-import net.liplum.lib.persistence.write
-import net.liplum.lib.utils.DoMultipleBool
+import net.liplum.common.Serialized
+import net.liplum.lib.assets.TR
+import net.liplum.common.persistence.read
+import net.liplum.common.persistence.write
+import net.liplum.common.utils.DoMultipleBool
 import net.liplum.mdt.*
 import net.liplum.mdt.animations.anims.Animation
 import net.liplum.mdt.animations.anims.AnimationObj

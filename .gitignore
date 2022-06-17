@@ -173,6 +173,8 @@ lib/build
 mdt/build
 buildSrc/build
 bundle/build
+common/build
+cui/build
 processor/build
 annotations/build
 extra

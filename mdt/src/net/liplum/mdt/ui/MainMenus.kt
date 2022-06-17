@@ -13,8 +13,8 @@ import mindustry.gen.Icon
 import mindustry.gen.Tex
 import mindustry.ui.MobileButton
 import mindustry.ui.Styles
-import net.liplum.lib.ui.NewIconTextButton
-import net.liplum.lib.utils.bundle
+import net.liplum.common.utils.bundle
+import net.liplum.ui.templates.NewIconTextButton
 
 object MainMenus {
     private var counter = 0
@@ -23,7 +23,7 @@ object MainMenus {
         text: String,
         icon: Drawable,
         id: String = "custom-menu-${counter++}",
-        onClicked: () -> Unit
+        onClicked: () -> Unit,
     ) {
         if (!Vars.mobile) return
         val menuGroup = Vars.ui.menuGroup
@@ -49,7 +49,7 @@ object MainMenus {
         text: String,
         icon: Drawable,
         id: String = "custom-menu-${counter++}",
-        onClicked: () -> Unit
+        onClicked: () -> Unit,
     ) {
         if (Vars.mobile) return
         val menuGroup = Vars.ui.menuGroup

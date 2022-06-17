@@ -1,7 +1,5 @@
-import org.gradle.api.tasks.testing.logging.TestExceptionFormat
-
 plugins {
-    kotlin("jvm") version "1.6.10"
+    kotlin("jvm")
     java
     `maven-publish`
 }
@@ -24,7 +22,6 @@ java {
 }
 
 dependencies {
-    implementation(project(":annotations"))
     implementation(project(":lib"))
     // Use anuke's mirror for now on https://github.com/Anuken/MindustryJitpack
     compileOnly("com.github.anuken.mindustryjitpack:core:$MdtHash")

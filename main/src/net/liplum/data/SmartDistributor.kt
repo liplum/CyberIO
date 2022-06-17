@@ -26,16 +26,15 @@ import net.liplum.R
 import net.liplum.UndebugOnly
 import net.liplum.Var
 import net.liplum.api.cyber.*
+import net.liplum.lib.arc.equalsNoOrder
+import net.liplum.lib.assets.TR
 import net.liplum.blocks.AniedBlock
-import net.liplum.lib.Serialized
-import net.liplum.lib.TR
-import net.liplum.lib.delegates.Delegate1
-import net.liplum.lib.persistence.read
-import net.liplum.lib.persistence.write
-import net.liplum.lib.utils.DoMultipleBool
-import net.liplum.lib.utils.equalsNoOrder
-import net.liplum.lib.utils.isZero
-import net.liplum.lib.utils.set
+import net.liplum.common.Serialized
+import net.liplum.common.delegates.Delegate1
+import net.liplum.common.persistence.read
+import net.liplum.common.persistence.write
+import net.liplum.common.utils.DoMultipleBool
+import net.liplum.lib.math.isZero
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.animations.anims.Animation
 import net.liplum.mdt.animations.anims.AnimationObj
@@ -54,7 +53,7 @@ import net.liplum.utils.addPowerUseStats
 import net.liplum.utils.addSenderInfo
 import net.liplum.utils.genText
 import kotlin.math.log2
-
+import net.liplum.lib.arc.set
 private typealias AniStateD = AniState<SmartDistributor, SmartDistributor.SmartDISBuild>
 
 open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDistributor.SmartDISBuild>(name) {

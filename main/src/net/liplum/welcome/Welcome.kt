@@ -18,17 +18,16 @@ import net.liplum.Settings.ShouldShowWelcome
 import net.liplum.Settings.ShowUpdate
 import net.liplum.annotations.Only
 import net.liplum.annotations.SubscribeEvent
+import net.liplum.lib.assets.TR
 import net.liplum.blocks.tmtrainer.RandomName
+import net.liplum.common.Res
+import net.liplum.common.utils.ReferBundleWrapper
+import net.liplum.common.utils.allMaxBy
+import net.liplum.common.utils.randomExcept
 import net.liplum.events.CioInitEvent
-import net.liplum.lib.Res
-import net.liplum.lib.TR
 import net.liplum.lib.math.randomByWeights
-import net.liplum.lib.utils.ReferBundleWrapper
-import net.liplum.lib.utils.allMaxBy
-import net.liplum.lib.utils.randomExcept
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.utils.atlas
-import net.liplum.welcome.Welcome.Entity.Companion.showTipByID
 
 @ClientOnly
 object Welcome {

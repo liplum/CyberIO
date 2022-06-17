@@ -3,8 +3,8 @@ package net.liplum.registries
 import arc.audio.Sound
 import mindustry.gen.Sounds
 import net.liplum.annotations.SubscribeEvent
+import net.liplum.lib.assets.EmptySounds
 import net.liplum.events.CioLoadContentEvent
-import net.liplum.lib.utils.EmptySounds
 import net.liplum.utils.LoadSound
 import net.liplum.utils.LoadSounds
 

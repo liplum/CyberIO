@@ -4,8 +4,8 @@ package net.liplum.mdt.animations.anis
 
 import arc.math.Interp
 import arc.math.Mathf
+import net.liplum.lib.arc.invoke
 import net.liplum.mdt.render.ALPHA
-import net.liplum.lib.utils.invoke
 
 val None: TransitionEffect = { _, _, cur ->
     cur()

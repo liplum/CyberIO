@@ -6,7 +6,7 @@ import arc.util.pooling.Pool
 import arc.util.pooling.Pools
 import mindustry.game.EventType
 import net.liplum.annotations.Subscribe
-import net.liplum.lib.utils.invoke
+import net.liplum.lib.arc.invoke
 import net.liplum.mdt.ClientOnly
 
 object Toaster {
@@ -31,7 +31,7 @@ object Toaster {
     fun post(
         duration: Float,
         useGlobalTime: Boolean = false,
-        task: ToastSpec.() -> Unit
+        task: ToastSpec.() -> Unit,
     ) {
         ClientOnly {
             val toast = genToast(duration, useGlobalTime, task)
@@ -46,7 +46,7 @@ object Toaster {
     fun add(
         duration: Float,
         useGlobalTime: Boolean = false,
-        task: ToastSpec.() -> Unit
+        task: ToastSpec.() -> Unit,
     ): Toast {
         val toast = genToast(duration, useGlobalTime, task)
         ClientOnly {
@@ -64,7 +64,7 @@ object Toaster {
         duration: Float,
         useGlobalTime: Boolean = false,
         overwrite: Boolean = true,
-        task: ToastSpec.() -> Unit
+        task: ToastSpec.() -> Unit,
     ) {
         ClientOnly {
             if (overwrite) {
@@ -89,7 +89,7 @@ object Toaster {
         duration: Float,
         useGlobalTime: Boolean = false,
         overwrite: Boolean = true,
-        task: ToastSpec.() -> Unit
+        task: ToastSpec.() -> Unit,
     ): Toast {
         return if (overwrite) {
             val toast = genToast(duration, useGlobalTime, task)
@@ -114,7 +114,7 @@ object Toaster {
     private fun genToast(
         duration: Float,
         useGlobalTime: Boolean = false,
-        task: ToastSpec.() -> Unit
+        task: ToastSpec.() -> Unit,
     ) = if (useGlobalTime)
         Toast.create(Time.globalTime, duration, true, task)
     else
@@ -206,7 +206,7 @@ class Toast : Pool.Poolable {
             startTime: Float,
             duration: Float,
             useGlobalTime: Boolean,
-            task: ToastSpec.() -> Unit
+            task: ToastSpec.() -> Unit,
         ): Toast = Toaster.toastPool.obtain().apply {
             this.startTime = startTime
             this.duration = duration
@@ -245,7 +245,7 @@ val ToastSpec.fadeOut: Float
  * @param duration the duration of fade-in&out
  */
 fun ToastSpec.fadeInOut(
-    duration: Float = toast.duration * 0.1f
+    duration: Float = toast.duration * 0.1f,
 ): Float =
     // Fade in:
     if (curTime < duration)
@@ -260,7 +260,7 @@ fun ToastSpec.fadeInOut(
  * @param durationPct final fade-in&out duration = toast.duration * durationPct
  */
 fun ToastSpec.fadeInOutPct(
-    durationPct: Float = 0.1f
+    durationPct: Float = 0.1f,
 ): Float {
     val duration = durationPct * toast.duration
     // Fade in:

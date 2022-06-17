@@ -30,10 +30,10 @@ import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.S
 import net.liplum.holo.HoloProjector.HoloPBuild
+import net.liplum.common.shaders.use
+import net.liplum.common.utils.bundle
+import net.liplum.common.utils.toFloat
 import net.liplum.lib.math.FUNC
-import net.liplum.lib.shaders.use
-import net.liplum.lib.utils.bundle
-import net.liplum.lib.utils.toFloat
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.Else
 import net.liplum.mdt.utils.MdtUnit

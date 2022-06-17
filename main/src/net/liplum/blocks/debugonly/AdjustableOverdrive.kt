@@ -11,12 +11,13 @@ import arc.util.io.Writes
 import mindustry.world.blocks.defense.OverdriveProjector
 import mindustry.world.meta.Stat
 import net.liplum.R
-import net.liplum.lib.Serialized
+import net.liplum.common.Serialized
+import net.liplum.mdt.ui.bars.AddBar
+import net.liplum.common.utils.*
 import net.liplum.lib.math.ExpLogGen
 import net.liplum.lib.math.FUNC
+import net.liplum.lib.math.isZero
 import net.liplum.lib.math.shrink
-import net.liplum.mdt.ui.bars.AddBar
-import net.liplum.lib.utils.*
 import kotlin.math.abs
 
 open class AdjustableOverdrive(name: String) : OverdriveProjector(name) {

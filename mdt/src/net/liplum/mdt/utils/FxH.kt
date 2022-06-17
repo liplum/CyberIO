@@ -5,12 +5,12 @@ package net.liplum.mdt.utils
 import arc.math.Interp
 import mindustry.entities.Effect
 import mindustry.entities.Effect.EffectContainer
-import net.liplum.lib.utils.invoke
+import net.liplum.lib.arc.invoke
 
 fun NewEffect(
     duration: Float,
     clipSize: Float = 50f,
-    render: EffectContainer.() -> Unit
+    render: EffectContainer.() -> Unit,
 ): Effect =
     Effect(duration, clipSize) {
         it.render()
@@ -19,7 +19,7 @@ fun NewEffect(
  * @param duration the duration of fade-in&out
  */
 fun EffectContainer.fadeInOut(
-    duration: Float = lifetime * 0.1f
+    duration: Float = lifetime * 0.1f,
 ): Float =
     // Fade in:
     if (time < duration)
@@ -34,7 +34,7 @@ fun EffectContainer.fadeInOut(
  * @param durationPct final fade-in&out duration = toast.duration * durationPct
  */
 fun EffectContainer.fadeInOutPct(
-    durationPct: Float = 0.1f
+    durationPct: Float = 0.1f,
 ): Float {
     val duration = durationPct * lifetime
     // Fade in:

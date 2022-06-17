@@ -33,13 +33,17 @@ import net.liplum.api.cyber.RIGHT
 import net.liplum.api.prism.PrismBlackList.canDisperse
 import net.liplum.api.prism.PrismRegistry.isDuplicate
 import net.liplum.api.prism.PrismRegistry.setDuplicate
+import net.liplum.lib.assets.EmptyTRs
+import net.liplum.lib.assets.TR
+import net.liplum.lib.assets.TRs
 import net.liplum.blocks.prism.CrystalManager.Companion.read
 import net.liplum.blocks.prism.CrystalManager.Companion.write
-import net.liplum.lib.*
+import net.liplum.common.*
+import net.liplum.common.math.*
+import net.liplum.common.utils.bundle
+import net.liplum.common.utils.percentI
 import net.liplum.lib.math.*
-import net.liplum.lib.utils.bundle
-import net.liplum.lib.utils.isZero
-import net.liplum.lib.utils.percentI
+import net.liplum.math.*
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.advanced.Inspector
 import net.liplum.mdt.advanced.Inspector.isSelected
@@ -171,8 +175,8 @@ open class Prism(name: String) : Block(name) {
                 }
             }
             addCrystalCallback = {
-                revolution = Polar(0f, 0f)
-                rotation = Polar(prismRadius, 0f)
+                revolution = PolarX(0f, 0f)
+                rotation = PolarX(prismRadius, 0f)
                 isClockwise = orbitPos % 2 != 0
             }
             for (i in 0 until initCrystalCount) {

@@ -20,13 +20,13 @@ import mindustry.world.meta.StatUnit
 import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.Var
-import net.liplum.lib.Serialized
-import net.liplum.lib.TR
-import net.liplum.lib.entity.RadiationArray
-import net.liplum.lib.math.Polar
+import net.liplum.lib.assets.TR
+import net.liplum.common.Serialized
+import net.liplum.common.entity.RadiationArray
+import net.liplum.common.math.PolarX
 import net.liplum.lib.math.approachR
+import net.liplum.lib.math.isZero
 import net.liplum.lib.math.radian
-import net.liplum.lib.utils.isZero
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.WhenTheSameTeam
@@ -143,7 +143,7 @@ open class WirelessTower(name: String) : PowerBlock(name) {
         val centerRadius: Float
             get() = size * Vars.tilesize * 2f
         @ClientOnly
-        val orientation = Polar(0f, 0f)
+        val orientation = PolarX(0f, 0f)
         @ClientOnly
         val rotationRadiusSpeed: Float
             get() = rotationRadius / 25f

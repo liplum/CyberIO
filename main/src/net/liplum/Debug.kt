@@ -2,8 +2,8 @@
 
 package net.liplum
 
-import net.liplum.lib.CoerceLength
-import net.liplum.lib.shaders.ShaderBase
+import net.liplum.common.CoerceLength
+import net.liplum.common.shaders.ShaderBase
 import net.liplum.mdt.shaders.CommonShader
 import net.liplum.registries.SD
 import net.liplum.registries.ShaderCtor

@@ -39,17 +39,17 @@ import net.liplum.api.brain.*
 import net.liplum.api.brain.IBrain.Companion.Mirror
 import net.liplum.api.brain.IBrain.Companion.XSign
 import net.liplum.api.brain.IBrain.Companion.YSign
-import net.liplum.lib.Serialized
-import net.liplum.lib.TR
-import net.liplum.lib.delegates.Delegate
-import net.liplum.lib.entity.Radiation
-import net.liplum.lib.entity.RadiationQueue
-import net.liplum.lib.persistence.ReadFromCache
-import net.liplum.lib.persistence.WriteIntoCache
-import net.liplum.lib.utils.format
-import net.liplum.lib.utils.invoke
-import net.liplum.lib.utils.isZero
-import net.liplum.lib.utils.toDouble
+import net.liplum.lib.arc.invoke
+import net.liplum.lib.assets.TR
+import net.liplum.common.Serialized
+import net.liplum.common.delegates.Delegate
+import net.liplum.common.entity.Radiation
+import net.liplum.common.entity.RadiationQueue
+import net.liplum.common.persistence.ReadFromCache
+import net.liplum.common.persistence.WriteIntoCache
+import net.liplum.common.utils.format
+import net.liplum.common.utils.toDouble
+import net.liplum.lib.math.isZero
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.HeadlessOnly
 import net.liplum.mdt.WhenNotPaused
@@ -496,7 +496,8 @@ open class Heimdall(name: String) : Block(name) {
             super.onProximityUpdate()
             checkComponentsNearby()
         }
-        open fun checkComponentsNearby(){
+
+        open fun checkComponentsNearby() {
             val formerComponentCount = components.size
             clear()
             for (build in proximity) {

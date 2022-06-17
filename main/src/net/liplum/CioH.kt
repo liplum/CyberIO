@@ -5,8 +5,8 @@ package net.liplum
 import arc.Core
 import arc.util.Time
 import mindustry.Vars
-import net.liplum.lib.Condition
-import net.liplum.lib.TR
+import net.liplum.common.Condition
+import net.liplum.lib.assets.TR
 import java.lang.annotation.Inherited
 
 val String.inCio: TR

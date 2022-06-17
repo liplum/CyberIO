@@ -2,14 +2,13 @@ package net.liplum.registries
 
 import mindustry.Vars
 import mindustry.graphics.Shaders.getShaderFi
-import net.liplum.CioMod
 import net.liplum.R
 import net.liplum.Var
 import net.liplum.annotations.Only
 import net.liplum.annotations.SubscribeEvent
 import net.liplum.events.CioInitEvent
-import net.liplum.lib.insertLineNumber
-import net.liplum.lib.shaders.*
+import net.liplum.common.insertLineNumber
+import net.liplum.common.shaders.*
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.shaders.CommonShader
 import net.liplum.mdt.shaders.ProgressShader

@@ -4,8 +4,8 @@ import arc.Core
 import arc.Events
 import mindustry.Vars
 import mindustry.ctype.UnlockableContent
-import net.liplum.lib.UseReflection
-import net.liplum.lib.utils.setFIn
+import net.liplum.common.UseReflection
+import net.liplum.common.utils.setFIn
 
 @UseReflection
 fun UnlockableContent.lock() {

@@ -6,7 +6,6 @@ import arc.scene.ui.layout.Table
 import mindustry.Vars
 import mindustry.gen.BlockUnitc
 import mindustry.graphics.Pal
-import net.liplum.R
 import net.liplum.S
 import net.liplum.annotations.Only
 import net.liplum.annotations.SubscribeEvent
@@ -14,7 +13,7 @@ import net.liplum.blocks.prism.AutoRGB
 import net.liplum.blocks.prism.Prism
 import net.liplum.events.CioInitEvent
 import net.liplum.holo.HoloUnit
-import net.liplum.lib.utils.setF
+import net.liplum.common.utils.setF
 import net.liplum.mdt.OverwriteVanilla
 import net.liplum.mdt.safeCall
 import net.liplum.mdt.ui.DynamicContentInfoDialog

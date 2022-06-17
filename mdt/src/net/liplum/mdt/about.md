@@ -2,5 +2,5 @@
 
 ### Import
 
-1. # Including net.liplum.lib
+1. # Including net.liplum.common
 2. mindustry.*

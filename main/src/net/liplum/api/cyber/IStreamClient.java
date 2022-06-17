@@ -6,7 +6,7 @@ import arc.struct.Seq;
 import mindustry.type.Liquid;
 import net.liplum.mdt.CalledBySync;
 import net.liplum.mdt.ClientOnly;
-import net.liplum.lib.delegates.Delegate1;
+import net.liplum.common.delegates.Delegate1;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

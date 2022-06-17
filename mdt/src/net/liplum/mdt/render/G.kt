@@ -19,9 +19,9 @@ import mindustry.graphics.Pal
 import mindustry.world.Block
 import mindustry.world.Tile
 import net.liplum.annotations.Subscribe
-import net.liplum.lib.TR
+import net.liplum.lib.assets.TR
 import net.liplum.lib.math.distance
-import net.liplum.lib.utils.isZero
+import net.liplum.lib.math.isZero
 import net.liplum.mdt.utils.*
 
 /**

@@ -1,25 +1,21 @@
 package net.liplum.lib.math
 
+import arc.math.Angles
 import arc.math.Mathf
+import arc.math.Rand
 import arc.math.geom.Vec2
 import arc.math.geom.Vec3
-import arc.util.io.Reads
-import arc.util.io.Writes
-import net.liplum.lib.persistence.CacheReaderSpec
-import net.liplum.lib.persistence.CacheWriter
-import net.liplum.lib.persistence.IRWableX
-import java.io.DataInputStream
 import kotlin.math.atan2
 
 /**
  * It represents a polar coordinate using radian.
  */
-class Polar(
+open class Polar(
     @JvmField
     var r: Float = 0f,
     @JvmField
     var a: Float = 0f,
-) : IRWableX {
+) {
     fun fromXY(x: Float, y: Float): Polar {
         r = Mathf.sqrt(x * x + y * y)
         a = atan2(y.toDouble(), x.toDouble()).toFloat()
@@ -63,24 +59,31 @@ class Polar(
             return Polar().fromV2d(v2d)
         }
     }
+}
 
-    override fun read(reader: Reads) {
-        r = reader.f()
-        a = reader.f()
-    }
-
-    override fun read(reader: DataInputStream) = CacheReaderSpec(reader).run {
-        r = f()
-        a = f()
-    }
-
-    override fun write(writer: Writes) {
-        writer.f(r)
-        writer.f(a)
-    }
-
-    override fun write(writer: CacheWriter) {
-        writer.f(r)
-        writer.f(a)
-    }
+fun Polar.approachR(targetR: Float, speed: Float): Polar {
+    r = Mathf.approach(r, targetR, speed)
+    return this
+}
+/**
+ * @param targetDegree an angle in degree
+ */
+fun Polar.approachADegree(targetDegree: Float, speed: Float): Polar {
+    a = Angles.moveToward(a.degree, targetDegree, speed).radian
+    return this
+}
+/**
+ * @param targetRadian an angle in radian
+ */
+fun Polar.approachA(targetRadian: Float, speed: Float): Polar {
+    a = Angles.moveToward(a.degree, targetRadian, speed).radian
+    return this
+}
+/**
+ * @return self
+ */
+fun Polar.random(radiusRange: Float, random: Rand = Mathf.rand): Polar {
+    angle = random.random(360f)
+    r = random.random(0f, radiusRange)
+    return this
 }

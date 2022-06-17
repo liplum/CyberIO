@@ -12,7 +12,7 @@ import net.liplum.mdt.animations.anis.config
 import net.liplum.blocks.AniedCrafter
 import net.liplum.lib.math.FUNC
 import net.liplum.mdt.utils.autoAnim
-import net.liplum.lib.utils.isZero
+import net.liplum.lib.math.isZero
 
 private typealias AniStateM = AniState<ICMachine, ICMachine.ICMachineBuild>
 

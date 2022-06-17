@@ -21,11 +21,11 @@ import net.liplum.UndebugOnly
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
 import net.liplum.data.Receiver.ReceiverBuild
-import net.liplum.lib.Serialized
-import net.liplum.lib.TR
-import net.liplum.lib.delegates.Delegate1
-import net.liplum.lib.persistence.read
-import net.liplum.lib.persistence.write
+import net.liplum.common.Serialized
+import net.liplum.lib.assets.TR
+import net.liplum.common.delegates.Delegate1
+import net.liplum.common.persistence.read
+import net.liplum.common.persistence.write
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.SetColor

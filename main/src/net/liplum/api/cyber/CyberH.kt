@@ -17,8 +17,8 @@ import net.liplum.Var
 import net.liplum.annotations.SubscribeEvent
 import net.liplum.api.ICyberEntity
 import net.liplum.events.CioInitEvent
+import net.liplum.common.utils.*
 import net.liplum.lib.math.Point2f
-import net.liplum.lib.utils.*
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.render.*
 import net.liplum.mdt.utils.*
@@ -103,7 +103,7 @@ object DataCenter {
     }
 }
 
-val EmptySingleItemArray: SingleItemArray = emptySeq()
+val EmptySingleItemArray: SingleItemArray = Seq()
 val Item?.req: SingleItemArray
     get() = if (this == null)
         EmptySingleItemArray
@@ -210,7 +210,7 @@ fun Int.nn(): INetworkNode? =
 fun Building.nn(): INetworkNode? =
     this.getCyberEntity()
 
-val EmptySingleLiquidArray: SingleLiquidArray = emptySeq()
+val EmptySingleLiquidArray: SingleLiquidArray = Seq()
 val Liquid?.req: SingleLiquidArray
     get() = if (this == null)
         EmptySingleLiquidArray

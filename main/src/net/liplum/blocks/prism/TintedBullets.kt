@@ -9,8 +9,8 @@ import mindustry.graphics.Pal
 import net.liplum.R
 import net.liplum.api.prism.PrismRegistry.getRegistered
 import net.liplum.bullets.BBulletType
-import net.liplum.lib.utils.ArrayList
-import net.liplum.lib.utils.copyFieldsFrom
+import net.liplum.common.utils.ArrayList
+import net.liplum.common.utils.copyFieldsFrom
 
 val BulletType.isTintIgnored: Boolean
     get() = this in IgnoredBullets || this::class.java in IgnoredClass

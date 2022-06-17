@@ -26,11 +26,11 @@ import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.Var
 import net.liplum.annotations.isOn
-import net.liplum.lib.Serialized
+import net.liplum.common.Serialized
+import net.liplum.common.utils.bigEndianByte
+import net.liplum.common.utils.on
+import net.liplum.common.utils.twoBytesToShort
 import net.liplum.lib.math.smooth
-import net.liplum.lib.utils.bigEndianByte
-import net.liplum.lib.utils.on
-import net.liplum.lib.utils.twoBytesToShort
 import net.liplum.mdt.*
 import net.liplum.mdt.render.*
 import net.liplum.mdt.ui.bars.AddBar

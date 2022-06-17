@@ -7,10 +7,10 @@ import mindustry.core.GameState.State
 import mindustry.game.EventType.Trigger
 import net.liplum.mdt.ClientOnly
 import net.liplum.CLog
-import net.liplum.lib.Res
-import net.liplum.lib.utils.createModBundle
-import net.liplum.lib.utils.loadMoreFrom
-import net.liplum.lib.toLinkedString
+import net.liplum.common.Res
+import net.liplum.common.utils.createModBundle
+import net.liplum.common.utils.loadMoreFrom
+import net.liplum.common.toLinkedString
 import net.liplum.scripts.ScriptLoader.load
 import opengal.core.Interpreter
 import opengal.core.NodeTree

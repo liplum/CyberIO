@@ -7,7 +7,7 @@ import arc.util.Log
 import mindustry.Vars
 import mindustry.game.EventType.Trigger
 import mindustry.gen.Teamc
-import net.liplum.lib.Condition
+import net.liplum.common.Condition
 import java.lang.annotation.Inherited
 import kotlin.annotation.AnnotationTarget.*
 

@@ -3,9 +3,9 @@ package net.liplum.mdt.shaders
 import arc.Core
 import arc.util.Time
 import mindustry.Vars
-import net.liplum.lib.shaders.FragFi
-import net.liplum.lib.shaders.ShaderBase
-import net.liplum.lib.shaders.VertFi
+import net.liplum.common.shaders.FragFi
+import net.liplum.common.shaders.ShaderBase
+import net.liplum.common.shaders.VertFi
 
 class CommonShader(
     vert: VertFi, frag: FragFi,

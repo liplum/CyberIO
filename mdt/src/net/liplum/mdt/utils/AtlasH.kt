@@ -5,9 +5,9 @@ package net.liplum.mdt.utils
 import arc.Core.atlas
 import mindustry.Vars
 import mindustry.ctype.MappableContent
-import net.liplum.lib.TR
-import net.liplum.lib.TRs
-import net.liplum.lib.utils.AtlasU
+import net.liplum.lib.assets.TR
+import net.liplum.lib.assets.TRs
+import net.liplum.common.utils.AtlasU
 
 fun String.atlas(): TR =
     atlas.find(this)

@@ -5,7 +5,7 @@ import arc.scene.ui.Label
 import arc.scene.ui.layout.Cell
 import arc.scene.ui.layout.Table
 import mindustry.gen.Tex
-import net.liplum.lib.delegates.Delegate
+import net.liplum.common.delegates.Delegate
 
 enum class DialogMode {
     Text, Option

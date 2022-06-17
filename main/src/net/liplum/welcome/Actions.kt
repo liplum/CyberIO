@@ -5,8 +5,8 @@ import arc.util.Log
 import arc.util.Time
 import mindustry.Vars
 import net.liplum.*
-import net.liplum.lib.ui.Navigator
-import net.liplum.lib.utils.bundle
+import net.liplum.common.ui.Navigator
+import net.liplum.common.utils.bundle
 import net.liplum.ui.CioUI
 import net.liplum.update.Updater
 

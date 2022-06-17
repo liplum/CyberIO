@@ -1,6 +1,6 @@
 package net.liplum
 
-import net.liplum.lib.Dir
+import net.liplum.common.Dir
 import java.io.File
 
 object FileSys {

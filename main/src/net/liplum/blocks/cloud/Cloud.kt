@@ -17,10 +17,10 @@ import net.liplum.R
 import net.liplum.Var
 import net.liplum.WhenRefresh
 import net.liplum.api.cyber.*
-import net.liplum.lib.TR
-import net.liplum.lib.delegates.Delegate1
-import net.liplum.lib.persistence.read
-import net.liplum.lib.persistence.write
+import net.liplum.lib.assets.TR
+import net.liplum.common.delegates.Delegate1
+import net.liplum.common.persistence.read
+import net.liplum.common.persistence.write
 import net.liplum.mdt.*
 import net.liplum.mdt.animations.anims.Animation
 import net.liplum.mdt.animations.anims.IFrameIndexer

@@ -3,8 +3,8 @@ package net.liplum.api.brain
 import mindustry.gen.Building
 import net.liplum.api.ICyberEntity
 import net.liplum.api.cyber.*
-import net.liplum.lib.delegates.Delegate
-import net.liplum.lib.utils.on
+import net.liplum.common.delegates.Delegate
+import net.liplum.common.utils.on
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.utils.*
 

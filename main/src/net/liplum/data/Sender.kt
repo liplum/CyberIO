@@ -18,10 +18,10 @@ import net.liplum.Var
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
 import net.liplum.data.Sender.SenderBuild
-import net.liplum.lib.Serialized
-import net.liplum.lib.TR
-import net.liplum.lib.utils.isZero
-import net.liplum.lib.utils.toFloat
+import net.liplum.common.Serialized
+import net.liplum.lib.assets.TR
+import net.liplum.common.utils.toFloat
+import net.liplum.lib.math.isZero
 import net.liplum.mdt.CalledBySync
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.SendDataPack

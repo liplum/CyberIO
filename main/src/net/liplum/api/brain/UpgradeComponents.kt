@@ -2,10 +2,10 @@ package net.liplum.api.brain
 
 import arc.util.Log
 import mindustry.world.Block
-import net.liplum.lib.CoerceLength
-import net.liplum.lib.fill
-import net.liplum.lib.utils.isOn
-import net.liplum.lib.utils.rotateOnce
+import net.liplum.common.CoerceLength
+import net.liplum.common.fill
+import net.liplum.common.utils.isOn
+import net.liplum.common.utils.rotateOnce
 
 interface IUpgradeComponent : IHeimdallEntity {
     var directionInfo: Direction2

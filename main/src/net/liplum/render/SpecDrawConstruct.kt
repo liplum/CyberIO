@@ -7,8 +7,8 @@ import mindustry.graphics.Layer
 import mindustry.graphics.Pal
 import mindustry.world.Block
 import mindustry.world.draw.DrawBlock
-import net.liplum.lib.TR
-import net.liplum.lib.TRs
+import net.liplum.lib.assets.TR
+import net.liplum.lib.assets.TRs
 import net.liplum.utils.sheetX
 import net.liplum.utils.subX
 

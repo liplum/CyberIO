@@ -2,7 +2,7 @@ package net.liplum
 
 import arc.math.Rand
 import mindustry.Vars
-import net.liplum.lib.ui.NavigationService
+import net.liplum.common.ui.NavigationService
 import net.liplum.mdt.utils.WorldXY
 
 object Var {

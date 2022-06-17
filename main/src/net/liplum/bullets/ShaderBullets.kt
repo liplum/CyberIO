@@ -10,8 +10,8 @@ import mindustry.entities.bullet.BasicBulletType
 import mindustry.entities.bullet.ContinuousLaserBulletType
 import mindustry.gen.Bullet
 import mindustry.graphics.Drawf
-import net.liplum.lib.shaders.ShaderBase
-import net.liplum.lib.shaders.use
+import net.liplum.common.shaders.ShaderBase
+import net.liplum.common.shaders.use
 
 open class ShaderCLaserT<TS : ShaderBase>(damage: Float) : ContinuousLaserBulletType(damage) {
     constructor() : this(0f)

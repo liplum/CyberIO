@@ -16,8 +16,8 @@ import mindustry.gen.Tex
 import mindustry.ui.Styles
 import mindustry.world.Block
 import mindustry.world.blocks.ItemSelection
-import net.liplum.lib.TR
-import net.liplum.lib.utils.invoke
+import net.liplum.lib.arc.invoke
+import net.liplum.lib.assets.TR
 
 /**
  * Copy from [ItemSelection.buildTable]

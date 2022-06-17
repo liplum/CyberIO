@@ -4,13 +4,13 @@ import arc.graphics.Color
 import net.liplum.ContentSpec.Erekir
 import net.liplum.ContentSpec.Vanilla
 import net.liplum.ContentSpecXInfo.Companion.needSuffixModVersion
-import net.liplum.lib.TR
-import net.liplum.lib.utils.bundle
+import net.liplum.common.utils.bundle
+import net.liplum.lib.assets.TR
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.utils.atlas
 
 enum class ContentSpec(
-    val id: String
+    val id: String,
 ) {
     Vanilla("vanilla"),
     Erekir("erekir");
@@ -27,7 +27,7 @@ enum class ContentSpec(
 }
 
 class ContentSpecXInfo(
-    val spec: ContentSpec
+    val spec: ContentSpec,
 ) {
     var needSuffixModVersion = false
     var needSuffixResource = false

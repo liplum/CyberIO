@@ -3,8 +3,8 @@ package net.liplum.welcome
 import arc.struct.Seq
 import arc.util.serialization.JsonValue
 import mindustry.io.JsonIO
-import net.liplum.lib.Res
-import net.liplum.lib.utils.getValue
+import net.liplum.common.Res
+import net.liplum.common.utils.getValue
 
 object WelcomeList {
     var list: Map<String, WelcomeTip> = emptyMap()

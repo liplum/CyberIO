@@ -19,7 +19,7 @@ import mindustry.gen.Icon
 import mindustry.gen.Tex
 import mindustry.graphics.Pal
 import mindustry.ui.dialogs.BaseDialog
-import net.liplum.lib.ui.addTable
+import net.liplum.ui.addTable
 
 open class DatabaseSelectorDialog : BaseDialog("") {
     companion object : DatabaseSelectorDialog()

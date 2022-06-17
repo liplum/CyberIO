@@ -22,9 +22,9 @@ import mindustry.world.meta.BlockGroup
 import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.Var
-import net.liplum.lib.TR
-import net.liplum.lib.utils.bundle
-import net.liplum.lib.utils.isZero
+import net.liplum.lib.assets.TR
+import net.liplum.common.utils.bundle
+import net.liplum.lib.math.isZero
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.render.G
 import net.liplum.mdt.render.G.realHeight

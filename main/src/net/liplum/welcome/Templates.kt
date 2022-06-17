@@ -4,8 +4,8 @@ import arc.scene.ui.Button
 import mindustry.ui.dialogs.BaseDialog
 import net.liplum.R
 import net.liplum.S
-import net.liplum.lib.utils.tinted
-import net.liplum.lib.ui.RateStarPanelBuilder
+import net.liplum.lib.arc.tinted
+import net.liplum.common.ui.RateStarPanelBuilder
 import net.liplum.update.Updater
 import net.liplum.welcome.Welcome.Entity
 import net.liplum.welcome.Welcome.handleTrRefer

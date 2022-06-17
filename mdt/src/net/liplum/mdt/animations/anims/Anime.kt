@@ -2,8 +2,8 @@ package net.liplum.mdt.animations.anims
 
 import arc.graphics.Color
 import arc.math.Mathf
-import net.liplum.lib.ITimer
-import net.liplum.lib.TR
+import net.liplum.common.ITimer
+import net.liplum.lib.assets.TR
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.Reset
 import net.liplum.mdt.render.SetColor

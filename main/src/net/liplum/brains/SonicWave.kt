@@ -2,10 +2,10 @@ package net.liplum.brains
 
 import arc.util.io.Reads
 import arc.util.io.Writes
-import net.liplum.lib.entity.PosRadiation
-import net.liplum.lib.entity.Queue
-import net.liplum.lib.persistence.CacheReaderSpec
-import net.liplum.lib.persistence.CacheWriter
+import net.liplum.common.entity.PosRadiation
+import net.liplum.common.entity.Queue
+import net.liplum.common.persistence.CacheReaderSpec
+import net.liplum.common.persistence.CacheWriter
 import java.io.DataInputStream
 
 class SonicWave(

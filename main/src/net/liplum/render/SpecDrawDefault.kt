@@ -6,7 +6,7 @@ import mindustry.entities.units.BuildPlan
 import mindustry.gen.Building
 import mindustry.world.Block
 import mindustry.world.draw.DrawBlock
-import net.liplum.lib.TRs
+import net.liplum.lib.assets.TRs
 import net.liplum.utils.atlasX
 
 class SpecDrawDefault : DrawBlock() {

@@ -20,8 +20,8 @@ import net.liplum.api.cyber.IDataReceiver
 import net.liplum.api.cyber.IDataSender
 import net.liplum.api.cyber.drawLinkedLineToReceiverWhenConfiguring
 import net.liplum.api.cyber.req
-import net.liplum.lib.Serialized
-import net.liplum.lib.delegates.Delegate1
+import net.liplum.common.Serialized
+import net.liplum.common.delegates.Delegate1
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.render.postToastTextOn
 import net.liplum.mdt.render.removeToastOn

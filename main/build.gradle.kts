@@ -1,10 +1,11 @@
 @file:Suppress("SpellCheckingInspection")
+
 import net.liplum.gradle.gen.IConvertContext
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.io.ByteArrayOutputStream
 
 plugins {
-    kotlin("jvm") version "1.6.21"
+    kotlin("jvm")
     id("com.google.devtools.ksp") version "1.7.0-1.0.6"
     java
 }
@@ -37,13 +38,7 @@ kotlin.sourceSets.main {
         file("$buildDir/generated/classGen"),
     )
 }
-
 val compileKotlin: KotlinCompile by tasks
-
-compileKotlin.kotlinOptions.freeCompilerArgs = listOf(
-    "-Xcontext-receivers",
-    "-XXLanguage:+KotlinFunInterfaceConstructorReference"
-)
 
 ksp {
     arg("Event.FileName", "EventRegistry")
@@ -62,11 +57,17 @@ java {
     targetCompatibility = JavaVersion.VERSION_1_8
 }
 tasks.withType<KotlinCompile>().configureEach {
-    kotlinOptions.freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
+    kotlinOptions.freeCompilerArgs += listOf(
+        "-opt-in=kotlin.RequiresOptIn",
+        "-Xcontext-receivers",
+        "-XXLanguage:+KotlinFunInterfaceConstructorReference"
+    )
 }
 dependencies {
     implementation(project(":annotations"))
+    implementation(project(":common"))
     implementation(project(":lib"))
+    implementation(project(":cui"))
     ksp(project(":processor"))
     ksp("com.github.anuken.mindustryjitpack:core:$MdtHash")
 //    compileOnly("com.github.Anuken.Arc:arc-core:$mdtVersion")
@@ -79,7 +80,7 @@ dependencies {
     implementation("com.github.liplum:OpenGAL:v0.4.3")
     implementation("com.github.liplum.plumyjava:path-kt:$PlumyHash")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.2")
 
     testImplementation("com.github.Anuken.Arc:arc-core:dfcb21ce56")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")

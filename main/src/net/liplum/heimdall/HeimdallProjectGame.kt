@@ -5,15 +5,15 @@ import arc.scene.ui.layout.Table
 import mindustry.gen.Tex
 import mindustry.graphics.Pal
 import mindustry.ui.Bar
+import net.liplum.common.ui.INavigable
+import net.liplum.common.ui.UIToast
+import net.liplum.common.utils.IBundlable
 import net.liplum.inCio
-import net.liplum.lib.ui.INavigable
-import net.liplum.lib.ui.TRD
-import net.liplum.lib.ui.UIToast
-import net.liplum.lib.ui.addTable
-import net.liplum.lib.utils.IBundlable
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.ui.tabview.TabItem
 import net.liplum.mdt.ui.tabview.TabView
+import net.liplum.ui.TRD
+import net.liplum.ui.addTable
 
 @ClientOnly
 object HeimdallProjectGame : IBundlable {
@@ -47,9 +47,11 @@ object HeimdallProjectGame : IBundlable {
         t.addTable {
             add(Image(TRD("heimdall".inCio))).left()
             addTable {
-                addBar(Bar({ data.hud.health.toString() },
-                    { Pal.health },
-                    { data.hud.progress }))
+                addBar(
+                    Bar({ data.hud.health.toString() },
+                        { Pal.health },
+                        { data.hud.progress })
+                )
             }.top().growX().pad(10f)
         }.left().growX().pad(10f)
         t.addTable {

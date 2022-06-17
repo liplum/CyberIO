@@ -4,10 +4,10 @@ import arc.struct.ObjectSet
 import arc.struct.OrderedSet
 import arc.util.io.Reads
 import arc.util.io.Writes
-import net.liplum.lib.entity.Queue
+import net.liplum.common.entity.Queue
+import net.liplum.common.persistence.read
+import net.liplum.common.persistence.write
 import net.liplum.lib.math.Progress
-import net.liplum.lib.persistence.read
-import net.liplum.lib.persistence.write
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.utils.TE
 
@@ -45,7 +45,7 @@ open class CrystalManager(
         set(value) {
             field = value.coerceIn(0f, expendRequirement)
         }
-    @JvmField var inited: Boolean = false
+    @JvmField var initialized: Boolean = false
     val progress: Progress
         get() = curExpendTime / expendRequirement
     val canAdd: Boolean

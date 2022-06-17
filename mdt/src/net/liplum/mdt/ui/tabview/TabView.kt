@@ -7,7 +7,7 @@ import arc.scene.ui.layout.Table
 import arc.util.Align
 import mindustry.gen.Tex
 import mindustry.ui.Styles
-import net.liplum.lib.ui.*
+import net.liplum.common.ui.*
 
 class TabView : INavigable {
     var items = LinkedHashMap<String, TabItem>()

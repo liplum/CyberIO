@@ -1,7 +1,7 @@
 package net.liplum.mdt.utils
 
 import arc.util.Time
-import net.liplum.lib.utils.format
+import net.liplum.common.utils.format
 
 val Float.seconds: Int
     get() = (this / Time.toSeconds).toInt()

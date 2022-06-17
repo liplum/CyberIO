@@ -18,7 +18,7 @@ import mindustry.graphics.Pal
 import mindustry.ui.Bar
 import net.liplum.Meta
 import net.liplum.S
-import net.liplum.lib.shaders.use
+import net.liplum.common.shaders.use
 import net.liplum.mdt.utils.healthPct
 import net.liplum.mdt.utils.localized
 import net.liplum.registries.SD

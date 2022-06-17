@@ -4,7 +4,6 @@ import arc.graphics.Color;
 import arc.struct.ObjectSet;
 import mindustry.type.Item;
 import net.liplum.R;
-import net.liplum.lib.utils.ArcU;
 import net.liplum.mdt.ClientOnly;
 import net.liplum.mdt.SendDataPack;
 import org.jetbrains.annotations.NotNull;
@@ -103,9 +102,14 @@ public interface IDataSender extends IDataBuilding {
         }
     }
 
+    /**
+     * Only for single connection
+     */
+    ObjectSet<Integer> EmptyDataConnections = new ObjectSet<>();
+
     @NotNull
     default ObjectSet<Integer> getConnectedReceivers() {
-        return ArcU.emptySet();
+        return EmptyDataConnections;
     }
 
     @NotNull

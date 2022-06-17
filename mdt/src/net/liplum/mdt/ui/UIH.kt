@@ -5,9 +5,9 @@ import arc.scene.ui.Label
 import arc.scene.ui.layout.Table
 import mindustry.ui.Styles
 import mindustry.ui.dialogs.BaseDialog
-import net.liplum.lib.ui.addTooltip
-import net.liplum.lib.ui.addEasyTooltip
-import net.liplum.lib.ui.addTrackTooltip
+import net.liplum.ui.addTooltip
+import net.liplum.ui.addTrackTooltip
+import net.liplum.ui.addEasyTooltip
 
 val NewBaseDialog: BaseDialog
     get() = BaseDialog("")

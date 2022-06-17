@@ -9,7 +9,7 @@ import mindustry.entities.Damage
 import mindustry.entities.bullet.ContinuousLaserBulletType
 import mindustry.gen.Bullet
 import mindustry.graphics.Drawf
-import net.liplum.lib.shaders.use
+import net.liplum.common.shaders.use
 import net.liplum.registries.SD
 
 class JammingLaser(damage: Float) : ContinuousLaserBulletType(damage) {

@@ -2,7 +2,7 @@ package net.liplum
 
 import arc.util.serialization.Json
 import arc.util.serialization.Jval
-import net.liplum.lib.F
+import net.liplum.common.F
 import net.liplum.mdt.HeadlessOnly
 
 @HeadlessOnly

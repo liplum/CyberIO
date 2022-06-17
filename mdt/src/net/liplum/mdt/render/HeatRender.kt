@@ -10,7 +10,7 @@ import mindustry.graphics.Layer
 import mindustry.world.Block
 import mindustry.world.blocks.heat.HeatBlock
 import mindustry.world.draw.DrawBlock
-import net.liplum.lib.TR
+import net.liplum.lib.assets.TR
 
 class HeatMeta {
     var heatColor = Color(1f, 0.22f, 0.22f, 0.8f)

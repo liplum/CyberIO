@@ -19,11 +19,11 @@ import net.liplum.ResourceLoader
 import net.liplum.annotations.Only
 import net.liplum.annotations.SubscribeEvent
 import net.liplum.events.CioLoadContentEvent
-import net.liplum.lib.TR
-import net.liplum.lib.entity.FixedList
-import net.liplum.lib.entity.Radiation
-import net.liplum.lib.entity.RadiationArray
-import net.liplum.lib.utils.progress
+import net.liplum.lib.assets.TR
+import net.liplum.common.entity.FixedList
+import net.liplum.common.entity.Radiation
+import net.liplum.common.entity.RadiationArray
+import net.liplum.common.utils.progress
 import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.render.DrawSize
 import net.liplum.mdt.utils.MdtUnit

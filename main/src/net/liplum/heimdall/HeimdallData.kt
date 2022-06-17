@@ -2,9 +2,9 @@ package net.liplum.heimdall
 
 import arc.util.io.Reads
 import arc.util.io.Writes
+import net.liplum.common.persistence.IRWable
+import net.liplum.common.TimeH
 import net.liplum.lib.math.Progress
-import net.liplum.lib.persistence.IRWable
-import net.liplum.lib.ui.TimeH
 
 internal typealias ResourceID = Int
 

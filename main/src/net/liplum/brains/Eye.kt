@@ -25,15 +25,14 @@ import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.Var
 import net.liplum.api.brain.*
-import net.liplum.lib.TR
-import net.liplum.lib.TRs
-import net.liplum.lib.math.Polar
+import net.liplum.lib.assets.EmptySounds
+import net.liplum.lib.assets.TR
+import net.liplum.lib.assets.TRs
+import net.liplum.common.math.PolarX
+import net.liplum.common.utils.progress
 import net.liplum.lib.math.approachA
 import net.liplum.lib.math.approachR
 import net.liplum.lib.math.radian
-import net.liplum.lib.utils.EmptySounds
-import net.liplum.lib.math.progress
-import net.liplum.lib.utils.progress
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.animations.anims.Anime
@@ -221,7 +220,7 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
         val stareAtScreenRadius: Float
             get() = size * Vars.tilesize * 2f
         @ClientOnly
-        val sight = Polar(0f, 0f)
+        val sight = PolarX(0f, 0f)
         @ClientOnly
         var lastInCombatTime = outOfCompactTime
         @ClientOnly

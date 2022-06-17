@@ -38,10 +38,10 @@ import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.S
 import net.liplum.UndebugOnly
-import net.liplum.lib.Serialized
-import net.liplum.lib.shaders.use
-import net.liplum.lib.utils.bundle
-import net.liplum.lib.utils.percentI
+import net.liplum.common.Serialized
+import net.liplum.common.shaders.use
+import net.liplum.common.utils.bundle
+import net.liplum.common.utils.percentI
 import net.liplum.mdt.*
 import net.liplum.mdt.consumer.DynamicContinuousLiquidCons
 import net.liplum.mdt.render.Draw

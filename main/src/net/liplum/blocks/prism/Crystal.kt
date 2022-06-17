@@ -2,20 +2,20 @@ package net.liplum.blocks.prism
 
 import arc.util.io.Reads
 import arc.util.io.Writes
-import net.liplum.lib.TR
-import net.liplum.lib.math.Polar
-import net.liplum.lib.persistence.CacheReaderSpec
-import net.liplum.lib.persistence.CacheWriter
-import net.liplum.lib.persistence.IRWableX
-import net.liplum.lib.utils.isOn
-import net.liplum.lib.utils.off
-import net.liplum.lib.utils.on
+import net.liplum.lib.assets.TR
+import net.liplum.common.math.PolarX
+import net.liplum.common.persistence.CacheReaderSpec
+import net.liplum.common.persistence.CacheWriter
+import net.liplum.common.persistence.IRWableX
+import net.liplum.common.utils.isOn
+import net.liplum.common.utils.off
+import net.liplum.common.utils.on
 import net.liplum.mdt.ClientOnly
 import java.io.DataInputStream
 
 class Crystal : IRWableX {
-    var revolution = Polar()
-    var rotation = Polar()
+    var revolution = PolarX()
+    var rotation = PolarX()
     @ClientOnly
     var img = TR()
     var orbitPos = 0

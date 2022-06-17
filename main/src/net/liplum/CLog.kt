@@ -3,10 +3,10 @@ package net.liplum
 import arc.struct.ObjectMap
 import arc.util.Log
 import arc.util.Log.LogLevel
-import net.liplum.lib.addLeft
-import net.liplum.lib.addRight
-import net.liplum.lib.BuildCenterFillUntil
-import net.liplum.lib.fill
+import net.liplum.common.addLeft
+import net.liplum.common.addRight
+import net.liplum.common.BuildCenterFillUntil
+import net.liplum.common.fill
 import java.io.PrintWriter
 import java.io.StringWriter
 

@@ -7,8 +7,8 @@ import mindustry.graphics.Layer
 import mindustry.graphics.Pal
 import net.liplum.Var.ParticleEffectNumber
 import net.liplum.Var.Rand
-import net.liplum.lib.TR
-import net.liplum.lib.math.Polar
+import net.liplum.lib.assets.TR
+import net.liplum.common.math.PolarX
 import net.liplum.lib.math.random
 import net.liplum.mdt.render.G
 import net.liplum.mdt.utils.NewEffect
@@ -22,7 +22,7 @@ object CioFx {
         Draw.alpha(fout())
         Draw.rect(data, x, y)
     }
-    val tempPolar = Polar()
+    val tempPolar = PolarX()
     val blackHoleAbsorbing = NewEffect(80f) {
         Draw.z(Layer.bullet - 1f)
         val range = rotation

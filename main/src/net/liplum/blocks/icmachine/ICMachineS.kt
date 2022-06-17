@@ -4,17 +4,17 @@ import arc.func.Prov
 import mindustry.graphics.Pal
 import mindustry.type.Item
 import net.liplum.DebugOnly
+import net.liplum.lib.assets.TR
 import net.liplum.blocks.AniedCrafter
-import net.liplum.lib.TR
+import net.liplum.common.utils.percentI
 import net.liplum.lib.math.FUNC
-import net.liplum.lib.utils.isZero
-import net.liplum.lib.utils.percentI
+import net.liplum.lib.math.isZero
 import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.render.Draw
-import net.liplum.mdt.render.SetAlpha
 import net.liplum.mdt.animations.anis.AniState
 import net.liplum.mdt.animations.anis.None
 import net.liplum.mdt.animations.anis.config
+import net.liplum.mdt.render.Draw
+import net.liplum.mdt.render.SetAlpha
 import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.utils.sub
 import kotlin.math.sqrt
@@ -36,9 +36,11 @@ open class ICMachineS(name: String) : AniedCrafter<ICMachineS, ICMachineS.ICMach
     @ClientOnly lateinit var processIcons: Array<Item>
     @ClientOnly @JvmField var baffleMinAlpha = 0.65f
     @ClientOnly @JvmField var baffleMaxAlpha = 1f
+
     init {
         buildType = Prov { ICMachineSBuild() }
     }
+
     override fun setBars() {
         super.setBars()
         DebugOnly {

@@ -21,15 +21,16 @@ import net.liplum.CLog
 import net.liplum.Var
 import net.liplum.annotations.Only
 import net.liplum.annotations.SubscribeEvent
+import net.liplum.lib.arc.tinted
 import net.liplum.events.CioInitEvent
-import net.liplum.lib.ui.*
-import net.liplum.lib.utils.allFieldsIncludeParents
-import net.liplum.lib.utils.directSuperClass
-import net.liplum.lib.utils.tinted
+import net.liplum.common.ui.*
+import net.liplum.common.utils.allFieldsIncludeParents
+import net.liplum.common.utils.directSuperClass
 import net.liplum.mdt.Screen
 import net.liplum.mdt.lock
 import net.liplum.mdt.ui.lockOrUnlock
 import net.liplum.render.Shapes
+import net.liplum.ui.attach.Dragger.Companion.dragToMove
 import java.lang.reflect.Field
 
 object DebugUI {

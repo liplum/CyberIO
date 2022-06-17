@@ -6,10 +6,10 @@ import net.liplum.annotations.Only
 import net.liplum.annotations.SubscribeEvent
 import net.liplum.events.CioInitEvent
 import net.liplum.heimdall.HeimdallProjectGame
-import net.liplum.lib.ui.INavigable
-import net.liplum.lib.ui.INavigator
-import net.liplum.lib.ui.NavigateKind
-import net.liplum.lib.ui.Navigator
+import net.liplum.common.ui.INavigable
+import net.liplum.common.ui.INavigator
+import net.liplum.common.ui.NavigateKind
+import net.liplum.common.ui.Navigator
 import net.liplum.mdt.ui.tabview.TabItem
 import net.liplum.mdt.ui.tabview.TabView
 

@@ -9,7 +9,7 @@ import mindustry.entities.Effect
 import mindustry.graphics.Drawf
 import mindustry.graphics.Layer
 import net.liplum.S
-import net.liplum.lib.shaders.on
+import net.liplum.common.shaders.on
 import net.liplum.registries.SD
 
 object HoloFx {

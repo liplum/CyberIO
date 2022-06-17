@@ -11,10 +11,10 @@ import mindustry.Vars
 import mindustry.ui.dialogs.ModsDialog
 import net.liplum.*
 import net.liplum.ConfigEntry.Companion.Config
-import net.liplum.lib.UseReflection
-import net.liplum.lib.replaceByteBy
-import net.liplum.lib.utils.getMethodBy
-import net.liplum.lib.utils.useFakeHeader
+import net.liplum.common.UseReflection
+import net.liplum.common.replaceByteBy
+import net.liplum.common.utils.getMethodBy
+import net.liplum.common.utils.useFakeHeader
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.HeadlessOnly
 import java.io.ByteArrayOutputStream

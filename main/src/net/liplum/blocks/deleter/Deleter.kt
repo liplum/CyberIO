@@ -20,13 +20,12 @@ import mindustry.world.blocks.defense.turrets.PowerTurret
 import mindustry.world.blocks.defense.turrets.Turret
 import mindustry.world.draw.DrawTurret
 import mindustry.world.meta.Stat
-import net.liplum.R
 import net.liplum.S
 import net.liplum.api.IExecutioner
-import net.liplum.lib.TR
+import net.liplum.lib.assets.TR
+import net.liplum.common.utils.MapKeyBundle
+import net.liplum.common.utils.format
 import net.liplum.lib.math.quadratic
-import net.liplum.lib.utils.MapKeyBundle
-import net.liplum.lib.utils.format
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.mixin.shootPattern
 import net.liplum.mdt.ui.ammoStats
