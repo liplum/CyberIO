@@ -33,7 +33,7 @@ import net.liplum.api.holo.IHoloEntity
 import net.liplum.api.holo.IHoloEntity.Companion.minHealth
 import net.liplum.lib.assets.TR
 import net.liplum.bullets.RuvikBullet
-import net.liplum.common.Serialized
+import net.liplum.lib.Serialized
 import net.liplum.common.delegates.Delegate1
 import net.liplum.common.persistence.read
 import net.liplum.common.persistence.write

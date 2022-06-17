@@ -11,7 +11,7 @@ import arc.util.io.Writes
 import mindustry.world.blocks.defense.OverdriveProjector
 import mindustry.world.meta.Stat
 import net.liplum.R
-import net.liplum.common.Serialized
+import net.liplum.lib.Serialized
 import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.common.utils.*
 import net.liplum.lib.math.ExpLogGen

@@ -27,7 +27,7 @@ import mindustry.world.blocks.payloads.Payload
 import mindustry.world.blocks.power.PowerGraph
 import net.liplum.S
 import net.liplum.holo.HoloProjector.HoloPBuild
-import net.liplum.common.Serialized
+import net.liplum.lib.Serialized
 import net.liplum.common.persistence.*
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.OverwriteVanilla

@@ -22,7 +22,10 @@ java {
 }
 
 dependencies {
+    implementation(project(":annotations"))
+    implementation(project(":cui"))
     implementation(project(":lib"))
+    implementation(project(":common"))
     // Use anuke's mirror for now on https://github.com/Anuken/MindustryJitpack
     compileOnly("com.github.anuken.mindustryjitpack:core:$MdtHash")
     compileOnly("com.github.Anuken.Arc:arc-core:dfcb21ce56")

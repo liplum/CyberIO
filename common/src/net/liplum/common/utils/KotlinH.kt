@@ -2,7 +2,7 @@
 
 package net.liplum.common.utils
 
-import net.liplum.common.Out
+import net.liplum.lib.Out
 
 typealias Index = Int
 

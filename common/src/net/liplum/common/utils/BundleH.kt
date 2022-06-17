@@ -12,7 +12,7 @@ import arc.util.I18NBundle
 import arc.util.io.PropertiesUtils
 import net.liplum.lib.arc.set
 import net.liplum.common.Res
-import net.liplum.common.UseReflection
+import net.liplum.lib.UseReflection
 import java.io.Reader
 import java.util.*
 

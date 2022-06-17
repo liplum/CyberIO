@@ -3,7 +3,7 @@ package net.liplum.heimdall
 import arc.math.Rand
 import mindustry.ctype.ContentType
 import mindustry.ctype.UnlockableContent
-import net.liplum.common.Out
+import net.liplum.lib.Out
 
 object HeimdallLoader {
     @JvmStatic

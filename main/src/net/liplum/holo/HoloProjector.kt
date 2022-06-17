@@ -38,7 +38,7 @@ import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.S
 import net.liplum.UndebugOnly
-import net.liplum.common.Serialized
+import net.liplum.lib.Serialized
 import net.liplum.common.shaders.use
 import net.liplum.common.utils.bundle
 import net.liplum.common.utils.percentI

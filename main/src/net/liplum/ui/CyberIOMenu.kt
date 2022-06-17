@@ -1,19 +1,23 @@
 package net.liplum.ui
 
+import mindustry.gen.Tex
+import mindustry.ui.Styles
 import mindustry.ui.dialogs.BaseDialog
 import net.liplum.Var
 import net.liplum.annotations.Only
 import net.liplum.annotations.SubscribeEvent
 import net.liplum.events.CioInitEvent
 import net.liplum.heimdall.HeimdallProjectGame
-import net.liplum.common.ui.INavigable
-import net.liplum.common.ui.INavigator
-import net.liplum.common.ui.NavigateKind
-import net.liplum.common.ui.Navigator
-import net.liplum.mdt.ui.tabview.TabItem
-import net.liplum.mdt.ui.tabview.TabView
+import net.liplum.ui.controls.tabview.TabItem
+import net.liplum.ui.controls.tabview.TabView
+import net.liplum.ui.controls.tabview.TabViewStyle
 
-object CyberIODialog : INavigable {
+object CyberIOMenu : INavigable {
+    val tabViewStyle = TabViewStyle().apply {
+        contentViewStyle = Tex.button
+        tabOptionStyle = Styles.flatTogglet
+    }
+
     fun show() {
         BaseDialog("Cyber IO").apply {
             allTabs.build(cont)
@@ -21,7 +25,7 @@ object CyberIODialog : INavigable {
         }.show()
     }
 
-    var allTabs = TabView().apply {
+    var allTabs = TabView(tabViewStyle).apply {
         // Select the Cyber IO specific
         addTab(TabItem("ContentSpecific").apply {
             buildIcon {

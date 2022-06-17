@@ -23,7 +23,7 @@ import net.liplum.annotations.Only
 import net.liplum.annotations.SubscribeEvent
 import net.liplum.lib.arc.invoke
 import net.liplum.events.CioInitEvent
-import net.liplum.common.UseReflection
+import net.liplum.lib.UseReflection
 import net.liplum.common.ing
 import net.liplum.common.utils.bundle
 import net.liplum.common.utils.getF
@@ -89,11 +89,11 @@ object CioUI {
         val cioMenuID = "cyber-io-menu"
         if (!Vars.mobile) {
             MainMenus.appendDesktopMenu("Cyber IO", icon, cioMenuID) {
-                CyberIODialog.show()
+                CyberIOMenu.show()
             }
         } else {
             MainMenus.appendMobileMenu("Cyber IO", icon, cioMenuID) {
-                CyberIODialog.show()
+                CyberIOMenu.show()
             }
         }
     }

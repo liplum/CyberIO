@@ -12,7 +12,7 @@ import mindustry.world.meta.Env
 import net.liplum.DebugOnly
 import net.liplum.api.cyber.*
 import net.liplum.api.cyber.SideLinks.Companion.enableAllSides
-import net.liplum.common.Serialized
+import net.liplum.lib.Serialized
 import net.liplum.lib.assets.TR
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.render.G

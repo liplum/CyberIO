@@ -11,7 +11,7 @@ import mindustry.Vars
 import mindustry.ui.dialogs.ModsDialog
 import net.liplum.*
 import net.liplum.ConfigEntry.Companion.Config
-import net.liplum.common.UseReflection
+import net.liplum.lib.UseReflection
 import net.liplum.common.replaceByteBy
 import net.liplum.common.utils.getMethodBy
 import net.liplum.common.utils.useFakeHeader

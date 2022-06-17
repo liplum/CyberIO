@@ -41,7 +41,7 @@ import net.liplum.api.brain.IBrain.Companion.XSign
 import net.liplum.api.brain.IBrain.Companion.YSign
 import net.liplum.lib.arc.invoke
 import net.liplum.lib.assets.TR
-import net.liplum.common.Serialized
+import net.liplum.lib.Serialized
 import net.liplum.common.delegates.Delegate
 import net.liplum.common.entity.Radiation
 import net.liplum.common.entity.RadiationQueue

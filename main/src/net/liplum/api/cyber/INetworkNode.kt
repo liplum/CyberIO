@@ -9,8 +9,8 @@ import net.liplum.Var
 import net.liplum.api.ICyberEntity
 import net.liplum.api.cyber.SideLinks.Companion.coordinates
 import net.liplum.api.cyber.SideLinks.Companion.reflect
-import net.liplum.common.Out
-import net.liplum.common.Serialized
+import net.liplum.lib.Out
+import net.liplum.lib.Serialized
 import net.liplum.common.utils.isEven
 import net.liplum.common.utils.raycastInThis
 import net.liplum.data.DataID

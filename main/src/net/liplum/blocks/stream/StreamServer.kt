@@ -20,7 +20,7 @@ import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.api.cyber.*
 import net.liplum.lib.arc.isNotEmpty
-import net.liplum.common.Serialized
+import net.liplum.lib.Serialized
 import net.liplum.common.delegates.Delegate1
 import net.liplum.common.persistence.read
 import net.liplum.common.persistence.write

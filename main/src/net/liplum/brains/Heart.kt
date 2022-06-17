@@ -33,7 +33,7 @@ import net.liplum.R
 import net.liplum.Var
 import net.liplum.api.brain.*
 import net.liplum.lib.arc.hsvLerp
-import net.liplum.common.Serialized
+import net.liplum.lib.Serialized
 import net.liplum.common.Smooth
 import net.liplum.common.utils.*
 import net.liplum.lib.assets.TR

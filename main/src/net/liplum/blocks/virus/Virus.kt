@@ -21,8 +21,8 @@ import mindustry.world.Tile
 import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.api.virus.UninfectedBlocksRegistry
-import net.liplum.common.Serialized
-import net.liplum.common.UseRandom
+import net.liplum.lib.Serialized
+import net.liplum.lib.UseRandom
 import net.liplum.common.shaders.use
 import net.liplum.common.utils.bundle
 import net.liplum.common.utils.off

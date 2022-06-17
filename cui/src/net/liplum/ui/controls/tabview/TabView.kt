@@ -1,21 +1,25 @@
-package net.liplum.mdt.ui.tabview
+package net.liplum.ui.controls.tabview
 
 import arc.graphics.Color
 import arc.scene.ui.Button
 import arc.scene.ui.ButtonGroup
 import arc.scene.ui.layout.Table
 import arc.util.Align
-import mindustry.gen.Tex
-import mindustry.ui.Styles
-import net.liplum.common.ui.*
+import net.liplum.ui.*
 
-class TabView : INavigable {
+class TabView(
+    var style: TabViewStyle = TabViewStyle(),
+) : INavigable {
     var items = LinkedHashMap<String, TabItem>()
     var navigationService: () -> INavigationService? = { null }
     var xName = ""
     var rememberBuilt = false
     private var item2Built = HashMap<TabItem, Built>()
-    var curContent = Table(Tex.button)
+    var curContent = Table(style.contentViewStyle.apply {
+        check(this != TabViewStyle.emptyContentViewStyle) {
+            "Please set the style of tab view ${this@TabView}."
+        }
+    })
         private set
     var curItem = TabItem.X
         private set
@@ -37,7 +41,7 @@ class TabView : INavigable {
             val group = ButtonGroup<Button>()
             val tabMenu = Table().apply {
                 for (item in items.values) {
-                    add(Button(Styles.flatToggleMenut).apply {
+                    add(Button(style.tabOptionStyle).apply {
                         item.buildIcon(this)
                         group.add(this)
                         changed {

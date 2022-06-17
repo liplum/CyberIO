@@ -1,4 +1,4 @@
-package net.liplum.common
+package net.liplum.lib
 
 import java.lang.annotation.Inherited
 

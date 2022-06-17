@@ -32,7 +32,7 @@ import net.liplum.R
 import net.liplum.Var
 import net.liplum.api.brain.*
 import net.liplum.lib.arc.invoke
-import net.liplum.common.Serialized
+import net.liplum.lib.Serialized
 import net.liplum.lib.assets.TR
 import net.liplum.common.entity.PosRadiation
 import net.liplum.common.persistence.ReadFromCache

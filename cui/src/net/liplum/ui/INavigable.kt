@@ -1,6 +1,6 @@
-package net.liplum.common.ui
+package net.liplum.ui
 
-import net.liplum.common.Out
+import net.liplum.lib.Out
 import java.util.*
 
 interface INavigable {

@@ -21,8 +21,8 @@ class CacheRwProcessor(
         // Filter target
         val rwFName = options["Cache.CacheRWQualifiedName"] ?: "net.liplum.annotations.CacheRW"
         val extension = options["Cache.Extension"] ?: "Cached"
-        val readsMapping = options["Cache.ReadsMapping"] ?: "net.liplum.lib.persistence.CacheReaderSpec"
-        val writesMapping = options["Cache.WritesMapping"] ?: "net.liplum.lib.persistence.CacheWriter"
+        val readsMapping = options["Cache.ReadsMapping"] ?: "net.liplum.common.persistence.CacheReaderSpec"
+        val writesMapping = options["Cache.WritesMapping"] ?: "net.liplum.common.persistence.CacheWriter"
         val rwSymbls = resolver
             .getSymbolsWithAnnotation(rwFName)
             .filterIsInstance<KSFile>()

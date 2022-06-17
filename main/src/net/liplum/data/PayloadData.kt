@@ -5,7 +5,7 @@ import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.world.blocks.payloads.Payload
 import net.liplum.lib.arc.forLoop
-import net.liplum.common.Serialized
+import net.liplum.lib.Serialized
 import net.liplum.common.persistence.*
 import net.liplum.mdt.payload.EmptyPayload
 import java.io.DataInputStream

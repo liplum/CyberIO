@@ -3,7 +3,6 @@ package net.liplum.ui
 import arc.Core
 import arc.graphics.Color
 import arc.math.Interp
-import arc.scene.actions.Actions
 import arc.scene.ui.ImageButton
 import arc.scene.ui.ImageButton.ImageButtonStyle
 import arc.scene.ui.Label
@@ -20,6 +19,10 @@ import net.liplum.common.utils.IBundlable
 import net.liplum.common.utils.bundle
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.ui.addTrackTooltip
+import net.liplum.ui.animation.AnimatedVisibility
+import net.liplum.ui.animation.FadeAnimationSpec
+import net.liplum.ui.animation.SmoothAnimationSpec
+import net.liplum.ui.animation.WrapAnimationSpec
 import net.liplum.ui.templates.NewIconTextButton
 
 @ClientOnly
@@ -35,16 +38,30 @@ object ContentSpecFrag : IBundlable {
     fun build(cont: Table) {
         // Main
         var curSpec = Var.ContentSpecific
-        var changed = curSpec != Var.ContentSpecific
+        val unsavedWarning = Label(R.Bundle.UnsavedChange.bundle).apply {
+            setColor(R.C.RedAlert)
+        }
+
+        var warningVisible by unsavedWarning.AnimatedVisibility(
+            isVisible = false,
+            duration = 60f,
+            spec = WrapAnimationSpec(Interp.pow2In)
+        )
+
         fun changeCurSpec(new: ContentSpec) {
             if (curSpec != new) {
                 curSpec = new
                 Sounds.message.play()
-                val tipKey = if (curSpec != Var.ContentSpecific) "switch-to" else "switch-back"
+                val tipKey = if (curSpec != Var.ContentSpecific) {
+                    warningVisible = true
+                    "switch-to"
+                } else {
+                    warningVisible = false
+                    "switch-back"
+                }
                 toastUI.postToastOnUI(Table().apply {
                     add(bundle(tipKey, curSpec.i18nName))
                 })
-                changed = true
             }
         }
 
@@ -53,27 +70,7 @@ object ContentSpecFrag : IBundlable {
         // Tip
         cont.add(Table().apply {
             add(Table().apply {
-                add(Label(R.Bundle.UnsavedChange.bundle).apply {
-                    setColor(R.C.RedAlert)
-                })
-                actions(Actions.alpha(0f))
-                update {
-                    if (!changed) return@update
-                    if (hasUnsavedChange()) {
-                        changed = false
-                        actions.clear()
-                        actions(
-                            Actions.alpha(0f),
-                            Actions.fadeIn(fadeDuration, Interp.fade)
-                        )
-                    } else {
-                        changed = false
-                        actions.clear()
-                        actions(
-                            Actions.fadeOut(fadeDuration, Interp.fade)
-                        )
-                    }
-                }
+                add(unsavedWarning)
             }).row()
             // Options
             add(bundle("introduction")).row()

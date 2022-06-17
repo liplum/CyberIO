@@ -21,7 +21,7 @@ import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.Var
 import net.liplum.lib.assets.TR
-import net.liplum.common.Serialized
+import net.liplum.lib.Serialized
 import net.liplum.common.entity.RadiationArray
 import net.liplum.common.math.PolarX
 import net.liplum.lib.math.approachR
