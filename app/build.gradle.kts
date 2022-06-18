@@ -44,7 +44,7 @@ tasks {
         group = "download"
         doLast {
             create<DownloadTask>("${name}Wrapper") {
-                sourceUrl.set("http://github.com/Anuken/Mindustry/releases/download/${GameLaunchVersion}/Mindustry.jar")
+                sourceUrl.set("http://github.com/Anuken/Mindustry/releases/download/v${GameLaunchVersion}/Mindustry.jar")
                 targetFile.set(File("$rootDir/run/Mindustry${GameLaunchVersion}.jar"))
                 tip.set("Downloading Mindustry ${GameLaunchVersion}...")
             }.download()
@@ -55,7 +55,7 @@ tasks {
         group = "download"
         doLast {
             create<DownloadTask>("${name}Wrapper") {
-                sourceUrl.set("https://github.com/Anuken/Mindustry/releases/download/${GameLaunchVersion}/server-release.jar")
+                sourceUrl.set("https://github.com/Anuken/Mindustry/releases/download/v${GameLaunchVersion}/server-release.jar")
                 targetFile.set(File("$rootDir/run/MindustryServer${GameLaunchVersion}.jar"))
                 tip.set("Downloading Mindustry Server ${GameLaunchVersion}...")
             }.download()

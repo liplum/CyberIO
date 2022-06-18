@@ -40,8 +40,13 @@ tasks {
         group = "verification"
         doLast {
             allprojects.forEach {
+                logger.lifecycle("------>[Testing ${it.name}]<------")
                 it.tasks.withType<Test>().forEach { test ->
-                    test.executeTests()
+                    try {
+                        test.executeTests()
+                    } catch (e: Exception) {
+                        logger.error(e.toString(),e)
+                    }
                 }
             }
         }
