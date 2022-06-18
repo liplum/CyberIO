@@ -11,10 +11,6 @@ val settings = net.liplum.gradle.settings.Settings.get(rootDir)
 allprojects {
     group = "net.liplum"
     version = "4.0"
-    val mdtVersion by extra(property("MindustryVersion") as String)
-    extra["outputJarName"] = property("OutputJarName") as String
-    extra["mdtVersion"] = mdtVersion
-    extra["mdtVersionNum"] = mdtVersion.replace("v", "")
     repositories {
         mavenCentral()
         maven {
@@ -35,6 +31,18 @@ allprojects {
         tasks.whenTaskAdded {
             when (name) {
                 "kspKotlin" -> if (settings.env == "dev") enabled = false
+            }
+        }
+    }
+}
+tasks {
+    register("test") {
+        group = "verification"
+        doLast {
+            allprojects.forEach {
+                it.tasks.withType<Test>().forEach { test ->
+                    test.executeTests()
+                }
             }
         }
     }

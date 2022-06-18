@@ -20,4 +20,4 @@ jobs:
       - name: Test CyberIO
         run: |
           chmod +x gradlew
-          ./gradlew :main:test
+          ./gradlew :test

@@ -6,6 +6,8 @@ import arc.scene.ui.ButtonGroup
 import arc.scene.ui.layout.Table
 import arc.util.Align
 import net.liplum.ui.*
+import net.liplum.ui.animation.AnimatedVisibility
+import net.liplum.ui.controls.SwitchTable
 
 class TabView(
     var style: TabViewStyle = TabViewStyle(),
@@ -15,11 +17,13 @@ class TabView(
     var xName = ""
     var rememberBuilt = false
     private var item2Built = HashMap<TabItem, Built>()
-    var curContent = Table(style.contentViewStyle.apply {
-        check(this != TabViewStyle.emptyContentViewStyle) {
-            "Please set the style of tab view ${this@TabView}."
-        }
-    })
+    var curContent = SwitchTable(AnimatedVisibility()).apply {
+        background(style.contentViewStyle.apply {
+            check(this != TabViewStyle.emptyContentViewStyle) {
+                "Please set the style of tab view ${this@TabView}."
+            }
+        })
+    }
         private set
     var curItem = TabItem.X
         private set
@@ -82,22 +86,19 @@ class TabView(
             if (rememberBuilt) {
                 val built = item2Built[item]
                 return if (built == null) {
-                    curContent.clear()
                     val container = Table()
                     val navigable = item.buildContent(container)
                     item2Built[item] = Built(container, navigable)
-                    curContent.add(container).grow()
+                    curContent.setContent(container)
                     navigable
                 } else {
-                    curContent.clear()
-                    curContent.add(built.content).grow()
+                    curContent.setContent(built.content)
                     built.navigable
                 }
             } else {// it not remembers built
-                curContent.clear()
                 val container = Table()
                 val navigable = item.buildContent(container)
-                curContent.add(container).grow()
+                curContent.setContent(container)
                 return navigable
             }
         }

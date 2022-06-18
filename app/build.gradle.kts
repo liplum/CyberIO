@@ -1,10 +1,9 @@
 import net.liplum.gradle.tasks.DownloadTask
 
-val outputJarName: String get() = extra["outputJarName"] as String
-val mdtVersion: String get() = extra["mdtVersion"] as String
-val mdtVersionNum: String get() = extra["mdtVersionNum"] as String
+val OutputJarName: String by project
+val GameLaunchVersion: String  by project
 fun getOutputJar(): File? {
-    val jarFile = File("${project(":main").buildDir}/libs/${outputJarName}Desktop.jar")
+    val jarFile = File("${project(":main").buildDir}/libs/${OutputJarName}Desktop.jar")
     if (!jarFile.exists()) {
         logger.lifecycle("Jar cannot be found at ${jarFile.path}")
         return null
@@ -27,8 +26,8 @@ tasks {
                 val APPDATA = System.getenv("APPDATA")
                 val modsFolder = File("$APPDATA/Mindustry/mods")
                 modsFolder.mkdirs()
-                File(modsFolder,"$outputJarName.jar").delete()
-                File(modsFolder,"${outputJarName}Desktop.jar").delete()
+                File(modsFolder,"$OutputJarName.jar").delete()
+                File(modsFolder,"${OutputJarName}Desktop.jar").delete()
                 copyJarFile(jarFile, modsFolder)
             }
         }
@@ -45,9 +44,9 @@ tasks {
         group = "download"
         doLast {
             create<DownloadTask>("${name}Wrapper") {
-                sourceUrl.set("http://github.com/Anuken/Mindustry/releases/download/${mdtVersion}/Mindustry.jar")
-                targetFile.set(File("$rootDir/run/Mindustry${mdtVersionNum}.jar"))
-                tip.set("Downloading Mindustry ${mdtVersion}...")
+                sourceUrl.set("http://github.com/Anuken/Mindustry/releases/download/${GameLaunchVersion}/Mindustry.jar")
+                targetFile.set(File("$rootDir/run/Mindustry${GameLaunchVersion}.jar"))
+                tip.set("Downloading Mindustry ${GameLaunchVersion}...")
             }.download()
         }
     }
@@ -56,9 +55,9 @@ tasks {
         group = "download"
         doLast {
             create<DownloadTask>("${name}Wrapper") {
-                sourceUrl.set("https://github.com/Anuken/Mindustry/releases/download/${mdtVersion}/server-release.jar")
-                targetFile.set(File("$rootDir/run/MindustryServer${mdtVersionNum}.jar"))
-                tip.set("Downloading Mindustry Server ${mdtVersion}...")
+                sourceUrl.set("https://github.com/Anuken/Mindustry/releases/download/${GameLaunchVersion}/server-release.jar")
+                targetFile.set(File("$rootDir/run/MindustryServer${GameLaunchVersion}.jar"))
+                tip.set("Downloading Mindustry Server ${GameLaunchVersion}...")
             }.download()
         }
     }
@@ -67,7 +66,7 @@ tasks {
         group = "run"
         dependsOn("copyJar")
         dependsOn("downloadDesktop")
-        val gameFile = File("$rootDir/run/Mindustry${mdtVersionNum}.jar")
+        val gameFile = File("$rootDir/run/Mindustry${GameLaunchVersion}.jar")
         mainClass.set("-jar")
         args = listOf(gameFile.path)
     }
@@ -75,7 +74,7 @@ tasks {
     register<JavaExec>("runGame") {
         group = "run"
         dependsOn("downloadDesktop")
-        val gameFile = File("$rootDir/run/Mindustry${mdtVersionNum}.jar")
+        val gameFile = File("$rootDir/run/Mindustry${GameLaunchVersion}.jar")
         mainClass.set("-jar")
         args = listOf(gameFile.path)
     }
@@ -84,7 +83,7 @@ tasks {
         group = "run"
         dependsOn("copyJarServer")
         dependsOn("downloadServer")
-        val gameFile = File("$rootDir/run/MindustryServer${mdtVersionNum}.jar")
+        val gameFile = File("$rootDir/run/MindustryServer${GameLaunchVersion}.jar")
         mainClass.set("-jar")
         standardInput = System.`in`
         args = listOf(gameFile.path)
@@ -93,7 +92,7 @@ tasks {
     register<JavaExec>("runServer") {
         group = "run"
         dependsOn("downloadServer")
-        val gameFile = File("$rootDir/run/MindustryServer${mdtVersionNum}.jar")
+        val gameFile = File("$rootDir/run/MindustryServer${GameLaunchVersion}.jar")
         mainClass.set("-jar")
         standardInput = System.`in`
         args = listOf(gameFile.path)

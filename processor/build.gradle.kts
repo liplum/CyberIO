@@ -1,6 +1,8 @@
 plugins {
     kotlin("jvm")
 }
+val MindustryVersion: String by project
+val ArcVersion: String by project
 sourceSets {
     main {
         java.srcDir("src")
@@ -11,19 +13,14 @@ sourceSets {
         resources.srcDir("resources")
     }
 }
-val MdtHash: String by project
-
 dependencies {
     implementation(project(":annotations"))
-    // compileOnly("com.github.Anuken.Arc:arc-core:$mdtVersion")
-    // compileOnly("com.github.Anuken.Mindustry:core:$mdtVersion")
-    // Use anuke's mirror for now on https://github.com/Anuken/MindustryJitpack
-    compileOnly("com.github.Anuken.Arc:arc-core:dfcb21ce56")
-    compileOnly("com.github.anuken.mindustryjitpack:core:$MdtHash")
+    compileOnly("com.github.anuken.mindustryjitpack:core:$MindustryVersion")
+    compileOnly("com.github.Anuken.Arc:arc-core:$ArcVersion")
     implementation("com.google.guava:guava:31.1-jre")
     implementation("com.google.devtools.ksp:symbol-processing-api:1.6.21-1.0.5")
-    testImplementation("com.github.tschuchortdev:kotlin-compile-testing:1.4.8")
-    testImplementation ("com.github.tschuchortdev:kotlin-compile-testing-ksp:1.4.8")
+    testImplementation("com.github.tschuchortdev:kotlin-compile-testing:1.4.9")
+    testImplementation ("com.github.tschuchortdev:kotlin-compile-testing-ksp:1.4.9")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.2")
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.6.21")

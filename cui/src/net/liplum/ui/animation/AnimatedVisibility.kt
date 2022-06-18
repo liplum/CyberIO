@@ -2,6 +2,7 @@ package net.liplum.ui.animation
 
 import arc.scene.Element
 import arc.util.Time
+import net.liplum.lib.Idempotent
 import net.liplum.ui.BindingException
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
@@ -13,24 +14,45 @@ class AnimatedVisibility(
 ) : ReadWriteProperty<Any?, Boolean> {
     var curTime = 0f
     var bound = false
+    val isEnd :Boolean
+        get() = if(isVisible) curTime >= duration else curTime <= 0f
     fun update(e: Element) {
+        val progress = curTime / duration
+        e.color.a(spec.decorate(progress))
+    }
+
+    fun updateTimer() {
         curTime = if (isVisible)
             (curTime + Time.delta).coerceAtMost(duration)
         else
             (curTime - Time.delta).coerceAtLeast(0f)
-        val progress = curTime / duration
-        e.color.a(spec.decorate(progress))
     }
     /**
      * @exception BindingException throw if this has been bound.
      */
-    fun bind(e: Element) {
+    fun bindAll(e: Element) {
         if (!bound) {
             e.update {
+                updateTimer()
                 update(e)
             }
             bound = true
         } else throw BindingException("This has already been bound, can't bind with $e.")
+    }
+    @Idempotent
+    fun bindTimer(e: Element) {
+        if (!bound) {
+            e.update {
+                updateTimer()
+            }
+            bound = true
+        }
+    }
+
+    fun bind(e: Element) {
+        e.update {
+            update(e)
+        }
     }
 
     override fun getValue(thisRef: Any?, property: KProperty<*>): Boolean {
@@ -44,6 +66,16 @@ class AnimatedVisibility(
 /**
  * @exception BindingException throw if this [animatedVisibility] has been bound.
  */
+fun Element.bindAll(animatedVisibility: AnimatedVisibility): AnimatedVisibility {
+    animatedVisibility.bindAll(this)
+    return animatedVisibility
+}
+
+fun Element.bindTimer(animatedVisibility: AnimatedVisibility): AnimatedVisibility {
+    animatedVisibility.bindTimer(this)
+    return animatedVisibility
+}
+
 fun Element.bind(animatedVisibility: AnimatedVisibility): AnimatedVisibility {
     animatedVisibility.bind(this)
     return animatedVisibility
@@ -55,7 +87,7 @@ fun Element.AnimatedVisibility(
     spec: AnimationSpec = SmoothAnimationSpec(),
 ): AnimatedVisibility {
     val animatedVisibility = net.liplum.ui.animation.AnimatedVisibility(isVisible, duration, spec)
-    this.bind(animatedVisibility)
+    this.bindAll(animatedVisibility)
     return animatedVisibility
 }
 

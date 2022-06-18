@@ -3,6 +3,7 @@ plugins {
     java
     `maven-publish`
 }
+val ArcVersion: String by project
 
 sourceSets {
     main {
@@ -21,8 +22,8 @@ java {
 }
 
 dependencies {
-    compileOnly("com.github.Anuken.Arc:arc-core:dfcb21ce56")
-    testImplementation("com.github.Anuken.Arc:arc-core:dfcb21ce56")
+    compileOnly("com.github.Anuken.Arc:arc-core:$ArcVersion")
+    testImplementation("com.github.Anuken.Arc:arc-core:$ArcVersion")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.2")
     testImplementation("com.github.liplum:TestUtils:v0.1")

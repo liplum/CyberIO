@@ -11,10 +11,10 @@ plugins {
 }
 val settings = net.liplum.gradle.settings.Settings.get(rootDir)
 val OutputJarName: String by project
-val MdtHash: String by project
-val PlumyHash: String by project
-val mdtVersion: String get() = extra["mdtVersion"] as String
-val mdtVersionNum: String get() = extra["mdtVersionNum"] as String
+val MindustryVersion: String by project
+val ArcVersion: String by project
+val PlumyVersion: String by project
+val OpenGalVersion: String by project
 val sdkRoot: String? by extra(System.getenv("ANDROID_HOME") ?: System.getenv("ANDROID_SDK_ROOT"))
 sourceSets {
     main {
@@ -69,20 +69,16 @@ dependencies {
     implementation(project(":lib"))
     implementation(project(":cui"))
     ksp(project(":processor"))
-    ksp("com.github.anuken.mindustryjitpack:core:$MdtHash")
-//    compileOnly("com.github.Anuken.Arc:arc-core:$mdtVersion")
-//    compileOnly("com.github.Anuken.Mindustry:core:$mdtVersion")
-    // Use anuke's mirror for now on https://github.com/Anuken/MindustryJitpack
-    compileOnly("com.github.Anuken.Arc:arc-core:dfcb21ce56")
-    //compileOnly(files("$rootDir/run/Mindustry136.jar"))
-    compileOnly("com.github.anuken.mindustryjitpack:core:$MdtHash")
-    testImplementation("com.github.anuken.mindustryjitpack:core:$MdtHash")
-    implementation("com.github.liplum:OpenGAL:v0.4.3")
-    implementation("com.github.liplum.plumyjava:path-kt:$PlumyHash")
+    ksp("com.github.anuken.mindustryjitpack:core:$MindustryVersion")
+    compileOnly("com.github.Anuken.Arc:arc-core:$ArcVersion")
+    compileOnly("com.github.anuken.mindustryjitpack:core:$MindustryVersion")
+    testImplementation("com.github.anuken.mindustryjitpack:core:$MindustryVersion")
+    implementation("com.github.liplum:OpenGAL:$OpenGalVersion")
+    implementation("com.github.liplum.plumyjava:path-kt:$PlumyVersion")
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.2")
 
-    testImplementation("com.github.Anuken.Arc:arc-core:dfcb21ce56")
+    testImplementation("com.github.Anuken.Arc:arc-core:$ArcVersion")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.2")
     testImplementation("com.github.liplum:TestUtils:v0.1")

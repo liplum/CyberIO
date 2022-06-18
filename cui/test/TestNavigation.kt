@@ -1,6 +1,6 @@
 package net.liplum.test
 
-import net.liplum.common.ui.Navigator
+import net.liplum.ui.Navigator
 import org.junit.jupiter.api.Test
 
 class TestNavigation {
