@@ -13,4 +13,3 @@ the mod from this release because it will always be the latest release.
     - **Windows**:`%AppData%/Mindustry/mods/`
 #### Search in Mod Browser
 You can search for the mod's name -- **"CyberIO"** by the **"Mod Browser"** in game.
-

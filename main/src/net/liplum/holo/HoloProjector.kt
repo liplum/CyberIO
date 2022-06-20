@@ -1,5 +1,6 @@
 package net.liplum.holo
 
+import arc.Core
 import arc.Events
 import arc.func.Floatf
 import arc.func.Prov
@@ -12,6 +13,7 @@ import arc.math.Mathf
 import arc.math.geom.Vec2
 import arc.scene.ui.layout.Table
 import arc.struct.Seq
+import arc.util.Strings
 import arc.util.Strings.autoFixed
 import arc.util.Structs
 import arc.util.Time
@@ -19,16 +21,17 @@ import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.Vars
 import mindustry.game.EventType.UnitCreateEvent
-import mindustry.gen.Building
-import mindustry.gen.Iconc
+import mindustry.gen.*
 import mindustry.gen.Unit
 import mindustry.graphics.Layer
 import mindustry.graphics.Pal
 import mindustry.logic.LAccess
 import mindustry.type.Item
+import mindustry.type.ItemStack
 import mindustry.type.Liquid
 import mindustry.type.UnitType
 import mindustry.ui.Fonts
+import mindustry.ui.ItemDisplay
 import mindustry.ui.Styles
 import mindustry.world.Block
 import mindustry.world.consumers.ConsumeItemDynamic
@@ -38,10 +41,10 @@ import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.S
 import net.liplum.UndebugOnly
-import net.liplum.lib.Serialized
 import net.liplum.common.shaders.use
 import net.liplum.common.utils.bundle
 import net.liplum.common.utils.percentI
+import net.liplum.lib.Serialized
 import net.liplum.mdt.*
 import net.liplum.mdt.consumer.DynamicContinuousLiquidCons
 import net.liplum.mdt.render.Draw
@@ -51,6 +54,7 @@ import net.liplum.mdt.ui.bars.removeItemsInBar
 import net.liplum.mdt.utils.*
 import net.liplum.registries.CioLiquids.cyberion
 import net.liplum.registries.SD
+import net.liplum.ui.addTable
 import kotlin.math.max
 
 open class HoloProjector(name: String) : Block(name) {
@@ -440,24 +444,35 @@ open class HoloProjector(name: String) : Block(name) {
         super.setStats()
         stats.remove(Stat.itemCapacity)
 
-        stats.add(Stat.output) { stat ->
-            val p: Seq<HoloPlan> = plans.select { plan ->
-                plan.unitType.unlockedNow()
-            }
+        stats.add(Stat.output) { stat: Table ->
             stat.row()
-            for (plan in p) {
-                val type = plan.unitType
-                stat.image(type.uiIcon).size((8 * 3).toFloat()).padRight(2f).right()
-                stat.add(type.localizedName)
-                    .color(cyberion.color).left()
-                stat.table {
-                    it.add("${autoFixed(plan.time / 60f, 1)} ${R.Bundle.CostSecond.bundle}")
-                        .color(Pal.stat).padLeft(12f).left()
-                    it.add(autoFixed(plan.req.cyberionReq, 1))
-                        .color(cyberion.color).padLeft(12f).left()
-                    it.image(cyberion.uiIcon).size((8 * 3).toFloat())
-                        .padRight(2f).right()
-                }
+            for (plan in plans) {
+                stat.addTable {
+                    background = Tex.whiteui
+                    setColor(Pal.darkestGray)
+                    if (plan.unitType.isBanned) {
+                        image(Icon.cancel).color(Pal.remove).size(40f)
+                        return@addTable
+                    }
+                    if (plan.unitType.unlockedNow()) {
+                        image(plan.unitType.uiIcon).size(40f).pad(10f).left()
+                        addTable {
+                            add(plan.unitType.localizedName).left()
+                            row()
+                            add("${autoFixed(plan.time / 60f, 1)} ${Core.bundle["unit.seconds"]}")
+                                .color(Color.lightGray)
+                        }.left()
+                        addTable {
+                            right()
+                            add(autoFixed(plan.req.cyberionReq, 1))
+                                .color(cyberion.color).padLeft(12f).left()
+                            image(cyberion.uiIcon).size((8 * 3).toFloat())
+                                .padRight(2f).right()
+                        }.right().grow().pad(10f)
+                    } else {
+                        image(Icon.lock).color(Pal.darkerGray).size(40f)
+                    }
+                }.growX().pad(5f)
                 stat.row()
             }
         }

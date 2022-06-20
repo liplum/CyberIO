@@ -19,7 +19,11 @@ open class SwitchTable(
 
     var curContent: Table? = null
     protected fun updateContent() {
-        curContent?.let {
+        if (queue.isNotEmpty()) {
+            clear()
+            add(queue.poll()).grow()
+        }
+        /*curContent?.let {
             animation.update(it)
         }
         if (queue.isNotEmpty() && animation.isVisible && animation.isEnd) {
@@ -31,7 +35,7 @@ open class SwitchTable(
             clear()
             add(next).grow()
             animation.isVisible = true
-        }
+        }*/
     }
 
     override fun act(delta: Float) {

@@ -291,10 +291,8 @@ open class ZipBomb(name: String) : Block(name) {
             configure(Command.genFull(autoDetectEnabled, gear))
         }
 
-        override fun display(table: Table) {
-            WhenTheSameTeam {
-                super.display(table)
-            }
+        override fun displayable(): Boolean {
+            return team() == Vars.player.team()
         }
         @SendDataPack
         open fun switchAutoDetectSync() {

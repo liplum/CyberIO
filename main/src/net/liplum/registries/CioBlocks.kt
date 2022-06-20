@@ -1273,7 +1273,7 @@ object CioBlocks {
             ErekirSpec {
                 requirements(
                     Category.turret, BuildVisibility.shown, arrayOf(
-                        ItemStack(CioItems.ic, 2),
+                        ItemStack(CioItems.ic, 6),
                         ItemStack(Items.surgeAlloy, 15),
                         ItemStack(Items.oxide, 10),
                         ItemStack(Items.tungsten, 40),
@@ -1360,8 +1360,8 @@ object CioBlocks {
             ErekirSpec {
                 requirements(
                     Category.turret, BuildVisibility.shown, arrayOf(
-                        ItemStack(CioItems.ic, 2),
-                        ItemStack(Items.graphite, 20),
+                        ItemStack(CioItems.ic, 6),
+                        ItemStack(Items.graphite, 50),
                         ItemStack(Items.beryllium, 60),
                         ItemStack(Items.silicon, 50),
                         ItemStack(Items.phaseFabric, 20),
@@ -1406,7 +1406,7 @@ object CioBlocks {
                 ErekirSpec {
                     requirements(
                         Category.turret, BuildVisibility.shown, arrayOf(
-                            ItemStack(CioItems.ic, 4),
+                            ItemStack(CioItems.ic, 12),
                             ItemStack(Items.oxide, 200),
                             ItemStack(Items.tungsten, 500),
                             ItemStack(Items.carbide, 50),

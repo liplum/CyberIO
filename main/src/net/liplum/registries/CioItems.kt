@@ -14,9 +14,11 @@ object CioItems {
         ic = SpecItem(R.I.IC, R.C.IcDark).apply {
             VanillaSpec {
                 cost = 1.1f
+                charge = 0.2f
             }
             ErekirSpec {
                 cost = 1.2f
+                charge = 0.5f
             }
         }
     }
