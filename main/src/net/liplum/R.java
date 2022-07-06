@@ -5,7 +5,7 @@ import mindustry.graphics.Pal;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-public class R {
+public final class R {
     @NotNull
     @Contract(pure = true)
     public static String Gen(String name) {
@@ -27,12 +27,12 @@ public class R {
 
     public static final class Unit {
         public static final String
-                HoloMiner = "holo-miner",
-                HoloFighter = "holo-fighter",
-                HoloGuardian = "holo-guardian",
-                HoloArchitect = "holo-architect",
-                HoloSupporter = "holo-supporter",
-                Brain = "brain";
+            HoloMiner = "holo-miner",
+            HoloFighter = "holo-fighter",
+            HoloGuardian = "holo-guardian",
+            HoloArchitect = "holo-architect",
+            HoloSupporter = "holo-supporter",
+            Brain = "brain";
     }
 
     public static final class Bundle {
@@ -46,21 +46,21 @@ public class R {
 
         public static final String Unlimited = Gen("unlimited");
         public static final String
-                CostSecond = Gen("cost.second"),
-                CostMinute = Gen("cost.minute");
+            CostSecond = Gen("cost.second"),
+            CostMinute = Gen("cost.minute");
         public static final String
-                PercentPlus = Gen("percent.plus"),
-                PercentMinus = Gen("percent.minus"),
-                ValuePlus = Gen("value.plus"),
-                ValueMinus = Gen("value.minus");
+            PercentPlus = Gen("percent.plus"),
+            PercentMinus = Gen("percent.minus"),
+            ValuePlus = Gen("value.plus"),
+            ValueMinus = Gen("value.minus");
         public static final String
-                FullSender = Gen("full-sender"),
-                FullReceiver = Gen("full-receiver"),
-                FullHost = Gen("full-host"),
-                FullClient = Gen("full-client"),
-                OverRange = Gen("over-range");
+            FullSender = Gen("full-sender"),
+            FullReceiver = Gen("full-receiver"),
+            FullHost = Gen("full-host"),
+            FullClient = Gen("full-client"),
+            OverRange = Gen("over-range");
         public static final String
-                UnsavedChange = Gen("unsaved-change");
+            UnsavedChange = Gen("unsaved-change");
     }
 
     public static final class Bar {
@@ -74,77 +74,77 @@ public class R {
         }
 
         public static final String GenerationN = "generation",
-                Generation = Gen(GenerationN);
+            Generation = Gen(GenerationN);
 
         public static final class Vanilla {
             public static final String BuildProgressN = "progress",
-                    BuildProgress = "bar.progress";
+                BuildProgress = "bar.progress";
             public static final String UnitsN = "units",
-                    UnitCapacity = "bar.unitcap";
+                UnitCapacity = "bar.unitcap";
         }
 
         public static final String SlowDownN = "slow-down",
-                SlowDown = Gen(SlowDownN);
+            SlowDown = Gen(SlowDownN);
         public static final String EfficiencyAbsorptionN = "efficiency-absorption",
-                EfficiencyAbsorption = Gen(EfficiencyAbsorptionN);
+            EfficiencyAbsorption = Gen(EfficiencyAbsorptionN);
         public static final String TeamN = "team",
-                Team = Gen(TeamN);
+            Team = Gen(TeamN);
         public static final String RangeN = "range",
-                Range = Gen(RangeN);
+            Range = Gen(RangeN);
         public static final String CoolDownN = "cool-down",
-                CoolDown = Gen(CoolDownN);
+            CoolDown = Gen(CoolDownN);
         public static final String IsAliveN = "is-alive",
-                IsAlive = Gen(IsAliveN);
+            IsAlive = Gen(IsAliveN);
         public static final String IsAsleepN = "is-asleep",
-                IsAsleep = Gen(IsAsleepN);
+            IsAsleep = Gen(IsAsleepN);
         public static final String AniStateN = "ani-state",
-                AniState = Gen(AniStateN);
+            AniState = Gen(AniStateN);
         public static final String AniStateLastN = "ani-state-last",
-                AniStateLast = Gen(AniStateLastN);
+            AniStateLast = Gen(AniStateLastN);
         public static final String NullN = "null",
-                Null = Gen(NullN);
+            Null = Gen(NullN);
 
         public static final String ProgressN = "progress",
-                Progress = Gen(ProgressN);
+            Progress = Gen(ProgressN);
         public static final String
-                PrismN = "prism",
-                Prism = Gen(PrismN),
-                PrismPl = Gen(PrismN + ".pl");
+            PrismN = "prism",
+            Prism = Gen(PrismN),
+            PrismPl = Gen(PrismN + ".pl");
         public static final String
-                LinkedN = "linked",
-                Linked = Gen(LinkedN),
-                NoLink = Gen(LinkedN + ".no");
+            LinkedN = "linked",
+            Linked = Gen(LinkedN),
+            NoLink = Gen(LinkedN + ".no");
         public static final String StatusN = "status",
-                Status = Gen(StatusN);
+            Status = Gen(StatusN);
         public static final String ReceiverN = "receiver",
-                Receiver = Gen(ReceiverN);
+            Receiver = Gen(ReceiverN);
         public static final String SenderN = "sender",
-                Sender = Gen(SenderN);
+            Sender = Gen(SenderN);
         public static final String ClientN = "client",
-                Client = Gen(ClientN);
+            Client = Gen(ClientN);
         public static final String HostN = "host",
-                Host = Gen(HostN);
+            Host = Gen(HostN);
         public static final String RestLifeN = "rest-life",
-                RestLife = Gen(RestLifeN),
-                RestLifeFigure = Gen(RestLifeN + ".figure");
+            RestLife = Gen(RestLifeN),
+            RestLifeFigure = Gen(RestLifeN + ".figure");
         public static final String RestResurrectN = "rest-resurrect",
-                RestResurrect = Gen(RestResurrectN);
+            RestResurrect = Gen(RestResurrectN);
         public static final String BloodN = "blood",
-                Blood = Gen(BloodN);
+            Blood = Gen(BloodN);
         public static final String TemperatureN = "temperature",
-                Temperature = Gen(TemperatureN);
+            Temperature = Gen(TemperatureN);
     }
 
     public static final class Ctrl {
         public static final String
-                Yes = Gen("yes"),
-                No = Gen("no"),
-                OK = Gen("ok"),
-                Enable = Gen("enable"),
-                Validate = Gen("validate"),
-                UpdateModSuccess = Gen("update-mod.success"),
-                UpdateModFailed = Gen("update-mod.failed"),
-                UpdateModBreakUpdateWarning = Gen("update-mod.break-update-warning");
+            Yes = Gen("yes"),
+            No = Gen("no"),
+            OK = Gen("ok"),
+            Enable = Gen("enable"),
+            Validate = Gen("validate"),
+            UpdateModSuccess = Gen("update-mod.success"),
+            UpdateModFailed = Gen("update-mod.failed"),
+            UpdateModBreakUpdateWarning = Gen("update-mod.break-update-warning");
 
         @NotNull
         @Contract(pure = true)
@@ -155,8 +155,8 @@ public class R {
 
     public static final class Advanced {
         public static final String
-                MapCleaner = Gen("map-cleaner"),
-                GithubMirror = Gen("github-mirror");
+            MapCleaner = Gen("map-cleaner"),
+            GithubMirror = Gen("github-mirror");
 
         @NotNull
         @Contract(pure = true)
@@ -185,7 +185,7 @@ public class R {
         public static final Color IsAive = GreenSafe;
         public static final Color CoolDown = Color.gray;
         public static final Color Sender = RedAlert,
-                Receiver = Pal.place;
+            Receiver = Pal.place;
         public static final Color Cloud = Color.white;
         public static final Color IcLight = Color.valueOf("#047b04");
         public static final Color IcDark = Color.valueOf("#024202");
@@ -197,21 +197,21 @@ public class R {
         public static final Color SonicWave = Color.valueOf("#b0bec5");
 
         public static final Color
-                PrismRedFG = Color.valueOf("#EF5350"), PrismRedBK = Color.valueOf("#E53935"),
-                PrismGreenFG = Color.valueOf("#76FF03"), PrismGreenBK = Color.valueOf("#00C853"),
-                PrismBlueFG = Color.valueOf("#039BE5"), PrismBlueBK = Color.valueOf("#1565C0");
+            PrismRedFG = Color.valueOf("#EF5350"), PrismRedBK = Color.valueOf("#E53935"),
+            PrismGreenFG = Color.valueOf("#76FF03"), PrismGreenBK = Color.valueOf("#00C853"),
+            PrismBlueFG = Color.valueOf("#039BE5"), PrismBlueBK = Color.valueOf("#1565C0");
         @NotNull
         public static final Color[] PrismRgbFG = {
-                PrismRedFG, PrismGreenFG, PrismBlueFG
+            PrismRedFG, PrismGreenFG, PrismBlueFG
         };
         @NotNull
         public static final Color[] PrismRgbBK = {
-                PrismRedBK, PrismGreenBK, PrismBlueBK
+            PrismRedBK, PrismGreenBK, PrismBlueBK
         };
         public static final Color Stop = RedAlert;/* Color.valueOf("#dd2c00");*/
         public static final Color Unconnected = Color.white;
         public static final Color Host = RedAlert,
-                Client = Pal.place;
+            Client = Pal.place;
         public static Color[] LiquidColors;
         public static Color[] HostLiquidColors;
         public static Color[] ClientLiquidColors;
@@ -252,10 +252,10 @@ public class R {
 
     public static final class Sound {
         public static final String ogg = "ogg",
-                wav = "wav",
-                mp3 = "mp3";
+            wav = "wav",
+            mp3 = "mp3";
         public static final String[] extensions = {
-                wav, ogg, mp3
+            wav, ogg, mp3
         };
 
         @NotNull
@@ -297,33 +297,33 @@ public class R {
 
     public static final class Setting {
         public static final String
-                LinkOpacity = Gen("connection-opacity"),
-                LinkArrowDensity = Gen("connection-density"),
-                AlwaysShowLink = Gen("always-show-link"),
-                ShowLinkCircle = Gen("show-link-circle"),
-                LinkSize = Gen("connection-size"),
-                ShowWelcome = Gen("show-welcome"),
-                ShowUpdate = Gen("show-update"),
-                LastSkippedUpdate = Gen("last-skipped-update"),
-                Version = Gen("version"),
-                ClickWelcomeTimes = Gen("welcome-click-times"),
-                LastWelcome = Gen("last-welcome"),
-                LastWelcomeID = Gen("last-welcome-id"),
-                FirstInstallationTime = Gen("first-install-time"),
-                CyberIOLoadedTimes = Gen("cio-loaded-times"),
-                ClassLoadedTimes = Gen("clz-loaded-times"),
-                LastPlayTime = Gen("last-play-time"),
-                GitHubMirrorUrl = Gen("github-mirror"),
-                ShaderRootPath = Gen("shader-root-path"),
-                ContentSpecific = Gen("content-specific"),
-                CheckUpdate = Gen("check-update");
+            LinkOpacity = Gen("connection-opacity"),
+            LinkArrowDensity = Gen("connection-density"),
+            AlwaysShowLink = Gen("always-show-link"),
+            ShowLinkCircle = Gen("show-link-circle"),
+            LinkSize = Gen("connection-size"),
+            ShowWelcome = Gen("show-welcome"),
+            ShowUpdate = Gen("show-update"),
+            LastSkippedUpdate = Gen("last-skipped-update"),
+            Version = Gen("version"),
+            ClickWelcomeTimes = Gen("welcome-click-times"),
+            LastWelcome = Gen("last-welcome"),
+            LastWelcomeID = Gen("last-welcome-id"),
+            FirstInstallationTime = Gen("first-install-time"),
+            CyberIOLoadedTimes = Gen("cio-loaded-times"),
+            ClassLoadedTimes = Gen("clz-loaded-times"),
+            LastPlayTime = Gen("last-play-time"),
+            GitHubMirrorUrl = Gen("github-mirror"),
+            ShaderRootPath = Gen("shader-root-path"),
+            ContentSpecific = Gen("content-specific"),
+            CheckUpdate = Gen("check-update");
     }
 
     public static final class CMD {
         public static final String
-                ResetConfig = "cio-reset-config",
-                ReloadConfig = "cio-reload-config",
-                CheckUpdate = "cio-check-update",
-                ClearCyberIOConetnt = "cio-clean-map";
+            ResetConfig = "cio-reset-config",
+            ReloadConfig = "cio-reload-config",
+            CheckUpdate = "cio-check-update",
+            ClearCyberIOConetnt = "cio-clean-map";
     }
 }
