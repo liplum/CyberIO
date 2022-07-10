@@ -1,6 +1,5 @@
 plugins {
     kotlin("jvm")
-    java
     `maven-publish`
 }
 val ArcVersion: String by project

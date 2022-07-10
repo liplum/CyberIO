@@ -1,6 +1,5 @@
 plugins {
     kotlin("jvm")
-    java
     `maven-publish`
 }
 val ArcVersion: String by project
@@ -22,7 +21,6 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.2")
     testImplementation("com.github.liplum:TestUtils:v0.1")
-    // annotationProcessor "com.github.Anuken:jabel:$jabelVersion"
 }
 
 java {
