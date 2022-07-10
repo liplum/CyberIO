@@ -5,7 +5,6 @@ import io.github.liplum.mindustry.mindustry
 import io.github.liplum.mindustry.mindustryAssets
 import net.liplum.gradle.gen.IConvertContext
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import java.io.ByteArrayOutputStream
 
 plugins {
     kotlin("jvm")
@@ -88,7 +87,7 @@ dependencies {
 tasks {
     register<net.liplum.gradle.tasks.GenerateStaticClassTask>("genMetaClass") {
         group = "build"
-        jsonPath.set("$rootDir/meta/Meta.json")
+        jsonFile.set(rootDir.resolve("meta").resolve("Meta.json"))
         args.set(
             mapOf(
                 "Condition" to settings.env

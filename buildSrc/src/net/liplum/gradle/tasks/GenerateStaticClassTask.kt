@@ -14,20 +14,19 @@ import java.io.File
 import java.io.FileNotFoundException
 import java.io.OutputStream
 
-abstract class GenerateStaticClassTask : DefaultTask() {
-    @get:Input
-    abstract val jsonPath: Property<String>
-    abstract val args: MapProperty<String, String>
+open class GenerateStaticClassTask : DefaultTask() {
+    val jsonFile: Property<File> =
+        project.objects.property(File::class.java)
+        @Input get
+    val args: MapProperty<String, String> =
+        project.objects.mapProperty(String::class.java, String::class.java)
         @Optional @Input get
-    abstract val converters: MapProperty<String, IClassConvert>
+    val converters: MapProperty<String, IClassConvert> =
+        project.objects.mapProperty(String::class.java, IClassConvert::class.java)
         @Optional @Input get
     @TaskAction
     fun generate() {
-        val path = jsonPath.get()
-        val jsonFile = File(path).apply {
-            if (!isFile || !exists()) throw FileNotFoundException("$this")
-        }
-        val jsonText = jsonFile.readText()
+        val jsonText = jsonFile.get().readText()
         val genArgs = if (args.isPresent) args.get() else emptyMap()
         val genConverters = if (converters.isPresent) converters.get() else emptyMap()
         StaticClassGenerator().apply {
