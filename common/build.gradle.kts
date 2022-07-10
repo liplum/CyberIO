@@ -24,10 +24,6 @@ kotlin.sourceSets.main {
     )
 }
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-}
 
 dependencies {
     implementation(project(":annotations"))
@@ -41,10 +37,10 @@ dependencies {
     // annotationProcessor "com.github.Anuken:jabel:$jabelVersion"
 }
 
-val sourcesJar by tasks.creating(Jar::class) {
-    dependsOn(JavaPlugin.CLASSES_TASK_NAME)
-    archiveClassifier.set("sources")
-    from(sourceSets["main"].allSource)
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+    withSourcesJar()
 }
 
 publishing {
@@ -52,7 +48,7 @@ publishing {
         create<MavenPublication>("maven") {
             from(components["java"])
             afterEvaluate {
-                artifact(sourcesJar)
+                artifact(tasks.named("sourcesJar"))
             }
         }
     }

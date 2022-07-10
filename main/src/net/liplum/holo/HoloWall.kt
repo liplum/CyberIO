@@ -8,6 +8,7 @@ import arc.struct.Seq
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.Vars
+import mindustry.entities.Damage
 import mindustry.gen.Building
 import mindustry.gen.Bullet
 import mindustry.gen.Call
@@ -20,11 +21,11 @@ import net.liplum.DebugOnly
 import net.liplum.S
 import net.liplum.api.holo.IHoloEntity
 import net.liplum.api.holo.IHoloEntity.Companion.minHealth
-import net.liplum.lib.assets.TR
-import net.liplum.lib.Serialized
 import net.liplum.common.shaders.use
 import net.liplum.common.utils.bundle
 import net.liplum.common.utils.toFloat
+import net.liplum.lib.Serialized
+import net.liplum.lib.assets.TR
 import net.liplum.lib.math.isZero
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.WhenNotPaused
@@ -165,11 +166,14 @@ open class HoloWall(name: String) : Wall(name) {
                 if (dm.isZero) {
                     d = this.health + 1.0f
                 } else {
-                    d /= dm
+                    d /= Damage.applyArmor(damage, armor) / dm
                 }
                 d = handleDamage(d)
                 val restHealth = (health - d).coerceAtLeast(maxHealth * minHealthProportion)
-                Call.tileDamage(this, restHealth)
+                if (!Vars.net.client()) {
+                    health = restHealth
+                }
+                healthChanged()
                 lastDamagedTime = 0f
             }
         }

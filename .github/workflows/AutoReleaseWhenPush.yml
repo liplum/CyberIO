@@ -28,7 +28,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: CyberIO-Jar
-          path: main/build/libs/*.jar
+          path: main/build/tmp/deploy/*.jar
 
   upload:
     needs: build

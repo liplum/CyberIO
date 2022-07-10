@@ -1,3 +1,6 @@
+plugins{
+    id("io.github.liplum.mgpp") version "1.0.13"
+}
 buildscript {
     repositories {
         mavenCentral()
@@ -35,20 +38,15 @@ allprojects {
         }
     }
 }
-tasks {
-    register("test") {
-        group = "verification"
-        doLast {
-            allprojects.forEach {
-                logger.lifecycle("------>[Testing ${it.name}]<------")
-                it.tasks.withType<Test>().forEach { test ->
-                    try {
-                        test.executeTests()
-                    } catch (e: Exception) {
-                        logger.error(e.toString(),e)
-                    }
-                }
-            }
-        }
+mindustry {
+    dependency {
+        mindustry mirror "d7312445a1"
+        arc on "123fbf12b9"
+    }
+    client {
+        mindustry be "22771"
+    }
+    server {
+        mindustry be "22771"
     }
 }

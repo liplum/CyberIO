@@ -1,8 +1,8 @@
+import io.github.liplum.mindustry.*
 plugins {
     kotlin("jvm")
+    id("io.github.liplum.mgpp")
 }
-val MindustryVersion: String by project
-val ArcVersion: String by project
 sourceSets {
     main {
         java.srcDir("src")
@@ -15,8 +15,7 @@ sourceSets {
 }
 dependencies {
     implementation(project(":annotations"))
-    compileOnly("com.github.anuken.mindustryjitpack:core:$MindustryVersion")
-    compileOnly("com.github.Anuken.Arc:arc-core:$ArcVersion")
+    importMindustry()
     implementation("com.google.guava:guava:31.1-jre")
     implementation("com.google.devtools.ksp:symbol-processing-api:1.6.21-1.0.5")
     testImplementation("com.github.tschuchortdev:kotlin-compile-testing:1.4.9")

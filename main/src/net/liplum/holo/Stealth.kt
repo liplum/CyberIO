@@ -10,6 +10,7 @@ import arc.struct.Seq
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.Vars
+import mindustry.entities.Damage
 import mindustry.entities.bullet.BulletType
 import mindustry.gen.Building
 import mindustry.gen.Bullet
@@ -31,15 +32,16 @@ import net.liplum.S
 import net.liplum.api.cyber.*
 import net.liplum.api.holo.IHoloEntity
 import net.liplum.api.holo.IHoloEntity.Companion.minHealth
-import net.liplum.lib.assets.TR
 import net.liplum.bullets.RuvikBullet
-import net.liplum.lib.Serialized
 import net.liplum.common.delegates.Delegate1
 import net.liplum.common.persistence.read
 import net.liplum.common.persistence.write
 import net.liplum.common.shaders.use
+import net.liplum.lib.Serialized
+import net.liplum.lib.assets.TR
 import net.liplum.lib.math.isZero
 import net.liplum.mdt.ClientOnly
+import net.liplum.mdt.NetClientOnly
 import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.animations.Floating
 import net.liplum.mdt.consumer.LiquidTurretCons
@@ -234,20 +236,20 @@ open class Stealth(name: String) : Turret(name) {
                 if (dm.isZero) {
                     d = this.health + 1.0f
                 } else {
-                    d /= dm
+                    d /= Damage.applyArmor(damage, armor) / dm
                 }
                 d = handleDamage(d)
                 val restHealth = health - d
                 lastDamagedTime = 0f
                 // Check whether it has enough cyberion
-                if (liquids[cyberion] >= curCyberionReq) {
-                    Call.tileDamage(this, restHealth.coerceAtLeast(minHealth))
-                } else {
-                    Call.tileDamage(this, restHealth)
-
-                    if (this.health <= 0.0f) {
-                        Call.tileDestroyed(this)
-                    }
+                val cyberionEnough = liquids[cyberion] >= curCyberionReq
+                val realRestHealth = if (cyberionEnough) restHealth.coerceAtLeast(minHealth) else restHealth
+                if(!Vars.net.client()) {
+                    this.health = realRestHealth
+                }
+                healthChanged()
+                if (this.health <= 0.0f) {
+                    Call.buildDestroyed(this)
                 }
             }
         }

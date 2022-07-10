@@ -16,11 +16,6 @@ sourceSets {
     }
 }
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-}
-
 dependencies {
     compileOnly("com.github.Anuken.Arc:arc-core:$ArcVersion")
     testImplementation("com.github.Anuken.Arc:arc-core:$ArcVersion")
@@ -29,10 +24,10 @@ dependencies {
     testImplementation("com.github.liplum:TestUtils:v0.1")
 }
 
-val sourcesJar by tasks.creating(Jar::class) {
-    dependsOn(JavaPlugin.CLASSES_TASK_NAME)
-    archiveClassifier.set("sources")
-    from(sourceSets["main"].allSource)
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+    withSourcesJar()
 }
 
 publishing {
@@ -40,7 +35,7 @@ publishing {
         create<MavenPublication>("maven") {
             from(components["java"])
             afterEvaluate {
-                artifact(sourcesJar)
+                artifact(tasks.named("sourcesJar"))
             }
         }
     }

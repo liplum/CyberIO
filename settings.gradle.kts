@@ -14,7 +14,6 @@ include(
     "lib",
     "cui",
     "mdt",
-    "app",
     "common",
     "story",
     "processor",

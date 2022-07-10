@@ -135,6 +135,15 @@ inline fun ServerOnly(func: () -> Unit): Boolean {
     val net = Vars.net
     if (net.server() || !net.active()) {
         func()
+        return true
+    }
+    return false
+}
+
+inline fun NetClientOnly(func: () -> Unit): Boolean {
+    if (Vars.net.client()) {
+        func()
+        return true
     }
     return false
 }
