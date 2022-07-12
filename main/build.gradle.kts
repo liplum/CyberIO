@@ -4,6 +4,7 @@ import io.github.liplum.mindustry.importMindustry
 import io.github.liplum.mindustry.mindustry
 import io.github.liplum.mindustry.mindustryAssets
 import net.liplum.gradle.gen.IConvertContext
+import net.liplum.gradle.tasks.GenerateStaticClassTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -56,6 +57,7 @@ mindustry {
     deploy {
         val OutputJarName: String by project
         baseName = OutputJarName
+        fatJar
     }
 }
 mindustryAssets {
@@ -74,7 +76,7 @@ dependencies {
     implementation(project(":lib"))
     implementation(project(":cui"))
     ksp(project(":processor"))
-    ksp("com.github.anuken.mindustryjitpack:core:$MindustryVersion")
+    importMindustry("ksp")
     importMindustry()
     implementation("com.github.liplum:OpenGAL:$OpenGalVersion")
     implementation("com.github.liplum.plumyjava:path-kt:$PlumyVersion")
@@ -85,7 +87,7 @@ dependencies {
 }
 
 tasks {
-    register<net.liplum.gradle.tasks.GenerateStaticClassTask>("genMetaClass") {
+    register<GenerateStaticClassTask>("genMetaClass") {
         group = "build"
         jsonFile.set(rootDir.resolve("meta").resolve("Meta.json"))
         args.set(
@@ -93,14 +95,11 @@ tasks {
                 "Condition" to settings.env
             )
         )
-        converters.set(
-            mapOf(
-                "Version2" to object : net.liplum.gradle.gen.ClassConverter("net.liplum.update.Version2") {
-                    override fun convert(context: IConvertContext, value: Any): String =
-                        context.newObject(qualifiedClassName, *(value as String).split(".").toTypedArray())
-                }
-            )
-        )
+        GenerateStaticClassTask["Version2"] = object :
+            net.liplum.gradle.gen.ClassConverter("net.liplum.update.Version2") {
+            override fun convert(context: IConvertContext, value: Any): String =
+                context.newObject(qualifiedClassName, *(value as String).split(".").toTypedArray())
+        }
     }
     named("compileJava") {
         dependsOn("genMetaClass")

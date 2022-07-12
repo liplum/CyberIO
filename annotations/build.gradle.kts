@@ -1,5 +1,7 @@
+import io.github.liplum.mindustry.importMindustry
 plugins {
     kotlin("jvm")
+    id("io.github.liplum.mgpp")
 }
 val MindustryVersion: String by project
 val ArcVersion: String by project
@@ -12,6 +14,5 @@ sourceSets {
     }
 }
 dependencies {
-    compileOnly("com.github.anuken.mindustryjitpack:core:$MindustryVersion")
-    compileOnly("com.github.Anuken.Arc:arc-core:$ArcVersion")
+    importMindustry()
 }

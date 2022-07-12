@@ -11,7 +11,6 @@ import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
 import java.io.File
-import java.io.FileNotFoundException
 import java.io.OutputStream
 
 open class GenerateStaticClassTask : DefaultTask() {
@@ -21,14 +20,12 @@ open class GenerateStaticClassTask : DefaultTask() {
     val args: MapProperty<String, String> =
         project.objects.mapProperty(String::class.java, String::class.java)
         @Optional @Input get
-    val converters: MapProperty<String, IClassConvert> =
-        project.objects.mapProperty(String::class.java, IClassConvert::class.java)
-        @Optional @Input get
+
+    companion object : HashMap<String, IClassConvert>()
     @TaskAction
     fun generate() {
         val jsonText = jsonFile.get().readText()
         val genArgs = if (args.isPresent) args.get() else emptyMap()
-        val genConverters = if (converters.isPresent) converters.get() else emptyMap()
         StaticClassGenerator().apply {
             generateClass(jsonText, object : IGeneratorContext {
                 override val fileHandler = object : IFileHandler {
@@ -44,7 +41,7 @@ open class GenerateStaticClassTask : DefaultTask() {
                             outputStream()
                         }
                 }
-                override val converters = genConverters
+                override val converters = GenerateStaticClassTask
                 override val args = genArgs
             })
         }
