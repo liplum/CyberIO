@@ -2,6 +2,8 @@ package net.liplum.data
 
 import arc.func.Prov
 import arc.graphics.Color
+import arc.graphics.g2d.Draw
+import arc.math.Mathf
 import arc.math.geom.Point2
 import arc.util.Nullable
 import arc.util.Time
@@ -17,10 +19,10 @@ import net.liplum.R
 import net.liplum.Var
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
+import net.liplum.common.utils.toFloat
 import net.liplum.data.Sender.SenderBuild
 import net.liplum.lib.Serialized
 import net.liplum.lib.assets.TR
-import net.liplum.common.utils.toFloat
 import net.liplum.lib.math.isZero
 import net.liplum.mdt.CalledBySync
 import net.liplum.mdt.ClientOnly
@@ -36,6 +38,8 @@ import net.liplum.utils.addReceiverInfo
 private typealias AniStateS = AniState<Sender, SenderBuild>
 
 open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
+    @ClientOnly lateinit var BaseTR: TR
+    @ClientOnly lateinit var HighlightTR: TR
     @ClientOnly lateinit var UpArrowTR: TR
     @ClientOnly lateinit var CrossTR: TR
     @ClientOnly lateinit var NoPowerTR: TR
@@ -63,6 +67,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
         schematicPriority = 20
         unloadable = false
         saveConfig = true
+        callDefaultBlockDraw = false
         /**
          * For connect
          */
@@ -82,6 +87,8 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
 
     override fun load() {
         super.load()
+        BaseTR = this.sub("base")
+        HighlightTR = this.sub("highlight")
         UpArrowTR = this.inMod("rs-up-arrow")
         CrossTR = this.inMod("rs-cross")
         UnconnectedTR = this.inMod("rs-unconnected")
@@ -346,6 +353,22 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
                 else -> super.sense(sensor)
             }
         }
+        @ClientOnly @JvmField
+        var highlightAlpha = 1f
+        override fun fixedDraw() {
+            BaseTR.DrawOn(this)
+            if (aniStateM.curState == IdleAni) {
+                highlightAlpha = Mathf.approach(highlightAlpha, 1f, 0.01f)
+                Draw.alpha(highlightAlpha)
+                HighlightTR.DrawOn(this)
+                Draw.color()
+            } else {
+                highlightAlpha = Mathf.approach(highlightAlpha, Var.rsSlightHighlightAlpha, 0.01f)
+                Draw.alpha(highlightAlpha)
+                HighlightTR.DrawOn(this)
+                Draw.color()
+            }
+        }
     }
 
     @ClientOnly lateinit var IdleAni: AniStateS
@@ -355,14 +378,12 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
     @ClientOnly
     override fun genAniState() {
         IdleAni = addAniState("Idle")
-
         UploadAni = addAniState("Upload") {
             UploadAnim.draw(Color.green, x, y)
         }
         BlockedAni = addAniState("Blocked") {
             SetColor(R.C.Stop)
             UpArrowTR.Draw(x, y)
-            ResetColor()
         }
         NoPowerAni = addAniState("NoPower") {
             NoPowerTR.Draw(x, y)

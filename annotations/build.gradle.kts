@@ -3,8 +3,10 @@ plugins {
     kotlin("jvm")
     id("io.github.liplum.mgpp")
 }
-val MindustryVersion: String by project
-val ArcVersion: String by project
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
 sourceSets {
     main {
         java.srcDir("src")

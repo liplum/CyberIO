@@ -36,4 +36,5 @@ object Var {
     @JvmField var NetworkNodeSendingSpeed: WorldXY = 0.5f * Vars.tilesize
     @JvmField val Navigation = NavigationService()
     const val wirelessTowerInitialPingingNumber = 5
+    const val rsSlightHighlightAlpha = 0.5f
 }

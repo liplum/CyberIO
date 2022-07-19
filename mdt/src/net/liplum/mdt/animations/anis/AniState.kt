@@ -73,9 +73,10 @@ class AniState<TBlock : Block, TBuild : Building> {
         stateName
 
     override fun equals(other: Any?): Boolean {
-        if (other is AniState<*, *>) {
-            return other.stateName == this.stateName
+        return when (other) {
+            is AniState<*, *> -> other.stateName == this.stateName
+            is String -> other == this.stateName
+            else -> false
         }
-        return false
     }
 }
