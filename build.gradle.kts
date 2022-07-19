@@ -1,3 +1,5 @@
+import net.liplum.gradle.settings.Settings.localConfig
+
 plugins{
     id("io.github.liplum.mgpp") version "1.1.4"
 }
@@ -10,7 +12,7 @@ buildscript {
         }
     }
 }
-val settings = net.liplum.gradle.settings.Settings.get(rootDir)
+val settings = localConfig
 allprojects {
     group = "net.liplum"
     version = "4.0"

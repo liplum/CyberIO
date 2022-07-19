@@ -11,8 +11,8 @@ import net.liplum.common.utils.IBundlable
 import net.liplum.inCio
 import net.liplum.mdt.ClientOnly
 import net.liplum.ui.CyberIOMenu
-import net.liplum.ui.controls.tabview.TabItem
-import net.liplum.ui.controls.tabview.TabView
+import net.liplum.ui.controls.TabItem
+import net.liplum.ui.controls.TabView
 import net.liplum.ui.TRD
 import net.liplum.ui.addTable
 

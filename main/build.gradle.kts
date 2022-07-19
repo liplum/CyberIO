@@ -10,7 +10,6 @@ plugins {
     id("com.google.devtools.ksp") version "1.7.0-1.0.6"
     id("io.github.liplum.mgpp")
 }
-val settings = net.liplum.gradle.settings.Settings.get(rootDir)
 val PlumyVersion: String by project
 val OpenGalVersion: String by project
 
@@ -83,7 +82,6 @@ dependencies {
 }
 
 tasks.jar {
-    //dependsOn("compileGAL")
     includeEmptyDirs = false
     exclude("**/**/*.java")
 

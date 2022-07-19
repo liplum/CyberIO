@@ -23,6 +23,12 @@ open class DelayTable(
         )
     }
 
+    fun resetAnimation() {
+        curItem?.apply {
+            visibility.restart()
+        }
+    }
+
     protected fun updateAnimation() {
         curItem?.apply {
             visibility.updateTimer()

@@ -1,25 +1,45 @@
 package net.liplum.gradle.settings
 
-import com.beust.klaxon.Klaxon
-import java.io.File
+import org.gradle.api.Project
+import java.util.*
 
 data class Config(
     val env: String = "prod",
 )
 
 object Settings {
-    val json = Klaxon()
     @JvmStatic
-    fun get(rootDir: File = File("")): Config {
-        val settingsFile = File(rootDir, "local_settings.json")
-        return if (!settingsFile.exists()) {
-            val res = Config()
-            if (settingsFile.createNewFile()) {
-                settingsFile.writeText(json.toJsonString(res))
-            }
-            res
+    private var all: Properties? = null
+    val Project.localProperties: Properties
+        get() = all ?: load()
+    val Project.local: PropertiesSpec
+        get() = PropertiesSpec(localProperties)
+    val initialText = """
+        cyberio.env=prod
+    """.trimIndent()
+
+    private fun Project.load(): Properties {
+        val properties = Properties()
+        val file = rootDir.resolve("local.properties")
+        if (file.exists()) {
+            file.inputStream().use { properties.load(it) }
+            logger.info("local.properties was found.")
         } else {
-            json.parse<Config>(settingsFile) ?: Config()
+            file.writeText(initialText)
+            logger.info("local.properties was created.")
         }
+        all = properties
+        return properties
     }
+
+    val Project.localConfig
+        get() = local.run {
+            Config(env = this["cyberio.env"] ?: "prod")
+        }
+}
+@JvmInline
+value class PropertiesSpec(
+    val properties: Properties,
+) {
+    operator fun get(key: String): String? = properties.getProperty(key)
 }

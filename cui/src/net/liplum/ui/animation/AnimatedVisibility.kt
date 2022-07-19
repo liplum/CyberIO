@@ -14,11 +14,16 @@ class AnimatedVisibility(
 ) : ReadWriteProperty<Any?, Boolean> {
     var curTime = 0f
     var bound = false
-    val isEnd :Boolean
-        get() = if(isVisible) curTime >= duration else curTime <= 0f
+    val isEnd: Boolean
+        get() = if (isVisible) curTime >= duration else curTime <= 0f
+
     fun update(e: Element) {
         val progress = curTime / duration
         e.color.a(spec.decorate(progress))
+    }
+
+    fun restart() {
+        curTime = if (isVisible) 0f else duration
     }
 
     fun updateTimer() {

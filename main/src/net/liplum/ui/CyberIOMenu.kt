@@ -1,5 +1,6 @@
 package net.liplum.ui
 
+import arc.graphics.Color
 import mindustry.gen.Tex
 import mindustry.ui.Styles
 import mindustry.ui.dialogs.BaseDialog
@@ -9,13 +10,16 @@ import net.liplum.annotations.Only
 import net.liplum.annotations.SubscribeEvent
 import net.liplum.events.CioInitEvent
 import net.liplum.heimdall.HeimdallProjectGame
-import net.liplum.ui.controls.tabview.TabItem
-import net.liplum.ui.controls.tabview.TabView
-import net.liplum.ui.controls.tabview.TabViewStyle
+import net.liplum.ui.controls.TabItem
+import net.liplum.ui.controls.TabView
+import net.liplum.ui.controls.TabViewStyle
 
 object CyberIOMenu : INavigable {
     val tabViewStyle = TabViewStyle().apply {
-        contentViewStyle = Tex.button
+        contentViewStyle = Tex.whiteui
+        contentViewStyler {
+            setColor(Color.gray)
+        }
         tabOptionStyle = Styles.flatTogglet
     }
 
@@ -49,8 +53,7 @@ object CyberIOMenu : INavigable {
             })
         }
         navigationService = { Var.Navigation }
-        //rememberBuilt = true
-        rememberBuilt = false
+        rememberBuilt = true
     }
     override val navigateFragment = "CyberIO"
     private val sharedLocator = Navigator()

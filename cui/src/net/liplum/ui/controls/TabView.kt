@@ -1,14 +1,14 @@
-package net.liplum.ui.controls.tabview
+package net.liplum.ui.controls
 
+import arc.Core
 import arc.graphics.Color
+import arc.scene.style.Drawable
 import arc.scene.ui.Button
 import arc.scene.ui.ButtonGroup
 import arc.scene.ui.layout.Table
 import arc.util.Align
 import net.liplum.ui.*
-import net.liplum.ui.animation.AnimatedVisibility
 import net.liplum.ui.animation.SmoothAnimationSpec
-import net.liplum.ui.controls.DelayTable
 
 class TabView(
     var style: TabViewStyle = TabViewStyle(),
@@ -24,6 +24,7 @@ class TabView(
                 "Please set the style of tab view ${this@TabView}."
             }
         })
+        style.contentViewStyler(this)
     }
         private set
     var curItem = TabItem.X
@@ -67,6 +68,7 @@ class TabView(
         }).minHeight(30f)
         table.row()
         table.add(curContent).grow()
+        curContent.resetAnimation()
     }
 
     fun resetItem() {
@@ -154,5 +156,20 @@ open class TabItem(
 
     companion object {
         val X = TabItem("")
+    }
+}
+
+data class TabViewStyle(
+    var contentViewStyle: Drawable = emptyContentViewStyle,
+    var contentViewStyler: Table.() -> Unit = {},
+    var tabOptionStyle: Button.ButtonStyle =
+        Core.scene.getStyle(Button.ButtonStyle::class.java),
+) {
+    fun contentViewStyler(styler: Table.() -> Unit) {
+        contentViewStyler = styler
+    }
+
+    companion object {
+        val emptyContentViewStyle = TRD()
     }
 }
