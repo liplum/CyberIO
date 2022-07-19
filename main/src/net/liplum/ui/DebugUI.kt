@@ -27,6 +27,7 @@ import net.liplum.common.ui.*
 import net.liplum.common.utils.allFieldsIncludeParents
 import net.liplum.common.utils.directSuperClass
 import net.liplum.mdt.Screen
+import net.liplum.mdt.forceUnlock
 import net.liplum.mdt.lock
 import net.liplum.mdt.ui.lockOrUnlock
 import net.liplum.render.Shapes
@@ -43,7 +44,6 @@ object DebugUI {
             touchable = Touchable.childrenOnly
         }
         Core.scene.add(debug)
-        addUnlockContent(debug)
         addEntityInspector(debug)
     }
 
@@ -66,16 +66,6 @@ object DebugUI {
             }.touchable(Touchable.disabled).name("mouse-position-world").uniformX()
             row()
         }
-    }
-
-    fun addUnlockContent(debug: Group) {
-        debug.addChildAt(0, Table().apply {
-            visible {
-                Var.EnableUnlockContent
-            }
-            lockOrUnlock("Lock", UnlockableContent::lock)
-            lockOrUnlock("Unlock", UnlockableContent::unlock)
-        })
     }
 
     val entityList = ArrayList<Entityc>(64)

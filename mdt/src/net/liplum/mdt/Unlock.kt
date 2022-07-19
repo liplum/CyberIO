@@ -4,19 +4,25 @@ import arc.Core
 import arc.Events
 import mindustry.Vars
 import mindustry.ctype.UnlockableContent
-import net.liplum.lib.UseReflection
+import mindustry.game.EventType.UnlockEvent
 import net.liplum.common.utils.setFIn
+import net.liplum.lib.UseReflection
 
 @UseReflection
 fun UnlockableContent.lock() {
-    val isUnlocked = Core.settings.getBool("$name-unlocked", true)
-    if (isUnlocked) {
-        Core.settings.put("$name-unlocked", false)
-        setFIn(UnlockableContent::class.java, "unlocked", false)
-        Vars.state.rules.researched.remove(name)
-        Events.fire(LockEvent(this))
-        this.techNode?.reset()
-    }
+    Core.settings.put("$name-unlocked", false)
+    setFIn(UnlockableContent::class.java, "unlocked", false)
+    Vars.state.rules.researched.remove(name)
+    Events.fire(LockEvent(this))
+    this.techNode?.reset()
+}
+
+@UseReflection
+fun UnlockableContent.forceUnlock() {
+    Core.settings.put("$name-unlocked", true)
+    setFIn(UnlockableContent::class.java, "unlocked", true)
+    Vars.state.rules.researched.add(name)
+    Events.fire(UnlockEvent(this))
 }
 
 class LockEvent(val content: UnlockableContent)

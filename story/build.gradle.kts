@@ -1,5 +1,3 @@
-import net.liplum.gradle.tasks.CompileOpenGalTask
-
 tasks {
     register("build") {
         group = "build"
@@ -29,21 +27,6 @@ tasks {
                 from("ScriptInfo.json")
                 into("$rootDir/extra")
             }
-        }
-    }
-    register("compileGAL") {
-        group = "build"
-        doLast {
-            create<CompileOpenGalTask>("${name}Wrapper") {
-                args.set(listOf(
-                    "-c",
-                    "-recursive=true",
-                    "-batch=folder",
-                    "scripts",
-                    "-t",
-                    "$rootDir/extra/script"
-                ))
-            }.compile()
         }
     }
 }

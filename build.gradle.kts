@@ -1,5 +1,5 @@
 plugins{
-    id("io.github.liplum.mgpp") version "1.1.0"
+    id("io.github.liplum.mgpp") version "1.1.4"
 }
 buildscript {
     repositories {
@@ -40,13 +40,13 @@ allprojects {
 }
 mindustry {
     dependency {
-        mindustry mirror "d7312445a1"
-        arc on "123fbf12b9"
+        mindustry mirror "v136"
+        arc on "v136.1"
     }
     client {
-        mindustry be "22771"
+        mindustry official "v136.1"
     }
     server {
-        mindustry be "22771"
+        mindustry official "v136.1"
     }
 }

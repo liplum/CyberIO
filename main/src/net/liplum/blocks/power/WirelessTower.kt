@@ -19,11 +19,12 @@ import mindustry.world.meta.Stat
 import mindustry.world.meta.StatUnit
 import net.liplum.DebugOnly
 import net.liplum.R
+import net.liplum.Settings
 import net.liplum.Var
-import net.liplum.lib.assets.TR
-import net.liplum.lib.Serialized
-import net.liplum.common.entity.RadiationArray
+import net.liplum.common.entity.Radiation
 import net.liplum.common.math.PolarX
+import net.liplum.lib.Serialized
+import net.liplum.lib.assets.TR
 import net.liplum.lib.math.approachR
 import net.liplum.lib.math.isZero
 import net.liplum.lib.math.radian
@@ -40,7 +41,6 @@ open class WirelessTower(name: String) : PowerBlock(name) {
     @JvmField var range = 300f
     @JvmField var distributeSpeed = 5f
     @JvmField var radiationSpeed = 0.01f
-    @JvmField var maxRadiation = 1
     @JvmField var reactivePower = 0.1f
     @JvmField var dst2CostRate: WirelessTowerBuild.(Float) -> Float = {
         1f + it * 1.5f / realRange
@@ -104,13 +104,12 @@ open class WirelessTower(name: String) : PowerBlock(name) {
         val realSpeed: Float
             get() = distributeSpeed * edelta()
         @ClientOnly @JvmField
-        var radiations = RadiationArray(maxRadiation) { i, r ->
-            r.range = realRange * i / maxRadiation
-        }
+        var radiation = Radiation()
         @ClientOnly
         val realRadiationSpeed: Float
             get() = radiationSpeed * Mathf.log(3f, timeScale + 2f)
-
+        @ClientOnly @JvmField
+        var pingingCount = 0
         override fun updateTile() {
             lastNeed = 0f
             if (power.status.isZero || (power.graph.all.size == 1 && power.graph.all.first() == this)) return
@@ -176,28 +175,36 @@ open class WirelessTower(name: String) : PowerBlock(name) {
             Draw.z(Layer.block + 1f)
             Drawf.shadow(CoilTR, x + offsetX - 0.5f, y + offsetY - 0.5f)
             CoilTR.Draw(x + offsetX, y + offsetY)
-            // Render radiations
-            WhenTheSameTeam {
-                val selfPower = this.power.status
-                if (selfPower.isZero || selfPower.isNaN() ||
-                    (power.graph.all.size == 1 && power.graph.all.first() == this)
-                ) return
-                val realRange = realRange
-                val step = realRadiationSpeed * realRange
-                radiations.forEach {
-                    WhenNotPaused {
-                        it.range += step
-                        it.range %= realRange
+            if (
+                Settings.ShowWirelessTowerCircle &&
+                pingingCount < Var.wirelessTowerInitialPingingNumber
+            ) {
+                // Render radiations
+                WhenTheSameTeam {
+                    val selfPower = this.power.status
+                    if (selfPower.isZero || selfPower.isNaN() ||
+                        (power.graph.all.size == 1 && power.graph.all.first() == this)
+                    ) return
+                    val realRange = realRange
+                    val step = realRadiationSpeed * realRange
+                    radiation.apply {
+                        WhenNotPaused {
+                            range += step
+                            if (range >= realRange) {
+                                range = 0f
+                                pingingCount++
+                            }
+                        }
+                        Draw.z(Layer.power + 1f)
+                        val progress = range / realRange
+                        val nonlinearProgress = Interp.pow2Out.apply(progress)
+                        G.circle(
+                            x, y,
+                            nonlinearProgress * realRange,
+                            R.C.Power, Renderer.laserOpacity * radiationAlpha,
+                            (realRange / 100f).coerceAtLeast(1f)
+                        )
                     }
-                    Draw.z(Layer.power + 1f)
-                    val progress = it.range / realRange
-                    val nonlinearProgress = Interp.pow2Out.apply(progress)
-                    G.circle(
-                        x, y,
-                        nonlinearProgress * realRange,
-                        R.C.Power, Renderer.laserOpacity * radiationAlpha,
-                        (realRange / 100f).coerceAtLeast(1f)
-                    )
                 }
             }
         }

@@ -3,8 +3,6 @@
 import io.github.liplum.mindustry.importMindustry
 import io.github.liplum.mindustry.mindustry
 import io.github.liplum.mindustry.mindustryAssets
-import net.liplum.gradle.gen.IConvertContext
-import net.liplum.gradle.tasks.GenerateStaticClassTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -13,7 +11,6 @@ plugins {
     id("io.github.liplum.mgpp")
 }
 val settings = net.liplum.gradle.settings.Settings.get(rootDir)
-val MindustryVersion: String by project
 val PlumyVersion: String by project
 val OpenGalVersion: String by project
 
@@ -55,8 +52,7 @@ java {
 }
 mindustry {
     deploy {
-        val OutputJarName: String by project
-        baseName = OutputJarName
+        baseName = "CyberIO"
         fatJar
     }
 }
@@ -86,30 +82,7 @@ dependencies {
     testImplementation("com.github.liplum:TestUtils:v0.1")
 }
 
-tasks {
-    register<GenerateStaticClassTask>("genMetaClass") {
-        group = "build"
-        jsonFile.set(rootDir.resolve("meta").resolve("Meta.json"))
-        args.set(
-            mapOf(
-                "Condition" to settings.env
-            )
-        )
-        GenerateStaticClassTask["Version2"] = object :
-            net.liplum.gradle.gen.ClassConverter("net.liplum.update.Version2") {
-            override fun convert(context: IConvertContext, value: Any): String =
-                context.newObject(qualifiedClassName, *(value as String).split(".").toTypedArray())
-        }
-    }
-    named("compileJava") {
-        dependsOn("genMetaClass")
-    }
-    named("compileKotlin") {
-        dependsOn("genMetaClass")
-    }
-}
-
-tasks.named<Jar>("jar") {
+tasks.jar {
     //dependsOn("compileGAL")
     includeEmptyDirs = false
     exclude("**/**/*.java")

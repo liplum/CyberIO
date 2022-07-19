@@ -19,9 +19,7 @@ import net.liplum.common.utils.IBundlable
 import net.liplum.common.utils.bundle
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.ui.addTrackTooltip
-import net.liplum.ui.animation.AnimatedVisibility
-import net.liplum.ui.animation.FadeAnimationSpec
-import net.liplum.ui.animation.SmoothAnimationSpec
+import net.liplum.ui.animation.animatedVisibility
 import net.liplum.ui.animation.WrapAnimationSpec
 import net.liplum.ui.templates.NewIconTextButton
 
@@ -42,7 +40,8 @@ object ContentSpecFrag : IBundlable {
             setColor(R.C.RedAlert)
         }
 
-        var warningVisible by unsavedWarning.AnimatedVisibility(
+        @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+        var warningVisible by unsavedWarning.animatedVisibility(
             isVisible = false,
             duration = 60f,
             spec = WrapAnimationSpec(Interp.pow2In)

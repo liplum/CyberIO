@@ -12,7 +12,7 @@ fun Table.lockOrUnlock(text: String, action: UnlockableContent.() -> Unit) {
             cont.table(Tex.button) { t ->
                 t.button("$text All") {
                     ForEachUnlockableContent {
-                        it.lock()
+                        it.action()
                     }
                 }.growX().row()
                 t.button("Select One To $text") {

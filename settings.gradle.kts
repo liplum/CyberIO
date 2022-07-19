@@ -6,7 +6,7 @@ pluginManagement {
     }
 
     plugins {
-        kotlin("jvm").version(extra["KotlinVersion"] as String)
+        kotlin("jvm") version "1.7.10"
     }
 }
 include(

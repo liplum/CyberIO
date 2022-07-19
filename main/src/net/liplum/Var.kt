@@ -2,8 +2,8 @@ package net.liplum
 
 import arc.math.Rand
 import mindustry.Vars
-import net.liplum.ui.NavigationService
 import net.liplum.mdt.utils.WorldXY
+import net.liplum.ui.NavigationService
 
 object Var {
     @JvmField var ContentSpecific = ContentSpec.Vanilla
@@ -11,7 +11,6 @@ object Var {
     @JvmField var ExperimentalMode = false
     @JvmField var TestGlCompatibility = false
     // Advanced Functions
-    @JvmField var EnableUnlockContent = false
     @JvmField var EnableMapCleaner = false
     // Visual Effects
     /** How much time to reach max selected circle */
@@ -36,4 +35,5 @@ object Var {
     /** [WorldXY] pre tick */
     @JvmField var NetworkNodeSendingSpeed: WorldXY = 0.5f * Vars.tilesize
     @JvmField val Navigation = NavigationService()
+    const val wirelessTowerInitialPingingNumber = 5
 }

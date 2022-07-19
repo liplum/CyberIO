@@ -9,6 +9,7 @@ import mindustry.game.EventType.*
 import mindustry.io.JsonIO
 import mindustry.mod.Mod
 import mindustry.mod.Mods
+import mindustry.ui.dialogs.PlanetDialog
 import net.liplum.ConfigEntry.Companion.Config
 import net.liplum.ContentSpec.Companion.resolveContentSpec
 import net.liplum.ContentSpecXInfo.Companion.color
@@ -129,6 +130,7 @@ class CioMod : Mod() {
         Events.fire(CioInitEvent())
         DebugOnly {
             // Cloud is developing
+            PlanetDialog.debugSelect = true
             JsonIO.json.addClassTag(SharedRoom::class.java.name, SharedRoom::class.java)
             Events.on(WorldLoadEvent::class.java) {
                 LiplumCloud.reset()

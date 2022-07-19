@@ -16,12 +16,6 @@ object Debug {
     var testText = ""
     var settings: List<Setting<out Any>> = listOf(
         Setting(
-            { "Enable Unlock Content" },
-            { Var.EnableUnlockContent },
-            { Var.EnableUnlockContent = it },
-            SettingType.Check,
-        ),
-        Setting(
             { "Debug:${Var.CurDebugLevel}".CoerceLength(15) },
             { Var.CurDebugLevel.level.toFloat() * (100f / DebugLevel.size) },
             {

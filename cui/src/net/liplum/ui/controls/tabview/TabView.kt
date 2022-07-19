@@ -7,7 +7,8 @@ import arc.scene.ui.layout.Table
 import arc.util.Align
 import net.liplum.ui.*
 import net.liplum.ui.animation.AnimatedVisibility
-import net.liplum.ui.controls.SwitchTable
+import net.liplum.ui.animation.SmoothAnimationSpec
+import net.liplum.ui.controls.DelayTable
 
 class TabView(
     var style: TabViewStyle = TabViewStyle(),
@@ -17,7 +18,7 @@ class TabView(
     var xName = ""
     var rememberBuilt = false
     private var item2Built = HashMap<TabItem, Built>()
-    var curContent = SwitchTable(AnimatedVisibility()).apply {
+    var curContent = DelayTable(animation = SmoothAnimationSpec()).apply {
         background(style.contentViewStyle.apply {
             check(this != TabViewStyle.emptyContentViewStyle) {
                 "Please set the style of tab view ${this@TabView}."
@@ -89,16 +90,16 @@ class TabView(
                     val container = Table()
                     val navigable = item.buildContent(container)
                     item2Built[item] = Built(container, navigable)
-                    curContent.setContent(container)
+                    curContent.delay(container)
                     navigable
                 } else {
-                    curContent.setContent(built.content)
+                    curContent.delay(built.content)
                     built.navigable
                 }
             } else {// it not remembers built
                 val container = Table()
                 val navigable = item.buildContent(container)
-                curContent.setContent(container)
+                curContent.delay(container)
                 return navigable
             }
         }

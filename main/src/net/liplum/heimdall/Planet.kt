@@ -12,7 +12,7 @@ class Planet : Iterable<Sector> {
     companion object {
         val X = Planet()
         fun by(p: MdtPlanet, metaMapping: IResourceMetaMapping) = Planet().apply planet@{
-            localizedName = p.localizedName
+            localizedName = p.localizedName ?: "???"
             sectors = (p.sectors as Iterable<MdtSector>).filter {
                 it.preset != null
             }.map {

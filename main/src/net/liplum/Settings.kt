@@ -12,6 +12,7 @@ object Settings {
     @ClientOnly @JvmField var LinkArrowDensity = 15f
     @ClientOnly @JvmField var AlwaysShowLink = false
     @ClientOnly @JvmField var ShowLinkCircle = false
+    @ClientOnly @JvmField var ShowWirelessTowerCircle = true
     @ClientOnly @JvmField var LinkSize = 4f
     @JvmStatic
     fun updateSettings() {
@@ -19,6 +20,7 @@ object Settings {
         AlwaysShowLink = settings.getBool(R.Setting.AlwaysShowLink, false)
         LinkSize = settings.getInt(R.Setting.LinkSize, 100) / 100f * 4f
         ShowLinkCircle = settings.getBool(R.Setting.ShowLinkCircle, false)
+        ShowWirelessTowerCircle = settings.getBool(R.Setting.ShowWirelessTowerCircle, true)
     }
 
     internal val settingsMap = HashMap<String, Setting<Settings, *>>()

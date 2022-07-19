@@ -130,6 +130,9 @@ object CioUI {
         addCheckPref(R.Setting.ShowLinkCircle, alwaysShowLinkDefault) {
             Settings.ShowLinkCircle = Core.settings.getBool(R.Setting.ShowLinkCircle, true)
         }
+        addCheckPref(R.Setting.ShowWirelessTowerCircle, alwaysShowLinkDefault) {
+            Settings.ShowWirelessTowerCircle = Core.settings.getBool(R.Setting.ShowWirelessTowerCircle, true)
+        }
         UnsteamOnly {
             addCheckPref(
                 R.Setting.ShowUpdate, !Vars.steam

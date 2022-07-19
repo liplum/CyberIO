@@ -81,12 +81,12 @@ fun Element.bind(animatedVisibility: AnimatedVisibility): AnimatedVisibility {
     return animatedVisibility
 }
 
-fun Element.AnimatedVisibility(
+fun Element.animatedVisibility(
     isVisible: Boolean = true,
     duration: Float = 60f,
     spec: AnimationSpec = SmoothAnimationSpec(),
 ): AnimatedVisibility {
-    val animatedVisibility = net.liplum.ui.animation.AnimatedVisibility(isVisible, duration, spec)
+    val animatedVisibility = AnimatedVisibility(isVisible, duration, spec)
     this.bindAll(animatedVisibility)
     return animatedVisibility
 }

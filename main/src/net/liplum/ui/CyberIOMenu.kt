@@ -3,6 +3,7 @@ package net.liplum.ui
 import mindustry.gen.Tex
 import mindustry.ui.Styles
 import mindustry.ui.dialogs.BaseDialog
+import net.liplum.DebugOnly
 import net.liplum.Var
 import net.liplum.annotations.Only
 import net.liplum.annotations.SubscribeEvent
@@ -36,15 +37,17 @@ object CyberIOMenu : INavigable {
                 ContentSpecFrag.build(this)
             }
         })
-        addTab(TabItem("Heimdall").apply {
-            buildIcon {
-                add(HeimdallProjectGame.title)
-                    .tooltip(HeimdallProjectGame.bundle("button-tip"))
-            }
-            buildContent {
-                HeimdallProjectGame.build(this)
-            }
-        })
+        DebugOnly {
+            addTab(TabItem("Heimdall").apply {
+                buildIcon {
+                    add(HeimdallProjectGame.title)
+                        .tooltip(HeimdallProjectGame.bundle("button-tip"))
+                }
+                buildContent {
+                    HeimdallProjectGame.build(this)
+                }
+            })
+        }
         navigationService = { Var.Navigation }
         //rememberBuilt = true
         rememberBuilt = false

@@ -1,6 +1,7 @@
 package net.liplum.ui
 
 import arc.files.Fi
+import arc.graphics.Color
 import arc.scene.Element
 import arc.scene.ui.Label
 import arc.scene.ui.ScrollPane
@@ -8,6 +9,7 @@ import arc.scene.ui.TextButton
 import arc.scene.ui.layout.Table
 import arc.scene.utils.Elem
 import mindustry.Vars
+import mindustry.ctype.UnlockableContent
 import mindustry.gen.Tex
 import mindustry.graphics.Pal
 import mindustry.graphics.Shaders.getShaderFi
@@ -18,7 +20,10 @@ import net.liplum.S
 import net.liplum.Settings
 import net.liplum.common.Dir
 import net.liplum.common.toFi
+import net.liplum.mdt.forceUnlock
+import net.liplum.mdt.lock
 import net.liplum.mdt.ui.ShowTextDialog
+import net.liplum.mdt.ui.lockOrUnlock
 import net.liplum.welcome.Welcome
 
 object DebugSettingsDialog {
@@ -57,6 +62,11 @@ object DebugSettingsDialog {
                     for (shader in Debug.shaders) {
                         add(shader.resolveShader(shaderLocator)).growX().row()
                     }
+                }).fill().row()
+                add(Table(Tex.button).apply {
+                    add("Unlock Content").color(Color.white).row()
+                    lockOrUnlock("Unlock", UnlockableContent::forceUnlock)
+                    lockOrUnlock("Lock", UnlockableContent::lock)
                 }).fill().row()
             }))
         }.show()
