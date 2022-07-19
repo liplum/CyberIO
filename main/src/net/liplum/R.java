@@ -21,10 +21,6 @@ public final class R {
         public static final String TissueFluid = "tissue-fluid";
     }
 
-    public static final class B {
-
-    }
-
     public static final class Unit {
         public static final String
             HoloMiner = "holo-miner",

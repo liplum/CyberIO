@@ -63,6 +63,6 @@ class WelcomeTip {
         const val DefaultCondition = "ShowWelcome"
         const val DefaultTemplateID = "Story"
         const val DefaultChance = 1000
-        const val DefaultIconPath = "welcome-cyber-io"
+        const val DefaultIconPath = "icon"
     }
 }

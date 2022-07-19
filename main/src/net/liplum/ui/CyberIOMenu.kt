@@ -16,7 +16,7 @@ import net.liplum.ui.controls.TabViewStyle
 
 object CyberIOMenu : INavigable {
     val tabViewStyle = TabViewStyle().apply {
-        contentViewStyle = Tex.whiteui
+        contentViewStyle = Tex.whitePane
         contentViewStyler {
             setColor(Color.gray)
         }

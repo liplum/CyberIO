@@ -46,8 +46,8 @@ import net.liplum.welcome.WelcomeList
 
 @ClientOnly
 object CioUI {
-    val icon by lazy {
-        TextureRegionDrawable("welcome-cyber-io".inCio)
+    val textIcon by lazy {
+        TextureRegionDrawable("icon-text".inCio)
     }
     @JvmStatic
     @SubscribeEvent(CioInitEvent::class, Only.client)
@@ -72,7 +72,7 @@ object CioUI {
                     menu.row()
                     menu.button(
                         Meta.Name,
-                        icon,
+                        textIcon,
                         Styles.flatt, Vars.iconMed
                     ) {
                         prefs.clearChildren()
@@ -88,11 +88,11 @@ object CioUI {
     fun addCyberIOMenu() {
         val cioMenuID = "cyber-io-menu"
         if (!Vars.mobile) {
-            MainMenus.appendDesktopMenu("Cyber IO", icon, cioMenuID) {
+            MainMenus.appendDesktopMenu("Cyber IO", textIcon, cioMenuID) {
                 CyberIOMenu.show()
             }
         } else {
-            MainMenus.appendMobileMenu("Cyber IO", icon, cioMenuID) {
+            MainMenus.appendMobileMenu("Cyber IO", textIcon, cioMenuID) {
                 CyberIOMenu.show()
             }
         }
