@@ -39,6 +39,7 @@ import net.liplum.common.math.PolarX
 import net.liplum.common.utils.bundle
 import net.liplum.common.utils.percentI
 import net.liplum.lib.Serialized
+import net.liplum.lib.arc.AnimatedColor
 import net.liplum.lib.assets.EmptyTRs
 import net.liplum.lib.assets.TR
 import net.liplum.lib.assets.TRs
@@ -130,6 +131,13 @@ open class Prism(name: String) : Block(name) {
         clipSize = Agl + (prismRadius * 3 * maxCrystal) + elevation
     }
 
+    companion object {
+        @JvmField @ClientOnly
+        val animatedColor = AnimatedColor(
+            R.C.PrismRgbFG, useGlobalTime = true
+        )
+    }
+
     override fun setBars() {
         super.setBars()
         AddBar<PrismBuild>(R.Bar.PrismN,
@@ -138,7 +146,7 @@ open class Prism(name: String) : Block(name) {
                     "$crystalAmount ${R.Bar.PrismPl.bundle()}"
                 else
                     "$crystalAmount ${R.Bar.Prism.bundle()}"
-            }, AutoRGBx,
+            }, { animatedColor.color },
             { crystalAmount.toFloat() / maxCrystal }
         )
         DebugOnly {
@@ -369,8 +377,9 @@ open class Prism(name: String) : Block(name) {
                 Right2BottomTRs[side].Draw(x + delta * dir.x, y + delta * dir.y)
                 Right2BottomTRs[side].AsShadow(x + delta * dir.x, y + delta * dir.y)
             }
+            val isSelected = this.isSelected()
             // draw Select
-            if (this.isSelected()) {
+            if (isSelected) {
                 Draw.z(Layer.blockOver)
                 val pre = expendingSelectCircleTime / cm.inOrbitAmount
                 cm.render {
@@ -401,7 +410,8 @@ open class Prism(name: String) : Block(name) {
                 )
                 if (isInPayload) Draw.z(Layer.blockOver + 1f)
                 else Draw.z(Layer.bullet - 1f)
-                G.dashCircleBreath(priselX, priselY, prismRadius * smoothSelect(maxSelectedCircleTime), circleColor)
+                if(isSelected)
+                    G.dashCircleBreath(priselX, priselY, prismRadius * smoothSelect(maxSelectedCircleTime), circleColor)
                 img.DrawSize(
                     priselX,
                     priselY,

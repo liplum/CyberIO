@@ -17,8 +17,6 @@ open class HoloWeapon : Weapon {
     constructor() : super()
 
     override fun shoot(unit: Unit, mount: WeaponMount, shootX: Float, shootY: Float, rotation: Float) {
-        // TODO: Find a leader
-        // val leader = unit.findLeaderInFormation()
         super.shoot(unit, mount, shootX, shootY, rotation)
         if (shootConsumeLife) {
             if (unit is HoloUnit)

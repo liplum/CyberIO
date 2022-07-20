@@ -108,7 +108,7 @@ class CioMod : Mod() {
                     DebugOnly {
                         TestShader.load()
                     }
-                    /* TODO: Add real story mode in v4?
+                    /* TODO: Add real story mode in v5?
                     DebugOnly {
                         Script.init()
                         Script.initInterpreter()

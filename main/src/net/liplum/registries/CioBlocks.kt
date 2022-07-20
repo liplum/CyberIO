@@ -658,7 +658,6 @@ object CioBlocks {
                         Items.surgeAlloy + 50,
                     )
                 )
-                //TODO: Create a new bullet instead?
                 ammo(
                     Items.tungsten, CioBulletTypes.virus,
                     Items.thorium, CioBulletTypes.radiationInterference,

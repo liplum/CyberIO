@@ -68,7 +68,7 @@ object OverwrittenUI {
                             if (player.dead() || unit is BlockUnitc) {
                                 if (unit is BlockUnitc) {
                                     if (unit.tile() is Prism.PrismBuild)
-                                        AutoRGB()
+                                        Prism.animatedColor.color
                                     else
                                         Pal.ammo
                                 } else

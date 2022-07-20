@@ -3,7 +3,6 @@ package net.liplum.blocks.prism
 import arc.func.Prov
 import arc.math.Mathf
 import arc.struct.EnumSet
-import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.gen.Building
@@ -14,7 +13,6 @@ import net.liplum.R
 import net.liplum.Var
 import net.liplum.blocks.prism.Prism.PrismBuild
 import net.liplum.common.utils.bundle
-import net.liplum.lib.arc.AnimatedColor
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.animations.anims.Animation
@@ -115,13 +113,9 @@ open class PrismObelisk(name: String) : Block(name) {
         open fun unlink() {
             linked = -1
         }
-        @JvmField @ClientOnly
-        val animatedColor = AnimatedColor(
-            R.C.PrismRgbBK
-        )
+
         override fun draw() {
             super.draw()
-            animatedColor.spend(Time.delta)
             WhenNotPaused {
                 val d = delta()
                 for ((i, obj) in BlinkObjs.withIndex()) {
@@ -134,9 +128,10 @@ open class PrismObelisk(name: String) : Block(name) {
                 }
             }
         }
+
         override fun drawSelect() {
             prism?.apply {
-                G.selected(this, animatedColor.color)
+                G.selected(this, Prism.animatedColor.color)
             }
         }
 

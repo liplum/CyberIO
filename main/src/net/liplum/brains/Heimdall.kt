@@ -8,6 +8,7 @@ import arc.graphics.g2d.Fill
 import arc.graphics.g2d.Lines
 import arc.math.Interp
 import arc.math.Mathf
+import arc.math.geom.Geometry
 import arc.math.geom.Intersector
 import arc.math.geom.Vec2
 import arc.struct.EnumSet
@@ -36,12 +37,6 @@ import net.liplum.R
 import net.liplum.Var
 import net.liplum.api.IExecutioner
 import net.liplum.api.brain.*
-import net.liplum.api.brain.IBrain.Companion.Mirror
-import net.liplum.api.brain.IBrain.Companion.XSign
-import net.liplum.api.brain.IBrain.Companion.YSign
-import net.liplum.lib.arc.invoke
-import net.liplum.lib.assets.TR
-import net.liplum.lib.Serialized
 import net.liplum.common.delegates.Delegate
 import net.liplum.common.entity.Radiation
 import net.liplum.common.entity.RadiationQueue
@@ -49,6 +44,9 @@ import net.liplum.common.persistence.ReadFromCache
 import net.liplum.common.persistence.WriteIntoCache
 import net.liplum.common.utils.format
 import net.liplum.common.utils.toDouble
+import net.liplum.lib.Serialized
+import net.liplum.lib.arc.invoke
+import net.liplum.lib.assets.TR
 import net.liplum.lib.math.isZero
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.HeadlessOnly
@@ -95,8 +93,8 @@ open class Heimdall(name: String) : Block(name) {
     @ClientOnly lateinit var BuckleHeatTRs: Array<TR>
     @ClientOnly lateinit var HeartTR: TR
     @ClientOnly @JvmField val heatMeta = HeatMeta()
-    @ClientOnly @JvmField var BuckleDuration = 20f
-    @ClientOnly @JvmField var BuckleFrameNum = 5
+    @ClientOnly @JvmField var BuckleDuration = 25f
+    @ClientOnly @JvmField var BuckleFrameNum = 8
     @JvmField var connectedSound: Sound = Sounds.none
     // Timer
     @JvmField var conversationTimer = timers++
@@ -509,8 +507,12 @@ open class Heimdall(name: String) : Block(name) {
                         val succeed = linkComponent(build, dire)
                         if (succeed) {
                             if (!justRestoreOrCreated) {
-                                connectedSound.at(tile)
                                 ClientOnly {
+                                    Time.run(BuckleDuration / 2f) {
+                                        if (this.isValid) {
+                                            connectedSound.at(tile)
+                                        }
+                                    }
                                     linkAnime.restart()
                                 }
                             }
@@ -557,34 +559,38 @@ open class Heimdall(name: String) : Block(name) {
             Draw.z(Layer.block)
             super.draw()
             // buckles
-            val step = size * Vars.tilesize / 4f
-            val step2 = step * 2
-            for ((i, side) in sides.withIndex()) {
-                val rotation = i * 90f
-                var dx = step * XSign[i]
-                var dy = step * YSign[i]
-                val mirror = Mirror[i]
-                for ((j, com) in side.components.withIndex()) {
-                    val isVertical = i % 2 == 0
-                    if (isVertical) { // vertical
-                        dy -= j * step2
-                    } else { // horizontal
-                        dx += j * step2
-                    }
-                    if (com == null) continue
-                    drawLinkAnimationAt(x + dx, y + dy, rotation)
-                    if (isVertical) {
-                        drawLinkAnimationAt(
-                            x + dx + mirror * step2,
-                            y + dy,
-                            rotation + 180f
-                        )
-                    } else {
-                        drawLinkAnimationAt(
-                            x + dx,
-                            y + dy + mirror * step2,
-                            rotation + 180f
-                        )
+            val step = Vars.tilesize
+            for ((side, content) in sides.withIndex()) {
+                val rotation = side * 90f
+                val dir = Geometry.d4[side]
+                val bcx = x + step * 2 * dir.x // the center x of two buckles
+                val bcy = y + step * 2 * dir.y // the center y of two buckles
+                for ((j, com) in content.components.withIndex()) {
+                    if (com == null) continue // only draw existed
+                    if (j == 0) { // pos 0
+                        val bx = when (side) {
+                            1 -> bcx + step * dir.y //1.0 -> (0,1)
+                            3 -> bcx + step * dir.y //3.0 -> (0,-1)
+                            else -> bcx
+                        }
+                        val by = when (side) {
+                            0 -> bcy - step * dir.x //0.0 -> (1,0)
+                            2 -> bcy - step * dir.x //2.0 -> (-1,0)
+                            else -> bcy
+                        }
+                        drawLinkAnimationAt(bx, by, rotation)
+                    } else {// pos 1
+                        val bx = when (side) {
+                            1 -> bcx - step * dir.y // 1.1 -> (0,1)
+                            3 -> bcx - step * dir.y // 3.1 -> (0,-1)
+                            else -> bcx
+                        }
+                        val by = when (side) {
+                            0 -> bcy + step * dir.x // 0.1 -> (1,0)
+                            2 -> bcy + step * dir.x // 2.1 -> (-1,0)
+                            else -> bcy
+                        }
+                        drawLinkAnimationAt(bx, by, rotation)
                     }
                 }
             }
@@ -643,6 +649,7 @@ open class Heimdall(name: String) : Block(name) {
         override fun drawSelect() {
             if (!this.isSelected()) return
             G.dashCircleBreath(x, y, realRange * smoothSelect(maxSelectedCircleTime), R.C.BrainWave)
+            Text.drawTextEasy(sides.visualFormation, x, y, Pal.techBlue)
         }
 
         override fun damage(damage: Float) {

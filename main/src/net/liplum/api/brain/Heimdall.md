@@ -6,7 +6,8 @@
 | 2.1 | Self | Self | 0.0 |
 |     | 3.0  | 3.1  |     |
 
-`Left` -> `Bottom` : `0` -> `3`
+Clockwise
+`Right` -> `Bottom` : `0` -> `3`
 
 `Side.Pos`
 

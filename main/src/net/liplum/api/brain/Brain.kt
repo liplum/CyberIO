@@ -63,14 +63,19 @@ interface IBrain : IHeimdallEntity, Iterable<IUpgradeComponent> {
      * ## Contract
      * 1. This tile entity's size is 4
      * 2. The return value has 4 bits
-     * ### For side (2 bits)
-     * - 0 is [right]
-     * - 1 is [top]
-     * - 2 is [left]
-     * - 3 is [bottom]
-     * ### For part (2 bits)
-     * - 0 is Up/Left
-     * - 1 is Down/Right
+     *
+     * ## Side.Pos
+     * ```
+     * ┌───┬───┬───┬───┐
+     * │   │1.1│1.0│   │
+     * ├───┼───┼───┼───┤
+     * │2.0│ x │ x │0.1│
+     * ├───┼───┼───┼───┤
+     * │2.1│ x │ x │0.0│
+     * ├───┼───┼───┼───┤
+     * │   │3.0│3.1│   │
+     * └───┴───┴───┴───┘
+     * ```
      * @return the direction of [b] relative to this tile entity.
      */
     @Suppress("KotlinConstantConditions")
@@ -80,29 +85,37 @@ interface IBrain : IHeimdallEntity, Iterable<IUpgradeComponent> {
         when (side) {
             //right
             0 -> {
+                // top 0.1
                 if (topRightX + 1 == b.topLeftX && topRightY == b.topLeftY)
-                    res = res on Direction2.Part0Pos
-                if (bottomRightX + 1 == b.bottomLeftX && bottomRightY == b.bottomLeftY)
                     res = res on Direction2.Part1Pos
+                // bottom 0.0
+                if (bottomRightX + 1 == b.bottomLeftX && bottomRightY == b.bottomLeftY)
+                    res = res on Direction2.Part0Pos
             }
             // top
             1 -> {
+                // left 1.1
                 if (topLeftX == b.bottomLeftX && topLeftY + 1 == b.bottomLeftY)
-                    res = res on Direction2.Part0Pos
-                if (topRightX == b.bottomRightX && topRightY + 1 == b.bottomRightY)
                     res = res on Direction2.Part1Pos
+                // right 1.0
+                if (topRightX == b.bottomRightX && topRightY + 1 == b.bottomRightY)
+                    res = res on Direction2.Part0Pos
             }
             // left
             2 -> {
+                // top 2.0
                 if (topLeftX - 1 == b.topRightX && topLeftY == b.topRightY)
                     res = res on Direction2.Part0Pos
+                // bottom 2.1
                 if (bottomLeftX - 1 == b.bottomRightX && bottomLeftY == b.bottomRightY)
                     res = res on Direction2.Part1Pos
             }
             // bottom
             3 -> {
+                // left 3.0
                 if (bottomLeftX == b.topLeftX && bottomLeftY - 1 == b.topLeftY)
                     res = res on Direction2.Part0Pos
+                // right 3.1
                 if (bottomRightX == b.topRightX && bottomRightY - 1 == b.topRightY)
                     res = res on Direction2.Part1Pos
             }
@@ -115,25 +128,14 @@ interface IBrain : IHeimdallEntity, Iterable<IUpgradeComponent> {
     override fun iterator() = components.iterator()
 
     companion object {
-        fun Sides.getLeftSide(sideIndex: Int): Side2 =
-            this[(sideIndex + 1) % 4]
+        fun Sides.getLeftSide(side: Side): Side2 =
+            this[(side + 1) % 4]
 
-        fun Sides.getRightSide(sideIndex: Int): Side2 =
-            this[(sideIndex + 3) % 4]// is -1 actually, but prevent a negative index
+        fun Sides.getRightSide(side: Side): Side2 =
+            this[(side + 3) % 4]// is -1 actually, but prevent a negative index
 
-        fun Sides.getOppositeSide(sideIndex: Int): Side2 =
-            this[(sideIndex + 2) % 4]
-
-        fun Sides.getLeftComponent(sideIndex: Int): IUpgradeComponent? =
-            if (sideIndex == 0 || sideIndex == 3) // x.1
-                getLeftSide(sideIndex)[1]
-            else getLeftSide(sideIndex)[0]// x.0
-
-        fun Sides.getRightComponent(sideIndex: Int): IUpgradeComponent? =
-            if (sideIndex == 0 || sideIndex == 3) // x.1
-                getRightSide(sideIndex)[1]
-            else getRightSide(sideIndex)[0]// x.0
-
+        fun Sides.getOppositeSide(side:Side): Side2 =
+            this[(side + 2) % 4]
         inline fun IBrain.find(filter: (IUpgradeComponent) -> Boolean): IUpgradeComponent? {
             for (c in components)
                 if (filter(c))

@@ -106,7 +106,6 @@ interface IComponentBlock {
         }
     }
 }
-// TODO: Rewrite this.
 class Sides(
     val sides: Array<Side2>
 ) : Iterable<Side2> {
@@ -137,14 +136,10 @@ class Sides(
 
     fun clockwiseRotate() {
         sides.rotateOnce(forward = false)
-        sides[1].swapComponents()
-        sides[3].swapComponents()
     }
 
     fun anticlockwiseRotate() {
         sides.rotateOnce(forward = true)
-        sides[0].swapComponents()
-        sides[2].swapComponents()
     }
 
     val visualFormation: String
@@ -154,9 +149,9 @@ class Sides(
             // Row 0
             s.fill(maxLen)
             s.append('|')
-            s.append("${top[0]?.componentName}".CoerceLength(maxLen))
-            s.append('|')
             s.append("${top[1]?.componentName}".CoerceLength(maxLen))
+            s.append('|')
+            s.append("${top[0]?.componentName}".CoerceLength(maxLen))
             s.append('\n')
             // Row 1
             s.append("${left[0]?.componentName}".CoerceLength(maxLen))
@@ -165,7 +160,7 @@ class Sides(
             s.append('|')
             s.fill(maxLen)
             s.append('|')
-            s.append("${right[0]?.componentName}".CoerceLength(maxLen))
+            s.append("${right[1]?.componentName}".CoerceLength(maxLen))
             s.append('\n')
             // Row 2
             s.append("${left[1]?.componentName}".CoerceLength(maxLen))
@@ -174,7 +169,7 @@ class Sides(
             s.append('|')
             s.fill(maxLen)
             s.append('|')
-            s.append("${right[1]?.componentName}".CoerceLength(maxLen))
+            s.append("${right[0]?.componentName}".CoerceLength(maxLen))
             s.append('\n')
             // Row 3
             s.fill(maxLen)
@@ -218,8 +213,11 @@ class Side2(val brain: IBrain) : Iterable<IUpgradeComponent> {
         if (changed)
             brain.onComponentChanged()
     }
-
-    fun statsTrueCount(): Int {
+    /**
+     * Calculate the actual number of components.
+     * It will ignore empty slot.
+     */
+    fun calcuComponentNumber(): Int {
         val p0 = components[0]
         val p1 = components[1]
         if (p0 == p1) {

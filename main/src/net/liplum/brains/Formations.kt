@@ -1,5 +1,18 @@
 package net.liplum.brains
 
+/**
+ * ```
+ * ┌───┬───┬───┬───┐
+ * │   │1.1│1.0│   │
+ * ├───┼───┼───┼───┤
+ * │2.0│ x │ x │0.1│
+ * ├───┼───┼───┼───┤
+ * │2.1│ x │ x │0.0│
+ * ├───┼───┼───┼───┤
+ * │   │3.0│3.1│   │
+ * └───┴───┴───┴───┘
+ * ```
+ */
 import net.liplum.api.brain.*
 import net.liplum.brains.Ear.EarBuild
 import net.liplum.brains.Eye.EyeBuild
@@ -10,7 +23,7 @@ private val EAR = EarBuild::class.java
 
 object FaceFE : SelfRotatedFormation(
     // Right
-    null, EAR,
+    EAR, null,
     // Top
     null, null,
     // Left
@@ -33,8 +46,7 @@ object FaceFE : SelfRotatedFormation(
 }
 
 object FunnyFaceFE : SelfFormation(
-    // Right
-    null, EYE,
+    EYE, null,
     // Top
     null, null,
     // Left

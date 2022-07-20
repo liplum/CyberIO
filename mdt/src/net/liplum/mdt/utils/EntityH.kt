@@ -35,15 +35,4 @@ fun Entityc?.findPlayer(): Player? {
     }
     return null
 }
-/*
-TODO: Because of the real RTS,
-  player cannot shoot plentiful bullets once when they control a group.
-fun MdtUnit.findLeaderInFormation(): MdtUnit {
-    val controller = this.controller()
-    if (controller is FormationAI) {
-        return controller.leader
-    }
-    return this
-}
-*/
 

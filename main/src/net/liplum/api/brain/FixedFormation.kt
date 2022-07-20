@@ -116,7 +116,19 @@ open class FixedFormation(
         return effect
     }
 }
-
+/**
+ * ```
+ * ┌───┬───┬───┬───┐
+ * │   │1.1│1.0│   │
+ * ├───┼───┼───┼───┤
+ * │2.0│ x │ x │0.1│
+ * ├───┼───┼───┼───┤
+ * │2.1│ x │ x │0.0│
+ * ├───┼───┼───┼───┤
+ * │   │3.0│3.1│   │
+ * └───┴───┴───┴───┘
+ * ```
+ */
 abstract class SelfFormation(
     vararg components: Class<out IUpgradeComponent>?,
 ) : FixedFormation(
@@ -129,7 +141,19 @@ abstract class SelfFormation(
     override val upgrades: Map<UpgradeType, Upgrade> = emptyMap()
     override fun toString() = name
 }
-
+/**
+ * ```
+ * ┌───┬───┬───┬───┐
+ * │   │1.1│1.0│   │
+ * ├───┼───┼───┼───┤
+ * │2.0│ x │ x │0.1│
+ * ├───┼───┼───┼───┤
+ * │2.1│ x │ x │0.0│
+ * ├───┼───┼───┼───┤
+ * │   │3.0│3.1│   │
+ * └───┴───┴───┴───┘
+ * ```
+ */
 fun analyzeSides(com: Array<out Class<out IUpgradeComponent>?>)
         : Array<Side2Pattern> =
     Array(4) {
@@ -140,7 +164,6 @@ fun List<Upgrade>.toUpgradeMap(): Map<UpgradeType, Upgrade> =
     this.associateBy { it.type }
 
 interface IRotatedFormationPattern : IFormationPattern {
-    @Suppress("UNCHECKED_CAST")
     override fun match(brain: IBrain): IFormationEffect? {
         val cur = brain.sides.copyInto(tmp)
         var i = 0

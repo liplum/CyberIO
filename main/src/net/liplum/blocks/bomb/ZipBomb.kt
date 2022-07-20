@@ -11,6 +11,8 @@ import arc.scene.ui.TextButton
 import arc.scene.ui.layout.Stack
 import arc.scene.ui.layout.Table
 import arc.util.Time
+import arc.util.io.Reads
+import arc.util.io.Writes
 import mindustry.Vars
 import mindustry.content.Fx
 import mindustry.entities.Damage
@@ -121,7 +123,6 @@ open class ZipBomb(name: String) : Block(name) {
     val tmp = ArrayList<Unit>()
 
     open inner class ZipBombBuild : Building() {
-        // TODO: Serialization
         @Serialized
         var autoDetectEnabled = true
         @Serialized
@@ -324,6 +325,20 @@ open class ZipBomb(name: String) : Block(name) {
         }
 
         override fun drawCracks() {
+        }
+
+        override fun read(read: Reads, revision: Byte) {
+            super.read(read, revision)
+            autoDetectEnabled = read.bool()
+            curSensitive = read.i()
+            autoDetectCounter = read.f()
+        }
+
+        override fun write(write: Writes) {
+            super.write(write)
+            write.bool(autoDetectEnabled)
+            write.i(curSensitive)
+            write.f(autoDetectCounter)
         }
     }
 }

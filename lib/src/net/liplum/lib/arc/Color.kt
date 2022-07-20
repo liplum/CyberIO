@@ -1,6 +1,7 @@
 package net.liplum.lib.arc
 
 import arc.graphics.Color
+import arc.util.Time
 import net.liplum.lib.math.Progress
 import net.liplum.lib.math.lerp
 
@@ -19,9 +20,15 @@ fun Color.hsvLerp(target: Color, progress: Progress) = this.apply {
 fun String.tinted(color: Color) =
     "[#${color}]$this[]"
 
+enum class LerpType {
+    RGB, HSV
+}
+
 class AnimatedColor(
     val colorSeq: Array<Color>,
     val duration: Float = 60f,
+    val lerp: LerpType = LerpType.RGB,
+    val useGlobalTime: Boolean = false,
 ) {
     var time = 0f
         set(value) {
@@ -38,11 +45,15 @@ class AnimatedColor(
      */
     val color = Color()
         get() {
+            val time = if (useGlobalTime) Time.globalTime else time
             val count = (time / duration).toInt() % colorSeq.size
             val curIndex = count.coerceIn(0, colorSeq.size - 1)
             val nextIndex = if (curIndex == colorSeq.size - 1) 0 else curIndex + 1
             val progress = (time % duration) / duration
-            field.set(colorSeq[curIndex]).lerp(colorSeq[nextIndex], progress)
+            when (lerp) {
+                LerpType.RGB -> field.set(colorSeq[curIndex]).lerp(colorSeq[nextIndex], progress)
+                LerpType.HSV -> field.set(colorSeq[curIndex]).hsvLerp(colorSeq[nextIndex], progress)
+            }
             return field
         }
 }
