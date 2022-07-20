@@ -29,13 +29,16 @@ import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.Var
 import net.liplum.annotations.isOn
-import net.liplum.lib.Serialized
 import net.liplum.common.utils.bigEndianByte
 import net.liplum.common.utils.on
 import net.liplum.common.utils.twoBytesToShort
+import net.liplum.lib.Serialized
 import net.liplum.lib.math.smooth
 import net.liplum.mdt.*
-import net.liplum.mdt.render.*
+import net.liplum.mdt.render.DrawSize
+import net.liplum.mdt.render.G
+import net.liplum.mdt.render.smoothPlacing
+import net.liplum.mdt.render.smoothSelect
 import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.utils.subBundle
 import net.liplum.mdt.utils.worldXY
@@ -44,7 +47,7 @@ import kotlin.math.sqrt
 
 open class ZipBomb(name: String) : Block(name) {
     @JvmField var explodeEffect: Effect = Fx.reactorExplosion
-    @JvmField var damagePreUnit = 100f
+    @JvmField var damagePreUnit = 150f
     @JvmField var rangePreUnit = 10f
     @JvmField var shake = 6f
     @JvmField var shakeDuration = 16f
@@ -286,8 +289,7 @@ open class ZipBomb(name: String) : Block(name) {
         }
         @SendDataPack
         open fun triggerSync() {
-            if (isAdded)
-                configureAny(true)
+            configureAny(true)
         }
         @SendDataPack
         open fun configGearSync(gear: Int) {

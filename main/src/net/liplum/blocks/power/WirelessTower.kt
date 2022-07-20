@@ -82,6 +82,7 @@ open class WirelessTower(name: String) : PowerBlock(name) {
         stats.remove(Stat.powerUse)
         addPowerUseStats()
         stats.add(CioStats.powerTransferSpeed, distributeSpeed * 60f, StatUnit.powerSecond)
+        stats.add(Stat.powerRange, range)
     }
 
     override fun icons() = arrayOf(BaseTR, SupportTR, CoilTR)

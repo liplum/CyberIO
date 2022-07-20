@@ -2,6 +2,7 @@ package net.liplum.registries
 
 import mindustry.content.StatusEffects
 import mindustry.type.Liquid
+import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.S
 import net.liplum.annotations.DependOn
@@ -24,15 +25,17 @@ object CioLiquids {
     }
     @DependOn
     fun tissueFluid() {
-        tissueFluid = Liquid(R.Liquid.TissueFluid, R.C.TissueFluid).apply {
-            flammability = 0f
-            explosiveness = 0f
-            temperature = 0.56f // room temp = 0.5f
-            heatCapacity = 0.3f
-            viscosity = 0.6f
-            boilPoint = 0.51f
-            effect = StatusEffects.freezing
-            lightColor = S.Hologram.cpy().a(0.2f)
+        DebugOnly {
+            tissueFluid = Liquid(R.Liquid.TissueFluid, R.C.TissueFluid).apply {
+                flammability = 0f
+                explosiveness = 0f
+                temperature = 0.56f // room temp = 0.5f
+                heatCapacity = 0.3f
+                viscosity = 0.6f
+                boilPoint = 0.51f
+                effect = StatusEffects.freezing
+                lightColor = S.Hologram.cpy().a(0.2f)
+            }
         }
     }
 }

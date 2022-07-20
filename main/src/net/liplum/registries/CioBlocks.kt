@@ -297,7 +297,7 @@ object CioBlocks {
                     )
                 )
                 health = 180
-                maxRange = 550f
+                maxRange = 800f
                 consumePower(0.8f)
             }
             replaceable = false
@@ -458,9 +458,9 @@ object CioBlocks {
             ErekirSpec {
                 requirements(
                     Category.turret, BuildVisibility.shown, arrayOf(
-                        CioItems.ic + 30,
-                        Items.carbide + 150,
-                        Items.surgeAlloy + 250,
+                        CioItems.ic + 20,
+                        Items.carbide + 60,
+                        Items.surgeAlloy + 120,
                         Items.tungsten + 150,
                     )
                 )
@@ -493,8 +493,8 @@ object CioBlocks {
                     Category.turret, BuildVisibility.shown, arrayOf(
                         CioItems.ic + 12,
                         Items.beryllium + 60,
-                        Items.surgeAlloy + 120,
-                        Items.tungsten + 80,
+                        Items.surgeAlloy + 50,
+                        Items.tungsten + 100,
                     )
                 )
                 health = 750
@@ -608,9 +608,9 @@ object CioBlocks {
                 requirements(
                     Category.defense, BuildVisibility.shown, arrayOf(
                         CioItems.ic + 6,
-                        Items.oxide + 24,
+                        Items.oxide + 10,
                         Items.tungsten + 40,
-                        Items.surgeAlloy + 10,
+                        Items.carbide + 5,
                     )
                 )
                 restoreReload = 20 * 60f
@@ -743,7 +743,7 @@ object CioBlocks {
                 )
                 unloadSpeed = 6f
                 scaledHealth = 200f
-                maxRange = 800f
+                maxRange = 1000f
             }
             size = 2
             ShrinkingAnimFrames = 7
@@ -812,8 +812,8 @@ object CioBlocks {
                     Category.liquid, BuildVisibility.shown, arrayOf(
                         CioItems.ic + 15,
                         Items.tungsten + 200,
-                        Items.carbide + 80,
-                        Items.beryllium + 100,
+                        Items.carbide + 25,
+                        Items.beryllium + 180,
                     )
                 )
                 scaledHealth = 350f
@@ -822,7 +822,7 @@ object CioBlocks {
                 networkSpeed = 2.6f
                 liquidCapacity = 1200f
                 maxConnection = 3
-                maxRange = 500f
+                maxRange = 1000f
             }
             size = 2
             replaceable = false
@@ -856,10 +856,10 @@ object CioBlocks {
                     Category.liquid, BuildVisibility.shown, arrayOf(
                         CioItems.ic + 16,
                         Items.tungsten + 500,
-                        Items.carbide + 400,
-                        Items.beryllium + 800,
-                        Items.surgeAlloy + 320,
-                        Items.phaseFabric + 120,
+                        Items.carbide + 120,
+                        Items.beryllium + 500,
+                        Items.surgeAlloy + 150,
+                        Items.phaseFabric + 60,
                     )
                 )
                 scaledHealth = 380f
@@ -868,7 +868,7 @@ object CioBlocks {
                 researchCostMultiplier = 0.6f
                 powerUseBase = 2.5f
                 maxConnection = 8
-                maxRange = 1800f
+                maxRange = 3200f
                 powerUsePerConnection = 3.8f
             }
             squareSprite = false
@@ -1199,7 +1199,7 @@ object CioBlocks {
                 )
                 scaledHealth = 100f
                 distributeSpeed = 10f
-                range = 320f
+                range = 380f
             }
             size = 2
         }
@@ -1228,8 +1228,8 @@ object CioBlocks {
                 requirements(
                     Category.turret, BuildVisibility.shown, arrayOf(
                         CioItems.ic + 10,
-                        Items.oxide + 300,
-                        Items.carbide + 150,
+                        Items.oxide + 80,
+                        Items.carbide + 40,
                         Items.thorium + 150,
                         Items.graphite + 150,
                     )
@@ -1270,8 +1270,7 @@ object CioBlocks {
                 requirements(
                     Category.turret, BuildVisibility.shown, arrayOf(
                         CioItems.ic + 6,
-                        Items.surgeAlloy + 15,
-                        Items.oxide + 10,
+                        Items.carbide + 25,
                         Items.tungsten + 40,
                         Items.silicon + 60,
                     )
@@ -1302,7 +1301,7 @@ object CioBlocks {
                     damage = 90f
                 }
                 ErekirSpec {
-                    damage = 100f
+                    damage = 120f
                 }
                 lightningLength = 25
                 collidesAir = false
@@ -1558,14 +1557,22 @@ object CioBlocks {
             VanillaSpec {
                 requirements(
                     Category.effect, BuildVisibility.shown, arrayOf(
+                        CioItems.ic + 1,
+                        Items.blastCompound + 2,
+                        Items.pyratite + 5,
+                        Items.coal + 10,
                     )
                 )
+                damagePreUnit = 150f
             }
             ErekirSpec {
                 requirements(
                     Category.effect, BuildVisibility.shown, arrayOf(
+                        CioItems.ic + 2,
+                        Items.oxide + 10,
                     )
                 )
+                damagePreUnit = 180f
             }
             size = 2
             maxSensitive = 5
