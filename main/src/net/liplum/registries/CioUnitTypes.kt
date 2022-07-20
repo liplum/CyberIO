@@ -15,7 +15,6 @@ import mindustry.entities.bullet.BasicBulletType
 import mindustry.entities.bullet.LaserBoltBulletType
 import mindustry.entities.bullet.MissileBulletType
 import mindustry.gen.Sounds
-import mindustry.type.ItemStack
 import mindustry.type.Weapon
 import mindustry.type.ammo.ItemAmmoType
 import mindustry.type.ammo.PowerAmmoType
@@ -27,6 +26,7 @@ import net.liplum.bullets.STEM_VERSION
 import net.liplum.flesh.BrainUnitType
 import net.liplum.holo.*
 import net.liplum.mdt.utils.NewUnitType
+import net.liplum.mdt.utils.plus
 import net.liplum.mdt.utils.registerPayloadSource
 import net.liplum.mdt.utils.registerUnitType
 import net.liplum.scripts.NpcUnitType
@@ -69,9 +69,9 @@ object CioUnitTypes {
             engineOffset = 5.7f
             range = 50f
             researchReq = arrayOf(
-                ItemStack(CioItems.ic, 1),
-                ItemStack(Items.titanium, 60),
-                ItemStack(Items.plastanium, 30),
+                CioItems.ic + 1,
+                Items.titanium + 60,
+                Items.plastanium + 30,
             )
             ammoType = PowerAmmoType(500f)
         }
@@ -99,10 +99,10 @@ object CioUnitTypes {
             enableRuvikTip = true
             ruvikTipRange = 220f
             researchReq = arrayOf(
-                ItemStack(CioItems.ic, 2),
-                ItemStack(Items.titanium, 100),
-                ItemStack(Items.plastanium, 80),
-                ItemStack(Items.thorium, 60),
+                CioItems.ic + 2,
+                Items.titanium + 100,
+                Items.plastanium + 80,
+                Items.thorium + 60,
             )
             weapons.add(HoloWeapon("holo-fighter-gun".Cio).apply {
                 top = false
@@ -149,8 +149,8 @@ object CioUnitTypes {
             hitSize = 15f
             armor = 5f
             researchReq = arrayOf(
-                ItemStack(CioItems.ic, 1),
-                ItemStack(Items.titanium, 40),
+                CioItems.ic + 1,
+                Items.titanium + 40,
             )
         }
     }
@@ -181,10 +181,10 @@ object CioUnitTypes {
             armor = 5f
             ammoType = PowerAmmoType(900f)
             researchReq = arrayOf(
-                ItemStack(CioItems.ic, 3),
-                ItemStack(Items.titanium, 120),
-                ItemStack(Items.plastanium, 160),
-                ItemStack(Items.thorium, 100),
+                CioItems.ic + 3,
+                Items.titanium + 120,
+                Items.plastanium + 160,
+                Items.thorium + 100,
             )
             weapons.add(HoloWeapon().apply {
                 x = 0f
@@ -230,9 +230,9 @@ object CioUnitTypes {
                 drag = 0.017f
                 ammoType = PowerAmmoType(1100f)
                 researchReq = arrayOf(
-                    ItemStack(CioItems.ic, 2),
-                    ItemStack(Items.titanium, 80),
-                    ItemStack(Items.plastanium, 120),
+                    CioItems.ic + 2,
+                    Items.titanium + 80,
+                    Items.plastanium + 120,
                 )
                 abilities.add(
                     RepairFieldAbility(20f, 60f * 8, 60f).apply {
@@ -251,9 +251,9 @@ object CioUnitTypes {
                 pickupUnits = true
                 ammoType = PowerAmmoType(600f)
                 researchReq = arrayOf(
-                    ItemStack(CioItems.ic, 5),
-                    ItemStack(Items.titanium, 80),
-                    ItemStack(Items.plastanium, 120),
+                    CioItems.ic + 5,
+                    Items.titanium + 80,
+                    Items.plastanium + 120,
                 )
             }
             aiController = Prov { RepairAI() }
