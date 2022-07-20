@@ -18,11 +18,17 @@ enum class ContentSpec(
     override fun toString() = id
 
     companion object {
-        @JvmStatic
-        fun String.resolveContentSpec() = when (this) {
+        fun String.resolveContentSpec() = when (this.lowercase()) {
             "erekir" -> Erekir
             else -> Vanilla
         }
+        fun String.tryResolveContentSpec() = when (this.lowercase()) {
+            "vanilla" -> Vanilla
+            "erekir" -> Erekir
+            else -> null
+        }
+        @JvmField
+        val candidateList = ContentSpec.values().joinToString(separator = ",", prefix = "[", postfix = "]")
     }
 }
 

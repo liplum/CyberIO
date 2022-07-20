@@ -313,6 +313,7 @@ public final class R {
             ResetConfig = "cio-reset-config",
             ReloadConfig = "cio-reload-config",
             CheckUpdate = "cio-check-update",
-            ClearCyberIOConetnt = "cio-clean-map";
+            ClearCyberIOConetnt = "cio-clean-map",
+            SwitchSpec = "cio-spec";
     }
 }

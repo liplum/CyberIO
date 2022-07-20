@@ -27,7 +27,7 @@ import net.liplum.mdt.IsSteam
 import net.liplum.mdt.animations.ganim.GlobalAnimation
 import net.liplum.registries.CioShaderLoader
 import net.liplum.registries.CioTechTree
-import net.liplum.registries.ServerCommands.registerCioCmds
+import net.liplum.registries.ServerCommands.registerCioCommands
 import net.liplum.registries.SpecificLoader
 import net.liplum.render.TestShader
 import net.liplum.scripts.NpcSystem
@@ -158,7 +158,9 @@ class CioMod : Mod() {
         Info = Vars.mods.locateMod(Meta.ModID)
         val meta = Info.meta
         meta.version = ContentSpecific.suffixModVersion(meta.version)
-        meta.subtitle = "[#${ContentSpecific.color}]${Meta.Version} ${ContentSpecific.i18nName}[]"
+        ClientOnly {
+            meta.subtitle = "[#${ContentSpecific.color}]${Meta.Version} ${ContentSpecific.i18nName}[]"
+        }
         Events.fire(CioLoadContentEvent())
         Contents.load()
         CioTechTree.loadAll()
@@ -168,6 +170,6 @@ class CioMod : Mod() {
     }
     @HeadlessOnly
     override fun registerServerCommands(handler: CommandHandler) {
-        handler.registerCioCmds()
+        handler.registerCioCommands()
     }
 }

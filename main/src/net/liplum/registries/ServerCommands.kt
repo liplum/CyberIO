@@ -1,10 +1,11 @@
 package net.liplum.registries
 
+import arc.Core
 import arc.util.CommandHandler
-import net.liplum.ConfigEntry
+import arc.util.Log
+import net.liplum.*
 import net.liplum.ConfigEntry.Companion.Config
-import net.liplum.Meta
-import net.liplum.R
+import net.liplum.ContentSpec.Companion.tryResolveContentSpec
 import net.liplum.mdt.HeadlessOnly
 import net.liplum.mdt.advanced.MapCleaner
 import net.liplum.update.Updater
@@ -13,7 +14,7 @@ import net.liplum.update.Updater
 object ServerCommands {
     @HeadlessOnly
     @JvmStatic
-    fun CommandHandler.registerCioCmds() {
+    fun CommandHandler.registerCioCommands() {
         register(
             R.CMD.ReloadConfig,
             "Reload config file of CyberIO."
@@ -38,6 +39,33 @@ object ServerCommands {
             "Clear all contents from Cyber IO in current map."
         ) {
             MapCleaner.cleanCurrentMap(Meta.ModID)
+        }
+        register(
+            R.CMD.SwitchSpec,
+            "<spec>",
+            """
+            Switch specific of Cyber IO:
+            usage: cio-spec <spec>
+            spec: ${ContentSpec.candidateList}
+            """.trimIndent()
+        ) {
+            if (it.isNotEmpty()) {
+                val to = it[0]
+                if (to.equals(Var.ContentSpecific.id, ignoreCase = true)) {
+                    Log.warn("CyberIO has been $to.")
+                } else {
+                    when (val spec = to.tryResolveContentSpec()) {
+                        null -> Log.warn("Didn't find $to, please check if it's in ${ContentSpec.candidateList}.")
+                        Var.ContentSpecific -> Log.warn("CyberIO has been $to.")
+                        else -> {
+                            Config.ContentSpecific = spec.id
+                            Config.trySave()
+                            Log.info("CyberIO switched to $spec, the game will restart soon.")
+                            Core.app.exit()
+                        }
+                    }
+                }
+            }
         }
     }
 }

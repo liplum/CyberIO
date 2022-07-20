@@ -1,7 +1,8 @@
 package net.liplum
 
+import arc.util.Log
 import arc.util.serialization.Json
-import arc.util.serialization.Jval
+import arc.util.serialization.JsonWriter
 import net.liplum.common.F
 import net.liplum.mdt.HeadlessOnly
 
@@ -9,11 +10,11 @@ import net.liplum.mdt.HeadlessOnly
 class ConfigEntry private constructor() {
     var AutoUpdate: Boolean = false
     var CheckUpdateInfoURL: String? = null
-    val ContentSpecific: String = "vanilla"
+    var ContentSpecific: String = "vanilla"
 
     companion object {
         lateinit var Config: ConfigEntry
-        var json = Json()
+        var json = Json(JsonWriter.OutputType.json)
         const val configName = "config.json"
         @Suppress("UNCHECKED_CAST")
         @JvmStatic
@@ -42,10 +43,17 @@ class ConfigEntry private constructor() {
                 CLog.info("${configFile.file.path} has created with initial config.")
             }
             val text = configFile.file.readText()
-            Config = json.fromJson(
-                ConfigEntry::class.java,
-                Jval.read(text).toString(Jval.Jformat.plain)
-            )
+            Config = try {
+                json.fromJson(ConfigEntry::class.java, text)
+            } catch (e: Exception) {
+                Log.err(e)
+                ConfigEntry()
+            }
         }
+    }
+
+    fun trySave() {
+        val json = json.toJson(this)
+        configFile.file.writeText(json)
     }
 }
