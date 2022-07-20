@@ -403,8 +403,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
                 pos.dr()?.let { disconnectSync(it) }
                 return false
             }
-            val b = other.dr()
-            if (b != null) {
+            if (other is IDataReceiver) {
                 if (maxRange > 0f && other.dst(this) >= maxRange) {
                     postOverRangeOn(other)
                 } else {
@@ -412,8 +411,8 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
                         deselect()
                     }
                     if (canHaveMoreReceiverConnection()) {
-                        if (b.acceptConnection(this)) {
-                            connectSync(b)
+                        if (other.acceptConnection(this)) {
+                            connectSync(other)
                         } else {
                             postFullSenderOn(other)
                         }

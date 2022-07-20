@@ -300,8 +300,7 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
                 pos.sc()?.let { disconnectSync(it) }
                 return false
             }
-            val b = other.sc()
-            if (b != null) {
+            if (other is IStreamClient) {
                 if (maxRange > 0f && other.dst(this) >= maxRange) {
                     postOverRangeOn(other)
                 } else {
@@ -309,8 +308,8 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
                         deselect()
                     }
                     if (canHaveMoreClientConnection()) {
-                        if (b.acceptConnection(this)) {
-                            connectSync(b)
+                        if (other.acceptConnection(this)) {
+                            connectSync(other)
                         } else {
                             postFullHostOn(other)
                         }

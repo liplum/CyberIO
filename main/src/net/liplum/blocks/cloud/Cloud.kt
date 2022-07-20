@@ -253,8 +253,7 @@ open class Cloud(name: String) : PowerBlock(name) {
                 pos.dr()?.let { disconnectSync(it) }
                 return false
             }
-            val b = other.dr()
-            if (b != null) {
+            if (other is IDataReceiver) {
                 if (other is CloudBuild) {
                     subBundle("self-connect").postToastTextOn(other, R.C.RedAlert)
                     return false
@@ -262,8 +261,8 @@ open class Cloud(name: String) : PowerBlock(name) {
                 if (!canMultipleConnect()) {
                     deselect()
                 }
-                if (b.acceptConnection(this)) {
-                    connectSync(b)
+                if (other.acceptConnection(this)) {
+                    connectSync(other)
                 }
                 return false
             }

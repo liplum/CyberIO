@@ -268,8 +268,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
                 configure(null)
                 return false
             }
-            val b = other.dr()
-            if (b != null) {
+            if (other is IDataReceiver) {
                 if (maxRange > 0f && other.dst(this) >= maxRange) {
                     postOverRangeOn(other)
                     return false
@@ -278,8 +277,8 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
                         deselect()
                     }
                     if (canHaveMoreReceiverConnection()) {
-                        if (b.acceptConnection(this)) {
-                            connectSync(b)
+                        if (other.acceptConnection(this)) {
+                            connectSync(other)
                         } else {
                             postFullSenderOn(other)
                         }

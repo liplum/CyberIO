@@ -1,36 +1,38 @@
 ## Concept
 
-
-|     | 1.0  | 1.1  |     |
-| ----- | ------ | ------ | ----- |
-| 2.0 | Self | Self | 0.0 |
-| 2.1 | Self | Self | 0.1 |
+|     | 1.1  | 1.0  |     |
+|-----|------|------|-----|
+| 2.0 | Self | Self | 0.1 |
+| 2.1 | Self | Self | 0.0 |
 |     | 3.0  | 3.1  |     |
 
-For Side[0] and Side[3], the proximate component is x.1
+`Left` -> `Bottom` : `0` -> `3`
 
-For Side[1] and Side[2], the proximate component is x.0
+`Side.Pos`
+
+|     | 3    | 2    |     |
+|-----|------|------|-----|
+| 4   | Self | Self | 1   |
+| 5   | Self | Self | 0   |
+|     | 6    | 7    |     |
+
+`Number` - `Side` * 2 + `Pos`
 
 ## Rotation
 
 ### Clockwise
 
-
 |     | 2.1  | 2.0  |     |
-| ----- | ------ | ------ | ----- |
-| 3.0 | Self | Self | 1.0 |
-| 3.1 | Self | Self | 1.1 |
-|     | 0.1  | 0.0  |     |
-
-At the [1] or [3], the side should swap its componets.
+|-----|------|------|-----|
+| 3.0 | Self | Self | 1.1 |
+| 3.1 | Self | Self | 1.0 |
+|     | 0.0  | 0.1  |     |
 
 ### Anti-clockwise
 
 
-|     | 0.0  | 0.1  |     |
-| ----- | ------ | ------ | ----- |
-| 1.1 | Self | Self | 3.1 |
-| 1.0 | Self | Self | 3.0 |
+|     | 0.1  | 0.0  |     |
+|-----|------|------|-----|
+| 1.0 | Self | Self | 1.1 |
+| 1.1 | Self | Self | 1.0 |
 |     | 2.0  | 2.1  |     |
-
-At the [0] or [2], the side should swap its componets.
