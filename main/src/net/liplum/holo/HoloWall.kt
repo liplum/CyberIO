@@ -11,7 +11,6 @@ import mindustry.Vars
 import mindustry.entities.Damage
 import mindustry.gen.Building
 import mindustry.gen.Bullet
-import mindustry.gen.Call
 import mindustry.graphics.Drawf
 import mindustry.graphics.Layer
 import mindustry.graphics.Pal
@@ -47,7 +46,7 @@ open class HoloWall(name: String) : Wall(name) {
     @ClientOnly lateinit var ImageTR: TR
     @ClientOnly lateinit var DyedImageTR: TR
     @JvmField var minHealthProportion = 0.05f
-    @ClientOnly @JvmField var FloatingRange = 0.6f
+    @ClientOnly @JvmField var FloatingRange = 2f
     @JvmField var needPower = false
     /**
      * Used when [needPower] is true.
@@ -143,7 +142,10 @@ open class HoloWall(name: String) : Wall(name) {
         override val minHealthProportion: Float
             get() = this@HoloWall.minHealthProportion
         @ClientOnly @JvmField
-        var floating: Floating = Floating(FloatingRange).randomXY().changeRate(1)
+        var floating: Floating = Floating(FloatingRange).apply {
+            randomPos()
+            changeRate = 10
+        }
         open val canRestructure: Boolean
             get() = lastDamagedTime > restoreReload || !isProjecting
         open val canRestore: Boolean
@@ -196,8 +198,8 @@ open class HoloWall(name: String) : Wall(name) {
                     Draw.color(S.Hologram)
                     Draw.rect(
                         ImageTR,
-                        x + floating.dx,
-                        y + floating.dy
+                        x + floating.x,
+                        y + floating.y
                     )
                     Draw.reset()
                 }
@@ -207,7 +209,7 @@ open class HoloWall(name: String) : Wall(name) {
         @ClientOnly
         open fun updateFloating() {
             val d = (0.1f * FloatingRange * delta() * (2f - healthPct)) * G.sclx
-            floating.move(d)
+            floating.move(d * 0.3f)
         }
 
         override fun updateTile() {

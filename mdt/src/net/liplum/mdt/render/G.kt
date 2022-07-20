@@ -199,13 +199,14 @@ object G {
     ) {
         if (density.isZero)
             return
-        val T = Tmp.v2.set(endDrawX, endDrawY).sub(startDrawX, startDrawY)
-        val length = T.len()
+        val T = Tmp.v2.set(endDrawX, endDrawY)
+            .sub(startDrawX, startDrawY)
+        val length = (T.len() - blockSize.worldXY).coerceAtLeast(0f)
         val count = Mathf.ceil(length / density)
         val per = T.scl(1f / count)
         var curX = startDrawX
         var curY = startDrawY
-        for (i in 1 until count) {
+        for (i in 1..count) {
             arrow(
                 curX,
                 curY,

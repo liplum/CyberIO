@@ -194,11 +194,14 @@ class Stereo(val jammer: Jammer.JammerBuild) {
     val targetPos = Vec2()
     var angleDis = 0f
     val vel = Vec2()
-    val floating = Floating(0.8f).randomXY().changeRate(6)
+    val floating = Floating(3f).apply {
+        randomPos()
+        changeRate = 10
+    }
     fun draw(image: TR) {
         image.Draw(
-            jammer.x + pos.x + floating.dx,
-            jammer.y + pos.y + floating.dy,
+            jammer.x + pos.x + floating.x,
+            jammer.y + pos.y + floating.y,
             rotation + jammer.rotation.draw
         )
     }

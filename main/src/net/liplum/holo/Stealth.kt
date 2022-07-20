@@ -41,7 +41,6 @@ import net.liplum.lib.Serialized
 import net.liplum.lib.assets.TR
 import net.liplum.lib.math.isZero
 import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.NetClientOnly
 import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.animations.Floating
 import net.liplum.mdt.consumer.LiquidTurretCons
@@ -61,7 +60,7 @@ open class Stealth(name: String) : Turret(name) {
     @JvmField var activePower = 2.5f
     @JvmField var reactivePower = 0.5f
     @JvmField var minHealthProportion = 0.05f
-    @ClientOnly @JvmField var FloatingRange = 0.6f
+    @ClientOnly @JvmField var FloatingRange = 2f
     @JvmField var restoreReq = 30f
     @ClientOnly @JvmField var ruvikShootingTipTime = 60f
     @JvmField val CheckConnectionTimer = timers++
@@ -122,7 +121,7 @@ open class Stealth(name: String) : Turret(name) {
             override fun draw(build: Building) = (build as StealthBuild).run {
                 WhenNotPaused {
                     val d = (0.1f * FloatingRange * delta() * (2f - healthPct)) * G.sclx
-                    floating.move(d)
+                    floating.move(d * 0.3f)
                 }
                 Draw.z(Layer.blockUnder)
                 Drawf.shadow(x, y, 10f)
@@ -137,8 +136,8 @@ open class Stealth(name: String) : Turret(name) {
                         it.blendHoloColorOpacity = 0f
                         Draw.color(S.Hologram)
                         ImageTR.Draw(
-                            x + recoilOffset.x + floating.dx,
-                            y + recoilOffset.y + floating.dy,
+                            x + recoilOffset.x + floating.x,
+                            y + recoilOffset.y + floating.y,
                             rotation.draw
                         )
                         Draw.reset()
@@ -244,7 +243,7 @@ open class Stealth(name: String) : Turret(name) {
                 // Check whether it has enough cyberion
                 val cyberionEnough = liquids[cyberion] >= curCyberionReq
                 val realRestHealth = if (cyberionEnough) restHealth.coerceAtLeast(minHealth) else restHealth
-                if(!Vars.net.client()) {
+                if (!Vars.net.client()) {
                     this.health = realRestHealth
                 }
                 healthChanged()
@@ -259,7 +258,10 @@ open class Stealth(name: String) : Turret(name) {
                 field = value.coerceIn(0f, 1f)
             }
         @ClientOnly @JvmField
-        var floating: Floating = Floating(FloatingRange).randomXY().changeRate(1)
+        var floating: Floating = Floating(FloatingRange).apply {
+            randomPos()
+            changeRate = 10
+        }
         override fun drawSelect() {
             G.dashCircleBreath(x, y, range, S.HologramDark)
             whenNotConfiguringHost {

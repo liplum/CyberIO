@@ -509,9 +509,8 @@ open class Heimdall(name: String) : Block(name) {
                             if (!justRestoreOrCreated) {
                                 ClientOnly {
                                     Time.run(BuckleDuration / 2f) {
-                                        if (this.isValid) {
-                                            connectedSound.at(tile)
-                                        }
+                                        if (this.isValid)
+                                            connectedSound.at(tile, Mathf.random(0.8f, 1.2f))
                                     }
                                     linkAnime.restart()
                                 }
