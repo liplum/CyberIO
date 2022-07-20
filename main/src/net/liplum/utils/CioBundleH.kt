@@ -20,30 +20,38 @@ fun Int.time(coerceMinute: Boolean = false): String {
         "$sec ${R.Bundle.CostSecond.bundle}"
 }
 @JvmOverloads
-fun Float.percent(digit: Int = 2) =
-    if (this >= 0f) {
-        R.Bundle.PercentPlus.bundle((this * 100f).absoluteValue.format(digit))
+fun Float.percent(digit: Int = 2, sign: Boolean = true) =
+    if (!sign) {
+        (this * 100f).absoluteValue.format(digit)
+    } else if (this >= 0f) {
+        "+${(this * 100f).format(digit)}%"
     } else {
-        R.Bundle.PercentMinus.bundle((this * 100f).absoluteValue.format(digit))
+        "-${(this * 100f).absoluteValue.format(digit)}%"
     }
 
-fun Int.percent() =
-    if (this >= 0) {
-        R.Bundle.PercentPlus.bundle(this.absoluteValue)
+fun Int.percent(sign: Boolean = true) =
+    if (!sign) {
+        "$absoluteValue"
+    } else if (this >= 0) {
+        "+$this%"
     } else {
-        R.Bundle.PercentMinus.bundle(this.absoluteValue)
+        "+${absoluteValue}%"
     }
 @JvmOverloads
-fun Float.value(digit: Int = 2) =
-    if (this >= 0f) {
-        R.Bundle.ValuePlus.bundle(this.absoluteValue.format(digit))
+fun Float.value(digit: Int = 2, sign: Boolean = true) =
+    if (!sign) {
+        absoluteValue.format(digit)
+    } else if (this >= 0f) {
+        "+${format(digit)}"
     } else {
-        R.Bundle.ValueMinus.bundle(this.absoluteValue.format(digit))
+        "-${absoluteValue.format(digit)}"
     }
 
-fun Int.value() =
-    if (this >= 0) {
-        R.Bundle.ValuePlus.bundle(this.absoluteValue)
+fun Int.value(sign: Boolean = true) =
+    if (!sign) {
+        "$absoluteValue"
+    } else if (this >= 0) {
+        "+$this"
     } else {
-        R.Bundle.ValueMinus.bundle(this.absoluteValue)
+        "-$absoluteValue"
     }

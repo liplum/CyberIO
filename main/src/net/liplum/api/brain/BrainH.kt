@@ -35,10 +35,11 @@ fun <T> T.addUpgradeComponentStats() where T : Block, T : IComponentBlock {
                 val i18n = UpgradeType.I18ns[type.type]
                 addTable {
                     right()
-                    add(
-                        if (upgrade.isDelta) i18n.delta(upgrade.value)
-                        else i18n.percent(upgrade.value)
-                    ).padRight(2f).right()
+                    val table = UpgradeStatTable(this)
+                    if (upgrade.isDelta)
+                        i18n.delta(table, upgrade)
+                    else
+                        i18n.percent(table, upgrade)
                 }.right().grow().pad(10f)
             }.growX().height(50f).pad(5f)
             stat.row()
@@ -66,11 +67,8 @@ fun Stats.addHeimdallProperties(props: Map<UpgradeType, Float>) {
                 val i18n = UpgradeType.I18ns[type.type]
                 addTable {
                     right()
-                    add(
-                        i18n.delta(basic)
-                            .replace("+", "")
-                            .replace("-", "")
-                    ).padRight(2f).right()
+                    val table = UpgradeStatTable(this)
+                    i18n.basic(table, basic)
                 }.right().grow().pad(10f)
             }.growX().height(50f).pad(5f)
             stat.row()

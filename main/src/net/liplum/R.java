@@ -45,11 +45,6 @@ public final class R {
             CostSecond = Gen("cost.second"),
             CostMinute = Gen("cost.minute");
         public static final String
-            PercentPlus = Gen("percent.plus"),
-            PercentMinus = Gen("percent.minus"),
-            ValuePlus = Gen("value.plus"),
-            ValueMinus = Gen("value.minus");
-        public static final String
             FullSender = Gen("full-sender"),
             FullReceiver = Gen("full-receiver"),
             FullHost = Gen("full-host"),
