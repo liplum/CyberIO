@@ -1,7 +1,7 @@
 import net.liplum.gradle.settings.Settings.localConfig
 
 plugins{
-    id("io.github.liplum.mgpp") version "1.1.5"
+    id("io.github.liplum.mgpp") version "1.1.6"
 }
 buildscript {
     repositories {
