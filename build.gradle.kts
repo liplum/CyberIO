@@ -1,7 +1,7 @@
 import net.liplum.gradle.settings.Settings.localConfig
 
 plugins{
-    id("io.github.liplum.mgpp") version "1.1.4"
+    id("io.github.liplum.mgpp") version "1.1.5"
 }
 buildscript {
     repositories {
@@ -50,5 +50,13 @@ mindustry {
     }
     server {
         mindustry official "v136.1"
+    }
+}
+tasks {
+    register("getReleaseHeader") {
+        doLast {
+            println("::set-output name=header::${rootProject.name} v$version on Mindustry v136")
+            println("::set-output name=version::v$version")
+        }
     }
 }

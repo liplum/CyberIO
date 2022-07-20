@@ -62,7 +62,6 @@ tasks.withType<KotlinCompile>().configureEach {
     kotlinOptions.freeCompilerArgs += listOf(
         "-opt-in=kotlin.RequiresOptIn",
         "-Xcontext-receivers",
-        "-XXLanguage:+KotlinFunInterfaceConstructorReference"
     )
 }
 dependencies {

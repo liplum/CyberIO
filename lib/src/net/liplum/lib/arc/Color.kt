@@ -21,9 +21,13 @@ fun String.tinted(color: Color) =
 
 class AnimatedColor(
     val colorSeq: Array<Color>,
-    val duration: Float = 120f,
+    val duration: Float = 60f,
 ) {
     var time = 0f
+        set(value) {
+            field = value.coerceAtLeast(0f)
+        }
+
     fun spend(delta: Float) {
         time += delta
     }
@@ -34,9 +38,10 @@ class AnimatedColor(
      */
     val color = Color()
         get() {
-            val progress = (time % duration) / duration
-            val curIndex = (progress * (colorSeq.size - 1)).toInt().coerceIn(0, colorSeq.size - 1)
+            val count = (time / duration).toInt() % colorSeq.size
+            val curIndex = count.coerceIn(0, colorSeq.size - 1)
             val nextIndex = if (curIndex == colorSeq.size - 1) 0 else curIndex + 1
+            val progress = (time % duration) / duration
             field.set(colorSeq[curIndex]).lerp(colorSeq[nextIndex], progress)
             return field
         }

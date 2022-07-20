@@ -1,4 +1,4 @@
-name: Build Push Changes
+name: Build Cyber IO Push
 on: push
 
 jobs:
@@ -20,6 +20,11 @@ jobs:
       - name: Get short commit hash
         run: echo "SHORT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
+      - name: Test CyberIO
+        run: |
+          chmod +x gradlew
+          ./gradlew :main:test
+
       - name: Build Cyber-IO
         run: |
           chmod +x gradlew
@@ -32,7 +37,7 @@ jobs:
 
   upload:
     needs: build
-    if: ${{ startsWith(github.event.head_commit.message,'[AR]') }}
+    if: ${{ startsWith(github.event.head_commit.message,'[release]') }}
     runs-on: ubuntu-latest
     env:
       GH_REPO: ${{ github.repository }}
@@ -44,17 +49,22 @@ jobs:
           name: CyberIO-Jar
           path: out
 
+      - name: Retrieve Meta
+        id: retrieveMeta
+        run: |
+          ./gradlew getReleaseHeader
+
       - name: Delete and recreate tag
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.retrieveMeta.outputs.version }}
         run: |
-          gh release delete AUTOR --yes || true
-          git push origin :AUTOR || true
-      - name: Get current date
-        id: date
-        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+          gh release delete "$VERSION" --yes || true
+          git push origin ":$VERSION" || true
+
       - name: Upload development build
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TODAY: ${{ steps.date.outputs.date }}
-        run: gh release create AUTOR --title "Auto-release on $TODAY" --notes-file "$GITHUB_WORKSPACE/.github/workflows/AutoReleaseMsg.md" out/*.jar
+          HEADER: ${{ steps.retrieveMeta.outputs.header }}
+          VERSION: ${{ steps.retrieveMeta.outputs.version }}
+        run: gh release create "$VERSION" --title "$HEADER" --notes-file "$GITHUB_WORKSPACE/ReleaseMessage.md" out/*.jar
