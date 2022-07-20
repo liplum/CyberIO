@@ -17,8 +17,6 @@ import mindustry.graphics.Layer
 import mindustry.type.Category
 import mindustry.type.ItemStack
 import mindustry.type.LiquidStack
-import mindustry.world.blocks.defense.BaseShield
-import mindustry.world.blocks.defense.DirectionalForceProjector
 import mindustry.world.blocks.environment.Floor
 import mindustry.world.blocks.payloads.*
 import mindustry.world.blocks.production.GenericCrafter
@@ -65,6 +63,7 @@ import net.liplum.bullets.*
 import net.liplum.data.*
 import net.liplum.holo.*
 import net.liplum.mdt.ui.DynamicContentInfoDialog.Companion.registerDynamicInfo
+import net.liplum.mdt.utils.plus
 import net.liplum.render.SpecDrawConstruct
 import net.liplum.render.SpecDrawDefault
 import net.liplum.seffects.StaticFx
@@ -115,19 +114,19 @@ object CioBlocks {
             VanillaSpec {
                 requirements(
                     Category.crafting, arrayOf(
-                        ItemStack(CioItems.ic, 2),
-                        ItemStack(Items.copper, 550),
-                        ItemStack(Items.lead, 280),
-                        ItemStack(Items.silicon, 150),
-                        ItemStack(Items.graphite, 250),
+                        CioItems.ic + 2,
+                        Items.copper + 550,
+                        Items.lead + 280,
+                        Items.silicon + 150,
+                        Items.graphite + 250,
                     )
                 )
                 health = 2000
                 consumeItems(
                     //Total:100
-                    ItemStack(Items.copper, 50),  //50%
-                    ItemStack(Items.silicon, 20),  //20%
-                    ItemStack(Items.metaglass, 30), //30%
+                    Items.copper + 50,  //50%
+                    Items.silicon + 20,  //20%
+                    Items.metaglass + 30, //30%
                 )
                 consumePower(10f)
                 craftTime = 400f
@@ -135,24 +134,24 @@ object CioBlocks {
             ErekirSpec {
                 requirements(
                     Category.crafting, arrayOf(
-                        ItemStack(CioItems.ic, 8),
-                        ItemStack(Items.beryllium, 250),
-                        ItemStack(Items.surgeAlloy, 80),
-                        ItemStack(Items.tungsten, 100),
-                        ItemStack(Items.thorium, 150),
+                        CioItems.ic + 8,
+                        Items.beryllium + 250,
+                        Items.surgeAlloy + 80,
+                        Items.tungsten + 100,
+                        Items.thorium + 150,
                     )
                 )
                 health = 1500
                 consumeItems( //Total:100
-                    ItemStack(Items.tungsten, 40),  //50%
-                    ItemStack(Items.beryllium, 20),  //20%
-                    ItemStack(Items.silicon, 30) //30%
+                    Items.tungsten + 40,  //50%
+                    Items.beryllium + 20,  //20%
+                    Items.silicon + 30 //30%
                 )
                 consumePower(8f)
                 craftTime = 420f
             }
             fogRadius = 3
-            outputItem = ItemStack(CioItems.ic, 2)
+            outputItem = CioItems.ic + 2
             size = 3
             buildCostMultiplier = 1.5f
             craftEffect = Fx.smeltsmoke
@@ -164,21 +163,21 @@ object CioBlocks {
         icMachineSmall = ICMachineS("ic-machine-s").apply {
             requirements(
                 Category.crafting, arrayOf(
-                    ItemStack(Items.copper, 150),
-                    ItemStack(Items.silicon, 50),
-                    ItemStack(Items.graphite, 50),
+                    Items.copper + 150,
+                    Items.silicon + 50,
+                    Items.graphite + 50,
                 )
             )
             health = 600
             craftTime = 1150f
             itemCapacity = 40
             consumeItems(
-                ItemStack(Items.copper, 25),
-                ItemStack(Items.sand, 40),
-                ItemStack(Items.lead, 15),
+                Items.copper + 25,
+                Items.sand + 40,
+                Items.lead + 15,
             )
             consumePower(2f)
-            outputItem = ItemStack(CioItems.ic, 1)
+            outputItem = CioItems.ic + 1
             fogRadius = 2
             size = 2
             craftEffect = Fx.formsmoke
@@ -196,19 +195,19 @@ object CioBlocks {
             VanillaSpec {
                 requirements(
                     Category.crafting, arrayOf(
-                        ItemStack(Items.lead, 60),
-                        ItemStack(Items.graphite, 35),
-                        ItemStack(Items.metaglass, 50),
-                        ItemStack(Items.silicon, 50),
+                        Items.lead + 60,
+                        Items.graphite + 35,
+                        Items.metaglass + 50,
+                        Items.silicon + 50,
                     )
                 )
                 health = 250
                 consumePower(1.2f)
                 itemCapacity = 40
                 consumeItems(
-                    ItemStack(Items.copper, 20),
-                    ItemStack(Items.silicon, 15),
-                    ItemStack(Items.metaglass, 5),
+                    Items.copper + 20,
+                    Items.silicon + 15,
+                    Items.metaglass + 5,
                 )
                 craftTime = 600f
                 drawer = DrawMulti(SpecDrawDefault(), SpecDrawConstruct())
@@ -216,18 +215,18 @@ object CioBlocks {
             ErekirSpec {
                 requirements(
                     Category.crafting, arrayOf(
-                        ItemStack(Items.beryllium, 60),
-                        ItemStack(Items.graphite, 105),
-                        ItemStack(Items.silicon, 50),
+                        Items.beryllium + 60,
+                        Items.graphite + 105,
+                        Items.silicon + 50,
                     )
                 )
                 health = 250
                 consumePower(1.1f)
                 itemCapacity = 40
                 consumeItems(
-                    ItemStack(Items.tungsten, 15),
-                    ItemStack(Items.beryllium, 20),
-                    ItemStack(Items.silicon, 15)
+                    Items.tungsten + 15,
+                    Items.beryllium + 20,
+                    Items.silicon + 15,
                 )
                 craftTime = 700f
                 drawer = DrawMulti(SpecDrawDefault(), SpecDrawConstruct().apply {
@@ -237,7 +236,7 @@ object CioBlocks {
             buildType = Prov { GenericCrafterBuild() }
             fogRadius = 2
             size = 2
-            outputItem = ItemStack(CioItems.ic, 1)
+            outputItem = CioItems.ic + 1
             craftEffect = Fx.smeltsmoke
         }
     }
@@ -247,11 +246,11 @@ object CioBlocks {
             VanillaSpec {
                 requirements(
                     Category.distribution, arrayOf(
-                        ItemStack(CioItems.ic, 1),
-                        ItemStack(Items.lead, 150),
-                        ItemStack(Items.graphite, 120),
-                        ItemStack(Items.metaglass, 60),
-                        ItemStack(Items.silicon, 180),
+                        CioItems.ic + 1,
+                        Items.lead + 150,
+                        Items.graphite + 120,
+                        Items.metaglass + 60,
+                        Items.silicon + 180,
                     )
                 )
                 health = 200
@@ -261,10 +260,10 @@ object CioBlocks {
             ErekirSpec {
                 requirements(
                     Category.distribution, arrayOf(
-                        ItemStack(CioItems.ic, 5),
-                        ItemStack(Items.graphite, 80),
-                        ItemStack(Items.tungsten, 30),
-                        ItemStack(Items.silicon, 30),
+                        CioItems.ic + 5,
+                        Items.graphite + 80,
+                        Items.tungsten + 30,
+                        Items.silicon + 30,
                     )
                 )
                 health = 150
@@ -280,11 +279,11 @@ object CioBlocks {
             VanillaSpec {
                 requirements(
                     Category.distribution, arrayOf(
-                        ItemStack(CioItems.ic, 1),
-                        ItemStack(Items.lead, 150),
-                        ItemStack(Items.graphite, 120),
-                        ItemStack(Items.metaglass, 60),
-                        ItemStack(Items.silicon, 180),
+                        CioItems.ic + 1,
+                        Items.lead + 150,
+                        Items.graphite + 120,
+                        Items.metaglass + 60,
+                        Items.silicon + 180,
                     )
                 )
                 health = 200
@@ -293,10 +292,10 @@ object CioBlocks {
             ErekirSpec {
                 requirements(
                     Category.distribution, arrayOf(
-                        ItemStack(CioItems.ic, 5),
-                        ItemStack(Items.graphite, 120),
-                        ItemStack(Items.tungsten, 50),
-                        ItemStack(Items.silicon, 50),
+                        CioItems.ic + 5,
+                        Items.graphite + 120,
+                        Items.tungsten + 50,
+                        Items.silicon + 50,
                     )
                 )
                 health = 180
@@ -1499,11 +1498,13 @@ object CioBlocks {
     }
 
     fun decentralizer() {
-        decentralizer = Decentralizer("decentralizer").apply {
-            requirements(
-                Category.crafting, BuildVisibility.shown, arrayOf()
-            )
-            size = 4
+        DebugOnly {
+            decentralizer = Decentralizer("decentralizer").apply {
+                requirements(
+                    Category.crafting, BuildVisibility.shown, arrayOf()
+                )
+                size = 4
+            }
         }
     }
     @DependOn("CioItems.ic")
@@ -1556,15 +1557,21 @@ object CioBlocks {
     }
     @DependOn("CioItems.ic")
     fun zipBomb() {
-        DebugOnly {
-            zipBomb = ZipBomb("zip-bomb").apply {
+        zipBomb = ZipBomb("zip-bomb").apply {
+            VanillaSpec {
                 requirements(
-                    Category.effect, BuildVisibility.shown, arrayOf()
+                    Category.effect, BuildVisibility.shown, arrayOf(
+                    )
                 )
-                size = 2
-                maxSensitive = 5
-                buildType = Prov { ZipBombBuild() }
             }
+            ErekirSpec {
+                requirements(
+                    Category.effect, BuildVisibility.shown, arrayOf(
+                    )
+                )
+            }
+            size = 2
+            maxSensitive = 5
         }
     }
     @DependOn("CioItems.ic")
@@ -1576,28 +1583,12 @@ object CioBlocks {
                 )
                 size = 5
                 linkRange = 30f * Vars.tilesize
-                buildType = Prov { SerializerBuild() }
             }
         }
     }
     @DependOn
     fun _overwriteVanilla() {
         DebugOnly {
-            Blocks.barrierProjector = DirectionalForceProjector("barrier-projector").apply {
-                requirements(Category.effect, ItemStack.with(Items.surgeAlloy, 100, Items.silicon, 125))
-                size = 3
-                width = 50f
-                length = 36f
-                shieldHealth = 2000f
-                cooldownNormal = 3f
-                cooldownBrokenBase = 0.35f
-                consumePower(4f)
-            }
-            Blocks.shieldProjector = BaseShield("shield-projector").apply {
-                requirements(Category.effect, BuildVisibility.shown, arrayOf())
-                size = 3
-                consumePower(5f)
-            }
             (Blocks.powerSource as PowerSource).apply {
                 buildVisibility = BuildVisibility.shown
                 health = Int.MAX_VALUE

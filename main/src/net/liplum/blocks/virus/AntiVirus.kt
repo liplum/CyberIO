@@ -128,7 +128,7 @@ open class AntiVirus(name: String) : Block(name) {
         super.drawPlace(x, y, rotation, valid)
         val range = range * smoothPlacing(maxSelectedCircleTime)
         drawEffectCirclePlace(x,y,uninfectedColor,range){
-            G.selected(this, getOtherColor(this))
+            G.selectedBreath(this, getOtherColor(this))
         }
     }
 
@@ -211,7 +211,7 @@ open class AntiVirus(name: String) : Block(name) {
                     {
                         true
                     }) {
-                    G.selected(it, getOtherColor(it))
+                    G.selectedBreath(it, getOtherColor(it))
                 }
                 Drawf.dashCircle(x, y, range, uninfectedColor)
             }

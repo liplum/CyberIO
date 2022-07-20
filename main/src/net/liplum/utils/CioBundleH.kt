@@ -6,10 +6,8 @@ import net.liplum.common.utils.format
 import kotlin.math.absoluteValue
 
 fun Boolean.yesNo(): String =
-    if (this)
-        R.Ctrl.Yes.bundle
-    else
-        R.Ctrl.No.bundle
+    if (this) "yes".bundle
+    else "no".bundle
 @JvmOverloads
 fun Int.time(coerceMinute: Boolean = false): String {
     val min = this / 60

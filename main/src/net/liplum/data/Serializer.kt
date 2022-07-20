@@ -1,5 +1,6 @@
 package net.liplum.data
 
+import arc.func.Prov
 import arc.graphics.g2d.Draw
 import arc.scene.ui.layout.Table
 import mindustry.Vars
@@ -48,6 +49,7 @@ class Serializer(name: String) :
         envEnabled = envEnabled or Env.space
         //make sure to display large units.
         clipSize = 120f
+        buildType = Prov { SerializerBuild() }
         setupNetworkNodeSettings()
     }
 

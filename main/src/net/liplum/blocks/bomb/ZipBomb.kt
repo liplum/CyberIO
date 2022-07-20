@@ -1,5 +1,6 @@
 package net.liplum.blocks.bomb
 
+import arc.func.Prov
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
 import arc.math.Mathf
@@ -41,7 +42,7 @@ import kotlin.math.sqrt
 
 open class ZipBomb(name: String) : Block(name) {
     @JvmField var explodeEffect: Effect = Fx.reactorExplosion
-    @JvmField var damagePreUnit = 400f
+    @JvmField var damagePreUnit = 100f
     @JvmField var rangePreUnit = 10f
     @JvmField var shake = 6f
     @JvmField var shakeDuration = 16f
@@ -86,6 +87,7 @@ open class ZipBomb(name: String) : Block(name) {
         drawDisabled = false
         commandable = true
         teamPassable = true
+        buildType = Prov { ZipBombBuild() }
         config(java.lang.Integer::class.java) { bomb: ZipBombBuild, cmdCode ->
             bomb.handleCommandFromRemote(Command(cmdCode.toInt()))
         }

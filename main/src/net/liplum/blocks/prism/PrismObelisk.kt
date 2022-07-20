@@ -3,6 +3,7 @@ package net.liplum.blocks.prism
 import arc.func.Prov
 import arc.math.Mathf
 import arc.struct.EnumSet
+import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.gen.Building
@@ -13,11 +14,13 @@ import net.liplum.R
 import net.liplum.Var
 import net.liplum.blocks.prism.Prism.PrismBuild
 import net.liplum.common.utils.bundle
+import net.liplum.lib.arc.AnimatedColor
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.animations.anims.Animation
 import net.liplum.mdt.animations.anims.AnimationObj
 import net.liplum.mdt.animations.anims.pingPong
+import net.liplum.mdt.render.G
 import net.liplum.mdt.render.drawSurroundingRect
 import net.liplum.mdt.render.smoothPlacing
 import net.liplum.mdt.ui.bars.AddBar
@@ -78,6 +81,8 @@ open class PrismObelisk(name: String) : Block(name) {
         var linked: Int = -1
         val isLinked: Boolean
             get() = linked != -1
+        val prism: PrismBuild?
+            get() = linked.TE()
         /**
          * Left->Down->Right->Up
          */
@@ -110,9 +115,13 @@ open class PrismObelisk(name: String) : Block(name) {
         open fun unlink() {
             linked = -1
         }
-
+        @JvmField @ClientOnly
+        val animatedColor = AnimatedColor(
+            R.C.PrismRgbBK
+        )
         override fun draw() {
             super.draw()
+            animatedColor.spend(Time.delta)
             WhenNotPaused {
                 val d = delta()
                 for ((i, obj) in BlinkObjs.withIndex()) {
@@ -123,6 +132,11 @@ open class PrismObelisk(name: String) : Block(name) {
                     obj.spend(d + Mathf.random())
                     obj.draw(x, y, i * 90f)
                 }
+            }
+        }
+        override fun drawSelect() {
+            prism?.apply {
+                G.selected(this, animatedColor.color)
             }
         }
 

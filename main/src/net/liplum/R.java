@@ -128,9 +128,6 @@ public final class R {
 
     public static final class Ctrl {
         public static final String
-            Yes = Gen("yes"),
-            No = Gen("no"),
-            OK = Gen("ok"),
             Enable = Gen("enable"),
             Validate = Gen("validate"),
             UpdateModSuccess = Gen("update-mod.success"),

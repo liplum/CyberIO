@@ -33,24 +33,21 @@ import net.liplum.api.cyber.RIGHT
 import net.liplum.api.prism.PrismBlackList.canDisperse
 import net.liplum.api.prism.PrismRegistry.isDuplicate
 import net.liplum.api.prism.PrismRegistry.setDuplicate
-import net.liplum.lib.assets.EmptyTRs
-import net.liplum.lib.assets.TR
-import net.liplum.lib.assets.TRs
 import net.liplum.blocks.prism.CrystalManager.Companion.read
 import net.liplum.blocks.prism.CrystalManager.Companion.write
-import net.liplum.common.math.*
+import net.liplum.common.math.PolarX
 import net.liplum.common.utils.bundle
 import net.liplum.common.utils.percentI
 import net.liplum.lib.Serialized
+import net.liplum.lib.assets.EmptyTRs
+import net.liplum.lib.assets.TR
+import net.liplum.lib.assets.TRs
 import net.liplum.lib.math.*
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.advanced.Inspector
 import net.liplum.mdt.advanced.Inspector.isSelected
 import net.liplum.mdt.mixin.copy
-import net.liplum.mdt.render.AsShadow
-import net.liplum.mdt.render.Draw
-import net.liplum.mdt.render.DrawSize
-import net.liplum.mdt.render.G
+import net.liplum.mdt.render.*
 import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.utils.*
 import kotlin.math.abs
@@ -86,6 +83,7 @@ open class Prism(name: String) : Block(name) {
     @ClientOnly lateinit var LeftDownStartTR: TR
     @ClientOnly lateinit var LeftDownEndTR: TR
     @ClientOnly var Right2BottomTRs = EmptyTRs
+    @ClientOnly @JvmField var maxSelectedCircleTime = 30f
 
     init {
         buildType = Prov { PrismBuild() }
@@ -371,6 +369,23 @@ open class Prism(name: String) : Block(name) {
                 Right2BottomTRs[side].Draw(x + delta * dir.x, y + delta * dir.y)
                 Right2BottomTRs[side].AsShadow(x + delta * dir.x, y + delta * dir.y)
             }
+            // draw Select
+            if (this.isSelected()) {
+                Draw.z(Layer.blockOver)
+                val pre = expendingSelectCircleTime / cm.inOrbitAmount
+                cm.render {
+                    val curNeed = (orbitPos + 1) * pre
+                    var selectProgress = ((Inspector.selectingTime + pre - curNeed) / curNeed).coerceIn(0f, 1f).smooth
+                    if (isRemoved) selectProgress = 1f - selectProgress
+                    if (selectProgress < 0.01f) return@render
+                    G.dashCircleBreath(
+                        this@PrismBuild,
+                        (Agl + (prismRadius * 2 * orbitPos)) * selectProgress,
+                        circleColor, alpha = 0.7f
+                    )
+                }
+            }
+            // draw Crystal
             cm.render {
                 val priselX = revolution.x + x
                 val priselY = revolution.y + y
@@ -386,9 +401,7 @@ open class Prism(name: String) : Block(name) {
                 )
                 if (isInPayload) Draw.z(Layer.blockOver + 1f)
                 else Draw.z(Layer.bullet - 1f)
-                DebugOnly {
-                    G.dashCircleBreath(priselX, priselY, prismRadius, circleColor)
-                }
+                G.dashCircleBreath(priselX, priselY, prismRadius * smoothSelect(maxSelectedCircleTime), circleColor)
                 img.DrawSize(
                     priselX,
                     priselY,
@@ -400,20 +413,7 @@ open class Prism(name: String) : Block(name) {
         }
 
         override fun drawSelect() {
-            if (!this.isSelected()) return
-            Draw.z(Layer.blockOver)
-            val pre = expendingSelectCircleTime / cm.inOrbitAmount
-            cm.render {
-                val curNeed = (orbitPos + 1) * pre
-                var progress = ((Inspector.selectingTime + pre - curNeed) / curNeed).coerceIn(0f, 1f).smooth
-                if (isRemoved) progress = 1f - progress
-                if (progress < 0.01f) return@render
-                G.dashCircleBreath(
-                    this@PrismBuild,
-                    (Agl + (prismRadius * 2 * orbitPos)) * progress,
-                    circleColor, alpha = 0.7f
-                )
-            }
+            // See draw()
         }
 
         override fun unit(): MdtUnit {

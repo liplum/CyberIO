@@ -400,11 +400,16 @@ object G {
     )
     @JvmStatic
     @JvmOverloads
-    fun selected(other: Building, color: Color = Pal.power, temp: Color = Tmp.c1) {
+    fun selectedBreath(other: Building, color: Color = Pal.power, temp: Color = Tmp.c1) {
         Drawf.selected(
             other,
             temp.set(color).a(Mathf.absin(4f, 1f))
         )
+    }
+    @JvmStatic
+    @JvmOverloads
+    fun selected(other: Building, color: Color = Pal.power) {
+        Drawf.selected(other, color)
     }
     @JvmStatic
     @JvmOverloads
