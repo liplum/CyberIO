@@ -18,6 +18,7 @@ import net.liplum.common.Observer
 import net.liplum.common.entity.Progress
 import net.liplum.common.entity.Queue
 import net.liplum.lib.math.FUNC
+import net.liplum.lib.math.nextBoolean
 import net.liplum.mdt.CalledBySync
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.SendDataPack
@@ -195,7 +196,7 @@ class Stereo(val jammer: Jammer.JammerBuild) {
     var angleDis = 0f
     val vel = Vec2()
     val floating = Floating(3f).apply {
-        clockwise = Mathf.randomBoolean()
+        clockwise = nextBoolean()
         randomPos()
         changeRate = 10
     }

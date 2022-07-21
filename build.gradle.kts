@@ -46,12 +46,12 @@ mindustry {
         arc on "v136.1"
     }
     client {
-        /*mindustry from Foo(
+        mindustry from Foo(
             version = "v8.0.0",
             release = "erekir-client.jar"
-        )*/
-        mindustry official "v136.1"
-        keepOtherVersion.set(true)
+        )
+        // mindustry official "v136.1"
+        keepOthers
     }
     server {
         mindustry official "v136.1"

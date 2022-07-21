@@ -211,40 +211,31 @@ object G {
         val inner = Tmp.c1.set(arrowColor).a(arrowColor.a * alphaMulti)
         val outline = Tmp.c2.set(arrowColor).a(arrowColor.a * alphaMulti).darken(0.3f)
         val size = 1f + sin * 0.15f
-        if (count == 1) {
-            t.set(startDrawX, startDrawY).add(endDrawX, endDrawY)
-            t /= 2f
-            Draw.color(outline)
-            Icon.right.region.DrawSize(t.x, t.y, size = size + 0.4f, rotation = angle)
-            Draw.color(inner)
-            Icon.right.region.DrawSize(t.x, t.y, size = size, rotation = angle)
-        } else {
-            val time = length / speed * 60f
-            val moving = if (speed > 0f) Tmp.v3.set(t).setLength((length * (Time.time % time / time)) % length)
-            else Tmp.v3.set(0f, 0f)
-            val cur = Tmp.v4.set(
-                startDrawX + moving.x,
-                startDrawY + moving.y
-            )
-            val per = t.scl(1f / count)
-            for (i in 0 until count) {
-                val line = Tmp.v5.set(cur).sub(startDrawX, startDrawY)
-                val lineLength = line.len() % length
-                line.setLength(lineLength)
-                line.add(startDrawX, startDrawY)
-                val fadeAlpha = when {
-                    lineLength <= 10f -> (lineLength / 10f).coerceIn(0f, 1f).smooth
-                    length - lineLength <= 10f -> ((length - lineLength) / 10f).coerceIn(0f, 1f).smooth
-                    else -> 1f
-                }
-                Draw.color(outline)
-                AddAlpha(fadeAlpha)
-                Icon.right.region.DrawSize(line.x, line.y, size = size + 0.4f, rotation = angle)
-                Draw.color(inner)
-                AddAlpha(fadeAlpha)
-                Icon.right.region.DrawSize(line.x, line.y, size = size, rotation = angle)
-                cur += per
+        val time = length / speed * 60f
+        val moving = if (speed > 0f) Tmp.v3.set(t).setLength((length * (Time.time % time / time)) % length)
+        else Tmp.v3.set(0f, 0f)
+        val cur = Tmp.v4.set(
+            startDrawX + moving.x,
+            startDrawY + moving.y
+        )
+        val per = t.scl(1f / count)
+        for (i in 0 until count) {
+            val line = Tmp.v5.set(cur).sub(startDrawX, startDrawY)
+            val lineLength = line.len() % length
+            line.setLength(lineLength)
+            line.add(startDrawX, startDrawY)
+            val fadeAlpha = when {
+                lineLength <= 10f -> (lineLength / 10f).coerceIn(0f, 1f).smooth
+                length - lineLength <= 10f -> ((length - lineLength) / 10f).coerceIn(0f, 1f).smooth
+                else -> 1f
             }
+            Draw.color(outline)
+            AddAlpha(fadeAlpha)
+            Icon.right.region.DrawSize(line.x, line.y, size = size + 0.4f, rotation = angle)
+            Draw.color(inner)
+            AddAlpha(fadeAlpha)
+            Icon.right.region.DrawSize(line.x, line.y, size = size, rotation = angle)
+            cur += per
         }
         Draw.color()
     }

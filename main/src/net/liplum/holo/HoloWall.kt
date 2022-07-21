@@ -26,6 +26,7 @@ import net.liplum.common.utils.toFloat
 import net.liplum.lib.Serialized
 import net.liplum.lib.assets.TR
 import net.liplum.lib.math.isZero
+import net.liplum.lib.math.nextBoolean
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.animations.Floating
@@ -143,7 +144,7 @@ open class HoloWall(name: String) : Wall(name) {
             get() = this@HoloWall.minHealthProportion
         @ClientOnly @JvmField
         var floating: Floating = Floating(FloatingRange).apply {
-            clockwise = Mathf.randomBoolean()
+            clockwise = nextBoolean()
             randomPos()
             changeRate = 10
         }

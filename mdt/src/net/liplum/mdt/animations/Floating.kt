@@ -2,6 +2,7 @@ package net.liplum.mdt.animations
 
 import arc.math.Mathf
 import net.liplum.lib.math.Polar
+import net.liplum.lib.math.nextBoolean
 
 open class Floating(
     val minR: Float,
@@ -21,7 +22,7 @@ open class Floating(
     open fun randomPos(): Floating {
         pos.r = Mathf.random(minR, maxR)
         pos.a = Mathf.random(0f, 2 * Mathf.PI)
-        rAdding = Mathf.randomBoolean()
+        rAdding = nextBoolean()
         return this
     }
 

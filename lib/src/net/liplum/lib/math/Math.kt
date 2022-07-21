@@ -265,3 +265,5 @@ val Int.sqrf: Float
     get() = (this * this).toFloat()
 val Int.cubef: Float
     get() = (this * this * this).toFloat()
+
+fun nextBoolean(): Boolean = Mathf.rand.nextBoolean()
