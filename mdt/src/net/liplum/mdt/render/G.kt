@@ -22,9 +22,7 @@ import mindustry.world.Tile
 import net.liplum.annotations.Subscribe
 import net.liplum.lib.arc.darken
 import net.liplum.lib.assets.TR
-import net.liplum.lib.math.distance
-import net.liplum.lib.math.divAssign
-import net.liplum.lib.math.isZero
+import net.liplum.lib.math.*
 import net.liplum.mdt.utils.*
 
 /**
@@ -189,6 +187,105 @@ object G {
         Fill.poly(vx, vy, 3, radius, angle)
         Draw.color()
     }
+    @JvmStatic
+    @JvmOverloads
+    fun transferArrowLineBreath(
+        startDrawX: WorldXY, startDrawY: WorldXY,
+        endDrawX: WorldXY, endDrawY: WorldXY,
+        arrowColor: Color = Pal.power,
+        density: Float = 15f,
+        /** unit per tick */
+        speed: Float = 60f,
+        alpha: Float? = null,
+    ) {
+        if (density.isZero)
+            return
+        if (alpha != null && alpha <= 0f)
+            return
+        val t = Tmp.v2.set(endDrawX, endDrawY)
+            .sub(startDrawX, startDrawY)
+        val angle = t.angle()
+        val length = t.len()
+        val count = (Mathf.ceil(length / density)).coerceAtLeast(1)
+        val alphaMulti = alpha ?: 1f
+        val inner = Tmp.c1.set(arrowColor).a(arrowColor.a * alphaMulti)
+        val outline = Tmp.c2.set(arrowColor).a(arrowColor.a * alphaMulti).darken(0.3f)
+        val size = 1f + sin * 0.15f
+        if (count == 1) {
+            t.set(startDrawX, startDrawY).add(endDrawX, endDrawY)
+            t /= 2f
+            Draw.color(outline)
+            Icon.right.region.DrawSize(t.x, t.y, size = size + 0.4f, rotation = angle)
+            Draw.color(inner)
+            Icon.right.region.DrawSize(t.x, t.y, size = size, rotation = angle)
+        } else {
+            val time = length / speed * 60f
+            val moving = if (speed > 0f) Tmp.v3.set(t).setLength((length * (Time.time % time / time)) % length)
+            else Tmp.v3.set(0f, 0f)
+            val cur = Tmp.v4.set(
+                startDrawX + moving.x,
+                startDrawY + moving.y
+            )
+            val per = t.scl(1f / count)
+            for (i in 0 until count) {
+                val line = Tmp.v5.set(cur).sub(startDrawX, startDrawY)
+                val lineLength = line.len() % length
+                line.setLength(lineLength)
+                line.add(startDrawX, startDrawY)
+                val fadeAlpha = when {
+                    lineLength <= 10f -> (lineLength / 10f).coerceIn(0f, 1f).smooth
+                    length - lineLength <= 10f -> ((length - lineLength) / 10f).coerceIn(0f, 1f).smooth
+                    else -> 1f
+                }
+                Draw.color(outline)
+                AddAlpha(fadeAlpha)
+                Icon.right.region.DrawSize(line.x, line.y, size = size + 0.4f, rotation = angle)
+                Draw.color(inner)
+                AddAlpha(fadeAlpha)
+                Icon.right.region.DrawSize(line.x, line.y, size = size, rotation = angle)
+                cur += per
+            }
+        }
+        Draw.color()
+    }
+    @JvmStatic
+    @JvmOverloads
+    fun transferArrowLineBreath(
+        startBlock: Block,
+        startBlockX: TileXYs, startBlockY: TileXYs,
+        endBlock: Block,
+        endBlockX: TileXYs, endBlockY: TileXYs,
+        arrowColor: Color = Pal.power,
+        density: Float = 15f,
+        speed: Float = 60f,
+        alpha: Float? = null,
+    ) {
+        transferArrowLineBreath(
+            startBlock.toCenterWorldXY(startBlockX),
+            startBlock.toCenterWorldXY(startBlockY),
+            endBlock.toCenterWorldXY(endBlockX),
+            endBlock.toCenterWorldXY(endBlockY),
+            arrowColor,
+            density,
+            speed,
+            alpha,
+        )
+    }
+    @JvmStatic
+    @JvmOverloads
+    fun transferArrowLineBreath(
+        start: Building,
+        end: Building,
+        arrowColor: Color = Pal.power,
+        density: Float = 15f,
+        speed: Float = 60f,
+        alpha: Float? = null,
+    ) = transferArrowLineBreath(
+        start.x, start.y,
+        end.x, end.y,
+        arrowColor, density, speed,
+        alpha,
+    )
     @JvmStatic
     @JvmOverloads
     fun arrowLineBreath(

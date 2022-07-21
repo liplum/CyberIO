@@ -10,12 +10,14 @@ import net.liplum.update.Version2
 object Settings {
     @ClientOnly @JvmField var LinkOpacity = 1f
     @ClientOnly @JvmField var LinkArrowDensity = 15f
+    @ClientOnly @JvmField var LinkArrowSpeed = 40f
     @ClientOnly @JvmField var AlwaysShowLink = false
     @ClientOnly @JvmField var ShowLinkCircle = false
     @ClientOnly @JvmField var ShowWirelessTowerCircle = true
     @JvmStatic
     fun updateSettings() {
         LinkOpacity = settings.getInt(R.Setting.LinkOpacity, 100) / 100f
+        LinkArrowSpeed = settings.getInt(R.Setting.LinkArrowSpeed, 60).toFloat()
         AlwaysShowLink = settings.getBool(R.Setting.AlwaysShowLink, false)
         ShowLinkCircle = settings.getBool(R.Setting.ShowLinkCircle, false)
         ShowWirelessTowerCircle = settings.getBool(R.Setting.ShowWirelessTowerCircle, true)

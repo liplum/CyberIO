@@ -16,8 +16,11 @@ import net.liplum.Settings
 import net.liplum.Var
 import net.liplum.annotations.SubscribeEvent
 import net.liplum.api.ICyberEntity
+import net.liplum.common.utils.Or
+import net.liplum.common.utils.bundle
+import net.liplum.common.utils.inViewField
+import net.liplum.common.utils.isLineInViewField
 import net.liplum.events.CioInitEvent
-import net.liplum.common.utils.*
 import net.liplum.lib.math.Point2f
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.render.*
@@ -26,11 +29,13 @@ import net.liplum.mdt.utils.*
 @ClientOnly
 val ArrowDensity: Float
     get() = Settings.LinkArrowDensity
+@ClientOnly
+val ArrowSpeed : Float
+    get() = Settings.LinkArrowSpeed
 var ToastTimeFadePercent = 0.1f
 var ToastTime = 180f
 private val p1 = Point2f()
 private val p2 = Point2f()
-
 fun Int.db(): IDataBuilding? =
     this.build as? IDataBuilding
 
@@ -79,7 +84,6 @@ val ICyberEntity.topRightX: Int
     get() = building.topRightX
 val ICyberEntity.topRightY: Int
     get() = building.topRightY
-
 typealias SingleItemArray = Seq<Item>
 
 object DataCenter {
@@ -139,7 +143,6 @@ fun Point2?.sh(): IStreamHost? =
 
 val IStreamNode?.exists: Boolean
     get() = this != null && this.building.exists
-
 typealias SingleLiquidArray = Seq<Liquid>
 
 object StreamCenter {
@@ -271,11 +274,14 @@ fun Block.drawLinkedLineToReceiverWhenConfiguring(x: Int, y: Int) {
     val isOverRange = if (sender.maxRange > 0f) selectedTile.dstWorld(x, y) > sender.maxRange else false
     val color = if (isOverRange) R.C.RedAlert else R.C.Receiver
     G.surroundingCircleBreath(this, x, y, color, alpha = opacity)
-    G.arrowLineBreath(
+    G.transferArrowLineBreath(
         sender.block,
         selectedTile.x, selectedTile.y,
         this, x.toShort(), y.toShort(),
-        ArrowDensity, color, alpha = opacity
+        arrowColor = color,
+        density = ArrowDensity,
+        speed = ArrowSpeed,
+        alpha = opacity
     )
     if (isOverRange)
         this.drawOverRangeOnTile(x, y, color)
@@ -323,11 +329,13 @@ fun Block.drawLinkedLineToClientWhenConfiguring(x: Int, y: Int) {
     val selectedTile = host.tile()
     val opacity = Settings.LinkOpacity
     G.surroundingCircleBreath(this, x, y, R.C.Client, alpha = opacity)
-    G.arrowLineBreath(
+    G.transferArrowLineBreath(
         host.block,
         selectedTile.x, selectedTile.y,
         this, x.toShort(), y.toShort(),
-        ArrowDensity, host.hostColor,
+        arrowColor = host.hostColor,
+        density = ArrowDensity,
+        speed = ArrowSpeed,
         alpha = opacity
     )
 }
@@ -349,8 +357,11 @@ fun IDataReceiver.drawSender(sender: Int?, showCircle: Boolean = true) {
         if (showCircle && s.canShowSelfCircle()) {
             G.surroundingCircleBreath(s.tile, s.senderColor, alpha = opacity)
         }
-        G.arrowLineBreath(
-            s.building, this.building, ArrowDensity, this.receiverColor,
+        G.transferArrowLineBreath(
+            s.building, this.building,
+            arrowColor = this.receiverColor,
+            density = ArrowDensity,
+            speed = ArrowSpeed,
             alpha = opacity
         )
     }
@@ -367,8 +378,11 @@ fun IDataReceiver.drawSenders(senders: Iterable<Int>, showCircle: Boolean = true
             if (showCircle && s.canShowSelfCircle()) {
                 G.surroundingCircleBreath(s.tile, s.senderColor, alpha = opacity)
             }
-            G.arrowLineBreath(
-                s.building, this.building, ArrowDensity, this.receiverColor,
+            G.transferArrowLineBreath(
+                s.building, this.building,
+                arrowColor = this.receiverColor,
+                density = ArrowDensity,
+                speed = ArrowSpeed,
                 alpha = opacity
             )
         }
@@ -386,8 +400,11 @@ fun IDataSender.drawReceiver(receiver: Int?, showCircle: Boolean = true) {
         if (showCircle && r.canShowSelfCircle()) {
             G.surroundingCircleBreath(r.tile, r.receiverColor, alpha = opacity)
         }
-        G.arrowLineBreath(
-            this.building, r.building, ArrowDensity, this.senderColor,
+        G.transferArrowLineBreath(
+            this.building, r.building,
+            arrowColor = this.senderColor,
+            density = ArrowDensity,
+            speed = ArrowSpeed,
             alpha = opacity
         )
         r.drawRequirements()
@@ -405,8 +422,11 @@ fun IDataSender.drawReceivers(receivers: Iterable<Int>, showCircle: Boolean = tr
             if (showCircle && r.canShowSelfCircle()) {
                 G.surroundingCircleBreath(r.tile, r.receiverColor, alpha = opacity)
             }
-            G.arrowLineBreath(
-                this.building, r.building, ArrowDensity, this.senderColor,
+            G.transferArrowLineBreath(
+                this.building, r.building,
+                arrowColor = this.senderColor,
+                density = ArrowDensity,
+                speed = ArrowSpeed,
                 alpha = opacity
             )
             r.drawRequirements()
@@ -430,8 +450,11 @@ fun IStreamClient.drawHosts(hosts: Iterable<Int>, showCircle: Boolean = true) {
             if (showCircle && h.canShowSelfCircle()) {
                 G.surroundingCircleBreath(h.tile, h.hostColor, alpha = opacity)
             }
-            G.arrowLineBreath(
-                h.building, this.building, ArrowDensity, this.clientColor,
+            G.transferArrowLineBreath(
+                h.building, this.building,
+                arrowColor = this.clientColor,
+                density = ArrowDensity,
+                speed = ArrowSpeed,
                 alpha = opacity
             )
         }
@@ -449,8 +472,11 @@ fun IStreamHost.drawClients(clients: Iterable<Int>, showCircle: Boolean = true) 
             if (showCircle && c.canShowSelfCircle()) {
                 G.surroundingCircleBreath(c.tile, c.clientColor, alpha = opacity)
             }
-            G.arrowLineBreath(
-                this.building, c.building, ArrowDensity, this.hostColor,
+            G.transferArrowLineBreath(
+                this.building, c.building,
+                arrowColor = this.hostColor,
+                density = ArrowDensity,
+                speed = ArrowSpeed,
                 alpha = opacity
             )
             c.drawRequirements()

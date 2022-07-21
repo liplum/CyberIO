@@ -25,6 +25,10 @@ fun SetColor(color: Color) {
 fun SetAlpha(alpha: Float) {
     Draw.alpha(alpha)
 }
+
+fun AddAlpha(alpha: Float){
+    Draw.alpha(Draw.getColor().a * alpha)
+}
 @JvmOverloads
 fun TR.DrawSize(
     x: Float, y: Float, size: Float,

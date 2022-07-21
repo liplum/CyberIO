@@ -23,6 +23,20 @@ fun FloatArray.lerp(target: FloatArray, progress: Float) = this.apply {
 val Progress.smooth: Progress
     get() = Interp.smooth(this.coerceIn(0f, 1f))
 /**
+ * Return the smoother interpolation.
+ * @receiver any number, finally is coerced in [0f,1f]
+ * @return [0f,1f]
+ */
+val Progress.smoother: Progress
+    get() = Interp.smoother(this.coerceIn(0f, 1f))
+/**
+ * Return the slope interpolation.
+ * @receiver any number, finally is coerced in [0f,1f] -> [1f,0f]
+ * @return [0f,1f]
+ */
+val Progress.slope: Progress
+    get() = Interp.slope(this.coerceIn(0f, 1f))
+/**
  * Return the power2 interpolation.
  * @receiver any number, finally is coerced in [0f,1f]
  * @return [0f,1f]

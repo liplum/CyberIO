@@ -287,10 +287,11 @@ public final class R {
         public static final String
             LinkOpacity = Gen("connection-opacity"),
             LinkArrowDensity = Gen("connection-density"),
+            LinkArrowSpeed = Gen("connection-speed"),
             AlwaysShowLink = Gen("always-show-link"),
             ShowLinkCircle = Gen("show-link-circle"),
             ShowWirelessTowerCircle = Gen("show-wireless-tower-circle"),
-            LinkSize = Gen("connection-size"),// Drepcated
+            LinkSize = Gen("connection-size"),// Deprecated
             ShowWelcome = Gen("show-welcome"),
             ShowUpdate = Gen("show-update"),
             LastSkippedUpdate = Gen("last-skipped-update"),
