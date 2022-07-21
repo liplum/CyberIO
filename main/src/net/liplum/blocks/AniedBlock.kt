@@ -6,7 +6,6 @@ import mindustry.world.Block
 import net.liplum.CanRefresh
 import net.liplum.CioMod
 import net.liplum.Meta
-import net.liplum.Var
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.animations.anis.*
@@ -21,9 +20,9 @@ import net.liplum.utils.addAniStateInfo
 @Suppress("UNCHECKED_CAST")
 abstract class AniedBlock<
         TBlock : AniedBlock<TBlock, TBuild>,
-        TBuild : AniedBlock<TBlock, TBuild>.AniedBuild
+        TBuild : AniedBlock<TBlock, TBuild>.AniedBuild,
         >(
-    name: String
+    name: String,
 ) : Block(name), IAniSMed<TBlock, TBuild> {
     @ClientOnly
     protected val name2AniStates = HashMap<String, AniState<TBlock, TBuild>>()
@@ -33,7 +32,7 @@ abstract class AniedBlock<
     override lateinit var aniConfig: AniConfig<TBlock, TBuild>
 
     init {
-        if (CioMod.IsClient) {
+        ClientOnly {
             genAniState()
             genAniConfig()
         }
@@ -69,7 +68,7 @@ abstract class AniedBlock<
         override lateinit var aniStateM: AniStateM<TBlock, TBuild>
 
         init {
-            if (CioMod.IsClient) {
+            ClientOnly {
                 val outer = this@AniedBlock
                 aniStateM = outer.aniConfig.gen(outer as TBlock, this as TBuild)
             }

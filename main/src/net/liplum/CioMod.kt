@@ -39,7 +39,6 @@ import java.io.File
 
 class CioMod : Mod() {
     companion object {
-        @JvmField val IsClient = !Vars.headless
         @JvmField var ContentLoaded = false
         lateinit var Info: Mods.LoadedMod
         @JvmField val jarFile = CioMod::class.java.protectionDomain?.let {
@@ -53,7 +52,7 @@ class CioMod : Mod() {
         init {
             if (!Core.settings.has(Meta.RepoInSettingsKey))
                 Core.settings.put(Meta.RepoInSettingsKey, Meta.Repo)
-            if (IsClient && Vars.clientLoaded && !objCreated) {
+            if (!Vars.headless && Vars.clientLoaded && !objCreated) {
                 FirstLoaded.tryRecord()
                 FirstLoaded.load()
                 Time.run(15f) {

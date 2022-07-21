@@ -27,7 +27,7 @@ abstract class AniedCrafter<
     var callDefaultBlockDraw = true
 
     init {
-        if (CioMod.IsClient) {
+        ClientOnly {
             genAniState()
             genAniConfig()
         }
@@ -62,7 +62,7 @@ abstract class AniedCrafter<
         override lateinit var aniStateM: AniStateM<TBlock, TBuild>
 
         init {
-            if (CioMod.IsClient) {
+            ClientOnly {
                 val out = this@AniedCrafter
                 aniStateM = out.aniConfig.gen(out as TBlock, this as TBuild)
                 aniStateM.onUpdate { onAniStateMUpdate() }

@@ -17,7 +17,7 @@ object Settings {
     @JvmStatic
     fun updateSettings() {
         LinkOpacity = settings.getInt(R.Setting.LinkOpacity, 100) / 100f
-        LinkArrowSpeed = settings.getInt(R.Setting.LinkArrowSpeed, 60).toFloat()
+        LinkArrowSpeed = settings.getInt(R.Setting.LinkArrowSpeed, 40).toFloat()
         AlwaysShowLink = settings.getBool(R.Setting.AlwaysShowLink, false)
         ShowLinkCircle = settings.getBool(R.Setting.ShowLinkCircle, false)
         ShowWirelessTowerCircle = settings.getBool(R.Setting.ShowWirelessTowerCircle, true)
