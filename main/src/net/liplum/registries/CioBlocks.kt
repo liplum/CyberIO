@@ -23,7 +23,7 @@ import mindustry.world.blocks.sandbox.ItemSource
 import mindustry.world.blocks.sandbox.LiquidSource
 import mindustry.world.blocks.sandbox.PowerSource
 import mindustry.world.draw.DrawDefault
-import mindustry.world.draw.DrawLiquidTile
+import mindustry.world.draw.DrawHeatInput
 import mindustry.world.draw.DrawMulti
 import mindustry.world.meta.BuildVisibility
 import net.liplum.*
@@ -37,6 +37,7 @@ import net.liplum.api.virus.setUninfected
 import net.liplum.api.virus.setUninfectedFloor
 import net.liplum.blocks.bomb.ZipBomb
 import net.liplum.blocks.cloud.Cloud
+import net.liplum.blocks.cyberion.DrawCyberionMixer
 import net.liplum.blocks.ddos.DDoS
 import net.liplum.blocks.debugonly.AdjustableOverdrive
 import net.liplum.blocks.decentralizer.Decentralizer
@@ -966,9 +967,10 @@ object CioBlocks {
                 consumePower(1.5f)
                 consumeItem(Items.thorium, 1)
                 consumeLiquid(Liquids.cryofluid, 0.3f)
-                // TODO: use default drawer temporarily
-                //drawer = CyberionMixerDrawer(S.Hologram, S.HologramDark)
-                drawer = DrawMulti(DrawLiquidTile(CioLiquids.cyberion), DrawDefault())
+                drawer = DrawMulti(
+                    DrawDefault(),
+                    DrawCyberionMixer()
+                )
                 size = 3
             }
         }
@@ -992,9 +994,13 @@ object CioBlocks {
                 heatRequirement = 8f
                 overheatScale = 1.5f
                 outputLiquid = CioLiquids.cyberion + 0.55f
-                // TODO: use default drawer temporarily
-                //drawer = CyberionMixerDrawer(S.Hologram, S.HologramDark)
-                drawer = DrawMulti(DrawLiquidTile(CioLiquids.cyberion), DrawDefault())
+                drawer = DrawMulti(
+                    DrawDefault(),
+                    DrawHeatInput().apply {
+                        heatColor = S.Hologram
+                    },
+                    DrawCyberionMixer()
+                )
                 size = 3
             }
         }
