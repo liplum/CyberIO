@@ -290,7 +290,7 @@ public final class R {
             AlwaysShowLink = Gen("always-show-link"),
             ShowLinkCircle = Gen("show-link-circle"),
             ShowWirelessTowerCircle = Gen("show-wireless-tower-circle"),
-            LinkSize = Gen("connection-size"),
+            LinkSize = Gen("connection-size"),// Drepcated
             ShowWelcome = Gen("show-welcome"),
             ShowUpdate = Gen("show-update"),
             LastSkippedUpdate = Gen("last-skipped-update"),

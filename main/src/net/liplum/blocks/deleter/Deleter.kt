@@ -22,12 +22,14 @@ import mindustry.world.draw.DrawTurret
 import mindustry.world.meta.Stat
 import net.liplum.S
 import net.liplum.api.IExecutioner
-import net.liplum.lib.assets.TR
 import net.liplum.common.utils.MapKeyBundle
 import net.liplum.common.utils.format
+import net.liplum.lib.assets.TR
 import net.liplum.lib.math.quadratic
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.mixin.shootPattern
+import net.liplum.mdt.render.HeatMeta
+import net.liplum.mdt.render.drawHeat
 import net.liplum.mdt.ui.ammoStats
 import net.liplum.mdt.utils.draw
 import net.liplum.mdt.utils.lostHp
@@ -36,10 +38,13 @@ import net.liplum.mdt.utils.subBundle
 
 private val P2Alpha = quadratic(0.95f, 0.35f)
 
-open class Deleter(name: String) : PowerTurret(name), IExecutioner {
-    override var executeProportion: Float = 0.2f
+open class Deleter(name: String) : PowerTurret(name) {
+    var executeProportion: Float = 0.2f
     @JvmField var extraLostHpBounce = 0.01f
     @JvmField var waveType: DeleterWave
+    @JvmField var heat = HeatMeta(
+        heatColor = S.Hologram
+    )
 
     init {
         buildType = Prov { PowerTurretBuild() }
@@ -97,15 +102,21 @@ open class Deleter(name: String) : PowerTurret(name), IExecutioner {
                 HaloTR = this@Deleter.sub("halo")
             }
 
-            override fun drawTurret(t: Turret, b: TurretBuild) = b.run {
-                super.drawTurret(this@Deleter, this)
-                Draw.color(team.color)
+            fun TurretBuild.drawHalo() {
                 Draw.rect(
                     HaloTR,
                     x + recoilOffset.x,
                     y + recoilOffset.y,
                     rotation.draw
                 )
+            }
+
+            override fun drawTurret(t: Turret, b: TurretBuild) = b.run {
+                super.drawTurret(this@Deleter, this)
+                drawHalo()
+                this@Deleter.heat.drawHeat(shootWarmup) {
+                    drawHalo()
+                }
             }
 
             override fun drawPlan(block: Block, plan: BuildPlan, list: Eachable<BuildPlan>) {
@@ -116,7 +127,10 @@ open class Deleter(name: String) : PowerTurret(name), IExecutioner {
         }
     }
 
-    open inner class DeleterWave : BasicBulletType(), IExecutioner by this@Deleter {
+    open inner class DeleterWave : BasicBulletType(), IExecutioner {
+        override val executeProportion: Float
+            get() = this@Deleter.executeProportion
+
         init {
             hitEffect = Fx.hitLancer
             frontColor = S.Hologram

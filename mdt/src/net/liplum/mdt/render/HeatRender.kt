@@ -12,12 +12,12 @@ import mindustry.world.blocks.heat.HeatBlock
 import mindustry.world.draw.DrawBlock
 import net.liplum.lib.assets.TR
 
-class HeatMeta {
-    var heatColor = Color(1f, 0.22f, 0.22f, 0.8f)
-    var heatPulse = 0.3f
-    var heatPulseScl: Float = 10f
-    var glowMult: Float = 1.2f
-}
+data class HeatMeta(
+    var heatColor: Color = Color(1f, 0.22f, 0.22f, 0.8f),
+    var heatPulse: Float = 0.3f,
+    var heatPulseScl: Float = 10f,
+    var glowMultiplier: Float = 1.2f,
+)
 
 fun HeatMeta.drawHeat(b: Building, tr: TR, heatFrac: Float) {
     if (heatFrac > 0f) {
@@ -81,7 +81,7 @@ fun HeatMeta.drawHeat(b: Building, tr: TR) {
 }
 
 class DrawHeat(
-    var suffix: String = "-heat"
+    var suffix: String = "-heat",
 ) : DrawBlock() {
     lateinit var heatTR: TR
     var heatColor = Color(1f, 0.22f, 0.22f, 0.8f)

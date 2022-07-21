@@ -122,11 +122,6 @@ object CioUI {
         addCheckPref(R.Setting.AlwaysShowLink, alwaysShowLinkDefault) {
             Settings.AlwaysShowLink = Core.settings.getBool(R.Setting.AlwaysShowLink, alwaysShowLinkDefault)
         }
-        addSliderSettingX(
-            R.Setting.LinkSize,
-            100, 0, 100, 5, { "$it%" }) {
-            Settings.LinkSize = Core.settings.getInt(R.Setting.LinkSize, 100) / 100f * 4f
-        }
         addCheckPref(R.Setting.ShowLinkCircle, alwaysShowLinkDefault) {
             Settings.ShowLinkCircle = Core.settings.getBool(R.Setting.ShowLinkCircle, true)
         }

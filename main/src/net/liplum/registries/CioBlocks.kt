@@ -16,6 +16,7 @@ import mindustry.gen.Sounds
 import mindustry.graphics.Layer
 import mindustry.type.Category
 import mindustry.world.blocks.environment.Floor
+import mindustry.world.blocks.heat.HeatProducer
 import mindustry.world.blocks.payloads.*
 import mindustry.world.blocks.production.GenericCrafter
 import mindustry.world.blocks.production.HeatCrafter
@@ -39,7 +40,6 @@ import net.liplum.blocks.bomb.ZipBomb
 import net.liplum.blocks.cloud.Cloud
 import net.liplum.blocks.cyberion.DrawCyberionMixer
 import net.liplum.blocks.ddos.DDoS
-import net.liplum.blocks.debugonly.AdjustableOverdrive
 import net.liplum.blocks.decentralizer.Decentralizer
 import net.liplum.blocks.deleter.Deleter
 import net.liplum.blocks.icmachine.ICMachine
@@ -49,6 +49,7 @@ import net.liplum.blocks.jammer.JammingLaser
 import net.liplum.blocks.power.WirelessTower
 import net.liplum.blocks.prism.Prism
 import net.liplum.blocks.prism.PrismObelisk
+import net.liplum.blocks.sandbox.AdjustableOverdrive
 import net.liplum.blocks.stream.StreamClient
 import net.liplum.blocks.stream.StreamHost
 import net.liplum.blocks.stream.StreamServer
@@ -531,7 +532,7 @@ object CioBlocks {
                         CioItems.ic + 15,
                         Items.surgeAlloy + 80,
                         Items.tungsten + 120,
-                        Items.oxide + 180,
+                        Items.carbide + 180,
                     )
                 )
                 cooldownTime = 18f
@@ -950,7 +951,7 @@ object CioBlocks {
     )
     fun cyberionMixer() {
         VanillaSpec {
-            cyberionMixer = GenericCrafter("cyberion-mixer").apply {
+            cyberionMixer = HeatProducer("cyberion-mixer").apply {
                 requirements(
                     Category.crafting, BuildVisibility.shown, arrayOf(
                         CioItems.ic + 4,
@@ -959,7 +960,7 @@ object CioBlocks {
                         Items.metaglass + 50,
                     )
                 )
-                buildType = Prov { GenericCrafterBuild() }
+                buildType = Prov { HeatProducerBuild() }
                 scaledHealth = 60f
                 liquidCapacity = 20f
                 outputLiquid = CioLiquids.cyberion + 0.3f
@@ -967,8 +968,12 @@ object CioBlocks {
                 consumePower(1.5f)
                 consumeItem(Items.thorium, 1)
                 consumeLiquid(Liquids.cryofluid, 0.3f)
+                heatOutput = 3f
                 drawer = DrawMulti(
                     DrawDefault(),
+                    /*DrawHeatOutput().apply {
+                        heatColor = S.Hologram
+                    },*/
                     DrawCyberionMixer()
                 )
                 size = 3
@@ -980,8 +985,7 @@ object CioBlocks {
                     Category.crafting, BuildVisibility.shown, arrayOf(
                         CioItems.ic + 5,
                         Items.carbide + 80,
-                        Items.oxide + 80,
-                        Items.surgeAlloy + 80,
+                        Items.tungsten + 120,
                     )
                 )
                 buildType = Prov { HeatCrafterBuild() }

@@ -143,6 +143,7 @@ open class HoloWall(name: String) : Wall(name) {
             get() = this@HoloWall.minHealthProportion
         @ClientOnly @JvmField
         var floating: Floating = Floating(FloatingRange).apply {
+            clockwise = Mathf.randomBoolean()
             randomPos()
             changeRate = 10
         }

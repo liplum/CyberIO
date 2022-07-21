@@ -1,4 +1,4 @@
-package net.liplum.blocks.debugonly
+package net.liplum.blocks.sandbox
 
 import arc.Core
 import arc.func.Prov

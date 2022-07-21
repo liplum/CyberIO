@@ -275,7 +275,7 @@ fun Block.drawLinkedLineToReceiverWhenConfiguring(x: Int, y: Int) {
         sender.block,
         selectedTile.x, selectedTile.y,
         this, x.toShort(), y.toShort(),
-        ArrowDensity, color, alpha = opacity, size = Settings.LinkSize
+        ArrowDensity, color, alpha = opacity
     )
     if (isOverRange)
         this.drawOverRangeOnTile(x, y, color)
@@ -328,7 +328,7 @@ fun Block.drawLinkedLineToClientWhenConfiguring(x: Int, y: Int) {
         selectedTile.x, selectedTile.y,
         this, x.toShort(), y.toShort(),
         ArrowDensity, host.hostColor,
-        alpha = opacity, size = Settings.LinkSize
+        alpha = opacity
     )
 }
 @ClientOnly
@@ -351,7 +351,7 @@ fun IDataReceiver.drawSender(sender: Int?, showCircle: Boolean = true) {
         }
         G.arrowLineBreath(
             s.building, this.building, ArrowDensity, this.receiverColor,
-            alpha = opacity, size = Settings.LinkSize
+            alpha = opacity
         )
     }
 }
@@ -369,7 +369,7 @@ fun IDataReceiver.drawSenders(senders: Iterable<Int>, showCircle: Boolean = true
             }
             G.arrowLineBreath(
                 s.building, this.building, ArrowDensity, this.receiverColor,
-                alpha = opacity, size = Settings.LinkSize
+                alpha = opacity
             )
         }
     }
@@ -388,7 +388,7 @@ fun IDataSender.drawReceiver(receiver: Int?, showCircle: Boolean = true) {
         }
         G.arrowLineBreath(
             this.building, r.building, ArrowDensity, this.senderColor,
-            alpha = opacity, size = Settings.LinkSize
+            alpha = opacity
         )
         r.drawRequirements()
     }
@@ -407,7 +407,7 @@ fun IDataSender.drawReceivers(receivers: Iterable<Int>, showCircle: Boolean = tr
             }
             G.arrowLineBreath(
                 this.building, r.building, ArrowDensity, this.senderColor,
-                alpha = opacity, size = Settings.LinkSize
+                alpha = opacity
             )
             r.drawRequirements()
         }
@@ -432,7 +432,7 @@ fun IStreamClient.drawHosts(hosts: Iterable<Int>, showCircle: Boolean = true) {
             }
             G.arrowLineBreath(
                 h.building, this.building, ArrowDensity, this.clientColor,
-                alpha = opacity, size = Settings.LinkSize
+                alpha = opacity
             )
         }
     }
@@ -451,7 +451,7 @@ fun IStreamHost.drawClients(clients: Iterable<Int>, showCircle: Boolean = true) 
             }
             G.arrowLineBreath(
                 this.building, c.building, ArrowDensity, this.hostColor,
-                alpha = opacity, size = Settings.LinkSize
+                alpha = opacity
             )
             c.drawRequirements()
         }

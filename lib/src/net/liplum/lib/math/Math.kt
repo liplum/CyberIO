@@ -173,24 +173,69 @@ fun Vec2.set(x: Short, y: Short): Vec2 =
 fun Vec2.set(x: Int, y: Int): Vec2 =
     this.set(x.toFloat(), y.toFloat())
 
-fun Vec2.minus(x: Int, y: Int): Vec2 = apply {
+fun Vec2.minus(x: Int, y: Int) = apply {
     this.x -= x.toFloat()
     this.y -= y.toFloat()
 }
 
-fun Vec2.minus(x: Short, y: Short): Vec2 = apply {
+fun Vec2.minus(x: Short, y: Short) = apply {
     this.x -= x.toFloat()
     this.y -= y.toFloat()
 }
 
-fun Vec2.minus(x: Float, y: Float): Vec2 = apply {
+fun Vec2.minus(x: Float, y: Float) = apply {
     this.x -= x
     this.y -= y
 }
 
-fun Vec2.minus(p: Position): Vec2 = apply {
+fun Vec2.minus(p: Position) = apply {
     this.x = p.x
     this.y = p.y
+}
+
+fun Vec2.div(b: Float) = apply {
+    x /= b
+    y /= b
+}
+
+operator fun Vec2.plusAssign(b: Float) {
+    x += b
+    y += b
+}
+
+operator fun Vec2.minusAssign(b: Float) {
+    x -= b
+    y -= b
+}
+
+operator fun Vec2.plusAssign(b: Vec2) {
+    x += b.x
+    y += b.y
+}
+
+operator fun Vec2.minusAssign(b: Vec2) {
+    x -= b.x
+    y -= b.y
+}
+
+operator fun Vec2.plusAssign(b: Position) {
+    x += b.x
+    y += b.y
+}
+
+operator fun Vec2.minusAssign(b: Position) {
+    x -= b.x
+    y -= b.y
+}
+
+operator fun Vec2.timesAssign(b: Float) {
+    x *= b
+    y *= b
+}
+
+operator fun Vec2.divAssign(b: Float) {
+    x /= b
+    y /= b
 }
 
 private val temp = Vec2()

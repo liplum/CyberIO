@@ -24,6 +24,23 @@ enum class LerpType {
     RGB, HSV
 }
 
+fun Color.darken(percentage: Float): Color {
+    r *= 1f - percentage
+    g *= 1f - percentage
+    b *= 1f - percentage
+    return this
+}
+
+fun Color.lighten(strength: Float): Color {
+    r *= 1f - strength
+    g *= 1f - strength
+    b *= 1f - strength
+    r += strength
+    g += strength
+    b += strength
+    return this
+}
+
 class AnimatedColor(
     val colorSeq: Array<Color>,
     val duration: Float = 60f,

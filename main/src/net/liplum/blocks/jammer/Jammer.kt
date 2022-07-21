@@ -195,6 +195,7 @@ class Stereo(val jammer: Jammer.JammerBuild) {
     var angleDis = 0f
     val vel = Vec2()
     val floating = Floating(3f).apply {
+        clockwise = Mathf.randomBoolean()
         randomPos()
         changeRate = 10
     }

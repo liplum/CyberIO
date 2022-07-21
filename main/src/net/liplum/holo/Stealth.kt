@@ -3,6 +3,7 @@ package net.liplum.holo
 import arc.func.Prov
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
+import arc.math.Mathf
 import arc.struct.ObjectMap
 import arc.struct.ObjectSet
 import arc.struct.OrderedSet
@@ -27,7 +28,6 @@ import mindustry.world.meta.Stat
 import mindustry.world.meta.StatUnit
 import mindustry.world.meta.StatValues
 import net.liplum.DebugOnly
-import net.liplum.R
 import net.liplum.S
 import net.liplum.api.cyber.*
 import net.liplum.api.holo.IHoloEntity
@@ -46,7 +46,6 @@ import net.liplum.mdt.animations.Floating
 import net.liplum.mdt.consumer.LiquidTurretCons
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.G
-import net.liplum.mdt.render.postToastTextOn
 import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.utils.*
 import net.liplum.registries.CioBulletTypes
@@ -259,9 +258,11 @@ open class Stealth(name: String) : Turret(name) {
             }
         @ClientOnly @JvmField
         var floating: Floating = Floating(FloatingRange).apply {
+            clockwise = Mathf.randomBoolean()
             randomPos()
             changeRate = 10
         }
+
         override fun drawSelect() {
             G.dashCircleBreath(x, y, range, S.HologramDark)
             whenNotConfiguringHost {
@@ -310,13 +311,6 @@ open class Stealth(name: String) : Turret(name) {
         }
 
         override fun peekAmmo() = shootType
-        override fun acceptLiquid(source: Building, liquid: Liquid): Boolean {
-            ClientOnly {
-                subBundle("unaccepted").postToastTextOn(this, R.C.RedAlert, overwrite = false)
-            }
-            return false
-        }
-
         @JvmField var onRequirementUpdated: Delegate1<IStreamClient> = Delegate1()
         override fun getOnRequirementUpdated(): Delegate1<IStreamClient> = onRequirementUpdated
         override fun getRequirements(): Seq<Liquid>? = cyberion.req

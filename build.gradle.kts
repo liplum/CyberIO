@@ -1,7 +1,7 @@
 import net.liplum.gradle.settings.Settings.localConfig
 
 plugins{
-    id("io.github.liplum.mgpp") version "1.1.6"
+    id("io.github.liplum.mgpp") version "1.1.7"
 }
 buildscript {
     repositories {
@@ -46,7 +46,12 @@ mindustry {
         arc on "v136.1"
     }
     client {
+        /*mindustry from Foo(
+            version = "v8.0.0",
+            release = "erekir-client.jar"
+        )*/
         mindustry official "v136.1"
+        keepOtherVersion.set(true)
     }
     server {
         mindustry official "v136.1"

@@ -14,13 +14,16 @@ import mindustry.Vars
 import mindustry.ctype.UnlockableContent
 import mindustry.game.EventType
 import mindustry.gen.Building
+import mindustry.gen.Icon
 import mindustry.graphics.Drawf
 import mindustry.graphics.Pal
 import mindustry.world.Block
 import mindustry.world.Tile
 import net.liplum.annotations.Subscribe
+import net.liplum.lib.arc.darken
 import net.liplum.lib.assets.TR
 import net.liplum.lib.math.distance
+import net.liplum.lib.math.divAssign
 import net.liplum.lib.math.isZero
 import net.liplum.mdt.utils.*
 
@@ -195,30 +198,41 @@ object G {
         density: Float = 15f,
         arrowColor: Color = Pal.power,
         alpha: Float? = null,
-        size: Float = 4f,
     ) {
         if (density.isZero)
             return
-        val T = Tmp.v2.set(endDrawX, endDrawY)
+        if (alpha != null && alpha <= 0f)
+            return
+        val t = Tmp.v2.set(endDrawX, endDrawY)
             .sub(startDrawX, startDrawY)
-        val length = (T.len() - blockSize.worldXY).coerceAtLeast(0f)
-        val count = Mathf.ceil(length / density)
-        val per = T.scl(1f / count)
-        var curX = startDrawX
-        var curY = startDrawY
-        for (i in 1..count) {
-            arrow(
-                curX,
-                curY,
-                curX + per.x,
-                curY + per.y,
-                blockSize * Vars.tilesize + sin,
-                size + sin,
-                arrowColor, alpha
-            )
-            curX += per.x
-            curY += per.y
+        val angle = t.angle()
+        val length = (t.len() - blockSize.worldXY).coerceAtLeast(0f)
+        val count = (Mathf.ceil(length / density)).coerceAtLeast(1)
+        val per = t.scl(1f / count)
+        var curX = startDrawX + per.x
+        var curY = startDrawY + per.y
+        val alphaMulti = alpha ?: 1f
+        val inner = Tmp.c1.set(arrowColor).a(arrowColor.a * alphaMulti)
+        val outline = Tmp.c2.set(arrowColor).a(arrowColor.a * alphaMulti).darken(0.3f)
+        val size = 1f + sin * 0.15f
+        if (count == 1) {
+            t.set(startDrawX, startDrawY).add(endDrawX, endDrawY)
+            t /= 2f
+            Draw.color(outline)
+            Icon.right.region.DrawSize(t.x, t.y, size = size + 0.4f, rotation = angle)
+            Draw.color(inner)
+            Icon.right.region.DrawSize(t.x, t.y, size = size, rotation = angle)
+        } else {
+            for (i in 0 until count - 1) {
+                Draw.color(outline)
+                Icon.right.region.DrawSize(curX, curY, size = size + 0.4f, rotation = angle)
+                Draw.color(inner)
+                Icon.right.region.DrawSize(curX, curY, size = size, rotation = angle)
+                curX += per.x
+                curY += per.y
+            }
         }
+        Draw.color()
     }
     @JvmStatic
     @JvmOverloads
@@ -228,7 +242,6 @@ object G {
         density: Float = 15f,
         arrowColor: Color = Pal.power,
         alpha: Float? = null,
-        size: Float = 4f,
     ) {
         arrowLineBreath(
             startBlockX.worldXY,
@@ -239,7 +252,6 @@ object G {
             density,
             arrowColor,
             alpha,
-            size
         )
     }
     @JvmStatic
@@ -252,7 +264,6 @@ object G {
         density: Float,
         arrowColor: Color = Pal.power,
         alpha: Float? = null,
-        size: Float = 4f,
     ) {
         arrowLineBreath(
             startBlock.toCenterWorldXY(startBlockX),
@@ -263,7 +274,6 @@ object G {
             density,
             arrowColor,
             alpha,
-            size
         )
     }
     @JvmStatic
@@ -274,14 +284,12 @@ object G {
         density: Float = 15f,
         arrowColor: Color = Pal.power,
         alpha: Float? = null,
-        size: Float = 4f,
     ) = arrowLineBreath(
         start.x, start.y,
         end.x, end.y,
         start.block.size,
         density, arrowColor,
         alpha,
-        size,
     )
     @JvmStatic
     @JvmOverloads

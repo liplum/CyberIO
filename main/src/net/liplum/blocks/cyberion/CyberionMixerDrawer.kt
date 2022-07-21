@@ -12,16 +12,17 @@ import arc.util.Time
 import mindustry.gen.Building
 import mindustry.world.draw.DrawBlock
 import net.liplum.S
+import net.liplum.lib.math.smooth
 
 class DrawCyberionMixer : DrawBlock() {
     var flameColor: Color = S.HologramDark
     var midColor: Color = S.Hologram
     var flameRad = 1f
-    var circleSpace = 2f
     var flameRadiusScl = 5f
     var flameRadiusMag = 0.8f
     var circleStroke = 1.5f
     var alpha = 0.68f
+    var coreRadius = 5f
     var particles = 25
     var particleLife = 40f
     var particleRad = 10f
@@ -35,10 +36,36 @@ class DrawCyberionMixer : DrawBlock() {
             val si = Mathf.absin(flameRadiusScl, 0.8f)
             val a = alpha * build.warmup()
             Draw.blend(blending)
-            Draw.color(midColor, a)
-            if (drawCenter) Fill.circle(build.x, build.y, flameRad + si)
+            if (drawCenter) {
+                val progress = build.progress()
+                val smoothPro = progress.smooth
+                if (progress <= 0.8f) {
+                    Draw.color(midColor, a)
+                    Fill.circle(
+                        build.x, build.y,
+                        (flameRad + si + coreRadius) * smoothPro
+                    )
+                    Draw.color(flameColor, a)
+                    Fill.circle(
+                        build.x, build.y,
+                        ((flameRad + si) * build.warmup())
+                    )
+                } else { // > 0.8
+                    val alphaScale = ((1f - progress) * 5f).smooth // [0,0.2] -> [0,1]
+                    val smoothMax = 0.8f.smooth
+                    Draw.color(midColor, a * alphaScale)
+                    Fill.circle(
+                        build.x, build.y,
+                        (flameRad + si + coreRadius) * smoothMax
+                    )
+                    Draw.color(flameColor, a)
+                    Fill.circle(
+                        build.x, build.y,
+                        ((flameRad + si) * build.warmup())
+                    )
+                }
+            }
             Draw.color(flameColor, a)
-            if (drawCenter) Lines.circle(build.x, build.y, (flameRad + circleSpace + si) * build.warmup())
             Lines.stroke(particleStroke * build.warmup())
             val base = Time.time / particleLife
             rand.setSeed(build.id.toLong())
