@@ -50,6 +50,9 @@ java {
     targetCompatibility = JavaVersion.VERSION_1_8
 }
 mindustry {
+    run {
+        clearOtherMods
+    }
     deploy {
         baseName = "CyberIO"
         fatJar

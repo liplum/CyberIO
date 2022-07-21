@@ -55,9 +55,9 @@ open class ZipBomb(name: String) : Block(name) {
     @JvmField var autoDetectTime = 300f
     @JvmField var warningRangeFactor = 2f
     val explosionRange: Float
-        get() = rangePreUnit * Vars.tilesize
+        get() = rangePreUnit * Vars.tilesize * size
     val explosionDamage: Float
-        get() = damagePreUnit * Vars.tilesize
+        get() = damagePreUnit * Vars.tilesize * size
     @JvmField var circleColor: Color = R.C.RedAlert
     @ClientOnly @JvmField var maxSelectedCircleTime = Var.SelectedCircleTime
     @JvmInline
@@ -175,16 +175,11 @@ open class ZipBomb(name: String) : Block(name) {
             return tmp.size
         }
 
-        override fun dropped() {
-            triggerSync()
-        }
-
         override fun unitOn(unit: Unit) {
             if (unit.team != team) {
                 kill()
             }
         }
-
         open fun detonate() {
             Sounds.explosionbig.at(this)
             Effect.shake(shake, shakeDuration, x, y)
@@ -195,18 +190,18 @@ open class ZipBomb(name: String) : Block(name) {
             Fx.dynamicExplosion.at(x, y, sqrt(explosionRange))
         }
 
+        override fun killed() {
+            super.killed()
+            detonate()
+        }
+
         override fun drawSelect() {
             super.drawSelect()
             G.dashCircleBreath(x, y, explosionRange * smoothSelect(maxSelectedCircleTime), circleColor)
         }
 
         override fun onCommand(target: Vec2) {
-            triggerSync()
-        }
-
-        override fun onDestroyed() {
-            super.onDestroyed()
-            detonate()
+            kill()
         }
         @ClientOnly
         override fun buildConfiguration(table: Table) {
@@ -265,11 +260,6 @@ open class ZipBomb(name: String) : Block(name) {
                 G.dashCircleBreath(x, y, explosionRange, circleColor)
             }
         }
-        @CalledBySync
-        open fun onTrigger() {
-            if (isAdded)
-                kill()
-        }
 
         override fun config(): Any? {
             return Command.genFull(autoDetectEnabled, curSensitive)
@@ -281,7 +271,7 @@ open class ZipBomb(name: String) : Block(name) {
         }
         @CalledBySync
         fun handleTriggerFromRemote() {
-            onTrigger()
+            kill()
         }
         @CalledBySync
         fun handleConfig(int: Int) {

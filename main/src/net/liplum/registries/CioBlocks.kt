@@ -459,8 +459,7 @@ object CioBlocks {
                 requirements(
                     Category.turret, BuildVisibility.shown, arrayOf(
                         CioItems.ic + 20,
-                        Items.carbide + 60,
-                        Items.surgeAlloy + 120,
+                        Items.carbide + 120,
                         Items.tungsten + 150,
                     )
                 )
@@ -1099,9 +1098,15 @@ object CioBlocks {
     fun aquacyberion() {
         aquacyberion = Floor("aqua-cyberion").apply {
             drownTime = 0f
-            status = StatusEffects.freezing
+            VanillaSpec {
+                status = StatusEffects.freezing
+                speedMultiplier = 0.1f
+            }
+            ErekirSpec {
+                status = StatusEffects.burning
+                speedMultiplier = 0.5f
+            }
             statusDuration = 240f
-            speedMultiplier = 0.1f
             variants = 0
             liquidDrop = CioLiquids.cyberion
             liquidMultiplier = 0.1f
@@ -1563,16 +1568,16 @@ object CioBlocks {
                         Items.coal + 10,
                     )
                 )
-                damagePreUnit = 150f
+                damagePreUnit = 80f
             }
             ErekirSpec {
                 requirements(
                     Category.effect, BuildVisibility.shown, arrayOf(
                         CioItems.ic + 2,
-                        Items.oxide + 10,
+                        Items.oxide + 8,
                     )
                 )
-                damagePreUnit = 180f
+                damagePreUnit = 100f
             }
             size = 2
             maxSensitive = 5
