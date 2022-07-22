@@ -23,8 +23,8 @@ import mindustry.world.blocks.production.HeatCrafter
 import mindustry.world.blocks.sandbox.ItemSource
 import mindustry.world.blocks.sandbox.LiquidSource
 import mindustry.world.blocks.sandbox.PowerSource
-import mindustry.world.draw.DrawDefault
 import mindustry.world.draw.DrawHeatInput
+import mindustry.world.draw.DrawHeatOutput
 import mindustry.world.draw.DrawMulti
 import mindustry.world.meta.BuildVisibility
 import net.liplum.*
@@ -970,10 +970,10 @@ object CioBlocks {
                 consumeLiquid(Liquids.cryofluid, 0.3f)
                 heatOutput = 3f
                 drawer = DrawMulti(
-                    DrawDefault(),
-                    /*DrawHeatOutput().apply {
+                    SpecDrawDefault(),
+                    DrawHeatOutput().apply {
                         heatColor = S.Hologram
-                    },*/
+                    },
                     DrawCyberionMixer()
                 )
                 size = 3
@@ -999,8 +999,8 @@ object CioBlocks {
                 overheatScale = 1.5f
                 outputLiquid = CioLiquids.cyberion + 0.55f
                 drawer = DrawMulti(
-                    DrawDefault(),
-                    DrawHeatInput().apply {
+                    SpecDrawDefault(),
+                    DrawHeatInput("-glow").apply {
                         heatColor = S.Hologram
                     },
                     DrawCyberionMixer()

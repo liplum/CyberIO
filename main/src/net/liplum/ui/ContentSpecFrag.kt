@@ -13,7 +13,6 @@ import mindustry.gen.Icon
 import mindustry.gen.Sounds
 import mindustry.gen.Tex
 import net.liplum.*
-import net.liplum.ContentSpecXInfo.Companion.color
 import net.liplum.common.ui.UIToast
 import net.liplum.common.utils.IBundlable
 import net.liplum.common.utils.bundle

@@ -18,7 +18,6 @@ import mindustry.ui.Styles
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.CheckSetting
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.SliderSetting
 import net.liplum.*
-import net.liplum.ContentSpecXInfo.Companion.color
 import net.liplum.annotations.Only
 import net.liplum.annotations.SubscribeEvent
 import net.liplum.lib.arc.invoke

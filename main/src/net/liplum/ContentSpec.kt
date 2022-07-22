@@ -1,9 +1,6 @@
 package net.liplum
 
 import arc.graphics.Color
-import net.liplum.ContentSpec.Erekir
-import net.liplum.ContentSpec.Vanilla
-import net.liplum.ContentSpecXInfo.Companion.needSuffixModVersion
 import net.liplum.common.utils.bundle
 import net.liplum.lib.assets.TR
 import net.liplum.mdt.ClientOnly
@@ -11,9 +8,20 @@ import net.liplum.mdt.utils.atlas
 
 enum class ContentSpec(
     val id: String,
+    var needSuffixModVersion: Boolean = false,
+    var needSuffixResource: Boolean = false,
+    var color: Color = Color(),
 ) {
-    Vanilla("vanilla"),
-    Erekir("erekir");
+    Vanilla(
+        "vanilla",
+        color = R.C.Holo.cpy()
+    ),
+    Erekir(
+        "erekir",
+        needSuffixModVersion = true,
+        needSuffixResource = true,
+        color = R.C.HoloOrange.cpy()
+    );
 
     override fun toString() = id
 
@@ -22,6 +30,7 @@ enum class ContentSpec(
             "erekir" -> Erekir
             else -> Vanilla
         }
+
         fun String.tryResolveContentSpec() = when (this.lowercase()) {
             "vanilla" -> Vanilla
             "erekir" -> Erekir
@@ -29,35 +38,6 @@ enum class ContentSpec(
         }
         @JvmField
         val candidateList = ContentSpec.values().joinToString(separator = ",", prefix = "[", postfix = "]")
-    }
-}
-
-class ContentSpecXInfo(
-    val spec: ContentSpec,
-) {
-    var needSuffixModVersion = false
-    var needSuffixResource = false
-    var color = Color()
-
-    companion object {
-        val ContentSpec.needSuffixModVersion: Boolean
-            get() = ContentSpecExtraInfos[this]?.needSuffixModVersion ?: false
-        val ContentSpec.needSuffixResource: Boolean
-            get() = ContentSpecExtraInfos[this]?.needSuffixResource ?: false
-        val ContentSpec.color: Color
-            get() = ContentSpecExtraInfos[this]?.color ?: Color.white.cpy()
-        val ContentSpecExtraInfos by lazy {
-            mapOf(
-                Erekir to ContentSpecXInfo(Erekir).apply {
-                    needSuffixModVersion = true
-                    needSuffixResource = true
-                    color.set(R.C.HoloOrange)
-                },
-                Vanilla to ContentSpecXInfo(Vanilla).apply {
-                    color.set(R.C.Holo)
-                },
-            )
-        }
     }
 }
 

@@ -225,7 +225,7 @@ inline fun WhenNotPaused(func: () -> Unit) {
     }
 }
 /**
- * If an exception is thrown, it doesn't crash the game.
+ * If an exception is thrown, it doesn't crash the game but outputs log.
  */
 inline fun safeCall(msg: String? = null, func: () -> Unit) {
     try {
@@ -236,7 +236,7 @@ inline fun safeCall(msg: String? = null, func: () -> Unit) {
     }
 }
 /**
- * If an exception is thrown, it doesn't crash the game.
+ * If an exception is thrown, it doesn't crash the game but outputs log.
  */
 inline fun safeCall(func: () -> Unit) {
     try {
@@ -245,6 +245,16 @@ inline fun safeCall(func: () -> Unit) {
         Log.err(e)
     }
 }
+/**
+ * If an exception is thrown, it doesn't crash the game without any log.
+ */
+inline fun safeCallSilent(func: () -> Unit) {
+    try {
+        func()
+    } catch (_: Throwable) {
+    }
+}
+
 inline fun RunOnUpdate(crossinline func: () -> Unit) {
     Events.run(Trigger.update) {
         func()

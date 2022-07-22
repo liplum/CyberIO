@@ -3,7 +3,6 @@ package net.liplum.holo
 import arc.func.Prov
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
-import arc.math.Mathf
 import arc.struct.ObjectMap
 import arc.struct.ObjectSet
 import arc.struct.OrderedSet

@@ -12,7 +12,6 @@ import mindustry.mod.Mods
 import mindustry.ui.dialogs.PlanetDialog
 import net.liplum.ConfigEntry.Companion.Config
 import net.liplum.ContentSpec.Companion.resolveContentSpec
-import net.liplum.ContentSpecXInfo.Companion.color
 import net.liplum.Var.ContentSpecific
 import net.liplum.blocks.cloud.LiplumCloud
 import net.liplum.blocks.cloud.SharedRoom
