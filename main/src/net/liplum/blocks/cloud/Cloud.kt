@@ -135,8 +135,7 @@ open class Cloud(name: String) : PowerBlock(name) {
         lateinit var dataTransferIx: IFrameIndexer
         lateinit var shredderIx: IFrameIndexer
         var teamID = 0
-        @JvmField var onRequirementUpdated: Delegate1<IDataReceiver> = Delegate1()
-        override fun getOnRequirementUpdated() = onRequirementUpdated
+        override val onRequirementUpdated: Delegate1<IDataReceiver> = Delegate1()
 
         init {
             ClientOnly {
@@ -212,9 +211,9 @@ open class Cloud(name: String) : PowerBlock(name) {
         override fun handleStack(item: Item, amount: Int, source: Teamc) {
         }
 
-        override fun getRequirements(): Seq<Item>? = null
+        override val requirements: Seq<Item>? = null
         @ClientOnly
-        override fun isBlocked() = false
+        override val isBlocked = false
         @SendDataPack
         override fun connectSync(receiver: IDataReceiver) {
             val pos = receiver.building.pos()
@@ -290,9 +289,7 @@ open class Cloud(name: String) : PowerBlock(name) {
             this.drawReceivers(info.receiversPos)
         }
 
-        override fun getConnectedSenders(): ObjectSet<Int> =
-            info.sendersPos
-
+        override val connectedSenders: ObjectSet<Int> = info.sendersPos
         override val connectedReceiver: Int?
             get() = if (info.receiversPos.isEmpty) null
             else info.receiversPos.first()
@@ -318,7 +315,7 @@ open class Cloud(name: String) : PowerBlock(name) {
             this.info = info
         }
 
-        override fun maxSenderConnection() = maxConnection
+        override val maxSenderConnection = maxConnection
         override val maxReceiverConnection = maxConnection
     }
 

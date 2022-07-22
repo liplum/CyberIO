@@ -3,7 +3,6 @@ package net.liplum.data
 import arc.func.Prov
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
-import arc.math.Mathf
 import arc.scene.ui.layout.Table
 import arc.struct.OrderedSet
 import arc.util.Eachable
@@ -126,21 +125,22 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
                     onRequirementUpdated(this)
                 }
             }
-
-        override fun getReceiverColor(): Color = outputItem?.color ?: R.C.Receiver
+        override val receiverColor: Color
+            get() = outputItem?.color ?: R.C.Receiver
         @ClientOnly
         var lastOutputDelta = 0f
         @ClientOnly
         var lastFullDataDelta = 0f
         @Serialized
         var senders = OrderedSet<Int>()
-        @JvmField var onRequirementUpdated: Delegate1<IDataReceiver> = Delegate1()
-        override fun getOnRequirementUpdated() = onRequirementUpdated
+        override val onRequirementUpdated: Delegate1<IDataReceiver> = Delegate1()
         override fun onRemoved() {
             onRequirementUpdated.clear()
         }
         @ClientOnly
-        override fun isBlocked(): Boolean = lastOutputDelta > blockTime
+        override val isBlocked: Boolean
+            get() = lastOutputDelta > blockTime
+
         override fun drawSelect() {
             whenNotConfiguringSender {
                 this.drawDataNetGraphic()
@@ -207,7 +207,9 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
             }
         }
 
-        override fun getRequirements() = outputItem.req
+        override val requirements
+            get() = outputItem.req
+
         override fun config(): Item? = outputItem
         override fun write(write: Writes) {
             super.write(write)
@@ -222,9 +224,8 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
             senders.read(read)
         }
 
-        override fun getConnectedSenders() = senders
-        override fun maxSenderConnection() = maxConnection
-
+        override val connectedSenders = senders
+        override val maxSenderConnection = maxConnection
         override fun fixedDraw() {
             BaseTR.DrawOn(this)
             Draw.alpha(Var.rsSlightHighlightAlpha)

@@ -26,14 +26,15 @@ import net.liplum.R
 import net.liplum.UndebugOnly
 import net.liplum.Var
 import net.liplum.api.cyber.*
-import net.liplum.lib.arc.equalsNoOrder
-import net.liplum.lib.assets.TR
 import net.liplum.blocks.AniedBlock
-import net.liplum.lib.Serialized
 import net.liplum.common.delegates.Delegate1
 import net.liplum.common.persistence.read
 import net.liplum.common.persistence.write
 import net.liplum.common.utils.DoMultipleBool
+import net.liplum.lib.Serialized
+import net.liplum.lib.arc.equalsNoOrder
+import net.liplum.lib.arc.set
+import net.liplum.lib.assets.TR
 import net.liplum.lib.math.isZero
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.animations.anims.Animation
@@ -53,7 +54,7 @@ import net.liplum.utils.addPowerUseStats
 import net.liplum.utils.addSenderInfo
 import net.liplum.utils.genText
 import kotlin.math.log2
-import net.liplum.lib.arc.set
+
 private typealias AniStateD = AniState<SmartDistributor, SmartDistributor.SmartDISBuild>
 
 open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDistributor.SmartDISBuild>(name) {
@@ -161,8 +162,7 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
         @JvmField var _requirements = Seq<Item>()
         @Serialized
         var senders = OrderedSet<Int>()
-        @JvmField var _onRequirementUpdated: Delegate1<IDataReceiver> = Delegate1()
-        override fun getOnRequirementUpdated() = _onRequirementUpdated
+        override val onRequirementUpdated: Delegate1<IDataReceiver> = Delegate1()
         @ClientOnly var lastDistributionTime = 0f
             set(value) {
                 field = value.coerceAtLeast(0f)
@@ -175,9 +175,7 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
         @Serialized
         var disIndex = 0
         @ClientOnly
-        var color: Color = R.C.Receiver
-        @ClientOnly
-        override fun getReceiverColor(): Color = color
+        override var receiverColor: Color = R.C.Receiver
 
         init {
             ClientOnly {
@@ -186,7 +184,7 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
         }
 
         override fun onRemoved() {
-            _onRequirementUpdated.clear()
+            onRequirementUpdated.clear()
         }
 
         val temp = HashSet<Item>()
@@ -229,9 +227,9 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
                     for (req in _requirements) {
                         c.lerp(req.color, 0.5f)
                     }
-                    color = c
+                    receiverColor = c
                 }
-                _onRequirementUpdated(this)
+                onRequirementUpdated(this)
             }
         }
 
@@ -317,10 +315,9 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
         }
 
         protected open fun distributeTo(other: Building, reqItem: Item): Boolean {
-            val item = reqItem
-            if (items.has(item) && other.acceptItem(this, item)) {
-                other.handleItem(this, item)
-                items.remove(item, 1)
+            if (items.has(reqItem) && other.acceptItem(this, reqItem)) {
+                other.handleItem(this, reqItem)
+                items.remove(reqItem, 1)
                 return true
             }
             return false
@@ -341,9 +338,12 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
                 0
         }
 
-        override fun getRequirements(): Seq<Item>? = _requirements
+        override val requirements: Seq<Item>?
+            get() = _requirements
         @ClientOnly
-        override fun isBlocked() = lastDistributionTime > 30f
+        override val isBlocked
+            get() = lastDistributionTime > 30f
+
         override fun read(read: Reads, revision: Byte) {
             super.read(read, revision)
             senders.read(read)
@@ -376,8 +376,8 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
                 arrowsAnimObj.spend(delta())
         }
 
-        override fun getConnectedSenders() = senders
-        override fun maxSenderConnection() = maxConnection
+        override val connectedSenders = senders
+        override val maxSenderConnection = maxConnection
     }
 
     @ClientOnly lateinit var DistributingAni: AniStateD

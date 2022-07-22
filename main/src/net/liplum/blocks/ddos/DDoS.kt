@@ -20,8 +20,8 @@ import net.liplum.api.cyber.IDataReceiver
 import net.liplum.api.cyber.IDataSender
 import net.liplum.api.cyber.drawLinkedLineToReceiverWhenConfiguring
 import net.liplum.api.cyber.req
-import net.liplum.lib.Serialized
 import net.liplum.common.delegates.Delegate1
+import net.liplum.lib.Serialized
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.render.postToastTextOn
 import net.liplum.mdt.render.removeToastOn
@@ -208,13 +208,13 @@ class DDoS(name: String) : Turret(name) {
             }
         }
         // TODO: Serialized
-        override fun getRequirements(): Seq<Item> = curAcceptItem.req
+        override val requirements: Seq<Item>
+            get() = curAcceptItem.req
         @ClientOnly
-        override fun isBlocked() = true
-        override fun getConnectedSenders() = senders
-        @JvmField var onRequirementUpdated: Delegate1<IDataReceiver> = Delegate1()
-        override fun getOnRequirementUpdated() = onRequirementUpdated
-        override fun maxSenderConnection() = maxConnection
+        override val isBlocked = true
+        override val connectedSenders = senders
+        override val onRequirementUpdated: Delegate1<IDataReceiver> = Delegate1()
+        override val maxSenderConnection = maxConnection
     }
 
     companion object {

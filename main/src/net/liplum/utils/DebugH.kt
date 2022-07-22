@@ -86,7 +86,7 @@ inline fun <reified T> Block.addSenderInfo() where T : Building, T : IDataReceiv
         { R.Bar.Sender.bundle(connectedSenders.size) },
         { R.C.Sender },
         {
-            var max = maxSenderConnection()
+            var max = maxSenderConnection
             if (max == -1) {
                 max = 10
             }
