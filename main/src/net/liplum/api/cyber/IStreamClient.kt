@@ -62,6 +62,6 @@ interface IStreamClient : IStreamNode {
 
     val hostConnectionNumber: Int
         get() = connectedHosts.size
+    @ClientOnly
     val clientColor: Color
-        @ClientOnly get
 }

@@ -15,11 +15,11 @@ import mindustry.world.meta.BlockGroup
 import net.liplum.*
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
+import net.liplum.common.persistence.read
+import net.liplum.common.persistence.write
 import net.liplum.lib.Serialized
 import net.liplum.lib.assets.TR
 import net.liplum.lib.assets.TRs
-import net.liplum.common.persistence.read
-import net.liplum.common.persistence.write
 import net.liplum.mdt.*
 import net.liplum.mdt.animations.anis.AniState
 import net.liplum.mdt.animations.anis.config
@@ -134,7 +134,7 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
     }
 
     open inner class HostBuild : AniedBuild(), IStreamHost {
-        override fun getMaxRange() = this@StreamHost.maxRange
+        override val maxRange = this@StreamHost.maxRange
         @Serialized
         var clients = OrderedSet<Int>()
         @ClientOnly @JvmField var liquidFlow = 0f
@@ -146,8 +146,9 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
         var queue = LinkedList<Point2>()
         val realNetworkSpeed: Float
             get() = networkSpeed * timeScale
+        override val hostColor: Color
+            get() = liquids.current().color
 
-        override fun getHostColor(): Color = liquids.current().color
         override fun updateTile() {
             checkQueue()
             // Check connection every second
@@ -345,8 +346,8 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
             }
         }
 
-        override fun maxClientConnection() = maxConnection
-        override fun getConnectedClients(): OrderedSet<Int> = clients
+        override val maxClientConnection = maxConnection
+        override val connectedClients: OrderedSet<Int> = clients
         override fun read(read: Reads, revision: Byte) {
             super.read(read, revision)
             clients.read(read)

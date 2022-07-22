@@ -100,7 +100,7 @@ inline fun <reified T> Block.addClientInfo() where T : Building, T : IStreamHost
         { R.Bar.Client.bundle(connectedClients.size) },
         { R.C.Client },
         {
-            var max = maxClientConnection()
+            var max = maxClientConnection
             if (max == -1) {
                 max = 10
             }

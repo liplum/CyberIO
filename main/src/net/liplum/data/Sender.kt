@@ -264,7 +264,6 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
                 return false
             }
             if (other.tileEquals(receiverPos)) {
-                deselect()
                 configure(null)
                 return false
             }

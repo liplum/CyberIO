@@ -1,13 +1,12 @@
-package net.liplum.api.cyber;
+package net.liplum.api.cyber
 
-import arc.graphics.Color;
-import arc.struct.OrderedSet;
-import mindustry.type.Liquid;
-import net.liplum.mdt.ClientOnly;
-import net.liplum.mdt.SendDataPack;
-import org.jetbrains.annotations.NotNull;
+import arc.graphics.Color
+import arc.struct.OrderedSet
+import mindustry.type.Liquid
+import net.liplum.mdt.ClientOnly
+import net.liplum.mdt.SendDataPack
 
-public interface IStreamHost extends IStreamNode {
+interface IStreamHost : IStreamNode {
     /**
      * sends liquid
      *
@@ -16,60 +15,47 @@ public interface IStreamHost extends IStreamNode {
      * @param amount how much liquid will be sent
      * @return the rest of liquid
      */
-    default float streaming(@NotNull IStreamClient client, @NotNull Liquid liquid, float amount) {
-        float maxAccepted = client.acceptedAmount(this, liquid);
+    fun streaming(client: IStreamClient, liquid: Liquid, amount: Float): Float {
+        val maxAccepted = client.acceptedAmount(this, liquid)
         if (maxAccepted < 0) {
-            client.readStream(this, liquid, amount);
-            return 0;
+            client.readStream(this, liquid, amount)
+            return 0f
         }
-        if (maxAccepted >= amount) {
-            client.readStream(this, liquid, amount);
-            return 0;
+        return if (maxAccepted >= amount) {
+            client.readStream(this, liquid, amount)
+            0f
         } else {
-            float rest = amount - maxAccepted;
-            client.readStream(this, liquid, maxAccepted);
-            return rest;
+            val rest = amount - maxAccepted
+            client.readStream(this, liquid, maxAccepted)
+            rest
         }
     }
-
     @SendDataPack
-    void connectSync(@NotNull IStreamClient client);
-
+    fun connectSync(client: IStreamClient)
     @SendDataPack
-    void disconnectSync(@NotNull IStreamClient client);
-
-    default boolean isConnectedWith(@NotNull IStreamClient client) {
-        return getConnectedClients().contains(client.getBuilding().pos());
+    fun disconnectSync(client: IStreamClient)
+    fun isConnectedWith(client: IStreamClient): Boolean {
+        return connectedClients.contains(client.building.pos())
     }
-
     /**
-     * Gets the maximum limit of connection.<br/>
+     * Gets the maximum limit of connection.<br></br>
      * -1 : unlimited
      *
      * @return the maximum of connection
      */
-    int maxClientConnection();
-
-    default boolean canHaveMoreClientConnection() {
-        int max = maxClientConnection();
-        if (max == -1) {
-            return true;
-        }
-        return getConnectedClients().size < max;
+    val maxClientConnection: Int
+    fun canHaveMoreClientConnection(): Boolean {
+        val max = maxClientConnection
+        return if (max == -1) {
+            true
+        } else connectedClients.size < max
     }
 
-    default int getClientConnectionNumber() {
-        return getConnectedClients().size;
-    }
-
-    @NotNull
-    OrderedSet<Integer> getConnectedClients();
-
-    @NotNull
+    val clientConnectionNumber: Int
+        get() = connectedClients.size
+    val connectedClients: OrderedSet<Int>
     @ClientOnly
-    Color getHostColor();
-
-    default float getMaxRange() {
-        return -1f;
-    }
+    val hostColor: Color
+    val maxRange: Float
+        get() = -1f
 }

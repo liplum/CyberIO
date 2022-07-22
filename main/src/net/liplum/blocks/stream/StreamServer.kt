@@ -84,7 +84,8 @@ open class StreamServer(name: String) : StreamHost(name) {
         @ClientOnly @JvmField var mixedLiquidColor: Color = Color.white.cpy()
         @ClientOnly @JvmField var _hostColor: Color = R.C.Host.cpy()
         @ClientOnly
-        override fun getHostColor() = _hostColor
+        override val hostColor: Color
+            get() = _hostColor
         @ClientOnly
         fun updateHostColor() {
             _hostColor = R.C.Host.cpy()
