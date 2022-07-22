@@ -14,6 +14,7 @@ import mindustry.Vars
 import mindustry.ctype.UnlockableContent
 import mindustry.game.EventType
 import mindustry.gen.Building
+import mindustry.gen.Buildingc
 import mindustry.gen.Icon
 import mindustry.graphics.Drawf
 import mindustry.graphics.Pal
@@ -42,10 +43,10 @@ object G {
     }
     @JvmStatic
     val TR.realWidth: Float
-        get() = width * sclx
+        get() = width * Draw.scl * Draw.xscl
     @JvmStatic
     val TR.realHeight: Float
-        get() = width * scly
+        get() = width * Draw.scl * Draw.yscl
     @JvmStatic
     val sclx: Float
         get() = Draw.scl * Draw.xscl
@@ -210,7 +211,12 @@ object G {
         val alphaMulti = alpha ?: 1f
         val inner = Tmp.c1.set(arrowColor).a(arrowColor.a * alphaMulti)
         val outline = Tmp.c2.set(arrowColor).a(arrowColor.a * alphaMulti).darken(0.3f)
-        val size = 1f + sin * 0.15f
+        var size = 1f + sin * 0.15f
+        var outlineSize = 1f + sin * 0.15f + 0.4f
+        if (Vars.mobile) {
+            size *= 0.7f
+            outlineSize *=0.7f
+        }
         val time = length / speed * 60f
         val moving = if (speed > 0f) Tmp.v3.set(t).setLength((length * (Time.time % time / time)) % length)
         else Tmp.v3.set(0f, 0f)
@@ -231,7 +237,7 @@ object G {
             }
             Draw.color(outline)
             AddAlpha(fadeAlpha)
-            Icon.right.region.DrawSize(line.x, line.y, size = size + 0.4f, rotation = angle)
+            Icon.right.region.DrawSize(line.x, line.y, size = outlineSize, rotation = angle)
             Draw.color(inner)
             AddAlpha(fadeAlpha)
             Icon.right.region.DrawSize(line.x, line.y, size = size, rotation = angle)
@@ -265,8 +271,8 @@ object G {
     @JvmStatic
     @JvmOverloads
     fun transferArrowLineBreath(
-        start: Building,
-        end: Building,
+        start: Buildingc,
+        end: Buildingc,
         arrowColor: Color = Pal.power,
         density: Float = 15f,
         speed: Float = 60f,

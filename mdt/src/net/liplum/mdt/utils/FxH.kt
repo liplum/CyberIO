@@ -11,10 +11,9 @@ fun NewEffect(
     duration: Float,
     clipSize: Float = 50f,
     render: EffectContainer.() -> Unit,
-): Effect =
-    Effect(duration, clipSize) {
-        it.render()
-    }
+): Effect = Effect(duration, clipSize) {
+    it.render()
+}
 /**
  * @param duration the duration of fade-in&out
  */

@@ -114,11 +114,11 @@ inline fun <reified T> Block.addHostInfo() where T : Building, T : IStreamClient
         { R.Bar.Host.bundle(connectedHosts.size) },
         { R.C.Host },
         {
-            var max = maxHostConnection()
+            var max = maxHostConnection
             if (max == -1) {
                 max = 10
             }
-            connectedHosts.size.toFloat() / max
+            connectedHosts.size.toFloat()/ max
         }
     )
 }

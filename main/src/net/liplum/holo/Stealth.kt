@@ -311,12 +311,11 @@ open class Stealth(name: String) : Turret(name) {
         }
 
         override fun peekAmmo() = shootType
-        @JvmField var onRequirementUpdated: Delegate1<IStreamClient> = Delegate1()
-        override fun getOnRequirementUpdated(): Delegate1<IStreamClient> = onRequirementUpdated
-        override fun getRequirements(): Seq<Liquid>? = cyberion.req
-        override fun getConnectedHosts(): ObjectSet<Int> = hosts
-        override fun getClientColor(): Color = cyberion.color
-        override fun maxHostConnection() = maxConnection
+        override val onRequirementUpdated: Delegate1<IStreamClient> = Delegate1()
+        override val requirements: Seq<Liquid>? = cyberion.req
+        override val connectedHosts: ObjectSet<Int> = hosts
+        override val clientColor: Color = cyberion.color
+        override val maxHostConnection = maxConnection
         override fun write(write: Writes) {
             super.write(write)
             hosts.write(write)

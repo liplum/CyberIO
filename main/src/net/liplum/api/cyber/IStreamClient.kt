@@ -1,83 +1,67 @@
-package net.liplum.api.cyber;
+package net.liplum.api.cyber
 
-import arc.graphics.Color;
-import arc.struct.ObjectSet;
-import arc.struct.Seq;
-import mindustry.type.Liquid;
-import net.liplum.mdt.CalledBySync;
-import net.liplum.mdt.ClientOnly;
-import net.liplum.common.delegates.Delegate1;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import arc.graphics.Color
+import arc.struct.ObjectSet
+import arc.struct.Seq
+import mindustry.type.Liquid
+import net.liplum.common.delegates.Delegate1
+import net.liplum.mdt.CalledBySync
+import net.liplum.mdt.ClientOnly
 
-public interface IStreamClient extends IStreamNode {
-    void readStream(@NotNull IStreamHost host, @NotNull Liquid liquid, float amount);
-
+interface IStreamClient : IStreamNode {
+    fun readStream(host: IStreamHost, liquid: Liquid, amount: Float)
     /**
-     * Gets the max acceptable number of this {@code liquid}.
+     * Gets the max acceptable number of this `liquid`.
      * negative number means any
      *
      * @param host   host
      * @param liquid liquid
      * @return amount
      */
-    float acceptedAmount(@NotNull IStreamHost host, @NotNull Liquid liquid);
-
-    @NotNull
-    Delegate1<IStreamClient> getOnRequirementUpdated();
+    fun acceptedAmount(host: IStreamHost, liquid: Liquid): Float
+    val onRequirementUpdated: Delegate1<IStreamClient>
     /**
-     * Gets what this client wants<br/>
-     * null : Any<br/>
-     * Array.Empty : Nothing<br/>
-     * An seq : all things in the array<br/>
+     * Gets what this client wants<br></br>
+     * null : Any<br></br>
+     * Array.Empty : Nothing<br></br>
+     * An seq : all things in the array<br></br>
      * Please cache this value, this is a mutable list.
      * @return what this client wants
      */
-    @Nullable
-    Seq<Liquid> getRequirements();
-
+    val requirements: Seq<Liquid>?
     @CalledBySync
-    default void connect(@NotNull IStreamHost host) {
-        getConnectedHosts().add(host.getBuilding().pos());
+    fun connect(host: IStreamHost) {
+        connectedHosts.add(host.building.pos())
     }
-
     @CalledBySync
-    default void disconnect(@NotNull IStreamHost host) {
-        getConnectedHosts().remove(host.getBuilding().pos());
+    fun disconnect(host: IStreamHost) {
+        connectedHosts.remove(host.building.pos())
     }
 
-    @NotNull
-    ObjectSet<Integer> getConnectedHosts();
-
-    default boolean isConnectedWith(@NotNull IStreamHost host) {
-        return getConnectedHosts().contains(host.getBuilding().pos());
+    val connectedHosts: ObjectSet<Int>
+    fun isConnectedWith(host: IStreamHost): Boolean {
+        return connectedHosts.contains(host.building.pos())
     }
-
     /**
-     * Gets the maximum limit of connection.<br/>
+     * Gets the maximum limit of connection.<br></br>
      * -1 : unlimited
      *
      * @return the maximum of connection
      */
-    int maxHostConnection();
-
-    default boolean acceptConnection(@NotNull IStreamHost host) {
-        return canHaveMoreHostConnection();
+    val maxHostConnection: Int
+    fun acceptConnection(host: IStreamHost): Boolean {
+        return canHaveMoreHostConnection()
     }
 
-    default boolean canHaveMoreHostConnection() {
-        int max = maxHostConnection();
-        if (max == -1) {
-            return true;
-        }
-        return getConnectedHosts().size < max;
+    fun canHaveMoreHostConnection(): Boolean {
+        val max = maxHostConnection
+        return if (max == -1) {
+            true
+        } else connectedHosts.size < max
     }
 
-    default int getHostConnectionNumber() {
-        return getConnectedHosts().size;
-    }
-
-    @NotNull
-    @ClientOnly
-    Color getClientColor();
+    val hostConnectionNumber: Int
+        get() = connectedHosts.size
+    val clientColor: Color
+        @ClientOnly get
 }

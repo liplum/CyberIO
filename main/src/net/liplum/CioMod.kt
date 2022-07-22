@@ -49,17 +49,20 @@ class CioMod : Mod() {
         @JvmField var lastPlayTime: Long = -1
 
         init {
-            if (!Core.settings.has(Meta.RepoInSettingsKey))
-                Core.settings.put(Meta.RepoInSettingsKey, Meta.Repo)
-            if (!Vars.headless && Vars.clientLoaded && !objCreated) {
-                FirstLoaded.tryRecord()
-                FirstLoaded.load()
-                Time.run(15f) {
-                    FirstLoaded.showDialog()
+            try {
+                if (!Core.settings.has(Meta.RepoInSettingsKey))
+                    Core.settings.put(Meta.RepoInSettingsKey, Meta.Repo)
+                if (!Vars.headless && Vars.clientLoaded && !objCreated) {
+                    FirstLoaded.tryRecord()
+                    FirstLoaded.load()
+                    Time.run(15f) {
+                        FirstLoaded.showDialog()
+                    }
                 }
+                val former = Core.settings.getInt("cyber-io-clz-loaded-times", 0)
+                Core.settings.put("cyber-io-clz-loaded-times", former + 1)
+            } catch (_: Exception) {
             }
-            val former = Core.settings.getInt("cyber-io-clz-loaded-times", 0)
-            Core.settings.put("cyber-io-clz-loaded-times", former + 1)
         }
     }
     /**

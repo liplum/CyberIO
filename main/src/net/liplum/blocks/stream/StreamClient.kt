@@ -19,16 +19,16 @@ import mindustry.world.meta.BlockGroup
 import net.liplum.DebugOnly
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
-import net.liplum.lib.Serialized
-import net.liplum.lib.assets.TR
 import net.liplum.common.delegates.Delegate1
 import net.liplum.common.persistence.read
 import net.liplum.common.persistence.write
+import net.liplum.lib.Serialized
+import net.liplum.lib.assets.TR
 import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.render.Draw
-import net.liplum.mdt.render.DrawOn
 import net.liplum.mdt.animations.anis.AniState
 import net.liplum.mdt.animations.anis.config
+import net.liplum.mdt.render.Draw
+import net.liplum.mdt.render.DrawOn
 import net.liplum.mdt.utils.inMod
 import net.liplum.mdt.utils.sub
 import net.liplum.utils.addHostInfo
@@ -76,6 +76,7 @@ open class StreamClient(name: String) : AniedBlock<StreamClient, StreamClient.Cl
         super.setStats()
         addMaxHostStats(maxConnection)
     }
+
     override fun load() {
         super.load()
         NoPowerTR = this.inMod("rs-no-power")
@@ -107,12 +108,14 @@ open class StreamClient(name: String) : AniedBlock<StreamClient, StreamClient.Cl
                     onRequirementUpdated(this)
                 }
             }
-        @JvmField var onRequirementUpdated: Delegate1<IStreamClient> = Delegate1()
-        override fun getOnRequirementUpdated() = onRequirementUpdated
-        override fun getRequirements(): Seq<Liquid>? = outputLiquid.req
-        override fun getConnectedHosts(): ObjectSet<Int> = hosts
-        override fun maxHostConnection() = maxConnection
-        override fun getClientColor(): Color = outputLiquid.clientColor
+        override val onRequirementUpdated: Delegate1<IStreamClient> = Delegate1()
+        override val requirements: Seq<Liquid>?
+            get() = outputLiquid.req
+        override val connectedHosts: ObjectSet<Int> = hosts
+        override val maxHostConnection = maxConnection
+        override val clientColor: Color
+            get() = outputLiquid.clientColor
+
         override fun updateTile() {
             // Check connection every second
             if (timer(CheckConnectionTimer, 60f)) {

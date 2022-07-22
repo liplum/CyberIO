@@ -19,15 +19,15 @@ import mindustry.ui.Bar
 import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.api.cyber.*
-import net.liplum.lib.arc.isNotEmpty
-import net.liplum.lib.Serialized
 import net.liplum.common.delegates.Delegate1
 import net.liplum.common.persistence.read
 import net.liplum.common.persistence.write
+import net.liplum.lib.Serialized
+import net.liplum.lib.arc.isNotEmpty
 import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.render.DrawOn
 import net.liplum.mdt.WhenTheSameTeam
 import net.liplum.mdt.mixin.total
+import net.liplum.mdt.render.DrawOn
 import net.liplum.mdt.ui.bars.appendDisplayLiquidsDynamic
 import net.liplum.mdt.ui.bars.genAllLiquidBars
 import net.liplum.mdt.ui.bars.removeLiquidInBar
@@ -288,11 +288,11 @@ open class StreamServer(name: String) : StreamHost(name) {
             }
         }
 
-        @JvmField var onRequirementUpdated: Delegate1<IStreamClient> = Delegate1()
-        override fun getOnRequirementUpdated() = onRequirementUpdated
-        override fun getRequirements(): Seq<Liquid>? = null
-        override fun getConnectedHosts(): ObjectSet<Int> = hosts
-        override fun maxHostConnection() = maxConnection
-        override fun getClientColor(): Color = mixedLiquidColor
+        override val onRequirementUpdated: Delegate1<IStreamClient> = Delegate1()
+        override val requirements: Seq<Liquid>? = null
+        override val connectedHosts: ObjectSet<Int> = hosts
+        override val maxHostConnection = maxConnection
+        override val clientColor: Color
+            get() = mixedLiquidColor
     }
 }
