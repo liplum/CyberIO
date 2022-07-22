@@ -193,7 +193,7 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
         }
 
         override fun acceptItem(source: Building, item: Item): Boolean = false
-        override fun acceptedAmount(sender: IDataSender, item: Item): Int {
+        override fun getAcceptedAmount(sender: IDataSender, item: Item): Int {
             if (!canConsume()) return 0
 
             return if (item == outputItem)
@@ -201,8 +201,8 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
             else 0
         }
 
-        override fun receiveData(sender: IDataSender, item: Item, amount: Int) {
-            if (this.isConnectedWith(sender)) {
+        override fun receiveDataFrom(sender: IDataSender, item: Item, amount: Int) {
+            if (this.isConnectedTo(sender)) {
                 items.add(item, amount)
             }
         }

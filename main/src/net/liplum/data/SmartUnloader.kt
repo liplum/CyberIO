@@ -249,7 +249,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
                     val pos = it.next()
                     val dr = pos.dr()
                     if (dr != null) {
-                        connectSync(dr)
+                        connectToSync(dr)
                         it.remove()
                     }
                 }
@@ -321,9 +321,9 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
                 if (tracker.receivers.isEmpty() || !this.items.has(item))
                     continue
                 val receiver = tracker.receivers[tracker.curIndex]
-                if (receiver.acceptedAmount(this, item).isAccepted()) {
+                if (receiver.getAcceptedAmount(this, item).isAccepted()) {
                     this.items.remove(item, 1)
-                    this.sendData(receiver, item, 1)
+                    this.sendDataTo(receiver, item, 1)
                     sent = true
                 }
                 tracker.curIndex++
@@ -400,7 +400,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
                 if (!canMultipleConnect) {
                     deselect()
                 }
-                pos.dr()?.let { disconnectSync(it) }
+                pos.dr()?.let { disconnectFromSync(it) }
                 return false
             }
             if (other is IDataReceiver) {
@@ -410,9 +410,9 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
                     if (!canMultipleConnect) {
                         deselect()
                     }
-                    if (canHaveMoreReceiverConnection()) {
-                        if (other.acceptConnection(this)) {
-                            connectSync(other)
+                    if (canHaveMoreReceiverConnection) {
+                        if (other.isConnectionAccepted(this)) {
+                            connectToSync(other)
                         } else {
                             postFullSenderOn(other)
                         }
@@ -433,7 +433,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
                 val abs = rel
                 val dr = abs.dr()
                 if (dr != null) {
-                    dr.connect(this)
+                    dr.connectTo(this)
                     this.connectReceiver(dr)
                 } else {
                     queue.add(abs)
@@ -445,12 +445,12 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
             if (pos in receivers) {
                 pos.dr()?.let {
                     disconnectReceiver(it)
-                    it.disconnect(this)
+                    it.disconnectFrom(this)
                 }
             } else {
                 pos.dr()?.let {
                     connectReceiver(it)
-                    it.connect(this)
+                    it.connectTo(this)
                 }
             }
         }
@@ -485,7 +485,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
         open fun clearReceivers() {
             receivers.forEach { pos ->
                 pos.dr()?.let {
-                    it.disconnect(this)
+                    it.disconnectFrom(this)
                     it.onRequirementUpdated -= ::onReceiverRequirementsUpdated
                 }
             }
@@ -493,14 +493,14 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
             updateTracker()
         }
         @SendDataPack
-        override fun connectSync(receiver: IDataReceiver) {
+        override fun connectToSync(receiver: IDataReceiver) {
             val pos = receiver.building.pos()
             if (pos !in receivers) {
                 configure(pos)
             }
         }
         @SendDataPack
-        override fun disconnectSync(receiver: IDataReceiver) {
+        override fun disconnectFromSync(receiver: IDataReceiver) {
             val pos = receiver.building.pos()
             if (pos in receivers) {
                 configure(pos)
@@ -534,7 +534,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
         override fun control(type: LAccess, p1: Any?, p2: Double, p3: Double, p4: Double) {
             when (type) {
                 LAccess.shoot ->
-                    if (p1 is IDataReceiver) connectSync(p1)
+                    if (p1 is IDataReceiver) connectToSync(p1)
                 else -> super.control(type, p1, p2, p3, p4)
             }
         }
@@ -543,7 +543,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
             when (type) {
                 LAccess.shoot -> {
                     val receiver = buildAt(p1, p2)
-                    if (receiver is IDataReceiver) connectSync(receiver)
+                    if (receiver is IDataReceiver) connectToSync(receiver)
                 }
                 else -> super.control(type, p1, p2, p3, p4)
             }

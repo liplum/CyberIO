@@ -1,6 +1,7 @@
 package net.liplum.api.cyber
 
 import arc.graphics.Color
+import arc.struct.ObjectSet
 import arc.struct.OrderedSet
 import mindustry.type.Liquid
 import net.liplum.api.ICyberEntity
@@ -16,26 +17,26 @@ interface IStreamHost : ICyberEntity {
      * @param amount how much liquid will be sent
      * @return the rest of liquid
      */
-    fun streaming(client: IStreamClient, liquid: Liquid, amount: Float): Float {
-        val maxAccepted = client.acceptedAmount(this, liquid)
+    fun streamTo(client: IStreamClient, liquid: Liquid, amount: Float): Float {
+        val maxAccepted = client.getAcceptedAmount(this, liquid)
         if (maxAccepted < 0) {
-            client.readStream(this, liquid, amount)
+            client.readStreamFrom(this, liquid, amount)
             return 0f
         }
         return if (maxAccepted >= amount) {
-            client.readStream(this, liquid, amount)
+            client.readStreamFrom(this, liquid, amount)
             0f
         } else {
             val rest = amount - maxAccepted
-            client.readStream(this, liquid, maxAccepted)
+            client.readStreamFrom(this, liquid, maxAccepted)
             rest
         }
     }
     @SendDataPack
-    fun connectSync(client: IStreamClient)
+    fun connectToSync(client: IStreamClient)
     @SendDataPack
-    fun disconnectSync(client: IStreamClient)
-    fun isConnectedWith(client: IStreamClient): Boolean {
+    fun disconnectFromSync(client: IStreamClient)
+    fun isConnectedTo(client: IStreamClient): Boolean {
         return connectedClients.contains(client.building.pos())
     }
     /**
@@ -45,13 +46,8 @@ interface IStreamHost : ICyberEntity {
      * @return the maximum of connection
      */
     val maxClientConnection: Int
-    fun canHaveMoreClientConnection(): Boolean {
-        val max = maxClientConnection
-        return if (max == -1) {
-            true
-        } else connectedClients.size < max
-    }
-
+    val canHaveMoreClientConnection: Boolean
+        get() = maxClientConnection == -1 || clientConnectionNumber < maxClientConnection
     val clientConnectionNumber: Int
         get() = connectedClients.size
     val connectedClients: OrderedSet<Int>
@@ -59,4 +55,19 @@ interface IStreamHost : ICyberEntity {
     val hostColor: Color
     val maxRange: Float
         get() = -1f
+
+    companion object {
+        /**
+         * Only for single connection
+         */
+        val emptyConnection = ObjectSet<Int>()
+        @SendDataPack
+        fun IStreamHost.connectToSync(client: Int) {
+            client.sc()?.let { connectToSync(it) }
+        }
+        @SendDataPack
+        fun IStreamHost.disconnectFromSync(client: Int) {
+            client.sc()?.let { disconnectFromSync(it) }
+        }
+    }
 }

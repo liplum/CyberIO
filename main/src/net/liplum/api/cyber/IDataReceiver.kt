@@ -11,7 +11,7 @@ import net.liplum.mdt.CalledBySync
 import net.liplum.mdt.ClientOnly
 
 interface IDataReceiver : ICyberEntity {
-    fun receiveData(sender: IDataSender, item: Item, amount: Int)
+    fun receiveDataFrom(sender: IDataSender, item: Item, amount: Int)
     /**
      * Gets the max acceptable number of this `item`.
      * -1 means any
@@ -20,7 +20,7 @@ interface IDataReceiver : ICyberEntity {
      * @param item   item
      * @return amount
      */
-    fun acceptedAmount(sender: IDataSender, item: Item): Int
+    fun getAcceptedAmount(sender: IDataSender, item: Item): Int
     /**
      * Gets what this receiver wants<br></br>
      * null : Any<br></br>
@@ -38,16 +38,16 @@ interface IDataReceiver : ICyberEntity {
     @ClientOnly
     val isBlocked: Boolean
     @CalledBySync
-    fun connect(sender: IDataSender) {
+    fun connectTo(sender: IDataSender) {
         connectedSenders.add(sender.building.pos())
     }
     @CalledBySync
-    fun disconnect(sender: IDataSender) {
+    fun disconnectFrom(sender: IDataSender) {
         connectedSenders.remove(sender.building.pos())
     }
 
     val connectedSenders: ObjectSet<Int>
-    fun isConnectedWith(sender: IDataSender): Boolean {
+    fun isConnectedTo(sender: IDataSender): Boolean {
         return connectedSenders.contains(sender.building.pos())
     }
 
@@ -59,17 +59,12 @@ interface IDataReceiver : ICyberEntity {
      * @return the maximum of connection
      */
     val maxSenderConnection: Int
-    fun acceptConnection(sender: IDataSender): Boolean {
-        return canHaveMoreSenderConnection()
+    fun isConnectionAccepted(sender: IDataSender): Boolean {
+        return canHaveMoreSenderConnection
     }
 
     val senderConnectionNumber: Int
         get() = connectedSenders.size
-
-    fun canHaveMoreSenderConnection(): Boolean {
-        val max = maxSenderConnection
-        return if (max == -1) {
-            true
-        } else connectedSenders.size < max
-    }
+    val canHaveMoreSenderConnection: Boolean
+        get() = maxSenderConnection == -1 || senderConnectionNumber < maxSenderConnection
 }

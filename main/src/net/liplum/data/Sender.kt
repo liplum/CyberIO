@@ -138,10 +138,10 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
         var receiverPos: Point2? = null
             set(value) {
                 var curBuild = receiverPos.dr()
-                curBuild?.disconnect(this)
+                curBuild?.disconnectFrom(this)
                 field = value
                 curBuild = receiverPos.dr()
-                curBuild?.connect(this)
+                curBuild?.connectTo(this)
             }
         val receiver: IDataReceiver?
             get() = receiverPos.dr()
@@ -201,7 +201,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
             if (waiting != null) {
                 val dr = waiting.dr()
                 if (dr != null) {
-                    connectSync(dr)
+                    connectToSync(dr)
                     queue = null
                 }
             }
@@ -226,7 +226,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
             }
             val reb = receiver
             if (reb != null) {
-                sendData(reb, item, 1)
+                sendDataTo(reb, item, 1)
                 ClientOnly {
                     lastSendingTime = 0f
                 }
@@ -269,9 +269,9 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
                     if (!canMultipleConnect) {
                         deselect()
                     }
-                    if (canHaveMoreReceiverConnection()) {
-                        if (other.acceptConnection(this)) {
-                            connectSync(other)
+                    if (canHaveMoreReceiverConnection) {
+                        if (other.isConnectionAccepted(this)) {
+                            connectToSync(other)
                         } else {
                             postFullSenderOn(other)
                         }
@@ -293,7 +293,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
                 return false
             }
             val reb = receiver
-            return reb?.acceptedAmount(this, item)?.isAccepted() ?: false
+            return reb?.getAcceptedAmount(this, item)?.isAccepted() ?: false
         }
 
         override fun write(write: Writes) {
@@ -307,14 +307,14 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
             receiverPos = if (packPos != -1) packPos.unpack() else null
         }
         @SendDataPack
-        override fun connectSync(receiver: IDataReceiver) {
+        override fun connectToSync(receiver: IDataReceiver) {
             val target = receiver.building
             if (!target.tileEquals(receiverPos)) {
                 configure(target.pos())
             }
         }
         @SendDataPack
-        override fun disconnectSync(receiver: IDataReceiver) {
+        override fun disconnectFromSync(receiver: IDataReceiver) {
             if (receiver.building.tileEquals(receiverPos)) {
                 configure(null)
             }
@@ -323,7 +323,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
         override fun control(type: LAccess, p1: Any?, p2: Double, p3: Double, p4: Double) {
             when (type) {
                 LAccess.shoot ->
-                    if (!p2.isZero && p1 is IDataReceiver) connectSync(p1)
+                    if (!p2.isZero && p1 is IDataReceiver) connectToSync(p1)
                 else -> super.control(type, p1, p2, p3, p4)
             }
         }
@@ -332,7 +332,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
             when (type) {
                 LAccess.shoot -> {
                     val receiver = buildAt(p1, p2)
-                    if (!p3.isZero && receiver is IDataReceiver) connectSync(receiver)
+                    if (!p3.isZero && receiver is IDataReceiver) connectToSync(receiver)
                 }
                 else -> super.control(type, p1, p2, p3, p4)
             }

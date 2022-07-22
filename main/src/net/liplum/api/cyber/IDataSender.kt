@@ -17,41 +17,30 @@ interface IDataSender : ICyberEntity {
      * @param amount   how many item(s) will be sent
      * @return the rest of item(s)
      */
-    fun sendData(receiver: IDataReceiver, item: Item, amount: Int): Int {
-        val maxAccepted = receiver.acceptedAmount(this, item)
+    fun sendDataTo(receiver: IDataReceiver, item: Item, amount: Int): Int {
+        val maxAccepted = receiver.getAcceptedAmount(this, item)
         if (maxAccepted == -1) {
-            receiver.receiveData(this, item, amount)
+            receiver.receiveDataFrom(this, item, amount)
             return 0
         }
         return if (maxAccepted >= amount) {
-            receiver.receiveData(this, item, amount)
+            receiver.receiveDataFrom(this, item, amount)
             0
         } else {
             val rest = amount - maxAccepted
-            receiver.receiveData(this, item, maxAccepted)
+            receiver.receiveDataFrom(this, item, maxAccepted)
             rest
         }
     }
     @SendDataPack
-    fun connectSync(receiver: IDataReceiver)
+    fun connectToSync(receiver: IDataReceiver)
     @SendDataPack
-    fun disconnectSync(receiver: IDataReceiver)
-    @SendDataPack
-    fun connectSync(receiver: Int) {
-        val dr = receiver.dr()
-        dr?.let { connectSync(it) }
-    }
-    @SendDataPack
-    fun disconnectSync(receiver: Int) {
-        val dr = receiver.dr()
-        dr?.let { disconnectSync(it) }
-    }
-
+    fun disconnectFromSync(receiver: IDataReceiver)
     val connectedReceiver: Int?
     val canMultipleConnect: Boolean
         get() = maxReceiverConnection != 1
 
-    fun isConnectedWith(receiver: IDataReceiver): Boolean {
+    fun isConnectedTo(receiver: IDataReceiver): Boolean {
         return if (canMultipleConnect) {
             connectedReceivers.contains(receiver.building.pos())
         } else {
@@ -71,14 +60,8 @@ interface IDataSender : ICyberEntity {
      */
     val maxReceiverConnection: Int
         get() = 1
-
-    fun canHaveMoreReceiverConnection(): Boolean {
-        val max = maxReceiverConnection
-        return if (max == -1) {
-            true
-        } else connectedReceivers.size < max
-    }
-
+    val canHaveMoreReceiverConnection: Boolean
+        get() = maxReceiverConnection == -1 || receiverConnectionNumber < maxReceiverConnection
     val receiverConnectionNumber: Int
         get() = if (canMultipleConnect) connectedReceivers.size
         else if (connectedReceiver == null) 0
@@ -96,5 +79,13 @@ interface IDataSender : ICyberEntity {
          * Only for single connection
          */
         val emptyConnection = ObjectSet<Int>()
+        @SendDataPack
+        fun IDataSender.connectToSync(receiver: Int) {
+            receiver.dr()?.let { connectToSync(it) }
+        }
+        @SendDataPack
+        fun IDataSender.disconnectFromSync(receiver: Int) {
+            receiver.dr()?.let { disconnectFromSync(it) }
+        }
     }
 }

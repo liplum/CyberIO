@@ -166,7 +166,7 @@ open class StreamServer(name: String) : StreamHost(name) {
                         val current = liquids.current()
                         val pumpedThisTime = per.coerceAtMost(liquids.currentAmount())
                         if (pumpedThisTime > 0.01f) {
-                            val rest = streaming(client, current, pumpedThisTime)
+                            val rest = streamTo(client, current, pumpedThisTime)
                             val consumed = (pumpedThisTime - rest)
                             liquids.remove(current, consumed)
                             restNeedPumped -= consumed
@@ -176,7 +176,7 @@ open class StreamServer(name: String) : StreamHost(name) {
                         for (liquidNeed in reqs) {
                             val pumpedThisTime = perThisTime.coerceAtMost(liquids.get(liquidNeed))
                             if (pumpedThisTime > 0.01f) {
-                                val rest = streaming(client, liquidNeed!!, pumpedThisTime)
+                                val rest = streamTo(client, liquidNeed!!, pumpedThisTime)
                                 val consumed = (perThisTime - rest)
                                 liquids.remove(liquidNeed, consumed)
                                 restNeedPumped -= consumed
@@ -229,7 +229,7 @@ open class StreamServer(name: String) : StreamHost(name) {
         override fun control(type: LAccess, p1: Any?, p2: Double, p3: Double, p4: Double) {
             when (type) {
                 LAccess.shoot ->
-                    if (p1 is IStreamClient) connectSync(p1)
+                    if (p1 is IStreamClient) connectToSync(p1)
                 else -> super.control(type, p1, p2, p3, p4)
             }
         }
@@ -238,15 +238,15 @@ open class StreamServer(name: String) : StreamHost(name) {
             when (type) {
                 LAccess.shoot -> {
                     val receiver = buildAt(p1, p2)
-                    if (receiver is IStreamClient) connectSync(receiver)
+                    if (receiver is IStreamClient) connectToSync(receiver)
                 }
                 else -> super.control(type, p1, p2, p3, p4)
             }
         }
         @Serialized
         var hosts = OrderedSet<Int>()
-        override fun readStream(host: IStreamHost, liquid: Liquid, amount: Float) {
-            if (this.isConnectedWith(host)) {
+        override fun readStreamFrom(host: IStreamHost, liquid: Liquid, amount: Float) {
+            if (this.isConnectedTo(host)) {
                 liquids.add(liquid, amount)
                 ClientOnly {
                     liquidFlow += amount
@@ -254,9 +254,9 @@ open class StreamServer(name: String) : StreamHost(name) {
             }
         }
 
-        override fun acceptedAmount(host: IStreamHost, liquid: Liquid): Float {
+        override fun getAcceptedAmount(host: IStreamHost, liquid: Liquid): Float {
             if (!canConsume()) return 0f
-            if (!isConnectedWith(host)) return 0f
+            if (!isConnectedTo(host)) return 0f
             return liquidCapacity - liquids[liquid]
         }
 

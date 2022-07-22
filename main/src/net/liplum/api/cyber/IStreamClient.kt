@@ -10,7 +10,7 @@ import net.liplum.mdt.CalledBySync
 import net.liplum.mdt.ClientOnly
 
 interface IStreamClient : ICyberEntity {
-    fun readStream(host: IStreamHost, liquid: Liquid, amount: Float)
+    fun readStreamFrom(host: IStreamHost, liquid: Liquid, amount: Float)
     /**
      * Gets the max acceptable number of this `liquid`.
      * negative number means any
@@ -19,7 +19,7 @@ interface IStreamClient : ICyberEntity {
      * @param liquid liquid
      * @return amount
      */
-    fun acceptedAmount(host: IStreamHost, liquid: Liquid): Float
+    fun getAcceptedAmount(host: IStreamHost, liquid: Liquid): Float
     val onRequirementUpdated: Delegate1<IStreamClient>
     /**
      * Gets what this client wants<br></br>
@@ -31,16 +31,16 @@ interface IStreamClient : ICyberEntity {
      */
     val requirements: Seq<Liquid>?
     @CalledBySync
-    fun connect(host: IStreamHost) {
+    fun connectFrom(host: IStreamHost) {
         connectedHosts.add(host.building.pos())
     }
     @CalledBySync
-    fun disconnect(host: IStreamHost) {
+    fun disconnectFrom(host: IStreamHost) {
         connectedHosts.remove(host.building.pos())
     }
 
     val connectedHosts: ObjectSet<Int>
-    fun isConnectedWith(host: IStreamHost): Boolean {
+    fun isConnectedTo(host: IStreamHost): Boolean {
         return connectedHosts.contains(host.building.pos())
     }
     /**
@@ -50,17 +50,12 @@ interface IStreamClient : ICyberEntity {
      * @return the maximum of connection
      */
     val maxHostConnection: Int
-    fun acceptConnection(host: IStreamHost): Boolean {
-        return canHaveMoreHostConnection()
+    fun isConnectionAccepted(host: IStreamHost): Boolean {
+        return canHaveMoreHostConnection
     }
 
-    fun canHaveMoreHostConnection(): Boolean {
-        val max = maxHostConnection
-        return if (max == -1) {
-            true
-        } else connectedHosts.size < max
-    }
-
+    val canHaveMoreHostConnection: Boolean
+        get() = maxHostConnection == -1 || hostConnectionNumber < maxHostConnection
     val hostConnectionNumber: Int
         get() = connectedHosts.size
     @ClientOnly

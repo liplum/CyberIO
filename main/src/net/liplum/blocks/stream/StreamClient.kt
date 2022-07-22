@@ -132,15 +132,15 @@ open class StreamClient(name: String) : AniedBlock<StreamClient, StreamClient.Cl
             }
         }
 
-        override fun readStream(host: IStreamHost, liquid: Liquid, amount: Float) {
-            if (this.isConnectedWith(host)) {
+        override fun readStreamFrom(host: IStreamHost, liquid: Liquid, amount: Float) {
+            if (this.isConnectedTo(host)) {
                 liquids.add(liquid, amount)
             }
         }
 
-        override fun acceptedAmount(host: IStreamHost, liquid: Liquid): Float {
+        override fun getAcceptedAmount(host: IStreamHost, liquid: Liquid): Float {
             if (!canConsume()) return 0f
-            if (!isConnectedWith(host)) return 0f
+            if (!isConnectedTo(host)) return 0f
             return if (liquid == outputLiquid)
                 liquidCapacity - liquids[outputLiquid]
             else

@@ -191,13 +191,13 @@ class DDoS(name: String) : Turret(name) {
             }
         }
 
-        override fun receiveData(sender: IDataSender, item: Item, amount: Int) {
-            if (this.isConnectedWith(sender)) {
+        override fun receiveDataFrom(sender: IDataSender, item: Item, amount: Int) {
+            if (this.isConnectedTo(sender)) {
                 items.add(item, amount)
             }
         }
 
-        override fun acceptedAmount(sender: IDataSender, item: Item): Int {
+        override fun getAcceptedAmount(sender: IDataSender, item: Item): Int {
             if (!canConsume()) return 0
             return if (item == curAcceptItem) getMaximumAccepted(curAcceptItem) - items[curAcceptItem]
             else {

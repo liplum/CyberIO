@@ -170,7 +170,7 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
                 var resetClient = clients.size
                 for (client in SharedClientSeq) {
                     if (liquid.match(client.requirements)) {
-                        val rest = streaming(client, liquid, per)
+                        val rest = streamTo(client, liquid, per)
                         restNeedPumped -= (per - rest)
                     }
                     resetClient--
@@ -189,7 +189,7 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
                     val pos = it.next()
                     val dr = pos.sc()
                     if (dr != null) {
-                        connectSync(dr)
+                        connectToSync(dr)
                         it.remove()
                     }
                 }
@@ -204,7 +204,7 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
                 val abs = rel
                 val dr = abs.sc()
                 if (dr != null) {
-                    dr.connect(this)
+                    dr.connectFrom(this)
                     this.connectClient(dr)
                 } else {
                     queue.add(abs)
@@ -252,12 +252,12 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
             if (pos in clients) {
                 pos.sc()?.let {
                     disconnectClient(it)
-                    it.disconnect(this)
+                    it.disconnectFrom(this)
                 }
             } else {
                 pos.sc()?.let {
                     connectClient(it)
-                    it.connect(this)
+                    it.connectFrom(this)
                 }
             }
         }
@@ -279,7 +279,7 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
         open fun clearClients() {
             clients.forEach { pos ->
                 pos.sc()?.let {
-                    it.disconnect(this)
+                    it.disconnectFrom(this)
                     it.onRequirementUpdated -= ::onClientRequirementsUpdated
                 }
             }
@@ -298,7 +298,7 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
                 if (maxConnection == 1) {
                     deselect()
                 }
-                pos.sc()?.let { disconnectSync(it) }
+                pos.sc()?.let { disconnectFromSync(it) }
                 return false
             }
             if (other is IStreamClient) {
@@ -308,9 +308,9 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
                     if (maxConnection == 1) {
                         deselect()
                     }
-                    if (canHaveMoreClientConnection()) {
-                        if (other.acceptConnection(this)) {
-                            connectSync(other)
+                    if (canHaveMoreClientConnection) {
+                        if (other.isConnectionAccepted(this)) {
+                            connectToSync(other)
                         } else {
                             postFullHostOn(other)
                         }
@@ -334,13 +334,13 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
             drawMaxRange()
         }
         @SendDataPack
-        override fun connectSync(client: IStreamClient) {
+        override fun connectToSync(client: IStreamClient) {
             if (client.building.pos() !in clients) {
                 configure(client.building.pos())
             }
         }
         @SendDataPack
-        override fun disconnectSync(client: IStreamClient) {
+        override fun disconnectFromSync(client: IStreamClient) {
             if (client.building.pos() in clients) {
                 configure(client.building.pos())
             }
@@ -370,7 +370,7 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
         override fun control(type: LAccess, p1: Any?, p2: Double, p3: Double, p4: Double) {
             when (type) {
                 LAccess.shoot ->
-                    if (p1 is IStreamClient) connectSync(p1)
+                    if (p1 is IStreamClient) connectToSync(p1)
                 else -> super.control(type, p1, p2, p3, p4)
             }
         }
@@ -379,7 +379,7 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
             when (type) {
                 LAccess.shoot -> {
                     val receiver = buildAt(p1, p2)
-                    if (receiver is IStreamClient) connectSync(receiver)
+                    if (receiver is IStreamClient) connectToSync(receiver)
                 }
                 else -> super.control(type, p1, p2, p3, p4)
             }
