@@ -1,4 +1,4 @@
-package net.liplum.blocks.cloud
+package net.liplum.data
 
 import arc.struct.ObjectSet
 import arc.util.Time

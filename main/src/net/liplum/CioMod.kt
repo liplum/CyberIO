@@ -13,8 +13,8 @@ import mindustry.ui.dialogs.PlanetDialog
 import net.liplum.ConfigEntry.Companion.Config
 import net.liplum.ContentSpec.Companion.resolveContentSpec
 import net.liplum.Var.ContentSpecific
-import net.liplum.blocks.cloud.LiplumCloud
-import net.liplum.blocks.cloud.SharedRoom
+import net.liplum.data.LiplumCloud
+import net.liplum.data.SharedRoom
 import net.liplum.events.CioInitEvent
 import net.liplum.events.CioLoadContentEvent
 import net.liplum.gen.Contents

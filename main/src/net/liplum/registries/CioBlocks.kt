@@ -37,7 +37,7 @@ import net.liplum.api.bullets.MultiBulletAbility
 import net.liplum.api.virus.setUninfected
 import net.liplum.api.virus.setUninfectedFloor
 import net.liplum.blocks.bomb.ZipBomb
-import net.liplum.blocks.cloud.Cloud
+import net.liplum.data.Cloud
 import net.liplum.blocks.cyberion.DrawCyberionMixer
 import net.liplum.blocks.ddos.DDoS
 import net.liplum.blocks.decentralizer.Decentralizer
