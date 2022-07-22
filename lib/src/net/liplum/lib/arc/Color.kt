@@ -24,6 +24,7 @@ enum class LerpType {
     RGB, HSV
 }
 
+fun Color(hex: String): Color = Color.valueOf(hex)
 fun Color.darken(percentage: Float): Color {
     r *= 1f - percentage
     g *= 1f - percentage

@@ -1,5 +1,6 @@
 package net.liplum.data
 
+import arc.graphics.Color
 import net.liplum.api.cyber.IDataReceiver
 import kotlin.math.absoluteValue
 
@@ -14,6 +15,17 @@ open class Tracker(val maxConnection: Int) {
         }
 
     fun canAddMore(): Boolean = receivers.size <= maxConnection
+    fun genMixedColor(): Color? = when (receivers.size) {
+        0 -> null
+        1 -> receivers[0].receiverColor
+        else -> {
+            val c = Color.gray.cpy()
+            for (receiver in receivers) {
+                c.lerp(receiver.receiverColor, 1f / receivers.size)
+            }
+            c
+        }
+    }
 
     fun add(receiver: IDataReceiver) {
         if (canAddMore()) {

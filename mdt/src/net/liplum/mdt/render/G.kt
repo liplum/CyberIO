@@ -227,7 +227,7 @@ object G {
         val per = t.scl(1f / count)
         for (i in 0 until count) {
             val line = Tmp.v5.set(cur).sub(startDrawX, startDrawY)
-            val lineLength = line.len() % length
+            val lineLength = (line.len() % length / length).smooth * length
             line.setLength(lineLength)
             line.add(startDrawX, startDrawY)
             val fadeAlpha = when {

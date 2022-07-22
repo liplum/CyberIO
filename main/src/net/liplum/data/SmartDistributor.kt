@@ -64,7 +64,7 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
     @JvmField @ClientOnly var ArrowsAnimFrames = 9
     @JvmField @ClientOnly var ArrowsAnimDuration = 70f
     @JvmField @ClientOnly var DistributionTime = 60f
-    @ClientOnly @JvmField var maxSelectedCircleTime = Var.SelectedCircleTime
+    @ClientOnly @JvmField var maxSelectedCircleTime = Var.SurroundingRectTime
     /**
      * The area(tile xy) indicates the surrounding machines can be distributed.
      */
@@ -219,15 +219,17 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
                     requirementsText = genRequirementsText()
                 }
                 ClientOnly {
-                    val c = when (_requirements.size) {
+                    receiverColor = when (_requirements.size) {
                         0 -> R.C.Receiver
-                        1 -> _requirements[0].color
-                        else -> Color.gray.cpy()
+                        1 -> _requirements [0].color
+                        else -> {
+                            val c = Color.gray.cpy()
+                            for (req in _requirements) {
+                                c.lerp(req.color, 1f / _requirements.size)
+                            }
+                            c
+                        }
                     }
-                    for (req in _requirements) {
-                        c.lerp(req.color, 0.5f)
-                    }
-                    receiverColor = c
                 }
                 onRequirementUpdated(this)
             }
@@ -340,6 +342,7 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
 
         override val requirements: Seq<Item>?
             get() = _requirements
+        @ClientOnly
         val isBlocked: Boolean
             get() = lastDistributionTime > 30f
 

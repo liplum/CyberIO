@@ -279,7 +279,7 @@ open class Ear(name: String) : Block(name), IComponentBlock {
             Draw.z(Layer.turret)
             Draw.z(Layer.bullet)
             for (wave in sonicWaves) {
-                val alpha = Interp.pow2Out(wave.range / realSonicRadius)
+                val alpha = Interp.pow2In(wave.range / realSonicRadius)
                 Lines.stroke(waveWidth, sonicWaveColor)
                 Draw.alpha((1f - alpha) + 0.4f)
                 Lines.circle(wave.x, wave.y, wave.range)

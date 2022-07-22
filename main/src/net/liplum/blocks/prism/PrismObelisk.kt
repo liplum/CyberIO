@@ -33,7 +33,7 @@ open class PrismObelisk(name: String) : Block(name) {
     @JvmField @ClientOnly var indicateAreaExtension = 2f
     @JvmField @ClientOnly var BlinkFrames = 6
     @JvmField @ClientOnly var BlinkDuration = 20f
-    @ClientOnly @JvmField var maxSelectedCircleTime = Var.SelectedCircleTime
+    @ClientOnly @JvmField var maxSelectedCircleTime = Var.SurroundingRectTime
 
     init {
         buildType = Prov { ObeliskBuild() }

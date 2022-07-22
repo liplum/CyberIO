@@ -15,6 +15,7 @@ object Var {
     // Visual Effects
     /** How much time to reach max selected circle */
     @JvmField var SelectedCircleTime = 60f
+    @JvmField var SurroundingRectTime = 30f
     @JvmField var AnimUpdateFrequency = 5f
     @JvmField var ParticleEffectNumber = if (Vars.mobile) 64 else 128
     @JvmField val Rand = Rand()

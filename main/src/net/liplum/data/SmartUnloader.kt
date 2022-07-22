@@ -1,6 +1,7 @@
 package net.liplum.data
 
 import arc.func.Prov
+import arc.graphics.Color
 import arc.math.Mathf
 import arc.math.geom.Point2
 import arc.struct.OrderedSet
@@ -218,6 +219,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
             }
         }
 
+        override var senderColor: Color = R.C.Sender
         open fun updateUnloaded() {
             nearby.clear()
             for (b in proximity) {
@@ -350,7 +352,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
                     val reqs = receiver.requirements
                     if (reqs != null) {
                         for (req in reqs) {
-                            val tracker = trackers[req!!.ID]
+                            val tracker = trackers[req.ID]
                             if (tracker.canAddMore()) {
                                 needUnloadItems.add(req)
                                 tracker.add(receiver)
@@ -358,6 +360,18 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
                         }
                     }
                 }
+            }
+            ClientOnly {
+                val c = Color.gray.cpy()
+                var hasAny = false
+                for (tracker in trackers) {
+                    val color = tracker.genMixedColor()
+                    if (color != null) {
+                        hasAny = true
+                        c.lerp(color, 0.5f)
+                    }
+                }
+                senderColor = if (hasAny) c else R.C.Sender
             }
             DebugOnly {
                 needUnloadItemsText = genNeedUnloadItemsText()

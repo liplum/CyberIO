@@ -137,6 +137,7 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
         override fun onRemoved() {
             onRequirementUpdated.clear()
         }
+        @ClientOnly
         val isBlocked: Boolean
             get() = lastOutputDelta > blockTime
 

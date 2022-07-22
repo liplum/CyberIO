@@ -172,7 +172,8 @@ public final class R {
         public static final Color Black = new Color(Color.black);
         public static final Color IsAive = GreenSafe;
         public static final Color CoolDown = Color.gray;
-        public static final Color Sender = RedAlert,
+        public static final Color
+            Sender = RedAlert,
             Receiver = Pal.place;
         public static final Color IcLight = Color.valueOf("#047b04");
         public static final Color IcDark = Color.valueOf("#024202");
