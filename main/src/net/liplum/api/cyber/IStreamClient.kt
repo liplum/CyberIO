@@ -4,11 +4,12 @@ import arc.graphics.Color
 import arc.struct.ObjectSet
 import arc.struct.Seq
 import mindustry.type.Liquid
+import net.liplum.api.ICyberEntity
 import net.liplum.common.delegates.Delegate1
 import net.liplum.mdt.CalledBySync
 import net.liplum.mdt.ClientOnly
 
-interface IStreamClient : IStreamNode {
+interface IStreamClient : ICyberEntity {
     fun readStream(host: IStreamHost, liquid: Liquid, amount: Float)
     /**
      * Gets the max acceptable number of this `liquid`.

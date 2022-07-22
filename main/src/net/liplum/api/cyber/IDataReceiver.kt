@@ -5,11 +5,12 @@ import arc.struct.ObjectSet
 import arc.struct.Seq
 import mindustry.type.Item
 import net.liplum.R
+import net.liplum.api.ICyberEntity
 import net.liplum.common.delegates.Delegate1
 import net.liplum.mdt.CalledBySync
 import net.liplum.mdt.ClientOnly
 
-interface IDataReceiver : IDataBuilding {
+interface IDataReceiver : ICyberEntity {
     fun receiveData(sender: IDataSender, item: Item, amount: Int)
     /**
      * Gets the max acceptable number of this `item`.

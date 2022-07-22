@@ -3,10 +3,11 @@ package net.liplum.api.cyber
 import arc.graphics.Color
 import arc.struct.OrderedSet
 import mindustry.type.Liquid
+import net.liplum.api.ICyberEntity
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.SendDataPack
 
-interface IStreamHost : IStreamNode {
+interface IStreamHost : ICyberEntity {
     /**
      * sends liquid
      *

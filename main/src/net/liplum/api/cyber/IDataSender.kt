@@ -4,10 +4,11 @@ import arc.graphics.Color
 import arc.struct.ObjectSet
 import mindustry.type.Item
 import net.liplum.R
+import net.liplum.api.ICyberEntity
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.SendDataPack
 
-interface IDataSender : IDataBuilding {
+interface IDataSender : ICyberEntity {
     /**
      * sends items
      *

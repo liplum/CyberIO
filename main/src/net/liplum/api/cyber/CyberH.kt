@@ -36,8 +36,6 @@ var ToastTimeFadePercent = 0.1f
 var ToastTime = 180f
 private val p1 = Point2f()
 private val p2 = Point2f()
-fun Int.db(): IDataBuilding? =
-    this.build as? IDataBuilding
 
 fun Int.dr(): IDataReceiver? =
     this.build as? IDataReceiver
@@ -51,9 +49,6 @@ fun Int.ds(): IDataSender? =
 fun Int.dsOrPayload(): IDataSender? =
     this.ds() Or { this.inPayload() }
 
-fun Point2?.db(): IDataBuilding? =
-    this?.let { this.build as? IDataBuilding }
-
 fun Point2?.dr(): IDataReceiver? =
     this?.let { this.build as? IDataReceiver }
 
@@ -66,7 +61,7 @@ fun Point2?.ds(): IDataSender? =
 fun Point2?.dsOrPayload(): IDataSender? =
     this?.let { this.ds() Or { this.inPayload() } }
 
-val IDataBuilding?.exists: Boolean
+val ICyberEntity?.exists: Boolean
     get() = this != null && this.building.exists
 val ICyberEntity.bottomLeftX: Int
     get() = building.bottomLeftX
@@ -123,17 +118,11 @@ val ICyberEntity?.tileXd: Double
 val ICyberEntity?.tileYd: Double
     get() = (this?.tile?.y ?: 0).toDouble()
 
-fun Int.sn(): IStreamNode? =
-    this.build as? IStreamNode
-
 fun Int.sc(): IStreamClient? =
     this.build as? IStreamClient
 
 fun Int.sh(): IStreamHost? =
     this.build as? IStreamHost
-
-fun Point2?.sn(): IStreamNode? =
-    this?.let { this.build as? IStreamNode }
 
 fun Point2?.sc(): IStreamClient? =
     this?.let { this.build as? IStreamClient }
@@ -141,8 +130,6 @@ fun Point2?.sc(): IStreamClient? =
 fun Point2?.sh(): IStreamHost? =
     this?.let { this.build as? IStreamHost }
 
-val IStreamNode?.exists: Boolean
-    get() = this != null && this.building.exists
 typealias SingleLiquidArray = Seq<Liquid>
 
 object StreamCenter {
