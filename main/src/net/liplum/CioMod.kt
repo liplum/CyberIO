@@ -6,15 +6,12 @@ import arc.util.CommandHandler
 import arc.util.Time
 import mindustry.Vars
 import mindustry.game.EventType.*
-import mindustry.io.JsonIO
 import mindustry.mod.Mod
 import mindustry.mod.Mods
 import mindustry.ui.dialogs.PlanetDialog
 import net.liplum.ConfigEntry.Companion.Config
 import net.liplum.ContentSpec.Companion.resolveContentSpec
 import net.liplum.Var.ContentSpecific
-import net.liplum.data.LiplumCloud
-import net.liplum.data.SharedRoom
 import net.liplum.events.CioInitEvent
 import net.liplum.events.CioLoadContentEvent
 import net.liplum.gen.Contents
@@ -130,17 +127,7 @@ class CioMod : Mod() {
         Var.AnimUpdateFrequency = if (Vars.mobile || Vars.testMobile) 10f else 5f
         Events.fire(CioInitEvent())
         DebugOnly {
-            // Cloud is developing
             PlanetDialog.debugSelect = true
-            JsonIO.json.addClassTag(SharedRoom::class.java.name, SharedRoom::class.java)
-            Events.on(WorldLoadEvent::class.java) {
-                LiplumCloud.reset()
-                LiplumCloud.read()
-            }
-            Events.on(SaveWriteEvent::class.java) {
-                LiplumCloud.reset()
-                LiplumCloud.save()
-            }
             ClientOnly {
                 NpcSystem.register()
                 Core.input.addProcessor(UnitTap)

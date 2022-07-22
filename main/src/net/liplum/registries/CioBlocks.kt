@@ -37,7 +37,6 @@ import net.liplum.api.bullets.MultiBulletAbility
 import net.liplum.api.virus.setUninfected
 import net.liplum.api.virus.setUninfectedFloor
 import net.liplum.blocks.bomb.ZipBomb
-import net.liplum.data.Cloud
 import net.liplum.blocks.cyberion.DrawCyberionMixer
 import net.liplum.blocks.ddos.DDoS
 import net.liplum.blocks.decentralizer.Decentralizer
@@ -80,7 +79,6 @@ object CioBlocks {
     @JvmStatic lateinit var holoFloor: HoloFloor
     @JvmStatic lateinit var underdriveProjector: UnderdriveProjector
     @JvmStatic lateinit var antiVirus: AntiVirus
-    @JvmStatic lateinit var cloud: Cloud
     @JvmStatic lateinit var prism: Prism
     @JvmStatic lateinit var prismObelisk: PrismObelisk
     @JvmStatic lateinit var deleter: Deleter
@@ -403,26 +401,6 @@ object CioBlocks {
             consumePower(0.5f)
             size = 1
         }.setUninfected()
-    }
-    @DependOn("CioItems.ic")
-    fun cloud() {
-        cloud = Cloud("cloud").apply {
-            requirements(
-                Category.effect,
-                IfDebugOr(
-                    { BuildVisibility.sandboxOnly },
-                    { BuildVisibility.hidden }),
-                arrayOf(
-                    CioItems.ic + 10,
-                    Items.titanium + 1000,
-                    Items.thorium + 1000,
-                )
-            )
-            size = 3
-            buildCostMultiplier = 2f
-            health = 500 * size * size
-            consumePower(1f)
-        }
     }
     @DependOn
     fun hyperOverdriveSphere() {
