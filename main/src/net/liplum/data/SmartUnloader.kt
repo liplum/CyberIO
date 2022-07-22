@@ -18,11 +18,11 @@ import mindustry.world.meta.Stat
 import net.liplum.*
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
-import net.liplum.lib.Serialized
-import net.liplum.lib.assets.TR
 import net.liplum.common.persistence.read
 import net.liplum.common.persistence.write
 import net.liplum.common.utils.DoMultipleBool
+import net.liplum.lib.Serialized
+import net.liplum.lib.assets.TR
 import net.liplum.mdt.*
 import net.liplum.mdt.animations.anims.Animation
 import net.liplum.mdt.animations.anims.AnimationObj
@@ -165,14 +165,14 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
             AddBar<SmartULDBuild>("queue",
                 { "Queue: ${queue.size}" },
                 { Pal.bar },
-                { queue.size.toFloat() / maxReceiverConnection() }
+                { queue.size.toFloat() / maxReceiverConnection }
             )
         }
     }
 
     open inner class SmartULDBuild : AniedBlock<SmartUnloader, SmartULDBuild>.AniedBuild(),
         IDataSender {
-        override fun getMaxRange() = this@SmartUnloader.maxRange
+        override val maxRange = this@SmartUnloader.maxRange
         @Serialized
         var receivers = OrderedSet<Int>()
         /**
@@ -397,7 +397,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
             }
             val pos = other.pos()
             if (pos in receivers) {
-                if (!canMultipleConnect()) {
+                if (!canMultipleConnect) {
                     deselect()
                 }
                 pos.dr()?.let { disconnectSync(it) }
@@ -407,7 +407,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
                 if (maxRange > 0f && other.dst(this) >= maxRange) {
                     postOverRangeOn(other)
                 } else {
-                    if (!canMultipleConnect()) {
+                    if (!canMultipleConnect) {
                         deselect()
                     }
                     if (canHaveMoreReceiverConnection()) {
@@ -507,11 +507,9 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
             }
         }
 
-        override fun getConnectedReceiver(): Int? =
-            if (receivers.isEmpty)
-                null
-            else
-                receivers.first()
+        override val connectedReceiver: Int?
+            get() = if (receivers.isEmpty) null
+            else receivers.first()
 
         override fun beforeDraw() {
             if (canConsume() && isUnloading && isSending) {
@@ -519,9 +517,9 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
             }
         }
 
-        override fun maxReceiverConnection() = maxConnection
+        override val maxReceiverConnection = maxConnection
         override fun acceptItem(source: Building, item: Item) = false
-        override fun getConnectedReceivers(): OrderedSet<Int> = receivers
+        override val connectedReceivers: OrderedSet<Int> = receivers
         override fun read(read: Reads, revision: Byte) {
             super.read(read, revision)
             receivers.read(read)

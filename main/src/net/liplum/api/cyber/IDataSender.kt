@@ -1,15 +1,13 @@
-package net.liplum.api.cyber;
+package net.liplum.api.cyber
 
-import arc.graphics.Color;
-import arc.struct.ObjectSet;
-import mindustry.type.Item;
-import net.liplum.R;
-import net.liplum.mdt.ClientOnly;
-import net.liplum.mdt.SendDataPack;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import arc.graphics.Color
+import arc.struct.ObjectSet
+import mindustry.type.Item
+import net.liplum.R
+import net.liplum.mdt.ClientOnly
+import net.liplum.mdt.SendDataPack
 
-public interface IDataSender extends IDataBuilding {
+interface IDataSender : IDataBuilding {
     /**
      * sends items
      *
@@ -18,107 +16,84 @@ public interface IDataSender extends IDataBuilding {
      * @param amount   how many item(s) will be sent
      * @return the rest of item(s)
      */
-    default int sendData(@NotNull IDataReceiver receiver, @NotNull Item item, int amount) {
-        int maxAccepted = receiver.acceptedAmount(this, item);
+    fun sendData(receiver: IDataReceiver, item: Item, amount: Int): Int {
+        val maxAccepted = receiver.acceptedAmount(this, item)
         if (maxAccepted == -1) {
-            receiver.receiveData(this, item, amount);
-            return 0;
+            receiver.receiveData(this, item, amount)
+            return 0
         }
-        if (maxAccepted >= amount) {
-            receiver.receiveData(this, item, amount);
-            return 0;
+        return if (maxAccepted >= amount) {
+            receiver.receiveData(this, item, amount)
+            0
         } else {
-            int rest = amount - maxAccepted;
-            receiver.receiveData(this, item, maxAccepted);
-            return rest;
+            val rest = amount - maxAccepted
+            receiver.receiveData(this, item, maxAccepted)
+            rest
         }
     }
-
     @SendDataPack
-    void connectSync(@NotNull IDataReceiver receiver);
-
+    fun connectSync(receiver: IDataReceiver)
     @SendDataPack
-    void disconnectSync(@NotNull IDataReceiver receiver);
-
+    fun disconnectSync(receiver: IDataReceiver)
     @SendDataPack
-    default void connectSync(int receiver) {
-        IDataReceiver dr = CyberH.dr(receiver);
-        if (dr != null) {
-            connectSync(dr);
-        }
+    fun connectSync(receiver: Int) {
+        val dr = receiver.dr()
+        dr?.let { connectSync(it) }
+    }
+    @SendDataPack
+    fun disconnectSync(receiver: Int) {
+        val dr = receiver.dr()
+        dr?.let { disconnectSync(it) }
     }
 
-    @SendDataPack
-    default void disconnectSync(int receiver) {
-        IDataReceiver dr = CyberH.dr(receiver);
-        if (dr != null) {
-            disconnectSync(dr);
-        }
-    }
+    val connectedReceiver: Int?
+    val canMultipleConnect: Boolean
+        get() = maxReceiverConnection != 1
 
-    @Nullable
-    Integer getConnectedReceiver();
-
-    default boolean canMultipleConnect() {
-        return maxReceiverConnection() != 1;
-    }
-
-    default boolean isConnectedWith(@NotNull IDataReceiver receiver) {
-        if (canMultipleConnect()) {
-            return getConnectedReceivers().contains(receiver.getBuilding().pos());
+    fun isConnectedWith(receiver: IDataReceiver): Boolean {
+        return if (canMultipleConnect) {
+            connectedReceivers.contains(receiver.building.pos())
         } else {
-            Integer connected = getConnectedReceiver();
+            val connected = connectedReceiver
             if (connected == null) {
-                return false;
+                false
             } else {
-                return connected == receiver.getBuilding().pos();
+                connected == receiver.building.pos()
             }
         }
     }
-
     /**
-     * Gets the maximum limit of connection.<br/>
+     * Gets the maximum limit of connection.<br></br>
      * -1 : unlimited
      *
      * @return the maximum of connection
      */
-    default int maxReceiverConnection() {
-        return 1;
+    val maxReceiverConnection: Int
+        get() = 1
+
+    fun canHaveMoreReceiverConnection(): Boolean {
+        val max = maxReceiverConnection
+        return if (max == -1) {
+            true
+        } else connectedReceivers.size < max
     }
 
-    default boolean canHaveMoreReceiverConnection() {
-        int max = maxReceiverConnection();
-        if (max == -1) {
-            return true;
-        }
-        return getConnectedReceivers().size < max;
-    }
-
-    default int getReceiverConnectionNumber() {
-        if (canMultipleConnect()) {
-            return getConnectedReceivers().size;
-        } else {
-            return getConnectedReceiver() == null ? 0 : 1;
-        }
-    }
-
-    /**
-     * Only for single connection
-     */
-    ObjectSet<Integer> EmptyDataConnections = new ObjectSet<>();
-
-    @NotNull
-    default ObjectSet<Integer> getConnectedReceivers() {
-        return EmptyDataConnections;
-    }
-
-    @NotNull
+    val receiverConnectionNumber: Int
+        get() = if (canMultipleConnect) connectedReceivers.size
+        else if (connectedReceiver == null) 0
+        else 1
     @ClientOnly
-    default Color getSenderColor() {
-        return R.C.Sender;
-    }
+    val senderColor: Color
+        get() = R.C.Sender
+    val maxRange: Float
+        get() = -1f
+    val connectedReceivers: ObjectSet<Int>
+        get() = emptyConnection
 
-    default float getMaxRange() {
-        return -1f;
+    companion object {
+        /**
+         * Only for single connection
+         */
+        val emptyConnection = ObjectSet<Int>()
     }
 }

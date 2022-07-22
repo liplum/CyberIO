@@ -17,11 +17,14 @@ import net.liplum.R
 import net.liplum.Var
 import net.liplum.WhenRefresh
 import net.liplum.api.cyber.*
-import net.liplum.lib.assets.TR
 import net.liplum.common.delegates.Delegate1
 import net.liplum.common.persistence.read
 import net.liplum.common.persistence.write
-import net.liplum.mdt.*
+import net.liplum.lib.assets.TR
+import net.liplum.mdt.CalledBySync
+import net.liplum.mdt.ClientOnly
+import net.liplum.mdt.SendDataPack
+import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.animations.anims.Animation
 import net.liplum.mdt.animations.anims.IFrameIndexer
 import net.liplum.mdt.animations.anims.ixAuto
@@ -247,7 +250,7 @@ open class Cloud(name: String) : PowerBlock(name) {
             }
             val pos = other.pos()
             if (pos in info.receiversPos) {
-                if (!canMultipleConnect()) {
+                if (!canMultipleConnect) {
                     deselect()
                 }
                 pos.dr()?.let { disconnectSync(it) }
@@ -258,7 +261,7 @@ open class Cloud(name: String) : PowerBlock(name) {
                     subBundle("self-connect").postToastTextOn(other, R.C.RedAlert)
                     return false
                 }
-                if (!canMultipleConnect()) {
+                if (!canMultipleConnect) {
                     deselect()
                 }
                 if (other.acceptConnection(this)) {
@@ -290,15 +293,10 @@ open class Cloud(name: String) : PowerBlock(name) {
         override fun getConnectedSenders(): ObjectSet<Int> =
             info.sendersPos
 
-        override fun getConnectedReceiver(): Int? =
-            if (info.receiversPos.isEmpty)
-                null
-            else
-                info.receiversPos.first()
-
-        override fun getConnectedReceivers(): ObjectSet<Int> =
-            info.sendersPos
-
+        override val connectedReceiver: Int?
+            get() = if (info.receiversPos.isEmpty) null
+            else info.receiversPos.first()
+        override val connectedReceivers: ObjectSet<Int> = info.sendersPos
         override fun acceptConnection(sender: IDataSender): Boolean = true
         override fun write(write: Writes) {
             super.write(write)
@@ -321,7 +319,7 @@ open class Cloud(name: String) : PowerBlock(name) {
         }
 
         override fun maxSenderConnection() = maxConnection
-        override fun maxReceiverConnection() = maxConnection
+        override val maxReceiverConnection = maxConnection
     }
 
     open fun genAnimState() {
@@ -346,7 +344,7 @@ open class Cloud(name: String) : PowerBlock(name) {
     }
 
     inner class CloudBlockObj(
-        block: Cloud, build: CloudBuild
+        block: Cloud, build: CloudBuild,
     ) : BlockObj<Cloud, CloudBuild>(block, build, CloudAniBlock) {
         var cloudAniSM = CloudAniConfig.gen(block, build)
         override fun update() {

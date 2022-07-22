@@ -236,7 +236,7 @@ fun IDataSender.drawDataNetGraphic(showCircle: Boolean = true) {
     if (showCircle && this.canShowSelfCircle()) {
         G.surroundingCircleBreath(tile, R.C.Sender, alpha = Settings.LinkOpacity)
     }
-    if (canMultipleConnect()) {
+    if (canMultipleConnect) {
         this.drawReceivers(connectedReceivers, showCircle)
     } else {
         this.drawReceiver(connectedReceiver, showCircle)

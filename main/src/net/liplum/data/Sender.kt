@@ -5,7 +5,6 @@ import arc.graphics.Color
 import arc.graphics.g2d.Draw
 import arc.math.Mathf
 import arc.math.geom.Point2
-import arc.util.Nullable
 import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
@@ -126,7 +125,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
     }
 
     open inner class SenderBuild : AniedBuild(), IDataSender {
-        override fun getMaxRange() = this@Sender.maxRange
+        override val maxRange = this@Sender.maxRange
         @ClientOnly var lastSendingTime = 0f
             set(value) {
                 field = value.coerceAtLeast(0f)
@@ -217,10 +216,9 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
 
         override fun toString() =
             "Sender#$id(->$receiverPos)"
-        @Nullable
-        override fun getConnectedReceiver(): Int? {
-            return receiverPos?.pack()
-        }
+
+        override val connectedReceiver: Int?
+            get() = receiverPos?.pack()
 
         override fun handleItem(source: Building, item: Item) {
             if (!canConsume()) {
@@ -235,15 +233,11 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
             }
         }
         @ClientOnly
-        override fun getSenderColor(): Color {
-            val receiver = receiver
-            if (receiver != null)
-                return if (receiver.isDefaultColor)
-                    super.getSenderColor()
-                else
-                    receiver.receiverColor
-            return super.getSenderColor()
-        }
+        override val senderColor: Color
+            get() = receiver?.let {
+                if (it.isDefaultColor) super.senderColor
+                else it.receiverColor
+            } ?: super.senderColor
         @ClientOnly
         override fun drawConfigure() {
             super.drawConfigure()
@@ -272,7 +266,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
                     postOverRangeOn(other)
                     return false
                 } else {
-                    if (!canMultipleConnect()) {
+                    if (!canMultipleConnect) {
                         deselect()
                     }
                     if (canHaveMoreReceiverConnection()) {
