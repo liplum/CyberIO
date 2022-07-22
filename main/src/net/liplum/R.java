@@ -286,7 +286,7 @@ public final class R {
         public static final String
             LinkOpacity = Gen("connection-opacity"),
             LinkArrowDensity = Gen("connection-density"),
-            LinkArrowSpeed = Gen("connection-moving-speed"),
+            LinkAnimationSpeed = Gen("connection-animation-speed"),
             AlwaysShowLink = Gen("always-show-link"),
             ShowLinkCircle = Gen("show-link-circle"),
             ShowWirelessTowerCircle = Gen("show-wireless-tower-circle"),

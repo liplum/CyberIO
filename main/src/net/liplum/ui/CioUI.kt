@@ -117,10 +117,10 @@ object CioUI {
         ) {
             Settings.LinkArrowDensity = pct2Density(Core.settings.getInt(R.Setting.LinkArrowDensity, 15))
         }
-        addSliderSettingX(R.Setting.LinkArrowSpeed,
+        addSliderSettingX(R.Setting.LinkAnimationSpeed,
             40, 0, 120, 5, { "$it" }
         ) {
-            Settings.LinkArrowSpeed = Core.settings.getInt(R.Setting.LinkArrowSpeed, 40).toFloat()
+            Settings.LinkArrowSpeed = Core.settings.getInt(R.Setting.LinkAnimationSpeed, 40).toFloat()
         }
         val alwaysShowLinkDefault = Vars.mobile
         addCheckPref(R.Setting.AlwaysShowLink, alwaysShowLinkDefault) {
