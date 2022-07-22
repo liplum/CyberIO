@@ -309,7 +309,7 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
                         deselect()
                     }
                     if (canHaveMoreClientConnection) {
-                        if (other.isConnectionAccepted(this)) {
+                        if (other.acceptConnectionTo(this)) {
                             connectToSync(other)
                         } else {
                             postFullHostOn(other)

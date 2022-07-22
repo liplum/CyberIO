@@ -35,8 +35,6 @@ interface IDataReceiver : ICyberEntity {
         get() = R.C.Receiver
     val isDefaultColor: Boolean
         get() = receiverColor === R.C.Receiver
-    @ClientOnly
-    val isBlocked: Boolean
     @CalledBySync
     fun connectTo(sender: IDataSender) {
         connectedSenders.add(sender.building.pos())
@@ -59,10 +57,7 @@ interface IDataReceiver : ICyberEntity {
      * @return the maximum of connection
      */
     val maxSenderConnection: Int
-    fun isConnectionAccepted(sender: IDataSender): Boolean {
-        return canHaveMoreSenderConnection
-    }
-
+    fun acceptConnectionTo(sender: IDataSender) = canHaveMoreSenderConnection
     val senderConnectionNumber: Int
         get() = connectedSenders.size
     val canHaveMoreSenderConnection: Boolean

@@ -137,8 +137,7 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
         override fun onRemoved() {
             onRequirementUpdated.clear()
         }
-        @ClientOnly
-        override val isBlocked: Boolean
+        val isBlocked: Boolean
             get() = lastOutputDelta > blockTime
 
         override fun drawSelect() {

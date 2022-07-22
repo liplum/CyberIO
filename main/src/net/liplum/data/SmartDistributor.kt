@@ -340,8 +340,7 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
 
         override val requirements: Seq<Item>?
             get() = _requirements
-        @ClientOnly
-        override val isBlocked
+        val isBlocked: Boolean
             get() = lastDistributionTime > 30f
 
         override fun read(read: Reads, revision: Byte) {

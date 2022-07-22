@@ -210,8 +210,6 @@ class DDoS(name: String) : Turret(name) {
         // TODO: Serialized
         override val requirements: Seq<Item>
             get() = curAcceptItem.req
-        @ClientOnly
-        override val isBlocked = true
         override val connectedSenders = senders
         override val onRequirementUpdated: Delegate1<IDataReceiver> = Delegate1()
         override val maxSenderConnection = maxConnection

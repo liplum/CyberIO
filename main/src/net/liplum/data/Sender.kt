@@ -270,7 +270,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
                         deselect()
                     }
                     if (canHaveMoreReceiverConnection) {
-                        if (other.isConnectionAccepted(this)) {
+                        if (other.acceptConnectionTo(this)) {
                             connectToSync(other)
                         } else {
                             postFullSenderOn(other)

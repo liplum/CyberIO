@@ -411,7 +411,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
                         deselect()
                     }
                     if (canHaveMoreReceiverConnection) {
-                        if (other.isConnectionAccepted(this)) {
+                        if (other.acceptConnectionTo(this)) {
                             connectToSync(other)
                         } else {
                             postFullSenderOn(other)

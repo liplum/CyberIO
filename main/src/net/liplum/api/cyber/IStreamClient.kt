@@ -50,10 +50,7 @@ interface IStreamClient : ICyberEntity {
      * @return the maximum of connection
      */
     val maxHostConnection: Int
-    fun isConnectionAccepted(host: IStreamHost): Boolean {
-        return canHaveMoreHostConnection
-    }
-
+    fun acceptConnectionTo(host: IStreamHost) = canHaveMoreHostConnection
     val canHaveMoreHostConnection: Boolean
         get() = maxHostConnection == -1 || hostConnectionNumber < maxHostConnection
     val hostConnectionNumber: Int
