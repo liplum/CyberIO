@@ -15,6 +15,8 @@ import mindustry.world.blocks.heat.HeatBlock
 import mindustry.world.draw.DrawBlock
 import net.liplum.lib.assets.EmptyTR
 import net.liplum.lib.assets.TR
+import net.liplum.mdt.mixin.drawX
+import net.liplum.mdt.mixin.drawY
 import net.liplum.mdt.utils.draw
 
 data class HeatMeta(
@@ -103,8 +105,8 @@ class DrawTurretHeat<T : TurretBuild>(
             Drawf.additive(
                 this@DrawTurretHeat.heatTR,
                 this@DrawTurretHeat.heat.heatColor.write(Tmp.c1).a(heatProgress() * this@DrawTurretHeat.heat.heatColor.a),
-                x + recoilOffset.x,
-                y + recoilOffset.y,
+                drawX,
+                drawY,
                 rotation.draw,
                 if (turretShading) turretHeatLayer else Draw.z() + heatLayerOffset
             )

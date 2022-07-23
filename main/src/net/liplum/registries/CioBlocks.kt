@@ -3,6 +3,7 @@ package net.liplum.registries
 import arc.func.Prov
 import arc.graphics.Color
 import arc.graphics.Texture
+import arc.math.Interp
 import arc.struct.Seq
 import arc.util.Time
 import mindustry.Vars
@@ -56,6 +57,7 @@ import net.liplum.blocks.stream.StreamHost
 import net.liplum.blocks.stream.StreamServer
 import net.liplum.blocks.tmtrainer.RandomName
 import net.liplum.blocks.tmtrainer.TMTRAINER
+import net.liplum.blocks.tmtrainer.TMTRAINER.DrawCore
 import net.liplum.blocks.underdrive.UnderdriveProjector
 import net.liplum.blocks.virus.AntiVirus
 import net.liplum.blocks.virus.Virus
@@ -63,7 +65,9 @@ import net.liplum.brains.*
 import net.liplum.bullets.*
 import net.liplum.data.*
 import net.liplum.holo.*
+import net.liplum.lib.math.pow3Intrp
 import net.liplum.lib.math.smooth
+import net.liplum.lib.math.smoother
 import net.liplum.mdt.render.DrawTurretHeat
 import net.liplum.mdt.render.drawMulti
 import net.liplum.mdt.render.regionPart
@@ -710,6 +714,17 @@ object CioBlocks {
             range = 260f
             shootCone = 15f
             size = 4
+            drawMulti {
+                drawTurret {
+                    regionPart("-head") {
+                        y = 14f
+                        progress = PartProgress { Interp.pow10In.apply(it.warmup) }
+                        moveY = -6f
+                        under = true
+                    }
+                }
+                then add DrawCore()
+            }
         }.registerDynamicInfo()
     }
     @Subscribe(Trigger.update, Only.client)

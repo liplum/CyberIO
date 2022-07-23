@@ -11,13 +11,12 @@ import arc.util.Strings
 import arc.util.Time
 import mindustry.Vars
 import mindustry.gen.Building
-import mindustry.graphics.Drawf
 import mindustry.type.Category
 import mindustry.world.blocks.defense.turrets.ItemTurret
 import mindustry.world.draw.DrawBlock
-import mindustry.world.draw.DrawMulti
-import mindustry.world.draw.DrawRegion
 import mindustry.world.meta.StatUnit
+import net.liplum.common.math.PolarX
+import net.liplum.lib.assets.TR
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.animations.anims.Animation
@@ -26,11 +25,8 @@ import net.liplum.mdt.animations.anims.ITimeModifier
 import net.liplum.mdt.mixin.drawRotation
 import net.liplum.mdt.mixin.drawX
 import net.liplum.mdt.mixin.drawY
-import net.liplum.common.math.PolarX
-import net.liplum.lib.assets.TR
-import net.liplum.lib.math.radian
-import net.liplum.mdt.utils.autoAnim
 import net.liplum.mdt.utils.atlas
+import net.liplum.mdt.utils.autoAnim
 import net.liplum.mdt.utils.sub
 
 open class TMTRAINER(name: String) : ItemTurret(name) {
@@ -44,46 +40,6 @@ open class TMTRAINER(name: String) : ItemTurret(name) {
 
     init {
         buildType = Prov { TMTRAINERBUILD() }
-        drawer = DrawMulti(
-            DrawRegion("-base"),
-            object : DrawRegion("-head") {
-                override fun draw(build: Building) = (build as TMTRAINERBUILD).run {
-                    WhenNotPaused {
-                        targetPol.a = rotation.radian
-                        var tpr = targetPol.r
-                        val delta = virusCharge * 0.001f
-                        tpr = if (wasShooting) tpr - delta else tpr + delta
-                        tpr = tpr.coerceIn(headMin, headMax)
-                        targetPol.r = tpr
-                    }
-                    Draw.rect(region, drawX + targetPol.x, drawY + targetPol.y, drawRotation)
-                }
-            },
-            object : DrawRegion("") {
-                override fun draw(build: Building) = (build as TMTRAINERBUILD).run {
-                    Drawf.shadow(region, drawX - elevation, drawY - elevation, drawRotation)
-                    Draw.rect(region, drawX, drawY, drawRotation)
-                }
-            },
-            object : DrawBlock() {
-                override fun draw(build: Building) = (build as TMTRAINERBUILD).run {
-                    emptyCoreAnimObj.draw(
-                        drawX,
-                        drawY,
-                        drawRotation
-                    )
-                    if (unit.ammo() > 0) {
-                        Draw.alpha(unit.ammof())
-                        coreAnimObj.draw(
-                            drawX,
-                            drawY,
-                            drawRotation
-                        )
-                        Draw.color()
-                    }
-                }
-            }
-        )
     }
 
     override fun load() {
@@ -92,14 +48,9 @@ open class TMTRAINER(name: String) : ItemTurret(name) {
         EmptyCoreAnim = autoAnim("core-empty", CoreAnimFrames, 60f)
     }
 
-    override fun icons() =
-        arrayOf(this.sub("base"), this.atlas(),this.sub("head"))
-
     open inner class TMTRAINERBUILD : ItemTurretBuild() {
         @ClientOnly lateinit var coreAnimObj: AnimationObj
         @ClientOnly lateinit var emptyCoreAnimObj: AnimationObj
-        @ClientOnly var targetPol: PolarX =
-            PolarX(headMax, 0f)
         open var virusCharge = 0f
             set(value) {
                 field = value.coerceIn(0f, 60f)
@@ -155,8 +106,10 @@ open class TMTRAINER(name: String) : ItemTurret(name) {
                                     if (flowItems.hasFlowItem(item)) {
                                         l.image(item.uiIcon).padRight(3.0f)
                                         l.label {
-                                            if (flowItems.getFlowRate(item) < 0) "..." else Strings.fixed(flowItems.getFlowRate(item),
-                                                1) + ps
+                                            if (flowItems.getFlowRate(item) < 0) "..." else Strings.fixed(
+                                                flowItems.getFlowRate(item),
+                                                1
+                                            ) + ps
                                         }.color(Color.lightGray)
                                         l.row()
                                     }
@@ -185,8 +138,10 @@ open class TMTRAINER(name: String) : ItemTurret(name) {
                                     if (liquids.hasFlowLiquid(liquid)) {
                                         l.image(liquid.uiIcon).padRight(3.0f)
                                         l.label {
-                                            if (liquids.getFlowRate(liquid) < 0) "..." else Strings.fixed(liquids.getFlowRate(liquid),
-                                                1) + ps
+                                            if (liquids.getFlowRate(liquid) < 0) "..." else Strings.fixed(
+                                                liquids.getFlowRate(liquid),
+                                                1
+                                            ) + ps
                                         }.color(Color.lightGray)
                                         l.row()
                                     }
@@ -216,6 +171,25 @@ open class TMTRAINER(name: String) : ItemTurret(name) {
             super.update()
             val delta = if (wasShooting) delta() else -delta()
             virusCharge += delta / 2.5f
+        }
+    }
+
+    class DrawCore : DrawBlock() {
+        override fun draw(build: Building) = (build as TMTRAINERBUILD).run {
+            emptyCoreAnimObj.draw(
+                drawX,
+                drawY,
+                drawRotation
+            )
+            if (unit.ammo() > 0) {
+                Draw.alpha(unit.ammof())
+                coreAnimObj.draw(
+                    drawX,
+                    drawY,
+                    drawRotation
+                )
+                Draw.color()
+            }
         }
     }
 }
