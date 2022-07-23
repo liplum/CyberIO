@@ -1400,9 +1400,8 @@ object CioBlocks {
                     requirements(
                         Category.turret, BuildVisibility.shown, arrayOf(
                             CioItems.ic + 12,
-                            Items.oxide + 200,
+                            Items.oxide + 100,
                             Items.tungsten + 500,
-                            Items.carbide + 50,
                             Items.silicon + 200,
                         )
                     )

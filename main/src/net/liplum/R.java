@@ -154,36 +154,50 @@ public final class R {
     }
 
     public static final class C {
-        public static final Color RedAlert = Color.valueOf("#e53935");
-        public static final Color RedAlertDark = Color.valueOf("#d50000");
+        @NotNull
+        public static final Color
+            RedAlert = Color.valueOf("#e53935"),
+            RedAlertDark = Color.valueOf("#d50000"),
+            GreenSafe = Color.valueOf("#00e676");
+        @NotNull
         public static final Color RedDark = Color.valueOf("#7d0000");
-        public static final Color GreenSafe = Color.valueOf("#00e676");
+        @NotNull
         public static final Color LightBlue = Color.valueOf("#add8e6");
-        public static final Color Holo = Color.valueOf("#42a5f5");//(0.2588,0.6471,0.9608)
-        public static final Color HoloOrange = Color.valueOf("#ff8f00");//(1.0,0.5608,0)
-        public static final Color HoloDark = Color.valueOf("#1e88e5");//(0.1176,0.5333,0.898)
-        public static final Color HoloDarkOrange = Color.valueOf("#ff6f00");//(1,0.0.4353,0.898)
-        public static final Color HoloDark2 = Color.valueOf("#0c80df");
+        @NotNull
+        public static final Color
+            Holo = Color.valueOf("#42a5f5"),//(0.2588,0.6471,0.9608)
+            HoloOrange = Color.valueOf("#ff8f00"),//(1.0,0.5608,0)
+            HoloDark = Color.valueOf("#1e88e5"),//(0.1176,0.5333,0.898)
+            HoloDarkOrange = Color.valueOf("#ff6f00");//(1,0.0.4353,0.898)
+        @NotNull
         public static final Color VirusBK = Color.valueOf("#cd44ff");
-        public static final Color Blood = Color.valueOf("#8a0303");
-        public static final Color ColdTemperature = Color.valueOf("#242f9b");
-        public static final Color HotTemperature = Color.valueOf("#e02401");
+        @NotNull
+        public static final Color
+            Blood = Color.valueOf("#8a0303"),
+            ColdTemperature = Color.valueOf("#242f9b"),
+            HotTemperature = Color.valueOf("#e02401");
         public static final Color Providence = Color.valueOf("#fff799");
         public static final Color Black = new Color(Color.black);
         public static final Color IsAive = GreenSafe;
         public static final Color CoolDown = Color.gray;
+        @NotNull
         public static final Color
             Sender = RedAlert,
             Receiver = Pal.place;
-        public static final Color IcLight = Color.valueOf("#047b04");
-        public static final Color IcDark = Color.valueOf("#024202");
+        @NotNull
+        public static final
+        Color IcLight = Color.valueOf("#047b04"),
+            IcDark = Color.valueOf("#024202");
         public static final Color Shadow = new Color(0, 0, 0, 0.71f);
         public static final Color BlendShadow = Color.white.cpy().lerp(Color.black, Shadow.a);
         public static final Color Power = Pal.power;
-        public static final Color BrainWave = Color.valueOf("#be61ab");
-        public static final Color TissueFluid = Color.valueOf("#cc8ebf");
+        @NotNull
+        public static final Color
+            BrainWave = Color.valueOf("#be61ab"),
+            TissueFluid = Color.valueOf("#cc8ebf");
         public static final Color SonicWave = Color.valueOf("#b0bec5");
 
+        @NotNull
         public static final Color
             PrismRedFG = Color.valueOf("#EF5350"), PrismRedBK = Color.valueOf("#E53935"),
             PrismGreenFG = Color.valueOf("#76FF03"), PrismGreenBK = Color.valueOf("#00C853"),
@@ -200,8 +214,11 @@ public final class R {
         public static final Color Unconnected = Color.white;
         public static final Color Host = RedAlert,
             Client = Pal.place;
+        @NotNull
         public static Color[] LiquidColors;
+        @NotNull
         public static Color[] HostLiquidColors;
+        @NotNull
         public static Color[] ClientLiquidColors;
     }
 

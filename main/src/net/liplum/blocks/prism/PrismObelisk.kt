@@ -68,7 +68,7 @@ open class PrismObelisk(name: String) : Block(name) {
         super.drawPlace(x, y, rotation, valid)
         drawSurroundingRect(
             x, y, indicateAreaExtension * smoothPlacing(maxSelectedCircleTime),
-            if (valid) R.C.GreenSafe else R.C.RedAlert,
+            if (valid) Prism.animatedColor.color else R.C.RedAlert,
         ) {
             it.block == prismType && !it.isDiagonalTo(this, x, y)
         }

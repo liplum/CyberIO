@@ -26,6 +26,7 @@ fun tintedRGB(b: BulletType): List<BulletType> {
         is LaserBulletType -> b.tinted
         is ContinuousFlameBulletType -> b.tinted
         is ContinuousLaserBulletType -> b.tinted
+        is PointLaserBulletType -> b.tinted
         is FireBulletType -> b.tinted
         is LiquidBulletType -> b.tinted
         is MassDriverBolt -> b.tinted
@@ -171,6 +172,16 @@ val ContinuousFlameBulletType.tinted: List<ContinuousFlameBulletType>
             shootEffect = HitMeltRgbFx[it]
             smokeEffect = HitMeltRgbFx[it]
             despawnEffect = HitMeltRgbFx[it]
+            commonTint(it, LaserTintLerp)
+        }
+    }
+val PointLaserBulletTypeBullets: HashMap<PointLaserBulletType, List<PointLaserBulletType>> = HashMap()
+val PointLaserBulletType.tinted: List<PointLaserBulletType>
+    get() = PointLaserBulletTypeBullets.rgb(this) {
+        (this.copy() as PointLaserBulletType).apply {
+            color = BK(it).Lerp(
+                color, LaserTintLerp
+            )
             commonTint(it, LaserTintLerp)
         }
     }
