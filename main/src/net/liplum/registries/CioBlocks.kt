@@ -3,6 +3,7 @@ package net.liplum.registries
 import arc.func.Prov
 import arc.graphics.Color
 import arc.graphics.Texture
+import arc.math.Mathf
 import arc.struct.Seq
 import arc.util.Time
 import mindustry.Vars
@@ -10,7 +11,9 @@ import mindustry.content.*
 import mindustry.entities.bullet.LaserBulletType
 import mindustry.entities.bullet.LightningBulletType
 import mindustry.entities.effect.MultiEffect
+import mindustry.entities.part.DrawPart.PartProgress
 import mindustry.entities.pattern.ShootAlternate
+import mindustry.entities.pattern.ShootSpread
 import mindustry.game.EventType.Trigger
 import mindustry.gen.Sounds
 import mindustry.graphics.Layer
@@ -39,6 +42,7 @@ import net.liplum.blocks.cyberion.DrawCyberionMixer
 import net.liplum.blocks.ddos.DDoS
 import net.liplum.blocks.decentralizer.Decentralizer
 import net.liplum.blocks.deleter.Deleter
+import net.liplum.blocks.deleter.DeleterWave
 import net.liplum.blocks.icmachine.ICMachine
 import net.liplum.blocks.icmachine.ICMachineS
 import net.liplum.blocks.jammer.Jammer
@@ -59,6 +63,8 @@ import net.liplum.brains.*
 import net.liplum.bullets.*
 import net.liplum.data.*
 import net.liplum.holo.*
+import net.liplum.mdt.render.drawTurret
+import net.liplum.mdt.render.regionPart
 import net.liplum.mdt.ui.DynamicContentInfoDialog.Companion.registerDynamicInfo
 import net.liplum.mdt.utils.plus
 import net.liplum.render.DrawDefaultSpec
@@ -501,6 +507,10 @@ object CioBlocks {
                 extraLostHpBounce = 0.005f
                 scaledHealth = 200f
                 executeProportion = 0.2f
+                shoot = ShootSpread().apply {
+                    shots = 18
+                    spread = 3f
+                }
             }
             ErekirSpec {
                 requirements(
@@ -520,13 +530,42 @@ object CioBlocks {
                 scaledHealth = 200f
                 scaledHealth = 80f
                 executeProportion = 0.18f
+                shoot = ShootSpread().apply {
+                    shots = 18
+                    spread = 3f
+                }
             }
+            targetAir = true
+            targetGround = true
             size = 3
             buildCostMultiplier = 1.5f
             shootSound = Sounds.lasershoot
-            configBullet {
+            minWarmup = 0.96f
+            shootWarmupSpeed = 0.03f
+            shootType = DeleterWave(executeProportion, extraLostHpBounce).apply {
+                shootEffect = Fx.none
+                smokeEffect = Fx.none
                 damage = 0.5f
                 pierceCap = 3
+            }
+            drawTurret {
+                regionPart("-side") {
+                    progress = PartProgress.warmup
+                    heatProgress = PartProgress.warmup
+                    heatColor = S.Hologram
+                    moveX = 8f
+                    moveRot = 40f
+                    mirror = true
+                }
+                regionPart("-head") {
+                    progress = PartProgress.warmup
+                    heatProgress = PartProgress.warmup
+                    heatColor = S.Hologram
+                    moveY = 3f
+                    moveRot = -20f
+                    under = true
+                    mirror = true
+                }
             }
         }
     }
