@@ -18,13 +18,13 @@ import net.liplum.Settings.ShouldShowWelcome
 import net.liplum.Settings.ShowUpdate
 import net.liplum.annotations.Only
 import net.liplum.annotations.SubscribeEvent
-import net.liplum.lib.assets.TR
 import net.liplum.blocks.tmtrainer.RandomName
 import net.liplum.common.Res
 import net.liplum.common.utils.ReferBundleWrapper
 import net.liplum.common.utils.allMaxBy
 import net.liplum.common.utils.randomExcept
 import net.liplum.events.CioInitEvent
+import net.liplum.lib.assets.TR
 import net.liplum.lib.math.randomByWeights
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.utils.atlas
@@ -54,6 +54,10 @@ object Welcome {
         val allTips = info.scenes.map { WelcomeList[it] }.distinct().toList()
         val tipsCanShow = allTips.filter { it.condition.canShow(it) }
         val allCandidates = tipsCanShow.allMaxBy { it.condition.priority(it) }
+        if (allCandidates.isEmpty()) {
+            showWelcome = false
+            return
+        }
         var sumChance = 0
         val weights = IntArray(allCandidates.size) {
             val chance = allCandidates[it].chance

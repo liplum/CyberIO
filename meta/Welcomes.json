@@ -58,7 +58,7 @@
     "Data": {
       "FontSize": 1.2,
       "ShowPoliteWelcome": false,
-      "CExpression": "@ClickWelcomeTimes > 3"
+      "CExpression": "@ClickWelcomeTimes > 5 && @ShouldShowWelcome"
     },
     "Chance": 200
   },

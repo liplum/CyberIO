@@ -9,7 +9,7 @@ import mindustry.world.draw.DrawBlock
 import net.liplum.lib.assets.TRs
 import net.liplum.utils.atlasX
 
-class SpecDrawDefault : DrawBlock() {
+class DrawDefaultSpec : DrawBlock() {
     override fun load(block: Block) = block.run {
         region.set(this.atlasX())
     }

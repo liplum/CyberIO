@@ -18,7 +18,7 @@ object CioLiquids {
                 boilPoint = 0.7f
             }
             ErekirSpec {
-                flammability = 0.2f
+                flammability = 0.8f
                 explosiveness = 0.5f
                 temperature = 1.5f
                 boilPoint = 3f

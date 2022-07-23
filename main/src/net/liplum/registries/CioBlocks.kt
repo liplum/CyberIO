@@ -23,9 +23,7 @@ import mindustry.world.blocks.production.HeatCrafter
 import mindustry.world.blocks.sandbox.ItemSource
 import mindustry.world.blocks.sandbox.LiquidSource
 import mindustry.world.blocks.sandbox.PowerSource
-import mindustry.world.draw.DrawHeatInput
-import mindustry.world.draw.DrawHeatOutput
-import mindustry.world.draw.DrawMulti
+import mindustry.world.draw.*
 import mindustry.world.meta.BuildVisibility
 import net.liplum.*
 import net.liplum.annotations.DependOn
@@ -63,8 +61,8 @@ import net.liplum.data.*
 import net.liplum.holo.*
 import net.liplum.mdt.ui.DynamicContentInfoDialog.Companion.registerDynamicInfo
 import net.liplum.mdt.utils.plus
+import net.liplum.render.DrawDefaultSpec
 import net.liplum.render.SpecDrawConstruct
-import net.liplum.render.SpecDrawDefault
 import net.liplum.seffects.StaticFx
 import net.liplum.utils.globalAnim
 
@@ -208,7 +206,7 @@ object CioBlocks {
                     Items.metaglass + 5,
                 )
                 craftTime = 600f
-                drawer = DrawMulti(SpecDrawDefault(), SpecDrawConstruct())
+                drawer = DrawMulti(DrawDefaultSpec(), SpecDrawConstruct())
             }
             ErekirSpec {
                 requirements(
@@ -227,7 +225,7 @@ object CioBlocks {
                     Items.silicon + 15,
                 )
                 craftTime = 700f
-                drawer = DrawMulti(SpecDrawDefault(), SpecDrawConstruct().apply {
+                drawer = DrawMulti(DrawDefaultSpec(), SpecDrawConstruct().apply {
                     stages = 4
                 })
             }
@@ -940,15 +938,18 @@ object CioBlocks {
                 )
                 buildType = Prov { HeatProducerBuild() }
                 scaledHealth = 60f
-                liquidCapacity = 20f
+                liquidCapacity = 100f
                 outputLiquid = CioLiquids.cyberion + 0.3f
                 craftTime = 100f
+                squareSprite = false
                 consumePower(1.5f)
                 consumeItem(Items.thorium, 1)
                 consumeLiquid(Liquids.cryofluid, 0.3f)
                 heatOutput = 3f
                 drawer = DrawMulti(
-                    SpecDrawDefault(),
+                    DrawRegion("-bottom"),
+                    DrawLiquidTile(CioLiquids.cyberion, 3f),
+                    DrawDefaultSpec(),
                     DrawHeatOutput().apply {
                         heatColor = S.Hologram
                     },
@@ -968,8 +969,9 @@ object CioBlocks {
                 )
                 buildType = Prov { HeatCrafterBuild() }
                 scaledHealth = 100f
-                liquidCapacity = 50f
+                liquidCapacity = 200f
                 craftTime = 90f
+                squareSprite = false
                 consumePower(1.8f)
                 consumeLiquid(Liquids.slag, 0.35f)
                 consumeItem(Items.oxide, 1)
@@ -977,10 +979,13 @@ object CioBlocks {
                 overheatScale = 1.5f
                 outputLiquid = CioLiquids.cyberion + 0.55f
                 drawer = DrawMulti(
-                    SpecDrawDefault(),
-                    DrawHeatInput("-glow").apply {
+                    DrawRegion("-bottom"),
+                    DrawLiquidTile(CioLiquids.cyberion, 5f),
+                    DrawDefaultSpec(),
+                    DrawHeatInput().apply {
                         heatColor = S.Hologram
                     },
+                    DrawHeatRegion("-glow"),
                     DrawCyberionMixer()
                 )
                 size = 3

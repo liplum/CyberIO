@@ -135,13 +135,17 @@ object CioUI {
         UnsteamOnly {
             addCheckPref(
                 R.Setting.ShowUpdate, !Vars.steam
-            ).apply {
+            ){
+                Settings.ShowUpdate = it
+            }.apply {
                 canShow = { isMenu }
             }
         }
         addCheckPref(
             R.Setting.ShowWelcome, true
-        ).apply {
+        ){
+            Settings.ShouldShowWelcome = it
+        }.apply {
             canShow = { isMenu }
         }
         // GitHub mirror and Check update

@@ -142,11 +142,5 @@ interface IBrain : IHeimdallEntity, Iterable<IUpgradeComponent> {
                     return c
             return null
         }
-        @ClientOnly
-        val XSign = arrayOf(+1, -1, -1, -1)
-        @ClientOnly
-        val YSign = arrayOf(+1, +1, +1, -1)
-        @ClientOnly
-        val Mirror = arrayOf(+1, +1, -1, -1)
     }
 }

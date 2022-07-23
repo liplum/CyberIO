@@ -214,8 +214,8 @@ object G {
         var size = 1f + sin * 0.15f
         var outlineSize = 1f + sin * 0.15f + 0.4f
         if (Vars.mobile) {
-            size *= 0.7f
-            outlineSize *=0.7f
+            size *= 0.6f
+            outlineSize *=0.76f
         }
         val time = length / speed * 60f
         val moving = if (speed > 0f) Tmp.v3.set(t).setLength((length * (Time.time % time / time)) % length)
