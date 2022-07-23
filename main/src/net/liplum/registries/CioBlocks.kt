@@ -63,6 +63,7 @@ import net.liplum.brains.*
 import net.liplum.bullets.*
 import net.liplum.data.*
 import net.liplum.holo.*
+import net.liplum.lib.math.smooth
 import net.liplum.mdt.render.DrawTurretHeat
 import net.liplum.mdt.render.drawMulti
 import net.liplum.mdt.render.regionPart
@@ -552,19 +553,34 @@ object CioBlocks {
             drawMulti {
                 drawTurret {
                     regionPart("-side") {
-                        progress = PartProgress.warmup
                         heatProgress = PartProgress.warmup
                         heatColor = S.Hologram
-                        moveX = 8f
-                        moveRot = 40f
+                        VanillaSpec {
+                            progress = PartProgress.warmup
+                            moveX = 8f
+                            moveRot = 40f
+                        }
+                        ErekirSpec {
+                            progress = PartProgress { it.warmup.smooth }
+                            moveY = 15f
+                            moveX = -5f
+                            moveRot = -170f
+                        }
                         mirror = true
                     }
                     regionPart("-head") {
-                        progress = PartProgress.warmup
                         heatProgress = PartProgress.warmup
                         heatColor = S.Hologram
-                        moveY = 3f
-                        moveRot = -20f
+                        VanillaSpec {
+                            progress = PartProgress.warmup
+                            moveY = 3f
+                            moveRot = -20f
+                        }
+                        ErekirSpec {
+                            progress = PartProgress { it.warmup.smooth }
+                            moveY = 5f
+                            moveRot = -30f
+                        }
                         under = true
                         mirror = true
                     }

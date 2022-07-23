@@ -21,6 +21,7 @@ import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.HeadlessOnly
 import net.liplum.mdt.IsSteam
 import net.liplum.mdt.animations.ganim.GlobalAnimation
+import net.liplum.mdt.safeCall
 import net.liplum.registries.CioShaderLoader
 import net.liplum.registries.CioTechTree
 import net.liplum.registries.ServerCommands.registerCioCommands
@@ -85,6 +86,14 @@ class CioMod : Mod() {
         }
         ClientOnly {
             ContentSpecific = Settings.ContentSpecific.resolveContentSpec()
+        }
+        DebugOnly {
+            safeCall {
+                val debugSpec = System.getenv("CYBERIO_SPEC")
+                if (debugSpec != null) {
+                    ContentSpecific = debugSpec.resolveContentSpec()
+                }
+            }
         }
         SpecificLoader.handle()
         EventRegistry.registerAll()
