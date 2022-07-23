@@ -5,12 +5,17 @@ import arc.graphics.Blending
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
 import arc.math.Mathf
+import arc.util.Tmp
 import mindustry.gen.Building
+import mindustry.graphics.Drawf
 import mindustry.graphics.Layer
 import mindustry.world.Block
+import mindustry.world.blocks.defense.turrets.Turret.TurretBuild
 import mindustry.world.blocks.heat.HeatBlock
 import mindustry.world.draw.DrawBlock
+import net.liplum.lib.assets.EmptyTR
 import net.liplum.lib.assets.TR
+import net.liplum.mdt.utils.draw
 
 data class HeatMeta(
     var heatColor: Color = Color(1f, 0.22f, 0.22f, 0.8f),
@@ -80,7 +85,34 @@ fun HeatMeta.drawHeat(b: Building, tr: TR) {
     }
 }
 
-class DrawHeat(
+class DrawTurretHeat<T : TurretBuild>(
+    var suffix: String = "-heat",
+    var heatProgress: T.() -> Float = { heat },
+) : DrawBlock() {
+    var heat = HeatMeta()
+    var heatTR = EmptyTR
+    var turretHeatLayer = Layer.turretHeat
+    var heatLayerOffset = 1f
+    var turretShading = false
+    override fun load(block: Block) = block.run {
+        heatTR = Core.atlas.find("${block.name}$suffix")
+    }
+    @Suppress("UNCHECKED_CAST")
+    override fun draw(build: Building) = (build as T).run {
+        if (this@DrawTurretHeat.heatTR.found()) {
+            Drawf.additive(
+                this@DrawTurretHeat.heatTR,
+                this@DrawTurretHeat.heat.heatColor.write(Tmp.c1).a(heatProgress() * this@DrawTurretHeat.heat.heatColor.a),
+                x + recoilOffset.x,
+                y + recoilOffset.y,
+                rotation.draw,
+                if (turretShading) turretHeatLayer else Draw.z() + heatLayerOffset
+            )
+        }
+    }
+}
+
+class DrawHeatBlock(
     var suffix: String = "-heat",
 ) : DrawBlock() {
     lateinit var heatTR: TR

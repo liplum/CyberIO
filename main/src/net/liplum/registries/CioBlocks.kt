@@ -3,7 +3,6 @@ package net.liplum.registries
 import arc.func.Prov
 import arc.graphics.Color
 import arc.graphics.Texture
-import arc.math.Mathf
 import arc.struct.Seq
 import arc.util.Time
 import mindustry.Vars
@@ -18,6 +17,7 @@ import mindustry.game.EventType.Trigger
 import mindustry.gen.Sounds
 import mindustry.graphics.Layer
 import mindustry.type.Category
+import mindustry.world.blocks.defense.turrets.PowerTurret.PowerTurretBuild
 import mindustry.world.blocks.environment.Floor
 import mindustry.world.blocks.heat.HeatProducer
 import mindustry.world.blocks.payloads.*
@@ -63,7 +63,8 @@ import net.liplum.brains.*
 import net.liplum.bullets.*
 import net.liplum.data.*
 import net.liplum.holo.*
-import net.liplum.mdt.render.drawTurret
+import net.liplum.mdt.render.DrawTurretHeat
+import net.liplum.mdt.render.drawMulti
 import net.liplum.mdt.render.regionPart
 import net.liplum.mdt.ui.DynamicContentInfoDialog.Companion.registerDynamicInfo
 import net.liplum.mdt.utils.plus
@@ -548,24 +549,27 @@ object CioBlocks {
                 damage = 0.5f
                 pierceCap = 3
             }
-            drawTurret {
-                regionPart("-side") {
-                    progress = PartProgress.warmup
-                    heatProgress = PartProgress.warmup
-                    heatColor = S.Hologram
-                    moveX = 8f
-                    moveRot = 40f
-                    mirror = true
+            drawMulti {
+                drawTurret {
+                    regionPart("-side") {
+                        progress = PartProgress.warmup
+                        heatProgress = PartProgress.warmup
+                        heatColor = S.Hologram
+                        moveX = 8f
+                        moveRot = 40f
+                        mirror = true
+                    }
+                    regionPart("-head") {
+                        progress = PartProgress.warmup
+                        heatProgress = PartProgress.warmup
+                        heatColor = S.Hologram
+                        moveY = 3f
+                        moveRot = -20f
+                        under = true
+                        mirror = true
+                    }
                 }
-                regionPart("-head") {
-                    progress = PartProgress.warmup
-                    heatProgress = PartProgress.warmup
-                    heatColor = S.Hologram
-                    moveY = 3f
-                    moveRot = -20f
-                    under = true
-                    mirror = true
-                }
+                then add DrawTurretHeat<PowerTurretBuild>("-glow") { warmup() }
             }
         }
     }

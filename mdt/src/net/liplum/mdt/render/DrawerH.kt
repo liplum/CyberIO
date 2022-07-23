@@ -26,8 +26,8 @@ inline fun DrawTurret.regionPart(
 
 class DrawMultiSpec {
     val all = ArrayList<DrawBlock>()
-    val add = this
-    infix fun a(drawer: DrawBlock) {
+    val then = this
+    infix fun add(drawer: DrawBlock) {
         all.add(drawer)
     }
 
