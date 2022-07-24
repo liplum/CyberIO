@@ -32,7 +32,7 @@ ___
 
 ### Hologram Projector
 
-![Holo Projector](GFX/Holo-projecting.gif)
+![Holo Projector](GFX/HoloProjector-new.gif)
 ___
 
 ### Mod Compatibility

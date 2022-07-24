@@ -212,6 +212,11 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
             }
             ClientOnly {
                 lastSendingTime += Time.delta
+                val target = receiver?.receiverColor?.let { if (it == R.C.Receiver) R.C.Sender else it } ?: R.C.Sender
+                if (target != targetSenderColor) {
+                    lastSenderColor = Changed(old = targetSenderColor)
+                    targetSenderColor = target
+                }
             }
         }
 
@@ -361,11 +366,6 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
                 Draw.alpha(highlightAlpha)
                 HighlightTR.DrawOn(this)
                 Draw.color()
-            }
-            val target = receiver?.receiverColor?.let { if (it == R.C.Receiver) R.C.Sender else it } ?: R.C.Sender
-            if (target != targetSenderColor) {
-                lastSenderColor = Changed(old = targetSenderColor)
-                targetSenderColor = target
             }
         }
     }
