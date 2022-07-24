@@ -32,7 +32,7 @@ Hologram                    = default("Hologram",                      ::Hologra
 
 Monochrome                  = default("Monochrome",                    ::CommonShader)
 InvertColor                 = default("InvertColor",                   ::CommonShader)
-TvStatic                    = default("TvStatic",                      ::CommonShader,     tryCompatible = true)
+TvStatic                    = default("TvStatic-compatible",           ::CommonShader)
 Pulse                       = default("Pulse",                         ::CommonShader)
 // Progressed
 InvertingColorRGB           = default("InvertingColorRgb",             ::ProgressShader)
