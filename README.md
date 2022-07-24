@@ -14,25 +14,26 @@ Cyber IO, you can check [the wiki](https://github.com/liplum/CyberIO/wiki/Game-G
 
 **For Server**: Please [check this file](Info/ForServer.md) to learn more about running Cyber IO on a server.
 
-**For Contributor**: Everyone is welcome to Cyber IO. If you want to translate, programme cooperatively or build Cyber IO on your own,
+**For Contributor**: Everyone is welcome to Cyber IO. If you want to translate, programme cooperatively or build Cyber
+IO on your own,
 please [check this file](Info/ForContributors.md).
 ___
 
-### IC Machine
+### IC Assembly
 
-![IC Machine](GFX/ProducingIC2.gif)
+![IC Assembly Vanilla](GFX/IC-new-vanilla.gif)
+![IC Assembly Erekir](GFX/IC-new-erekir.gif)
 ___
 
 ### Sender & Receiver
 
-![Sender](GFX/Sender&Receiver.gif)
+![Sender](GFX/SenderReciever-new.gif)
 ___
 
 ### Hologram Projector
 
 ![Holo Projector](GFX/Holo-projecting.gif)
 ___
-
 
 ### Mod Compatibility
 
@@ -52,11 +53,16 @@ ___
 * Anyone who likes CyberIO.
 * And you.
 
+**Resources**
+
+- Textures -> [Eclipse](https://github.com/EclipseTheOldOne) 
+
 **Translation**
 
-- Ukrainian -> Prosta4ok_ua#6336
+- Ukrainian -> [Prosta4okua](https://github.com/Prosta4okua)
 - Chinese Simplified -> woodjecket#0554
-- Japanese -> 星華輝月#2243
+- Japanese -> [Sakuranokwa](https://github.com/Sakuranokwa)
+
 ___
 
 ## Licence
