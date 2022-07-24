@@ -237,6 +237,7 @@ object CioBlocks {
                 drawer = DrawMulti(DrawDefaultSpec(), SpecDrawConstruct().apply {
                     stages = 4
                 })
+                squareSprite = false
             }
             buildType = Prov { GenericCrafterBuild() }
             fogRadius = 2
@@ -1300,7 +1301,7 @@ object CioBlocks {
                 )
                 scaledHealth = 150f
                 distributeSpeed = 10f
-                range = 300f
+                range = 380f
             }
             ErekirSpec {
                 requirements(
@@ -1314,7 +1315,7 @@ object CioBlocks {
                 )
                 scaledHealth = 100f
                 distributeSpeed = 10f
-                range = 380f
+                range = 450f
             }
             size = 2
         }

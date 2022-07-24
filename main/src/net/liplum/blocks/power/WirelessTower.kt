@@ -176,6 +176,9 @@ open class WirelessTower(name: String) : PowerBlock(name) {
             Draw.z(Layer.block + 1f)
             Drawf.shadow(CoilTR, x + offsetX - 0.5f, y + offsetY - 0.5f)
             CoilTR.Draw(x + offsetX, y + offsetY)
+            if (Time.time % Var.WirelessTowerPingFrequency <= 1f) {
+                pingingCount--
+            }
             if (
                 Settings.ShowWirelessTowerCircle &&
                 pingingCount < Var.WirelessTowerInitialPingingNumber
@@ -207,6 +210,8 @@ open class WirelessTower(name: String) : PowerBlock(name) {
                         )
                     }
                 }
+            } else {
+                radiation.range = 0f
             }
         }
 
