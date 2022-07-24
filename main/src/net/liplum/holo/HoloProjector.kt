@@ -323,7 +323,7 @@ open class HoloProjector(name: String) : Block(name) {
                     if (type.HoloOpacity > 0f) {
                         it.blendHoloColorOpacity = type.HoloOpacity
                     }
-                    type.uiIcon.Draw(x, y)
+                    type.fullIcon.Draw(x, y)
                 }
             }
             WhenNotPaused {

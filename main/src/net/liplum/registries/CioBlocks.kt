@@ -943,7 +943,7 @@ object CioBlocks {
                     )
                 )
                 scaledHealth = 250f
-                coolant = consumeCoolant(0.3f)
+                coolant = consumeCoolant(0.45f)
                 consumePower(15f)
                 shootDuration = 180f
                 range = 195f
@@ -952,13 +952,13 @@ object CioBlocks {
                 requirements(
                     Category.turret, BuildVisibility.shown, arrayOf(
                         CioItems.ic + 8,
-                        Items.surgeAlloy + 350,
+                        Items.surgeAlloy + 150,
                         Items.thorium + 200,
                         Items.carbide + 150,
                     )
                 )
                 scaledHealth = 350f
-                coolant = consumeCoolant(0.5f)
+                coolant = consumeCoolant(0.2f)
                 consumePower(12f)
                 shootDuration = 200f
                 range = 165f
@@ -984,7 +984,7 @@ object CioBlocks {
                     drawSize = 300f
                 }
                 ErekirSpec {
-                    damage = 180f
+                    damage = 280f
                     length = 180f
                     drawSize = 280f
                 }
@@ -1022,7 +1022,10 @@ object CioBlocks {
                         y = -8.5f
                         haloRadius = 3.5f
                         radius = 1.2f
+                        radiusTo = 15f
                         haloRotateSpeed = 5f
+                        haloRadiusTo = 360f
+                        progress = PartProgress { Interp.pow10In(it.recoil) }
                         color = R.C.FutureBlue
                     }
                     regionPart("-side") {
