@@ -236,7 +236,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
         override val senderColor: Color
             get() = receiver?.let {
                 if (it.isDefaultColor) super.senderColor
-                else it.receiverColor
+                else it.shownColor
             } ?: super.senderColor
         @ClientOnly
         override fun drawConfigure() {

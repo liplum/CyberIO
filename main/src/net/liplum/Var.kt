@@ -38,4 +38,5 @@ object Var {
     @JvmField val Navigation = NavigationService()
     const val wirelessTowerInitialPingingNumber = 5
     const val rsSlightHighlightAlpha = 0.5f
+    const val CyberColorTransitionTime = 60f
 }

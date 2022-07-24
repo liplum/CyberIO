@@ -6,6 +6,7 @@ import arc.graphics.Color
 import arc.math.geom.Point2
 import arc.struct.Seq
 import arc.util.Align
+import arc.util.Time
 import mindustry.Vars
 import mindustry.gen.Building
 import mindustry.type.Item
@@ -22,6 +23,7 @@ import net.liplum.common.utils.inViewField
 import net.liplum.common.utils.isLineInViewField
 import net.liplum.events.CioInitEvent
 import net.liplum.lib.math.Point2f
+import net.liplum.lib.math.smooth
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.render.*
 import net.liplum.mdt.utils.*
@@ -30,13 +32,14 @@ import net.liplum.mdt.utils.*
 val ArrowDensity: Float
     get() = Settings.LinkArrowDensity
 @ClientOnly
-val ArrowSpeed : Float
+val ArrowSpeed: Float
     get() = Settings.LinkArrowSpeed
 var ToastTimeFadePercent = 0.1f
 var ToastTime = 180f
 private val p1 = Point2f()
 private val p2 = Point2f()
-
+private val c1 = Color()
+private val c2 = Color()
 fun Int.dr(): IDataReceiver? =
     this.build as? IDataReceiver
 
@@ -129,7 +132,6 @@ fun Point2?.sc(): IStreamClient? =
 
 fun Point2?.sh(): IStreamHost? =
     this?.let { this.build as? IStreamHost }
-
 typealias SingleLiquidArray = Seq<Liquid>
 
 object StreamCenter {
@@ -206,6 +208,15 @@ val Liquid?.clientColor: Color
         R.C.Client
     else
         R.C.ClientLiquidColors[this.ID]
+val IDataReceiver.shownColor: Color
+    get() {
+        val cur = receiverColor
+        val last = lastReceiverColor.last
+        return if (last != null) c1.set(last).lerp(
+            cur,
+            ((Time.time - lastReceiverColor.timestamp) / Var.CyberColorTransitionTime).smooth
+        ) else cur
+    }
 
 fun Float.isAccepted() =
     this <= -1f || this > 0f

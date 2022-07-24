@@ -231,8 +231,8 @@ object G {
             line.setLength(lineLength)
             line.add(startDrawX, startDrawY)
             val fadeAlpha = when {
-                lineLength <= 10f -> (lineLength / 10f).coerceIn(0f, 1f).smooth
-                length - lineLength <= 10f -> ((length - lineLength) / 10f).coerceIn(0f, 1f).smooth
+                lineLength <= 10f -> (lineLength / 10f).smooth
+                length - lineLength <= 10f -> ((length - lineLength) / 10f).smooth
                 else -> 1f
             }
             Draw.color(outline)

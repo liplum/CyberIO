@@ -6,6 +6,7 @@ import arc.struct.Seq
 import mindustry.type.Item
 import net.liplum.R
 import net.liplum.api.ICyberEntity
+import net.liplum.common.Changed
 import net.liplum.common.delegates.Delegate1
 import net.liplum.mdt.CalledBySync
 import net.liplum.mdt.ClientOnly
@@ -33,6 +34,8 @@ interface IDataReceiver : ICyberEntity {
     @ClientOnly
     val receiverColor: Color
         get() = R.C.Receiver
+    @ClientOnly
+    val lastReceiverColor: Changed<Color>
     val isDefaultColor: Boolean
         get() = receiverColor === R.C.Receiver
     @CalledBySync

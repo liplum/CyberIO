@@ -38,12 +38,12 @@ object TimeH {
         hour: Int = 0,
         min: Int = 0,
         sec: Int = 0,
-        separatorr: Char = ':',
+        separator: Char = ':',
     ): String {
         val sb = StringBuilder()
-        val dayAdded = sb.tryAppendTimeFragment(day, separatorr, false)
-        val hourAdded = sb.tryAppendTimeFragment(hour, separatorr, dayAdded)
-        val minAdded = sb.tryAppendTimeFragment(min, separatorr, hourAdded)
+        val dayAdded = sb.tryAppendTimeFragment(day, separator, false)
+        val hourAdded = sb.tryAppendTimeFragment(hour, separator, dayAdded)
+        val minAdded = sb.tryAppendTimeFragment(min, separator, hourAdded)
         if (minAdded && sec < 10)
             sb.append('0')
         sb.append(sec)
@@ -52,13 +52,13 @@ object TimeH {
     }
     @JvmStatic
     private fun StringBuilder.tryAppendTimeFragment(
-        value: Int, seperator: Char, needZeroFill: Boolean = true,
+        value: Int, separator: Char, needZeroFill: Boolean = true,
     ): Boolean {
         if (value > 0) {
             if (needZeroFill && value < 10)
                 append('0')
             append(value)
-            append(seperator)
+            append(separator)
             return true
         }
         return false

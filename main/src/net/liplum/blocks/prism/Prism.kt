@@ -384,7 +384,7 @@ open class Prism(name: String) : Block(name) {
                 val pre = expendingSelectCircleTime / cm.inOrbitAmount
                 cm.render {
                     val curNeed = (orbitPos + 1) * pre
-                    var selectProgress = ((Inspector.selectingTime + pre - curNeed) / curNeed).coerceIn(0f, 1f).smooth
+                    var selectProgress = ((Inspector.selectingTime + pre - curNeed) / curNeed).smooth
                     if (isRemoved) selectProgress = 1f - selectProgress
                     if (selectProgress < 0.01f) return@render
                     G.dashCircleBreath(
@@ -399,7 +399,7 @@ open class Prism(name: String) : Block(name) {
                 val priselX = revolution.x + x
                 val priselY = revolution.y + y
                 var scale = 1f + Mathf.log(3f, orbitPos + 3f) * 0.2f - 0.2f
-                val perspectiveProgress = (revolution.r / maxOutsideRange).coerceIn(0f, 1f).smooth
+                val perspectiveProgress = (revolution.r / maxOutsideRange).smooth
                 scale *= perspectiveProgress
                 Draw.z(Layer.blockOver)
                 img.AsShadow(
