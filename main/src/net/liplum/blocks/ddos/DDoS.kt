@@ -99,7 +99,6 @@ class DDoS(name: String) : Turret(name) {
             get() = alreadyUsed[curIndex]
         val usedItemCooldownTimeInMap: Float
             get() = usedItemCooldownTimePreItem * enabledItemsInMap.size
-        override val lastReceiverColor: Changed<Color> = Changed.empty()
         override fun updateTile() {
             acceptCounter += Time.delta
             if (acceptCounter >= acceptTime) {

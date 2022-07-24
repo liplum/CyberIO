@@ -19,6 +19,7 @@ import mindustry.world.meta.Stat
 import net.liplum.*
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
+import net.liplum.common.Changed
 import net.liplum.common.persistence.read
 import net.liplum.common.persistence.write
 import net.liplum.common.utils.DoMultipleBool
@@ -212,6 +213,13 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
             get() = lastUnloadTime < UnloadTime
         @ClientOnly lateinit var shrinkingAnimObj: AnimationObj
         var justRestored = false
+        @ClientOnly
+        var lastSenderColor = Changed.empty<Color>()
+        @ClientOnly
+        var targetSenderColor = R.C.Sender
+        @ClientOnly
+        override val senderColor: Color
+            get() = transitionColor(lastSenderColor, targetSenderColor)
 
         init {
             ClientOnly {
@@ -219,7 +227,6 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
             }
         }
 
-        override var senderColor: Color = R.C.Sender
         open fun updateUnloaded() {
             nearby.clear()
             for (b in proximity) {
@@ -371,7 +378,8 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
                         c.lerp(color, 0.5f)
                     }
                 }
-                senderColor = if (hasAny) c else R.C.Sender
+                lastSenderColor = Changed(old = targetSenderColor)
+                targetSenderColor = if (hasAny) c else R.C.Sender
             }
             DebugOnly {
                 needUnloadItemsText = genNeedUnloadItemsText()

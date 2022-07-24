@@ -27,7 +27,6 @@ import net.liplum.UndebugOnly
 import net.liplum.Var
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
-import net.liplum.common.Changed
 import net.liplum.common.delegates.Delegate1
 import net.liplum.common.persistence.read
 import net.liplum.common.persistence.write
@@ -179,11 +178,9 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
         override var receiverColor = R.C.Receiver
             set(value) {
                 if (field != value) {
-                    lastReceiverColor = Changed(field)
                     field = value
                 }
             }
-        override var lastReceiverColor: Changed<Color> = Changed.empty()
 
         init {
             ClientOnly {

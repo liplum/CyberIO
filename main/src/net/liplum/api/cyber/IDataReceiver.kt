@@ -34,10 +34,6 @@ interface IDataReceiver : ICyberEntity {
     @ClientOnly
     val receiverColor: Color
         get() = R.C.Receiver
-    @ClientOnly
-    val lastReceiverColor: Changed<Color>
-    val isDefaultColor: Boolean
-        get() = receiverColor === R.C.Receiver
     @CalledBySync
     fun connectTo(sender: IDataSender) {
         connectedSenders.add(sender.building.pos())

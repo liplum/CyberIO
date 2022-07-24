@@ -17,6 +17,7 @@ import net.liplum.Settings
 import net.liplum.Var
 import net.liplum.annotations.SubscribeEvent
 import net.liplum.api.ICyberEntity
+import net.liplum.common.Changed
 import net.liplum.common.utils.Or
 import net.liplum.common.utils.bundle
 import net.liplum.common.utils.inViewField
@@ -208,15 +209,14 @@ val Liquid?.clientColor: Color
         R.C.Client
     else
         R.C.ClientLiquidColors[this.ID]
-val IDataReceiver.shownColor: Color
-    get() {
-        val cur = receiverColor
-        val last = lastReceiverColor.last
-        return if (last != null) c1.set(last).lerp(
-            cur,
-            ((Time.time - lastReceiverColor.timestamp) / Var.CyberColorTransitionTime).smooth
-        ) else cur
-    }
+
+fun transitionColor(from: Changed<Color>, to: Color): Color {
+    val last = from.old
+    return if (last != null) c1.set(last).lerp(
+        to,
+        ((Time.time - from.timestamp) / Var.RsColorTransitionTime).smooth
+    ) else to
+}
 
 fun Float.isAccepted() =
     this <= -1f || this > 0f
@@ -232,7 +232,7 @@ fun ICyberEntity.canShowSelfCircle(): Boolean =
 fun IDataSender.drawDataNetGraphic(showCircle: Boolean = true) {
     if (receiverConnectionNumber <= 0) return
     if (showCircle && this.canShowSelfCircle()) {
-        G.surroundingCircleBreath(tile, R.C.Sender, alpha = Settings.LinkOpacity)
+        G.surroundingCircleBreath(tile, senderColor, alpha = Settings.LinkOpacity)
     }
     if (canMultipleConnect) {
         this.drawReceivers(connectedReceivers, showCircle)
@@ -245,7 +245,7 @@ fun IDataSender.drawDataNetGraphic(showCircle: Boolean = true) {
 fun IDataReceiver.drawDataNetGraphic(showCircle: Boolean = true) {
     if (senderConnectionNumber <= 0) return
     if (showCircle && this.canShowSelfCircle()) {
-        G.surroundingCircleBreath(tile, R.C.Receiver, alpha = Settings.LinkOpacity)
+        G.surroundingCircleBreath(tile, receiverColor, alpha = Settings.LinkOpacity)
     }
     this.drawSenders(connectedSenders, showCircle)
 }

@@ -21,7 +21,6 @@ import net.liplum.UndebugOnly
 import net.liplum.Var
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
-import net.liplum.common.Changed
 import net.liplum.common.delegates.Delegate1
 import net.liplum.common.persistence.read
 import net.liplum.common.persistence.write
@@ -122,14 +121,12 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
         var outputItem: Item? = null
             set(value) {
                 if (field != value) {
-                    lastReceiverColor = Changed(field?.color)
                     field = value
                     onRequirementUpdated(this)
                 }
             }
         override val receiverColor: Color
             get() = outputItem?.color ?: R.C.Receiver
-        override var lastReceiverColor: Changed<Color> = Changed.empty()
         @ClientOnly
         var lastOutputDelta = 0f
         @ClientOnly
@@ -231,7 +228,7 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
         override val maxSenderConnection = maxConnection
         override fun fixedDraw() {
             BaseTR.DrawOn(this)
-            Draw.alpha(Var.rsSlightHighlightAlpha)
+            Draw.alpha(Var.RsSlightHighlightAlpha)
             HighlightTR.DrawOn(this)
             Draw.color()
         }

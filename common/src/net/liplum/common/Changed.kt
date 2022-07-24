@@ -3,7 +3,7 @@ package net.liplum.common
 import arc.util.Time
 
 data class Changed<T>(
-    val last: T?,
+    val old: T?,
     val timestamp: Float = Time.time,
 ) {
     companion object {

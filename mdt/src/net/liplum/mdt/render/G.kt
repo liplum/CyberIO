@@ -236,11 +236,9 @@ object G {
                 else -> 1f
             }
             Draw.color(outline)
-            AddAlpha(fadeAlpha)
-            Icon.right.region.DrawSize(line.x, line.y, size = outlineSize, rotation = angle)
+            Icon.right.region.DrawSize(line.x, line.y, size = outlineSize* fadeAlpha, rotation = angle)
             Draw.color(inner)
-            AddAlpha(fadeAlpha)
-            Icon.right.region.DrawSize(line.x, line.y, size = size, rotation = angle)
+            Icon.right.region.DrawSize(line.x, line.y, size = size * fadeAlpha, rotation = angle)
             cur += per
         }
         Draw.color()

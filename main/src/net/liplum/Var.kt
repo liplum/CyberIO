@@ -36,7 +36,9 @@ object Var {
     /** [WorldXY] pre tick */
     @JvmField var NetworkNodeSendingSpeed: WorldXY = 0.5f * Vars.tilesize
     @JvmField val Navigation = NavigationService()
-    const val wirelessTowerInitialPingingNumber = 5
-    const val rsSlightHighlightAlpha = 0.5f
-    const val CyberColorTransitionTime = 60f
+    const val WirelessTowerInitialPingingNumber = 5
+    /** unit:tick */
+    const val WirelessTowerPingFrequency = 60f * 30f
+    const val RsSlightHighlightAlpha = 0.5f
+    const val RsColorTransitionTime = 60f
 }

@@ -18,6 +18,7 @@ import net.liplum.R
 import net.liplum.Var
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
+import net.liplum.common.Changed
 import net.liplum.common.utils.toFloat
 import net.liplum.data.Sender.SenderBuild
 import net.liplum.lib.Serialized
@@ -233,11 +234,12 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
             }
         }
         @ClientOnly
+        var lastSenderColor = Changed.empty<Color>()
+        @ClientOnly
+        var targetSenderColor = R.C.Sender
+        @ClientOnly
         override val senderColor: Color
-            get() = receiver?.let {
-                if (it.isDefaultColor) super.senderColor
-                else it.shownColor
-            } ?: super.senderColor
+            get() = transitionColor(lastSenderColor, targetSenderColor)
         @ClientOnly
         override fun drawConfigure() {
             super.drawConfigure()
@@ -355,10 +357,15 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
                 HighlightTR.DrawOn(this)
                 Draw.color()
             } else {
-                highlightAlpha = Mathf.approach(highlightAlpha, Var.rsSlightHighlightAlpha, 0.01f)
+                highlightAlpha = Mathf.approach(highlightAlpha, Var.RsSlightHighlightAlpha, 0.01f)
                 Draw.alpha(highlightAlpha)
                 HighlightTR.DrawOn(this)
                 Draw.color()
+            }
+            val target = receiver?.receiverColor?.let { if (it == R.C.Receiver) R.C.Sender else it } ?: R.C.Sender
+            if (target != targetSenderColor) {
+                lastSenderColor = Changed(old = targetSenderColor)
+                targetSenderColor = target
             }
         }
     }

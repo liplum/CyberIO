@@ -178,7 +178,7 @@ open class WirelessTower(name: String) : PowerBlock(name) {
             CoilTR.Draw(x + offsetX, y + offsetY)
             if (
                 Settings.ShowWirelessTowerCircle &&
-                pingingCount < Var.wirelessTowerInitialPingingNumber
+                pingingCount < Var.WirelessTowerInitialPingingNumber
             ) {
                 // Render radiations
                 WhenTheSameTeam {
