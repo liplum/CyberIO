@@ -1,6 +1,6 @@
 package net.liplum.mdt.render
 
-import mindustry.entities.part.RegionPart
+import mindustry.entities.part.*
 import mindustry.world.blocks.defense.turrets.Turret
 import mindustry.world.draw.DrawBlock
 import mindustry.world.draw.DrawMulti
@@ -22,6 +22,29 @@ inline fun DrawTurret.regionPart(
     config: RegionPart.() -> Unit,
 ) {
     parts.add(RegionPart(suffix).apply(config))
+}
+
+inline fun DrawTurret.shapePart(
+    config: ShapePart.() -> Unit,
+) {
+    parts.add(ShapePart().apply(config))
+}
+inline fun DrawTurret.flarePart(
+    config: FlarePart.() -> Unit,
+) {
+    parts.add(FlarePart().apply(config))
+}
+
+inline fun DrawTurret.hoverPart(
+    config: HoverPart.() -> Unit,
+) {
+    parts.add(HoverPart().apply(config))
+}
+
+inline fun DrawTurret.haloPart(
+    config: HaloPart.() -> Unit,
+) {
+    parts.add(HaloPart().apply(config))
 }
 
 class DrawMultiSpec {

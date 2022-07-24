@@ -65,12 +65,9 @@ import net.liplum.brains.*
 import net.liplum.bullets.*
 import net.liplum.data.*
 import net.liplum.holo.*
-import net.liplum.lib.math.pow3Intrp
+import net.liplum.lib.arc.invoke
 import net.liplum.lib.math.smooth
-import net.liplum.lib.math.smoother
-import net.liplum.mdt.render.DrawTurretHeat
-import net.liplum.mdt.render.drawMulti
-import net.liplum.mdt.render.regionPart
+import net.liplum.mdt.render.*
 import net.liplum.mdt.ui.DynamicContentInfoDialog.Companion.registerDynamicInfo
 import net.liplum.mdt.utils.plus
 import net.liplum.render.DrawDefaultSpec
@@ -530,7 +527,7 @@ object CioBlocks {
                 cooldownTime = 18f
                 recoil = 5f
                 range = 200f
-                reload = 14f
+                reload = 20f
                 consumePower(4f)
                 extraLostHpBounce = 0.003f
                 scaledHealth = 200f
@@ -546,8 +543,14 @@ object CioBlocks {
             size = 3
             buildCostMultiplier = 1.5f
             shootSound = Sounds.lasershoot
-            minWarmup = 0.96f
-            shootWarmupSpeed = 0.03f
+            VanillaSpec {
+                minWarmup = 0.96f
+                shootWarmupSpeed = 0.03f
+            }
+            ErekirSpec {
+                minWarmup = 0.96f
+                shootWarmupSpeed = 0.06f
+            }
             shootType = DeleterWave(executeProportion, extraLostHpBounce).apply {
                 shootEffect = Fx.none
                 smokeEffect = Fx.none
@@ -565,7 +568,7 @@ object CioBlocks {
                             moveRot = 40f
                         }
                         ErekirSpec {
-                            progress = PartProgress { it.warmup.smooth }
+                            progress = PartProgress { Interp.pow3Out(it.warmup) }
                             moveY = 15f
                             moveX = -5f
                             moveRot = -170f
@@ -576,7 +579,7 @@ object CioBlocks {
                         heatProgress = PartProgress.warmup
                         heatColor = S.Hologram
                         VanillaSpec {
-                            progress = PartProgress.warmup
+                            progress = PartProgress { it.warmup.smooth }
                             moveY = 3f
                             moveRot = -20f
                         }
@@ -718,7 +721,7 @@ object CioBlocks {
                 drawTurret {
                     regionPart("-head") {
                         y = 14f
-                        progress = PartProgress { Interp.pow10In.apply(it.warmup) }
+                        progress = PartProgress { Interp.pow10In(it.warmup) }
                         moveY = -6f
                         under = true
                     }
@@ -966,9 +969,10 @@ object CioBlocks {
             recoil = 4f
             shake = 2f
             shootDuration = 150f
-            reload = 40f
+            reload = 240f
             firingMoveFract = 1f
-            shootSound = CioSounds.jammerPreShoot
+            shoot.firstShotDelay = 90f
+            chargeSound = CioSounds.jammerPreShoot
             loopSound = CioSounds.tvStatic
             loopSoundVolume = 0.5f
             rotateSpeed = 2f
@@ -984,6 +988,7 @@ object CioBlocks {
                     length = 180f
                     drawSize = 280f
                 }
+                width = 6f
                 divisions = 5
                 hitEffect = StaticFx
                 hitColor = Color.white
@@ -992,6 +997,42 @@ object CioBlocks {
                 incendSpread = 5f
                 incendAmount = 1
                 ammoMultiplier = 1f
+            }
+            shootWarmupSpeed = 0.03f
+            minWarmup = 0.96f
+            shootY = -3.5f
+            drawMulti {
+                drawTurret {
+                    regionPart("-barrel") {
+                        mirror = true
+                        under = true
+                        progress = PartProgress.warmup
+                        moveX = 7f
+                        moveY = -1.8f
+                        x = 1.2f
+                    }
+                    shapePart {
+                        circle = true
+                        hollow = true
+                        y = -8.5f
+                        radius = 2.5f
+                        color = R.C.FutureBlue
+                    }
+                    haloPart {
+                        y = -8.5f
+                        haloRadius = 3.5f
+                        radius = 1.2f
+                        haloRotateSpeed = 5f
+                        color = R.C.FutureBlue
+                    }
+                    regionPart("-side") {
+                        mirror = true
+                        progress = PartProgress.warmup
+                        moveX = 4f
+                        moveY = -4f
+                    }
+                }
+                then add DrawStereo()
             }
         }
     }

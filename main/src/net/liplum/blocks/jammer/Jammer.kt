@@ -7,18 +7,18 @@ import arc.math.geom.Vec2
 import arc.util.Time
 import arc.util.Tmp
 import arc.util.io.Reads
+import mindustry.gen.Building
 import mindustry.gen.Groups
 import mindustry.world.Block
 import mindustry.world.blocks.defense.turrets.LaserTurret
-import mindustry.world.blocks.defense.turrets.Turret
-import mindustry.world.draw.DrawTurret
+import mindustry.world.draw.DrawBlock
 import mindustry.world.meta.BlockGroup
-import net.liplum.lib.assets.TR
 import net.liplum.common.Observer
 import net.liplum.common.entity.Progress
 import net.liplum.common.entity.Queue
-import net.liplum.lib.math.FUNC
+import net.liplum.lib.assets.TR
 import net.liplum.lib.math.nextBoolean
+import net.liplum.lib.math.smooth
 import net.liplum.mdt.CalledBySync
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.SendDataPack
@@ -36,15 +36,8 @@ open class Jammer(name: String) : LaserTurret(name) {
     @ClientOnly var waveMaxNumber = 3
     @ClientOnly var waveShootingBoost = 1f
     @ClientOnly var waveShootingTime = 30f
-    @ClientOnly var waveSpeed = 0.02f
+    @ClientOnly var waveSpeed = 0.014f
     @ClientOnly var waveReloadTime = 10f
-    @ClientOnly var fadeInOut: FUNC = {
-        when (it) {
-            in 0f..0.1f -> it * 10f
-            in 0.1f..0.9f -> 1f
-            else -> 1f - (it - 0.9f) * 10f
-        }
-    }
     /**
      * It's a magic number but the more means the slower.
      */
@@ -52,68 +45,10 @@ open class Jammer(name: String) : LaserTurret(name) {
 
     init {
         buildType = Prov { JammerBuild() }
-        outlineIcon = false
         //consumes.remove(ConsumeType.liquid)
         config(Integer::class.java) { obj: JammerBuild, i ->
             if (i.toInt() == 1)
                 obj.onJamming()
-        }
-    }
-
-    init {
-        drawer = object : DrawTurret() {
-            @ClientOnly lateinit var TurretTR: TR
-            @ClientOnly lateinit var StereoTR: TR
-            @ClientOnly lateinit var SonicWaveAnim: Animation
-            override fun load(block: Block) = block.run {
-                super.load(this)
-                TurretTR = this.sub("turret")
-                StereoTR = this.sub("stereo")
-                SonicWaveAnim = this.autoAnim("sonic-wave", 6, 30f)
-            }
-
-            override fun drawTurret(block: Turret, build: TurretBuild) = (build as JammerBuild).run {
-                super.drawTurret(block, build)
-                // Draw Stereos
-                for (s in stereos) {
-                    WhenNotPaused {
-                        s.targetPos.setAngle(s.angleDis + rotation)
-                        val force = Tmp.v1.set(s.targetPos).sub(s.pos)
-                        s.vel.set(force).setLength(Mathf.sqrt(force.len() / stereoSpeed))
-                        s.move(Time.delta)
-                    }
-                    s.draw(StereoTR)
-                }
-                // Draw sonic wave
-                WhenNotPaused {
-                    waveReload += delta()
-                }
-                if (waveReload >= waveReloadTime && waves.canAdd) {
-                    waveReload = 0f
-                    waves.append(Progress())
-                }
-                waves.pollWhen {
-                    it.progress >= 1f
-                }
-                val startIndex = Mathf.randomSeed(id.toLong(), 0, 1)
-                val endIndex = 1 - startIndex
-                val start = stereos[startIndex]
-                val end = stereos[endIndex]
-                val total = Tmp.v2.set(end.pos).sub(start.pos)
-                val length = total.len()
-                waves.forEach {
-                    WhenNotPaused {
-                        it.progress += realWaveSpeed
-                    }
-                    Tmp.v1.set(total).setLength(length * it.progress)
-                    Draw.alpha(fadeInOut(it.progress))
-                    SonicWaveAnim.draw(
-                        x + start.pos.x + Tmp.v1.x,
-                        y + start.pos.y + Tmp.v1.y,
-                        rotation.draw
-                    )
-                }
-            }
         }
     }
 
@@ -187,6 +122,63 @@ open class Jammer(name: String) : LaserTurret(name) {
             }
         }
     }
+
+    inner class DrawStereo : DrawBlock() {
+        @ClientOnly lateinit var StereoTR: TR
+        @ClientOnly lateinit var SonicWaveAnim: Animation
+        override fun load(block: Block) = block.run {
+            super.load(this)
+            StereoTR = this.sub("stereo")
+            SonicWaveAnim = this.autoAnim("sonic-wave", 6, 30f)
+        }
+
+        override fun draw(build: Building) = (build as JammerBuild).run {
+            // Draw Stereos
+            for (s in stereos) {
+                WhenNotPaused {
+                    s.targetPos.setAngle(s.angleDis + rotation)
+                    val force = Tmp.v1.set(s.targetPos).sub(s.pos)
+                    s.vel.set(force).setLength(Mathf.sqrt(force.len() / stereoSpeed))
+                    s.move(Time.delta)
+                }
+                s.draw(StereoTR)
+            }
+            // Draw sonic wave
+            WhenNotPaused {
+                waveReload += delta()
+            }
+            if (waveReload >= waveReloadTime && waves.canAdd) {
+                waveReload = 0f
+                waves.append(Progress())
+            }
+            waves.pollWhen {
+                it.progress >= 1f
+            }
+            val startIndex = Mathf.randomSeed(id.toLong(), 0, 1)
+            val endIndex = 1 - startIndex
+            val start = stereos[startIndex]
+            val end = stereos[endIndex]
+            val total = Tmp.v2.set(end.pos).sub(start.pos)
+            val length = total.len()
+            waves.forEach {
+                WhenNotPaused {
+                    it.progress += realWaveSpeed
+                }
+                Tmp.v1.set(total).setLength(length * it.progress.smooth)
+                val fadeAlpha = when {
+                    it.progress <= 0.2f -> (it.progress / 0.2f).smooth
+                    it.progress >= 0.8f -> ((1f - it.progress) / 0.2f).smooth
+                    else -> 1f
+                }
+                Draw.alpha(fadeAlpha)
+                SonicWaveAnim.draw(
+                    x + start.pos.x + Tmp.v1.x,
+                    y + start.pos.y + Tmp.v1.y,
+                    rotation.draw
+                )
+            }
+        }
+    }
 }
 @ClientOnly
 class Stereo(val jammer: Jammer.JammerBuild) {
@@ -200,6 +192,7 @@ class Stereo(val jammer: Jammer.JammerBuild) {
         randomPos()
         changeRate = 10
     }
+
     fun draw(image: TR) {
         image.Draw(
             jammer.x + pos.x + floating.x,

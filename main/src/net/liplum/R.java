@@ -195,7 +195,10 @@ public final class R {
         public static final Color
             BrainWave = Color.valueOf("#be61ab"),
             TissueFluid = Color.valueOf("#cc8ebf");
+        @NotNull
         public static final Color SonicWave = Color.valueOf("#b0bec5");
+        @NotNull
+        public static final Color FutureBlue = Color.valueOf("#84fff1");
 
         @NotNull
         public static final Color

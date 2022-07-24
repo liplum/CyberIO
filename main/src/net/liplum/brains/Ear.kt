@@ -84,7 +84,7 @@ open class Ear(name: String) : Block(name), IComponentBlock {
     @ClientOnly @JvmField val heatMeta = HeatMeta()
     @ClientOnly @JvmField var scaleTime = 30f
     @ClientOnly @JvmField var maxScale = 0.3f
-    @ClientOnly @JvmField var sonicWaveColor: Color = R.C.SonicWave
+    @ClientOnly @JvmField var sonicWaveColor = R.C.SonicWave
     override val upgrades: MutableMap<UpgradeType, Upgrade> = HashMap()
 
     init {
