@@ -10,6 +10,7 @@ import arc.struct.Seq
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.Vars
+import mindustry.content.Bullets
 import mindustry.entities.Damage
 import mindustry.entities.bullet.BulletType
 import mindustry.gen.Building
@@ -55,7 +56,7 @@ import net.liplum.registries.SD
 open class Stealth(name: String) : Turret(name) {
     @JvmField var restoreReload = 10 * 60f
     @JvmField var maxConnection = -1
-    @JvmField var shootType: BulletType = CioBulletTypes.ruvik2
+    @JvmField var shootType: BulletType = Bullets.placeholder
     @JvmField var activePower = 2.5f
     @JvmField var reactivePower = 0.5f
     @JvmField var minHealthProportion = 0.05f

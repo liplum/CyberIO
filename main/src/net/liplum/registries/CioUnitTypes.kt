@@ -134,12 +134,9 @@ object CioUnitTypes {
                 bullet = RuvikBullet(1.6f, 35f).apply {
                     stemVersion = STEM_VERSION.STEM1
                     maxRange = ruvikTipRange
-                    width = 10f
-                    height = 10f
                     hitSize = 10f
                     lifetime = 240f
-                    frontColor = S.Hologram
-                    backColor = S.HologramDark
+                    trailColor = S.Hologram
                 }
             })
         }

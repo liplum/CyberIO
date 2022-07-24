@@ -1273,13 +1273,13 @@ object CioBlocks {
                     damage = 120f
                 }
                 stemVersion = STEM_VERSION.STEM2
-                width = 10f
-                height = 10f
+                smokeEffect = Fx.none
+                shootSound = Sounds.none
+                arrowWidth = 10f
                 hitSize = 10f
                 lifetime = 240f
                 maxRange = ruvikRange
-                frontColor = S.Hologram
-                backColor = S.HologramDark
+                trailColor = S.Hologram
             }
         }
     }

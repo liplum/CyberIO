@@ -17,45 +17,7 @@ import net.liplum.shaders.HologramShader
 object CioBulletTypes {
     @JvmStatic lateinit var virus: BasicBulletType
     @JvmStatic lateinit var radiationInterference: ShaderBasicBulletT<CommonShader>
-    @JvmStatic lateinit var holoBullet: ShaderBasicBulletT<HologramShader>
-    @JvmStatic lateinit var ruvik: RuvikBullet
-    @JvmStatic lateinit var ruvik2: RuvikBullet
-    @DependOn
-    fun holoBullet() {
-        holoBullet = ShaderBasicBulletT<HologramShader>(
-            2f, 35f
-        ).apply {
-            shader = { SD.Hologram }
-            width = 10f
-            height = 10f
-            hitSize = 10f
-            lifetime = 60f
-            pierce = true
-            pierceCap = 5
-            backColor = S.HologramDark
-            frontColor = S.HologramDark
-        }
-    }
-    @DependOn
-    fun ruvik() {
-        ruvik = RuvikBullet(1.5f, 30f).apply {
-            stemVersion = STEM_VERSION.STEM1
-            width = 10f
-            height = 10f
-            hitSize = 10f
-            lifetime = 240f
-        }
-    }
-    @DependOn
-    fun ruvik2() {
-        ruvik2 = RuvikBullet(1.5f, 30f).apply {
-            stemVersion = STEM_VERSION.STEM2
-            width = 10f
-            height = 10f
-            hitSize = 10f
-            lifetime = 240f
-        }
-    }
+
     @DependOn("CioSEffects.infected")
     fun virus() {
         virus = BasicBulletType().apply {
@@ -63,7 +25,6 @@ object CioBulletTypes {
                 speed = 2.5f
                 damage = 50f
             }
-            //TODO: Create a new bullet instead?
             ErekirSpec {
                 speed = 2.8f
                 damage = 80f

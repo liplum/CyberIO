@@ -1,5 +1,6 @@
 package net.liplum.bullets
 
+import arc.graphics.g2d.Draw
 import arc.math.Angles
 import arc.util.Nullable
 import arc.util.Time
@@ -7,9 +8,10 @@ import mindustry.Vars
 import mindustry.ai.types.MissileAI
 import mindustry.entities.Mover
 import mindustry.entities.Units
-import mindustry.entities.bullet.BasicBulletType
+import mindustry.entities.bullet.BulletType
 import mindustry.game.Team
 import mindustry.gen.*
+import mindustry.graphics.Drawf
 import mindustry.world.blocks.ControlBlock
 import mindustry.world.blocks.defense.turrets.BaseTurret
 import net.liplum.mdt.utils.MdtUnit
@@ -20,10 +22,12 @@ enum class STEM_VERSION {
     STEM1, STEM2
 }
 
-open class RuvikBullet : BasicBulletType {
+open class RuvikBullet : BulletType {
     @JvmField var stemVersion: STEM_VERSION = STEM_VERSION.STEM1
     @JvmField var maxRange = 120f
     @JvmField var maxRange2 = 120f * 120f
+    @JvmField var arrowWidth = 5f
+    @JvmField var arrowLength = 10f
 
     constructor(speed: Float, damage: Float) : super(speed, damage)
     constructor() : super()
@@ -38,13 +42,9 @@ open class RuvikBullet : BasicBulletType {
             controlled = false
         }
 
-        fun control(
-            angle: Float,
-            //dis: Float = -1f,
-        ) {
+        fun control(angle: Float) {
             ruvikAngle = angle
             controlled = true
-            //distance = dis
         }
     }
 
@@ -63,19 +63,19 @@ open class RuvikBullet : BasicBulletType {
                 val aimX = unit.aimX
                 val aimY = unit.aimY
                 if (checkOverMaxRange(b, unit.x, unit.y)) return
-                STEMSystem.control(b.angleTo(aimX, aimY) /*b.dst(aimX, aimY)*/)
+                STEMSystem.control(b.angleTo(aimX, aimY))
             } else {
                 if (checkOverMaxRange(b, data.x, data.y)) return
                 val aimX = data.aimX()
                 val aimY = data.aimY()
-                STEMSystem.control(b.angleTo(aimX, aimY) /*b.dst(aimX, aimY)*/)
+                STEMSystem.control(b.angleTo(aimX, aimY))
             }
         } else if (data is ControlBlock && data.isControlled) {
             val player = data.unit()
             if (checkOverMaxRange(b, player.x, player.y)) return
             val aimX = player.aimX
             val aimY = player.aimY
-            STEMSystem.control(b.angleTo(aimX, aimY) /*b.dst(aimX, aimY)*/)
+            STEMSystem.control(b.angleTo(aimX, aimY))
         } else if (data is BaseTurret.BaseTurretBuild) {
             if (checkOverMaxRange(b, data.x, data.y)) return
             STEMSystem.control(data.rotation)
@@ -89,7 +89,7 @@ open class RuvikBullet : BasicBulletType {
             if (checkOverMaxRange(b, unit.x, unit.y)) return
             val aimX = unit.aimX()
             val aimY = unit.aimY()
-            STEMSystem.control(b.angleTo(aimX, aimY) /*b.dst(aimX, aimY)*/)
+            STEMSystem.control(b.angleTo(aimX, aimY))
         } else {
             ControlBySTEM1(b)
         }
@@ -111,6 +111,13 @@ open class RuvikBullet : BasicBulletType {
         }
     }
 
+    override fun draw(b: Bullet) {
+        super.draw(b)
+        Draw.color(trailColor)
+        Drawf.tri(b.x, b.y, arrowWidth, arrowLength, b.vel.angle())
+        Draw.color()
+    }
+
     open fun updateRuvik(b: Bullet) {
         STEMSystem.reset()
         CONTROL(b)
@@ -121,12 +128,6 @@ open class RuvikBullet : BasicBulletType {
                     speed * Time.delta * 50f
                 )
             )
-            /* Taking distance of unit and destination into account
-             val dis = STEMSystem.distance
-             if (dis >= 0f) {
-                 val len = b.vel.len()
-                 b.vel.setLength(len + Mathf.log(100f,dis))
-             }*/
         }
     }
 
