@@ -1227,7 +1227,6 @@ object CioBlocks {
     }
     @DependOn(
         "CioItems.ic",
-        "CioBulletTypes.ruvik2"
     )
     fun stealth() {
         stealth = Stealth("stealth").apply {
