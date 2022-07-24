@@ -1,5 +1,6 @@
 @file:Suppress("SpellCheckingInspection")
 
+import io.github.liplum.mindustry.antiAlias
 import io.github.liplum.mindustry.importMindustry
 import io.github.liplum.mindustry.mindustry
 import io.github.liplum.mindustry.mindustryAssets
@@ -58,8 +59,20 @@ mindustry {
         fatJar
     }
 }
+val antiAliasedDir = rootDir.resolve("assets-gen").resolve("sprites")
+tasks.antiAlias {
+    sourceDirectory.set(rootDir.resolve("assets-raw").resolve("sprites"))
+    destinationDirectory.set(antiAliasedDir)
+}
+tasks.jar {
+    dependsOn(tasks.antiAlias)
+}
 mindustryAssets {
     root at "$rootDir/assets"
+    sprites {
+        dependsOn(tasks.antiAlias)
+        dir = antiAliasedDir
+    }
 }
 tasks.withType<KotlinCompile>().configureEach {
     kotlinOptions.freeCompilerArgs += listOf(
