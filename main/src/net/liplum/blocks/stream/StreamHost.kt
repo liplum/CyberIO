@@ -326,12 +326,12 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
         override fun drawConfigure() {
             super.drawConfigure()
             this.drawStreamGraphic()
-            drawMaxRange()
+            drawConfiguringMaxRange()
         }
 
         override fun drawSelect() {
             this.drawStreamGraphic()
-            drawMaxRange()
+            drawSelectedMaxRange()
         }
         @SendDataPack
         override fun connectToSync(client: IStreamClient) {

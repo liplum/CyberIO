@@ -322,16 +322,20 @@ fun Block.drawLinkedLineToClientWhenConfiguring(x: Int, y: Int) {
     if (host !is IStreamHost) return
     val selectedTile = host.tile()
     val opacity = Settings.LinkOpacity
-    G.surroundingCircleBreath(this, x, y, R.C.Client, alpha = opacity)
+    val isOverRange = if (host.maxRange > 0f) selectedTile.dstWorld(x, y) > host.maxRange else false
+    val color = if (isOverRange) R.C.RedAlert else R.C.Client
+    G.surroundingCircleBreath(this, x, y, color, alpha = opacity)
     G.transferArrowLineBreath(
         host.block,
         selectedTile.x, selectedTile.y,
         this, x.toShort(), y.toShort(),
-        arrowColor = host.hostColor,
+        arrowColor = color,
         density = ArrowDensity,
         speed = ArrowSpeed,
         alpha = opacity
     )
+    if (isOverRange)
+        this.drawOverRangeOnTile(x, y, color)
 }
 @ClientOnly
 inline fun whenNotConfiguringHost(func: () -> Unit) {
@@ -498,15 +502,27 @@ fun Building.postFullClientOn(other: Building) {
     R.Bundle.FullClient.bundle.postToastTextOn(this.id, other, R.C.RedAlert)
 }
 
-fun IDataSender.drawMaxRange() {
+fun IDataSender.drawSelectedMaxRange() {
     if (maxRange > 0f) {
-        G.dashCircleBreath(building.x, building.y, maxRange * building.smoothSelect(Var.SelectedCircleTime), senderColor)
+        G.dashCircleBreath(building.x, building.y, maxRange * building.smoothSelect(Var.SelectedCircleTime), senderColor, stroke = 3f)
     }
 }
 
-fun IStreamHost.drawMaxRange() {
+fun IStreamHost.drawSelectedMaxRange() {
     if (maxRange > 0f) {
-        G.dashCircleBreath(building.x, building.y, maxRange * building.smoothSelect(Var.SelectedCircleTime), hostColor)
+        G.dashCircleBreath(building.x, building.y, maxRange * building.smoothSelect(Var.SelectedCircleTime), hostColor, stroke = 3f)
+    }
+}
+
+fun IDataSender.drawConfiguringMaxRange() {
+    if (maxRange > 0f) {
+        G.dashCircleBreath(building.x, building.y, maxRange, senderColor, stroke = 3f)
+    }
+}
+
+fun IStreamHost.drawConfiguringMaxRange() {
+    if (maxRange > 0f) {
+        G.dashCircleBreath(building.x, building.y, maxRange, hostColor, stroke = 3f)
     }
 }
 

@@ -13,21 +13,30 @@ import net.liplum.mdt.render.IFocusable
 
 @ClientOnly
 object Inspector {
+    // selected
     var preSelected: Building? = null
         private set
     var curSelected: Building? = null
         private set
     var selectingTime = 0f
         private set
+    // placing
     var prePlacing: Block? = null
     var curPlacing: Block? = null
         private set
     var placingTime = 0f
         private set
+    // configuring
+    var preConfiguring: Building? = null
+    var curConfiguring: Building? = null
+        private set
+    var configuringTime = 0f
+        private set
     @Subscribe(EventType.Trigger.preDraw, Only.client)
     fun updateInput() {
         updateSelectedTile()
         updatePlacingBlock()
+        updateConfiguringTile()
     }
 
     fun updatePlacingBlock() {
@@ -60,12 +69,6 @@ object Inspector {
         }
     }
 
-    fun Building.isSelected(): Boolean =
-        this == curSelected
-
-    fun Block.isPlacing(): Boolean =
-        this == curPlacing
-
     private fun setCurSelected(build: Building?) {
         if (curSelected != build) {
             (preSelected as? IFocusable)?.onLostFocus()
@@ -75,4 +78,27 @@ object Inspector {
             (curSelected as? IFocusable)?.onFocused()
         }
     }
+    fun updateConfiguringTile(){
+        if (Vars.state.isMenu) return
+        if (curConfiguring != null) configuringTime += Time.delta
+        else configuringTime = 0f
+        setCurConfiguring(Vars.control.input.config?.selected)
+    }
+
+    private fun setCurConfiguring(build: Building?) {
+        if (curConfiguring != build) {
+            preConfiguring = curConfiguring
+            curConfiguring = build
+            configuringTime = 0f
+        }
+    }
+    fun Building.isSelected(): Boolean =
+        this == curSelected
+
+    fun Block.isPlacing(): Boolean =
+        this == curPlacing
+
+    fun Building.isConfiguring(): Boolean =
+        this == curConfiguring
+
 }

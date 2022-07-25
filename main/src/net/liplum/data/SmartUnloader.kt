@@ -138,7 +138,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
         stats.remove(Stat.powerUse)
         addPowerUseStats()
         addLinkRangeStats(maxRange)
-        addMaxClientStats(1)
+        addMaxReceiverStats(1)
     }
 
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
@@ -402,13 +402,13 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
                     drawPlaceText(needUnloadItemsText, tileX(), tileY(), true)
                 }
             }
-            drawMaxRange()
+            drawSelectedMaxRange()
         }
 
         override fun drawConfigure() {
             super.drawConfigure()
             this.drawDataNetGraphic()
-            drawMaxRange()
+            drawConfiguringMaxRange()
         }
 
         override fun onConfigureBuildTapped(other: Building): Boolean {

@@ -123,7 +123,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
     override fun setStats() {
         super.setStats()
         addLinkRangeStats(maxRange)
-        addMaxClientStats(1)
+        addMaxReceiverStats(1)
     }
 
     val sharedReceiverSet = ObjectSet<Int>()
@@ -257,12 +257,12 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
         override fun drawConfigure() {
             super.drawConfigure()
             this.drawDataNetGraphic()
-            drawMaxRange()
+            drawConfiguringMaxRange()
         }
         @ClientOnly
         override fun drawSelect() {
             this.drawDataNetGraphic()
-            drawMaxRange()
+            drawSelectedMaxRange()
         }
         @ClientOnly
         @SendDataPack
