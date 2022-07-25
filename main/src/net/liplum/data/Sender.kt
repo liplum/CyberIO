@@ -273,15 +273,9 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
                     postOverRangeOn(other)
                     return false
                 } else {
-                    if (!canMultipleConnect) {
-                        deselect()
-                    }
-                    if (canHaveMoreReceiverConnection) {
-                        if (other.acceptConnectionTo(this)) {
-                            connectToSync(other)
-                        } else {
-                            postFullSenderOn(other)
-                        }
+                    if (other.acceptConnectionTo(this)) {
+                        receiver?.let { disconnectFromSync(it) }
+                        connectToSync(other)
                     } else {
                         postFullSenderOn(other)
                     }

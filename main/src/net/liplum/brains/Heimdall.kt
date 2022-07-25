@@ -6,7 +6,6 @@ import arc.graphics.Color
 import arc.graphics.g2d.Draw
 import arc.graphics.g2d.Fill
 import arc.graphics.g2d.Lines
-import arc.math.Interp
 import arc.math.Mathf
 import arc.math.geom.Geometry
 import arc.math.geom.Intersector
@@ -45,9 +44,9 @@ import net.liplum.common.persistence.WriteIntoCache
 import net.liplum.common.utils.format
 import net.liplum.common.utils.toDouble
 import net.liplum.lib.Serialized
-import net.liplum.lib.arc.invoke
 import net.liplum.lib.assets.TR
 import net.liplum.lib.math.isZero
+import net.liplum.lib.math.pow2OutIntrp
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.HeadlessOnly
 import net.liplum.mdt.WhenNotPaused
@@ -599,9 +598,8 @@ open class Heimdall(name: String) : Block(name) {
             val realRange = realRange
             for (wave in brainWaves) {
                 val dst = realRange - wave.range
-                val alpha = Interp.pow2Out(dst / realRange)
-                Lines.stroke(waveWidth, R.C.BrainWave)
-                Draw.alpha(alpha + 0.7f)
+                val alpha = (dst / realRange).pow2OutIntrp
+                Lines.stroke(waveWidth * alpha, R.C.BrainWave)
                 Lines.circle(x, y, wave.range)
             }
             Draw.reset()

@@ -25,11 +25,11 @@ import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.Var
 import net.liplum.api.brain.*
+import net.liplum.common.math.PolarX
+import net.liplum.common.utils.progress
 import net.liplum.lib.assets.EmptySounds
 import net.liplum.lib.assets.TR
 import net.liplum.lib.assets.TRs
-import net.liplum.common.math.PolarX
-import net.liplum.common.utils.progress
 import net.liplum.lib.math.approachA
 import net.liplum.lib.math.approachR
 import net.liplum.lib.math.radian
@@ -46,8 +46,9 @@ import net.liplum.utils.addBrainInfo
 open class Eye(name: String) : PowerTurret(name), IComponentBlock {
     var normalBullet: BulletType = Bullets.placeholder
     var improvedBullet: BulletType = Bullets.placeholder
-    @JvmField var normalSounds: Array<Sound> = EmptySounds
-    @JvmField var improvedSounds: Array<Sound> = EmptySounds
+    @ClientOnly @JvmField var normalSounds: Array<Sound> = EmptySounds
+    @ClientOnly @JvmField var improvedSounds: Array<Sound> = EmptySounds
+    @ClientOnly @JvmField var soundVolume = 1f
     /**
      * Cooling per tick. It should be multiplied by [Time.delta]
      */
@@ -134,7 +135,7 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
 
     open inner class EyeBuild : PowerTurretBuild(), IUpgradeComponent {
         //<editor-fold desc="Heimdall">
-        override val componentName="Eye"
+        override val componentName = "Eye"
         override val scale: SpeedScale = SpeedScale()
         override var directionInfo: Direction2 = Direction2.Empty
         override var brain: IBrain? = null
@@ -314,9 +315,9 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
         override fun handleBullet(bullet: Bullet, offsetX: Float, offsetY: Float, angleOffset: Float) {
             super.handleBullet(bullet, offsetX, offsetY, angleOffset)
             if (isLinkedBrain)
-                improvedSounds.random().at(tile, soundPitchMin)
+                improvedSounds.random().at(x, y, soundPitchMin, soundVolume)
             else
-                normalSounds.random().at(tile)
+                normalSounds.random().at(x, y, 1f, soundVolume)
         }
 
         override fun drawSelect() {

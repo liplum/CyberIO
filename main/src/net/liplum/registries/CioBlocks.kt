@@ -44,6 +44,7 @@ import net.liplum.blocks.ddos.DDoS
 import net.liplum.blocks.decentralizer.Decentralizer
 import net.liplum.blocks.deleter.Deleter
 import net.liplum.blocks.deleter.DeleterWave
+import net.liplum.blocks.deleter.deleted
 import net.liplum.blocks.icmachine.ICMachine
 import net.liplum.blocks.icmachine.ICMachineS
 import net.liplum.blocks.jammer.Jammer
@@ -137,6 +138,7 @@ object CioBlocks {
                 craftTime = 400f
             }
             ErekirSpec {
+                buildVisibility = BuildVisibility.hidden
                 requirements(
                     Category.crafting, arrayOf(
                         CioItems.ic + 8,
@@ -522,7 +524,7 @@ object CioBlocks {
                         CioItems.ic + 15,
                         Items.surgeAlloy + 80,
                         Items.tungsten + 120,
-                        Items.carbide + 180,
+                        Items.carbide + 20,
                     )
                 )
                 cooldownTime = 18f
@@ -553,6 +555,7 @@ object CioBlocks {
                 shootWarmupSpeed = 0.06f
             }
             shootType = DeleterWave(executeProportion, extraLostHpBounce).apply {
+                deletedFx = deleted
                 shootEffect = Fx.none
                 smokeEffect = Fx.none
                 damage = 0.5f
@@ -651,7 +654,7 @@ object CioBlocks {
             ErekirSpec {
                 requirements(
                     Category.defense, BuildVisibility.shown, arrayOf(
-                        CioItems.ic + 6,
+                        CioItems.ic + 5,
                         Items.oxide + 10,
                         Items.tungsten + 40,
                         Items.carbide + 5,
@@ -696,10 +699,9 @@ object CioBlocks {
             ErekirSpec {
                 requirements(
                     Category.turret, BuildVisibility.shown, arrayOf(
-                        CioItems.ic + 5,
-                        Items.tungsten + 100,
-                        Items.graphite + 100,
-                        Items.surgeAlloy + 50,
+                        CioItems.ic + 4,
+                        Items.tungsten + 150,
+                        Items.thorium + 200,
                     )
                 )
                 ammo(
@@ -757,11 +759,10 @@ object CioBlocks {
             ErekirSpec {
                 requirements(
                     Category.distribution, BuildVisibility.shown, arrayOf(
-                        CioItems.ic + 30,
+                        CioItems.ic + 20,
                         Items.tungsten + 180,
                         Items.carbide + 80,
                         Items.surgeAlloy + 100,
-                        Items.phaseFabric + 50,
                     )
                 )
                 scaledHealth = 500f
@@ -793,7 +794,7 @@ object CioBlocks {
                         CioItems.ic + 5,
                         Items.tungsten + 350,
                         Items.carbide + 80,
-                        Items.surgeAlloy + 100,
+                        Items.phaseFabric + 100,
                     )
                 )
                 unloadSpeed = 6f
@@ -865,7 +866,7 @@ object CioBlocks {
             ErekirSpec {
                 requirements(
                     Category.liquid, BuildVisibility.shown, arrayOf(
-                        CioItems.ic + 15,
+                        CioItems.ic + 8,
                         Items.tungsten + 200,
                         Items.carbide + 25,
                         Items.beryllium + 180,
@@ -877,7 +878,7 @@ object CioBlocks {
                 networkSpeed = 2.6f
                 liquidCapacity = 1200f
                 maxConnection = 3
-                maxRange = 1000f
+                maxRange = 1500f
             }
             size = 2
             replaceable = false
@@ -913,7 +914,6 @@ object CioBlocks {
                         Items.tungsten + 500,
                         Items.carbide + 120,
                         Items.beryllium + 500,
-                        Items.surgeAlloy + 150,
                         Items.phaseFabric + 60,
                     )
                 )
@@ -955,7 +955,6 @@ object CioBlocks {
                         CioItems.ic + 8,
                         Items.surgeAlloy + 150,
                         Items.thorium + 200,
-                        Items.carbide + 150,
                     )
                 )
                 scaledHealth = 350f
@@ -1252,8 +1251,8 @@ object CioBlocks {
                 requirements(
                     Category.turret, BuildVisibility.shown, arrayOf(
                         CioItems.ic + 5,
-                        Items.tungsten + 150,
-                        Items.surgeAlloy + 50,
+                        Items.beryllium + 120,
+                        Items.tungsten + 50,
                     )
                 )
                 scaledHealth = 140f
@@ -1310,7 +1309,7 @@ object CioBlocks {
                         Items.tungsten + 150,
                         Items.graphite + 100,
                         Items.silicon + 80,
-                        Items.carbide + 50,
+                        Items.carbide + 30,
                     )
                 )
                 scaledHealth = 100f
@@ -1357,6 +1356,7 @@ object CioBlocks {
                 damage = 10f
                 reloadTime = 75f
             }
+            loopSound = Sounds.minebeam
             size = 4
             connectedSound = CioSounds.connected
             addFormationPatterns(
@@ -1412,6 +1412,8 @@ object CioBlocks {
                 Upgrade(UT.MaxBrainWaveNum, true, 0.2f),
             )
             normalSounds = CioSounds.laserWeak
+            improvedSounds = CioSounds.laser
+            soundVolume = 0.2f
             normalBullet = LightningBulletType().apply {
                 VanillaSpec {
                     damage = 90f
@@ -1427,7 +1429,6 @@ object CioBlocks {
                 accurateDelay = true
                 lightningColor = R.C.RedAlert
             }
-            improvedSounds = CioSounds.laser
             improvedBullet = LaserBulletType().apply {
                 VanillaSpec {
                     damage = 250f
@@ -1683,7 +1684,7 @@ object CioBlocks {
             ErekirSpec {
                 requirements(
                     Category.effect, BuildVisibility.shown, arrayOf(
-                        CioItems.ic + 2,
+                        CioItems.ic + 1,
                         Items.oxide + 8,
                     )
                 )

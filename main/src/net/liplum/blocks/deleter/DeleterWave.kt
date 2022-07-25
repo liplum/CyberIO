@@ -4,22 +4,27 @@ import arc.graphics.g2d.Draw
 import arc.math.Mathf
 import arc.util.Tmp
 import mindustry.content.Fx
+import mindustry.entities.Effect
 import mindustry.entities.bullet.BasicBulletType
-import mindustry.gen.Building
-import mindustry.gen.Bullet
-import mindustry.gen.Healthc
-import mindustry.gen.Hitboxc
+import mindustry.gen.*
 import net.liplum.S
 import net.liplum.api.IExecutioner
 import net.liplum.lib.math.quadratic
+import net.liplum.mdt.render.Draw
+import net.liplum.mdt.utils.NewEffect
 import net.liplum.mdt.utils.lostHp
 
 private val P2Alpha = quadratic(0.95f, 0.35f)
+val deleted = NewEffect(60f) {
+    Icon.trash.region.Draw(x, y)
+}
 
 open class DeleterWave(
     override val executeProportion: Float,
     var extraLostHpBounce: Float,
 ) : BasicBulletType(), IExecutioner {
+    var deletedFx: Effect = Fx.none
+
     init {
         hitEffect = Fx.hitLancer
         frontColor = S.Hologram
@@ -50,6 +55,7 @@ open class DeleterWave(
     open fun onHitTarget(b: Bullet, entity: Healthc) {
         if (entity.canBeExecuted) {
             execute(entity)
+            deletedFx.at(b.x, b.y)
         } else {
             entity.damage(b.damage)
             entity.damagePierce(entity.lostHp * extraLostHpBounce)
