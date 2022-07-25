@@ -419,9 +419,6 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
             }
             val pos = other.pos()
             if (pos in receivers) {
-                if (!canMultipleConnect) {
-                    deselect()
-                }
                 pos.dr()?.let { disconnectFromSync(it) }
                 return false
             }
@@ -429,9 +426,6 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
                 if (maxRange > 0f && other.dst(this) >= maxRange) {
                     postOverRangeOn(other)
                 } else {
-                    if (!canMultipleConnect) {
-                        deselect()
-                    }
                     if (canHaveMoreReceiverConnection) {
                         if (other.acceptConnectionTo(this)) {
                             connectToSync(other)
@@ -528,11 +522,6 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
                 configure(pos)
             }
         }
-
-        override val connectedReceiver: Int?
-            get() = if (receivers.isEmpty) null
-            else receivers.first()
-
         override fun beforeDraw() {
             if (canConsume() && isUnloading && isSending) {
                 shrinkingAnimObj.spend(delta())

@@ -51,7 +51,7 @@ mindustry {
             release = "erekir-client.jar"
         )*/
         mindustry official "v136.1"
-        keepOthers
+        clearUp
     }
     server {
         mindustry official "v136.1"

@@ -215,7 +215,7 @@ object G {
         var outlineSize = 1f + sin * 0.15f + 0.4f
         if (Vars.mobile) {
             size *= 0.6f
-            outlineSize *=0.76f
+            outlineSize *= 0.76f
         }
         val time = length / speed * 60f
         val moving = if (speed > 0f) Tmp.v3.set(t).setLength((length * (Time.time % time / time)) % length)
@@ -236,7 +236,7 @@ object G {
                 else -> 1f
             }
             Draw.color(outline)
-            Icon.right.region.DrawSize(line.x, line.y, size = outlineSize* fadeAlpha, rotation = angle)
+            Icon.right.region.DrawSize(line.x, line.y, size = outlineSize * fadeAlpha, rotation = angle)
             Draw.color(inner)
             Icon.right.region.DrawSize(line.x, line.y, size = size * fadeAlpha, rotation = angle)
             cur += per

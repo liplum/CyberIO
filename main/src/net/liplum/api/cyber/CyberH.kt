@@ -234,11 +234,7 @@ fun IDataSender.drawDataNetGraphic(showCircle: Boolean = true) {
     if (showCircle && this.canShowSelfCircle()) {
         G.surroundingCircleBreath(tile, senderColor, alpha = Settings.LinkOpacity)
     }
-    if (canMultipleConnect) {
-        this.drawReceivers(connectedReceivers, showCircle)
-    } else {
-        this.drawReceiver(connectedReceiver, showCircle)
-    }
+    this.drawReceivers(connectedReceivers, showCircle)
 }
 @JvmOverloads
 @ClientOnly
@@ -384,28 +380,6 @@ fun IDataReceiver.drawSenders(senders: Iterable<Int>, showCircle: Boolean = true
                 alpha = opacity
             )
         }
-    }
-}
-/**
- * Called in Sender block
- */
-@ClientOnly
-fun IDataSender.drawReceiver(receiver: Int?, showCircle: Boolean = true) {
-    if (receiver == null) return
-    val opacity = Settings.LinkOpacity
-    val r = receiver.dr() ?: return
-    if (this.toOtherInViewField(r)) {
-        if (showCircle && r.canShowSelfCircle()) {
-            G.surroundingCircleBreath(r.tile, r.receiverColor, alpha = opacity)
-        }
-        G.transferArrowLineBreath(
-            this.building, r.building,
-            arrowColor = this.senderColor,
-            density = ArrowDensity,
-            speed = ArrowSpeed,
-            alpha = opacity
-        )
-        r.drawRequirements()
     }
 }
 /**

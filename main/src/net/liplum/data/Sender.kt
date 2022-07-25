@@ -5,6 +5,7 @@ import arc.graphics.Color
 import arc.graphics.g2d.Draw
 import arc.math.Mathf
 import arc.math.geom.Point2
+import arc.struct.ObjectSet
 import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
@@ -125,6 +126,8 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
         addMaxClientStats(1)
     }
 
+    val sharedReceiverSet = ObjectSet<Int>()
+
     open inner class SenderBuild : AniedBuild(), IDataSender {
         override val maxRange = this@Sender.maxRange
         @ClientOnly var lastSendingTime = 0f
@@ -223,8 +226,13 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
         override fun toString() =
             "Sender#$id(->$receiverPos)"
 
-        override val connectedReceiver: Int?
-            get() = receiverPos?.pack()
+        override val connectedReceivers: ObjectSet<Int>
+            get() = sharedReceiverSet.apply {
+                clear()
+                receiverPos?.let {
+                    add(it.pack())
+                }
+            }
 
         override fun handleItem(source: Building, item: Item) {
             if (!canConsume()) {

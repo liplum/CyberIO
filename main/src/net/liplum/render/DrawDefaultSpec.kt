@@ -6,16 +6,18 @@ import mindustry.entities.units.BuildPlan
 import mindustry.gen.Building
 import mindustry.world.Block
 import mindustry.world.draw.DrawBlock
+import net.liplum.lib.assets.EmptyTR
 import net.liplum.lib.assets.TRs
 import net.liplum.utils.atlasX
 
 class DrawDefaultSpec : DrawBlock() {
+    var tr = EmptyTR
     override fun load(block: Block) = block.run {
-        region.set(this.atlasX())
+        tr  = this.atlasX()
     }
 
     override fun draw(build: Building) = build.run {
-        Draw.rect(block.region, build.x, build.y, build.drawrot())
+        Draw.rect(tr, build.x, build.y, build.drawrot())
     }
 
     override fun drawPlan(block: Block, plan: BuildPlan?, list: Eachable<BuildPlan?>?) {
@@ -23,6 +25,6 @@ class DrawDefaultSpec : DrawBlock() {
     }
 
     override fun icons(block: Block): TRs = block.run {
-        return arrayOf(region)
+        return arrayOf(tr)
     }
 }

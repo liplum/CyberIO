@@ -36,21 +36,8 @@ interface IDataSender : ICyberEntity {
     fun connectToSync(receiver: IDataReceiver)
     @SendDataPack
     fun disconnectFromSync(receiver: IDataReceiver)
-    val connectedReceiver: Int?
-    val canMultipleConnect: Boolean
-        get() = maxReceiverConnection != 1
-
     fun isConnectedTo(receiver: IDataReceiver): Boolean {
-        return if (canMultipleConnect) {
-            connectedReceivers.contains(receiver.building.pos())
-        } else {
-            val connected = connectedReceiver
-            if (connected == null) {
-                false
-            } else {
-                connected == receiver.building.pos()
-            }
-        }
+        return receiver.building.pos() in connectedReceivers
     }
     /**
      * Gets the maximum limit of connection.<br></br>
@@ -63,22 +50,15 @@ interface IDataSender : ICyberEntity {
     val canHaveMoreReceiverConnection: Boolean
         get() = maxReceiverConnection == -1 || receiverConnectionNumber < maxReceiverConnection
     val receiverConnectionNumber: Int
-        get() = if (canMultipleConnect) connectedReceivers.size
-        else if (connectedReceiver == null) 0
-        else 1
+        get() = connectedReceivers.size
     @ClientOnly
     val senderColor: Color
         get() = R.C.Sender
     val maxRange: Float
         get() = -1f
     val connectedReceivers: ObjectSet<Int>
-        get() = emptyConnection
 
     companion object {
-        /**
-         * Only for single connection
-         */
-        val emptyConnection = ObjectSet<Int>()
         @SendDataPack
         fun IDataSender.connectToSync(receiver: Int) {
             receiver.dr()?.let { connectToSync(it) }

@@ -60,23 +60,15 @@ inline fun <reified T> Block.addProgressInfo() where T : GenericCrafter.GenericC
 inline fun <reified T> Block.addReceiverInfo() where T : Building, T : IDataSender {
     AddBar<T>(R.Bar.ReceiverN,
         {
-            val connected = if (canMultipleConnect)
-                connectedReceivers.size
-            else
-                if (connectedReceiver != null) 1 else 0
-            R.Bar.Receiver.bundle(connected)
+            R.Bar.Receiver.bundle(connectedReceivers.size)
         },
         { R.C.Receiver },
         {
-            val connected = if (canMultipleConnect)
-                connectedReceivers.size
-            else
-                if (connectedReceiver != null) 1 else 0
             var max = maxReceiverConnection
             if (max == -1) {
                 max = 10
             }
-            connected.toFloat() / max
+            connectedReceivers.size.toFloat() / max
         }
     )
 }
