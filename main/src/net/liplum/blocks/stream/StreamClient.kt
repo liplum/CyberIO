@@ -149,7 +149,7 @@ open class StreamClient(name: String) : AniedBlock<StreamClient, StreamClient.Cl
 
         override fun drawSelect() {
             whenNotConfiguringHost {
-                this.drawStreamGraphic()
+                this.drawStreamGraph()
             }
             this.drawRequirements()
         }

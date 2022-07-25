@@ -143,7 +143,7 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
 
         override fun drawSelect() {
             whenNotConfiguringSender {
-                this.drawDataNetGraphic()
+                this.drawDataNetGraph()
             }
             this.drawRequirements()
         }

@@ -5,42 +5,28 @@ package net.liplum.api.cyber
 import arc.graphics.Color
 import arc.math.geom.Point2
 import arc.struct.Seq
-import arc.util.Align
 import arc.util.Time
 import mindustry.Vars
-import mindustry.gen.Building
 import mindustry.type.Item
 import mindustry.type.Liquid
-import mindustry.world.Block
 import net.liplum.R
-import net.liplum.Settings
 import net.liplum.Var
 import net.liplum.annotations.SubscribeEvent
 import net.liplum.api.ICyberEntity
 import net.liplum.common.Changed
 import net.liplum.common.utils.Or
-import net.liplum.common.utils.bundle
-import net.liplum.common.utils.inViewField
 import net.liplum.common.utils.isLineInViewField
 import net.liplum.events.CioInitEvent
 import net.liplum.lib.math.Point2f
 import net.liplum.lib.math.smooth
 import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.render.*
 import net.liplum.mdt.utils.*
 
-@ClientOnly
-val ArrowDensity: Float
-    get() = Settings.LinkArrowDensity
-@ClientOnly
-val ArrowSpeed: Float
-    get() = Settings.LinkArrowSpeed
-var ToastTimeFadePercent = 0.1f
-var ToastTime = 180f
 private val p1 = Point2f()
 private val p2 = Point2f()
 private val c1 = Color()
 private val c2 = Color()
+//<editor-fold desc="Try Cast">
 fun Int.dr(): IDataReceiver? =
     this.build as? IDataReceiver
 
@@ -65,8 +51,26 @@ fun Point2?.ds(): IDataSender? =
 fun Point2?.dsOrPayload(): IDataSender? =
     this?.let { this.ds() Or { this.inPayload() } }
 
+fun Int.sc(): IStreamClient? =
+    this.build as? IStreamClient
+
+fun Int.sh(): IStreamHost? =
+    this.build as? IStreamHost
+
+fun Point2?.sc(): IStreamClient? =
+    this?.let { this.build as? IStreamClient }
+
+fun Point2?.sh(): IStreamHost? =
+    this?.let { this.build as? IStreamHost }
+
+fun Int.nn(): INetworkNode? =
+    this.build as? INetworkNode
+
+//</editor-fold>
+
 val ICyberEntity?.exists: Boolean
     get() = this != null && this.building.exists
+//<editor-fold desc="Tile Position">
 val ICyberEntity.bottomLeftX: Int
     get() = building.bottomLeftX
 val ICyberEntity.bottomLeftY: Int
@@ -83,8 +87,18 @@ val ICyberEntity.topRightX: Int
     get() = building.topRightX
 val ICyberEntity.topRightY: Int
     get() = building.topRightY
-typealias SingleItemArray = Seq<Item>
 
+val ICyberEntity?.tileX: Int
+    get() = (this?.tile?.x ?: 0).toInt()
+val ICyberEntity?.tileY: Int
+    get() = (this?.tile?.y ?: 0).toInt()
+val ICyberEntity?.tileXd: Double
+    get() = (this?.tile?.x ?: 0).toDouble()
+val ICyberEntity?.tileYd: Double
+    get() = (this?.tile?.y ?: 0).toDouble()
+//</editor-fold>
+
+typealias SingleItemArray = Seq<Item>
 object DataCenter {
     @JvmField var SingleItems: Array<SingleItemArray> = emptyArray()
     @JvmStatic
@@ -113,26 +127,7 @@ fun Item?.match(requirements: SingleItemArray?): Boolean {
 fun Int.isAccepted() =
     this == -1 || this > 0
 
-val ICyberEntity?.tileX: Int
-    get() = (this?.tile?.x ?: 0).toInt()
-val ICyberEntity?.tileY: Int
-    get() = (this?.tile?.y ?: 0).toInt()
-val ICyberEntity?.tileXd: Double
-    get() = (this?.tile?.x ?: 0).toDouble()
-val ICyberEntity?.tileYd: Double
-    get() = (this?.tile?.y ?: 0).toDouble()
 
-fun Int.sc(): IStreamClient? =
-    this.build as? IStreamClient
-
-fun Int.sh(): IStreamHost? =
-    this.build as? IStreamHost
-
-fun Point2?.sc(): IStreamClient? =
-    this?.let { this.build as? IStreamClient }
-
-fun Point2?.sh(): IStreamHost? =
-    this?.let { this.build as? IStreamHost }
 typealias SingleLiquidArray = Seq<Liquid>
 
 object StreamCenter {
@@ -182,9 +177,6 @@ object StreamCenter {
     }
 }
 
-fun Int.nn(): INetworkNode? =
-    this.build as? INetworkNode
-
 val EmptySingleLiquidArray: SingleLiquidArray = Seq()
 val Liquid?.req: SingleLiquidArray
     get() = if (this == null)
@@ -220,66 +212,8 @@ fun transitionColor(from: Changed<Color>, to: Color): Color {
 
 fun Float.isAccepted() =
     this <= -1f || this > 0f
-@ClientOnly
-fun ICyberEntity.toOtherInViewField(other: ICyberEntity): Boolean {
-    return isLineInViewField(building.worldPos(p1), other.building.worldPos(p2))
-}
-@ClientOnly
-fun ICyberEntity.canShowSelfCircle(): Boolean =
-    building.worldPos(p1).inViewField(block.clipSize)
-@JvmOverloads
-@ClientOnly
-fun IDataSender.drawDataNetGraphic(showCircle: Boolean = true) {
-    if (receiverConnectionNumber <= 0) return
-    if (showCircle && this.canShowSelfCircle()) {
-        G.surroundingCircleBreath(tile, senderColor, alpha = Settings.LinkOpacity)
-    }
-    this.drawReceivers(connectedReceivers, showCircle)
-}
-@JvmOverloads
-@ClientOnly
-fun IDataReceiver.drawDataNetGraphic(showCircle: Boolean = true) {
-    if (senderConnectionNumber <= 0) return
-    if (showCircle && this.canShowSelfCircle()) {
-        G.surroundingCircleBreath(tile, receiverColor, alpha = Settings.LinkOpacity)
-    }
-    this.drawSenders(connectedSenders, showCircle)
-}
-@ClientOnly
-fun IDataReceiver.drawRequirements() {
-    val reqs = this.requirements
-    if (reqs != null) {
-        G.materialIcons(this.building, reqs, Settings.LinkOpacity * 0.8f)
-    }
-}
-/**
- * Called in an [IDataReceiver] block
- *
- * @param x        tile x
- * @param y        tile y
- */
-@ClientOnly
-fun Block.drawLinkedLineToReceiverWhenConfiguring(x: Int, y: Int) {
-    if (!Vars.control.input.config.isShown) return
-    val sender = Vars.control.input.config.selected
-    if (sender !is IDataSender) return
-    val selectedTile = sender.tile()
-    val opacity = Settings.LinkOpacity
-    val isOverRange = if (sender.maxRange > 0f) selectedTile.dstWorld(x, y) > sender.maxRange else false
-    val color = if (isOverRange) R.C.RedAlert else R.C.Receiver
-    G.surroundingCircleBreath(this, x, y, color, alpha = opacity)
-    G.transferArrowLineBreath(
-        sender.block,
-        selectedTile.x, selectedTile.y,
-        this, x.toShort(), y.toShort(),
-        arrowColor = color,
-        density = ArrowDensity,
-        speed = ArrowSpeed,
-        alpha = opacity
-    )
-    if (isOverRange)
-        this.drawOverRangeOnTile(x, y, color)
-}
+
+//<editor-fold desc="Check if Configuring">
 @ClientOnly
 inline fun whenNotConfiguringSender(func: () -> Unit) {
     if (!isConfiguringSender()) {
@@ -287,126 +221,9 @@ inline fun whenNotConfiguringSender(func: () -> Unit) {
     }
 }
 @ClientOnly
-fun IStreamHost.drawStreamGraphic(showCircle: Boolean = true) {
-    if (clientConnectionNumber <= 0) return
-    if (showCircle && this.canShowSelfCircle()) {
-        G.surroundingCircleBreath(tile, hostColor, alpha = Settings.LinkOpacity)
-    }
-    this.drawClients(connectedClients, showCircle)
-}
-@ClientOnly
-fun IStreamClient.drawStreamGraphic(showCircle: Boolean = true) {
-    if (hostConnectionNumber <= 0) return
-    if (showCircle && this.canShowSelfCircle()) {
-        G.surroundingCircleBreath(tile, clientColor, alpha = Settings.LinkOpacity)
-    }
-    this.drawHosts(connectedHosts, showCircle)
-}
-@ClientOnly
-fun IStreamClient.drawRequirements() {
-    val reqs = this.requirements
-    if (reqs != null) {
-        G.materialIcons(this.building, reqs, Settings.LinkOpacity * 0.8f)
-    }
-}
-/**
- * Called in an [IStreamClient] block
- *
- * @param x        tile x
- * @param y        tile y
- */
-@ClientOnly
-fun Block.drawLinkedLineToClientWhenConfiguring(x: Int, y: Int) {
-    if (!Vars.control.input.config.isShown) return
-    val host = Vars.control.input.config.selected
-    if (host !is IStreamHost) return
-    val selectedTile = host.tile()
-    val opacity = Settings.LinkOpacity
-    val isOverRange = if (host.maxRange > 0f) selectedTile.dstWorld(x, y) > host.maxRange else false
-    val color = if (isOverRange) R.C.RedAlert else R.C.Client
-    G.surroundingCircleBreath(this, x, y, color, alpha = opacity)
-    G.transferArrowLineBreath(
-        host.block,
-        selectedTile.x, selectedTile.y,
-        this, x.toShort(), y.toShort(),
-        arrowColor = color,
-        density = ArrowDensity,
-        speed = ArrowSpeed,
-        alpha = opacity
-    )
-    if (isOverRange)
-        this.drawOverRangeOnTile(x, y, color)
-}
-@ClientOnly
 inline fun whenNotConfiguringHost(func: () -> Unit) {
     if (!isConfiguringHost()) {
         func()
-    }
-}
-/**
- * Called in Receiver block
- */
-@ClientOnly
-fun IDataReceiver.drawSender(sender: Int?, showCircle: Boolean = true) {
-    if (sender == null) return
-    val opacity = Settings.LinkOpacity
-    val s = sender.ds() ?: return
-    if (this.toOtherInViewField(s)) {
-        if (showCircle && s.canShowSelfCircle()) {
-            G.surroundingCircleBreath(s.tile, s.senderColor, alpha = opacity)
-        }
-        G.transferArrowLineBreath(
-            s.building, this.building,
-            arrowColor = this.receiverColor,
-            density = ArrowDensity,
-            speed = ArrowSpeed,
-            alpha = opacity
-        )
-    }
-}
-/**
- * Called in Receiver block
- */
-@ClientOnly
-fun IDataReceiver.drawSenders(senders: Iterable<Int>, showCircle: Boolean = true) {
-    val opacity = Settings.LinkOpacity
-    for (sender in senders) {
-        val s = sender.ds() ?: continue
-        if (this.toOtherInViewField(s)) {
-            if (showCircle && s.canShowSelfCircle()) {
-                G.surroundingCircleBreath(s.tile, s.senderColor, alpha = opacity)
-            }
-            G.transferArrowLineBreath(
-                s.building, this.building,
-                arrowColor = this.receiverColor,
-                density = ArrowDensity,
-                speed = ArrowSpeed,
-                alpha = opacity
-            )
-        }
-    }
-}
-/**
- * Called in Sender block
- */
-@ClientOnly
-fun IDataSender.drawReceivers(receivers: Iterable<Int>, showCircle: Boolean = true) {
-    val opacity = Settings.LinkOpacity
-    for (receiver in receivers) {
-        val r = receiver.dr() ?: continue
-        if (this.toOtherInViewField(r)) {
-            if (showCircle && r.canShowSelfCircle()) {
-                G.surroundingCircleBreath(r.tile, r.receiverColor, alpha = opacity)
-            }
-            G.transferArrowLineBreath(
-                this.building, r.building,
-                arrowColor = this.senderColor,
-                density = ArrowDensity,
-                speed = ArrowSpeed,
-                alpha = opacity
-            )
-            r.drawRequirements()
-        }
     }
 }
 @ClientOnly
@@ -414,118 +231,13 @@ fun isConfiguringSender(): Boolean {
     val selected = Vars.control.input.config.selected
     return selected is IDataSender
 }
-/**
- * Called in Client block
- */
-@ClientOnly
-fun IStreamClient.drawHosts(hosts: Iterable<Int>, showCircle: Boolean = true) {
-    val opacity = Settings.LinkOpacity
-    for (host in hosts) {
-        val h = host.sh() ?: continue
-        if (this.toOtherInViewField(h)) {
-            if (showCircle && h.canShowSelfCircle()) {
-                G.surroundingCircleBreath(h.tile, h.hostColor, alpha = opacity)
-            }
-            G.transferArrowLineBreath(
-                h.building, this.building,
-                arrowColor = this.clientColor,
-                density = ArrowDensity,
-                speed = ArrowSpeed,
-                alpha = opacity
-            )
-        }
-    }
-}
-/**
- * Called in Host block
- */
-@ClientOnly
-fun IStreamHost.drawClients(clients: Iterable<Int>, showCircle: Boolean = true) {
-    val opacity = Settings.LinkOpacity
-    for (client in clients) {
-        val c = client.sc() ?: continue
-        if (this.toOtherInViewField(c)) {
-            if (showCircle && c.canShowSelfCircle()) {
-                G.surroundingCircleBreath(c.tile, c.clientColor, alpha = opacity)
-            }
-            G.transferArrowLineBreath(
-                this.building, c.building,
-                arrowColor = this.hostColor,
-                density = ArrowDensity,
-                speed = ArrowSpeed,
-                alpha = opacity
-            )
-            c.drawRequirements()
-        }
-    }
-}
 
 fun isConfiguringHost(): Boolean {
     val selected = Vars.control.input.config.selected
     return selected is IStreamHost
 }
-
-fun Building.postOverRangeOn(other: Building) {
-    R.Bundle.OverRange.bundle.postToastTextOn(this.id, other, R.C.RedAlert)
-}
-
-fun Building.postOverRangeOnTile(x: TileXY, y: TileXY) {
-    R.Bundle.OverRange.bundle.postToastTextOnXY(this.id, x.worldXY, y.worldXY, R.C.RedAlert)
-}
-
-fun Block.drawOverRangeOnTile(x: TileXY, y: TileXY, color: Color) {
-    val text = R.Bundle.OverRange.bundle
-    Text.drawText {
-        setText(it, text)
-        it.color.set(color)
-        it.draw(
-            text, toCenterWorldXY(x),
-            toCenterWorldXY(y) + size * Vars.tilesize / 2f,
-            Align.center
-        )
-    }
-}
-
-fun Building.postFullSenderOn(other: Building) {
-    R.Bundle.FullSender.bundle.postToastTextOn(this.id, other, R.C.RedAlert)
-}
-
-fun Building.postFullReceiverOn(other: Building) {
-    R.Bundle.FullReceiver.bundle.postToastTextOn(this.id, other, R.C.RedAlert)
-}
-
-fun Building.postFullHostOn(other: Building) {
-    R.Bundle.FullHost.bundle.postToastTextOn(this.id, other, R.C.RedAlert)
-}
-
-fun Building.postFullClientOn(other: Building) {
-    R.Bundle.FullClient.bundle.postToastTextOn(this.id, other, R.C.RedAlert)
-}
-
-fun IDataSender.drawSelectedMaxRange() {
-    if (maxRange > 0f) {
-        G.dashCircleBreath(building.x, building.y, maxRange * building.smoothSelect(Var.SelectedCircleTime), senderColor, stroke = 3f)
-    }
-}
-
-fun IStreamHost.drawSelectedMaxRange() {
-    if (maxRange > 0f) {
-        G.dashCircleBreath(building.x, building.y, maxRange * building.smoothSelect(Var.SelectedCircleTime), hostColor, stroke = 3f)
-    }
-}
-
-fun IDataSender.drawConfiguringMaxRange() {
-    if (maxRange > 0f) {
-        G.dashCircleBreath(building.x, building.y, maxRange, senderColor, stroke = 3f)
-    }
-}
-
-fun IStreamHost.drawConfiguringMaxRange() {
-    if (maxRange > 0f) {
-        G.dashCircleBreath(building.x, building.y, maxRange, hostColor, stroke = 3f)
-    }
-}
-
+//</editor-fold>
+//<editor-fold desc="Check Connection">
 fun IDataReceiver.checkSendersPos() {
     connectedSenders.removeAll { !it.ds().exists }
 }
@@ -541,3 +253,4 @@ fun IStreamHost.checkClientsPos() {
 fun IStreamClient.checkHostsPos() {
     connectedHosts.removeAll { !it.sh().exists }
 }
+//</editor-fold>

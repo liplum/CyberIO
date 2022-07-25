@@ -221,7 +221,7 @@ open class StreamServer(name: String) : StreamHost(name) {
         override fun drawSelect() {
             super.drawSelect()
             whenNotConfiguringHost {
-                (this as IStreamClient).drawStreamGraphic()
+                (this as IStreamClient).drawStreamGraph()
             }
             this.drawRequirements()
         }

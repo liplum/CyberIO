@@ -368,7 +368,7 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
         fun genRequirementsText() = _requirements.genText()
         override fun drawSelect() {
             whenNotConfiguringSender {
-                this.drawDataNetGraphic()
+                this.drawDataNetGraph()
             }
             this.drawRequirements()
             DebugOnly {

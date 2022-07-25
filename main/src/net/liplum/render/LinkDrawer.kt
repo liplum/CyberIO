@@ -7,8 +7,8 @@ import net.liplum.Settings
 import net.liplum.annotations.Subscribe
 import net.liplum.api.cyber.IDataSender
 import net.liplum.api.cyber.IStreamHost
-import net.liplum.api.cyber.drawDataNetGraphic
-import net.liplum.api.cyber.drawStreamGraphic
+import net.liplum.api.cyber.drawDataNetGraph
+import net.liplum.api.cyber.drawStreamGraph
 import net.liplum.mdt.ClientOnly
 
 object LinkDrawer {
@@ -21,9 +21,9 @@ object LinkDrawer {
         Groups.build.each {
             if (it.team != curTeam) return@each
             if (it is IDataSender) {
-                it.drawDataNetGraphic(showCircle = Settings.ShowLinkCircle)
+                it.drawDataNetGraph(showCircle = Settings.ShowLinkCircle)
             } else if (it is IStreamHost) {
-                it.drawStreamGraphic(showCircle = Settings.ShowLinkCircle)
+                it.drawStreamGraph(showCircle = Settings.ShowLinkCircle)
             }
         }
     }

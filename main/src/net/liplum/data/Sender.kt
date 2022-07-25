@@ -256,12 +256,12 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
         @ClientOnly
         override fun drawConfigure() {
             super.drawConfigure()
-            this.drawDataNetGraphic()
+            this.drawDataNetGraph()
             drawConfiguringMaxRange()
         }
         @ClientOnly
         override fun drawSelect() {
-            this.drawDataNetGraphic()
+            this.drawDataNetGraph()
             drawSelectedMaxRange()
         }
         @ClientOnly
