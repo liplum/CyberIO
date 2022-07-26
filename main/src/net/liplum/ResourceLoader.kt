@@ -19,9 +19,16 @@ object ResourceLoader {
         }
     }
 
-    operator fun minusAssign(handler: () -> Unit) {
+    operator fun minusAssign(task: () -> Unit) {
         ClientOnly {
-            loadingTask -= handler
+            loadingTask -= task
         }
+    }
+
+    fun <T> T.onLoaded(task: T.() -> Unit): T {
+        ClientOnly {
+            loadingTask += { task() }
+        }
+        return this
     }
 }

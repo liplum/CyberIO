@@ -5,7 +5,7 @@ import net.liplum.ErekirSpec
 import net.liplum.R
 import net.liplum.VanillaSpec
 import net.liplum.annotations.DependOn
-import net.liplum.items.SpecItem
+import net.liplum.type.SpecItem
 
 object CioItems {
     @JvmStatic lateinit var ic: Item

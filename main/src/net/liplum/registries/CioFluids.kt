@@ -4,13 +4,14 @@ import mindustry.content.StatusEffects
 import mindustry.type.Liquid
 import net.liplum.*
 import net.liplum.annotations.DependOn
+import net.liplum.type.SpecFluid
 
 object CioFluids {
     @JvmStatic lateinit var cyberion: Liquid
     @JvmStatic lateinit var tissueFluid: Liquid
     @DependOn
     fun cyberion() {
-        cyberion = Liquid(R.Liquid.Cyberion, S.Hologram).apply {
+        cyberion = SpecFluid(R.Liquid.Cyberion, S.Hologram).apply {
             VanillaSpec {
                 flammability = 0f
                 explosiveness = 0f

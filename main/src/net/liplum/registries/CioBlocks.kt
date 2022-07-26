@@ -30,6 +30,7 @@ import mindustry.world.blocks.sandbox.PowerSource
 import mindustry.world.draw.*
 import mindustry.world.meta.BuildVisibility
 import net.liplum.*
+import net.liplum.ResourceLoader.onLoaded
 import net.liplum.annotations.DependOn
 import net.liplum.annotations.Only
 import net.liplum.annotations.Subscribe

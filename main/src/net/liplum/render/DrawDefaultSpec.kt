@@ -13,7 +13,7 @@ import net.liplum.utils.atlasX
 class DrawDefaultSpec : DrawBlock() {
     var tr = EmptyTR
     override fun load(block: Block) = block.run {
-        tr  = this.atlasX()
+        tr = this.atlasX()
     }
 
     override fun draw(build: Building) = build.run {

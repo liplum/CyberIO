@@ -1,10 +1,10 @@
-package net.liplum.items
+package net.liplum.type
 
 import arc.graphics.Color
-import mindustry.type.Item
+import mindustry.type.Liquid
 import net.liplum.utils.atlasX
 
-class SpecItem : Item {
+class SpecFluid : Liquid {
     constructor(name: String, color: Color) : super(name, color)
     constructor(name: String) : super(name)
 
