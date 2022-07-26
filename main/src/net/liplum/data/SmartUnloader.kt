@@ -449,7 +449,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
                 val abs = rel
                 val dr = abs.dr()
                 if (dr != null) {
-                    dr.connectTo(this)
+                    dr.onConnectTo(this)
                     this.connectReceiver(dr)
                 } else {
                     queue.add(abs)
@@ -461,12 +461,12 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
             if (pos in receivers) {
                 pos.dr()?.let {
                     disconnectReceiver(it)
-                    it.disconnectFrom(this)
+                    it.onDisconnectFrom(this)
                 }
             } else {
                 pos.dr()?.let {
                     connectReceiver(it)
-                    it.connectTo(this)
+                    it.onConnectTo(this)
                 }
             }
         }
@@ -501,7 +501,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
         open fun clearReceivers() {
             receivers.forEach { pos ->
                 pos.dr()?.let {
-                    it.disconnectFrom(this)
+                    it.onDisconnectFrom(this)
                     it.onRequirementUpdated -= ::onReceiverRequirementsUpdated
                 }
             }

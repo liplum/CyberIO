@@ -53,6 +53,7 @@ import net.liplum.blocks.power.WirelessTower
 import net.liplum.blocks.prism.Prism
 import net.liplum.blocks.prism.PrismObelisk
 import net.liplum.blocks.sandbox.AdjustableOverdrive
+import net.liplum.blocks.stream.P2pNode
 import net.liplum.blocks.stream.StreamClient
 import net.liplum.blocks.stream.StreamHost
 import net.liplum.blocks.stream.StreamServer
@@ -68,6 +69,7 @@ import net.liplum.data.*
 import net.liplum.holo.*
 import net.liplum.lib.arc.invoke
 import net.liplum.lib.math.smooth
+import net.liplum.mdt.Else
 import net.liplum.mdt.render.*
 import net.liplum.mdt.ui.DynamicContentInfoDialog.Companion.registerDynamicInfo
 import net.liplum.mdt.utils.plus
@@ -114,18 +116,19 @@ object CioBlocks {
     @JvmStatic lateinit var dataCDN: DataCDN
     @JvmStatic lateinit var zipBomb: ZipBomb
     @JvmStatic lateinit var serializer: Serializer
+    @JvmStatic lateinit var p2pNode: P2pNode
     @DependOn("CioItems.ic")
     fun icMachine() {
         icMachine = ICMachine("ic-machine").apply {
+            category = Category.crafting
+            buildVisibility = BuildVisibility.shown
             VanillaSpec {
-                requirements(
-                    Category.crafting, arrayOf(
-                        CioItems.ic + 2,
-                        Items.copper + 550,
-                        Items.lead + 280,
-                        Items.silicon + 150,
-                        Items.graphite + 250,
-                    )
+                requirements = arrayOf(
+                    CioItems.ic + 2,
+                    Items.copper + 550,
+                    Items.lead + 280,
+                    Items.silicon + 150,
+                    Items.graphite + 250,
                 )
                 health = 2000
                 consumeItems(
@@ -139,14 +142,12 @@ object CioBlocks {
             }
             ErekirSpec {
                 buildVisibility = BuildVisibility.hidden
-                requirements(
-                    Category.crafting, arrayOf(
-                        CioItems.ic + 8,
-                        Items.beryllium + 250,
-                        Items.surgeAlloy + 80,
-                        Items.tungsten + 100,
-                        Items.thorium + 150,
-                    )
+                requirements = arrayOf(
+                    CioItems.ic + 8,
+                    Items.beryllium + 250,
+                    Items.surgeAlloy + 80,
+                    Items.tungsten + 100,
+                    Items.thorium + 150,
                 )
                 health = 1500
                 consumeItems( //Total:100
@@ -168,12 +169,12 @@ object CioBlocks {
     @DependOn("CioItems.ic")
     fun icMachineSmall() {
         icMachineSmall = ICMachineS("ic-machine-s").apply {
-            requirements(
-                Category.crafting, arrayOf(
-                    Items.copper + 150,
-                    Items.silicon + 50,
-                    Items.graphite + 50,
-                )
+            category = Category.crafting
+            buildVisibility = BuildVisibility.shown
+            requirements = arrayOf(
+                Items.copper + 150,
+                Items.silicon + 50,
+                Items.graphite + 50,
             )
             health = 600
             craftTime = 1150f
@@ -199,14 +200,14 @@ object CioBlocks {
     @DependOn("CioItems.ic")
     fun icAssembler() {
         icAssembler = GenericCrafter("ic-assembler").apply {
+            category = Category.crafting
+            buildVisibility = BuildVisibility.shown
             VanillaSpec {
-                requirements(
-                    Category.crafting, arrayOf(
-                        Items.lead + 60,
-                        Items.graphite + 35,
-                        Items.metaglass + 50,
-                        Items.silicon + 50,
-                    )
+                requirements = arrayOf(
+                    Items.lead + 60,
+                    Items.graphite + 35,
+                    Items.metaglass + 50,
+                    Items.silicon + 50,
                 )
                 health = 250
                 consumePower(1.2f)
@@ -220,12 +221,10 @@ object CioBlocks {
                 drawer = DrawMulti(DrawDefaultSpec(), SpecDrawConstruct())
             }
             ErekirSpec {
-                requirements(
-                    Category.crafting, arrayOf(
-                        Items.beryllium + 60,
-                        Items.graphite + 105,
-                        Items.silicon + 50,
-                    )
+                requirements = arrayOf(
+                    Items.beryllium + 60,
+                    Items.graphite + 105,
+                    Items.silicon + 50,
                 )
                 health = 250
                 consumePower(1.1f)
@@ -251,28 +250,26 @@ object CioBlocks {
     @DependOn("CioItems.ic")
     fun receiver() {
         receiver = Receiver("receiver").apply {
+            category = Category.distribution
+            buildVisibility = BuildVisibility.shown
             VanillaSpec {
-                requirements(
-                    Category.distribution, arrayOf(
-                        CioItems.ic + 1,
-                        Items.lead + 150,
-                        Items.graphite + 120,
-                        Items.metaglass + 60,
-                        Items.silicon + 180,
-                    )
+                requirements = arrayOf(
+                    CioItems.ic + 1,
+                    Items.lead + 150,
+                    Items.graphite + 120,
+                    Items.metaglass + 60,
+                    Items.silicon + 180,
                 )
                 health = 200
                 maxConnection = 5
                 consumePower(0.5f)
             }
             ErekirSpec {
-                requirements(
-                    Category.distribution, arrayOf(
-                        CioItems.ic + 5,
-                        Items.graphite + 80,
-                        Items.tungsten + 30,
-                        Items.silicon + 30,
-                    )
+                requirements = arrayOf(
+                    CioItems.ic + 5,
+                    Items.graphite + 80,
+                    Items.tungsten + 30,
+                    Items.silicon + 30,
                 )
                 health = 150
                 maxConnection = 3
@@ -284,27 +281,25 @@ object CioBlocks {
     @DependOn("CioItems.ic")
     fun sender() {
         sender = Sender("sender").apply {
+            category = Category.distribution
+            buildVisibility = BuildVisibility.shown
             VanillaSpec {
-                requirements(
-                    Category.distribution, arrayOf(
-                        CioItems.ic + 1,
-                        Items.lead + 150,
-                        Items.graphite + 120,
-                        Items.metaglass + 60,
-                        Items.silicon + 180,
-                    )
+                requirements = arrayOf(
+                    CioItems.ic + 1,
+                    Items.lead + 150,
+                    Items.graphite + 120,
+                    Items.metaglass + 60,
+                    Items.silicon + 180,
                 )
                 health = 200
                 consumePower(0.5f)
             }
             ErekirSpec {
-                requirements(
-                    Category.distribution, arrayOf(
-                        CioItems.ic + 5,
-                        Items.graphite + 120,
-                        Items.tungsten + 50,
-                        Items.silicon + 50,
-                    )
+                requirements = arrayOf(
+                    CioItems.ic + 5,
+                    Items.graphite + 120,
+                    Items.tungsten + 50,
+                    Items.silicon + 50,
                 )
                 health = 180
                 maxRange = 800f
@@ -316,12 +311,11 @@ object CioBlocks {
     @DependOn
     fun virus() {
         virus = Virus("virus").apply {
-            requirements(
-                Category.effect, BuildVisibility.sandboxOnly,
-                arrayOf(
-                    Items.sporePod + 50,
-                    Items.pyratite + 20,
-                )
+            category = Category.effect
+            buildVisibility = BuildVisibility.sandboxOnly
+            requirements = arrayOf(
+                Items.sporePod + 50,
+                Items.pyratite + 20,
             )
             buildCostMultiplier = 5f
             spreadingSpeed = 200
@@ -334,16 +328,17 @@ object CioBlocks {
     @DependOn("CioItems.ic")
     fun landProjector() {
         landProjector = LandProjector("land-projector").apply {
-            requirements(
-                Category.effect,
-                IfDebugOr(
-                    { BuildVisibility.sandboxOnly },
-                    { BuildVisibility.hidden }), arrayOf(
-                    CioItems.ic + 5,
-                    Items.graphite + 80,
-                    Items.thorium + 100,
-                    Items.silicon + 50
-                )
+            category = Category.effect
+            DebugOnly {
+                buildVisibility = BuildVisibility.shown
+            }.Else {
+                buildVisibility = BuildVisibility.hidden
+            }
+            requirements = arrayOf(
+                CioItems.ic + 5,
+                Items.graphite + 80,
+                Items.thorium + 100,
+                Items.silicon + 50
             )
             health = 100
             size = 2
@@ -359,16 +354,16 @@ object CioBlocks {
     @DependOn("CioItems.ic")
     fun underdriveProjector() {
         underdriveProjector = UnderdriveProjector("underdrive-projector").apply {
+            category = Category.power
+            buildVisibility = BuildVisibility.shown
             VanillaSpec {
-                requirements(
-                    Category.effect, BuildVisibility.shown, arrayOf(
-                        CioItems.ic + 8,
-                        Items.copper + 300,
-                        Items.lead + 20,
-                        Items.silicon + 240,
-                        Items.plastanium + 10,
-                        Items.phaseFabric + 5,
-                    )
+                requirements = arrayOf(
+                    CioItems.ic + 8,
+                    Items.copper + 300,
+                    Items.lead + 20,
+                    Items.silicon + 240,
+                    Items.plastanium + 10,
+                    Items.phaseFabric + 5,
                 )
                 health = 300
                 powerProduction = 4.5f
@@ -376,14 +371,12 @@ object CioBlocks {
                 maxGear = 5
             }
             ErekirSpec {
-                requirements(
-                    Category.effect, BuildVisibility.shown, arrayOf(
-                        CioItems.ic + 3,
-                        Items.tungsten + 80,
-                        Items.silicon + 50,
-                        Items.phaseFabric + 5,
-                        Items.surgeAlloy + 10,
-                    )
+                requirements = arrayOf(
+                    CioItems.ic + 3,
+                    Items.tungsten + 80,
+                    Items.silicon + 50,
+                    Items.phaseFabric + 5,
+                    Items.surgeAlloy + 10,
                 )
                 health = 250
                 range = 45f
@@ -399,13 +392,13 @@ object CioBlocks {
     @DependOn("CioItems.ic")
     fun antiVirus() {
         antiVirus = AntiVirus("anti-virus").apply {
-            requirements(
-                Category.effect, BuildVisibility.shown, arrayOf(
-                    CioItems.ic + 1,
-                    Items.copper + 100,
-                    Items.graphite + 40,
-                    Items.silicon + 25
-                )
+            category = Category.effect
+            buildVisibility = BuildVisibility.shown
+            requirements = arrayOf(
+                CioItems.ic + 1,
+                Items.copper + 100,
+                Items.graphite + 40,
+                Items.silicon + 25
             )
             health = 500
             consumePower(0.5f)
@@ -415,15 +408,13 @@ object CioBlocks {
     @DependOn
     fun hyperOverdriveSphere() {
         hyperOverdriveSphere = AdjustableOverdrive("hyper-overdrive-sphere").apply {
-            requirements(
-                Category.effect,
-                IfDebugOr({
-                    BuildVisibility.shown
-                }, {
-                    BuildVisibility.sandboxOnly
-                }),
-                emptyArray()
-            )
+            category = Category.effect
+            DebugOnly {
+                buildVisibility = BuildVisibility.shown
+            }.Else {
+                buildVisibility = BuildVisibility.sandboxOnly
+            }
+            requirements = emptyArray()
             size = 3
             maxBoost = 50f
             minBoost = 0.5f
@@ -434,24 +425,22 @@ object CioBlocks {
     @DependOn("CioItems.ic")
     fun prism() {
         prism = Prism("prism").apply {
+            category = Category.turret
+            buildVisibility = BuildVisibility.shown
             VanillaSpec {
-                requirements(
-                    Category.turret, BuildVisibility.shown, arrayOf(
-                        CioItems.ic + 15,
-                        Items.copper + 250,
-                        Items.metaglass + 350,
-                        Items.titanium + 50,
-                    )
+                requirements = arrayOf(
+                    CioItems.ic + 15,
+                    Items.copper + 250,
+                    Items.metaglass + 350,
+                    Items.titanium + 50,
                 )
                 health = 2500
             }
             ErekirSpec {
-                requirements(
-                    Category.turret, BuildVisibility.shown, arrayOf(
-                        CioItems.ic + 20,
-                        Items.carbide + 120,
-                        Items.tungsten + 150,
-                    )
+                requirements = arrayOf(
+                    CioItems.ic + 20,
+                    Items.carbide + 120,
+                    Items.tungsten + 150,
                 )
                 health = 1500
             }
@@ -465,26 +454,24 @@ object CioBlocks {
     )
     fun prismObelisk() {
         prismObelisk = PrismObelisk("prism-obelisk").apply {
+            category = Category.turret
+            buildVisibility = BuildVisibility.shown
             VanillaSpec {
-                requirements(
-                    Category.turret, BuildVisibility.shown, arrayOf(
-                        CioItems.ic + 3,
-                        Items.copper + 60,
-                        Items.plastanium + 120,
-                        Items.metaglass + 240,
-                        Items.titanium + 10,
-                    )
+                requirements = arrayOf(
+                    CioItems.ic + 3,
+                    Items.copper + 60,
+                    Items.plastanium + 120,
+                    Items.metaglass + 240,
+                    Items.titanium + 10,
                 )
                 health = 1000
             }
             ErekirSpec {
-                requirements(
-                    Category.turret, BuildVisibility.shown, arrayOf(
-                        CioItems.ic + 12,
-                        Items.beryllium + 60,
-                        Items.surgeAlloy + 50,
-                        Items.tungsten + 100,
-                    )
+                requirements = arrayOf(
+                    CioItems.ic + 12,
+                    Items.beryllium + 60,
+                    Items.surgeAlloy + 50,
+                    Items.tungsten + 100,
                 )
                 health = 750
             }
@@ -495,15 +482,15 @@ object CioBlocks {
     @DependOn("CioItems.ic")
     fun deleter() {
         deleter = Deleter("deleter").apply {
+            category = Category.turret
+            buildVisibility = BuildVisibility.shown
             VanillaSpec {
-                requirements(
-                    Category.turret, BuildVisibility.shown, arrayOf(
-                        CioItems.ic + 9,
-                        Items.graphite + 100,
-                        Items.silicon + 60,
-                        Items.thorium + 250,
-                        Items.surgeAlloy + 50,
-                    )
+                requirements = arrayOf(
+                    CioItems.ic + 9,
+                    Items.graphite + 100,
+                    Items.silicon + 60,
+                    Items.thorium + 250,
+                    Items.surgeAlloy + 50,
                 )
                 cooldownTime = 20f
                 recoil = 5f
@@ -519,13 +506,11 @@ object CioBlocks {
                 }
             }
             ErekirSpec {
-                requirements(
-                    Category.turret, BuildVisibility.shown, arrayOf(
-                        CioItems.ic + 15,
-                        Items.surgeAlloy + 80,
-                        Items.tungsten + 120,
-                        Items.carbide + 20,
-                    )
+                requirements = arrayOf(
+                    CioItems.ic + 15,
+                    Items.surgeAlloy + 80,
+                    Items.tungsten + 120,
+                    Items.carbide + 20,
                 )
                 cooldownTime = 18f
                 recoil = 5f
@@ -603,25 +588,23 @@ object CioBlocks {
     @DependOn("CioItems.ic")
     fun holoWall() {
         holoWall = HoloWall("holo-wall").apply {
+            category = Category.defense
+            buildVisibility = BuildVisibility.shown
             VanillaSpec {
-                requirements(
-                    Category.defense, BuildVisibility.shown, arrayOf(
-                        CioItems.ic + 1,
-                        Items.silicon + 6,
-                        Items.titanium + 12,
-                        Items.plastanium + 10,
-                    )
+                requirements = arrayOf(
+                    CioItems.ic + 1,
+                    Items.silicon + 6,
+                    Items.titanium + 12,
+                    Items.plastanium + 10,
                 )
                 scaledHealth = 600f
                 restoreReload = 10 * 60f
             }
             ErekirSpec {
-                requirements(
-                    Category.defense, BuildVisibility.shown, arrayOf(
-                        CioItems.ic + 3,
-                        Items.oxide + 8,
-                        Items.tungsten + 12,
-                    )
+                requirements = arrayOf(
+                    CioItems.ic + 3,
+                    Items.oxide + 8,
+                    Items.tungsten + 12,
                 )
                 scaledHealth = 425f
                 restoreReload = 15 * 60f
@@ -639,26 +622,24 @@ object CioBlocks {
     )
     fun holoWallLarge() {
         holoWallLarge = HoloWall("holo-wall-large").apply {
+            category = Category.defense
+            buildVisibility = BuildVisibility.shown
             VanillaSpec {
-                requirements(
-                    Category.defense, BuildVisibility.shown, arrayOf(
-                        CioItems.ic + 2,
-                        Items.silicon + 24,
-                        Items.titanium + 48,
-                        Items.plastanium + 40,
-                    )
+                requirements = arrayOf(
+                    CioItems.ic + 2,
+                    Items.silicon + 24,
+                    Items.titanium + 48,
+                    Items.plastanium + 40,
                 )
                 restoreReload = 15 * 60f
                 health = 550 * 5
             }
             ErekirSpec {
-                requirements(
-                    Category.defense, BuildVisibility.shown, arrayOf(
-                        CioItems.ic + 5,
-                        Items.oxide + 10,
-                        Items.tungsten + 40,
-                        Items.carbide + 5,
-                    )
+                requirements = arrayOf(
+                    CioItems.ic + 5,
+                    Items.oxide + 10,
+                    Items.tungsten + 40,
+                    Items.carbide + 5,
                 )
                 restoreReload = 20 * 60f
                 scaledHealth = 450f
@@ -678,14 +659,14 @@ object CioBlocks {
     )
     fun TMTRAINER() {
         TMTRAINER = TMTRAINER("TMTRAINER").apply {
+            category = Category.turret
+            buildVisibility = BuildVisibility.shown
             VanillaSpec {
-                requirements(
-                    Category.turret, BuildVisibility.shown, arrayOf(
-                        CioItems.ic + 5,
-                        Items.titanium + 100,
-                        Items.graphite + 100,
-                        Items.silicon + 50,
-                    )
+                requirements = arrayOf(
+                    CioItems.ic + 5,
+                    Items.titanium + 100,
+                    Items.graphite + 100,
+                    Items.silicon + 50,
                 )
                 ammo(
                     Items.sporePod, CioBulletTypes.virus,
@@ -697,12 +678,10 @@ object CioBlocks {
                 scaledHealth = 250f
             }
             ErekirSpec {
-                requirements(
-                    Category.turret, BuildVisibility.shown, arrayOf(
-                        CioItems.ic + 4,
-                        Items.tungsten + 150,
-                        Items.thorium + 200,
-                    )
+                requirements = arrayOf(
+                    CioItems.ic + 4,
+                    Items.tungsten + 150,
+                    Items.thorium + 200,
                 )
                 ammo(
                     Items.tungsten, CioBulletTypes.virus,
@@ -743,27 +722,25 @@ object CioBlocks {
     @DependOn("CioItems.ic")
     fun smartDistributor() {
         smartDistributor = SmartDistributor("smart-distributor").apply {
+            category = Category.distribution
+            buildVisibility = BuildVisibility.shown
             VanillaSpec {
-                requirements(
-                    Category.distribution, BuildVisibility.shown, arrayOf(
-                        CioItems.ic + 15,
-                        Items.copper + 550,
-                        Items.silicon + 210,
-                        Items.plastanium + 80,
-                        Items.thorium + 140,
-                        Items.surgeAlloy + 50,
-                    )
+                requirements = arrayOf(
+                    CioItems.ic + 15,
+                    Items.copper + 550,
+                    Items.silicon + 210,
+                    Items.plastanium + 80,
+                    Items.thorium + 140,
+                    Items.surgeAlloy + 50,
                 )
                 scaledHealth = 800f
             }
             ErekirSpec {
-                requirements(
-                    Category.distribution, BuildVisibility.shown, arrayOf(
-                        CioItems.ic + 20,
-                        Items.tungsten + 180,
-                        Items.carbide + 80,
-                        Items.surgeAlloy + 100,
-                    )
+                requirements = arrayOf(
+                    CioItems.ic + 20,
+                    Items.tungsten + 180,
+                    Items.carbide + 80,
+                    Items.surgeAlloy + 100,
                 )
                 scaledHealth = 500f
             }
@@ -775,27 +752,25 @@ object CioBlocks {
     @DependOn("CioItems.ic")
     fun smartUnloader() {
         smartUnloader = SmartUnloader("smart-unloader").apply {
+            category = Category.distribution
+            buildVisibility = BuildVisibility.shown
             VanillaSpec {
-                requirements(
-                    Category.distribution, BuildVisibility.shown, arrayOf(
-                        CioItems.ic + 5,
-                        Items.lead + 350,
-                        Items.silicon + 210,
-                        Items.graphite + 150,
-                        Items.titanium + 50,
-                    )
+                requirements = arrayOf(
+                    CioItems.ic + 5,
+                    Items.lead + 350,
+                    Items.silicon + 210,
+                    Items.graphite + 150,
+                    Items.titanium + 50,
                 )
                 unloadSpeed = 5f
                 scaledHealth = 300f
             }
             ErekirSpec {
-                requirements(
-                    Category.distribution, BuildVisibility.shown, arrayOf(
-                        CioItems.ic + 5,
-                        Items.tungsten + 350,
-                        Items.carbide + 80,
-                        Items.phaseFabric + 100,
-                    )
+                requirements = arrayOf(
+                    CioItems.ic + 5,
+                    Items.tungsten + 350,
+                    Items.carbide + 80,
+                    Items.phaseFabric + 100,
                 )
                 unloadSpeed = 6f
                 scaledHealth = 200f
@@ -809,15 +784,15 @@ object CioBlocks {
     @DependOn("CioItems.ic")
     fun streamClient() {
         streamClient = StreamClient("stream-client").apply {
+            category = Category.liquid
+            buildVisibility = BuildVisibility.shown
             VanillaSpec {
-                requirements(
-                    Category.liquid, BuildVisibility.shown, arrayOf(
-                        CioItems.ic + 2,
-                        Items.metaglass + 40,
-                        Items.silicon + 20,
-                        Items.graphite + 40,
-                        Items.titanium + 10,
-                    )
+                requirements = arrayOf(
+                    CioItems.ic + 2,
+                    Items.metaglass + 40,
+                    Items.silicon + 20,
+                    Items.graphite + 40,
+                    Items.titanium + 10,
                 )
                 health = 300
                 maxConnection = 5
@@ -825,13 +800,11 @@ object CioBlocks {
                 liquidCapacity = 200f
             }
             ErekirSpec {
-                requirements(
-                    Category.liquid, BuildVisibility.shown, arrayOf(
-                        CioItems.ic + 6,
-                        Items.beryllium + 40,
-                        Items.silicon + 20,
-                        Items.tungsten + 40,
-                    )
+                requirements = arrayOf(
+                    CioItems.ic + 6,
+                    Items.beryllium + 40,
+                    Items.silicon + 20,
+                    Items.tungsten + 40,
                 )
                 health = 250
                 maxConnection = 3
@@ -844,17 +817,17 @@ object CioBlocks {
     @DependOn("CioItems.ic")
     fun streamHost() {
         streamHost = StreamHost("stream-host").apply {
+            category = Category.liquid
+            buildVisibility = BuildVisibility.shown
             VanillaSpec {
-                requirements(
-                    Category.liquid, BuildVisibility.shown, arrayOf(
-                        CioItems.ic + 5,
-                        Items.lead + 100,
-                        Items.metaglass + 600,
-                        Items.silicon + 80,
-                        Items.graphite + 60,
-                        Items.titanium + 40,
-                        Items.plastanium + 20,
-                    )
+                requirements = arrayOf(
+                    CioItems.ic + 5,
+                    Items.lead + 100,
+                    Items.metaglass + 600,
+                    Items.silicon + 80,
+                    Items.graphite + 60,
+                    Items.titanium + 40,
+                    Items.plastanium + 20,
                 )
                 scaledHealth = 500f
                 powerUseBase = 1f
@@ -864,13 +837,11 @@ object CioBlocks {
                 maxConnection = 5
             }
             ErekirSpec {
-                requirements(
-                    Category.liquid, BuildVisibility.shown, arrayOf(
-                        CioItems.ic + 8,
-                        Items.tungsten + 200,
-                        Items.carbide + 25,
-                        Items.beryllium + 180,
-                    )
+                requirements = arrayOf(
+                    CioItems.ic + 8,
+                    Items.tungsten + 200,
+                    Items.carbide + 25,
+                    Items.beryllium + 180,
                 )
                 scaledHealth = 350f
                 powerUseBase = 1.4f
@@ -887,17 +858,17 @@ object CioBlocks {
     @DependOn("CioItems.ic")
     fun streamServer() {
         streamServer = StreamServer("stream-server").apply {
+            category = Category.liquid
+            buildVisibility = BuildVisibility.shown
             VanillaSpec {
-                requirements(
-                    Category.liquid, BuildVisibility.shown, arrayOf(
-                        CioItems.ic + 16,
-                        Items.copper + 1200,
-                        Items.lead + 400,
-                        Items.metaglass + 1200,
-                        Items.silicon + 320,
-                        Items.thorium + 40,
-                        Items.phaseFabric + 120,
-                    )
+                requirements = arrayOf(
+                    CioItems.ic + 16,
+                    Items.copper + 1200,
+                    Items.lead + 400,
+                    Items.metaglass + 1200,
+                    Items.silicon + 320,
+                    Items.thorium + 40,
+                    Items.phaseFabric + 120,
                 )
                 scaledHealth = 500f
                 networkSpeed = 15f
@@ -908,14 +879,12 @@ object CioBlocks {
                 liquidCapacity = 2000f
             }
             ErekirSpec {
-                requirements(
-                    Category.liquid, BuildVisibility.shown, arrayOf(
-                        CioItems.ic + 16,
-                        Items.tungsten + 500,
-                        Items.carbide + 120,
-                        Items.beryllium + 500,
-                        Items.phaseFabric + 60,
-                    )
+                requirements = arrayOf(
+                    CioItems.ic + 16,
+                    Items.tungsten + 500,
+                    Items.carbide + 120,
+                    Items.beryllium + 500,
+                    Items.phaseFabric + 60,
                 )
                 scaledHealth = 380f
                 networkSpeed = 15f
@@ -934,14 +903,14 @@ object CioBlocks {
     @DependOn("CioItems.ic")
     fun jammer() {
         jammer = Jammer("jammer").apply {
+            category = Category.turret
+            buildVisibility = BuildVisibility.shown
             VanillaSpec {
-                requirements(
-                    Category.turret, BuildVisibility.shown, arrayOf(
-                        CioItems.ic + 8,
-                        Items.lead + 350,
-                        Items.thorium + 200,
-                        Items.surgeAlloy + 150,
-                    )
+                requirements = arrayOf(
+                    CioItems.ic + 8,
+                    Items.lead + 350,
+                    Items.thorium + 200,
+                    Items.surgeAlloy + 150,
                 )
                 scaledHealth = 250f
                 coolant = consumeCoolant(0.45f)
@@ -950,12 +919,10 @@ object CioBlocks {
                 range = 195f
             }
             ErekirSpec {
-                requirements(
-                    Category.turret, BuildVisibility.shown, arrayOf(
-                        CioItems.ic + 8,
-                        Items.surgeAlloy + 150,
-                        Items.thorium + 200,
-                    )
+                requirements = arrayOf(
+                    CioItems.ic + 8,
+                    Items.surgeAlloy + 150,
+                    Items.thorium + 200,
                 )
                 scaledHealth = 350f
                 coolant = consumeCoolant(0.2f)
@@ -1046,13 +1013,13 @@ object CioBlocks {
     fun cyberionMixer() {
         VanillaSpec {
             cyberionMixer = HeatProducer("cyberion-mixer").apply {
-                requirements(
-                    Category.crafting, BuildVisibility.shown, arrayOf(
-                        CioItems.ic + 4,
-                        Items.lead + 100,
-                        Items.titanium + 100,
-                        Items.metaglass + 50,
-                    )
+                category = Category.crafting
+                buildVisibility = BuildVisibility.shown
+                requirements = arrayOf(
+                    CioItems.ic + 4,
+                    Items.lead + 100,
+                    Items.titanium + 100,
+                    Items.metaglass + 50,
                 )
                 buildType = Prov { HeatProducerBuild() }
                 scaledHealth = 60f
@@ -1078,12 +1045,12 @@ object CioBlocks {
         }
         ErekirSpec {
             cyberionMixer = HeatCrafter("cyberion-mixer").apply {
-                requirements(
-                    Category.crafting, BuildVisibility.shown, arrayOf(
-                        CioItems.ic + 5,
-                        Items.carbide + 80,
-                        Items.tungsten + 120,
-                    )
+                category = Category.crafting
+                buildVisibility = BuildVisibility.shown
+                requirements = arrayOf(
+                    CioItems.ic + 5,
+                    Items.carbide + 80,
+                    Items.tungsten + 120,
                 )
                 buildType = Prov { HeatCrafterBuild() }
                 scaledHealth = 100f
@@ -1121,15 +1088,15 @@ object CioBlocks {
     )
     fun holoProjector() {
         holoProjector = HoloProjector("holo-projector").apply {
+            category = Category.units
+            buildVisibility = BuildVisibility.shown
             VanillaSpec {
-                requirements(
-                    Category.units, BuildVisibility.shown, arrayOf(
-                        CioItems.ic + 16,
-                        Items.silicon + 220,
-                        Items.graphite + 300,
-                        Items.metaglass + 500,
-                        Items.thorium + 1200,
-                    )
+                requirements = arrayOf(
+                    CioItems.ic + 16,
+                    Items.silicon + 220,
+                    Items.graphite + 300,
+                    Items.metaglass + 500,
+                    Items.thorium + 1200,
                 )
                 scaledHealth = 100f
                 researchCostMultiplier = 0.8f
@@ -1162,14 +1129,12 @@ object CioBlocks {
                 )
             }
             ErekirSpec {
-                requirements(
-                    Category.units, BuildVisibility.shown, arrayOf(
-                        CioItems.ic + 16,
-                        Items.oxide + 220,
-                        Items.thorium + 300,
-                        Items.carbide + 150,
-                        Items.silicon + 800,
-                    )
+                requirements = arrayOf(
+                    CioItems.ic + 16,
+                    Items.oxide + 220,
+                    Items.thorium + 300,
+                    Items.carbide + 150,
+                    Items.silicon + 800,
                 )
                 scaledHealth = 150f
                 researchCostMultiplier = 0.75f
@@ -1233,13 +1198,13 @@ object CioBlocks {
     )
     fun stealth() {
         stealth = Stealth("stealth").apply {
+            category = Category.turret
+            buildVisibility = BuildVisibility.shown
             VanillaSpec {
-                requirements(
-                    Category.turret, BuildVisibility.shown, arrayOf(
-                        CioItems.ic + 5,
-                        Items.titanium + 150,
-                        Items.plastanium + 30,
-                    )
+                requirements = arrayOf(
+                    CioItems.ic + 5,
+                    Items.titanium + 150,
+                    Items.plastanium + 30,
                 )
                 scaledHealth = 160f
                 range = 260f
@@ -1248,12 +1213,10 @@ object CioBlocks {
                 reload = 15f
             }
             ErekirSpec {
-                requirements(
-                    Category.turret, BuildVisibility.shown, arrayOf(
-                        CioItems.ic + 5,
-                        Items.beryllium + 120,
-                        Items.tungsten + 50,
-                    )
+                requirements = arrayOf(
+                    CioItems.ic + 5,
+                    Items.beryllium + 120,
+                    Items.tungsten + 50,
                 )
                 scaledHealth = 140f
                 range = 270f
@@ -1288,29 +1251,27 @@ object CioBlocks {
     @DependOn("CioItems.ic")
     fun wirelessTower() {
         wirelessTower = WirelessTower("wireless-tower").apply {
+            category = Category.power
+            buildVisibility = BuildVisibility.shown
             VanillaSpec {
-                requirements(
-                    Category.power, BuildVisibility.shown, arrayOf(
-                        CioItems.ic + 2,
-                        Items.copper + 310,
-                        Items.lead + 20,
-                        Items.silicon + 20,
-                        Items.graphite + 30,
-                    )
+                requirements = arrayOf(
+                    CioItems.ic + 2,
+                    Items.copper + 310,
+                    Items.lead + 20,
+                    Items.silicon + 20,
+                    Items.graphite + 30,
                 )
                 scaledHealth = 150f
                 distributeSpeed = 10f
                 range = 380f
             }
             ErekirSpec {
-                requirements(
-                    Category.power, BuildVisibility.shown, arrayOf(
-                        CioItems.ic + 10,
-                        Items.tungsten + 150,
-                        Items.graphite + 100,
-                        Items.silicon + 80,
-                        Items.carbide + 30,
-                    )
+                requirements = arrayOf(
+                    CioItems.ic + 10,
+                    Items.tungsten + 150,
+                    Items.graphite + 100,
+                    Items.silicon + 80,
+                    Items.carbide + 30,
                 )
                 scaledHealth = 100f
                 distributeSpeed = 10f
@@ -1322,17 +1283,17 @@ object CioBlocks {
     @DependOn("CioItems.ic")
     fun heimdall() {
         heimdall = Heimdall("heimdall").apply {
+            category = Category.turret
+            buildVisibility = BuildVisibility.shown
             VanillaSpec {
-                requirements(
-                    Category.turret, BuildVisibility.shown, arrayOf(
-                        CioItems.ic + 10,
-                        Items.sporePod + 300,
-                        Items.thorium + 150,
-                        Items.metaglass + 50,
-                        Items.copper + 120,
-                        Items.silicon + 180,
-                        Items.plastanium + 50,
-                    )
+                requirements = arrayOf(
+                    CioItems.ic + 10,
+                    Items.sporePod + 300,
+                    Items.thorium + 150,
+                    Items.metaglass + 50,
+                    Items.copper + 120,
+                    Items.silicon + 180,
+                    Items.plastanium + 50,
                 )
                 scaledHealth = 400f
                 range = 175f
@@ -1340,14 +1301,12 @@ object CioBlocks {
                 damage = 8f
             }
             ErekirSpec {
-                requirements(
-                    Category.turret, BuildVisibility.shown, arrayOf(
-                        CioItems.ic + 10,
-                        Items.oxide + 80,
-                        Items.carbide + 40,
-                        Items.thorium + 150,
-                        Items.graphite + 150,
-                    )
+                requirements = arrayOf(
+                    CioItems.ic + 10,
+                    Items.oxide + 80,
+                    Items.carbide + 40,
+                    Items.thorium + 150,
+                    Items.graphite + 150,
                 )
                 scaledHealth = 350f
                 range = 145f
@@ -1367,29 +1326,27 @@ object CioBlocks {
     @DependOn("CioItems.ic")
     fun eye() {
         eye = Eye("heimdall-eye").apply {
+            category = Category.turret
+            buildVisibility = BuildVisibility.shown
             VanillaSpec {
-                requirements(
-                    Category.turret, BuildVisibility.shown, arrayOf(
-                        CioItems.ic + 2,
-                        Items.pyratite + 15,
-                        Items.plastanium + 10,
-                        Items.metaglass + 40,
-                        Items.copper + 60,
-                        Items.silicon + 30,
-                    )
+                requirements = arrayOf(
+                    CioItems.ic + 2,
+                    Items.pyratite + 15,
+                    Items.plastanium + 10,
+                    Items.metaglass + 40,
+                    Items.copper + 60,
+                    Items.silicon + 30,
                 )
                 range = 165f
                 scaledHealth = 300f
                 consumePower(3f)
             }
             ErekirSpec {
-                requirements(
-                    Category.turret, BuildVisibility.shown, arrayOf(
-                        CioItems.ic + 6,
-                        Items.carbide + 25,
-                        Items.tungsten + 40,
-                        Items.silicon + 60,
-                    )
+                requirements = arrayOf(
+                    CioItems.ic + 6,
+                    Items.carbide + 25,
+                    Items.tungsten + 40,
+                    Items.silicon + 60,
                 )
                 range = 175f
                 scaledHealth = 250f
@@ -1454,30 +1411,28 @@ object CioBlocks {
     @DependOn("CioItems.ic")
     fun ear() {
         ear = Ear("heimdall-ear").apply {
+            category = Category.turret
+            buildVisibility = BuildVisibility.shown
             VanillaSpec {
-                requirements(
-                    Category.turret, BuildVisibility.shown, arrayOf(
-                        CioItems.ic + 2,
-                        Items.sporePod + 20,
-                        Items.graphite + 5,
-                        Items.copper + 60,
-                        Items.silicon + 50,
-                        Items.plastanium + 10,
-                    )
+                requirements = arrayOf(
+                    CioItems.ic + 2,
+                    Items.sporePod + 20,
+                    Items.graphite + 5,
+                    Items.copper + 60,
+                    Items.silicon + 50,
+                    Items.plastanium + 10,
                 )
                 range = 145f
                 scaledHealth = 300f
                 damage = 8f
             }
             ErekirSpec {
-                requirements(
-                    Category.turret, BuildVisibility.shown, arrayOf(
-                        CioItems.ic + 6,
-                        Items.graphite + 50,
-                        Items.beryllium + 60,
-                        Items.silicon + 50,
-                        Items.phaseFabric + 20,
-                    )
+                requirements = arrayOf(
+                    CioItems.ic + 6,
+                    Items.graphite + 50,
+                    Items.beryllium + 60,
+                    Items.silicon + 50,
+                    Items.phaseFabric + 20,
                 )
                 range = 165f
                 scaledHealth = 250f
@@ -1502,27 +1457,25 @@ object CioBlocks {
     fun heart() {
         DebugOnly {
             heart = Heart("heimdall-heart").apply {
+                category = Category.turret
+                buildVisibility = BuildVisibility.shown
                 VanillaSpec {
-                    requirements(
-                        Category.turret, BuildVisibility.shown, arrayOf(
-                            CioItems.ic + 4,
-                            Items.graphite + 200,
-                            Items.metaglass + 500,
-                            Items.silicon + 50,
-                            Items.blastCompound + 200,
-                        )
+                    requirements = arrayOf(
+                        CioItems.ic + 4,
+                        Items.graphite + 200,
+                        Items.metaglass + 500,
+                        Items.silicon + 50,
+                        Items.blastCompound + 200,
                     )
                     scaledHealth = 125f
                     convertSpeed = 6f
                 }
                 ErekirSpec {
-                    requirements(
-                        Category.turret, BuildVisibility.shown, arrayOf(
-                            CioItems.ic + 12,
-                            Items.oxide + 100,
-                            Items.tungsten + 500,
-                            Items.silicon + 200,
-                        )
+                    requirements = arrayOf(
+                        CioItems.ic + 12,
+                        Items.oxide + 100,
+                        Items.tungsten + 500,
+                        Items.silicon + 200,
                     )
                     convertSpeed = 7f
                     scaledHealth = 105f
@@ -1623,9 +1576,9 @@ object CioBlocks {
     fun DDos() {
         DebugOnly {
             DDoS = DDoS("DDoS").apply {
-                requirements(
-                    Category.turret, BuildVisibility.shown, arrayOf()
-                )
+                category = Category.turret
+                buildVisibility = BuildVisibility.shown
+                requirements = arrayOf()
                 maxDamage = 120f
                 size = 4
                 hitSizer = { damage / 80f * 4f }
@@ -1660,9 +1613,9 @@ object CioBlocks {
     fun dataCDN() {
         DebugOnly {
             dataCDN = DataCDN("data-cdn").apply {
-                requirements(
-                    Category.units, BuildVisibility.shown, arrayOf()
-                )
+                category = Category.units
+                buildVisibility = BuildVisibility.shown
+                requirements = arrayOf()
                 size = 3
             }
         }
@@ -1670,23 +1623,21 @@ object CioBlocks {
     @DependOn("CioItems.ic")
     fun zipBomb() {
         zipBomb = ZipBomb("zip-bomb").apply {
+            category = Category.effect
+            buildVisibility = BuildVisibility.shown
             VanillaSpec {
-                requirements(
-                    Category.effect, BuildVisibility.shown, arrayOf(
-                        CioItems.ic + 1,
-                        Items.blastCompound + 2,
-                        Items.pyratite + 5,
-                        Items.coal + 10,
-                    )
+                requirements = arrayOf(
+                    CioItems.ic + 1,
+                    Items.blastCompound + 2,
+                    Items.pyratite + 5,
+                    Items.coal + 10,
                 )
                 damagePreUnit = 80f
             }
             ErekirSpec {
-                requirements(
-                    Category.effect, BuildVisibility.shown, arrayOf(
-                        CioItems.ic + 1,
-                        Items.oxide + 8,
-                    )
+                requirements = arrayOf(
+                    CioItems.ic + 1,
+                    Items.oxide + 8,
                 )
                 damagePreUnit = 100f
             }
@@ -1698,12 +1649,21 @@ object CioBlocks {
     fun serializer() {
         DebugOnly {
             serializer = Serializer("serializer").apply {
-                requirements(
-                    Category.units, BuildVisibility.shown, arrayOf()
-                )
+                category = Category.effect
+                buildVisibility = BuildVisibility.shown
+                requirements = arrayOf()
                 size = 5
                 linkRange = 30f * Vars.tilesize
             }
+        }
+    }
+    @DependOn("CioItems.ic")
+    fun p2pNode() {
+        p2pNode = P2pNode("p2p-node").apply {
+            category = Category.liquid
+            buildVisibility = BuildVisibility.shown
+            requirements = arrayOf()
+            size = 2
         }
     }
     @DependOn

@@ -204,7 +204,7 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
                 val abs = rel
                 val dr = abs.sc()
                 if (dr != null) {
-                    dr.connectFrom(this)
+                    dr.onConnectFrom(this)
                     this.connectClient(dr)
                 } else {
                     queue.add(abs)
@@ -252,12 +252,12 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
             if (pos in clients) {
                 pos.sc()?.let {
                     disconnectClient(it)
-                    it.disconnectFrom(this)
+                    it.onDisconnectFrom(this)
                 }
             } else {
                 pos.sc()?.let {
                     connectClient(it)
-                    it.connectFrom(this)
+                    it.onConnectFrom(this)
                 }
             }
         }
@@ -279,7 +279,7 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
         open fun clearClients() {
             clients.forEach { pos ->
                 pos.sc()?.let {
-                    it.disconnectFrom(this)
+                    it.onDisconnectFrom(this)
                     it.onRequirementUpdated -= ::onClientRequirementsUpdated
                 }
             }

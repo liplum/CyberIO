@@ -15,7 +15,6 @@ import net.liplum.annotations.SubscribeEvent
 import net.liplum.api.ICyberEntity
 import net.liplum.common.Changed
 import net.liplum.common.utils.Or
-import net.liplum.common.utils.isLineInViewField
 import net.liplum.events.CioInitEvent
 import net.liplum.lib.math.Point2f
 import net.liplum.lib.math.smooth
@@ -66,8 +65,11 @@ fun Point2?.sh(): IStreamHost? =
 fun Int.nn(): INetworkNode? =
     this.build as? INetworkNode
 
+fun Int.p2p(): IP2pNode? =
+    this.build as? IP2pNode
+fun Point2?.p2p(): IP2pNode? =
+    this?.let { this.build as? IP2pNode }
 //</editor-fold>
-
 val ICyberEntity?.exists: Boolean
     get() = this != null && this.building.exists
 //<editor-fold desc="Tile Position">
@@ -87,7 +89,6 @@ val ICyberEntity.topRightX: Int
     get() = building.topRightX
 val ICyberEntity.topRightY: Int
     get() = building.topRightY
-
 val ICyberEntity?.tileX: Int
     get() = (this?.tile?.x ?: 0).toInt()
 val ICyberEntity?.tileY: Int
@@ -97,8 +98,8 @@ val ICyberEntity?.tileXd: Double
 val ICyberEntity?.tileYd: Double
     get() = (this?.tile?.y ?: 0).toDouble()
 //</editor-fold>
-
 typealias SingleItemArray = Seq<Item>
+
 object DataCenter {
     @JvmField var SingleItems: Array<SingleItemArray> = emptyArray()
     @JvmStatic
@@ -126,8 +127,6 @@ fun Item?.match(requirements: SingleItemArray?): Boolean {
 
 fun Int.isAccepted() =
     this == -1 || this > 0
-
-
 typealias SingleLiquidArray = Seq<Liquid>
 
 object StreamCenter {
@@ -212,7 +211,6 @@ fun transitionColor(from: Changed<Color>, to: Color): Color {
 
 fun Float.isAccepted() =
     this <= -1f || this > 0f
-
 //<editor-fold desc="Check if Configuring">
 @ClientOnly
 inline fun whenNotConfiguringSender(func: () -> Unit) {

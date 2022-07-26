@@ -28,19 +28,21 @@ import mindustry.world.blocks.heat.HeatBlock
 import mindustry.world.meta.BlockFlag
 import mindustry.world.meta.BlockGroup
 import net.liplum.DebugOnly
-import net.liplum.IfDebugOr
 import net.liplum.R
 import net.liplum.Var
 import net.liplum.api.brain.*
-import net.liplum.lib.arc.hsvLerp
-import net.liplum.lib.Serialized
 import net.liplum.common.Smooth
-import net.liplum.common.utils.*
+import net.liplum.common.utils.bundle
+import net.liplum.common.utils.format
+import net.liplum.common.utils.toDouble
+import net.liplum.lib.Serialized
+import net.liplum.lib.arc.hsvLerp
 import net.liplum.lib.assets.TR
 import net.liplum.lib.assets.TRs
 import net.liplum.lib.math.FUNC
 import net.liplum.lib.math.isZero
 import net.liplum.mdt.ClientOnly
+import net.liplum.mdt.Else
 import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.WhenTheSameTeam
 import net.liplum.mdt.animations.anims.Anime
@@ -159,21 +161,29 @@ open class Heart(name: String) : Block(name), IComponentBlock {
         DebugOnly {
             addBrainInfo<HeartBuild>()
         }
-        AddBar<HeartBuild>(R.Bar.BloodN, IfDebugOr(
-            { { "${R.Bar.Blood.bundle}: ${bloodAmount.toInt()}" } },
-            { { R.Bar.Blood.bundle } }), {
-            bloodColor
-        }, {
-            bloodAmount / realBloodCapacity
-        })
+        DebugOnly {
+            AddBar<HeartBuild>(R.Bar.BloodN,
+                { "${R.Bar.Blood.bundle}: ${bloodAmount.toInt()}" },
+                { bloodColor },
+                { bloodAmount / realBloodCapacity })
+        }.Else {
+            AddBar<HeartBuild>(R.Bar.BloodN,
+                { R.Bar.Blood.bundle },
+                { bloodColor },
+                { bloodAmount / realBloodCapacity })
+        }
 
-        AddBar<HeartBuild>(R.Bar.TemperatureN, IfDebugOr(
-            { { "${R.Bar.Temperature.bundle}: ${temperature.format(2)}" } },
-            { { R.Bar.Temperature.bundle } }), {
-            temperatureColor.set(coldColor).hsvLerp(hotColor, temperature)
-        }, {
-            temperature
-        })
+        DebugOnly {
+            AddBar<HeartBuild>(R.Bar.TemperatureN,
+                { "${R.Bar.Temperature.bundle}: ${temperature.format(2)}" },
+                { temperatureColor.set(coldColor).hsvLerp(hotColor, temperature) },
+                { temperature })
+        }.Else {
+            AddBar<HeartBuild>(R.Bar.TemperatureN,
+                { R.Bar.Temperature.bundle },
+                { temperatureColor.set(coldColor).hsvLerp(hotColor, temperature) },
+                { temperature })
+        }
         DebugOnly {
             AddBar<HeartBuild>("reload",
                 { "Reload: ${reloadCounter.toInt()}/ ${realReloadTime.toInt()}" }, {

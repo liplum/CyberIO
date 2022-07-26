@@ -57,7 +57,9 @@ annotation class HeadlessOnly
 )
 @Inherited
 @MustBeDocumented
-annotation class SendDataPack
+annotation class SendDataPack(
+    val callChain:Array<String> = []
+)
 /**
  * It indicates this will be called by a function which handles data packet.
  */

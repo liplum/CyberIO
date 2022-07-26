@@ -31,11 +31,11 @@ interface IStreamClient : ICyberEntity {
      */
     val requirements: Seq<Liquid>?
     @CalledBySync
-    fun connectFrom(host: IStreamHost) {
+    fun onConnectFrom(host: IStreamHost) {
         connectedHosts.add(host.building.pos())
     }
     @CalledBySync
-    fun disconnectFrom(host: IStreamHost) {
+    fun onDisconnectFrom(host: IStreamHost) {
         connectedHosts.remove(host.building.pos())
     }
 

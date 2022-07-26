@@ -112,6 +112,7 @@ open class WirelessTower(name: String) : PowerBlock(name) {
         @ClientOnly @JvmField
         var pingingCount = 0
         override fun updateTile() {
+            // TODO: Bug
             lastNeed = 0f
             if (power.status.isZero || (power.graph.all.size == 1 && power.graph.all.first() == this)) return
             forEachBufferedInRange {

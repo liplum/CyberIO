@@ -141,11 +141,13 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
         @Serialized
         var receiverPos: Point2? = null
             set(value) {
-                var curBuild = receiverPos.dr()
-                curBuild?.disconnectFrom(this)
-                field = value
-                curBuild = receiverPos.dr()
-                curBuild?.connectTo(this)
+                if (receiverPos != null) {
+                    var curBuild = field.dr()
+                    curBuild?.onDisconnectFrom(this)
+                    field = value
+                    curBuild = value.dr()
+                    curBuild?.onConnectTo(this)
+                }
             }
         val receiver: IDataReceiver?
             get() = receiverPos.dr()

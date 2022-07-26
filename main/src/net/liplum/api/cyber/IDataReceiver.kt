@@ -6,7 +6,6 @@ import arc.struct.Seq
 import mindustry.type.Item
 import net.liplum.R
 import net.liplum.api.ICyberEntity
-import net.liplum.common.Changed
 import net.liplum.common.delegates.Delegate1
 import net.liplum.mdt.CalledBySync
 import net.liplum.mdt.ClientOnly
@@ -35,11 +34,11 @@ interface IDataReceiver : ICyberEntity {
     val receiverColor: Color
         get() = R.C.Receiver
     @CalledBySync
-    fun connectTo(sender: IDataSender) {
+    fun onConnectTo(sender: IDataSender) {
         connectedSenders.add(sender.building.pos())
     }
     @CalledBySync
-    fun disconnectFrom(sender: IDataSender) {
+    fun onDisconnectFrom(sender: IDataSender) {
         connectedSenders.remove(sender.building.pos())
     }
 

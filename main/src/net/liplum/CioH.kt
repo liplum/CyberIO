@@ -45,10 +45,6 @@ inline fun DebugOnly(func: () -> Unit): Boolean {
     return false
 }
 
-inline fun <R> IfDebugOr(
-    onDebug: () -> R, onNotDebug: () -> R
-): R = if (Meta.EnableDebug) onDebug() else onNotDebug()
-
 enum class DebugLevel(
     val level: Int
 ) {

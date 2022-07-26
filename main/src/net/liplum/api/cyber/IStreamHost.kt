@@ -1,7 +1,6 @@
 package net.liplum.api.cyber
 
 import arc.graphics.Color
-import arc.struct.ObjectSet
 import arc.struct.OrderedSet
 import mindustry.type.Liquid
 import net.liplum.api.ICyberEntity
@@ -57,10 +56,6 @@ interface IStreamHost : ICyberEntity {
         get() = -1f
 
     companion object {
-        /**
-         * Only for single connection
-         */
-        val emptyConnection = ObjectSet<Int>()
         @SendDataPack
         fun IStreamHost.connectToSync(client: Int) {
             client.sc()?.let { connectToSync(it) }
