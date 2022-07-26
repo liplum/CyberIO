@@ -7,7 +7,6 @@ import arc.math.Mathf
 import arc.math.geom.Vec2
 import arc.scene.ui.Label
 import arc.scene.ui.Slider
-import arc.scene.ui.TextButton
 import arc.scene.ui.layout.Stack
 import arc.scene.ui.layout.Table
 import arc.util.Time
@@ -19,7 +18,6 @@ import mindustry.entities.Damage
 import mindustry.entities.Effect
 import mindustry.entities.Units
 import mindustry.gen.Building
-import mindustry.gen.Iconc
 import mindustry.gen.Sounds
 import mindustry.gen.Unit
 import mindustry.graphics.Drawf
@@ -28,10 +26,6 @@ import mindustry.world.meta.BlockStatus
 import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.Var
-import net.liplum.annotations.isOn
-import net.liplum.common.utils.bigEndianByte
-import net.liplum.common.utils.on
-import net.liplum.common.utils.twoBytesToShort
 import net.liplum.lib.Serialized
 import net.liplum.lib.math.smooth
 import net.liplum.mdt.*
@@ -40,7 +34,6 @@ import net.liplum.mdt.render.G
 import net.liplum.mdt.render.smoothPlacing
 import net.liplum.mdt.render.smoothSelect
 import net.liplum.mdt.ui.bars.AddBar
-import net.liplum.mdt.utils.subBundle
 import net.liplum.mdt.utils.worldXY
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
@@ -60,23 +53,6 @@ open class ZipBomb(name: String) : Block(name) {
         get() = damagePreUnit * Vars.tilesize * size
     @JvmField var circleColor: Color = R.C.RedAlert
     @ClientOnly @JvmField var maxSelectedCircleTime = Var.SelectedCircleTime
-    @JvmInline
-    value class Command(val value: Int) {
-        val isAutoDetect: Boolean get() = value isOn AutoDetectPos
-        val configGear: Int get() = value.bigEndianByte
-
-        companion object {
-            private const val AutoDetectPos = 0
-            fun config(gear: Int): Command =
-                Command(twoBytesToShort(gear, 0))
-
-            fun genFull(autoDetect: Boolean, configGear: Int): Int {
-                var r = twoBytesToShort(configGear, 0)
-                if (autoDetect) r = r on AutoDetectPos
-                return r
-            }
-        }
-    }
 
     init {
         update = true
@@ -94,7 +70,7 @@ open class ZipBomb(name: String) : Block(name) {
         teamPassable = true
         buildType = Prov { ZipBombBuild() }
         config(java.lang.Integer::class.java) { bomb: ZipBombBuild, cmdCode ->
-            bomb.handleCommandFromRemote(Command(cmdCode.toInt()))
+            bomb.setSensitiveFromRemote(cmdCode.toInt())
         }
         config(java.lang.Boolean::class.java) { bomb: ZipBombBuild, trigger ->
             if (trigger.booleanValue())
@@ -127,34 +103,20 @@ open class ZipBomb(name: String) : Block(name) {
 
     open inner class ZipBombBuild : Building() {
         @Serialized
-        var autoDetectEnabled = true
-        @Serialized
         var curSensitive = 1
         @Serialized
         var autoDetectCounter = 0f
         override fun updateTile() {
-            HeadlessOnly {
-                // Headless don't need to check enemy nearby every tick
-                if (!autoDetectEnabled) return
-                autoDetectCounter += Time.delta
-                if (autoDetectCounter >= autoDetectTime) {
-                    autoDetectCounter %= autoDetectTime
-                    if (countEnemyNearby() >= curSensitive) {
-                        triggerSync()
-                    }
+            autoDetectCounter += Time.delta
+            if (autoDetectCounter >= autoDetectTime) {
+                autoDetectCounter %= autoDetectTime
+                if (countEnemyNearby() >= curSensitive) {
+                    triggerSync()
                 }
-            }
-            ClientOnly {
+            } else {
                 // Client should check enemy nearby every tick for animation
-                if (autoDetectEnabled)
-                    autoDetectCounter += Time.delta
-                // If auto-detect is charging, just detect the enemy without trigger
-                if (autoDetectCounter >= autoDetectTime) {
-                    autoDetectCounter %= autoDetectTime
-                    if (countEnemyNearby() >= curSensitive) {
-                        triggerSync()
-                    }
-                } else {
+                // Headless don't need to check enemy nearby every tick
+                ClientOnly {
                     countEnemyNearby(explosionRange * warningRangeFactor)
                 }
             }
@@ -180,6 +142,7 @@ open class ZipBomb(name: String) : Block(name) {
                 kill()
             }
         }
+
         open fun detonate() {
             Sounds.explosionbig.at(this)
             Effect.shake(shake, shakeDuration, x, y)
@@ -211,8 +174,7 @@ open class ZipBomb(name: String) : Block(name) {
                 table.add(Stack(
                     Slider(pre, 1f, pre, false).apply {
                         value = curSensitive * pre
-                        moved { configGearSync((it * (maxSensitive + 1)).toInt().coerceIn(1, maxSensitive)) }
-                        update { isDisabled = !autoDetectEnabled }
+                        moved { configSensitiveSync((it * (maxSensitive + 1)).toInt().coerceIn(1, maxSensitive)) }
                     },
                     Table().apply {
                         add(Label { ">=$curSensitive" }.apply {
@@ -223,18 +185,7 @@ open class ZipBomb(name: String) : Block(name) {
                 )
                 ).width(250f).row()
             }
-            table.add(TextButton("").apply {
-                label.setText { getCurrentAutoDetectButton() }
-                changed { switchAutoDetectSync() }
-            }).width(250f).grow()
             table.defaults().growX()
-        }
-        @ClientOnly
-        fun getCurrentAutoDetectButton(): String {
-            return subBundle(
-                "auto-detect", if (autoDetectEnabled) Iconc.ok
-                else Iconc.cancel
-            )
         }
 
         override fun draw() {
@@ -262,36 +213,27 @@ open class ZipBomb(name: String) : Block(name) {
         }
 
         override fun config(): Any? {
-            return Command.genFull(autoDetectEnabled, curSensitive)
+            return curSensitive
         }
         @CalledBySync
-        fun handleCommandFromRemote(cmdCode: Command) {
-            autoDetectEnabled = cmdCode.isAutoDetect
-            handleConfig(cmdCode.configGear)
+        fun setSensitiveFromRemote(gear: Int) {
+            curSensitive = gear
         }
         @CalledBySync
         fun handleTriggerFromRemote() {
             kill()
-        }
-        @CalledBySync
-        fun handleConfig(int: Int) {
-            curSensitive = int
         }
         @SendDataPack
         open fun triggerSync() {
             configureAny(true)
         }
         @SendDataPack
-        open fun configGearSync(gear: Int) {
-            configure(Command.genFull(autoDetectEnabled, gear))
+        open fun configSensitiveSync(gear: Int) {
+            configure(gear)
         }
 
         override fun displayable(): Boolean {
             return team() == Vars.player.team()
-        }
-        @SendDataPack
-        open fun switchAutoDetectSync() {
-            configure(Command.genFull(!autoDetectEnabled, curSensitive))
         }
 
         override fun drawTeamTop() {
@@ -321,14 +263,12 @@ open class ZipBomb(name: String) : Block(name) {
 
         override fun read(read: Reads, revision: Byte) {
             super.read(read, revision)
-            autoDetectEnabled = read.bool()
             curSensitive = read.i()
             autoDetectCounter = read.f()
         }
 
         override fun write(write: Writes) {
             super.write(write)
-            write.bool(autoDetectEnabled)
             write.i(curSensitive)
             write.f(autoDetectCounter)
         }
