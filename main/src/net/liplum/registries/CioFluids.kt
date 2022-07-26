@@ -15,13 +15,13 @@ object CioFluids {
             VanillaSpec {
                 flammability = 0f
                 explosiveness = 0f
-                temperature = 0.1f
+                temperature = 0f
                 boilPoint = 0.7f
             }
             ErekirSpec {
                 flammability = 0.8f
                 explosiveness = 0.5f
-                temperature = 1.5f
+                temperature = 2f
                 boilPoint = 3f
             }
             heatCapacity = 1.4f

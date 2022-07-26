@@ -30,7 +30,6 @@ import mindustry.world.blocks.sandbox.PowerSource
 import mindustry.world.draw.*
 import mindustry.world.meta.BuildVisibility
 import net.liplum.*
-import net.liplum.ResourceLoader.onLoaded
 import net.liplum.annotations.DependOn
 import net.liplum.annotations.Only
 import net.liplum.annotations.Subscribe
@@ -78,6 +77,7 @@ import net.liplum.render.DrawDefaultSpec
 import net.liplum.render.SpecDrawConstruct
 import net.liplum.seffects.StaticFx
 import net.liplum.utils.globalAnim
+import kotlin.math.absoluteValue
 
 object CioBlocks {
     @JvmStatic lateinit var icMachine: GenericCrafter
@@ -917,9 +917,9 @@ object CioBlocks {
                     Items.surgeAlloy + 150,
                 )
                 scaledHealth = 250f
-                coolant = consumeCoolant(0.45f)
-                consumePower(15f)
+                consumePower(8f)
                 range = 195f
+                liquidConsumed = 12f / 60f
             }
             ErekirSpec {
                 requirements = arrayOf(
@@ -928,9 +928,8 @@ object CioBlocks {
                     Items.thorium + 200,
                 )
                 scaledHealth = 350f
-                coolant = consumeCoolant(0.2f)
-                consumePower(12f)
                 range = 165f
+                liquidConsumed = 10f / 60f
             }
             size = 3
             shootEffect = StaticFx
@@ -991,7 +990,9 @@ object CioBlocks {
                         radiusTo = 15f
                         haloRotateSpeed = 5f
                         haloRadiusTo = 360f
-                        progress = PartProgress { Interp.pow10In(it.recoil) }
+                        progress = PartProgress {
+                            (if(it.heat > 0f) 0f else 1f) * Interp.pow10In(it.recoil)
+                        }
                         color = R.C.FutureBlue
                     }
                     regionPart("-side") {
@@ -1023,12 +1024,12 @@ object CioBlocks {
                 buildType = Prov { HeatProducerBuild() }
                 scaledHealth = 60f
                 liquidCapacity = 100f
-                outputLiquid = CioFluids.cyberion + 0.3f
                 craftTime = 100f
                 squareSprite = false
                 consumePower(1.5f)
                 consumeItem(Items.thorium, 1)
                 consumeLiquid(Liquids.cryofluid, 0.3f)
+                outputLiquid = CioFluids.cyberion + 0.25f
                 heatOutput = 3f
                 drawer = DrawMulti(
                     DrawRegion("-bottom"),
@@ -1057,11 +1058,11 @@ object CioBlocks {
                 craftTime = 90f
                 squareSprite = false
                 consumePower(1.8f)
-                consumeLiquid(Liquids.slag, 0.35f)
+                consumeLiquid(Liquids.slag, 0.15f)
                 consumeItem(Items.oxide, 1)
                 heatRequirement = 8f
                 overheatScale = 1.5f
-                outputLiquid = CioFluids.cyberion + 0.55f
+                outputLiquid = CioFluids.cyberion + 0.25f
                 drawer = DrawMulti(
                     DrawRegion("-bottom"),
                     DrawLiquidTile(CioFluids.cyberion, 5f),
@@ -1201,9 +1202,9 @@ object CioBlocks {
             buildVisibility = BuildVisibility.shown
             VanillaSpec {
                 requirements = arrayOf(
-                    CioItems.ic + 5,
+                    CioItems.ic + 2,
                     Items.titanium + 150,
-                    Items.plastanium + 30,
+                    Items.plastanium + 50,
                 )
                 scaledHealth = 160f
                 range = 260f
