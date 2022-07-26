@@ -5,7 +5,7 @@ import mindustry.type.Liquid
 import net.liplum.*
 import net.liplum.annotations.DependOn
 
-object CioLiquids {
+object CioFluids {
     @JvmStatic lateinit var cyberion: Liquid
     @JvmStatic lateinit var tissueFluid: Liquid
     @DependOn

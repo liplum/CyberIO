@@ -52,7 +52,7 @@ import net.liplum.mdt.ui.addItemSelectorDefault
 import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.ui.bars.removeItemsInBar
 import net.liplum.mdt.utils.*
-import net.liplum.registries.CioLiquids.cyberion
+import net.liplum.registries.CioFluids.cyberion
 import net.liplum.registries.SD
 import net.liplum.ui.addTable
 import kotlin.math.max

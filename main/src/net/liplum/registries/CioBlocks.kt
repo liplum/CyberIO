@@ -902,7 +902,7 @@ object CioBlocks {
     }
     @DependOn(
         "CioItems.ic",
-        "CioLiquids.cyberion",
+        "CioFluids.cyberion",
     )
     fun jammer() {
         jammer = Jammer("jammer").apply {
@@ -942,7 +942,7 @@ object CioBlocks {
             loopSoundVolume = 0.3f
             rotateSpeed = 2f
 
-            ammo(CioLiquids.cyberion, JammingLaser().apply {
+            ammo(CioFluids.cyberion, JammingLaser().apply {
                 VanillaSpec {
                     damage = 100f
                     length = 220f
@@ -1006,7 +1006,7 @@ object CioBlocks {
     }
     @DependOn(
         "CioItems.ic",
-        "CioLiquids.cyberion"
+        "CioFluids.cyberion"
     )
     fun cyberionMixer() {
         VanillaSpec {
@@ -1022,7 +1022,7 @@ object CioBlocks {
                 buildType = Prov { HeatProducerBuild() }
                 scaledHealth = 60f
                 liquidCapacity = 100f
-                outputLiquid = CioLiquids.cyberion + 0.3f
+                outputLiquid = CioFluids.cyberion + 0.3f
                 craftTime = 100f
                 squareSprite = false
                 consumePower(1.5f)
@@ -1031,7 +1031,7 @@ object CioBlocks {
                 heatOutput = 3f
                 drawer = DrawMulti(
                     DrawRegion("-bottom"),
-                    DrawLiquidTile(CioLiquids.cyberion, 3f),
+                    DrawLiquidTile(CioFluids.cyberion, 3f),
                     DrawDefaultSpec(),
                     DrawHeatOutput().apply {
                         heatColor = S.Hologram
@@ -1060,10 +1060,10 @@ object CioBlocks {
                 consumeItem(Items.oxide, 1)
                 heatRequirement = 8f
                 overheatScale = 1.5f
-                outputLiquid = CioLiquids.cyberion + 0.55f
+                outputLiquid = CioFluids.cyberion + 0.55f
                 drawer = DrawMulti(
                     DrawRegion("-bottom"),
-                    DrawLiquidTile(CioLiquids.cyberion, 5f),
+                    DrawLiquidTile(CioFluids.cyberion, 5f),
                     DrawDefaultSpec(),
                     DrawHeatInput().apply {
                         heatColor = S.Hologram
@@ -1077,7 +1077,7 @@ object CioBlocks {
     }
     @DependOn(
         "CioItems.ic",
-        "CioLiquids.cyberion",
+        "CioFluids.cyberion",
         "CioUnitTypes.holoMiner",
         "CioUnitTypes.holoFighter",
         "CioUnitTypes.holoGuardian",
@@ -1168,7 +1168,7 @@ object CioBlocks {
             buildCostMultiplier = 2f
         }
     }
-    @DependOn("CioLiquids.cyberion")
+    @DependOn("CioFluids.cyberion")
     fun aquacyberion() {
         aquacyberion = Floor("aqua-cyberion").apply {
             drownTime = 0f
@@ -1182,7 +1182,7 @@ object CioBlocks {
             }
             statusDuration = 240f
             variants = 0
-            liquidDrop = CioLiquids.cyberion
+            liquidDrop = CioFluids.cyberion
             liquidMultiplier = 0.1f
             isLiquid = true
             cacheLayer = CioCLs.cyberion

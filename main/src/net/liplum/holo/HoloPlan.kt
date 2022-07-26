@@ -3,7 +3,7 @@ package net.liplum.holo
 import mindustry.type.ItemStack
 import mindustry.type.LiquidStack
 import net.liplum.mdt.utils.plus
-import net.liplum.registries.CioLiquids
+import net.liplum.registries.CioFluids
 
 open class HoloPlan(
     val unitType: HoloUnitType,
@@ -24,7 +24,7 @@ open class Requirement(
     ) : this(items, 0f)
 
     val liquid = if (cyberionReq != 0f)
-        CioLiquids.cyberion + cyberionReq
+        CioFluids.cyberion + cyberionReq
     else
         null
 }

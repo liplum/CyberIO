@@ -37,7 +37,7 @@ import net.liplum.mdt.utils.TE
 import net.liplum.mdt.utils.build
 import net.liplum.mdt.utils.exists
 import net.liplum.mdt.utils.hasShields
-import net.liplum.registries.CioLiquids
+import net.liplum.registries.CioFluids
 import net.liplum.registries.EntityRegistry
 
 open class HoloUnit : UnitEntity(), PayloadMixin, IRevisionable {
@@ -264,10 +264,10 @@ open class HoloUnit : UnitEntity(), PayloadMixin, IRevisionable {
         val type = type as? HoloUnitType ?: return
         if (payload is BuildPayload) {
             val build = payload.build
-            if (build.acceptLiquid(projector, CioLiquids.cyberion)) {
+            if (build.acceptLiquid(projector, CioFluids.cyberion)) {
                 val amount = type.sacrificeCyberionAmount
                 time += type.sacrificeLifeFunc(amount)
-                build.handleLiquid(projector, CioLiquids.cyberion, amount)
+                build.handleLiquid(projector, CioFluids.cyberion, amount)
             }
         }
     }

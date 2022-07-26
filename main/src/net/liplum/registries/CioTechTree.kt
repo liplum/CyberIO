@@ -30,7 +30,7 @@ import net.liplum.registries.CioBlocks.streamServer
 import net.liplum.registries.CioBlocks.underdriveProjector
 import net.liplum.registries.CioBlocks.wirelessTower
 import net.liplum.registries.CioItems.ic
-import net.liplum.registries.CioLiquids.cyberion
+import net.liplum.registries.CioFluids.cyberion
 import net.liplum.registries.CioUnitTypes.holoArchitect
 import net.liplum.registries.CioUnitTypes.holoFighter
 import net.liplum.registries.CioUnitTypes.holoGuardian
