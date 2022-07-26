@@ -69,8 +69,8 @@ open class ZipBomb(name: String) : Block(name) {
         commandable = true
         teamPassable = true
         buildType = Prov { ZipBombBuild() }
-        config(java.lang.Integer::class.java) { bomb: ZipBombBuild, cmdCode ->
-            bomb.setSensitiveFromRemote(cmdCode.toInt())
+        config(java.lang.Integer::class.java) { bomb: ZipBombBuild, gear ->
+            bomb.setSensitiveFromRemote(gear.toInt())
         }
         config(java.lang.Boolean::class.java) { bomb: ZipBombBuild, trigger ->
             if (trigger.booleanValue())

@@ -900,7 +900,10 @@ object CioBlocks {
             replaceable = false
         }
     }
-    @DependOn("CioItems.ic")
+    @DependOn(
+        "CioItems.ic",
+        "CioLiquids.cyberion",
+    )
     fun jammer() {
         jammer = Jammer("jammer").apply {
             category = Category.turret
@@ -915,7 +918,6 @@ object CioBlocks {
                 scaledHealth = 250f
                 coolant = consumeCoolant(0.45f)
                 consumePower(15f)
-                shootDuration = 180f
                 range = 195f
             }
             ErekirSpec {
@@ -927,31 +929,27 @@ object CioBlocks {
                 scaledHealth = 350f
                 coolant = consumeCoolant(0.2f)
                 consumePower(12f)
-                shootDuration = 200f
                 range = 165f
             }
             size = 3
             shootEffect = StaticFx
-            shootCone = 40f
-            recoil = 4f
             shake = 2f
-            shootDuration = 150f
             reload = 240f
-            firingMoveFract = 1f
             shoot.firstShotDelay = 90f
             chargeSound = CioSounds.jammerPreShoot
+            shootSound = Sounds.none
             loopSound = CioSounds.tvStatic
-            loopSoundVolume = 0.5f
+            loopSoundVolume = 0.3f
             rotateSpeed = 2f
 
-            shootType = JammingLaser().apply {
+            ammo(CioLiquids.cyberion, JammingLaser().apply {
                 VanillaSpec {
-                    damage = 120f
+                    damage = 100f
                     length = 220f
                     drawSize = 300f
                 }
                 ErekirSpec {
-                    damage = 280f
+                    damage = 250f
                     length = 180f
                     drawSize = 280f
                 }
@@ -964,7 +962,7 @@ object CioBlocks {
                 incendSpread = 5f
                 incendAmount = 1
                 ammoMultiplier = 1f
-            }
+            })
             shootWarmupSpeed = 0.03f
             minWarmup = 0.96f
             shootY = -3.5f
@@ -1224,11 +1222,11 @@ object CioBlocks {
                 recoil = 3.5f
                 reload = 18f
             }
-            val ruvikRange = range
+            shootSound = Sounds.lasershoot
             size = 3
             squareSprite = false
 
-            shootType = RuvikBullet().apply {
+            shootType = RuvikBullet().apply bullet@{
                 VanillaSpec {
                     speed = 2f
                     damage = 100f
@@ -1243,7 +1241,7 @@ object CioBlocks {
                 arrowWidth = 10f
                 hitSize = 10f
                 lifetime = 240f
-                maxRange = ruvikRange
+                maxRange = this@apply.range
                 trailColor = S.Hologram
             }
         }

@@ -459,7 +459,7 @@ open class HoloProjector(name: String) : Block(name) {
                         addTable {
                             add(plan.unitType.localizedName).left()
                             row()
-                            add("${autoFixed(plan.time / 60f, 1)} ${Core.bundle["unit.seconds"]}")
+                            add("${autoFixed(plan.time / 60f, 1)} ${"unit.seconds".bundle}")
                                 .color(Color.lightGray)
                         }.left()
                         addTable {

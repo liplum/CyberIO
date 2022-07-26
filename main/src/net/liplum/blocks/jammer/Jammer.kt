@@ -6,22 +6,16 @@ import arc.math.Mathf
 import arc.math.geom.Vec2
 import arc.util.Time
 import arc.util.Tmp
-import arc.util.io.Reads
 import mindustry.gen.Building
-import mindustry.gen.Groups
 import mindustry.world.Block
-import mindustry.world.blocks.defense.turrets.LaserTurret
+import mindustry.world.blocks.defense.turrets.ContinuousLiquidTurret
 import mindustry.world.draw.DrawBlock
-import mindustry.world.meta.BlockGroup
-import net.liplum.common.Observer
 import net.liplum.common.entity.Progress
 import net.liplum.common.entity.Queue
 import net.liplum.lib.assets.TR
 import net.liplum.lib.math.nextBoolean
 import net.liplum.lib.math.smooth
-import net.liplum.mdt.CalledBySync
 import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.SendDataPack
 import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.animations.Floating
 import net.liplum.mdt.animations.anims.Animation
@@ -30,7 +24,7 @@ import net.liplum.mdt.utils.autoAnim
 import net.liplum.mdt.utils.draw
 import net.liplum.mdt.utils.sub
 
-open class Jammer(name: String) : LaserTurret(name) {
+open class Jammer(name: String) : ContinuousLiquidTurret(name) {
     @ClientOnly var dx = -15f
     @ClientOnly var dy = -12f
     @ClientOnly var waveMaxNumber = 3
@@ -45,18 +39,9 @@ open class Jammer(name: String) : LaserTurret(name) {
 
     init {
         buildType = Prov { JammerBuild() }
-        //consumes.remove(ConsumeType.liquid)
-        config(Integer::class.java) { obj: JammerBuild, i ->
-            if (i.toInt() == 1)
-                obj.onJamming()
-        }
     }
 
-    open inner class JammerBuild : LaserTurretBuild() {
-        @SendDataPack
-        val isShootingOb = Observer { wasShooting }.notify { b ->
-            if (b) configure(1)
-        }
+    open inner class JammerBuild : ContinuousLiquidTurretBuild() {
         @ClientOnly
         lateinit var stereos: Array<Stereo>
 
@@ -72,18 +57,6 @@ open class Jammer(name: String) : LaserTurret(name) {
                 }
             }
         }
-        @CalledBySync
-        open fun onJamming() {
-            Groups.build.each {
-                if (
-                    it.team != team &&
-                    it.block.group == BlockGroup.logic &&
-                    it.dst(this) <= range() * 2
-                ) {
-                    it.destroyLogic()
-                }
-            }
-        }
         @ClientOnly
         var shootingTime = 0f
             set(value) {
@@ -92,13 +65,16 @@ open class Jammer(name: String) : LaserTurret(name) {
 
         override fun updateTile() {
             super.updateTile()
-            isShootingOb.update()
             ClientOnly {
                 if (!bullets.isEmpty)
                     shootingTime += Time.delta
                 else
                     shootingTime -= Time.delta
             }
+        }
+
+        override fun shouldActiveSound(): Boolean {
+            return wasShooting && enabled && !bullets.isEmpty
         }
         @ClientOnly
         val realWaveMaxNumber: Int
@@ -113,8 +89,7 @@ open class Jammer(name: String) : LaserTurret(name) {
         val realWaveSpeed: Float
             get() = waveSpeed * (1f + (shootingTime / waveShootingTime) * waveShootingBoost)
 
-        override fun read(read: Reads, revision: Byte) {
-            super.read(read, revision)
+        override fun afterRead() {
             ClientOnly {
                 for (s in stereos) {
                     s.pos.setAngle(s.angleDis + rotation)

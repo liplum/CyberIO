@@ -77,7 +77,9 @@ fun I18NBundle.formatDirectly(
     val fields = this.getBundleFields()
     return fields.formatValue(value, *args)
 }
-
+/**
+ * Find i18n in the default bundle
+ */
 val String.bundle: String
     get() = Core.bundle.format(this)
 
