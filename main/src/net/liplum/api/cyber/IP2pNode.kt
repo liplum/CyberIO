@@ -7,6 +7,10 @@ import net.liplum.mdt.SendDataPack
 interface IP2pNode : ICyberEntity {
     val currentFluid: Liquid
     val currentAmount: Float
+    val maxRange: Float
+    /**
+     * Changing this will change both side.
+     */
     var connected: IP2pNode?
         @SendDataPack set
 

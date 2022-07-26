@@ -9,6 +9,7 @@ import arc.scene.ui.layout.Scl
 import arc.util.Align
 import arc.util.pooling.Pools
 import mindustry.Vars
+import mindustry.graphics.Pal
 import mindustry.ui.Fonts
 import net.liplum.mdt.utils.WorldXY
 
@@ -21,7 +22,7 @@ object Text {
         text: String,
         x: WorldXY,
         y: WorldXY,
-        color: Color
+        color: Color = Pal.accent
     ): WorldXY {
         if (Vars.renderer.pixelator.enabled()) return 0f
         val font = Fonts.outline
@@ -56,7 +57,7 @@ object Text {
         text: String,
         x: WorldXY,
         y: WorldXY,
-        color: Color
+        color: Color = Pal.accent
     ): WorldXY {
         if (Vars.renderer.pixelator.enabled()) return 0f
         val font = Fonts.outline

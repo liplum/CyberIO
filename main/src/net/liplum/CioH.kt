@@ -79,13 +79,6 @@ inline fun DebugOnly(level: DebugLevel, func: () -> Unit): Boolean {
     return false
 }
 
-inline fun <reified T> T.DebugOnlyOn(func: T.() -> Unit): T {
-    if (Meta.EnableDebug) {
-        func()
-    }
-    return this
-}
-
 fun CanRefresh() = Time.time % Var.AnimUpdateFrequency < 1f
 inline fun ExperimentalOnly(func: () -> Unit): Boolean {
     if (Meta.EnableDebug) {
