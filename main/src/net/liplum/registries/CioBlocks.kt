@@ -1663,6 +1663,7 @@ object CioBlocks {
             category = Category.liquid
             buildVisibility = BuildVisibility.shown
             requirements = arrayOf()
+            liquidCapacity = 800f
             size = 2
         }
     }

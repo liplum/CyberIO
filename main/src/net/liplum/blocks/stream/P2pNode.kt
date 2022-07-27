@@ -22,6 +22,7 @@ import net.liplum.mdt.render.Text
 import net.liplum.mdt.utils.PackedPos
 import net.liplum.mdt.utils.inMod
 import net.liplum.mdt.utils.sub
+import kotlin.math.absoluteValue
 
 private typealias AniStateP = AniState<P2pNode, P2pNode.P2pBuild>
 
@@ -83,13 +84,28 @@ open class P2pNode(name: String) : AniedBlock<P2pNode, P2pNode.P2pBuild>(name) {
         override fun disconnectFromAnotherSync() {
             configure(null)
         }
-
-        override fun acceptLiquid(source: Building, liquid: Liquid): Boolean {
+        /**
+         * ### If unconnected
+         * limit:
+         * 1. Does this match the input?
+         * 2. If 1 is false, is this almost empty?
+         * 3. Can this hold more fluid?
+         * ### If connected
+         * limit:
+         * 1. Does another match the input?
+         * 2. If 1 is false, is another almost empty?
+         * 3. Does this match the input?
+         * 3. If 3 is false, is this almost empty?
+         * 4. Can this hold more fluid?
+         */
+        override fun acceptLiquid(source: Building, fluid: Liquid): Boolean {
             val connected = connected
-            return if (connected != null)
-                connected.currentFluid == liquid && liquids[liquid] < liquidCapacity
+            return if (connected == null)
+                (currentFluid == fluid || currentAmount < 0.2f) && liquids[fluid] < liquidCapacity
             else
-                (currentFluid == liquid || currentAmount < 0.2f) && liquids[liquid] < liquidCapacity
+                (connected.currentFluid == fluid || connected.currentAmount < 0.2f) &&
+                        (this.currentFluid == fluid || this.currentAmount < 0.2f) &&
+                        this.liquids[fluid] < liquidCapacity
         }
         @CalledBySync
         fun setConnectedPosFromRemote(pos: PackedPos) {
@@ -101,7 +117,31 @@ open class P2pNode(name: String) : AniedBlock<P2pNode, P2pNode.P2pBuild>(name) {
         }
 
         override fun updateTile() {
-            if (currentAmount > 0.001f) {
+            val other = connected
+            run {
+                if (other != null) {
+                    if(this.currentFluid != other.currentFluid && other.currentAmount > 0.02f) return@run
+                    val difference = this.currentAmount - other.currentAmount
+                    val connection =
+                        when {
+                            difference > 0f -> this to other //this > other, other needs more
+                            difference < 0f -> other to this //this < other, this needs more
+                            else -> return@run
+                        }
+                    val (sender, receiver) = connection
+                    val abs = difference.absoluteValue
+                    if (abs > Var.P2PNNodeBalanceThreshold) {
+                        val data = abs
+                            .coerceAtMost(sender.currentAmount)
+                            .coerceAtMost(receiver.restRoom)
+                            .coerceAtMost(balancingSpeed) * delta()
+                        if (data > 0.0001f) {
+                            sender.streamToAnother(data)
+                        }
+                    }
+                }
+            }
+            if (currentAmount > 0.0001f) {
                 dumpLiquid(currentFluid)
             }
         }
