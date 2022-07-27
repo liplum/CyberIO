@@ -38,7 +38,6 @@ open class StreamClient(name: String) : AniedBlock<StreamClient, StreamClient.Cl
     @JvmField var maxConnection = -1
     @ClientOnly var NoPowerTR = EmptyTR
     @ClientOnly var BottomTR = EmptyTR
-    @JvmField val timerTransfer = timers++
     @JvmField var dumpScale = 2f
     @JvmField val CheckConnectionTimer = timers++
     @ClientOnly var liquidPadding = 0f
@@ -54,6 +53,7 @@ open class StreamClient(name: String) : AniedBlock<StreamClient, StreamClient.Cl
         schematicPriority = 25
         saveConfig = true
         noUpdateDisabled = true
+        callDefaultBlockDraw = false
         canOverdrive = false
         sync = true
         config(
@@ -117,12 +117,9 @@ open class StreamClient(name: String) : AniedBlock<StreamClient, StreamClient.Cl
                 checkHostsPos()
             }
             val outputLiquid = outputLiquid
-            // every tick check dump
             if (outputLiquid != null) {
-                if (efficiency > 0f && liquids.currentAmount() > 0.001f
-                    && timer(timerTransfer, 1f)
-                ) {
-                    dumpLiquid(outputLiquid, dumpScale * efficiency)
+                if (liquids.currentAmount() > 0.001f && timer(timerDump, 1f)) {
+                    dumpLiquid(outputLiquid, dumpScale)
                 }
             }
         }

@@ -37,7 +37,7 @@ object MainMenus {
                 name = id
             })
         }
-        Time.run(7f) {
+        Time.run(4f) {
             rebuild()
             Events.on(EventType.ResizeEvent::class.java) {
                 rebuild()
@@ -85,7 +85,7 @@ object MainMenus {
                 }
                 return
             }
-            Time.run(7f) {
+            Time.run(4f) {
                 rebuild()
                 Events.on(EventType.ResizeEvent::class.java) {
                     rebuild()

@@ -2,14 +2,26 @@ package net.liplum.api.cyber
 
 import mindustry.type.Liquid
 import net.liplum.api.ICyberEntity
+import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.SendDataPack
 import net.liplum.mdt.utils.PackedPos
+
+enum class P2pStatus {
+    None, Sender, Receiver
+}
 
 interface IP2pNode : ICyberEntity {
     val currentFluid: Liquid
     val currentAmount: Float
     val maxRange: Float
     var connectedPos: PackedPos
+    /**
+     * Who should draw the link
+     */
+    @ClientOnly
+    var isDrawer: Boolean
+    @ClientOnly
+    var status: P2pStatus
     val connected: IP2pNode?
         get() = connectedPos.p2p()
     @SendDataPack

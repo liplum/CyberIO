@@ -2,10 +2,8 @@
 
 package net.liplum.mdt
 
-import arc.Events
 import arc.util.Log
 import mindustry.Vars
-import mindustry.game.EventType.Trigger
 import mindustry.gen.Teamc
 import net.liplum.common.Condition
 import java.lang.annotation.Inherited
@@ -26,7 +24,7 @@ import kotlin.annotation.AnnotationTarget.*
 annotation class ClientOnly
 /**
  * It indicates this should be called or accessed only on Logical Server.
- * You should wrap this with [ServerOnly] or [ServerOnlyOn].
+ * You should wrap this with [ServerOnly].
  */
 @Retention(AnnotationRetention.SOURCE)
 @Inherited
@@ -34,7 +32,7 @@ annotation class ClientOnly
 annotation class ServerOnly
 /**
  * It indicates this should be called or accessed only on Physical Server(headless).
- * You should wrap this with [HeadlessOnly] or [HeadlessOnlyOn].
+ * You should wrap this with [HeadlessOnly].
  * If a certain target isn't annotated this, it can be called on Physical Client safely.
  * ## Use case
  * 1. On properties or fields, you shouldn't access them, it may provide wrong data or even crash the game.
@@ -58,7 +56,7 @@ annotation class HeadlessOnly
 @Inherited
 @MustBeDocumented
 annotation class SendDataPack(
-    val callChain:Array<String> = []
+    val callChain: Array<String> = [],
 )
 /**
  * It indicates this will be called by a function which handles data packet.
@@ -98,20 +96,6 @@ inline fun MobileOnly(func: () -> Unit): Boolean {
         return true
     }
     return false
-}
-
-inline fun <reified T> T.DesktopOnlyOn(func: T.() -> Unit): T {
-    if (!Vars.mobile) {
-        func()
-    }
-    return this
-}
-
-inline fun <reified T> T.MobileOnlyOn(func: T.() -> Unit): T {
-    if (Vars.mobile) {
-        func()
-    }
-    return this
 }
 
 val IsClient = Condition { !Vars.headless }
@@ -160,22 +144,6 @@ inline fun OnlyLocal(func: () -> Unit): Boolean {
     return false
 }
 
-inline fun <reified T> T.OnlyLocalOn(func: T.() -> Unit): T {
-    val net = Vars.net
-    if (!net.server() && !net.active()) {
-        func()
-    }
-    return this
-}
-
-inline fun <reified T> T.ServerOnlyOn(func: T.() -> Unit): T {
-    val net = Vars.net
-    if (net.server() || !net.active()) {
-        func()
-    }
-    return this
-}
-
 fun IsServer(): Boolean {
     val net = Vars.net
     return net.server() || !net.active()
@@ -184,15 +152,6 @@ fun IsServer(): Boolean {
  * Runs codes only on Physical Server
  */
 inline fun HeadlessOnly(func: () -> Unit): Boolean {
-    if (Vars.headless) {
-        func()
-    }
-    return false
-}
-/**
- * Runs codes only on Physical Server
- */
-inline fun <reified T> T.HeadlessOnlyOn(func: T.() -> Unit): Boolean {
     if (Vars.headless) {
         func()
     }
@@ -254,30 +213,6 @@ inline fun safeCallSilent(func: () -> Unit) {
     try {
         func()
     } catch (_: Throwable) {
-    }
-}
-
-inline fun RunOnUpdate(crossinline func: () -> Unit) {
-    Events.run(Trigger.update) {
-        func()
-    }
-}
-
-inline fun RunOnDraw(crossinline func: () -> Unit) {
-    Events.run(Trigger.draw) {
-        func()
-    }
-}
-
-inline fun RunOnPostDraw(crossinline func: () -> Unit) {
-    Events.run(Trigger.postDraw) {
-        func()
-    }
-}
-
-inline fun RunOnPreDraw(crossinline func: () -> Unit) {
-    Events.run(Trigger.preDraw) {
-        func()
     }
 }
 

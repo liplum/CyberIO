@@ -59,7 +59,7 @@ object G {
     fun dashLineBetweenTwoBlocksBreath(
         startTile: Tile, endTile: Tile,
         lineColor: Color = Pal.placing, outlineColor: Color = Pal.gray,
-        alpha: Float? = null,
+        alpha: Float = -1f,
     ) = dashLineBetweenTwoBlocksBreath(
         startTile.block(), startTile.x, startTile.y,
         endTile.block(), endTile.x, endTile.y,
@@ -71,7 +71,7 @@ object G {
         startBlock: Block, startBlockX: TileXYs, startBlockY: TileXYs,
         endBlock: Block, endBlockX: TileXYs, endBlockY: TileXYs,
         lineColor: Color = Pal.placing, outlineColor: Color = Pal.gray,
-        alpha: Float? = null,
+        alpha: Float = -1f,
     ) {
         val startDrawX = startBlock.toCenterWorldXY(startBlockX)
         val startDrawY = startBlock.toCenterWorldXY(startBlockY)
@@ -92,13 +92,13 @@ object G {
         val y1 = startDrawY + Tmp.v1.y
         val segs = segsf.toInt()
         Lines.stroke(4f, outlineColor)
-        if (alpha != null) {
+        if (alpha >= 0f) {
             Draw.alpha(alpha)
         }
         Lines.dashLine(x1, y1, x2, y2, segs)
 
         Lines.stroke(2f, lineColor)
-        if (alpha != null) {
+        if (alpha >= 0f) {
             Draw.alpha(alpha)
         }
         Lines.dashLine(x1, y1, x2, y2, segs)
@@ -109,7 +109,7 @@ object G {
     @JvmOverloads
     fun arrowBetweenTwoBlocksBreath(
         startTile: Tile, pointTile: Tile,
-        alpha: Float? = null,
+        alpha: Float = -1f,
     ) = arrowBetweenTwoBlocksBreath(
         startTile.block(), startTile.x, startTile.y,
         pointTile.block(), pointTile.x, pointTile.y,
@@ -120,7 +120,7 @@ object G {
     fun arrowBetweenTwoBlocksBreath(
         startTile: Tile, pointedTile: Tile,
         arrowColor: Color,
-        alpha: Float? = null,
+        alpha: Float = -1f,
     ) = arrowBetweenTwoBlocksBreath(
         startTile.block(), startTile.x, startTile.y, pointedTile.block(), pointedTile.x, pointedTile.y,
         arrowColor, alpha
@@ -131,7 +131,7 @@ object G {
         startBlock: Block, startBlockX: TileXYs, startBlockY: TileXYs,
         pointedBlock: Block, pointedBlockX: TileXYs, pointedBlockY: TileXYs,
         arrowColor: Color = Pal.accent,
-        alpha: Float? = null,
+        alpha: Float = -1f,
     ) {
         val startDrawX = pointedBlock.toCenterWorldXY(pointedBlockX)
         val startDrawY = pointedBlock.toCenterWorldXY(pointedBlockY)
@@ -151,7 +151,7 @@ object G {
         pointedBlock: Block, pointedBlockX: TileXYs, pointedBlockY: TileXYs,
         degrees: Float,
         arrowColor: Color = Pal.power,
-        alpha: Float? = null,
+        alpha: Float = -1f,
     ) {
         val pointedDrawX = pointedBlock.toCenterWorldXY(pointedBlockX)
         val pointedDrawY = pointedBlock.toCenterWorldXY(pointedBlockY)
@@ -170,7 +170,7 @@ object G {
         x: WorldXY, y: WorldXY, x2: WorldXY, y2: WorldXY,
         length: Float, radius: Float,
         color: Color = Pal.power,
-        alpha: Float? = null,
+        alpha: Float = -1f,
     ) {
         val angle = Angles.angle(x, y, x2, y2)
         val space = 2f
@@ -178,12 +178,12 @@ object G {
         val vx = Tmp.v1.x + x
         val vy = Tmp.v1.y + y
         Draw.color(Pal.gray)
-        if (alpha != null) {
+        if (alpha <= 0f) {
             Draw.alpha(alpha)
         }
         Fill.poly(vx, vy, 3, radius + space, angle)
         Draw.color(color)
-        if (alpha != null) {
+        if (alpha <= 0f) {
             Draw.alpha(alpha)
         }
         Fill.poly(vx, vy, 3, radius, angle)
@@ -196,11 +196,11 @@ object G {
         blockSize: Int,
         density: Float = 15f,
         arrowColor: Color = Pal.power,
-        alpha: Float? = null,
+        alphaMultiplier: Float = 1f,
     ) {
         if (density.isZero)
             return
-        if (alpha != null && alpha <= 0f)
+        if (alphaMultiplier <= 0f)
             return
         val t = Tmp.v2.set(endDrawX, endDrawY)
             .sub(startDrawX, startDrawY)
@@ -210,9 +210,8 @@ object G {
         val per = t.scl(1f / count)
         var curX = startDrawX + per.x
         var curY = startDrawY + per.y
-        val alphaMulti = alpha ?: 1f
-        val inner = Tmp.c1.set(arrowColor).a(arrowColor.a * alphaMulti)
-        val outline = Tmp.c2.set(arrowColor).a(arrowColor.a * alphaMulti).darken(0.3f)
+        val inner = Tmp.c1.set(arrowColor).a(arrowColor.a * alphaMultiplier)
+        val outline = Tmp.c2.set(arrowColor).a(arrowColor.a * alphaMultiplier).darken(0.3f)
         val size = 1f + sin * 0.15f
         if (count == 1) {
             t.set(startDrawX, startDrawY).add(endDrawX, endDrawY)
@@ -239,7 +238,7 @@ object G {
         endBlockX: TileXYs, endBlockY: TileXYs,
         density: Float = 15f,
         arrowColor: Color = Pal.power,
-        alpha: Float? = null,
+        alphaMultiplier: Float = 1f,
     ) {
         arrowLineBreath(
             startBlockX.worldXY,
@@ -249,7 +248,7 @@ object G {
             2,
             density,
             arrowColor,
-            alpha,
+            alphaMultiplier,
         )
     }
     @JvmStatic
@@ -260,7 +259,7 @@ object G {
         endBlockX: TileXYs, endBlockY: TileXYs,
         density: Float,
         arrowColor: Color = Pal.power,
-        alpha: Float? = null,
+        alphaMultiplier: Float = 1f,
     ) {
         arrowLineBreath(
             startBlock.toCenterWorldXY(startBlockX),
@@ -270,7 +269,7 @@ object G {
             startBlock.size,
             density,
             arrowColor,
-            alpha,
+            alphaMultiplier,
         )
     }
     @JvmStatic
@@ -279,32 +278,32 @@ object G {
         end: Building,
         density: Float = 15f,
         arrowColor: Color = Pal.power,
-        alpha: Float? = null,
+        alphaMultiplier: Float = 1f,
     ) = arrowLineBreath(
         start.x, start.y,
         end.x, end.y,
         start.block.size,
         density, arrowColor,
-        alpha,
+        alphaMultiplier,
     )
     @JvmStatic
     fun circleBreath(
         x: WorldXY, y: WorldXY, rad: Float, color: Color = Pal.power,
-        alpha: Float? = null, stroke: Float = 1f,
+        alpha: Float = -1f, stroke: Float = 1f,
     ) = circle(x, y, rad + sin, color, alpha, stroke)
     @JvmStatic
     fun circle(
         x: WorldXY, y: WorldXY, rad: Float, color: Color = Pal.power,
-        alpha: Float? = null, stroke: Float = 1f,
+        alpha: Float = -1f, stroke: Float = 1f,
     ) {
         Lines.stroke(stroke + 2f, Pal.gray)
-        if (alpha != null) {
+        if (alpha >= 0f) {
             Draw.alpha(alpha)
         }
         Lines.circle(x, y, rad)
 
         Lines.stroke(stroke, color)
-        if (alpha != null) {
+        if (alpha >= 0f) {
             Draw.alpha(alpha)
         }
         Lines.circle(x, y, rad)
@@ -313,7 +312,7 @@ object G {
     @JvmStatic
     fun surroundingCircleBreath(
         t: Tile, circleColor: Color = Pal.power,
-        alpha: Float? = null, stroke: Float = 1f,
+        alpha: Float = -1f, stroke: Float = 1f,
     ) = circle(
         t.drawx(), t.drawy(),
         (t.block().size / 2f + 1) * Vars.tilesize + sin - 2f,
@@ -322,7 +321,7 @@ object G {
     @JvmStatic
     fun surroundingCircleBreath(
         b: Block, x: WorldXY, y: WorldXY, circleColor: Color = Pal.power,
-        alpha: Float? = null, stroke: Float = 1f,
+        alpha: Float = -1f, stroke: Float = 1f,
     ) = circle(
         x, y,
         (b.size / 2f + 1) * Vars.tilesize + sin - 2f,
@@ -332,7 +331,7 @@ object G {
     fun surroundingCircleBreath(
         b: Block, x: TileXY, y: TileXY,
         circleColor: Color = Pal.power,
-        alpha: Float? = null, stroke: Float = 1f,
+        alpha: Float = -1f, stroke: Float = 1f,
     ) = circle(
         b.toCenterWorldXY(x),
         b.toCenterWorldXY(y),
@@ -342,16 +341,16 @@ object G {
     @JvmStatic
     fun dashCircle(
         x: WorldXY, y: WorldXY, rad: WorldXY, color: Color = Pal.power,
-        alpha: Float? = null, stroke: Float = 1f,
+        alpha: Float = -1f, stroke: Float = 1f,
     ) {
         Lines.stroke(stroke + 2f, Pal.gray)
-        if (alpha != null) {
+        if (alpha >= 0f) {
             Draw.alpha(alpha)
         }
         Lines.dashCircle(x, y, rad)
 
         Lines.stroke(stroke, color)
-        if (alpha != null) {
+        if (alpha >= 0f) {
             Draw.alpha(alpha)
         }
         Lines.dashCircle(x, y, rad)
@@ -361,7 +360,7 @@ object G {
     fun dashCircleBreath(
         b: Block, x: TileXY, y: TileXY, rad: WorldXY,
         circleColor: Color = Pal.power,
-        alpha: Float? = null, stroke: Float = 1f,
+        alpha: Float = -1f, stroke: Float = 1f,
     ) = dashCircle(
         b.toCenterWorldXY(x),
         b.toCenterWorldXY(y),
@@ -372,7 +371,7 @@ object G {
     fun dashCircleBreath(
         x: WorldXY, y: WorldXY, rad: WorldXY,
         color: Color = Pal.power,
-        alpha: Float? = null, stroke: Float = 1f,
+        alpha: Float = -1f, stroke: Float = 1f,
     ) = dashCircle(
         x, y, rad + sin - 2f,
         color, alpha, stroke
@@ -381,13 +380,13 @@ object G {
     fun dashCircleBreath(
         build: Building,
         range: WorldXY, color: Color = Pal.power,
-        alpha: Float? = null, stroke: Float = 1f,
+        alpha: Float = -1f, stroke: Float = 1f,
     ) = dashCircle(build.x, build.y, range + sin - 2, color, alpha, stroke)
     @JvmStatic
     fun dashCircleBreath(
         b: Block, blockX: TileXYs, BlockY: TileXYs,
         range: WorldXY, color: Color = Pal.power,
-        alpha: Float? = null, stroke: Float = 1f,
+        alpha: Float = -1f, stroke: Float = 1f,
     ) = dashCircle(
         b.toCenterWorldXY(blockX),
         b.toCenterWorldXY(BlockY),

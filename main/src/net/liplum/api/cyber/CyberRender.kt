@@ -20,10 +20,7 @@ import net.liplum.common.utils.bundle
 import net.liplum.common.utils.inViewField
 import net.liplum.common.utils.isLineInViewField
 import net.liplum.lib.arc.darken
-import net.liplum.lib.math.Point2f
-import net.liplum.lib.math.isZero
-import net.liplum.lib.math.plusAssign
-import net.liplum.lib.math.smooth
+import net.liplum.lib.math.*
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.render.*
 import net.liplum.mdt.utils.*
@@ -117,7 +114,7 @@ fun IDataReceiver.drawSenders(senders: Iterable<Int>, showCircle: Boolean = true
                 arrowColor = this.receiverColor,
                 density = ArrowDensity,
                 speed = ArrowSpeed,
-                alpha = opacity
+                alphaMultiplier = opacity
             )
         }
     }
@@ -139,7 +136,7 @@ fun IDataSender.drawReceivers(receivers: Iterable<Int>, showCircle: Boolean = tr
                 arrowColor = this.senderColor,
                 density = ArrowDensity,
                 speed = ArrowSpeed,
-                alpha = opacity
+                alphaMultiplier = opacity
             )
             r.drawRequirements()
         }
@@ -162,7 +159,7 @@ fun IStreamClient.drawHosts(hosts: Iterable<Int>, showCircle: Boolean = true) {
                 arrowColor = this.clientColor,
                 density = ArrowDensity,
                 speed = ArrowSpeed,
-                alpha = opacity
+                alphaMultiplier = opacity
             )
         }
     }
@@ -184,7 +181,7 @@ fun IStreamHost.drawClients(clients: Iterable<Int>, showCircle: Boolean = true) 
                 arrowColor = this.hostColor,
                 density = ArrowDensity,
                 speed = ArrowSpeed,
-                alpha = opacity
+                alphaMultiplier = opacity
             )
             c.drawRequirements()
         }
@@ -215,7 +212,7 @@ fun Block.drawLinkedLineToReceiverWhenConfiguring(x: Int, y: Int) {
         arrowColor = color,
         density = ArrowDensity,
         speed = ArrowSpeed,
-        alpha = opacity
+        alphaMultiplier = opacity
     )
     if (isOverRange)
         this.drawOverRangeOnTile(x, y, color)
@@ -243,7 +240,7 @@ fun Block.drawLinkedLineToClientWhenConfiguring(x: Int, y: Int) {
         arrowColor = color,
         density = ArrowDensity,
         speed = ArrowSpeed,
-        alpha = opacity
+        alphaMultiplier = opacity
     )
     if (isOverRange)
         this.drawOverRangeOnTile(x, y, color)
@@ -313,8 +310,6 @@ fun IStreamHost.drawConfiguringMaxRange() {
     }
 }
 //</editor-fold>
-
-
 fun transferArrowLineBreath(
     startDrawX: WorldXY, startDrawY: WorldXY,
     endDrawX: WorldXY, endDrawY: WorldXY,
@@ -322,20 +317,19 @@ fun transferArrowLineBreath(
     density: Float = 15f,
     /** unit per tick */
     speed: Float = 60f,
-    alpha: Float? = null,
+    alphaMultiplier: Float = 1f,
 ) {
     if (density.isZero)
         return
-    if (alpha != null && alpha <= 0f)
+    if (alphaMultiplier <= 0f)
         return
     val t = Tmp.v2.set(endDrawX, endDrawY)
         .sub(startDrawX, startDrawY)
     val angle = t.angle()
     val length = t.len()
     val count = (Mathf.ceil(length / density)).coerceAtLeast(1)
-    val alphaMulti = alpha ?: 1f
-    val inner = Tmp.c1.set(arrowColor).a(arrowColor.a * alphaMulti)
-    val outline = Tmp.c2.set(arrowColor).a(arrowColor.a * alphaMulti).darken(0.3f)
+    val inner = Tmp.c1.set(arrowColor).a(arrowColor.a * alphaMultiplier)
+    val outline = Tmp.c2.set(arrowColor).a(arrowColor.a * alphaMultiplier).darken(0.3f)
     var size = 1f + G.sin * 0.15f
     var outlineSize = 1f + G.sin * 0.15f + 0.4f
     if (Vars.mobile) {
@@ -368,6 +362,7 @@ fun transferArrowLineBreath(
     }
     Draw.color()
 }
+
 fun transferArrowLineBreath(
     startBlock: Block,
     startBlockX: TileXYs, startBlockY: TileXYs,
@@ -376,29 +371,32 @@ fun transferArrowLineBreath(
     arrowColor: Color = Pal.power,
     density: Float = 15f,
     speed: Float = 60f,
-    alpha: Float? = null,
+    alphaMultiplier: Float = 1f,
 ) {
     transferArrowLineBreath(
         startBlock.toCenterWorldXY(startBlockX),
         startBlock.toCenterWorldXY(startBlockY),
         endBlock.toCenterWorldXY(endBlockX),
         endBlock.toCenterWorldXY(endBlockY),
-        arrowColor,
-        density,
-        speed,
-        alpha,
+        arrowColor = arrowColor,
+        density = density,
+        speed = speed,
+        alphaMultiplier = alphaMultiplier,
     )
 }
+
 fun transferArrowLineBreath(
     start: Buildingc,
     end: Buildingc,
     arrowColor: Color = Pal.power,
     density: Float = 15f,
     speed: Float = 60f,
-    alpha: Float? = null,
+    alphaMultiplier: Float = 1f,
 ) = transferArrowLineBreath(
     start.x, start.y,
     end.x, end.y,
-    arrowColor, density, speed,
-    alpha,
+    arrowColor = arrowColor,
+    density = density,
+    speed = speed,
+    alphaMultiplier = alphaMultiplier,
 )

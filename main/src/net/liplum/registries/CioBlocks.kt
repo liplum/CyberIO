@@ -77,7 +77,6 @@ import net.liplum.render.DrawDefaultSpec
 import net.liplum.render.SpecDrawConstruct
 import net.liplum.seffects.StaticFx
 import net.liplum.utils.globalAnim
-import kotlin.math.absoluteValue
 
 object CioBlocks {
     @JvmStatic lateinit var icMachine: GenericCrafter
@@ -122,7 +121,7 @@ object CioBlocks {
     fun icMachine() {
         icMachine = ICMachine("ic-machine").apply {
             category = Category.crafting
-            buildVisibility = BuildVisibility.shown
+            buildVisibility = BuildVisibility.hidden
             VanillaSpec {
                 requirements = arrayOf(
                     CioItems.ic + 2,
@@ -142,7 +141,6 @@ object CioBlocks {
                 craftTime = 400f
             }
             ErekirSpec {
-                buildVisibility = BuildVisibility.hidden
                 requirements = arrayOf(
                     CioItems.ic + 8,
                     Items.beryllium + 250,
@@ -263,7 +261,7 @@ object CioBlocks {
                 )
                 health = 200
                 maxConnection = 5
-                consumePower(0.5f)
+                consumePower(1.5f)
             }
             ErekirSpec {
                 requirements = arrayOf(
@@ -293,7 +291,7 @@ object CioBlocks {
                     Items.silicon + 180,
                 )
                 health = 200
-                consumePower(0.5f)
+                consumePower(1.5f)
             }
             ErekirSpec {
                 requirements = arrayOf(
@@ -304,7 +302,7 @@ object CioBlocks {
                 )
                 health = 180
                 maxRange = 800f
-                consumePower(0.8f)
+                consumePower(1f)
             }
             replaceable = false
         }
@@ -797,7 +795,7 @@ object CioBlocks {
                 )
                 health = 300
                 maxConnection = 5
-                consumePower(0.7f)
+                consumePower(1.8f)
                 liquidCapacity = 200f
             }
             ErekirSpec {
@@ -809,7 +807,7 @@ object CioBlocks {
                 )
                 health = 250
                 maxConnection = 3
-                consumePower(1f)
+                consumePower(1.5f)
                 liquidCapacity = 80f
             }
             replaceable = false
@@ -831,7 +829,7 @@ object CioBlocks {
                     Items.plastanium + 20,
                 )
                 scaledHealth = 500f
-                powerUseBase = 1f
+                powerUseBase = 2f
                 powerUsePerConnection = 1f
                 networkSpeed = 3f
                 liquidCapacity = 800f
@@ -874,7 +872,7 @@ object CioBlocks {
                 scaledHealth = 500f
                 networkSpeed = 15f
                 researchCostMultiplier = 0.7f
-                powerUseBase = 2f
+                powerUseBase = 3.5f
                 maxConnection = 5
                 powerUsePerConnection = 2f
                 liquidCapacity = 2000f
@@ -991,7 +989,7 @@ object CioBlocks {
                         haloRotateSpeed = 5f
                         haloRadiusTo = 360f
                         progress = PartProgress {
-                            (if(it.heat > 0f) 0f else 1f) * Interp.pow10In(it.recoil)
+                            (if (it.heat > 0f) 0f else 1f) * Interp.pow10In(it.recoil)
                         }
                         color = R.C.FutureBlue
                     }
@@ -1662,10 +1660,28 @@ object CioBlocks {
         p2pNode = P2pNode("p2p-node").apply {
             category = Category.liquid
             buildVisibility = BuildVisibility.shown
-            requirements = arrayOf()
-            liquidCapacity = 800f
+            VanillaSpec {
+                requirements = arrayOf(
+                    CioItems.ic + 2,
+                    Items.lead + 40,
+                    Items.metaglass + 20,
+                    Items.silicon + 10,
+                )
+                liquidCapacity = 800f
+            }
+            ErekirSpec {
+                requirements = arrayOf(
+                    CioItems.ic + 4,
+                    Items.tungsten + 15,
+                    Items.beryllium + 60,
+                    Items.silicon + 40,
+                )
+                liquidCapacity = 600f
+            }
             liquidPadding = 2f
             size = 2
+            squareSprite = false
+            consumePower(1.5f)
         }
     }
     @DependOn

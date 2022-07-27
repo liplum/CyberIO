@@ -41,5 +41,8 @@ object Var {
     const val WirelessTowerPingFrequency = 60f * 30f
     const val RsSlightHighlightAlpha = 0.5f
     const val RsColorTransitionTime = 60f
+    // P2P
     const val P2PNNodeBalanceThreshold = 2f
+    const val P2PArrowRotationTime = 60f
+    const val YinYangRotationSpeed = 60f
 }
