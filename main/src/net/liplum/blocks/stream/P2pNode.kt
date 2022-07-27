@@ -3,6 +3,7 @@ package net.liplum.blocks.stream
 import arc.func.Prov
 import mindustry.gen.Building
 import mindustry.type.Liquid
+import mindustry.world.blocks.liquid.LiquidBlock
 import mindustry.world.meta.BlockGroup
 import net.liplum.R
 import net.liplum.Var
@@ -16,9 +17,11 @@ import net.liplum.mdt.SendDataPack
 import net.liplum.mdt.animations.anis.AniState
 import net.liplum.mdt.animations.anis.config
 import net.liplum.mdt.render.Draw
+import net.liplum.mdt.render.DrawOn
 import net.liplum.mdt.render.Text
 import net.liplum.mdt.utils.PackedPos
 import net.liplum.mdt.utils.inMod
+import net.liplum.mdt.utils.sub
 
 private typealias AniStateP = AniState<P2pNode, P2pNode.P2pBuild>
 
@@ -30,6 +33,7 @@ open class P2pNode(name: String) : AniedBlock<P2pNode, P2pNode.P2pBuild>(name) {
      */
     @JvmField var maxRange = -1f
     @ClientOnly @JvmField var maxSelectedCircleTime = Var.SelectedCircleTime
+    @ClientOnly lateinit var TopTR: TR
 
     init {
         buildType = Prov { P2pBuild() }
@@ -42,19 +46,22 @@ open class P2pNode(name: String) : AniedBlock<P2pNode, P2pNode.P2pBuild>(name) {
         noUpdateDisabled = true
         canOverdrive = false
         sync = true
-        config(java.lang.Integer::class.java) { b: P2pBuild, i ->
-            b.setConnectedPosFromRemote(i.toInt())
+        config(java.lang.Integer::class.java) { b: P2pBuild, pos ->
+            b.connectedPos = pos.toInt()
         }
         configClear<P2pBuild> {
-            it.setConnectedPosFromRemote(-1)
+            it.connected?.connectedPos = -1
+            it.connectedPos = -1
         }
     }
 
     override fun load() {
         super.load()
         NoPowerTR = this.inMod("rs-no-power")
+        TopTR = this.sub("top")
     }
 
+    override fun icons() = arrayOf(region, TopTR)
     override fun setBars() {
         super.setBars()
     }
@@ -67,13 +74,15 @@ open class P2pNode(name: String) : AniedBlock<P2pNode, P2pNode.P2pBuild>(name) {
             get() = liquids.currentAmount()
         @Serialized
         @set:CalledBySync
-        var connectedPos: PackedPos = -1
-        override var connected: IP2pNode?
-            get() = connectedPos.p2p()
-            @SendDataPack(["setConnectedPosFromRemote(PackedPos)", "connectedPos::set"])
-            set(value) {
-                configure(value?.building?.pos() ?: -1)
-            }
+        override var connectedPos: PackedPos = -1
+        @SendDataPack(["setConnectedPosFromRemote(PackedPos)", "connectedPos::set"])
+        override fun connectToSync(other: IP2pNode) {
+            configure(other.building.pos())
+        }
+
+        override fun disconnectFromAnotherSync() {
+            configure(null)
+        }
 
         override fun acceptLiquid(source: Building, liquid: Liquid): Boolean {
             val connected = connected
@@ -84,14 +93,14 @@ open class P2pNode(name: String) : AniedBlock<P2pNode, P2pNode.P2pBuild>(name) {
         }
         @CalledBySync
         fun setConnectedPosFromRemote(pos: PackedPos) {
-            connectedPos = pos
+            if (pos == -1) {
+                this.connectedPos = -1
+            } else {
+                this.connectedPos = pos
+            }
         }
 
         override fun updateTile() {
-            connected?.let {
-                if (it.connected != this)
-                    it.connected = this
-            }
             if (currentAmount > 0.001f) {
                 dumpLiquid(currentFluid)
             }
@@ -109,6 +118,14 @@ open class P2pNode(name: String) : AniedBlock<P2pNode, P2pNode.P2pBuild>(name) {
                     alpha = 0.8f
                 )
             }
+        }
+
+        override fun fixedDraw() {
+            LiquidBlock.drawTiledFrames(
+                size, x, y, 0f,
+                currentFluid, currentAmount / liquidCapacity
+            )
+            TopTR.DrawOn(this)
         }
 
         fun balance() {
@@ -140,7 +157,10 @@ open class P2pNode(name: String) : AniedBlock<P2pNode, P2pNode.P2pBuild>(name) {
                 if (maxRange > 0f && other.dst(this) >= maxRange) {
                     postOverRangeOn(other)
                 } else {
-                    other.connected = this
+                    connected?.disconnectFromAnotherSync()
+                    other.connected?.disconnectFromAnotherSync()
+                    this.connectToSync(other)
+                    other.connectToSync(this)
                 }
                 return false
             }

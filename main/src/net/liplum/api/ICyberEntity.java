@@ -1,6 +1,5 @@
 package net.liplum.api;
 
-import mindustry.Vars;
 import mindustry.gen.Building;
 import mindustry.world.Block;
 import mindustry.world.Tile;
@@ -15,10 +14,6 @@ public interface ICyberEntity {
     @NotNull
     default Tile getTile() {
         return getBuilding().tile;
-    }
-
-    default boolean isFlying() {
-        return getTile().equals(Vars.emptyTile);
     }
 
     @NotNull

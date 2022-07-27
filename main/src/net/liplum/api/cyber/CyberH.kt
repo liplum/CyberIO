@@ -25,6 +25,8 @@ private val p1 = Point2f()
 private val p2 = Point2f()
 private val c1 = Color()
 private val c2 = Color()
+val ICyberEntity.isFlying: Boolean
+    get() = tile == Vars.emptyTile
 //<editor-fold desc="Try Cast">
 fun Int.dr(): IDataReceiver? =
     this.build as? IDataReceiver
@@ -67,6 +69,7 @@ fun Int.nn(): INetworkNode? =
 
 fun Int.p2p(): IP2pNode? =
     this.build as? IP2pNode
+
 fun Point2?.p2p(): IP2pNode? =
     this?.let { this.build as? IP2pNode }
 //</editor-fold>

@@ -38,7 +38,6 @@ private typealias AniStateC = AniState<StreamClient, StreamClient.ClientBuild>
 open class StreamClient(name: String) : AniedBlock<StreamClient, StreamClient.ClientBuild>(name) {
     @JvmField var maxConnection = -1
     @ClientOnly lateinit var NoPowerTR: TR
-    @ClientOnly lateinit var LiquidTR: TR
     @ClientOnly lateinit var TopTR: TR
     @JvmField val timerTransfer = timers++
     @JvmField var dumpScale = 2f
@@ -80,7 +79,6 @@ open class StreamClient(name: String) : AniedBlock<StreamClient, StreamClient.Cl
     override fun load() {
         super.load()
         NoPowerTR = this.inMod("rs-no-power")
-        LiquidTR = this.sub("liquid")
         TopTR = this.sub("top")
     }
 
