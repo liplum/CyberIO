@@ -18,7 +18,7 @@ import net.liplum.blocks.AniedBlock
 import net.liplum.common.persistence.read
 import net.liplum.common.persistence.write
 import net.liplum.lib.Serialized
-import net.liplum.lib.assets.TR
+import net.liplum.lib.assets.EmptyTR
 import net.liplum.lib.assets.TRs
 import net.liplum.mdt.*
 import net.liplum.mdt.animations.anis.AniState
@@ -37,6 +37,7 @@ import java.util.*
 private typealias AniStateH = AniState<StreamHost, StreamHost.HostBuild>
 
 open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuild>(name) {
+    @ClientOnly var liquidPadding = 0f
     @JvmField var maxConnection = 5
     @JvmField var liquidColorLerp = 0.5f
     @JvmField var powerUseBase = 1f
@@ -52,11 +53,10 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
      * The max range when trying to connect. -1f means no limit.
      */
     @JvmField var maxRange = -1f
-    @ClientOnly lateinit var LiquidTR: TR
-    @ClientOnly lateinit var TopTR: TR
+    @ClientOnly var BottomTR = EmptyTR
+    @ClientOnly var NoPowerTR = EmptyTR
     @ClientOnly lateinit var NoPowerAni: AniStateH
     @ClientOnly lateinit var NormalAni: AniStateH
-    @ClientOnly lateinit var NoPowerTR: TR
     @ClientOnly @JvmField var maxSelectedCircleTime = Var.SelectedCircleTime
     @JvmField val CheckConnectionTimer = timers++
     @JvmField val TransferTimer = timers++
@@ -93,13 +93,12 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
 
     override fun load() {
         super.load()
-        LiquidTR = this.sub("liquid")
-        TopTR = this.sub("top")
+        BottomTR = this.sub("bottom")
         NoPowerTR = this.inMod("rs-no-power")
     }
 
     override fun icons(): TRs {
-        return arrayOf(region, TopTR)
+        return arrayOf(BottomTR, region)
     }
 
     open fun initPowerUse() {
@@ -359,12 +358,12 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
         }
 
         override fun fixedDraw() {
-            region.DrawOn(this)
+            BottomTR.DrawOn(this)
             LiquidBlock.drawTiledFrames(
-                size, x, y, 0f,
+                size, x, y, liquidPadding,
                 liquids.current(), liquids.currentAmount() / liquidCapacity
             )
-            TopTR.DrawOn(this)
+            region.DrawOn(this)
         }
 
         override fun control(type: LAccess, p1: Any?, p2: Double, p3: Double, p4: Double) {

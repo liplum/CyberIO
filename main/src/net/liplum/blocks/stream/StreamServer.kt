@@ -24,6 +24,7 @@ import net.liplum.common.persistence.read
 import net.liplum.common.persistence.write
 import net.liplum.lib.Serialized
 import net.liplum.lib.arc.isNotEmpty
+import net.liplum.lib.assets.EmptyTR
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.WhenTheSameTeam
 import net.liplum.mdt.mixin.total
@@ -33,6 +34,7 @@ import net.liplum.mdt.ui.bars.genAllLiquidBars
 import net.liplum.mdt.ui.bars.removeLiquidInBar
 import net.liplum.mdt.utils.ForProximity
 import net.liplum.mdt.utils.buildAt
+import net.liplum.mdt.utils.sub
 import net.liplum.utils.addHostInfo
 
 /**
@@ -42,6 +44,7 @@ import net.liplum.utils.addHostInfo
 open class StreamServer(name: String) : StreamHost(name) {
     @JvmField var fireproof = false
     @ClientOnly lateinit var allLiquidBars: Array<(Building) -> Bar>
+    @ClientOnly var LiquidTR = EmptyTR
 
     init {
         buildType = Prov { ServerBuild() }
@@ -56,6 +59,10 @@ open class StreamServer(name: String) : StreamHost(name) {
         }
     }
 
+    override fun load() {
+        super.load()
+        LiquidTR = this.sub("liquid")
+    }
     override fun init() {
         super.init()
         allLiquidBars = genAllLiquidBars()
@@ -207,15 +214,14 @@ open class StreamServer(name: String) : StreamHost(name) {
         }
 
         override fun fixedDraw() {
-            region.DrawOn(this)
+            BottomTR.DrawOn(this)
             Drawf.liquid(
                 LiquidTR, x, y,
                 liquids.total() / liquidCapacity,
                 mixedLiquidColor,
                 0f
             )
-            TopTR.DrawOn(this)
-            drawTeamTop()
+            region.DrawOn(this)
         }
 
         override fun drawSelect() {

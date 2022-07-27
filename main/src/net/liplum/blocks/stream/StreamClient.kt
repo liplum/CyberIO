@@ -2,7 +2,6 @@ package net.liplum.blocks.stream
 
 import arc.func.Prov
 import arc.graphics.Color
-import arc.graphics.g2d.TextureRegion
 import arc.scene.ui.layout.Table
 import arc.struct.ObjectSet
 import arc.struct.Seq
@@ -23,7 +22,7 @@ import net.liplum.common.delegates.Delegate1
 import net.liplum.common.persistence.read
 import net.liplum.common.persistence.write
 import net.liplum.lib.Serialized
-import net.liplum.lib.assets.TR
+import net.liplum.lib.assets.EmptyTR
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.animations.anis.AniState
 import net.liplum.mdt.animations.anis.config
@@ -37,11 +36,12 @@ private typealias AniStateC = AniState<StreamClient, StreamClient.ClientBuild>
 
 open class StreamClient(name: String) : AniedBlock<StreamClient, StreamClient.ClientBuild>(name) {
     @JvmField var maxConnection = -1
-    @ClientOnly lateinit var NoPowerTR: TR
-    @ClientOnly lateinit var TopTR: TR
+    @ClientOnly var NoPowerTR = EmptyTR
+    @ClientOnly var BottomTR = EmptyTR
     @JvmField val timerTransfer = timers++
     @JvmField var dumpScale = 2f
     @JvmField val CheckConnectionTimer = timers++
+    @ClientOnly var liquidPadding = 0f
 
     init {
         buildType = Prov { ClientBuild() }
@@ -79,13 +79,10 @@ open class StreamClient(name: String) : AniedBlock<StreamClient, StreamClient.Cl
     override fun load() {
         super.load()
         NoPowerTR = this.inMod("rs-no-power")
-        TopTR = this.sub("top")
+        BottomTR = this.sub("bottom")
     }
 
-    override fun icons(): Array<TextureRegion> {
-        return arrayOf(region, TopTR)
-    }
-
+    override fun icons() = arrayOf(BottomTR, region)
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)
         this.drawLinkedLineToClientWhenConfiguring(x, y)
@@ -191,11 +188,12 @@ open class StreamClient(name: String) : AniedBlock<StreamClient, StreamClient.Cl
         }
 
         override fun fixedDraw() {
+            BottomTR.DrawOn(this)
             LiquidBlock.drawTiledFrames(
-                size, x, y, 0f,
+                size, x, y, liquidPadding,
                 liquids.current(), liquids.currentAmount() / liquidCapacity
             )
-            TopTR.DrawOn(this)
+            region.DrawOn(this)
         }
     }
 

@@ -1664,6 +1664,7 @@ object CioBlocks {
             buildVisibility = BuildVisibility.shown
             requirements = arrayOf()
             liquidCapacity = 800f
+            liquidPadding = 2f
             size = 2
         }
     }

@@ -93,7 +93,7 @@
     "Template": "DoAction",
     "Data": {
       "ShowPoliteWelcome": true,
-      "CExpression": "@ContentSpecific == vanilla",
+      "CExpression": "@ContentSpecific == vanilla && @ShouldShowWelcome",
       "YesAction": "Navigation",
       "Locator": "/CyberIO/ContentSpecific"
     }

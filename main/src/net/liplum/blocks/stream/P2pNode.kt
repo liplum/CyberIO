@@ -1,6 +1,7 @@
 package net.liplum.blocks.stream
 
 import arc.func.Prov
+import arc.util.Time
 import mindustry.gen.Building
 import mindustry.type.Liquid
 import mindustry.world.blocks.liquid.LiquidBlock
@@ -10,7 +11,7 @@ import net.liplum.Var
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
 import net.liplum.lib.Serialized
-import net.liplum.lib.assets.TR
+import net.liplum.lib.assets.EmptyTR
 import net.liplum.mdt.CalledBySync
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.SendDataPack
@@ -27,14 +28,16 @@ import kotlin.math.absoluteValue
 private typealias AniStateP = AniState<P2pNode, P2pNode.P2pBuild>
 
 open class P2pNode(name: String) : AniedBlock<P2pNode, P2pNode.P2pBuild>(name) {
-    @ClientOnly lateinit var NoPowerTR: TR
+    @ClientOnly var liquidPadding = 0f
+    @ClientOnly var NoPowerTR = EmptyTR
     @JvmField var balancingSpeed = 1f
     /**
      * The max range when trying to connect. -1f means no limit.
      */
     @JvmField var maxRange = -1f
     @ClientOnly @JvmField var maxSelectedCircleTime = Var.SelectedCircleTime
-    @ClientOnly lateinit var TopTR: TR
+    @ClientOnly var BottomTR = EmptyTR
+    @ClientOnly var YinAndYangTR = EmptyTR
 
     init {
         buildType = Prov { P2pBuild() }
@@ -59,10 +62,11 @@ open class P2pNode(name: String) : AniedBlock<P2pNode, P2pNode.P2pBuild>(name) {
     override fun load() {
         super.load()
         NoPowerTR = this.inMod("rs-no-power")
-        TopTR = this.sub("top")
+        BottomTR = this.sub("bottom")
+        YinAndYangTR = this.sub("yin-and-yang")
     }
 
-    override fun icons() = arrayOf(region, TopTR)
+    override fun icons() = arrayOf(BottomTR, region)
     override fun setBars() {
         super.setBars()
     }
@@ -120,7 +124,7 @@ open class P2pNode(name: String) : AniedBlock<P2pNode, P2pNode.P2pBuild>(name) {
             val other = connected
             run {
                 if (other != null) {
-                    if(this.currentFluid != other.currentFluid && other.currentAmount > 0.02f) return@run
+                    if (this.currentFluid != other.currentFluid && other.currentAmount > 0.02f) return@run
                     val difference = this.currentAmount - other.currentAmount
                     val connection =
                         when {
@@ -161,11 +165,15 @@ open class P2pNode(name: String) : AniedBlock<P2pNode, P2pNode.P2pBuild>(name) {
         }
 
         override fun fixedDraw() {
-            LiquidBlock.drawTiledFrames(
-                size, x, y, 0f,
-                currentFluid, currentAmount / liquidCapacity
-            )
-            TopTR.DrawOn(this)
+            BottomTR.DrawOn(this)
+            if (currentAmount > 0.001f) {
+                LiquidBlock.drawTiledFrames(
+                    size, x, y, liquidPadding,
+                    currentFluid, currentAmount / liquidCapacity
+                )
+            }
+            region.DrawOn(this)
+            YinAndYangTR.DrawOn(this, rotation = Time.time / 2f)
         }
 
         fun balance() {

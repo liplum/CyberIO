@@ -19,8 +19,9 @@ interface IP2pNode : ICyberEntity {
     fun isConnectedTo(other: IP2pNode) = other == connected
     fun streamToAnother(amount: Float)
     fun readSteam(fluid: Liquid, amount: Float)
-    val restRoom:Float
+    val restRoom: Float
         get() = (block.liquidCapacity - currentAmount).coerceAtLeast(0f)
+
     companion object {
         @SendDataPack
         fun IP2pNode.connectToSync(other: Int) {
