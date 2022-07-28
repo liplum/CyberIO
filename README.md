@@ -32,33 +32,25 @@ ___
 
 ## Acknowledgements
 
-**Main Authors:**
+### Main Authors
 
-@liplum
+<kbd>   <br>   Liplum   <br>   </kbd> 
+<kbd>   <br>   [sudoudou233](https://github.com/sudoudou233)   <br>   </kbd>   
 
-[sudoudou233](https://github.com/sudoudou233)
 ___
-### IN NO ORDER
 
-The friendly people on Discord whoever have helped me.
+### Sprites
 
-Anyone who committed any issue or made any pull request on GitHub.
-
-Anyone who likes Cyber IO.
-
-And you.
-
-### Resources
-
-Sprites -> [Eclipse](https://github.com/EclipseTheOldOne) 
+<kbd>   <br>   [Eclipse](https://github.com/EclipseTheOldOne)   <br>   </kbd>   
 
 ### Translation
+<br>
 
-Ukrainian -> [Prosta4okua](https://github.com/Prosta4okua)
+<kbd>   <br>   Ukrainian [Prosta4okua](https://github.com/Prosta4okua)   <br>   </kbd>   
+<kbd>   <br>   Chinese Simplified woodjecket#0554   <br>   </kbd>   
+<kbd>   <br>   Japanese [Sakuranokwa](https://github.com/Sakuranokwa)   <br>   </kbd>
 
-Chinese Simplified -> woodjecket#0554
-
-Japanese -> [Sakuranokwa](https://github.com/Sakuranokwa)
+<br>
 
 ___
 
