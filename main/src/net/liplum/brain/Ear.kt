@@ -127,7 +127,7 @@ open class Ear(name: String) : Block(name), IComponentBlock {
             toCenterWorldXY(x),
             toCenterWorldXY(y),
             range * smoothPlacing(maxSelectedCircleTime),
-            sonicWaveColor
+            sonicWaveColor, stroke = Var.CircleStroke
         )
     }
 
@@ -283,7 +283,7 @@ open class Ear(name: String) : Block(name), IComponentBlock {
         }
 
         override fun drawSelect() {
-            G.dashCircleBreath(x, y, realRange * smoothSelect(maxSelectedCircleTime), sonicWaveColor)
+            G.dashCircleBreath(x, y, realRange * smoothSelect(maxSelectedCircleTime), sonicWaveColor, stroke = Var.CircleStroke)
         }
         // </editor-fold>
         override fun updateTile() {

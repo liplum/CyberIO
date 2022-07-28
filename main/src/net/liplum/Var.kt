@@ -16,6 +16,7 @@ object Var {
     /** How much time to reach max selected circle */
     @JvmField var SelectedCircleTime = 60f
     val MaxRangeCircleTimeFactor = if(Vars.mobile) 1 / 15f else 1f / 12f
+    const val CircleStroke = 3f
     @JvmField var SurroundingRectTime = 30f
     @JvmField var AnimUpdateFrequency = 5f
     @JvmField var ParticleEffectNumber = if (Vars.mobile) 64 else 128

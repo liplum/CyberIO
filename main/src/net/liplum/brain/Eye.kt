@@ -127,7 +127,7 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
         val worldX = toCenterWorldXY(x)
         val worldY = toCenterWorldXY(y)
         drawOverlay(worldX, worldY, rotation)
-        G.dashCircleBreath(worldX, worldY, range * smoothPlacing(maxSelectedCircleTime), Pal.placing)
+        G.dashCircleBreath(worldX, worldY, range * smoothPlacing(maxSelectedCircleTime), Pal.placing, stroke = Var.CircleStroke)
     }
 
     open inner class EyeBuild : PowerTurretBuild(), IUpgradeComponent {
@@ -318,7 +318,7 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
         }
 
         override fun drawSelect() {
-            G.dashCircleBreath(x, y, range() * smoothSelect(maxSelectedCircleTime), team.color)
+            G.dashCircleBreath(x, y, range() * smoothSelect(maxSelectedCircleTime), team.color, stroke = Var.CircleStroke)
         }
 
         override fun heal() {

@@ -155,7 +155,7 @@ open class Heimdall(name: String) : Block(name) {
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)
         if (!this.isPlacing()) return
-        G.dashCircleBreath(this, x, y, range * smoothPlacing(maxSelectedCircleTime), R.C.BrainWave)
+        G.dashCircleBreath(this, x, y, range * smoothPlacing(maxSelectedCircleTime), R.C.BrainWave, stroke = Var.CircleStroke)
     }
 
     override fun setStats() {
@@ -645,8 +645,10 @@ open class Heimdall(name: String) : Block(name) {
 
         override fun drawSelect() {
             if (!this.isSelected()) return
-            G.dashCircleBreath(x, y, realRange * smoothSelect(maxSelectedCircleTime), R.C.BrainWave)
-            Text.drawTextEasy(sides.visualFormation, x, y, Pal.techBlue)
+            G.dashCircleBreath(x, y, realRange * smoothSelect(maxSelectedCircleTime), R.C.BrainWave, stroke = Var.CircleStroke)
+            DebugOnly {
+                Text.drawTextEasy(sides.visualFormation, x, y, Pal.techBlue)
+            }
         }
 
         override fun damage(damage: Float) {
