@@ -1,23 +1,19 @@
 <div align="center">
 
-# [Cyber IO](https://liplum.github.io/CyberIO) [![Discord](GFX/Discord.png)](https://discord.gg/PDwyxM3waw)
+# [Cyber IO](https://liplum.github.io/CyberIO)
 
-[![Discord](https://img.shields.io/discord/937228972041842718?color=%23529b69&label=Discord&logo=Discord&style=for-the-badge)](https://discord.gg/PDwyxM3waw)
-[![TotalDownloads](https://img.shields.io/github/downloads/liplum/CyberIO/total?color=674ea7&label=Download&logo=docusign&logoColor=white&style=for-the-badge)](https://github.com/liplum/CyberIO/releases)
+[![Badge Discord]][Discord]
+[![Badge Download]][Download]
 
-A Mindustry v7 mod provides lots of cybernetic things!!!
+### *The Cybernetics on Mindustry v7.*
+
 ___
-</div>
+<br>
 
-The official website of Cyber IO is [liplum.github.io/CyberIO](https://liplum.github.io/CyberIO). To learn about playing
-Cyber IO, you can check [the wiki](https://github.com/liplum/CyberIO/wiki/Game-Guide).
+[![Button Website]][Website]
+[![Button For Server]][For Server]
+[![Button Contribution]][Contribution]
 
-**For Server**: Please [check this file](Info/ForServer.md) to learn more about running Cyber IO on a server.
-
-**For Contributor**: Everyone is welcome to Cyber IO. If you want to translate, programme cooperatively or build Cyber
-IO on your own,
-please [check this file](Info/ForContributors.md).
-___
 
 ### IC Assembly
 
@@ -33,35 +29,32 @@ ___
 ### Hologram Projector
 
 ![Holo Projector](GFX/HoloProjector-new.gif)
-___
-
-### Mod Compatibility
-
-If you'd like to play a mod pack, [there is a rough test](Info/SafelyWorkWith.md) of inter-mod compatibility as a
-reference for you.
-
-*Note: Every mod could update and might break the result, please think and test on your own.*
 
 ## Acknowledgements
 
 **Main Authors:** Liplum, sudoudou233 (tudou#3923)
 ___
-**IN NO ORDER**
+### IN NO ORDER
 
-* The friendly people on Discord whoever have ever helped me.
-* Anyone who committed any issue or made any pull request on GitHub.
-* Anyone who likes CyberIO.
-* And you.
+The friendly people on Discord whoever have ever helped me.
 
-**Resources**
+Anyone who committed any issue or made any pull request on GitHub.
 
-- Sprites -> [Eclipse](https://github.com/EclipseTheOldOne) 
+Anyone who likes CyberIO.
 
-**Translation**
+And you.
 
-- Ukrainian -> [Prosta4okua](https://github.com/Prosta4okua)
-- Chinese Simplified -> woodjecket#0554
-- Japanese -> [Sakuranokwa](https://github.com/Sakuranokwa)
+### Resources
+
+Sprites -> [Eclipse](https://github.com/EclipseTheOldOne) 
+
+### Translation
+
+Ukrainian -> [Prosta4okua](https://github.com/Prosta4okua)
+
+Chinese Simplified -> woodjecket#0554
+
+Japanese -> [Sakuranokwa](https://github.com/Sakuranokwa)
 
 ___
 
@@ -70,3 +63,22 @@ ___
 The codes of CyberIO are open source in GNU General Public License v3.0 (GPL 3.0).
 
 To learn about the resources of CyberIO, please check the [Copyright File](Info/Copyright.md).
+</div>
+
+<!----------------------------------------------------------------------------->
+
+[Discord]: https://discord.gg/PDwyxM3waw
+[Download]: https://github.com/liplum/CyberIO/releases/latest
+[Website]: https://liplum.github.io/CyberIO
+[For Server]: Info/ForServer.md
+[Contribution]: Info/ForContributors.md
+
+<!----------------------------------[ Badges ]--------------------------------->
+
+[Badge Discord]: https://img.shields.io/discord/937228972041842718?color=454fc1&label=Discord&logo=Discord&style=for-the-badge&logoColor=white&labelColor=5865F2
+[Badge Download]: https://img.shields.io/github/downloads/liplum/CyberIO/total?color=023a46&label=Download&logo=docusign&logoColor=white&style=for-the-badge&labelColor=034e5e
+
+<!---------------------------------[ Buttons ]--------------------------------->
+[Button Website]: https://img.shields.io/badge/Website-428813?style=for-the-badge&logoColor=white&logo=GitBook
+[Button For Server]: https://img.shields.io/badge/For_Server-AA344D?style=for-the-badge&logoColor=white&logo=iCloud
+[Button Contribution]: https://img.shields.io/badge/Contribution-097399?style=for-the-badge&logoColor=white&logo=ChatBot
