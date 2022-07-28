@@ -17,7 +17,7 @@ fun Team.updateHoloCapacity(): Int {
     val buildings = data().buildings
     if (buildings.isEmpty) return 0
     buildings.each {
-        if (it is HoloProjector.HoloPBuild) {
+        if (it is HoloProjector.HoloProjectorBuild) {
             val block = it.block
             if (block is HoloProjector) {
                 count += block.holoUnitCapacity
@@ -28,12 +28,12 @@ fun Team.updateHoloCapacity(): Int {
     return count
 }
 
-fun Team.updateHoloCapacity(thisProjector: HoloProjector.HoloPBuild): Int {
+fun Team.updateHoloCapacity(thisProjector: HoloProjector.HoloProjectorBuild): Int {
     var count = thisProjector.block().holoUnitCapacity
     val buildings = data().buildings
     if (buildings.isEmpty) return 0
     buildings.each {
-        if (it is HoloProjector.HoloPBuild) {
+        if (it is HoloProjector.HoloProjectorBuild) {
             val block = it.block
             if (block is HoloProjector && it != thisProjector) {
                 count += block.holoUnitCapacity

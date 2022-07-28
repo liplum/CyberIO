@@ -6,6 +6,7 @@ import arc.graphics.g2d.Draw
 import arc.math.Angles
 import arc.math.Interp
 import arc.math.Mathf
+import arc.struct.ObjectSet
 import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
@@ -15,6 +16,7 @@ import mindustry.gen.Building
 import mindustry.graphics.Drawf
 import mindustry.graphics.Layer
 import mindustry.world.blocks.power.PowerBlock
+import mindustry.world.blocks.power.PowerGraph
 import mindustry.world.meta.Stat
 import mindustry.world.meta.StatUnit
 import net.liplum.DebugOnly
@@ -111,9 +113,10 @@ open class WirelessTower(name: String) : PowerBlock(name) {
             get() = radiationSpeed * Mathf.log(3f, timeScale + 2f)
         @ClientOnly @JvmField
         var pingingCount = 0
+        val powerGraphsTemp = ObjectSet<PowerGraph>()
         override fun updateTile() {
-            // TODO: Bug
             lastNeed = 0f
+            powerGraphsTemp.clear()
             if (power.status.isZero || (power.graph.all.size == 1 && power.graph.all.first() == this)) return
             forEachBufferedInRange {
                 val powerCons = it.block.consPower
@@ -126,7 +129,11 @@ open class WirelessTower(name: String) : PowerBlock(name) {
                         originalStatus + provided / powerCons.capacity
                     )
                     lastNeed += provided * dst2CostRate(it.dst(this))
+                    powerGraphsTemp.add(power.graph)
                 }
+            }
+            for (graph in powerGraphsTemp) {
+                graph.update()
             }
         }
 

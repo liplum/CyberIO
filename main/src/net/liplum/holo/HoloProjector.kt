@@ -68,7 +68,7 @@ open class HoloProjector(name: String) : Block(name) {
     val vecs = arrayOf(Vec2(), Vec2(), Vec2(), Vec2())
 
     init {
-        buildType = Prov { HoloPBuild() }
+        buildType = Prov { HoloProjectorBuild() }
         solid = true
         update = true
         hasPower = true
@@ -81,24 +81,24 @@ open class HoloProjector(name: String) : Block(name) {
         configurable = true
         sync = true
         commandable = true
-        config(Integer::class.java) { obj: HoloPBuild, plan ->
+        config(Integer::class.java) { obj: HoloProjectorBuild, plan ->
             obj.setPlan(plan.toInt())
         }
-        configClear { obj: HoloPBuild ->
+        configClear { obj: HoloProjectorBuild ->
             obj.setPlan(-1)
         }
     }
 
     override fun init() {
-        consume(ConsumeItemDynamic<HoloPBuild> {
+        consume(ConsumeItemDynamic<HoloProjectorBuild> {
             it.curPlan.itemReqs
         })
 
         consume(object : DynamicContinuousLiquidCons({
-            (it as HoloPBuild).curPlan.cyberionReq
+            (it as HoloProjectorBuild).curPlan.cyberionReq
         }) {
             override fun update(b: Building) {
-                b as HoloPBuild
+                b as HoloProjectorBuild
                 val plan = b.curPlan
                 if (plan != null) {
                     val liquid = plan.req.liquid
@@ -108,7 +108,7 @@ open class HoloProjector(name: String) : Block(name) {
                 }
             }
         })
-        consumePowerCond<HoloPBuild>(powerUse) {
+        consumePowerCond<HoloProjectorBuild>(powerUse) {
             it.curPlan != null
         }
         itemCapabilities = IntArray(ItemTypeAmount())
@@ -135,19 +135,19 @@ open class HoloProjector(name: String) : Block(name) {
             removeItemsInBar()
         }
         DebugOnly {
-            AddBar<HoloPBuild>("progress",
+            AddBar<HoloProjectorBuild>("progress",
                 { "${"bar.progress".bundle}: ${progress.percentI}" },
                 { S.Hologram },
                 { progress }
             )
         }.Else {
-            AddBar<HoloPBuild>("progress",
+            AddBar<HoloProjectorBuild>("progress",
                 { "bar.progress".bundle },
                 { S.Hologram },
                 { progress }
             )
         }
-        AddBar<HoloPBuild>(R.Bar.Vanilla.UnitsN,
+        AddBar<HoloProjectorBuild>(R.Bar.Vanilla.UnitsN,
             {
                 val curPlan = curPlan
                 if (curPlan == null)
@@ -175,11 +175,11 @@ open class HoloProjector(name: String) : Block(name) {
         else
             plans[this]
 
-    open inner class HoloPBuild : Building() {
+    open inner class HoloProjectorBuild : Building() {
         @Serialized
-        var planOrder: Int = -1
+        var planIndex: Int = -1
         val curPlan: HoloPlan?
-            get() = planOrder.plan
+            get() = planIndex.plan
         @Serialized
         var progressTime = 0f
         var commandPos: Vec2? = null
@@ -212,8 +212,8 @@ open class HoloProjector(name: String) : Block(name) {
             if (order < 0 || order >= plans.size) {
                 order = -1
             }
-            if (order == planOrder) return
-            planOrder = order
+            if (order == planIndex) return
+            planIndex = order
             val p = curPlan
             progressTime = if (p != null)
                 progressTime.coerceAtMost(p.time)
@@ -253,10 +253,10 @@ open class HoloProjector(name: String) : Block(name) {
         }
 
         @JvmField var lastUnitInPayload: MdtUnit? = null
-        fun findTrueHoloProjectorSource(): HoloPBuild {
+        fun findTrueHoloProjectorSource(): HoloProjectorBuild {
             val unit = lastUnitInPayload
             if (unit is HoloUnit) {
-                val trueProjector = unit.projectorPos.TE<HoloPBuild>()
+                val trueProjector = unit.projectorPos.TE<HoloProjectorBuild>()
                 if (trueProjector != null)
                     return trueProjector
             }
@@ -268,7 +268,7 @@ open class HoloProjector(name: String) : Block(name) {
             super.updatePayload(unitHolder, buildingHolder)
         }
 
-        override fun config(): Any? = planOrder
+        override fun config(): Any? = planIndex
         open fun projectUnit(unitType: HoloUnitType): Boolean {
             if (unitType.canCreateHoloUnitIn(team)) {
                 val unit = unitType.create(team)
@@ -403,19 +403,19 @@ open class HoloProjector(name: String) : Block(name) {
 
         override fun read(read: Reads, revision: Byte) {
             super.read(read, revision)
-            planOrder = read.b().toInt()
+            planIndex = read.b().toInt()
             progressTime = read.f()
         }
 
         override fun write(write: Writes) {
             super.write(write)
-            write.b(planOrder)
+            write.b(planIndex)
             write.f(progressTime)
         }
 
         override fun senseObject(sensor: LAccess): Any? {
             return when (sensor) {
-                LAccess.config -> planOrder
+                LAccess.config -> planIndex
                 else -> super.sense(sensor)
             }
         }

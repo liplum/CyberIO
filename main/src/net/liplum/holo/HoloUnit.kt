@@ -24,10 +24,9 @@ import mindustry.world.blocks.payloads.Payload
 import mindustry.world.blocks.power.PowerGraph
 import net.liplum.S
 import net.liplum.common.persistence.*
-import net.liplum.holo.HoloProjector.HoloPBuild
+import net.liplum.holo.HoloProjector.HoloProjectorBuild
 import net.liplum.lib.Serialized
 import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.OverwriteVanilla
 import net.liplum.mdt.mixin.PayloadMixin
 import net.liplum.mdt.render.G
 import net.liplum.mdt.utils.TE
@@ -64,7 +63,7 @@ open class HoloUnit : UnitEntity(), PayloadMixin, IRevisionable {
     val isProjectorMissing: Boolean
         get() = !projectorPos.build.exists
 
-    open fun setProjector(projector: HoloPBuild) {
+    open fun setProjector(projector: HoloProjectorBuild) {
         projectorPos = projector.pos()
     }
 
@@ -236,7 +235,7 @@ open class HoloUnit : UnitEntity(), PayloadMixin, IRevisionable {
     }
 
     override fun updatePayload() {
-        val projector = projectorPos.TE<HoloPBuild>()
+        val projector = projectorPos.TE<HoloProjectorBuild>()
         if (projector?.power != null)
             payloadPower = projector.power?.graph
 
@@ -257,7 +256,7 @@ open class HoloUnit : UnitEntity(), PayloadMixin, IRevisionable {
     }
 
     fun tryTransferCyberionInto(payload: Payload) {
-        val projector = projectorPos.TE<HoloPBuild>() ?: return
+        val projector = projectorPos.TE<HoloProjectorBuild>() ?: return
         val type = type as? HoloUnitType ?: return
         if (payload is BuildPayload) {
             val build = payload.build
@@ -272,6 +271,7 @@ open class HoloUnit : UnitEntity(), PayloadMixin, IRevisionable {
     override fun classId(): Int {
         return EntityRegistry[javaClass]
     }
+
     override fun read(_read_: Reads) {
         super.read(_read_)
         // Since 8, use cache reader instead of vanilla
@@ -283,6 +283,7 @@ open class HoloUnit : UnitEntity(), PayloadMixin, IRevisionable {
             }
         }
     }
+
     override fun write(_write_: Writes) {
         super.write(_write_)
         // Since 8, use cache writer instead of vanilla

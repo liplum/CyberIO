@@ -29,7 +29,7 @@ import mindustry.world.meta.Stat
 import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.S
-import net.liplum.holo.HoloProjector.HoloPBuild
+import net.liplum.holo.HoloProjector.HoloProjectorBuild
 import net.liplum.common.shader.use
 import net.liplum.common.util.bundle
 import net.liplum.common.util.toFloat
@@ -284,15 +284,15 @@ open class HoloUnitType(name: String) : UnitType(name) {
             if (unit is HoloUnit) {
                 bars.add(
                     Bar({
-                        val p = unit.projectorPos.TE<HoloPBuild>()
+                        val p = unit.projectorPos.TE<HoloProjectorBuild>()
                         if (p != null) "${p.tileX()},${p.tileY()}"
                         else "${Iconc.cancel}"
                     }, {
-                        val p = unit.projectorPos.TE<HoloPBuild>()
+                        val p = unit.projectorPos.TE<HoloProjectorBuild>()
                         if (p != null) S.Hologram
                         else Color.gray
                     }, {
-                        (unit.projectorPos.TE<HoloPBuild>() != null).toFloat()
+                        (unit.projectorPos.TE<HoloProjectorBuild>() != null).toFloat()
                     })
                 )
                 bars.row()
