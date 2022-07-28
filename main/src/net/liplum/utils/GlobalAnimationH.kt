@@ -5,11 +5,11 @@ import arc.scene.style.TextureRegionDrawable
 import mindustry.ctype.UnlockableContent
 import mindustry.world.Block
 import net.liplum.ResourceLoader
+import net.liplum.common.utils.sheetOneDirection
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.animations.ganim.GlobalAnimation
 import net.liplum.mdt.animations.ganim.GlobalAnimation.Companion.register
 import net.liplum.mdt.utils.anim
-import net.liplum.mdt.utils.sheet
 
 fun <T : Block> T.globalAnim(
     duration: Float, frameCount: Int,
@@ -63,7 +63,7 @@ fun <T : TextureRegionDrawable> T.globalAnim(
             register()
         }
         ResourceLoader += {
-            a.allFrames = name.sheet(number = frameCount)
+            a.allFrames = name.sheetOneDirection(number = frameCount)
         }
     }
     return this
@@ -82,7 +82,7 @@ fun <T : TextureRegion> T.globalAnim(
             register()
         }
         ResourceLoader += {
-            a.allFrames = name.sheet(number = frameCount)
+            a.allFrames = name.sheetOneDirection(number = frameCount)
         }
     }
     return this

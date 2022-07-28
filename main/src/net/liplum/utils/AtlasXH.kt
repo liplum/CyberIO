@@ -3,9 +3,10 @@
 package net.liplum.utils
 
 import mindustry.ctype.MappableContent
+import net.liplum.common.utils.sheet
+import net.liplum.common.utils.sheetOneDirection
 import net.liplum.lib.assets.TR
 import net.liplum.lib.assets.TRs
-import net.liplum.common.utils.AtlasU
 import net.liplum.mdt.utils.atlas
 import net.liplum.mdt.utils.or
 import net.liplum.mdt.utils.sheet
@@ -41,7 +42,7 @@ fun MappableContent.sheetX(
 ): TRs {
     val id = name + if (subName != null) "-$subName" else ""
     val tr = id.atlasX()
-    return AtlasU.slice(tr, number, isHorizontal)
+    return tr.sheetOneDirection(number, isHorizontal)
 }
 /**
  * Support content specific. see [String.sheet]
@@ -49,4 +50,4 @@ fun MappableContent.sheetX(
 fun String.sheetX(
     number: Int,
     isHorizontal: Boolean = true,
-): TRs = AtlasU.slice(this.atlasX(), number, isHorizontal)
+): TRs = this.atlasX().sheetOneDirection(number, isHorizontal)

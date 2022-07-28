@@ -12,14 +12,14 @@ object Settings {
     @ClientOnly @JvmField var LinkArrowDensity = 15f
     @ClientOnly @JvmField var LinkArrowSpeed = 40f
     @ClientOnly @JvmField var AlwaysShowLink = true
-    @ClientOnly @JvmField var ShowLinkCircle = Vars.mobile
+    @ClientOnly @JvmField var ShowLinkCircle = false
     @ClientOnly @JvmField var ShowWirelessTowerCircle = true
     @JvmStatic
     fun updateSettings() {
         LinkOpacity = settings.getInt(R.Setting.LinkOpacity, 100) / 100f
         LinkArrowSpeed = settings.getInt(R.Setting.LinkAnimationSpeed, 40).toFloat()
         AlwaysShowLink = settings.getBool(R.Setting.AlwaysShowLink, true)
-        ShowLinkCircle = settings.getBool(R.Setting.ShowLinkCircle, Vars.mobile)
+        ShowLinkCircle = settings.getBool(R.Setting.ShowLinkCircle, false)
         ShowWirelessTowerCircle = settings.getBool(R.Setting.ShowWirelessTowerCircle, true)
     }
 

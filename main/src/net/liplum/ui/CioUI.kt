@@ -125,8 +125,8 @@ object CioUI {
         addCheckPref(R.Setting.AlwaysShowLink, true) {
             Settings.AlwaysShowLink = Core.settings.getBool(R.Setting.AlwaysShowLink, true)
         }
-        addCheckPref(R.Setting.ShowLinkCircle, Vars.mobile) {
-            Settings.ShowLinkCircle = Core.settings.getBool(R.Setting.ShowLinkCircle, Vars.mobile)
+        addCheckPref(R.Setting.ShowLinkCircle, false) {
+            Settings.ShowLinkCircle = Core.settings.getBool(R.Setting.ShowLinkCircle, false)
         }
         addCheckPref(R.Setting.ShowWirelessTowerCircle, true) {
             Settings.ShowWirelessTowerCircle = Core.settings.getBool(R.Setting.ShowWirelessTowerCircle, true)

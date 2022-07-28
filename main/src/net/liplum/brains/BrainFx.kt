@@ -18,18 +18,18 @@ import net.liplum.R
 import net.liplum.ResourceLoader
 import net.liplum.annotations.Only
 import net.liplum.annotations.SubscribeEvent
-import net.liplum.events.CioLoadContentEvent
-import net.liplum.lib.assets.TR
 import net.liplum.common.entity.FixedList
 import net.liplum.common.entity.Radiation
 import net.liplum.common.entity.RadiationArray
 import net.liplum.common.utils.progress
+import net.liplum.common.utils.sheetOneDirection
+import net.liplum.events.CioLoadContentEvent
+import net.liplum.lib.assets.TR
 import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.render.DrawSize
 import net.liplum.mdt.utils.MdtUnit
 import net.liplum.mdt.utils.NewEffect
 import net.liplum.mdt.utils.fadeInOutPct
-import net.liplum.mdt.utils.sheet
 
 object BrainFx {
     val eyeCharge = NewEffect(38f) {
@@ -69,7 +69,7 @@ object BrainFx {
     @SubscribeEvent(CioLoadContentEvent::class, Only.client)
     fun load() {
         ResourceLoader += {
-            bloodBulletFrames = "blood-bullet-hit".Cio.sheet(16)
+            bloodBulletFrames = "blood-bullet-hit".Cio.sheetOneDirection(16)
             if (bloodBulletFrames.isNotEmpty())
                 bloodBulletFrames[0].texture.setFilter(TextureFilter.nearest)
         }

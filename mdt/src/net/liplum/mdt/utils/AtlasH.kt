@@ -5,9 +5,9 @@ package net.liplum.mdt.utils
 import arc.Core.atlas
 import mindustry.Vars
 import mindustry.ctype.MappableContent
+import net.liplum.common.utils.sheetOneDirection
 import net.liplum.lib.assets.TR
 import net.liplum.lib.assets.TRs
-import net.liplum.common.utils.AtlasU
 
 fun String.atlas(): TR =
     atlas.find(this)
@@ -45,13 +45,8 @@ fun MappableContent.sheet(
     isHorizontal: Boolean = true,
 ): TRs {
     val identity = name + if (subName != null) "-$subName" else ""
-    return AtlasU.sheet(identity, number, isHorizontal)
+    return identity.sheetOneDirection(number, isHorizontal)
 }
-
-fun String.sheet(
-    number: Int,
-    isHorizontal: Boolean = true,
-): TRs = AtlasU.sheet(this, number, isHorizontal)
 /**
  * Gets an array of Texture Region of "sprites/{this}-{subName}" or "sprites/{this}" if subName is null.
  * @param subName the following name after a hyphen. If it's null, use the {this} name
@@ -65,12 +60,5 @@ fun MappableContent.anim(
     number: Int,
 ): TRs {
     val identity = name + if (subName != null) "-$subName-anim" else "-anim"
-    return AtlasU.animation(identity, isHorizontal, number)
+    return identity.sheetOneDirection(number, isHorizontal)
 }
-@JvmOverloads
-fun TR.slice(
-    count: Int,
-    isHorizontal: Boolean = true,
-): TRs =
-    AtlasU.slice(this, count, isHorizontal)
-
