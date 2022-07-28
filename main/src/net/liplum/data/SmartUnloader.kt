@@ -10,6 +10,7 @@ import arc.util.Structs
 import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
+import mindustry.Vars
 import mindustry.gen.Building
 import mindustry.graphics.Pal
 import mindustry.logic.LAccess
@@ -54,7 +55,6 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
     @JvmField var powerUsePerItem = 2.5f
     @JvmField var powerUsePerConnection = 2f
     @JvmField var powerUseBasic = 1.5f
-    @JvmField val CheckConnectionTimer = timers++
     @JvmField val TransferTimer = timers++
     @JvmField var unloaderComparator: Comparator<Building> = Structs.comparingBool { it.block.highUnloadPriority }
     @JvmField var boost2Count: (Float) -> Int = {
@@ -261,16 +261,19 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
                 }
             }
         }
+        var lastTileChange = -2
 
         override fun updateTile() {
+            // Check connection only when any block changed
+            if (lastTileChange != Vars.world.tileChanges) {
+                lastTileChange = Vars.world.tileChanges
+                checkReceiversPos()
+            }
             if (justRestored) {
                 updateTracker()
                 justRestored = false
             }
             checkQueue()
-            if (timer(CheckConnectionTimer, 60f)) {
-                checkReceiversPos()
-            }
             ClientOnly {
                 lastUnloadTime += Time.delta
                 lastSendingTime += Time.delta

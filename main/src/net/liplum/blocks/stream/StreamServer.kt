@@ -45,6 +45,8 @@ open class StreamServer(name: String) : StreamHost(name) {
     @JvmField var fireproof = false
     @ClientOnly lateinit var allLiquidBars: Array<(Building) -> Bar>
     @ClientOnly var LiquidTR = EmptyTR
+    @JvmField val ColorUpdateTimer = timers++
+    var ColorUpdateTime = if (Vars.mobile) 120f else 60f
 
     init {
         buildType = Prov { ServerBuild() }
@@ -63,6 +65,7 @@ open class StreamServer(name: String) : StreamHost(name) {
         super.load()
         LiquidTR = this.sub("liquid")
     }
+
     override fun init() {
         super.init()
         allLiquidBars = genAllLiquidBars()
@@ -86,70 +89,37 @@ open class StreamServer(name: String) : StreamHost(name) {
         this.drawLinkedLineToClientWhenConfiguring(x, y)
     }
 
-    open inner class ServerBuild : HostBuild(), IStreamClient {
+    open inner class ServerBuild : HostBuild(), IStreamServer {
         override fun version() = 1.toByte()
-        @ClientOnly @JvmField var mixedLiquidColor: Color = Color.white.cpy()
-        @ClientOnly @JvmField var _hostColor: Color = R.C.Host.cpy()
+        @Serialized
+        var hosts = OrderedSet<Int>()
+        @ClientOnly @JvmField var mixedFluidColor = R.C.Host
         @ClientOnly
         override val hostColor: Color
-            get() = _hostColor
+            get() = mixedFluidColor
+        override val clientColor: Color
+            get() = mixedFluidColor
         @ClientOnly
-        fun updateHostColor() {
-            _hostColor = R.C.Host.cpy()
-            when (clients.size) {
-                0 -> _hostColor = R.C.Host
-                1 -> _hostColor = clients.first().sc()?.clientColor ?: R.C.Host
-                else -> {
-                    clients.forEach { pos ->
-                        pos.sc()?.let {
-                            if (it.clientColor != R.C.Client) {
-                                _hostColor.lerp(it.clientColor, liquidColorLerp)
-                            }
-                        }
-                    }
+        fun updateColor() {
+            mixedFluidColor = Color.gray.cpy()
+            val total = liquids.total()
+            for (liquid in Vars.content.liquids()) {
+                val curAmount = liquids[liquid]
+                val proportion = curAmount / total
+                if (curAmount > 0.0001f) {
+                    mixedFluidColor.lerp(liquid.color, proportion)
                 }
             }
         }
 
-        override fun onClientRequirementsUpdated(client: IStreamClient) {
-            super.onClientRequirementsUpdated(client)
-            ClientOnly {
-                updateHostColor()
-            }
-        }
-
-        override fun onClientsChanged() {
-            super.onClientsChanged()
-            ClientOnly {
-                updateHostColor()
-            }
-        }
-
-        @JvmField protected var restored = true
         override fun updateTile() {
-            if (restored) {
-                ClientOnly {
-                    updateHostColor()
-                }
-                restored = false
-            }
-            // Check connection every second
-            if (timer(CheckConnectionTimer, 60f)) {
+            // Check connection only when any block changed
+            if (lastTileChange != Vars.world.tileChanges) {
+                lastTileChange = Vars.world.tileChanges
                 checkClientsPos()
                 checkHostsPos()
-                ClientOnly {
-                    mixedLiquidColor = Color.white.cpy()
-                    val total = liquids.total()
-                    for (liquid in Vars.content.liquids()) {
-                        val curAmount = liquids[liquid]
-                        val proportion = curAmount / total
-                        if (proportion > 0.2f) {
-                            mixedLiquidColor.lerp(liquid.color, proportion)
-                        }
-                    }
-                }
             }
-            if (timer(TransferTimer, 1f)) {
+            if (efficiency > 0f && timer(TransferTimer, 1f)) {
                 if (fireproof) {
                     ForProximity(5) {
                         Fires.remove(tile)
@@ -195,9 +165,10 @@ open class StreamServer(name: String) : StreamHost(name) {
                         per = restNeedPumped / restClient
                     }
                 }
-                val consumed = needPumped - restNeedPumped
+            }
+            if (timer(ColorUpdateTimer, ColorUpdateTime)) {
                 ClientOnly {
-                    liquidFlow += consumed
+                    updateColor()
                 }
             }
         }
@@ -206,19 +177,12 @@ open class StreamServer(name: String) : StreamHost(name) {
             return canConsume() && liquids.get(liquid) < liquidCapacity
         }
 
-        override fun handleLiquid(source: Building, liquid: Liquid, amount: Float) {
-            super.handleLiquid(source, liquid, amount)
-            ClientOnly {
-                liquidFlow += amount
-            }
-        }
-
         override fun fixedDraw() {
             BottomTR.DrawOn(this)
             Drawf.liquid(
                 LiquidTR, x, y,
                 liquids.total() / liquidCapacity,
-                mixedLiquidColor,
+                mixedFluidColor,
                 0f
             )
             region.DrawOn(this)
@@ -226,7 +190,7 @@ open class StreamServer(name: String) : StreamHost(name) {
 
         override fun drawSelect() {
             super.drawSelect()
-            whenNotConfiguringHost {
+            whenNotConfiguringP2P {
                 (this as IStreamClient).drawStreamGraph()
             }
             this.drawRequirements()
@@ -249,14 +213,10 @@ open class StreamServer(name: String) : StreamHost(name) {
                 else -> super.control(type, p1, p2, p3, p4)
             }
         }
-        @Serialized
-        var hosts = OrderedSet<Int>()
+
         override fun readStreamFrom(host: IStreamHost, liquid: Liquid, amount: Float) {
             if (this.isConnectedTo(host)) {
                 liquids.add(liquid, amount)
-                ClientOnly {
-                    liquidFlow += amount
-                }
             }
         }
 
@@ -273,10 +233,6 @@ open class StreamServer(name: String) : StreamHost(name) {
                 // Since 1
                 hosts.read(read)
             }
-        }
-
-        override fun afterRead() {
-            restored = true
         }
 
         override fun write(write: Writes) {
@@ -299,7 +255,5 @@ open class StreamServer(name: String) : StreamHost(name) {
         override val requirements: Seq<Liquid>? = null
         override val connectedHosts: ObjectSet<Int> = hosts
         override val maxHostConnection = maxConnection
-        override val clientColor: Color
-            get() = mixedLiquidColor
     }
 }

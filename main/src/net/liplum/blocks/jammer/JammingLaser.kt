@@ -15,6 +15,10 @@ import net.liplum.registries.SD
 class JammingLaser(damage: Float) : ContinuousLaserBulletType(damage) {
     constructor() : this(0f)
 
+    init {
+        laserAbsorb = false
+    }
+
     var spaceMag = 35f
     var tscales = floatArrayOf(1f, 0.7f, 0.5f, 0.2f)
     var strokes = floatArrayOf(2f, 1.5f, 1f, 0.3f)

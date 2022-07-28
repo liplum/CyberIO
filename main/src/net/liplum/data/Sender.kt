@@ -9,6 +9,7 @@ import arc.struct.ObjectSet
 import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
+import mindustry.Vars
 import mindustry.gen.Building
 import mindustry.graphics.Pal
 import mindustry.logic.LAccess
@@ -50,8 +51,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
     @ClientOnly lateinit var UploadAnim: Animation
     @JvmField var UploadAnimFrameNumber = 7
     @JvmField var UploadAnimDuration = 30f
-    @JvmField val CheckConnectionTimer = timers++
-    @JvmField val SpeedLimitTimer = timers++
+    @JvmField val TransferTimer = timers++
     /**
      * The max range when trying to connect. -1f means no limit.
      */
@@ -142,7 +142,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
         @Serialized
         var receiverPos: Point2? = null
             set(value) {
-                if (receiverPos != null) {
+                if (field != value) {
                     var curBuild = field.dr()
                     curBuild?.onDisconnectFrom(this)
                     field = value
@@ -196,13 +196,14 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
             return relative
         }
 
-        open fun checkReceiverPos() {
+        fun checkReceiverPos() {
             if (receiverPos == null) return
             if (!receiverPos.dr().exists) {
                 receiverPos = null
             }
         }
 
+        var lastTileChange = -2
         override fun updateTile() {
             val waiting = queue
             if (waiting != null) {
@@ -212,8 +213,9 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
                     queue = null
                 }
             }
-            // Check connection every second
-            if (timer(CheckConnectionTimer, 60f)) {
+            // Check connection only when any block changed
+            if (lastTileChange != Vars.world.tileChanges) {
+                lastTileChange = Vars.world.tileChanges
                 checkReceiverPos()
             }
             ClientOnly {

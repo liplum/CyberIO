@@ -6,8 +6,10 @@ import arc.math.Angles
 import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
+import mindustry.Vars
 import mindustry.gen.Building
 import mindustry.graphics.Layer
+import mindustry.logic.LAccess
 import mindustry.type.Liquid
 import mindustry.world.blocks.liquid.LiquidBlock
 import mindustry.world.meta.BlockGroup
@@ -32,6 +34,7 @@ import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.DrawOn
 import net.liplum.mdt.render.Text
 import net.liplum.mdt.utils.PackedPos
+import net.liplum.mdt.utils.buildAt
 import net.liplum.mdt.utils.inMod
 import net.liplum.mdt.utils.sub
 import kotlin.math.absoluteValue
@@ -82,6 +85,12 @@ open class P2pNode(name: String) : AniedBlock<P2pNode, P2pNode.P2pBuild>(name) {
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)
         drawPlacingMaxRange(x, y, maxRange, R.C.LightBlue)
+        drawLinkedLineToP2pWhenConfiguring(x, y)
+    }
+
+    override fun setStats() {
+        super.setStats()
+        addLinkRangeStats(maxRange)
     }
 
     override fun icons() = arrayOf(BottomTR, region, YinAndYangTR)
@@ -147,12 +156,14 @@ open class P2pNode(name: String) : AniedBlock<P2pNode, P2pNode.P2pBuild>(name) {
                     if (abs > Var.P2pNNodeBalanceThreshold) {
                         sender.status = P2pStatus.Sender
                         receiver.status = P2pStatus.Receiver
-                        val data = abs
-                            .coerceAtMost(sender.currentAmount)
-                            .coerceAtMost(receiver.restRoom)
-                            .coerceAtMost(balancingSpeed) * delta()
-                        if (data > 0.0001f) {
-                            sender.streamToAnother(data)
+                        if (other.building.efficiency > 0f) {
+                            val data = abs
+                                .coerceAtMost(sender.currentAmount)
+                                .coerceAtMost(receiver.restRoom)
+                                .coerceAtMost(balancingSpeed) * efficiency * other.building.efficiency * delta()
+                            if (data > 0.0001f) {
+                                sender.streamToAnother(data)
+                            }
                         }
                     }
                 }
@@ -164,8 +175,13 @@ open class P2pNode(name: String) : AniedBlock<P2pNode, P2pNode.P2pBuild>(name) {
         var targetP2pColor = R.C.P2P
         override val color: Color
             get() = transitionColor(lastP2pColor, targetP2pColor)
-
+        var lastTileChange = -2
         override fun updateTile() {
+            // Check connection only when any block changed
+            if (lastTileChange != Vars.world.tileChanges) {
+                lastTileChange = Vars.world.tileChanges
+                checkConnection()
+            }
             balanceFluid()
             if (currentAmount > 0.0001f && timer(timerDump, 1f)) {
                 dumpLiquid(currentFluid, dumpScale)
@@ -201,17 +217,6 @@ open class P2pNode(name: String) : AniedBlock<P2pNode, P2pNode.P2pBuild>(name) {
             }
         }
 
-        override fun draw() {
-            super.draw()
-            val other = connected
-            DebugOnly {
-                if (other != null) {
-                    DrawLayer(Layer.blockOver) {
-                        Text.drawTextEasy("(${other.tileX},${other.tileY})", x, y + 10f)
-                    }
-                }
-            }
-        }
         @ClientOnly
         var yinYangRotation = 0f
         override fun fixedDraw() {
@@ -231,6 +236,14 @@ open class P2pNode(name: String) : AniedBlock<P2pNode, P2pNode.P2pBuild>(name) {
                 }
             }
             YinAndYangTR.DrawOn(this, rotation = yinYangRotation)
+            val other = connected
+            DebugOnly {
+                if (other != null) {
+                    DrawLayer(Layer.blockOver) {
+                        Text.drawTextEasy("(${other.tileX},${other.tileY})", x, y + 10f)
+                    }
+                }
+            }
         }
 
         override fun streamToAnother(amount: Float) {
@@ -291,6 +304,32 @@ open class P2pNode(name: String) : AniedBlock<P2pNode, P2pNode.P2pBuild>(name) {
         override fun write(write: Writes) {
             super.write(write)
             write.i(connectedPos)
+        }
+
+        override fun control(type: LAccess, p1: Any?, p2: Double, p3: Double, p4: Double) {
+            when (type) {
+                LAccess.shoot ->
+                    if (p1 is IP2pNode) connectToSync(p1)
+                else -> super.control(type, p1, p2, p3, p4)
+            }
+        }
+
+        override fun control(type: LAccess, p1: Double, p2: Double, p3: Double, p4: Double) {
+            when (type) {
+                LAccess.shoot -> {
+                    val receiver = buildAt(p1, p2)
+                    if (receiver is IP2pNode) connectToSync(receiver)
+                }
+                else -> super.control(type, p1, p2, p3, p4)
+            }
+        }
+
+        override fun sense(sensor: LAccess): Double {
+            return when (sensor) {
+                LAccess.shootX -> connected.tileXd
+                LAccess.shootY -> connected.tileYd
+                else -> super.sense(sensor)
+            }
         }
     }
 

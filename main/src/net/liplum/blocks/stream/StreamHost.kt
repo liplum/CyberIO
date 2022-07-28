@@ -7,6 +7,7 @@ import arc.struct.OrderedSet
 import arc.struct.Seq
 import arc.util.io.Reads
 import arc.util.io.Writes
+import mindustry.Vars
 import mindustry.gen.Building
 import mindustry.logic.LAccess
 import mindustry.type.Liquid
@@ -56,7 +57,6 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
     @ClientOnly lateinit var NoPowerAni: AniStateH
     @ClientOnly lateinit var NormalAni: AniStateH
     @ClientOnly @JvmField var maxSelectedCircleTime = Var.SelectedCircleTime
-    @JvmField val CheckConnectionTimer = timers++
     @JvmField val TransferTimer = timers++
 
     init {
@@ -134,7 +134,6 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
         override val maxRange = this@StreamHost.maxRange
         @Serialized
         var clients = OrderedSet<Int>()
-        @ClientOnly @JvmField var liquidFlow = 0f
         /**
          * When this stream host was restored by schematic, it should check whether the client was built.
          *
@@ -146,10 +145,12 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
         override val hostColor: Color
             get() = liquids.current().color
 
+        var lastTileChange = -2
         override fun updateTile() {
             checkQueue()
-            // Check connection every second
-            if (timer(CheckConnectionTimer, 60f)) {
+            // Check connection only when any block changed
+            if (lastTileChange != Vars.world.tileChanges) {
+                lastTileChange = Vars.world.tileChanges
                 checkClientsPos()
             }
             if (efficiency > 0f && timer(TransferTimer, 1f)) {

@@ -20,13 +20,13 @@ import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.SliderSetting
 import net.liplum.*
 import net.liplum.annotations.Only
 import net.liplum.annotations.SubscribeEvent
-import net.liplum.lib.arc.invoke
-import net.liplum.events.CioInitEvent
-import net.liplum.lib.UseReflection
 import net.liplum.common.ing
 import net.liplum.common.utils.bundle
 import net.liplum.common.utils.getF
 import net.liplum.common.utils.randomExcept
+import net.liplum.events.CioInitEvent
+import net.liplum.lib.UseReflection
+import net.liplum.lib.arc.invoke
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.IsLocal
 import net.liplum.mdt.UnsteamOnly
@@ -122,20 +122,19 @@ object CioUI {
         ) {
             Settings.LinkArrowSpeed = Core.settings.getInt(R.Setting.LinkAnimationSpeed, 40).toFloat()
         }
-        val alwaysShowLinkDefault = Vars.mobile
-        addCheckPref(R.Setting.AlwaysShowLink, alwaysShowLinkDefault) {
-            Settings.AlwaysShowLink = Core.settings.getBool(R.Setting.AlwaysShowLink, alwaysShowLinkDefault)
+        addCheckPref(R.Setting.AlwaysShowLink, true) {
+            Settings.AlwaysShowLink = Core.settings.getBool(R.Setting.AlwaysShowLink, true)
         }
-        addCheckPref(R.Setting.ShowLinkCircle, alwaysShowLinkDefault) {
-            Settings.ShowLinkCircle = Core.settings.getBool(R.Setting.ShowLinkCircle, true)
+        addCheckPref(R.Setting.ShowLinkCircle, Vars.mobile) {
+            Settings.ShowLinkCircle = Core.settings.getBool(R.Setting.ShowLinkCircle, Vars.mobile)
         }
-        addCheckPref(R.Setting.ShowWirelessTowerCircle, alwaysShowLinkDefault) {
+        addCheckPref(R.Setting.ShowWirelessTowerCircle, true) {
             Settings.ShowWirelessTowerCircle = Core.settings.getBool(R.Setting.ShowWirelessTowerCircle, true)
         }
         UnsteamOnly {
             addCheckPref(
                 R.Setting.ShowUpdate, !Vars.steam
-            ){
+            ) {
                 Settings.ShowUpdate = it
             }.apply {
                 canShow = { isMenu }
@@ -143,7 +142,7 @@ object CioUI {
         }
         addCheckPref(
             R.Setting.ShowWelcome, true
-        ){
+        ) {
             Settings.ShouldShowWelcome = it
         }.apply {
             canShow = { isMenu }

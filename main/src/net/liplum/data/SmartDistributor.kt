@@ -7,7 +7,6 @@ import arc.graphics.g2d.Draw
 import arc.math.Mathf
 import arc.struct.OrderedSet
 import arc.struct.Seq
-import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.Vars
@@ -69,11 +68,10 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
      * The area(tile xy) indicates the surrounding machines can be distributed.
      */
     @JvmField @ClientOnly var indicateAreaExtension = 2f
-    @JvmField var DynamicReqUpdateTime = 30f
     @JvmField var powerUsePerItem = 2.5f
     @JvmField var powerUseBase = 3f
-    @JvmField val CheckConnectionTimer = timers++
     @JvmField val TransferTimer = timers++
+    @JvmField val DynamicReqUpdateTimer = timers++
     @JvmField var supportedConsumerFilter = Boolf<Consume> {
         it is ConsumeItems || it is ConsumeItemDynamic || it is ConsumeItemFilter
     }
@@ -171,7 +169,6 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
         @ClientOnly open val isDistributing: Boolean
             get() = lastDistributionTime < DistributionTime
         var hasDynamicRequirements: Boolean = false
-        var dynamicReqUpdateTimer = 0f
         @Serialized
         var disIndex = 0
         @ClientOnly
@@ -250,22 +247,19 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
             updateRequirements()
         }
 
+        var lastTileChange = -2
         override fun updateTile() {
-            // Check connection every second
-            if (timer(CheckConnectionTimer, 60f)) {
+            // Check connection only when any block changed
+            if (lastTileChange != Vars.world.tileChanges) {
+                lastTileChange = Vars.world.tileChanges
                 checkSendersPos()
             }
             if (hasDynamicRequirements) {
-                dynamicReqUpdateTimer += Time.delta
-                if (dynamicReqUpdateTimer >= DynamicReqUpdateTime) {
-                    dynamicReqUpdateTimer = 0f
+                if (timer(DynamicReqUpdateTimer, 1f)) {
                     updateRequirements()
                 }
-            } else {
-                dynamicReqUpdateTimer = 0f
             }
-            if (efficiency <= 0f) return
-            if (timer(TransferTimer, 1f)) {
+            if (efficiency > 0f && timer(TransferTimer, 1f)) {
                 val dised = DoMultipleBool(canOverdrive, boost2Count(timeScale), this::distribute)
                 if (dised) {
                     lastDistributionTime = 0f

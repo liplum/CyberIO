@@ -72,6 +72,7 @@ class CioMod : Mod() {
      * 5. ClientLoadEvent
      */
     init {
+        Vars.mobile = true
         objCreated = true
         lastPlayTime = Settings.LastPlayTime
         CLog.info("v${Meta.DetailedVersion} loading started.")

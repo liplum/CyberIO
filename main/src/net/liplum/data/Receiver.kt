@@ -54,8 +54,6 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
     @JvmField var DownloadAnimDuration = 30f
     @JvmField var blockTime = 60f
     @JvmField var fullTime = 60f
-    @JvmField val CheckConnectionTimer = timers++
-    @JvmField val TransferTimer = timers++
 
     init {
         buildType = Prov { ReceiverBuild() }
@@ -148,9 +146,11 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
             this.drawRequirements()
         }
 
+        var lastTileChange = -2
         override fun updateTile() {
-            // Check connection every second
-            if (timer(CheckConnectionTimer, 60f)) {
+            // Check connection only when any block changed
+            if (lastTileChange != Vars.world.tileChanges) {
+                lastTileChange = Vars.world.tileChanges
                 checkSendersPos()
             }
             ClientOnly {
@@ -166,7 +166,7 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
                         lastFullDataDelta += Time.delta
                     }
                 }
-                if (efficiency > 0f && timer(TransferTimer, 1f)) {
+                if (efficiency > 0f && timer(timerDump, 1f)) {
                     val dumped = dump(outputItem)
                     ClientOnly {
                         if (dumped) {

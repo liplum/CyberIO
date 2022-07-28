@@ -265,7 +265,7 @@ open class Stealth(name: String) : Turret(name) {
 
         override fun drawSelect() {
             G.dashCircleBreath(x, y, range, S.HologramDark)
-            whenNotConfiguringHost {
+            whenNotConfiguringP2P {
                 this.drawStreamGraph()
             }
             this.drawRequirements()

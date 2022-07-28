@@ -74,19 +74,9 @@ object MainMenus {
             buttons.button("@quit", Icon.exit, Styles.flatToggleMenut, Core.app::exit)
                 .marginLeft(11f)
         }
-
-        fun coroutine() {
-            if (Core.assets.progress != 1f) {
-                Core.app.post {
-                    coroutine()
-                }
-                return
-            }
+        rebuild()
+        Events.on(EventType.ResizeEvent::class.java) {
             rebuild()
-            Events.on(EventType.ResizeEvent::class.java) {
-                rebuild()
-            }
         }
-        coroutine()
     }
 }

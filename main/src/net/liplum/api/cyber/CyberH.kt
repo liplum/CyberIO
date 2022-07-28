@@ -228,30 +228,43 @@ inline fun whenNotConfiguringHost(func: () -> Unit) {
     }
 }
 @ClientOnly
+inline fun whenNotConfiguringP2P(func: () -> Unit) {
+    if (!isConfiguringP2P()) {
+        func()
+    }
+}
+@ClientOnly
 fun isConfiguringSender(): Boolean {
     val selected = Vars.control.input.config.selected
     return selected is IDataSender
 }
 
+@ClientOnly
 fun isConfiguringHost(): Boolean {
     val selected = Vars.control.input.config.selected
     return selected is IStreamHost
 }
+fun isConfiguringP2P():Boolean{
+    val selected = Vars.control.input.config.selected
+    return selected is IP2pNode
+}
 //</editor-fold>
 //<editor-fold desc="Check Connection">
-fun IDataReceiver.checkSendersPos() {
+fun IDataReceiver.checkSendersPos() =
     connectedSenders.removeAll { !it.ds().exists }
-}
 
-fun IDataSender.checkReceiversPos() {
+fun IDataSender.checkReceiversPos() =
     connectedReceivers.removeAll { !it.dr().exists }
-}
 
-fun IStreamHost.checkClientsPos() {
+fun IStreamHost.checkClientsPos() =
     connectedClients.removeAll { !it.sc().exists }
-}
 
-fun IStreamClient.checkHostsPos() {
+fun IStreamClient.checkHostsPos() =
     connectedHosts.removeAll { !it.sh().exists }
-}
+
+fun IP2pNode.checkConnection() =
+    if (!connected.exists) {
+        connectedPos = -1
+        true
+    } else false
 //</editor-fold>

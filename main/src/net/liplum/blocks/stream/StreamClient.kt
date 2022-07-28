@@ -39,7 +39,6 @@ open class StreamClient(name: String) : AniedBlock<StreamClient, StreamClient.Cl
     @ClientOnly var NoPowerTR = EmptyTR
     @ClientOnly var BottomTR = EmptyTR
     @JvmField var dumpScale = 2f
-    @JvmField val CheckConnectionTimer = timers++
     @ClientOnly var liquidPadding = 0f
 
     init {
@@ -110,10 +109,11 @@ open class StreamClient(name: String) : AniedBlock<StreamClient, StreamClient.Cl
         override val maxHostConnection = maxConnection
         override val clientColor: Color
             get() = outputLiquid.clientColor
-
+        var lastTileChange = -2
         override fun updateTile() {
             // Check connection every second
-            if (timer(CheckConnectionTimer, 60f)) {
+            if (lastTileChange != Vars.world.tileChanges) {
+                lastTileChange = Vars.world.tileChanges
                 checkHostsPos()
             }
             val outputLiquid = outputLiquid
@@ -140,7 +140,7 @@ open class StreamClient(name: String) : AniedBlock<StreamClient, StreamClient.Cl
         }
 
         override fun drawSelect() {
-            whenNotConfiguringHost {
+            whenNotConfiguringP2P {
                 this.drawStreamGraph()
             }
             this.drawRequirements()

@@ -895,6 +895,7 @@ object CioBlocks {
                 maxRange = 2800f
                 powerUsePerConnection = 3.8f
             }
+            fireproof = true
             squareSprite = false
             size = 3
             replaceable = false

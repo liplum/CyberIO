@@ -284,6 +284,34 @@ fun Block.drawLinkedLineToClientWhenConfiguring(x: Int, y: Int) {
     if (isOverRange)
         this.drawOverRangeOnTile(x, y, color)
 }
+/**
+ * Called in an [IDataReceiver] block
+ *
+ * @param x        tile x
+ * @param y        tile y
+ */
+@ClientOnly
+fun Block.drawLinkedLineToP2pWhenConfiguring(x: Int, y: Int) {
+    if (!Vars.control.input.config.isShown) return
+    val node = Vars.control.input.config.selected
+    if (node !is IP2pNode) return
+    val selectedTile = node.tile()
+    val opacity = Settings.LinkOpacity
+    val isOverRange = if (node.maxRange > 0f) selectedTile.dstWorld(x, y) > node.maxRange else false
+    val color = if (isOverRange) R.C.RedAlert else R.C.P2P
+    G.surroundingCircleBreath(this, x, y, color, alpha = opacity)
+    transferArrowLineBreath(
+        node.block,
+        selectedTile.x, selectedTile.y,
+        this, x.toShort(), y.toShort(),
+        arrowColor = color,
+        density = ArrowDensity,
+        speed = ArrowSpeed,
+        alphaMultiplier = opacity
+    )
+    if (isOverRange)
+        this.drawOverRangeOnTile(x, y, color)
+}
 //</editor-fold>
 //<editor-fold desc="Draw and Post Over Range">
 fun Building.postOverRangeOn(other: Building) {

@@ -13,7 +13,7 @@ object LinkDrawer {
     @Subscribe(EventType.Trigger.drawOver)
     fun draw() {
         if (!Settings.AlwaysShowLink) return
-        Vars.player.team().data().buildings.each {
+        Vars.player.team().data().buildings.forEach {
             when (it) {
                 is IDataSender -> it.drawDataNetGraph(showCircle = Settings.ShowLinkCircle)
                 is IStreamHost -> it.drawStreamGraph(showCircle = Settings.ShowLinkCircle)
