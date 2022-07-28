@@ -32,7 +32,7 @@ ___
 
 ## Acknowledgements
 
-### Main Authors
+### Main
 
 <kbd>   <br>   Liplum   <br>   </kbd> 
 <kbd>   <br>   [sudoudou233](https://github.com/sudoudou233)   <br>   </kbd>   
