@@ -12,13 +12,10 @@ import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.Vars
-import mindustry.ctype.Content
-import mindustry.ctype.ContentType
 import mindustry.game.EventType.UnitDestroyEvent
 import mindustry.gen.UnitEntity
 import mindustry.graphics.Drawf
 import mindustry.graphics.Layer
-import mindustry.io.TypeIO
 import mindustry.logic.LAccess
 import mindustry.type.UnitType
 import mindustry.world.blocks.ConstructBlock.ConstructBuild
@@ -26,9 +23,9 @@ import mindustry.world.blocks.payloads.BuildPayload
 import mindustry.world.blocks.payloads.Payload
 import mindustry.world.blocks.power.PowerGraph
 import net.liplum.S
+import net.liplum.common.persistence.*
 import net.liplum.holo.HoloProjector.HoloPBuild
 import net.liplum.lib.Serialized
-import net.liplum.common.persistence.*
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.OverwriteVanilla
 import net.liplum.mdt.mixin.PayloadMixin
@@ -41,7 +38,7 @@ import net.liplum.registry.CioFluids
 import net.liplum.registry.EntityRegistry
 
 open class HoloUnit : UnitEntity(), PayloadMixin, IRevisionable {
-    override fun getRevisionID() = 8
+    override val revisionID = 0
     override var payloadPower: PowerGraph? = null
     override var payloads = Seq<Payload>()
     override val unitType: UnitType
@@ -275,100 +272,21 @@ open class HoloUnit : UnitEntity(), PayloadMixin, IRevisionable {
     override fun classId(): Int {
         return EntityRegistry[javaClass]
     }
-
-    private fun readReversion7(read: Reads) {
-        // Copy from parent revision 7
-        abilities = TypeIO.readAbilities(read, abilities)
-        ammo = read.f()
-        controller = TypeIO.readController(read, controller)
-        elevation = read.f()
-        flag = read.d()
-        health = read.f()
-        isShooting = read.bool()
-        mineTile = TypeIO.readTile(read)
-        mounts = TypeIO.readMounts(read, mounts)
-        plans = TypeIO.readPlansQueue(read)
-        rotation = read.f()
-        shield = read.f()
-        spawnedByCore = read.bool()
-        stack = TypeIO.readItems(read, stack)
-        val statuses_LENGTH = read.i()
-        statuses.clear()
-        for (i in 0 until statuses_LENGTH) {
-            val statusItem = TypeIO.readStatus(read)
-            if (statusItem != null) {
-                statuses.add(statusItem)
-            }
-        }
-        team = TypeIO.readTeam(read)
-        type = Vars.content.getByID<Content>(ContentType.unit, read.s().toInt()) as UnitType
-        updateBuilding = read.bool()
-        vel = TypeIO.readVec2(read, vel)
-        x = read.f()
-        y = read.f()
-    }
-    @OverwriteVanilla("Super")
     override fun read(_read_: Reads) {
-        val REV = _read_.s().toInt()
-        if (REV == 7) {
-            readReversion7(_read_)
-            time = _read_.f()
-            projectorPos = _read_.i()
-        } else if (REV >= 8) {
-            // Since 8, use cache reader instead of vanilla
-            ReadFromCache(_read_, revisionID) {
-                Warp {
-                    readReversion7(this)
-                }
-                time = f()
-                projectorPos = i()
-                Warp {
-                    readPayload(this)
-                }
+        super.read(_read_)
+        // Since 8, use cache reader instead of vanilla
+        ReadFromCache(_read_, revisionID) {
+            time = f()
+            projectorPos = i()
+            Warp {
+                readPayload(this)
             }
         }
-        this.afterRead()
     }
-
-    private fun writeUnitEntity(write: Writes) {
-        TypeIO.writeAbilities(write, abilities)
-        write.f(ammo)
-        TypeIO.writeController(write, controller)
-        write.f(elevation)
-        write.d(flag)
-        write.f(health)
-        write.bool(isShooting)
-        TypeIO.writeTile(write, mineTile)
-        TypeIO.writeMounts(write, mounts)
-        write.i(plans.size)
-        for (plan in plans) {
-            TypeIO.writePlan(write, plan)
-        }
-
-        write.f(rotation)
-        write.f(shield)
-        write.bool(spawnedByCore)
-        TypeIO.writeItems(write, stack)
-        write.i(statuses.size)
-        for (status in statuses) {
-            TypeIO.writeStatus(write, status)
-        }
-
-        TypeIO.writeTeam(write, team)
-        write.s(type.id.toInt())
-        write.bool(updateBuilding)
-        TypeIO.writeVec2(write, vel)
-        write.f(x)
-        write.f(y)
-    }
-    @OverwriteVanilla("Super")
     override fun write(_write_: Writes) {
-        _write_.s(revisionID)
+        super.write(_write_)
         // Since 8, use cache writer instead of vanilla
         WriteIntoCache(_write_, revisionID) {
-            Wrap {
-                writeUnitEntity(this)
-            }
             f(time)
             i(projectorPos)
             Wrap {

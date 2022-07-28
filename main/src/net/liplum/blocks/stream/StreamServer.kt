@@ -89,7 +89,6 @@ open class StreamServer(name: String) : StreamHost(name) {
     }
 
     open inner class ServerBuild : HostBuild(), IStreamServer {
-        override fun version() = 1.toByte()
         @Serialized
         var hosts = OrderedSet<Int>()
         @ClientOnly @JvmField var mixedFluidColor = R.C.Host
@@ -227,11 +226,7 @@ open class StreamServer(name: String) : StreamHost(name) {
 
         override fun read(read: Reads, revision: Byte) {
             super.read(read, revision)
-            val version = revision.toInt()
-            if (version > 0) {
-                // Since 1
-                hosts.read(read)
-            }
+            hosts.read(read)
         }
 
         override fun write(write: Writes) {

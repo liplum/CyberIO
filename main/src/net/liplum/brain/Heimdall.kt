@@ -56,7 +56,10 @@ import net.liplum.mdt.animation.anims.Anime
 import net.liplum.mdt.animation.anims.linearFrames
 import net.liplum.mdt.render.*
 import net.liplum.mdt.ui.bars.AddBar
-import net.liplum.mdt.utils.*
+import net.liplum.mdt.utils.MdtUnit
+import net.liplum.mdt.utils.atUnit
+import net.liplum.mdt.utils.sheet
+import net.liplum.mdt.utils.sub
 import net.liplum.util.addPowerUseStats
 
 /**
@@ -663,24 +666,12 @@ open class Heimdall(name: String) : Block(name) {
 
         override fun read(_read_: Reads, revision: Byte) {
             super.read(_read_, revision)
-            val version = revision.toInt()
-            if (version <= 1) {
-                brainWaves.read(_read_)
-                reloadCounter = _read_.f()
-                shieldAmount = _read_.f()
-                lastShieldDamageTime = _read_.f()
-                if (version == 1) { // Since 1
-                    curFieldRadius = _read_.f()
-                }
-            } else {
-                // Since 2
-                ReadFromCache(_read_, version().toInt()) {
-                    brainWaves.read(this.cache)
-                    reloadCounter = f()
-                    shieldAmount = f()
-                    lastShieldDamageTime = f()
-                    curFieldRadius = f()
-                }
+            ReadFromCache(_read_, version().toInt()) {
+                brainWaves.read(this.cache)
+                reloadCounter = f()
+                shieldAmount = f()
+                lastShieldDamageTime = f()
+                curFieldRadius = f()
             }
         }
 

@@ -1,5 +1,5 @@
-package net.liplum.common.persistence;
+package net.liplum.common.persistence
 
-public interface IRevisionable {
-    int getRevisionID();
+interface IRevisionable {
+    val revisionID: Int
 }
