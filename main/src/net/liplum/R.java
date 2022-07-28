@@ -50,6 +50,8 @@ public final class R {
             OverRange = Gen("over-range");
         public static final String
             UnsavedChange = Gen("unsaved-change");
+        public static final String
+            RandomName = Gen("random-name");
     }
 
     public static final class Bar {
