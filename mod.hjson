@@ -8,7 +8,7 @@
 */
 {
   "displayName": "[#42a5f5[]]Cyber IO[[]]",
-  "subtitle":"V4 in development for Erekir",
+  "subtitle":"Untested V4 preview for Erekir",
   "name": "cyber-io",
   "author": "[#42a5f5[]]Liplum[[]]",
   "main": "net.liplum.CioMod",

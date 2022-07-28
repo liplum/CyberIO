@@ -17,9 +17,8 @@ import net.liplum.common.ui.UIToast
 import net.liplum.common.util.IBundlable
 import net.liplum.common.util.bundle
 import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.ui.addTrackTooltip
-import net.liplum.ui.animation.animatedVisibility
 import net.liplum.ui.animation.WrapAnimationSpec
+import net.liplum.ui.animation.animatedVisibility
 import net.liplum.ui.template.NewIconTextButton
 
 @ClientOnly
@@ -31,6 +30,7 @@ object ContentSpecFrag : IBundlable {
     val title: String
         get() = bundle("title")
     var fadeDuration = 0.8f
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
     @JvmStatic
     fun build(cont: Table) {
         // Main
@@ -38,9 +38,21 @@ object ContentSpecFrag : IBundlable {
         val unsavedWarning = Label(R.Bundle.UnsavedChange.bundle).apply {
             setColor(R.C.RedAlert)
         }
-
-        @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
         var warningVisible by unsavedWarning.animatedVisibility(
+            isVisible = false,
+            duration = 60f,
+            spec = WrapAnimationSpec(Interp.pow2In)
+        )
+        val desc = Label(curSpec.i18nDesc)
+        var descVisible by desc.animatedVisibility(
+            isVisible = false,
+            duration = 30f,
+            spec = WrapAnimationSpec(Interp.smooth)
+        )
+        val savesWarning = Label(bundle("saves-warning")).apply {
+            setColor(R.C.RedAlert)
+        }
+        var savesWarningVisible by savesWarning.animatedVisibility(
             isVisible = false,
             duration = 60f,
             spec = WrapAnimationSpec(Interp.pow2In)
@@ -48,7 +60,15 @@ object ContentSpecFrag : IBundlable {
 
         fun changeCurSpec(new: ContentSpec) {
             if (curSpec != new) {
+                descVisible = true
+                savesWarningVisible = true
                 curSpec = new
+                desc.apply {
+                    setColor(new.color)
+                    if (new != Var.ContentSpecific)
+                        setText("${new.i18nDesc} ${bundle("require-restart")}")
+                    else setText(new.i18nDesc)
+                }
                 Sounds.message.play()
                 val tipKey = if (curSpec != Var.ContentSpecific) {
                     warningVisible = true
@@ -72,30 +92,33 @@ object ContentSpecFrag : IBundlable {
             }).row()
             // Options
             add(bundle("introduction")).row()
-            add(Table().apply {
+            addTable {
                 val default = Core.scene.getStyle(ImageButtonStyle::class.java)
                 val style = ImageButtonStyle(default).apply {
                     checked = default.over
                 }
-                ContentSpec.values().forEach {
-                    this.add(ImageButton(it.icon, style).apply {
-                        clicked {
-                            changeCurSpec(it)
-                        }
-                        update {
-                            isChecked = it == curSpec
-                        }
-                        row()
-                        add(Label(it.i18nName).apply {
-                            update {
-                                if (it == curSpec) setColor(it.color)
-                                else setColor(Color.white)
+                addTable {
+                    ContentSpec.values().forEach {
+                        this.add(ImageButton(it.icon, style).apply {
+                            clicked {
+                                changeCurSpec(it)
                             }
-                        })
-                        addTrackTooltip(it.i18nDesc)
-                    }).pad(5f)
-                }
-            })
+                            update {
+                                isChecked = it == curSpec
+                            }
+                            row()
+                            add(Label(it.i18nName).apply {
+                                update {
+                                    if (it == curSpec) setColor(it.color)
+                                    else setColor(Color.white)
+                                }
+                            })
+                        }).pad(5f)
+                    }
+                }.pad(50f).row()
+                add(desc).row()
+                add(savesWarning)
+            }
         }).grow()
         cont.row()
         // Buttons

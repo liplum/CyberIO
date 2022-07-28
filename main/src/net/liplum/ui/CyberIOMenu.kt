@@ -10,6 +10,7 @@ import net.liplum.annotations.Only
 import net.liplum.annotations.SubscribeEvent
 import net.liplum.event.CioInitEvent
 import net.liplum.heimdall.HeimdallProjectGame
+import net.liplum.mdt.Else
 import net.liplum.ui.control.TabItem
 import net.liplum.ui.control.TabView
 import net.liplum.ui.control.TabViewStyle
@@ -53,7 +54,11 @@ object CyberIOMenu : INavigable {
             })
         }
         navigationService = { Var.Navigation }
-        rememberBuilt = true
+        DebugOnly {
+            rememberBuilt = false
+        }.Else {
+            rememberBuilt = true
+        }
     }
     override val navigateFragment = "CyberIO"
     private val sharedLocator = Navigator()

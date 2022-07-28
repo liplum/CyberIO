@@ -55,10 +55,8 @@ class TabView(
                         }
                         update {
                             isChecked = curItem == item
-                            if (isChecked)
-                                color.set(Color.white)
-                            else
-                                color.set(Color.gray).a(0.4f)
+                            if (isChecked) color.set(Color.white)
+                            else color.set(Color.gray).a(0.4f)
                         }
                     }).margin(10f).pad(5f).grow()
                 }
