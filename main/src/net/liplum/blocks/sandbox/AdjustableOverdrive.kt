@@ -8,16 +8,18 @@ import arc.scene.ui.Slider
 import arc.scene.ui.layout.Table
 import arc.util.io.Reads
 import arc.util.io.Writes
+import mindustry.graphics.Drawf
 import mindustry.world.blocks.defense.OverdriveProjector
 import mindustry.world.meta.Stat
 import net.liplum.R
+import net.liplum.common.utils.bundle
+import net.liplum.common.utils.percentI
 import net.liplum.lib.Serialized
-import net.liplum.mdt.ui.bars.AddBar
-import net.liplum.common.utils.*
 import net.liplum.lib.math.ExpLogGen
 import net.liplum.lib.math.FUNC
 import net.liplum.lib.math.isZero
 import net.liplum.lib.math.shrink
+import net.liplum.mdt.ui.bars.AddBar
 import kotlin.math.abs
 
 open class AdjustableOverdrive(name: String) : OverdriveProjector(name) {
@@ -48,7 +50,7 @@ open class AdjustableOverdrive(name: String) : OverdriveProjector(name) {
         AddBar<AOBuild>("boost",
             { Core.bundle.format("bar.boost", realBoost().percentI) },
             { baseColor },
-            { realBoost() / maxBoost / 2f }
+            { realBoost() / maxBoost }
         )
     }
 
@@ -56,9 +58,11 @@ open class AdjustableOverdrive(name: String) : OverdriveProjector(name) {
         super.setStats()
         stats.remove(Stat.speedIncrease)
         stats.add(Stat.speedIncrease) {
-            it.add(R.Bundle.Gen("speed-increase.range").bundle(
-                minBoost * 100f, maxBoost * 100f
-            ))
+            it.add(
+                R.Bundle.Gen("speed-increase.range").bundle(
+                    minBoost * 100f, maxBoost * 100f
+                )
+            )
         }
     }
 
@@ -80,6 +84,14 @@ open class AdjustableOverdrive(name: String) : OverdriveProjector(name) {
         open fun setGear(gear: Int) {
             curGear = abs(gear)
             curBoost = adjustDomainFunc(curGear.toFloat() / maxGear)
+        }
+
+        val realRange: Float
+            get() = range + phaseHeat * phaseRangeBoost
+
+        override fun drawConfigure() {
+            super.drawConfigure()
+            Drawf.dashCircle(x, y, realRange, baseColor)
         }
 
         override fun buildConfiguration(table: Table) {

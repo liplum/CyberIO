@@ -15,6 +15,7 @@ object Var {
     // Visual Effects
     /** How much time to reach max selected circle */
     @JvmField var SelectedCircleTime = 60f
+    const val MaxRangeCircleTimeFactor = 1 / 15f
     @JvmField var SurroundingRectTime = 30f
     @JvmField var AnimUpdateFrequency = 5f
     @JvmField var ParticleEffectNumber = if (Vars.mobile) 64 else 128
@@ -42,7 +43,7 @@ object Var {
     const val RsSlightHighlightAlpha = 0.5f
     const val RsColorTransitionTime = 60f
     // P2P
-    const val P2PNNodeBalanceThreshold = 2f
-    const val P2PArrowRotationTime = 60f
-    const val YinYangRotationSpeed = 60f
+    const val P2pNNodeBalanceThreshold = 2f
+    const val P2pArrowRotationTime = 60f
+    const val YinYangRotationSpeed = 5f
 }

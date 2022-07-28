@@ -20,7 +20,10 @@ import net.liplum.common.utils.bundle
 import net.liplum.common.utils.inViewField
 import net.liplum.common.utils.isLineInViewField
 import net.liplum.lib.arc.darken
-import net.liplum.lib.math.*
+import net.liplum.lib.math.Point2f
+import net.liplum.lib.math.isZero
+import net.liplum.lib.math.plusAssign
+import net.liplum.lib.math.smooth
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.render.*
 import net.liplum.mdt.utils.*
@@ -78,6 +81,15 @@ fun IStreamClient.drawStreamGraph(showCircle: Boolean = true) {
         G.surroundingCircleBreath(tile, clientColor, alpha = Settings.LinkOpacity)
     }
     this.drawHosts(connectedHosts, showCircle)
+}
+@ClientOnly
+fun IP2pNode.drawP2PConnection(showCircle: Boolean = true) {
+    val other = connected ?: return
+    val drawer = if(this.isDrawer) this else other
+    if (showCircle && this.canShowSelfCircle()) {
+        G.surroundingCircleBreath(tile, color, alpha = Settings.LinkOpacity)
+    }
+    drawer.drawAnother(showCircle)
 }
 //</editor-fold>
 //<editor-fold desc="Draw Requirements">
@@ -187,6 +199,33 @@ fun IStreamHost.drawClients(clients: Iterable<Int>, showCircle: Boolean = true) 
         }
     }
 }
+@ClientOnly
+fun IP2pNode.drawAnother(showCircle: Boolean = true) {
+    val opacity = Settings.LinkOpacity
+    val other = connected ?: return
+    if (!this.toOtherInViewField(other)) return
+    if (isDrawer) {
+        if (showCircle && other.canShowSelfCircle()) {
+            G.surroundingCircleBreath(other.tile, color, alpha = opacity)
+        }
+        val sender: Building
+        val receiver: Building
+        if (status == P2pStatus.Sender) {
+            sender = this.building
+            receiver = other.building
+        } else {
+            sender = other.building
+            receiver = this.building
+        }
+        transferArrowLineBreath(
+            sender, receiver,
+            arrowColor = color,
+            density = ArrowDensity,
+            speed = ArrowSpeed,
+            alphaMultiplier = 0.8f
+        )
+    }
+}
 //</editor-fold>
 //<editor-fold desc="Draw Configuring Placing Link">
 /**
@@ -288,13 +327,57 @@ fun Building.postFullClientOn(other: Building) {
 //<editor-fold desc="Draw Selected and Configuring Max range">
 fun IDataSender.drawSelectedMaxRange() {
     if (maxRange > 0f) {
-        G.dashCircleBreath(building.x, building.y, maxRange * building.smoothSelect(Var.SelectedCircleTime), senderColor, stroke = 3f)
+        G.dashCircleBreath(
+            building.x,
+            building.y,
+            maxRange * building.smoothSelect(
+                Var.SelectedCircleTime + maxRange * Var.MaxRangeCircleTimeFactor
+            ),
+            senderColor,
+            stroke = 3f
+        )
     }
 }
 
 fun IStreamHost.drawSelectedMaxRange() {
     if (maxRange > 0f) {
-        G.dashCircleBreath(building.x, building.y, maxRange * building.smoothSelect(Var.SelectedCircleTime), hostColor, stroke = 3f)
+        G.dashCircleBreath(
+            building.x,
+            building.y,
+            maxRange * building.smoothSelect(
+                Var.SelectedCircleTime + maxRange * Var.MaxRangeCircleTimeFactor
+            ),
+            hostColor,
+            stroke = 3f
+        )
+    }
+}
+
+fun IP2pNode.drawSelectedMaxRange() {
+    if (maxRange > 0f) {
+        G.dashCircleBreath(
+            building.x,
+            building.y,
+            maxRange * building.smoothSelect(
+                Var.SelectedCircleTime + maxRange * Var.MaxRangeCircleTimeFactor
+            ),
+            color,
+            stroke = 3f
+        )
+    }
+}
+
+fun Block.drawPlacingMaxRange(x: TileXY, y: TileXY, maxRange: Float, color: Color) {
+    if (maxRange > 0f) {
+        G.dashCircleBreath(
+            x.worldXY,
+            y.worldXY,
+            maxRange * smoothPlacing(
+                Var.SelectedCircleTime + maxRange * Var.MaxRangeCircleTimeFactor
+            ),
+            color,
+            stroke = 3f
+        )
     }
 }
 
@@ -307,6 +390,12 @@ fun IDataSender.drawConfiguringMaxRange() {
 fun IStreamHost.drawConfiguringMaxRange() {
     if (maxRange > 0f) {
         G.dashCircleBreath(building.x, building.y, maxRange, hostColor, stroke = 3f)
+    }
+}
+
+fun IP2pNode.drawConfiguringMaxRange() {
+    if (maxRange > 0f) {
+        G.dashCircleBreath(building.x, building.y, maxRange, color, stroke = 3f)
     }
 }
 //</editor-fold>

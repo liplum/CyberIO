@@ -223,6 +223,7 @@ object CioBlocks {
                 requirements = arrayOf(
                     Items.beryllium + 60,
                     Items.graphite + 105,
+                    Items.tungsten + 25,
                     Items.silicon + 50,
                 )
                 health = 250
@@ -265,7 +266,7 @@ object CioBlocks {
             }
             ErekirSpec {
                 requirements = arrayOf(
-                    CioItems.ic + 5,
+                    CioItems.ic + 6,
                     Items.graphite + 80,
                     Items.tungsten + 30,
                     Items.silicon + 30,
@@ -295,7 +296,7 @@ object CioBlocks {
             }
             ErekirSpec {
                 requirements = arrayOf(
-                    CioItems.ic + 5,
+                    CioItems.ic + 6,
                     Items.graphite + 120,
                     Items.tungsten + 50,
                     Items.silicon + 50,
@@ -371,17 +372,16 @@ object CioBlocks {
             }
             ErekirSpec {
                 requirements = arrayOf(
-                    CioItems.ic + 3,
+                    CioItems.ic + 4,
                     Items.tungsten + 80,
                     Items.silicon + 50,
-                    Items.phaseFabric + 5,
-                    Items.surgeAlloy + 10,
+                    Items.beryllium + 80,
                 )
                 health = 250
                 range = 45f
-                powerProduction = 2.8f
-                maxPowerEFFBlocksReq = 20
-                maxGear = 6
+                powerProduction = 2f
+                maxPowerEFFBlocksReq = 18
+                maxGear = 8
             }
             color = R.C.LightBlue
             maxSlowDownRate = 0.9f
@@ -437,9 +437,10 @@ object CioBlocks {
             }
             ErekirSpec {
                 requirements = arrayOf(
-                    CioItems.ic + 20,
+                    CioItems.ic + 22,
                     Items.carbide + 120,
-                    Items.tungsten + 150,
+                    Items.beryllium + 250,
+                    Items.tungsten + 250,
                 )
                 health = 1500
             }
@@ -467,9 +468,9 @@ object CioBlocks {
             }
             ErekirSpec {
                 requirements = arrayOf(
-                    CioItems.ic + 12,
+                    CioItems.ic + 8,
                     Items.beryllium + 60,
-                    Items.surgeAlloy + 50,
+                    Items.carbide + 50,
                     Items.tungsten + 100,
                 )
                 health = 750
@@ -602,8 +603,8 @@ object CioBlocks {
             ErekirSpec {
                 requirements = arrayOf(
                     CioItems.ic + 3,
-                    Items.oxide + 8,
-                    Items.tungsten + 12,
+                    Items.beryllium + 50,
+                    Items.tungsten + 25,
                 )
                 scaledHealth = 425f
                 restoreReload = 15 * 60f
@@ -635,10 +636,10 @@ object CioBlocks {
             }
             ErekirSpec {
                 requirements = arrayOf(
-                    CioItems.ic + 5,
-                    Items.oxide + 10,
+                    CioItems.ic + 8,
+                    Items.beryllium + 100,
                     Items.tungsten + 40,
-                    Items.carbide + 5,
+                    Items.carbide + 6,
                 )
                 restoreReload = 20 * 60f
                 scaledHealth = 450f
@@ -678,8 +679,8 @@ object CioBlocks {
             }
             ErekirSpec {
                 requirements = arrayOf(
-                    CioItems.ic + 4,
-                    Items.tungsten + 150,
+                    CioItems.ic + 5,
+                    Items.tungsten + 180,
                     Items.thorium + 200,
                 )
                 ammo(
@@ -737,8 +738,8 @@ object CioBlocks {
             ErekirSpec {
                 requirements = arrayOf(
                     CioItems.ic + 20,
-                    Items.tungsten + 180,
-                    Items.carbide + 80,
+                    Items.tungsten + 200,
+                    Items.carbide + 180,
                     Items.surgeAlloy + 100,
                 )
                 scaledHealth = 500f
@@ -839,8 +840,8 @@ object CioBlocks {
                 requirements = arrayOf(
                     CioItems.ic + 8,
                     Items.tungsten + 200,
-                    Items.carbide + 25,
-                    Items.beryllium + 180,
+                    Items.carbide + 120,
+                    Items.beryllium + 300,
                 )
                 scaledHealth = 350f
                 powerUseBase = 1.4f
@@ -891,7 +892,7 @@ object CioBlocks {
                 researchCostMultiplier = 0.6f
                 powerUseBase = 2.5f
                 maxConnection = 8
-                maxRange = 3200f
+                maxRange = 2800f
                 powerUsePerConnection = 3.8f
             }
             squareSprite = false
@@ -921,9 +922,9 @@ object CioBlocks {
             }
             ErekirSpec {
                 requirements = arrayOf(
-                    CioItems.ic + 8,
+                    CioItems.ic + 12,
                     Items.surgeAlloy + 150,
-                    Items.thorium + 200,
+                    Items.thorium + 300,
                 )
                 scaledHealth = 350f
                 range = 165f
@@ -963,7 +964,7 @@ object CioBlocks {
             })
             shootWarmupSpeed = 0.03f
             minWarmup = 0.96f
-            shootY = -3.5f
+            shootY = -3f
             drawMulti {
                 drawTurret {
                     regionPart("-barrel") {
@@ -1664,19 +1665,23 @@ object CioBlocks {
                 requirements = arrayOf(
                     CioItems.ic + 2,
                     Items.lead + 40,
-                    Items.metaglass + 20,
-                    Items.silicon + 10,
+                    Items.metaglass + 50,
+                    Items.silicon + 50,
                 )
                 liquidCapacity = 800f
+                balancingSpeed = 0.5f
+                maxRange = -1f
             }
             ErekirSpec {
                 requirements = arrayOf(
                     CioItems.ic + 4,
-                    Items.tungsten + 15,
-                    Items.beryllium + 60,
-                    Items.silicon + 40,
+                    Items.tungsten + 40,
+                    Items.beryllium + 240,
+                    Items.silicon + 180,
                 )
                 liquidCapacity = 600f
+                balancingSpeed = 0.5f
+                maxRange = 1800f
             }
             liquidPadding = 2f
             size = 2

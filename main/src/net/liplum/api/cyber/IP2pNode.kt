@@ -1,5 +1,6 @@
 package net.liplum.api.cyber
 
+import arc.graphics.Color
 import mindustry.type.Liquid
 import net.liplum.api.ICyberEntity
 import net.liplum.mdt.ClientOnly
@@ -22,6 +23,9 @@ interface IP2pNode : ICyberEntity {
     var isDrawer: Boolean
     @ClientOnly
     var status: P2pStatus
+    @ClientOnly
+    val color: Color
+        get() = currentFluid.color
     val connected: IP2pNode?
         get() = connectedPos.p2p()
     @SendDataPack

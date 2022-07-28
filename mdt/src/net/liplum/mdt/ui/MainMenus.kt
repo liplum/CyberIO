@@ -6,7 +6,6 @@ import arc.scene.style.Drawable
 import arc.scene.ui.TextButton
 import arc.scene.ui.layout.Table
 import arc.scene.ui.layout.WidgetGroup
-import arc.util.Time
 import mindustry.Vars
 import mindustry.game.EventType
 import mindustry.gen.Icon
@@ -37,11 +36,9 @@ object MainMenus {
                 name = id
             })
         }
-        Time.run(4f) {
+        rebuild()
+        Events.on(EventType.ResizeEvent::class.java) {
             rebuild()
-            Events.on(EventType.ResizeEvent::class.java) {
-                rebuild()
-            }
         }
     }
     @JvmStatic
@@ -85,11 +82,9 @@ object MainMenus {
                 }
                 return
             }
-            Time.run(4f) {
+            rebuild()
+            Events.on(EventType.ResizeEvent::class.java) {
                 rebuild()
-                Events.on(EventType.ResizeEvent::class.java) {
-                    rebuild()
-                }
             }
         }
         coroutine()

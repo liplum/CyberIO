@@ -31,7 +31,9 @@ import net.liplum.mdt.SendDataPack
 import net.liplum.mdt.animations.anims.Animation
 import net.liplum.mdt.animations.anis.AniState
 import net.liplum.mdt.animations.anis.config
-import net.liplum.mdt.render.*
+import net.liplum.mdt.render.Draw
+import net.liplum.mdt.render.DrawOn
+import net.liplum.mdt.render.SetColor
 import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.utils.*
 import net.liplum.utils.addReceiverInfo
@@ -99,8 +101,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
 
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)
-        if (maxRange > 0f)
-            G.dashCircleBreath(this, x, y, maxRange * smoothPlacing(maxSelectedCircleTime), R.C.Sender)
+        drawPlacingMaxRange(x, y, maxRange, R.C.Sender)
     }
 
     override fun setBars() {

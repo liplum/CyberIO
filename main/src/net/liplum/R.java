@@ -181,7 +181,10 @@ public final class R {
         @NotNull
         public static final Color
             Sender = RedAlert,
-            Receiver = Pal.place;
+            Receiver = Pal.place,
+            Host = RedAlert,
+            Client = Pal.place,
+            P2P = LightBlue;
         @NotNull
         public static final
         Color IcLight = Color.valueOf("#047b04"),
@@ -213,14 +216,9 @@ public final class R {
         };
         public static final Color Stop = RedAlert;/* Color.valueOf("#dd2c00");*/
         public static final Color Unconnected = Color.white;
-        public static final Color Host = RedAlert,
-            Client = Pal.place;
-        @NotNull
-        public static Color[] LiquidColors;
-        @NotNull
-        public static Color[] HostLiquidColors;
-        @NotNull
-        public static Color[] ClientLiquidColors;
+        public static Color[] LiquidColors = {};
+        public static Color[] HostLiquidColors = {};
+        public static Color[] ClientLiquidColors = {};
     }
 
     public static final class SD {

@@ -55,9 +55,9 @@ import net.liplum.utils.addSenderInfo
 import net.liplum.utils.genText
 import kotlin.math.log2
 
-private typealias AniStateD = AniState<SmartDistributor, SmartDistributor.SmartDISBuild>
+private typealias AniStateD = AniState<SmartDistributor, SmartDistributor.SmartDistributorBuild>
 
-open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDistributor.SmartDISBuild>(name) {
+open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDistributor.SmartDistributorBuild>(name) {
     @JvmField var maxConnection = -1
     @ClientOnly lateinit var NoPowerTR: TR
     @ClientOnly lateinit var ArrowsAnim: Animation
@@ -89,7 +89,7 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
     }
 
     init {
-        buildType = Prov { SmartDISBuild() }
+        buildType = Prov { SmartDistributorBuild() }
         solid = true
         update = true
         hasItems = true
@@ -105,7 +105,7 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
     }
 
     open fun initPowerUse() {
-        consumePowerDynamic<SmartDISBuild> {
+        consumePowerDynamic<SmartDistributorBuild> {
             it._requirements.size * powerUsePerItem + powerUseBase
         }
     }
@@ -134,12 +134,12 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
             removeItemsInBar()
         }
         DebugOnly {
-            AddBar<SmartDISBuild>("dis-count",
+            AddBar<SmartDistributorBuild>("dis-count",
                 { "Count:" + boost2Count(timeScale()) },
                 { Pal.power },
                 { boost2Count(timeScale()) / 4f }
             )
-            addSenderInfo<SmartDISBuild>()
+            addSenderInfo<SmartDistributorBuild>()
         }
     }
 
@@ -157,7 +157,7 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
         drawPlaceText(subBundle("tip"), x, y, valid)
     }
 
-    open inner class SmartDISBuild : AniedBlock<SmartDistributor, SmartDISBuild>.AniedBuild(),
+    open inner class SmartDistributorBuild : AniedBlock<SmartDistributor, SmartDistributorBuild>.AniedBuild(),
         IDataReceiver {
         @JvmField var _requirements = Seq<Item>()
         @Serialized

@@ -25,8 +25,6 @@ import net.liplum.mdt.animations.anis.AniState
 import net.liplum.mdt.animations.anis.config
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.DrawOn
-import net.liplum.mdt.render.G
-import net.liplum.mdt.render.smoothPlacing
 import net.liplum.mdt.utils.buildAt
 import net.liplum.mdt.utils.inMod
 import net.liplum.mdt.utils.sub
@@ -129,8 +127,7 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
 
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)
-        if (maxRange > 0f)
-            G.dashCircleBreath(this, x, y, maxRange * smoothPlacing(maxSelectedCircleTime), R.C.Host)
+        drawPlacingMaxRange(x, y, maxRange, R.C.Host)
     }
 
     open inner class HostBuild : AniedBuild(), IStreamHost {

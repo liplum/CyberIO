@@ -31,8 +31,6 @@ import net.liplum.mdt.animations.anims.AnimationObj
 import net.liplum.mdt.animations.anis.AniState
 import net.liplum.mdt.animations.anis.config
 import net.liplum.mdt.render.Draw
-import net.liplum.mdt.render.G
-import net.liplum.mdt.render.smoothPlacing
 import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.ui.bars.removeItemsInBar
 import net.liplum.mdt.utils.*
@@ -41,10 +39,10 @@ import java.util.*
 import kotlin.math.absoluteValue
 import kotlin.math.log2
 
-private typealias AniStateU = AniState<SmartUnloader, SmartUnloader.SmartULDBuild>
-private typealias SmartDIS = SmartDistributor.SmartDISBuild
+private typealias AniStateU = AniState<SmartUnloader, SmartUnloader.SmartUnloaderBuild>
+private typealias SmartDIS = SmartDistributor.SmartDistributorBuild
 
-open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader.SmartULDBuild>(name) {
+open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader.SmartUnloaderBuild>(name) {
     /**
      * The lager the number the slower the unloading speed. Belongs to [0,+inf)
      */
@@ -80,7 +78,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
     @JvmField var maxRange = -1f
 
     init {
-        buildType = Prov { SmartULDBuild() }
+        buildType = Prov { SmartUnloaderBuild() }
         solid = true
         update = true
         hasPower = true
@@ -99,22 +97,22 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
         /**
          * For connect
          */
-        config(Integer::class.java) { obj: SmartULDBuild, receiverPackedPos ->
+        config(Integer::class.java) { obj: SmartUnloaderBuild, receiverPackedPos ->
             obj.addReceiverFromRemote(receiverPackedPos.toInt())
         }
-        configClear<SmartULDBuild> {
+        configClear<SmartUnloaderBuild> {
             it.clearReceivers()
         }
         /**
          * For schematic
          */
-        config(Array<Point2>::class.java) { obj: SmartULDBuild, relatives ->
+        config(Array<Point2>::class.java) { obj: SmartUnloaderBuild, relatives ->
             obj.resolveRelativePosFromRemote(relatives)
         }
     }
 
     open fun initPowerUse() {
-        consumePowerDynamic<SmartULDBuild> {
+        consumePowerDynamic<SmartUnloaderBuild> {
             (powerUseBasic
                     + powerUsePerItem * it.needUnloadItems.size
                     + powerUsePerConnection * it.connectedReceivers.size)
@@ -143,8 +141,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
 
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)
-        if (maxRange > 0f)
-            G.dashCircleBreath(this, x, y, maxRange * smoothPlacing(maxSelectedCircleTime), R.C.Sender)
+        drawPlacingMaxRange(x, y, maxRange, R.C.Sender)
     }
 
     override fun setBars() {
@@ -153,18 +150,18 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
             removeItemsInBar()
         }
         DebugOnly {
-            addReceiverInfo<SmartULDBuild>()
-            AddBar<SmartULDBuild>("last-unloading",
+            addReceiverInfo<SmartUnloaderBuild>()
+            AddBar<SmartUnloaderBuild>("last-unloading",
                 { "Last Unload: ${lastUnloadTime.toInt()}" },
                 { Pal.bar },
                 { lastUnloadTime / UnloadTime }
             )
-            AddBar<SmartULDBuild>("last-sending",
+            AddBar<SmartUnloaderBuild>("last-sending",
                 { "Last Send: ${lastSendingTime.toInt()}" },
                 { Pal.bar },
                 { lastSendingTime / SendingTime }
             )
-            AddBar<SmartULDBuild>("queue",
+            AddBar<SmartUnloaderBuild>("queue",
                 { "Queue: ${queue.size}" },
                 { Pal.bar },
                 { queue.size.toFloat() / maxReceiverConnection }
@@ -172,7 +169,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
         }
     }
 
-    open inner class SmartULDBuild : AniedBlock<SmartUnloader, SmartULDBuild>.AniedBuild(),
+    open inner class SmartUnloaderBuild : AniedBlock<SmartUnloader, SmartUnloaderBuild>.AniedBuild(),
         IDataSender {
         override val maxRange = this@SmartUnloader.maxRange
         @Serialized
@@ -522,6 +519,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
                 configure(pos)
             }
         }
+
         override fun beforeDraw() {
             if (canConsume() && isUnloading && isSending) {
                 shrinkingAnimObj.spend(delta())

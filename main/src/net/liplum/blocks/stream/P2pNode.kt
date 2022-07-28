@@ -1,7 +1,7 @@
 package net.liplum.blocks.stream
 
 import arc.func.Prov
-import arc.graphics.g2d.Draw
+import arc.graphics.Color
 import arc.math.Angles
 import arc.util.Time
 import arc.util.io.Reads
@@ -12,16 +12,20 @@ import mindustry.type.Liquid
 import mindustry.world.blocks.liquid.LiquidBlock
 import mindustry.world.meta.BlockGroup
 import net.liplum.DebugOnly
+import net.liplum.R
 import net.liplum.Var
 import net.liplum.Var.YinYangRotationSpeed
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
+import net.liplum.common.Changed
 import net.liplum.common.utils.DrawLayer
 import net.liplum.lib.Serialized
 import net.liplum.lib.assets.EmptyTR
+import net.liplum.lib.math.nextBoolean
 import net.liplum.mdt.CalledBySync
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.SendDataPack
+import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.animations.anis.AniState
 import net.liplum.mdt.animations.anis.config
 import net.liplum.mdt.render.Draw
@@ -73,6 +77,11 @@ open class P2pNode(name: String) : AniedBlock<P2pNode, P2pNode.P2pBuild>(name) {
         NoPowerTR = this.inMod("rs-no-power")
         BottomTR = this.sub("bottom")
         YinAndYangTR = this.sub("yin-and-yang")
+    }
+
+    override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
+        super.drawPlace(x, y, rotation, valid)
+        drawPlacingMaxRange(x, y, maxRange, R.C.LightBlue)
     }
 
     override fun icons() = arrayOf(BottomTR, region, YinAndYangTR)
@@ -135,7 +144,7 @@ open class P2pNode(name: String) : AniedBlock<P2pNode, P2pNode.P2pBuild>(name) {
                         }
                     val (sender, receiver) = connection
                     val abs = difference.absoluteValue
-                    if (abs > Var.P2PNNodeBalanceThreshold) {
+                    if (abs > Var.P2pNNodeBalanceThreshold) {
                         sender.status = P2pStatus.Sender
                         receiver.status = P2pStatus.Receiver
                         val data = abs
@@ -149,11 +158,46 @@ open class P2pNode(name: String) : AniedBlock<P2pNode, P2pNode.P2pBuild>(name) {
                 }
             }
         }
+        @ClientOnly
+        var lastP2pColor = Changed.empty<Color>()
+        @ClientOnly
+        var targetP2pColor = R.C.P2P
+        override val color: Color
+            get() = transitionColor(lastP2pColor, targetP2pColor)
 
         override fun updateTile() {
             balanceFluid()
             if (currentAmount > 0.0001f && timer(timerDump, 1f)) {
                 dumpLiquid(currentFluid, dumpScale)
+            }
+            ClientOnly {
+                val other = connected ?: return@ClientOnly
+                if (!other.isDrawer && !this.isDrawer) {
+                    this.isDrawer = nextBoolean()
+                    other.isDrawer = !this.isDrawer
+                }
+            }
+            ClientOnly {
+                val other = connected
+                if (other == null) {
+                    if (targetP2pColor != R.C.P2P) {
+                        lastP2pColor = Changed(old = targetP2pColor)
+                        targetP2pColor = R.C.P2P
+                    }
+                } else {
+                    if (currentAmount < 0.0001f) {
+                        if (targetP2pColor != R.C.P2P) {
+                            lastP2pColor = Changed(old = targetP2pColor)
+                            targetP2pColor = R.C.P2P
+                        }
+                    } else {
+                        val fluidColor = currentFluid.color
+                        if (targetP2pColor != fluidColor) {
+                            lastP2pColor = Changed(old = targetP2pColor)
+                            targetP2pColor = fluidColor
+                        }
+                    }
+                }
             }
         }
 
@@ -167,25 +211,6 @@ open class P2pNode(name: String) : AniedBlock<P2pNode, P2pNode.P2pBuild>(name) {
                     }
                 }
             }
-            if (other != null && isDrawer) {
-                val sender: Building
-                val receiver: Building
-                if (status == P2pStatus.Sender) {
-                    sender = this
-                    receiver = other.building
-                } else {
-                    sender = other.building
-                    receiver = this
-                }
-                Draw.z(Layer.blockOver)
-                transferArrowLineBreath(
-                    sender, receiver,
-                    arrowColor = currentFluid.color,
-                    density = ArrowDensity,
-                    speed = ArrowSpeed,
-                    alphaMultiplier = 0.8f
-                )
-            }
         }
         @ClientOnly
         var yinYangRotation = 0f
@@ -198,10 +223,12 @@ open class P2pNode(name: String) : AniedBlock<P2pNode, P2pNode.P2pBuild>(name) {
                 )
             }
             region.DrawOn(this)
-            yinYangRotation = when (status) {
-                P2pStatus.Sender -> Angles.moveToward(yinYangRotation, 0f, YinYangRotationSpeed * Time.delta)
-                P2pStatus.Receiver -> Angles.moveToward(yinYangRotation, 180f, YinYangRotationSpeed * Time.delta)
-                else -> Angles.moveToward(yinYangRotation, 0f, YinYangRotationSpeed * Time.delta)
+            WhenNotPaused {
+                yinYangRotation = when (status) {
+                    P2pStatus.Sender -> Angles.moveToward(yinYangRotation, 0f, YinYangRotationSpeed * Time.delta)
+                    P2pStatus.Receiver -> Angles.moveToward(yinYangRotation, 180f, YinYangRotationSpeed * Time.delta)
+                    else -> Angles.moveToward(yinYangRotation, 0f, YinYangRotationSpeed * Time.delta)
+                }
             }
             YinAndYangTR.DrawOn(this, rotation = yinYangRotation)
         }
@@ -215,6 +242,18 @@ open class P2pNode(name: String) : AniedBlock<P2pNode, P2pNode.P2pBuild>(name) {
 
         override fun readSteam(fluid: Liquid, amount: Float) {
             liquids.add(fluid, amount)
+        }
+
+        override fun drawSelect() {
+            super.drawSelect()
+            drawP2PConnection()
+            drawSelectedMaxRange()
+        }
+
+        override fun drawConfigure() {
+            super.drawConfigure()
+            drawP2PConnection()
+            drawConfiguringMaxRange()
         }
         @ClientOnly
         @SendDataPack
