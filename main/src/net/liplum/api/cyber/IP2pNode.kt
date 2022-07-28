@@ -28,6 +28,8 @@ interface IP2pNode : ICyberEntity {
         get() = currentFluid.color
     val connected: IP2pNode?
         get() = connectedPos.p2p()
+    val isConnected: Boolean
+        get() = connected != null
     @SendDataPack
     fun disconnectFromAnotherSync()
     @SendDataPack

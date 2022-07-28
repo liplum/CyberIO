@@ -7,18 +7,23 @@ import arc.math.geom.Point2
 import arc.struct.Seq
 import arc.util.Time
 import mindustry.Vars
+import mindustry.gen.Building
 import mindustry.type.Item
 import mindustry.type.Liquid
+import mindustry.world.Block
 import net.liplum.R
 import net.liplum.Var
 import net.liplum.annotations.SubscribeEvent
 import net.liplum.api.ICyberEntity
 import net.liplum.common.Changed
 import net.liplum.common.util.Or
+import net.liplum.common.util.bundle
+import net.liplum.common.util.toFloat
 import net.liplum.event.CioInitEvent
 import net.liplum.lib.math.Point2f
 import net.liplum.lib.math.smooth
 import net.liplum.mdt.ClientOnly
+import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.utils.*
 
 private val p1 = Point2f()
@@ -238,13 +243,13 @@ fun isConfiguringSender(): Boolean {
     val selected = Vars.control.input.config.selected
     return selected is IDataSender
 }
-
 @ClientOnly
 fun isConfiguringHost(): Boolean {
     val selected = Vars.control.input.config.selected
     return selected is IStreamHost
 }
-fun isConfiguringP2P():Boolean{
+
+fun isConfiguringP2P(): Boolean {
     val selected = Vars.control.input.config.selected
     return selected is IP2pNode
 }
@@ -267,4 +272,79 @@ fun IP2pNode.checkConnection() =
         connectedPos = -1
         true
     } else false
+//</editor-fold>
+//<editor-fold desc="Bars">
+inline fun <reified T> Block.addReceiverInfo() where T : Building, T : IDataSender {
+    AddBar<T>(
+        R.Bar.ReceiverN,
+        {
+            "${R.Bar.Receiver.bundle}: ${connectedReceivers.size}"
+        },
+        { R.C.Receiver },
+        {
+            var max = maxReceiverConnection
+            if (max == -1) {
+                max = 10
+            }
+            connectedReceivers.size.toFloat() / max
+        }
+    )
+}
+
+inline fun <reified T> Block.addSenderInfo() where T : Building, T : IDataReceiver {
+    AddBar<T>(
+        R.Bar.SenderN,
+        { "${R.Bar.Sender.bundle}: ${connectedSenders.size}" },
+        { R.C.Sender },
+        {
+            var max = maxSenderConnection
+            if (max == -1) {
+                max = 10
+            }
+            connectedSenders.size.toFloat() / max
+        }
+    )
+}
+
+inline fun <reified T> Block.addClientInfo() where T : Building, T : IStreamHost {
+    AddBar<T>(
+        R.Bar.ClientN,
+        { "${R.Bar.Client.bundle}: ${connectedClients.size}" },
+        { R.C.Client },
+        {
+            var max = maxClientConnection
+            if (max == -1) {
+                max = 10
+            }
+            connectedClients.size.toFloat() / max
+        }
+    )
+}
+
+inline fun <reified T> Block.addHostInfo() where T : Building, T : IStreamClient {
+    AddBar<T>(
+        R.Bar.HostN,
+        { "${R.Bar.Host.bundle}: ${connectedHosts.size}" },
+        { R.C.Host },
+        {
+            var max = maxHostConnection
+            if (max == -1) {
+                max = 10
+            }
+            connectedHosts.size.toFloat() / max
+        }
+    )
+}
+
+inline fun <reified T> Block.addP2pLinkInfo() where T : Building, T : IP2pNode {
+    AddBar<T>(
+        R.Bar.LinkedN,
+        {
+            if (isConnected) R.Bar.Linked.bundle
+            else R.Bar.Unlinked.bundle
+        },
+        { R.C.P2P },
+        { isConnected.toFloat() }
+    )
+}
 //</editor-fold>

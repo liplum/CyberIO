@@ -93,6 +93,10 @@ open class P2pNode(name: String) : AniedBlock<P2pNode, P2pNode.P2pBuild>(name) {
         addLinkRangeStats(maxRange)
     }
 
+    override fun setBars() {
+        super.setBars()
+
+    }
     override fun icons() = arrayOf(BottomTR, region, YinAndYangTR)
     open inner class P2pBuild : AniedBuild(), IP2pNode {
         override val maxRange = this@P2pNode.maxRange

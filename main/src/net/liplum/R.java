@@ -82,8 +82,6 @@ public final class R {
             CoolDown = Gen(CoolDownN);
         public static final String IsAliveN = "is-alive",
             IsAlive = Gen(IsAliveN);
-        public static final String AniStateN = "ani-state",
-            AniState = Gen(AniStateN);
         public static final String NullN = "null",
             Null = Gen(NullN);
 
@@ -94,9 +92,7 @@ public final class R {
         public static final String
             LinkedN = "linked",
             Linked = Gen(LinkedN),
-            Unlink = Gen("unlinked");
-        public static final String StatusN = "status",
-            Status = Gen(StatusN);
+            Unlinked = Gen("unlinked");
         public static final String ReceiverN = "receiver",
             Receiver = Gen(ReceiverN);
         public static final String SenderN = "sender",

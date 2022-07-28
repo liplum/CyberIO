@@ -148,11 +148,11 @@ open class Prism(name: String) : Block(name) {
         )
         DebugOnly {
             AddBar<PrismBuild>("progress",
-                { "${"bar.loadprogress ".bundle}: ${cm.progress.percentI}" },
+                { "${"bar.loadprogress".bundle}: ${cm.progress.percentI}" },
                 { Pal.power },
                 { cm.progress }
             )
-            AddBar<PrismBuild>(R.Bar.StatusN,
+            AddBar<PrismBuild>("prism-status",
                 { cm.status.toString() },
                 { Pal.accent },
                 { 1f }

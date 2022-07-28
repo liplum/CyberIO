@@ -55,11 +55,10 @@ open class PrismObelisk(name: String) : Block(name) {
         super.setBars()
         AddBar<ObeliskBuild>(R.Bar.LinkedN,
             {
-                if (linked != -1)
-                    R.Bar.Linked.bundle
-                else
-                    R.Bar.Unlink.bundle
-            }, AutoRGBx,
+                if (isLinked) R.Bar.Linked.bundle
+                else R.Bar.Unlinked.bundle
+            },
+            { Prism.animatedColor.color },
             { if (linked != -1) 1f else 0f }
         )
     }

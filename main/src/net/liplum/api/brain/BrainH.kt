@@ -85,7 +85,7 @@ inline fun <reified T> Block.addBrainLinkInfo() where T : Building, T : IUpgrade
         R.Bar.LinkedN,
         {
             if (isLinkedBrain) R.Bar.Linked.bundle
-            else R.Bar.Unlink.bundle
+            else R.Bar.Unlinked.bundle
         },
         { R.C.Host },
         { isLinkedBrain.toFloat() }

@@ -94,8 +94,6 @@ open class HoloWall(name: String) : Wall(name) {
     override fun icons() = arrayOf(BaseTR, DyedImageTR)
     override fun setBars() {
         super.setBars()
-        removeItemsInBar()
-        removeBar("health")
         AddBar<HoloWallBuild>("health",
             { "stat.health".bundle },
             { S.Hologram },
