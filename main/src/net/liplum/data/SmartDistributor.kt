@@ -29,7 +29,7 @@ import net.liplum.blocks.AniedBlock
 import net.liplum.common.delegate.Delegate1
 import net.liplum.common.persistence.read
 import net.liplum.common.persistence.write
-import net.liplum.common.utils.DoMultipleBool
+import net.liplum.common.util.DoMultipleBool
 import net.liplum.lib.Serialized
 import net.liplum.lib.arc.equalsNoOrder
 import net.liplum.lib.arc.set

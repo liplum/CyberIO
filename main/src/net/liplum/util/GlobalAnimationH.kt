@@ -5,7 +5,7 @@ import arc.scene.style.TextureRegionDrawable
 import mindustry.ctype.UnlockableContent
 import mindustry.world.Block
 import net.liplum.ResourceLoader
-import net.liplum.common.utils.sheetOneDirection
+import net.liplum.common.util.sheetOneDirection
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.animation.ganim.GlobalAnimation
 import net.liplum.mdt.animation.ganim.GlobalAnimation.Companion.register

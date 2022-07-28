@@ -12,7 +12,7 @@ import mindustry.world.meta.BlockGroup
 import net.liplum.R
 import net.liplum.Var
 import net.liplum.blocks.prism.Prism.PrismBuild
-import net.liplum.common.utils.bundle
+import net.liplum.common.util.bundle
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.animation.anims.Animation

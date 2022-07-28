@@ -7,7 +7,7 @@ import arc.util.Time
 import mindustry.game.EventType
 import net.liplum.annotations.Only
 import net.liplum.annotations.Subscribe
-import net.liplum.common.utils.progress
+import net.liplum.common.util.progress
 import net.liplum.mdt.ClientOnly
 
 typealias GlobalAnimationIndexer = GlobalAnimation.() -> TextureRegion

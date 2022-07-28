@@ -4,7 +4,7 @@ import mindustry.gen.Building
 import net.liplum.api.ICyberEntity
 import net.liplum.api.cyber.*
 import net.liplum.common.delegate.Delegate
-import net.liplum.common.utils.on
+import net.liplum.common.util.on
 import net.liplum.mdt.utils.*
 
 interface IHeimdallEntity : ICyberEntity {

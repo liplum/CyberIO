@@ -36,9 +36,9 @@ import net.liplum.lib.assets.TR
 import net.liplum.common.entity.PosRadiation
 import net.liplum.common.persistence.ReadFromCache
 import net.liplum.common.persistence.WriteIntoCache
-import net.liplum.common.utils.forLoop
+import net.liplum.common.util.forLoop
 import net.liplum.lib.math.isZero
-import net.liplum.common.utils.toDouble
+import net.liplum.common.util.toDouble
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.render.*
 import net.liplum.mdt.utils.MdtUnit

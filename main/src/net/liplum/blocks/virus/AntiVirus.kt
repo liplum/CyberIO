@@ -23,7 +23,7 @@ import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.Var
 import net.liplum.lib.assets.TR
-import net.liplum.common.utils.bundle
+import net.liplum.common.util.bundle
 import net.liplum.lib.math.isZero
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.render.G

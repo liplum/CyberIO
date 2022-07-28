@@ -4,7 +4,7 @@ import mindustry.entities.bullet.BulletType
 import mindustry.gen.Bullet
 import mindustry.type.UnitType
 import net.liplum.blocks.prism.RgbList
-import net.liplum.common.utils.directSuperClass
+import net.liplum.common.util.directSuperClass
 
 enum class PrismData {
     Duplicate

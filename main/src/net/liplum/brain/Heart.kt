@@ -32,9 +32,9 @@ import net.liplum.R
 import net.liplum.Var
 import net.liplum.api.brain.*
 import net.liplum.common.Smooth
-import net.liplum.common.utils.bundle
-import net.liplum.common.utils.format
-import net.liplum.common.utils.toDouble
+import net.liplum.common.util.bundle
+import net.liplum.common.util.format
+import net.liplum.common.util.toDouble
 import net.liplum.lib.Serialized
 import net.liplum.lib.arc.hsvLerp
 import net.liplum.lib.assets.TR

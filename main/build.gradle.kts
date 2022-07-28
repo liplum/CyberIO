@@ -8,6 +8,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm")
+    `maven-publish`
     id("com.google.devtools.ksp") version "1.7.0-1.0.6"
     id("io.github.liplum.mgpp")
 }
@@ -45,10 +46,6 @@ ksp {
     arg("Dp.Scope", "net.liplum.registry")
     allowSourcesFromOtherPlugins = true
     blockOtherCompilerPlugins = true
-}
-java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
 }
 mindustry {
     run {
@@ -106,5 +103,19 @@ tasks.jar {
     }
     from("$rootDir/extra") {
         include("**")
+    }
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+    withSourcesJar()
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            from(components["java"])
+        }
     }
 }

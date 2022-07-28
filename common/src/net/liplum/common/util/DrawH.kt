@@ -1,6 +1,6 @@
 @file:JvmName("DrawH")
 
-package net.liplum.common.utils
+package net.liplum.common.util
 
 import arc.graphics.g2d.Draw
 

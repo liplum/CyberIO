@@ -6,7 +6,7 @@ import mindustry.type.Item
 import net.liplum.DebugOnly
 import net.liplum.lib.assets.TR
 import net.liplum.blocks.AniedCrafter
-import net.liplum.common.utils.percentI
+import net.liplum.common.util.percentI
 import net.liplum.lib.math.FUNC
 import net.liplum.lib.math.isZero
 import net.liplum.mdt.ClientOnly
@@ -19,7 +19,7 @@ import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.utils.sub
 import kotlin.math.sqrt
 
-private typealias AniStateMS = AniState<ICMachineS, ICMachineS.ICMachineSBuild>
+private typealias AniStateMS = AniState<ICMachineSmall, ICMachineSmall.ICMachineSmallBuild>
 
 private val P2ALeft = (3 - sqrt(3f)) / 6
 private val P2ARight = (3 + sqrt(3f)) / 6
@@ -30,7 +30,7 @@ private val P2A: FUNC = {
         -6 * it * it + 6 * it
 }
 
-open class ICMachineS(name: String) : AniedCrafter<ICMachineS, ICMachineS.ICMachineSBuild>(name) {
+open class ICMachineSmall(name: String) : AniedCrafter<ICMachineSmall, ICMachineSmall.ICMachineSmallBuild>(name) {
     @ClientOnly var phase = 3
     @ClientOnly lateinit var Baffle: TR
     @ClientOnly lateinit var processIcons: Array<Item>
@@ -38,13 +38,13 @@ open class ICMachineS(name: String) : AniedCrafter<ICMachineS, ICMachineS.ICMach
     @ClientOnly @JvmField var baffleMaxAlpha = 1f
 
     init {
-        buildType = Prov { ICMachineSBuild() }
+        buildType = Prov { ICMachineSmallBuild() }
     }
 
     override fun setBars() {
         super.setBars()
         DebugOnly {
-            AddBar<ICMachineSBuild>("alpha",
+            AddBar<ICMachineSmallBuild>("alpha",
                 { "alpha:${baffleAlpha.percentI}" },
                 { Pal.powerBar },
                 { baffleAlpha / 1f }
@@ -61,7 +61,7 @@ open class ICMachineS(name: String) : AniedCrafter<ICMachineS, ICMachineS.ICMach
         region, Baffle
     )
 
-    open inner class ICMachineSBuild : AniedCrafter<ICMachineS, ICMachineSBuild>.AniedCrafterBuild() {
+    open inner class ICMachineSmallBuild : AniedCrafter<ICMachineSmall, ICMachineSmallBuild>.AniedCrafterBuild() {
         @ClientOnly open var baffleAlpha = baffleMinAlpha
             set(value) {
                 field = value.coerceIn(baffleMinAlpha, baffleMaxAlpha)

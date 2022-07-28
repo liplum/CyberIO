@@ -24,9 +24,9 @@ import net.liplum.api.virus.UninfectedBlocksRegistry
 import net.liplum.lib.Serialized
 import net.liplum.lib.UseRandom
 import net.liplum.common.shader.use
-import net.liplum.common.utils.bundle
-import net.liplum.common.utils.off
-import net.liplum.common.utils.on
+import net.liplum.common.util.bundle
+import net.liplum.common.util.off
+import net.liplum.common.util.on
 import net.liplum.mdt.Else
 import net.liplum.mdt.ServerOnly
 import net.liplum.mdt.ui.bars.AddBar

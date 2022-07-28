@@ -13,8 +13,8 @@ import mindustry.type.UnitType
 import mindustry.world.blocks.defense.turrets.PowerTurret
 import mindustry.world.meta.StatUnit
 import mindustry.world.meta.StatValue
-import net.liplum.common.utils.IBundle
-import net.liplum.common.utils.OverwriteBundle
+import net.liplum.common.util.IBundle
+import net.liplum.common.util.OverwriteBundle
 
 fun <T : UnlockableContent> ammoStats(
     vararg map: Pair<T, BulletType>,

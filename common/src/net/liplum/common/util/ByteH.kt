@@ -1,6 +1,6 @@
 @file:JvmName("ByteH")
 
-package net.liplum.common.utils
+package net.liplum.common.util
 
 /**
  * **[pos] Starts with 0**

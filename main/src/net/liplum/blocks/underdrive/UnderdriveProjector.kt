@@ -36,9 +36,9 @@ import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.Var
 import net.liplum.lib.Serialized
-import net.liplum.common.utils.bundle
-import net.liplum.common.utils.format
-import net.liplum.common.utils.percentI
+import net.liplum.common.util.bundle
+import net.liplum.common.util.format
+import net.liplum.common.util.percentI
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.render.G
 import net.liplum.mdt.render.G.realHeight

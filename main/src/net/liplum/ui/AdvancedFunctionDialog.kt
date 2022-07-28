@@ -13,8 +13,8 @@ import mindustry.ui.dialogs.BaseDialog
 import net.liplum.R
 import net.liplum.Var
 import net.liplum.common.delegate.Delegate
-import net.liplum.common.utils.IBundlable
-import net.liplum.common.utils.bundle
+import net.liplum.common.util.IBundlable
+import net.liplum.common.util.bundle
 
 object AdvancedFunctionDialog : IBundlable {
     override val bundlePrefix = "setting.${R.Gen("advanced-function")}"

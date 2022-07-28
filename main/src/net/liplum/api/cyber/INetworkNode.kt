@@ -11,8 +11,8 @@ import net.liplum.api.cyber.SideLinks.Companion.coordinates
 import net.liplum.api.cyber.SideLinks.Companion.reflect
 import net.liplum.lib.Out
 import net.liplum.lib.Serialized
-import net.liplum.common.utils.isEven
-import net.liplum.common.utils.raycastInThis
+import net.liplum.common.util.isEven
+import net.liplum.common.util.raycastInThis
 import net.liplum.data.DataID
 import net.liplum.data.EmptyDataID
 import net.liplum.data.PayloadData

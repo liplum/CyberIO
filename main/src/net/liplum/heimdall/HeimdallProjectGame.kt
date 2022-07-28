@@ -7,12 +7,12 @@ import mindustry.graphics.Pal
 import mindustry.ui.Bar
 import net.liplum.ui.INavigable
 import net.liplum.common.ui.UIToast
-import net.liplum.common.utils.IBundlable
+import net.liplum.common.util.IBundlable
 import net.liplum.inCio
 import net.liplum.mdt.ClientOnly
 import net.liplum.ui.CyberIOMenu
-import net.liplum.ui.controls.TabItem
-import net.liplum.ui.controls.TabView
+import net.liplum.ui.control.TabItem
+import net.liplum.ui.control.TabView
 import net.liplum.ui.TRD
 import net.liplum.ui.addTable
 

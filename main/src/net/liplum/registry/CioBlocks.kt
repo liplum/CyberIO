@@ -46,7 +46,7 @@ import net.liplum.blocks.deleter.Deleter
 import net.liplum.blocks.deleter.DeleterWave
 import net.liplum.blocks.deleter.deleted
 import net.liplum.blocks.ic.ICMachine
-import net.liplum.blocks.ic.ICMachineS
+import net.liplum.blocks.ic.ICMachineSmall
 import net.liplum.blocks.jammer.Jammer
 import net.liplum.blocks.jammer.JammingLaser
 import net.liplum.blocks.power.WirelessTower
@@ -167,7 +167,7 @@ object CioBlocks {
     }
     @DependOn("CioItems.ic")
     fun icMachineSmall() {
-        icMachineSmall = ICMachineS("ic-machine-s").apply {
+        icMachineSmall = ICMachineSmall("ic-machine-s").apply {
             category = Category.crafting
             buildVisibility = BuildVisibility.shown
             requirements = arrayOf(

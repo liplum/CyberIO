@@ -1,6 +1,6 @@
 package net.liplum.test
 
-import net.liplum.common.utils.rotateOnce
+import net.liplum.common.util.rotateOnce
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 

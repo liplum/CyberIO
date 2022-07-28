@@ -4,7 +4,7 @@ import arc.struct.Seq
 import arc.util.serialization.JsonValue
 import mindustry.io.JsonIO
 import net.liplum.common.Res
-import net.liplum.common.utils.getValue
+import net.liplum.common.util.getValue
 
 object WelcomeList {
     var list: Map<String, WelcomeTip> = emptyMap()

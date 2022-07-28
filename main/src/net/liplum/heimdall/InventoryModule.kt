@@ -1,7 +1,7 @@
 package net.liplum.heimdall
 
 import arc.scene.ui.layout.Table
-import net.liplum.common.utils.IBundlable
+import net.liplum.common.util.IBundlable
 
 class InventoryModule : IBundlable {
     lateinit var op: HeimdallOp

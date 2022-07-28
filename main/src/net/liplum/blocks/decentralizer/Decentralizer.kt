@@ -12,7 +12,7 @@ import net.liplum.DebugOnly
 import net.liplum.S
 import net.liplum.blocks.decentralizer.RecipeCenter.AllRecipes
 import net.liplum.blocks.decentralizer.RecipeCenter.calcuID
-import net.liplum.common.utils.getF
+import net.liplum.common.util.getF
 import net.liplum.mdt.render.postToastTextOn
 import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.utils.ID

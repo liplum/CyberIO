@@ -5,7 +5,7 @@ import arc.Events
 import mindustry.Vars
 import mindustry.ctype.UnlockableContent
 import mindustry.game.EventType.UnlockEvent
-import net.liplum.common.utils.setFIn
+import net.liplum.common.util.setFIn
 import net.liplum.lib.UseReflection
 
 @UseReflection

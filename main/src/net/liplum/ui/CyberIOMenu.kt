@@ -10,9 +10,9 @@ import net.liplum.annotations.Only
 import net.liplum.annotations.SubscribeEvent
 import net.liplum.event.CioInitEvent
 import net.liplum.heimdall.HeimdallProjectGame
-import net.liplum.ui.controls.TabItem
-import net.liplum.ui.controls.TabView
-import net.liplum.ui.controls.TabViewStyle
+import net.liplum.ui.control.TabItem
+import net.liplum.ui.control.TabView
+import net.liplum.ui.control.TabViewStyle
 
 object CyberIOMenu : INavigable {
     val tabViewStyle = TabViewStyle().apply {

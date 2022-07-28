@@ -14,13 +14,13 @@ import mindustry.gen.Sounds
 import mindustry.gen.Tex
 import net.liplum.*
 import net.liplum.common.ui.UIToast
-import net.liplum.common.utils.IBundlable
-import net.liplum.common.utils.bundle
+import net.liplum.common.util.IBundlable
+import net.liplum.common.util.bundle
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.ui.addTrackTooltip
 import net.liplum.ui.animation.animatedVisibility
 import net.liplum.ui.animation.WrapAnimationSpec
-import net.liplum.ui.templates.NewIconTextButton
+import net.liplum.ui.template.NewIconTextButton
 
 @ClientOnly
 object ContentSpecFrag : IBundlable {

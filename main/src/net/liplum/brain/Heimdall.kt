@@ -41,8 +41,8 @@ import net.liplum.common.entity.Radiation
 import net.liplum.common.entity.RadiationQueue
 import net.liplum.common.persistence.ReadFromCache
 import net.liplum.common.persistence.WriteIntoCache
-import net.liplum.common.utils.format
-import net.liplum.common.utils.toDouble
+import net.liplum.common.util.format
+import net.liplum.common.util.toDouble
 import net.liplum.lib.Serialized
 import net.liplum.lib.assets.TR
 import net.liplum.lib.math.isZero

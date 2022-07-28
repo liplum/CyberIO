@@ -8,8 +8,8 @@ import mindustry.game.EventType.Trigger
 import net.liplum.mdt.ClientOnly
 import net.liplum.CLog
 import net.liplum.common.Res
-import net.liplum.common.utils.createModBundle
-import net.liplum.common.utils.loadMoreFrom
+import net.liplum.common.util.createModBundle
+import net.liplum.common.util.loadMoreFrom
 import net.liplum.common.toLinkedString
 import net.liplum.script.ScriptLoader.load
 import opengal.core.Interpreter

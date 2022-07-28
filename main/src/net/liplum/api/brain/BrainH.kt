@@ -5,7 +5,7 @@ import mindustry.gen.Tex
 import mindustry.graphics.Pal
 import mindustry.world.Block
 import mindustry.world.meta.Stats
-import net.liplum.common.utils.bundle
+import net.liplum.common.util.bundle
 import net.liplum.registry.CioStats
 import net.liplum.ui.addTable
 import net.liplum.ui.then

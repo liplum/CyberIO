@@ -1,6 +1,6 @@
 @file:JvmName("KotlinH")
 
-package net.liplum.common.utils
+package net.liplum.common.util
 
 import net.liplum.lib.Out
 

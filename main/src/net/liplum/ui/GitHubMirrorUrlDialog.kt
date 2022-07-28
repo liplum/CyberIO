@@ -11,9 +11,9 @@ import net.liplum.R
 import net.liplum.Settings
 import net.liplum.common.delegate.Delegate
 import net.liplum.common.ing
-import net.liplum.common.utils.IBundlable
-import net.liplum.common.utils.bundle
-import net.liplum.common.utils.useFakeHeader
+import net.liplum.common.util.IBundlable
+import net.liplum.common.util.bundle
+import net.liplum.common.util.useFakeHeader
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.ui.ShowTextDialog
 import net.liplum.mdt.ui.addTrackTooltip

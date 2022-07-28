@@ -1,8 +1,8 @@
 package net.liplum.util
 
 import net.liplum.R
-import net.liplum.common.utils.bundle
-import net.liplum.common.utils.format
+import net.liplum.common.util.bundle
+import net.liplum.common.util.format
 import kotlin.math.absoluteValue
 
 fun Boolean.yesNo(): String =

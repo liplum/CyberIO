@@ -7,9 +7,9 @@ import net.liplum.common.math.PolarX
 import net.liplum.common.persistence.CacheReaderSpec
 import net.liplum.common.persistence.CacheWriter
 import net.liplum.common.persistence.IRWableX
-import net.liplum.common.utils.isOn
-import net.liplum.common.utils.off
-import net.liplum.common.utils.on
+import net.liplum.common.util.isOn
+import net.liplum.common.util.off
+import net.liplum.common.util.on
 import net.liplum.mdt.ClientOnly
 import java.io.DataInputStream
 

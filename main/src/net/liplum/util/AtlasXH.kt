@@ -3,8 +3,8 @@
 package net.liplum.util
 
 import mindustry.ctype.MappableContent
-import net.liplum.common.utils.sheet
-import net.liplum.common.utils.sheetOneDirection
+import net.liplum.common.util.sheet
+import net.liplum.common.util.sheetOneDirection
 import net.liplum.lib.assets.TR
 import net.liplum.lib.assets.TRs
 import net.liplum.mdt.utils.atlas

@@ -2,7 +2,7 @@ package net.liplum.api.cyber
 
 import arc.math.geom.Geometry
 import arc.math.geom.Point2
-import net.liplum.common.utils.copyFrom
+import net.liplum.common.util.copyFrom
 import net.liplum.mdt.utils.PackedPos
 import net.liplum.mdt.utils.TEAny
 

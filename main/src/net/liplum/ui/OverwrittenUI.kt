@@ -10,7 +10,7 @@ import net.liplum.S
 import net.liplum.annotations.Only
 import net.liplum.annotations.SubscribeEvent
 import net.liplum.blocks.prism.Prism
-import net.liplum.common.utils.setF
+import net.liplum.common.util.setF
 import net.liplum.event.CioInitEvent
 import net.liplum.holo.HoloUnit
 import net.liplum.mdt.OverwriteVanilla

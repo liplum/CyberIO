@@ -36,8 +36,8 @@ import net.liplum.api.prism.PrismRegistry.setDuplicate
 import net.liplum.blocks.prism.CrystalManager.Companion.read
 import net.liplum.blocks.prism.CrystalManager.Companion.write
 import net.liplum.common.math.PolarX
-import net.liplum.common.utils.bundle
-import net.liplum.common.utils.percentI
+import net.liplum.common.util.bundle
+import net.liplum.common.util.percentI
 import net.liplum.lib.Serialized
 import net.liplum.lib.arc.AnimatedColor
 import net.liplum.lib.assets.EmptyTRs

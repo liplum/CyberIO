@@ -26,7 +26,7 @@ import net.liplum.R
 import net.liplum.Var
 import net.liplum.api.brain.*
 import net.liplum.common.math.PolarX
-import net.liplum.common.utils.progress
+import net.liplum.common.util.progress
 import net.liplum.lib.assets.EmptySounds
 import net.liplum.lib.assets.TR
 import net.liplum.lib.assets.TRs

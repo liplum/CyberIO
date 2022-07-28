@@ -1,4 +1,4 @@
-package net.liplum.common.utils
+package net.liplum.common.util
 
 import arc.Core
 import net.liplum.lib.assets.TR

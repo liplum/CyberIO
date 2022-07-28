@@ -12,7 +12,7 @@ import mindustry.graphics.Pal
 import net.liplum.lib.assets.TR
 import net.liplum.common.TimeH
 import net.liplum.common.ui.addProgressTable
-import net.liplum.common.utils.IBundlable
+import net.liplum.common.util.IBundlable
 import net.liplum.ui.addSeparatorLine
 
 class MiningModule : IBundlable {

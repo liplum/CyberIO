@@ -6,7 +6,7 @@ import mindustry.type.LiquidStack
 import mindustry.ui.ReqImage
 import mindustry.world.consumers.Consume
 import net.liplum.mdt.mixin.has
-import net.liplum.common.utils.toFloat
+import net.liplum.common.util.toFloat
 import net.liplum.mdt.ui.LiquidImage
 
 open class DynamicOnceLiquidsCons(

@@ -21,9 +21,9 @@ import net.liplum.*
 import net.liplum.annotations.Only
 import net.liplum.annotations.SubscribeEvent
 import net.liplum.common.ing
-import net.liplum.common.utils.bundle
-import net.liplum.common.utils.getF
-import net.liplum.common.utils.randomExcept
+import net.liplum.common.util.bundle
+import net.liplum.common.util.getF
+import net.liplum.common.util.randomExcept
 import net.liplum.event.CioInitEvent
 import net.liplum.lib.UseReflection
 import net.liplum.lib.arc.invoke

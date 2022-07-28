@@ -22,8 +22,8 @@ import net.liplum.annotations.Only
 import net.liplum.annotations.SubscribeEvent
 import net.liplum.lib.arc.tinted
 import net.liplum.event.CioInitEvent
-import net.liplum.common.utils.allFieldsIncludeParents
-import net.liplum.common.utils.directSuperClass
+import net.liplum.common.util.allFieldsIncludeParents
+import net.liplum.common.util.directSuperClass
 import net.liplum.mdt.Screen
 import net.liplum.render.Shapes
 import net.liplum.ui.attach.Dragger.Companion.dragToMove

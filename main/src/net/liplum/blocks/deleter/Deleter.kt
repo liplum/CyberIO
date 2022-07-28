@@ -4,8 +4,8 @@ import arc.Core
 import arc.func.Prov
 import mindustry.world.blocks.defense.turrets.PowerTurret
 import mindustry.world.meta.Stat
-import net.liplum.common.utils.MapKeyBundle
-import net.liplum.common.utils.format
+import net.liplum.common.util.MapKeyBundle
+import net.liplum.common.util.format
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.ui.ammoStats
 import net.liplum.mdt.utils.subBundle

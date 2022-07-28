@@ -31,8 +31,8 @@ import net.liplum.R
 import net.liplum.S
 import net.liplum.holo.HoloProjector.HoloPBuild
 import net.liplum.common.shader.use
-import net.liplum.common.utils.bundle
-import net.liplum.common.utils.toFloat
+import net.liplum.common.util.bundle
+import net.liplum.common.util.toFloat
 import net.liplum.lib.math.FUNC
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.Else

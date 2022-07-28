@@ -12,8 +12,8 @@ import mindustry.graphics.Drawf
 import mindustry.world.blocks.defense.OverdriveProjector
 import mindustry.world.meta.Stat
 import net.liplum.R
-import net.liplum.common.utils.bundle
-import net.liplum.common.utils.percentI
+import net.liplum.common.util.bundle
+import net.liplum.common.util.percentI
 import net.liplum.lib.Serialized
 import net.liplum.lib.math.ExpLogGen
 import net.liplum.lib.math.FUNC

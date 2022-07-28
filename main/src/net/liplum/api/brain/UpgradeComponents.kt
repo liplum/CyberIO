@@ -4,8 +4,8 @@ import arc.util.Log
 import mindustry.world.Block
 import net.liplum.common.CoerceLength
 import net.liplum.common.fill
-import net.liplum.common.utils.isOn
-import net.liplum.common.utils.rotateOnce
+import net.liplum.common.util.isOn
+import net.liplum.common.util.rotateOnce
 
 interface IUpgradeComponent : IHeimdallEntity {
     var directionInfo: Direction2

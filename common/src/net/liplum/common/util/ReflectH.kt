@@ -1,6 +1,6 @@
 @file:JvmName("ReflectH")
 
-package net.liplum.common.utils
+package net.liplum.common.util
 
 import net.liplum.lib.Out
 import java.lang.reflect.Field

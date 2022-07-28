@@ -1,4 +1,4 @@
-package net.liplum.common.utils
+package net.liplum.common.util
 
 inline fun DoMultipleBool(isMultiple: Boolean, times: Int, action: () -> Boolean): Boolean {
     return if (isMultiple) {

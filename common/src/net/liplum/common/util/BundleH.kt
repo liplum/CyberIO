@@ -3,7 +3,7 @@
 /**
  * In this BundleH.kt, you can only import any class from [arc.*]
  */
-package net.liplum.common.utils
+package net.liplum.common.util
 
 import arc.Core
 import arc.files.Fi

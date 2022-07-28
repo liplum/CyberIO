@@ -3,7 +3,7 @@ package net.liplum.mdt.utils
 import arc.Core
 import arc.graphics.g2d.TextureRegion
 import mindustry.ctype.MappableContent
-import net.liplum.common.utils.sheetOneDirection
+import net.liplum.common.util.sheetOneDirection
 import net.liplum.mdt.animation.anims.Animation
 import net.liplum.mdt.animation.anims.AutoAnimation
 

@@ -34,9 +34,6 @@ publishing {
     publications {
         create<MavenPublication>("maven") {
             from(components["java"])
-            afterEvaluate {
-                artifact(tasks.named("sourcesJar"))
-            }
         }
     }
 }

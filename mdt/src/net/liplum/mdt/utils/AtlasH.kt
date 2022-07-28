@@ -5,7 +5,7 @@ package net.liplum.mdt.utils
 import arc.Core.atlas
 import mindustry.Vars
 import mindustry.ctype.MappableContent
-import net.liplum.common.utils.sheetOneDirection
+import net.liplum.common.util.sheetOneDirection
 import net.liplum.lib.assets.TR
 import net.liplum.lib.assets.TRs
 

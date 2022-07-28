@@ -1,4 +1,4 @@
-package net.liplum.ui.controls
+package net.liplum.ui.control
 
 import arc.scene.ui.layout.Table
 import net.liplum.ui.animation.AnimatedVisibility

@@ -23,7 +23,7 @@ import net.liplum.blocks.AniedBlock
 import net.liplum.common.Changed
 import net.liplum.common.persistence.read
 import net.liplum.common.persistence.write
-import net.liplum.common.utils.DoMultipleBool
+import net.liplum.common.util.DoMultipleBool
 import net.liplum.lib.Serialized
 import net.liplum.lib.assets.TR
 import net.liplum.mdt.*

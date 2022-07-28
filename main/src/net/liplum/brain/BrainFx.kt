@@ -21,8 +21,8 @@ import net.liplum.annotations.SubscribeEvent
 import net.liplum.common.entity.FixedList
 import net.liplum.common.entity.Radiation
 import net.liplum.common.entity.RadiationArray
-import net.liplum.common.utils.progress
-import net.liplum.common.utils.sheetOneDirection
+import net.liplum.common.util.progress
+import net.liplum.common.util.sheetOneDirection
 import net.liplum.event.CioLoadContentEvent
 import net.liplum.lib.assets.TR
 import net.liplum.mdt.WhenNotPaused

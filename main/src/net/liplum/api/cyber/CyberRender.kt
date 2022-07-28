@@ -16,9 +16,9 @@ import net.liplum.R
 import net.liplum.Settings
 import net.liplum.Var
 import net.liplum.api.ICyberEntity
-import net.liplum.common.utils.bundle
-import net.liplum.common.utils.inViewField
-import net.liplum.common.utils.isLineInViewField
+import net.liplum.common.util.bundle
+import net.liplum.common.util.inViewField
+import net.liplum.common.util.isLineInViewField
 import net.liplum.lib.arc.darken
 import net.liplum.lib.math.Point2f
 import net.liplum.lib.math.isZero

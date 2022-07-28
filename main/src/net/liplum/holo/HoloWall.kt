@@ -21,8 +21,8 @@ import net.liplum.S
 import net.liplum.api.holo.IHoloEntity
 import net.liplum.api.holo.IHoloEntity.Companion.minHealth
 import net.liplum.common.shader.use
-import net.liplum.common.utils.bundle
-import net.liplum.common.utils.toFloat
+import net.liplum.common.util.bundle
+import net.liplum.common.util.toFloat
 import net.liplum.lib.Serialized
 import net.liplum.lib.assets.TR
 import net.liplum.lib.math.isZero

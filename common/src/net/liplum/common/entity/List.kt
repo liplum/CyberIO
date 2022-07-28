@@ -5,7 +5,7 @@ import arc.util.io.Writes
 import net.liplum.common.persistence.CacheReaderSpec
 import net.liplum.common.persistence.CacheWriter
 import net.liplum.common.persistence.IRWableX
-import net.liplum.common.utils.ArrayList
+import net.liplum.common.util.ArrayList
 import java.io.DataInputStream
 import java.util.*
 
