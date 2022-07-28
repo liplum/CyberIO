@@ -37,8 +37,6 @@ ___
 <kbd>   <br>   Liplum   <br>   </kbd> 
 <kbd>   <br>   [sudoudou233](https://github.com/sudoudou233)   <br>   </kbd>   
 
-___
-
 ### Sprites
 
 <kbd>   <br>   [Eclipse](https://github.com/EclipseTheOldOne)   <br>   </kbd>   
@@ -46,9 +44,9 @@ ___
 ### Translation
 <br>
 
-<kbd>   <br>   Ukrainian [Prosta4okua](https://github.com/Prosta4okua)   <br>   </kbd>   
-<kbd>   <br>   Chinese Simplified woodjecket#0554   <br>   </kbd>   
-<kbd>   <br>   Japanese [Sakuranokwa](https://github.com/Sakuranokwa)   <br>   </kbd>
+<kbd>   <br>   [Ukrainian] [Prosta4okua](https://github.com/Prosta4okua)   <br>   </kbd>   
+<kbd>   <br>   [Chinese Simplified] woodjecket#0554   <br>   </kbd>   
+<kbd>   <br>   [Japanese] [Sakuranokwa](https://github.com/Sakuranokwa)   <br>   </kbd>
 
 <br>
 
