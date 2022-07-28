@@ -24,4 +24,5 @@ sourceSets {
 }
 dependencies {
     implementation(gradleApi())
+    implementation("com.google.code.gson:gson:2.9.0")
 }

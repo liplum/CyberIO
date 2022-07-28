@@ -46,25 +46,29 @@ jobs:
 
       - uses: actions/download-artifact@v2
         with:
-          name: CyberIO-Jar
+          name: CyberIO-Unzip-This
           path: out
 
-      - name: Retrieve Meta
+      - name: Retrieve meta
         id: retrieveMeta
         run: |
-          ./gradlew getReleaseHeader
+          chmod +x gradlew
+          ./gradlew retrieveMeta
 
-      - name: Delete and recreate tag
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VERSION: ${{ steps.retrieveMeta.outputs.version }}
-        run: |
-          gh release delete "$VERSION" --yes || true
-          git push origin ":$VERSION" || true
-
-      - name: Upload development build
+      - name: Create release
+        if: ${{ steps.retrieveMeta.outputs.tag_exist == 'false' }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           HEADER: ${{ steps.retrieveMeta.outputs.header }}
           VERSION: ${{ steps.retrieveMeta.outputs.version }}
-        run: gh release create "$VERSION" --title "$HEADER" --notes-file "$GITHUB_WORKSPACE/ReleaseMessage.md" out/*.jar
+          TAG_EXIST: ${{ steps.retrieveMeta.outputs.tag_exist }}
+        run: |
+          gh release create "$VERSION" --title "$HEADER" --notes-file "Info/ReleaseMessage/$VERSION.md" out/*
+
+      - name: Update release file
+        if: ${{ steps.retrieveMeta.outputs.tag_exist == 'true' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.retrieveMeta.outputs.version }}
+        run: |
+          gh release upload "$VERSION" out/* --clobber
