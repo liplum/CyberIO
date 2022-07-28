@@ -56,9 +56,9 @@ open class PrismObelisk(name: String) : Block(name) {
         AddBar<ObeliskBuild>(R.Bar.LinkedN,
             {
                 if (linked != -1)
-                    R.Bar.Linked.bundle()
+                    R.Bar.Linked.bundle
                 else
-                    R.Bar.NoLink.bundle()
+                    R.Bar.Unlink.bundle
             }, AutoRGBx,
             { if (linked != -1) 1f else 0f }
         )

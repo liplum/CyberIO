@@ -68,8 +68,6 @@ public final class R {
             Generation = Gen(GenerationN);
 
         public static final class Vanilla {
-            public static final String BuildProgressN = "progress",
-                BuildProgress = "bar.progress";
             public static final String UnitsN = "units",
                 UnitCapacity = "bar.unitcap";
         }
@@ -78,33 +76,25 @@ public final class R {
             SlowDown = Gen(SlowDownN);
         public static final String EfficiencyAbsorptionN = "efficiency-absorption",
             EfficiencyAbsorption = Gen(EfficiencyAbsorptionN);
-        public static final String TeamN = "team",
-            Team = Gen(TeamN);
         public static final String RangeN = "range",
             Range = Gen(RangeN);
         public static final String CoolDownN = "cool-down",
             CoolDown = Gen(CoolDownN);
         public static final String IsAliveN = "is-alive",
             IsAlive = Gen(IsAliveN);
-        public static final String IsAsleepN = "is-asleep",
-            IsAsleep = Gen(IsAsleepN);
         public static final String AniStateN = "ani-state",
             AniState = Gen(AniStateN);
-        public static final String AniStateLastN = "ani-state-last",
-            AniStateLast = Gen(AniStateLastN);
         public static final String NullN = "null",
             Null = Gen(NullN);
 
-        public static final String ProgressN = "progress",
-            Progress = Gen(ProgressN);
         public static final String
             PrismN = "prism",
-            Prism = Gen(PrismN),
-            PrismPl = Gen(PrismN + ".pl");
+            Prism = Gen(PrismN);
+
         public static final String
             LinkedN = "linked",
             Linked = Gen(LinkedN),
-            NoLink = Gen(LinkedN + ".no");
+            Unlink = Gen("unlinked");
         public static final String StatusN = "status",
             Status = Gen(StatusN);
         public static final String ReceiverN = "receiver",

@@ -142,18 +142,15 @@ open class Prism(name: String) : Block(name) {
         super.setBars()
         AddBar<PrismBuild>(R.Bar.PrismN,
             {
-                if (cm.validAmount > 1)
-                    "$crystalAmount ${R.Bar.PrismPl.bundle()}"
-                else
-                    "$crystalAmount ${R.Bar.Prism.bundle()}"
+                "${R.Bar.Prism.bundle}: $crystalAmount"
             }, { animatedColor.color },
             { crystalAmount.toFloat() / maxCrystal }
         )
         DebugOnly {
-            AddBar<PrismBuild>(R.Bar.ProgressN,
-                { R.Bar.Progress.bundle(cm.progress.percentI) },
+            AddBar<PrismBuild>("progress",
+                { "${"bar.loadprogress ".bundle}: ${cm.progress.percentI}" },
                 { Pal.power },
-                { cm.progress / 1f }
+                { cm.progress }
             )
             AddBar<PrismBuild>(R.Bar.StatusN,
                 { cm.status.toString() },
@@ -410,7 +407,7 @@ open class Prism(name: String) : Block(name) {
                 )
                 if (isInPayload) Draw.z(Layer.blockOver + 1f)
                 else Draw.z(Layer.bullet - 1f)
-                if(isSelected)
+                if (isSelected)
                     G.dashCircleBreath(priselX, priselY, prismRadius * smoothSelect(maxSelectedCircleTime), circleColor)
                 img.DrawSize(
                     priselX,

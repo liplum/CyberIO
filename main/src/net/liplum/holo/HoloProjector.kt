@@ -135,15 +135,15 @@ open class HoloProjector(name: String) : Block(name) {
             removeItemsInBar()
         }
         DebugOnly {
-            AddBar<HoloPBuild>(R.Bar.ProgressN,
-                { R.Bar.Progress.bundle(progress.percentI) },
-                { Pal.bar },
+            AddBar<HoloPBuild>("progress",
+                { "${"bar.progress".bundle}: ${progress.percentI}" },
+                { S.Hologram },
                 { progress }
             )
         }.Else {
-            AddBar<HoloPBuild>(R.Bar.Vanilla.BuildProgressN,
-                { R.Bar.Vanilla.BuildProgress.bundle },
-                { Pal.bar },
+            AddBar<HoloPBuild>("progress",
+                { "bar.progress".bundle },
+                { S.Hologram },
                 { progress }
             )
         }

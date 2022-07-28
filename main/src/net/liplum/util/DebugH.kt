@@ -8,21 +8,12 @@ import mindustry.gen.Building
 import mindustry.graphics.Pal
 import mindustry.logic.Ranged
 import mindustry.world.Block
-import mindustry.world.blocks.production.GenericCrafter
 import net.liplum.R
 import net.liplum.api.brain.IUpgradeComponent
 import net.liplum.api.cyber.*
 import net.liplum.common.util.*
 import net.liplum.mdt.animation.anis.IAniSMedBuild
 import net.liplum.mdt.ui.bars.AddBar
-
-fun Block.addTeamInfo() {
-    AddBar<Building>(R.Bar.TeamN,
-        { R.Bar.Team.bundle(team) },
-        { Pal.powerBar },
-        { 1f }
-    )
-}
 
 inline fun <reified T> Block.addRangeInfo(maxRange: Float) where T : Building, T : Ranged {
     AddBar<T>(R.Bar.RangeN,
@@ -38,22 +29,20 @@ inline fun <reified T> Block.addAniStateInfo() where T : Building, T : IAniSMedB
         { Pal.bar },
         { 1f }
     )
-    AddBar<T>(R.Bar.AniStateLastN,
+    AddBar<T>("ani-state-last",
         {
-            R.Bar.AniStateLast.bundle(
-                aniStateM.lastState?.stateName ?: R.Bar.Null.bundle()
-            )
+            "Last: ${aniStateM.lastState?.stateName ?: R.Bar.Null.bundle}"
         },
         { Pal.bar },
         { (aniStateM.lastState != null).Float }
     )
 }
 
-inline fun <reified T> Block.addProgressInfo() where T : GenericCrafter.GenericCrafterBuild {
-    AddBar<T>(R.Bar.ProgressN,
-        { R.Bar.Progress.bundle(progress.percentI) },
+inline fun <reified T> Block.addProgressInfo() where T : Building {
+    AddBar<T>("progress",
+        { "${"bar.loadprogress".bundle}: ${progress().percentI}" },
         { Pal.power },
-        { progress / 1f }
+        { progress() }
     )
 }
 
@@ -110,7 +99,7 @@ inline fun <reified T> Block.addHostInfo() where T : Building, T : IStreamClient
             if (max == -1) {
                 max = 10
             }
-            connectedHosts.size.toFloat()/ max
+            connectedHosts.size.toFloat() / max
         }
     )
 }
@@ -124,10 +113,10 @@ inline fun <reified T> Block.addBrainInfo() where T : Building, T : IUpgradeComp
 }
 
 inline fun <reified T> Block.addSendingProgress() where T : Building, T : INetworkNode {
-    AddBar<T>(R.Bar.ProgressN,
-        { R.Bar.Progress.bundle(sendingProgress) },
+    AddBar<T>("progress",
+        { "${"bar.loadprogress".bundle}: $sendingProgress" },
         { R.C.Power },
-        { sendingProgress / 1f }
+        { sendingProgress }
     )
 }
 
