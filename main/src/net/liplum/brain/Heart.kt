@@ -58,7 +58,6 @@ import net.liplum.mdt.ui.bars.removeLiquidInBar
 import net.liplum.mdt.utils.MdtUnit
 import net.liplum.mdt.utils.sheet
 import net.liplum.mdt.utils.sub
-import net.liplum.util.addBrainInfo
 
 open class Heart(name: String) : Block(name), IComponentBlock {
     // Upgrade component
@@ -158,9 +157,7 @@ open class Heart(name: String) : Block(name), IComponentBlock {
     override fun setBars() {
         super.setBars()
         removeLiquidInBar()
-        DebugOnly {
-            addBrainInfo<HeartBuild>()
-        }
+        addBrainLinkInfo<HeartBuild>()
         DebugOnly {
             AddBar<HeartBuild>(R.Bar.BloodN,
                 { "${R.Bar.Blood.bundle}: ${bloodAmount.toInt()}" },

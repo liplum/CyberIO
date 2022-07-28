@@ -30,7 +30,6 @@ import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.DrawOn
 import net.liplum.mdt.utils.inMod
 import net.liplum.mdt.utils.sub
-import net.liplum.util.addHostInfo
 
 private typealias AniStateC = AniState<StreamClient, StreamClient.ClientBuild>
 

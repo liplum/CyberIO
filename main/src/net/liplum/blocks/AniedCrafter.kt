@@ -1,10 +1,10 @@
 package net.liplum.blocks
 
-import mindustry.Vars
 import mindustry.world.blocks.production.GenericCrafter
 import net.liplum.CanRefresh
-import net.liplum.Meta
+import net.liplum.DebugOnly
 import net.liplum.mdt.ClientOnly
+import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.animation.anis.*
 import net.liplum.util.addAniStateInfo
 import net.liplum.util.addProgressInfo
@@ -12,9 +12,9 @@ import net.liplum.util.addProgressInfo
 @Suppress("UNCHECKED_CAST")
 abstract class AniedCrafter<
         TBlock : AniedCrafter<TBlock, TBuild>,
-        TBuild : AniedCrafter<TBlock, TBuild>.AniedCrafterBuild
+        TBuild : AniedCrafter<TBlock, TBuild>.AniedCrafterBuild,
         >(
-    name: String
+    name: String,
 ) :
     GenericCrafter(name), IAniSMed<TBlock, TBuild> {
     @ClientOnly
@@ -33,7 +33,7 @@ abstract class AniedCrafter<
 
     override fun setBars() {
         super.setBars()
-        if (Meta.EnableDebug) {
+        DebugOnly {
             addProgressInfo<GenericCrafterBuild>()
             addAniStateInfo<AniedCrafterBuild>()
         }
@@ -77,7 +77,7 @@ abstract class AniedCrafter<
         }
 
         override fun draw() {
-            if (!Vars.state.isPaused) {
+            WhenNotPaused {
                 aniStateM.spend(delta())
                 beforeDraw()
             }

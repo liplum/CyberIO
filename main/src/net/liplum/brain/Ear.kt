@@ -26,26 +26,24 @@ import mindustry.world.meta.BlockFlag
 import mindustry.world.meta.BlockGroup
 import mindustry.world.meta.Stat
 import mindustry.world.meta.StatUnit
-import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.Var
 import net.liplum.api.brain.*
-import net.liplum.lib.arc.invoke
-import net.liplum.lib.Serialized
-import net.liplum.lib.assets.TR
 import net.liplum.common.entity.PosRadiation
 import net.liplum.common.persistence.ReadFromCache
 import net.liplum.common.persistence.WriteIntoCache
 import net.liplum.common.util.forLoop
-import net.liplum.lib.math.isZero
 import net.liplum.common.util.toDouble
+import net.liplum.lib.Serialized
+import net.liplum.lib.arc.invoke
+import net.liplum.lib.assets.TR
+import net.liplum.lib.math.isZero
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.render.*
 import net.liplum.mdt.utils.MdtUnit
 import net.liplum.mdt.utils.TileXY
 import net.liplum.mdt.utils.sub
 import net.liplum.mdt.utils.toCenterWorldXY
-import net.liplum.util.addBrainInfo
 
 /**
  * ### Since 1
@@ -120,9 +118,7 @@ open class Ear(name: String) : Block(name), IComponentBlock {
     override fun icons() = arrayOf(BaseTR, EarTR)
     override fun setBars() {
         super.setBars()
-        DebugOnly {
-            addBrainInfo<EarBuild>()
-        }
+        addBrainLinkInfo<EarBuild>()
     }
 
     override fun drawPlace(x: TileXY, y: TileXY, rotation: Int, valid: Boolean) {
@@ -146,7 +142,7 @@ open class Ear(name: String) : Block(name), IComponentBlock {
         IUpgradeComponent, ControlBlock, Ranged {
         override fun version() = 1.toByte()
         // <editor-fold desc="Heimdall">
-        override val componentName="Ear"
+        override val componentName = "Ear"
         override val scale: SpeedScale = SpeedScale()
         override var directionInfo: Direction2 = Direction2()
         override var brain: IBrain? = null
@@ -156,6 +152,7 @@ open class Ear(name: String) : Block(name), IComponentBlock {
             set(value) {
                 field = value.coerceIn(0f, 1f)
             }
+
         override fun afterPickedUp() {
             super.afterPickedUp()
             unlinkBrain()

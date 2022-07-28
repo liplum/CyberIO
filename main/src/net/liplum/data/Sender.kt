@@ -37,7 +37,6 @@ import net.liplum.mdt.render.DrawOn
 import net.liplum.mdt.render.SetColor
 import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.utils.*
-import net.liplum.util.addReceiverInfo
 
 private typealias AniStateS = AniState<Sender, SenderBuild>
 

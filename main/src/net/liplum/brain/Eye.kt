@@ -41,7 +41,6 @@ import net.liplum.mdt.animation.anims.randomCurTime
 import net.liplum.mdt.render.*
 import net.liplum.mdt.ui.ammoStats
 import net.liplum.mdt.utils.*
-import net.liplum.util.addBrainInfo
 
 open class Eye(name: String) : PowerTurret(name), IComponentBlock {
     var normalBullet: BulletType = Bullets.placeholder
@@ -113,9 +112,7 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
 
     override fun setBars() {
         super.setBars()
-        DebugOnly {
-            addBrainInfo<EyeBuild>()
-        }
+        addBrainLinkInfo<EyeBuild>()
     }
 
     override fun setStats() {

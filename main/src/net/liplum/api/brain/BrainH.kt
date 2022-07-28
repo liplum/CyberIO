@@ -1,11 +1,15 @@
 package net.liplum.api.brain
 
 import arc.graphics.Color
+import mindustry.gen.Building
 import mindustry.gen.Tex
 import mindustry.graphics.Pal
 import mindustry.world.Block
 import mindustry.world.meta.Stats
+import net.liplum.R
 import net.liplum.common.util.bundle
+import net.liplum.common.util.toFloat
+import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.registry.CioStats
 import net.liplum.ui.addTable
 import net.liplum.ui.then
@@ -74,4 +78,16 @@ fun Stats.addHeimdallProperties(props: Map<UpgradeType, Float>) {
             stat.row()
         }
     }
+}
+
+inline fun <reified T> Block.addBrainLinkInfo() where T : Building, T : IUpgradeComponent {
+    AddBar<T>(
+        R.Bar.LinkedN,
+        {
+            if (isLinkedBrain) R.Bar.Linked.bundle
+            else R.Bar.Unlink.bundle
+        },
+        { R.C.Host },
+        { isLinkedBrain.toFloat() }
+    )
 }

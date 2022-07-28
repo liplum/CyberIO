@@ -38,7 +38,6 @@ import net.liplum.mdt.ui.bars.removeItemsInBar
 import net.liplum.mdt.utils.autoAnimInMod
 import net.liplum.mdt.utils.inMod
 import net.liplum.mdt.utils.sub
-import net.liplum.util.addSenderInfo
 
 private typealias AniStateR = AniState<Receiver, ReceiverBuild>
 

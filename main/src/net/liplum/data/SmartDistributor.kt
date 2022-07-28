@@ -50,7 +50,6 @@ import net.liplum.mdt.utils.inMod
 import net.liplum.mdt.utils.isDiagonalTo
 import net.liplum.mdt.utils.subBundle
 import net.liplum.util.addPowerUseStats
-import net.liplum.util.addSenderInfo
 import net.liplum.util.genText
 import kotlin.math.log2
 

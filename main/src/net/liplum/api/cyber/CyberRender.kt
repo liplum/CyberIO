@@ -26,6 +26,7 @@ import net.liplum.lib.math.plusAssign
 import net.liplum.lib.math.smooth
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.render.*
+import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.utils.*
 
 @ClientOnly
@@ -85,7 +86,7 @@ fun IStreamClient.drawStreamGraph(showCircle: Boolean = true) {
 @ClientOnly
 fun IP2pNode.drawP2PConnection(showCircle: Boolean = true) {
     val other = connected ?: return
-    val drawer = if(this.isDrawer) this else other
+    val drawer = if (this.isDrawer) this else other
     if (showCircle && this.canShowSelfCircle()) {
         G.surroundingCircleBreath(tile, color, alpha = Settings.LinkOpacity)
     }
@@ -427,6 +428,7 @@ fun IP2pNode.drawConfiguringMaxRange() {
     }
 }
 //</editor-fold>
+//<editor-fold desc="Transfer Arrow Line">
 fun transferArrowLineBreath(
     startDrawX: WorldXY, startDrawY: WorldXY,
     endDrawX: WorldXY, endDrawY: WorldXY,
@@ -517,3 +519,63 @@ fun transferArrowLineBreath(
     speed = speed,
     alphaMultiplier = alphaMultiplier,
 )
+//</editor-fold>
+//<editor-fold desc="Bars">
+inline fun <reified T> Block.addReceiverInfo() where T : Building, T : IDataSender {
+    AddBar<T>(R.Bar.ReceiverN,
+        {
+            "${R.Bar.Receiver.bundle}: ${connectedReceivers.size}"
+        },
+        { R.C.Receiver },
+        {
+            var max = maxReceiverConnection
+            if (max == -1) {
+                max = 10
+            }
+            connectedReceivers.size.toFloat() / max
+        }
+    )
+}
+
+inline fun <reified T> Block.addSenderInfo() where T : Building, T : IDataReceiver {
+    AddBar<T>(R.Bar.SenderN,
+        { "${R.Bar.Sender.bundle}: ${connectedSenders.size}" },
+        { R.C.Sender },
+        {
+            var max = maxSenderConnection
+            if (max == -1) {
+                max = 10
+            }
+            connectedSenders.size.toFloat() / max
+        }
+    )
+}
+
+inline fun <reified T> Block.addClientInfo() where T : Building, T : IStreamHost {
+    AddBar<T>(R.Bar.ClientN,
+        { "${R.Bar.Client.bundle}: ${connectedClients.size}" },
+        { R.C.Client },
+        {
+            var max = maxClientConnection
+            if (max == -1) {
+                max = 10
+            }
+            connectedClients.size.toFloat() / max
+        }
+    )
+}
+
+inline fun <reified T> Block.addHostInfo() where T : Building, T : IStreamClient {
+    AddBar<T>(R.Bar.HostN,
+        { "${R.Bar.Host.bundle}: ${connectedHosts.size}" },
+        { R.C.Host },
+        {
+            var max = maxHostConnection
+            if (max == -1) {
+                max = 10
+            }
+            connectedHosts.size.toFloat() / max
+        }
+    )
+}
+//</editor-fold>

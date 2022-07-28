@@ -55,7 +55,7 @@ ___
 
 **Resources**
 
-- Textures -> [Eclipse](https://github.com/EclipseTheOldOne) 
+- Sprites -> [Eclipse](https://github.com/EclipseTheOldOne) 
 
 **Translation**
 

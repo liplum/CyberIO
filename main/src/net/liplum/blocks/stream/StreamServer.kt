@@ -35,7 +35,6 @@ import net.liplum.mdt.ui.bars.removeLiquidInBar
 import net.liplum.mdt.utils.ForProximity
 import net.liplum.mdt.utils.buildAt
 import net.liplum.mdt.utils.sub
-import net.liplum.util.addHostInfo
 
 /**
  * ### Since 1
