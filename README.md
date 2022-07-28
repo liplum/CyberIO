@@ -32,15 +32,19 @@ ___
 
 ## Acknowledgements
 
-**Main Authors:** Liplum, sudoudou233 (tudou#3923)
+**Main Authors:**
+
+@liplum
+
+[sudoudou233](https://github.com/sudoudou233)
 ___
 ### IN NO ORDER
 
-The friendly people on Discord whoever have ever helped me.
+The friendly people on Discord whoever have helped me.
 
 Anyone who committed any issue or made any pull request on GitHub.
 
-Anyone who likes CyberIO.
+Anyone who likes Cyber IO.
 
 And you.
 
@@ -60,7 +64,7 @@ ___
 
 ## Licence
 
-The codes of CyberIO are open source in GNU General Public License v3.0 (GPL 3.0).
+The codes of CyberIO are open source under GNU General Public License v3.0 (GPL 3.0).
 
 To learn about the resources of CyberIO, please check the [Copyright File](Info/Copyright.md).
 </div>
