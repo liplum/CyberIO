@@ -62,7 +62,7 @@ mindustry {
 
 tasks.register("retrieveMeta") {
     doLast {
-        println("::set-output name=header::[Preview]${mindustry.meta.displayName} v$version on Mindustry v${mindustry.meta.minGameVersion}")
+        println("::set-output name=header::[Preview] Cyber IO v$version on Mindustry v${mindustry.meta.minGameVersion}")
         println("::set-output name=version::v$version")
         try {
             val releases = java.net.URL("https://api.github.com/repos/liplum/CyberIO/releases").readText()
