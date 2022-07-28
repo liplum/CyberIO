@@ -23,7 +23,7 @@ import net.liplum.R
 import net.liplum.api.virus.UninfectedBlocksRegistry
 import net.liplum.lib.Serialized
 import net.liplum.lib.UseRandom
-import net.liplum.common.shaders.use
+import net.liplum.common.shader.use
 import net.liplum.common.utils.bundle
 import net.liplum.common.utils.off
 import net.liplum.common.utils.on
@@ -31,8 +31,8 @@ import net.liplum.mdt.Else
 import net.liplum.mdt.ServerOnly
 import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.utils.sub
-import net.liplum.registries.SD
-import net.liplum.utils.yesNo
+import net.liplum.registry.SD
+import net.liplum.util.yesNo
 
 typealias UBR = UninfectedBlocksRegistry
 

@@ -3,13 +3,11 @@
 package net.liplum.api.cyber
 
 import arc.scene.ui.Label
-import mindustry.gen.Iconc
-import mindustry.ui.Fonts
 import mindustry.world.Block
 import mindustry.world.meta.Stat
 import net.liplum.R
 import net.liplum.common.utils.bundle
-import net.liplum.registries.CioStats
+import net.liplum.registry.CioStats
 
 fun <T> T.addLinkRangeStats(range: Float) where  T : Block {
     stats.add(CioStats.dataRange) { stat ->

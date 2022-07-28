@@ -9,8 +9,8 @@ import mindustry.world.Block
 import mindustry.world.draw.DrawBlock
 import net.liplum.lib.assets.TR
 import net.liplum.lib.assets.TRs
-import net.liplum.utils.sheetX
-import net.liplum.utils.subX
+import net.liplum.util.sheetX
+import net.liplum.util.subX
 
 class SpecDrawConstruct : DrawBlock() {
     var stages = 3

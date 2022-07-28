@@ -1,6 +1,6 @@
 package net.liplum
 
-import net.liplum.common.delegates.Delegate
+import net.liplum.common.delegate.Delegate
 import net.liplum.mdt.ClientOnly
 
 object ResourceLoader {

@@ -2,7 +2,6 @@ tasks {
     register("build") {
         group = "build"
         dependsOn("copyAllFiles")
-        dependsOn("compileGAL")
     }
     register("copyAllFiles") {
         group = "copy"

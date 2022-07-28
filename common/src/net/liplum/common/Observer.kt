@@ -1,8 +1,8 @@
 package net.liplum.common
 
-import net.liplum.common.delegates.Delegate2
-import net.liplum.common.delegates.DelegateHandler1
-import net.liplum.common.delegates.DelegateHandler2
+import net.liplum.common.delegate.Delegate2
+import net.liplum.common.delegate.DelegateHandler1
+import net.liplum.common.delegate.DelegateHandler2
 
 typealias ObserverAny = Observer<Any>
 typealias ObserverAnyNull = ObserverNull<Any>

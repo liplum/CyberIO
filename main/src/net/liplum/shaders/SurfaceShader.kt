@@ -7,7 +7,7 @@ import arc.graphics.Texture
 import arc.util.Time
 import mindustry.Vars
 import mindustry.graphics.Shaders.getShaderFi
-import net.liplum.common.shaders.ShaderBase
+import net.liplum.common.shader.ShaderBase
 
 class SurfaceShader(
     vert: Fi, frag: Fi,

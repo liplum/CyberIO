@@ -5,7 +5,7 @@ import arc.files.Fi
 import arc.scene.ui.layout.Scl
 import arc.util.Time
 import mindustry.graphics.Shaders.getShaderFi
-import net.liplum.common.shaders.ShaderBase
+import net.liplum.common.shader.ShaderBase
 
 class TestShieldShader : ShaderBase {
     constructor(vert: Fi, frag: Fi) : super(vert, frag)

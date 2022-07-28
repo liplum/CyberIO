@@ -2,7 +2,7 @@ package net.liplum.holo
 
 import mindustry.game.Team
 import net.liplum.annotations.SubscribeEvent
-import net.liplum.events.BattleExitEvent
+import net.liplum.event.BattleExitEvent
 
 val Team2HoloCapacity: HashMap<Team, Int> = HashMap()
 val Team.holoCapacity: Int

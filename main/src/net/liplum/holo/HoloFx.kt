@@ -9,8 +9,8 @@ import mindustry.entities.Effect
 import mindustry.graphics.Drawf
 import mindustry.graphics.Layer
 import net.liplum.S
-import net.liplum.common.shaders.on
-import net.liplum.registries.SD
+import net.liplum.common.shader.on
+import net.liplum.registry.SD
 
 object HoloFx {
     val heal = Effect(11f) {

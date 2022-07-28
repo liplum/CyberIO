@@ -42,7 +42,7 @@ ksp {
     arg("Event.GenerateSpec", "EventRegistry")
     arg("Dp.FileName", "Contents")
     arg("Dp.GenerateSpec", "Contents")
-    arg("Dp.Scope", "net.liplum.registries")
+    arg("Dp.Scope", "net.liplum.registry")
     allowSourcesFromOtherPlugins = true
     blockOtherCompilerPlugins = true
 }

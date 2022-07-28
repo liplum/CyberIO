@@ -13,7 +13,6 @@ import arc.scene.ui.layout.WidgetGroup
 import arc.struct.Seq
 import arc.util.Interval
 import mindustry.Vars
-import mindustry.ctype.UnlockableContent
 import mindustry.game.EventType
 import mindustry.gen.*
 import mindustry.graphics.Pal
@@ -22,14 +21,10 @@ import net.liplum.Var
 import net.liplum.annotations.Only
 import net.liplum.annotations.SubscribeEvent
 import net.liplum.lib.arc.tinted
-import net.liplum.events.CioInitEvent
-import net.liplum.common.ui.*
+import net.liplum.event.CioInitEvent
 import net.liplum.common.utils.allFieldsIncludeParents
 import net.liplum.common.utils.directSuperClass
 import net.liplum.mdt.Screen
-import net.liplum.mdt.forceUnlock
-import net.liplum.mdt.lock
-import net.liplum.mdt.ui.lockOrUnlock
 import net.liplum.render.Shapes
 import net.liplum.ui.attach.Dragger.Companion.dragToMove
 import java.lang.reflect.Field

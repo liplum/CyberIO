@@ -2,7 +2,7 @@ package net.liplum.type
 
 import arc.graphics.Color
 import mindustry.type.Liquid
-import net.liplum.utils.atlasX
+import net.liplum.util.atlasX
 
 class SpecFluid : Liquid {
     constructor(name: String, color: Color) : super(name, color)

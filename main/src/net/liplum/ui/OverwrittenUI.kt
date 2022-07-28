@@ -11,7 +11,7 @@ import net.liplum.annotations.Only
 import net.liplum.annotations.SubscribeEvent
 import net.liplum.blocks.prism.Prism
 import net.liplum.common.utils.setF
-import net.liplum.events.CioInitEvent
+import net.liplum.event.CioInitEvent
 import net.liplum.holo.HoloUnit
 import net.liplum.mdt.OverwriteVanilla
 import net.liplum.mdt.safeCall

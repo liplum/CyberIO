@@ -15,7 +15,6 @@ include(
     "cui",
     "mdt",
     "common",
-    "story",
     "processor",
     "annotations",
 )

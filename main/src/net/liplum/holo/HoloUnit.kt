@@ -37,8 +37,8 @@ import net.liplum.mdt.utils.TE
 import net.liplum.mdt.utils.build
 import net.liplum.mdt.utils.exists
 import net.liplum.mdt.utils.hasShields
-import net.liplum.registries.CioFluids
-import net.liplum.registries.EntityRegistry
+import net.liplum.registry.CioFluids
+import net.liplum.registry.EntityRegistry
 
 open class HoloUnit : UnitEntity(), PayloadMixin, IRevisionable {
     override fun getRevisionID() = 8

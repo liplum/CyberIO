@@ -28,8 +28,8 @@ import net.liplum.mdt.CalledBySync
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.SendDataPack
 import net.liplum.mdt.WhenNotPaused
-import net.liplum.mdt.animations.anis.AniState
-import net.liplum.mdt.animations.anis.config
+import net.liplum.mdt.animation.anis.AniState
+import net.liplum.mdt.animation.anis.config
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.DrawOn
 import net.liplum.mdt.render.Text

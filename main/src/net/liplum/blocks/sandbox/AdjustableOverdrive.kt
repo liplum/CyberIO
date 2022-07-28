@@ -104,6 +104,10 @@ open class AdjustableOverdrive(name: String) : OverdriveProjector(name) {
         override fun read(read: Reads, revision: Byte) {
             super.read(read, revision)
             curGear = read.b().toInt()
+        }
+
+        override fun afterRead() {
+            super.afterRead()
             setGear(curGear)
         }
 

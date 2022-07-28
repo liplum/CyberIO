@@ -8,7 +8,7 @@ import net.liplum.DebugOnly
 import net.liplum.Var
 import net.liplum.annotations.Only
 import net.liplum.annotations.SubscribeEvent
-import net.liplum.events.CioInitEvent
+import net.liplum.event.CioInitEvent
 import net.liplum.heimdall.HeimdallProjectGame
 import net.liplum.ui.controls.TabItem
 import net.liplum.ui.controls.TabView

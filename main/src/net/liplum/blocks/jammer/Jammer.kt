@@ -17,8 +17,8 @@ import net.liplum.lib.math.nextBoolean
 import net.liplum.lib.math.smooth
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.WhenNotPaused
-import net.liplum.mdt.animations.Floating
-import net.liplum.mdt.animations.anims.Animation
+import net.liplum.mdt.animation.Floating
+import net.liplum.mdt.animation.anims.Animation
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.utils.autoAnim
 import net.liplum.mdt.utils.draw

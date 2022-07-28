@@ -2,7 +2,7 @@ package net.liplum.type
 
 import arc.graphics.Color
 import mindustry.type.Item
-import net.liplum.utils.atlasX
+import net.liplum.util.atlasX
 
 class SpecItem : Item {
     constructor(name: String, color: Color) : super(name, color)

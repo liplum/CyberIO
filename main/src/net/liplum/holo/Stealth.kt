@@ -32,25 +32,25 @@ import net.liplum.S
 import net.liplum.api.cyber.*
 import net.liplum.api.holo.IHoloEntity
 import net.liplum.api.holo.IHoloEntity.Companion.minHealth
-import net.liplum.bullets.RuvikBullet
-import net.liplum.common.delegates.Delegate1
+import net.liplum.bullet.RuvikBullet
+import net.liplum.common.delegate.Delegate1
 import net.liplum.common.persistence.read
 import net.liplum.common.persistence.write
-import net.liplum.common.shaders.use
+import net.liplum.common.shader.use
 import net.liplum.lib.Serialized
 import net.liplum.lib.assets.TR
 import net.liplum.lib.math.isZero
 import net.liplum.lib.math.nextBoolean
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.WhenNotPaused
-import net.liplum.mdt.animations.Floating
+import net.liplum.mdt.animation.Floating
 import net.liplum.mdt.consumer.LiquidTurretCons
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.G
 import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.utils.*
-import net.liplum.registries.CioFluids.cyberion
-import net.liplum.registries.SD
+import net.liplum.registry.CioFluids.cyberion
+import net.liplum.registry.SD
 
 open class Stealth(name: String) : Turret(name) {
     @JvmField var restoreReload = 10 * 60f

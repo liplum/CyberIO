@@ -15,19 +15,16 @@ import mindustry.type.Category
 import mindustry.world.blocks.defense.turrets.ItemTurret
 import mindustry.world.draw.DrawBlock
 import mindustry.world.meta.StatUnit
-import net.liplum.common.math.PolarX
 import net.liplum.lib.assets.TR
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.WhenNotPaused
-import net.liplum.mdt.animations.anims.Animation
-import net.liplum.mdt.animations.anims.AnimationObj
-import net.liplum.mdt.animations.anims.ITimeModifier
+import net.liplum.mdt.animation.anims.Animation
+import net.liplum.mdt.animation.anims.AnimationObj
+import net.liplum.mdt.animation.anims.ITimeModifier
 import net.liplum.mdt.mixin.drawRotation
 import net.liplum.mdt.mixin.drawX
 import net.liplum.mdt.mixin.drawY
-import net.liplum.mdt.utils.atlas
 import net.liplum.mdt.utils.autoAnim
-import net.liplum.mdt.utils.sub
 
 open class TMTRAINER(name: String) : ItemTurret(name) {
     @ClientOnly lateinit var CoreAnim: Animation

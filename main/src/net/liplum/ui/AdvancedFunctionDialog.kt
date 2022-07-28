@@ -12,7 +12,7 @@ import mindustry.gen.Tex
 import mindustry.ui.dialogs.BaseDialog
 import net.liplum.R
 import net.liplum.Var
-import net.liplum.common.delegates.Delegate
+import net.liplum.common.delegate.Delegate
 import net.liplum.common.utils.IBundlable
 import net.liplum.common.utils.bundle
 

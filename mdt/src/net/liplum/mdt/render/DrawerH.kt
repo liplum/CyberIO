@@ -8,8 +8,8 @@ import mindustry.world.draw.DrawBlock
 import mindustry.world.draw.DrawMulti
 import mindustry.world.draw.DrawRegion
 import mindustry.world.draw.DrawTurret
-import net.liplum.common.shaders.ShaderBase
-import net.liplum.common.shaders.use
+import net.liplum.common.shader.ShaderBase
+import net.liplum.common.shader.use
 
 inline fun Turret.drawTurret(
     config: DrawTurret.() -> Unit,

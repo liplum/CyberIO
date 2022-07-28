@@ -19,7 +19,7 @@ import mindustry.ui.Bar
 import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.api.cyber.*
-import net.liplum.common.delegates.Delegate1
+import net.liplum.common.delegate.Delegate1
 import net.liplum.common.persistence.read
 import net.liplum.common.persistence.write
 import net.liplum.lib.Serialized
@@ -35,7 +35,7 @@ import net.liplum.mdt.ui.bars.removeLiquidInBar
 import net.liplum.mdt.utils.ForProximity
 import net.liplum.mdt.utils.buildAt
 import net.liplum.mdt.utils.sub
-import net.liplum.utils.addHostInfo
+import net.liplum.util.addHostInfo
 
 /**
  * ### Since 1

@@ -2,7 +2,7 @@ package net.liplum.render
 
 import net.liplum.ResourceLoader
 import net.liplum.annotations.SubscribeEvent
-import net.liplum.events.CioLoadContentEvent
+import net.liplum.event.CioLoadContentEvent
 import net.liplum.inCio
 import net.liplum.lib.assets.TR
 

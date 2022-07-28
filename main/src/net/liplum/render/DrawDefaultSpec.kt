@@ -8,7 +8,7 @@ import mindustry.world.Block
 import mindustry.world.draw.DrawBlock
 import net.liplum.lib.assets.EmptyTR
 import net.liplum.lib.assets.TRs
-import net.liplum.utils.atlasX
+import net.liplum.util.atlasX
 
 class DrawDefaultSpec : DrawBlock() {
     var tr = EmptyTR

@@ -15,7 +15,7 @@ import net.liplum.annotations.SubscribeEvent
 import net.liplum.api.ICyberEntity
 import net.liplum.common.Changed
 import net.liplum.common.utils.Or
-import net.liplum.events.CioInitEvent
+import net.liplum.event.CioInitEvent
 import net.liplum.lib.math.Point2f
 import net.liplum.lib.math.smooth
 import net.liplum.mdt.ClientOnly

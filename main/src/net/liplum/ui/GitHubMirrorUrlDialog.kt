@@ -9,7 +9,7 @@ import mindustry.ui.dialogs.BaseDialog
 import net.liplum.Meta
 import net.liplum.R
 import net.liplum.Settings
-import net.liplum.common.delegates.Delegate
+import net.liplum.common.delegate.Delegate
 import net.liplum.common.ing
 import net.liplum.common.utils.IBundlable
 import net.liplum.common.utils.bundle

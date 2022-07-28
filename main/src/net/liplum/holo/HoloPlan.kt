@@ -3,7 +3,7 @@ package net.liplum.holo
 import mindustry.type.ItemStack
 import mindustry.type.LiquidStack
 import net.liplum.mdt.utils.plus
-import net.liplum.registries.CioFluids
+import net.liplum.registry.CioFluids
 
 open class HoloPlan(
     val unitType: HoloUnitType,

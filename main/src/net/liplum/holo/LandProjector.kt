@@ -6,7 +6,7 @@ import mindustry.Vars
 import mindustry.gen.Building
 import mindustry.world.Block
 import mindustry.world.meta.BlockGroup
-import net.liplum.registries.CioBlocks
+import net.liplum.registry.CioBlocks
 
 open class LandProjector(name: String) : Block(name) {
     private val projectRadius = 10

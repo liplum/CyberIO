@@ -9,8 +9,8 @@ import mindustry.entities.Damage
 import mindustry.entities.bullet.ContinuousLaserBulletType
 import mindustry.gen.Bullet
 import mindustry.graphics.Drawf
-import net.liplum.common.shaders.use
-import net.liplum.registries.SD
+import net.liplum.common.shader.use
+import net.liplum.registry.SD
 
 class JammingLaser(damage: Float) : ContinuousLaserBulletType(damage) {
     constructor() : this(0f)

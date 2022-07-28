@@ -30,7 +30,7 @@ import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.S
 import net.liplum.holo.HoloProjector.HoloPBuild
-import net.liplum.common.shaders.use
+import net.liplum.common.shader.use
 import net.liplum.common.utils.bundle
 import net.liplum.common.utils.toFloat
 import net.liplum.lib.math.FUNC
@@ -40,8 +40,8 @@ import net.liplum.mdt.utils.MdtUnit
 import net.liplum.mdt.utils.TE
 import net.liplum.mdt.utils.healthPct
 import net.liplum.mdt.utils.seconds
-import net.liplum.registries.SD
-import net.liplum.utils.time
+import net.liplum.registry.SD
+import net.liplum.util.time
 import kotlin.math.min
 
 /**

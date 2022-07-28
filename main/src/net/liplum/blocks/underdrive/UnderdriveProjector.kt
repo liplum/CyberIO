@@ -51,7 +51,7 @@ import net.liplum.mdt.ui.bars.ReverseBar
 import net.liplum.mdt.utils.NewEffect
 import net.liplum.mdt.utils.sub
 import net.liplum.mdt.utils.subBundle
-import net.liplum.utils.addRangeInfo
+import net.liplum.util.addRangeInfo
 import kotlin.math.max
 
 const val MagicNSpiralRate = 0.1125f

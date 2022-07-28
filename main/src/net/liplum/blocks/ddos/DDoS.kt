@@ -1,7 +1,6 @@
 package net.liplum.blocks.ddos
 
 import arc.func.Prov
-import arc.graphics.Color
 import arc.scene.ui.layout.Table
 import arc.struct.OrderedSet
 import arc.struct.Seq
@@ -21,8 +20,7 @@ import net.liplum.api.cyber.IDataReceiver
 import net.liplum.api.cyber.IDataSender
 import net.liplum.api.cyber.drawLinkedLineToReceiverWhenConfiguring
 import net.liplum.api.cyber.req
-import net.liplum.common.Changed
-import net.liplum.common.delegates.Delegate1
+import net.liplum.common.delegate.Delegate1
 import net.liplum.lib.Serialized
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.render.postToastTextOn

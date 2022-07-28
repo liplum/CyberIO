@@ -17,15 +17,15 @@ import net.liplum.api.cyber.*
 import net.liplum.api.cyber.SideLinks.Companion.enableAllSides
 import net.liplum.lib.Serialized
 import net.liplum.lib.assets.TR
-import net.liplum.common.shaders.use
+import net.liplum.common.shader.use
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.smoothSelect
 import net.liplum.mdt.utils.MdtUnit
 import net.liplum.mdt.utils.WorldXY
 import net.liplum.mdt.utils.atlas
-import net.liplum.registries.SD
-import net.liplum.utils.addSendingProgress
+import net.liplum.registry.SD
+import net.liplum.util.addSendingProgress
 
 class Serializer(name: String) :
     PayloadBlock(name), INetworkBlock {

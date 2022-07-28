@@ -21,16 +21,16 @@ import net.liplum.UndebugOnly
 import net.liplum.Var
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
-import net.liplum.common.delegates.Delegate1
+import net.liplum.common.delegate.Delegate1
 import net.liplum.common.persistence.read
 import net.liplum.common.persistence.write
 import net.liplum.data.Receiver.ReceiverBuild
 import net.liplum.lib.Serialized
 import net.liplum.lib.assets.TR
 import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.animations.anims.Animation
-import net.liplum.mdt.animations.anis.AniState
-import net.liplum.mdt.animations.anis.config
+import net.liplum.mdt.animation.anims.Animation
+import net.liplum.mdt.animation.anis.AniState
+import net.liplum.mdt.animation.anis.config
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.DrawOn
 import net.liplum.mdt.render.SetColor
@@ -38,7 +38,7 @@ import net.liplum.mdt.ui.bars.removeItemsInBar
 import net.liplum.mdt.utils.autoAnimInMod
 import net.liplum.mdt.utils.inMod
 import net.liplum.mdt.utils.sub
-import net.liplum.utils.addSenderInfo
+import net.liplum.util.addSenderInfo
 
 private typealias AniStateR = AniState<Receiver, ReceiverBuild>
 

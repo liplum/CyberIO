@@ -6,7 +6,7 @@ import arc.struct.OrderedSet
 import arc.struct.Seq
 import mindustry.type.Liquid
 import net.liplum.api.ICyberEntity
-import net.liplum.common.delegates.Delegate1
+import net.liplum.common.delegate.Delegate1
 import net.liplum.mdt.CalledBySync
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.SendDataPack

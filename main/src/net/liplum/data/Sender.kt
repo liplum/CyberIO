@@ -29,15 +29,15 @@ import net.liplum.lib.math.isZero
 import net.liplum.mdt.CalledBySync
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.SendDataPack
-import net.liplum.mdt.animations.anims.Animation
-import net.liplum.mdt.animations.anis.AniState
-import net.liplum.mdt.animations.anis.config
+import net.liplum.mdt.animation.anims.Animation
+import net.liplum.mdt.animation.anis.AniState
+import net.liplum.mdt.animation.anis.config
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.DrawOn
 import net.liplum.mdt.render.SetColor
 import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.utils.*
-import net.liplum.utils.addReceiverInfo
+import net.liplum.util.addReceiverInfo
 
 private typealias AniStateS = AniState<Sender, SenderBuild>
 

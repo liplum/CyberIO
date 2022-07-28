@@ -4,8 +4,8 @@ import arc.Core
 import arc.graphics.g2d.TextureRegion
 import mindustry.ctype.MappableContent
 import net.liplum.common.utils.sheetOneDirection
-import net.liplum.mdt.animations.anims.Animation
-import net.liplum.mdt.animations.anims.AutoAnimation
+import net.liplum.mdt.animation.anims.Animation
+import net.liplum.mdt.animation.anims.AutoAnimation
 
 @JvmOverloads
 fun MappableContent.autoAnim(

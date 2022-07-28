@@ -21,7 +21,7 @@ import net.liplum.Var
 import net.liplum.api.cyber.SideLinks.Companion.coordinates
 import net.liplum.api.cyber.SideLinks.Companion.reflect
 import net.liplum.lib.assets.TR
-import net.liplum.common.shaders.use
+import net.liplum.common.shader.use
 import net.liplum.common.utils.DrawLayer
 import net.liplum.data.EmptyDataID
 import net.liplum.data.PayloadData
@@ -32,7 +32,7 @@ import net.liplum.mdt.advanced.Inspector.isPlacing
 import net.liplum.mdt.advanced.Inspector.isSelected
 import net.liplum.mdt.render.*
 import net.liplum.mdt.utils.*
-import net.liplum.registries.SD
+import net.liplum.registry.SD
 import kotlin.math.absoluteValue
 
 /**

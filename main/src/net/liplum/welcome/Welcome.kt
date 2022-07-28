@@ -23,7 +23,7 @@ import net.liplum.common.Res
 import net.liplum.common.utils.ReferBundleWrapper
 import net.liplum.common.utils.allMaxBy
 import net.liplum.common.utils.randomExcept
-import net.liplum.events.CioInitEvent
+import net.liplum.event.CioInitEvent
 import net.liplum.lib.assets.TR
 import net.liplum.lib.math.randomByWeights
 import net.liplum.mdt.ClientOnly

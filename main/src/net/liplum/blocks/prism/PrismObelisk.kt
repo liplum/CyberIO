@@ -15,9 +15,9 @@ import net.liplum.blocks.prism.Prism.PrismBuild
 import net.liplum.common.utils.bundle
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.WhenNotPaused
-import net.liplum.mdt.animations.anims.Animation
-import net.liplum.mdt.animations.anims.AnimationObj
-import net.liplum.mdt.animations.anims.pingPong
+import net.liplum.mdt.animation.anims.Animation
+import net.liplum.mdt.animation.anims.AnimationObj
+import net.liplum.mdt.animation.anims.pingPong
 import net.liplum.mdt.render.G
 import net.liplum.mdt.render.drawSurroundingRect
 import net.liplum.mdt.render.smoothPlacing

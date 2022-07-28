@@ -26,7 +26,7 @@ import net.liplum.UndebugOnly
 import net.liplum.Var
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
-import net.liplum.common.delegates.Delegate1
+import net.liplum.common.delegate.Delegate1
 import net.liplum.common.persistence.read
 import net.liplum.common.persistence.write
 import net.liplum.common.utils.DoMultipleBool
@@ -36,10 +36,10 @@ import net.liplum.lib.arc.set
 import net.liplum.lib.assets.TR
 import net.liplum.lib.math.isZero
 import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.animations.anims.Animation
-import net.liplum.mdt.animations.anims.AnimationObj
-import net.liplum.mdt.animations.anis.AniState
-import net.liplum.mdt.animations.anis.config
+import net.liplum.mdt.animation.anims.Animation
+import net.liplum.mdt.animation.anims.AnimationObj
+import net.liplum.mdt.animation.anis.AniState
+import net.liplum.mdt.animation.anis.config
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.drawSurroundingRect
 import net.liplum.mdt.render.smoothPlacing
@@ -49,9 +49,9 @@ import net.liplum.mdt.utils.autoAnim
 import net.liplum.mdt.utils.inMod
 import net.liplum.mdt.utils.isDiagonalTo
 import net.liplum.mdt.utils.subBundle
-import net.liplum.utils.addPowerUseStats
-import net.liplum.utils.addSenderInfo
-import net.liplum.utils.genText
+import net.liplum.util.addPowerUseStats
+import net.liplum.util.addSenderInfo
+import net.liplum.util.genText
 import kotlin.math.log2
 
 private typealias AniStateD = AniState<SmartDistributor, SmartDistributor.SmartDistributorBuild>

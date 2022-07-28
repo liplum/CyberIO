@@ -18,19 +18,19 @@ import mindustry.world.meta.BlockGroup
 import net.liplum.DebugOnly
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
-import net.liplum.common.delegates.Delegate1
+import net.liplum.common.delegate.Delegate1
 import net.liplum.common.persistence.read
 import net.liplum.common.persistence.write
 import net.liplum.lib.Serialized
 import net.liplum.lib.assets.EmptyTR
 import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.animations.anis.AniState
-import net.liplum.mdt.animations.anis.config
+import net.liplum.mdt.animation.anis.AniState
+import net.liplum.mdt.animation.anis.config
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.DrawOn
 import net.liplum.mdt.utils.inMod
 import net.liplum.mdt.utils.sub
-import net.liplum.utils.addHostInfo
+import net.liplum.util.addHostInfo
 
 private typealias AniStateC = AniState<StreamClient, StreamClient.ClientBuild>
 

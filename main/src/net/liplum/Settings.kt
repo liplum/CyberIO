@@ -4,7 +4,7 @@ import arc.Core.settings
 import mindustry.Vars
 import net.liplum.common.Setting
 import net.liplum.mdt.ClientOnly
-import net.liplum.scripts.KeyNotFoundException
+import net.liplum.script.KeyNotFoundException
 import net.liplum.update.Version2
 
 object Settings {

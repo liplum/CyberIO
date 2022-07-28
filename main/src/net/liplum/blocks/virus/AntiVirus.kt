@@ -35,7 +35,7 @@ import net.liplum.mdt.render.smoothSelect
 import net.liplum.mdt.ui.bars.ReverseBar
 import net.liplum.mdt.utils.seconds
 import net.liplum.mdt.utils.sub
-import net.liplum.utils.addRangeInfo
+import net.liplum.util.addRangeInfo
 
 internal const val T2SD = 5f / 6f * Mathf.pi
 internal const val HalfPi = 1f / 2f * Mathf.pi

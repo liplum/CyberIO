@@ -8,7 +8,7 @@ import mindustry.gen.Building
 import mindustry.graphics.Pal
 import net.liplum.R
 import net.liplum.api.prism.PrismRegistry.getRegistered
-import net.liplum.bullets.BBulletType
+import net.liplum.bullet.BBulletType
 import net.liplum.common.utils.ArrayList
 import net.liplum.common.utils.copyFieldsFrom
 

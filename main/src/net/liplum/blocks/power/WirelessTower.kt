@@ -33,8 +33,8 @@ import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.WhenTheSameTeam
 import net.liplum.mdt.render.*
 import net.liplum.mdt.utils.sub
-import net.liplum.registries.CioStats
-import net.liplum.utils.addPowerUseStats
+import net.liplum.registry.CioStats
+import net.liplum.util.addPowerUseStats
 import kotlin.math.min
 
 open class WirelessTower(name: String) : PowerBlock(name) {

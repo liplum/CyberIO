@@ -20,7 +20,7 @@ import net.liplum.DebugOnly
 import net.liplum.S
 import net.liplum.api.holo.IHoloEntity
 import net.liplum.api.holo.IHoloEntity.Companion.minHealth
-import net.liplum.common.shaders.use
+import net.liplum.common.shader.use
 import net.liplum.common.utils.bundle
 import net.liplum.common.utils.toFloat
 import net.liplum.lib.Serialized
@@ -29,7 +29,7 @@ import net.liplum.lib.math.isZero
 import net.liplum.lib.math.nextBoolean
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.WhenNotPaused
-import net.liplum.mdt.animations.Floating
+import net.liplum.mdt.animation.Floating
 import net.liplum.mdt.render.G
 import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.ui.bars.removeItemsInBar
@@ -37,8 +37,8 @@ import net.liplum.mdt.utils.healthPct
 import net.liplum.mdt.utils.or
 import net.liplum.mdt.utils.seconds
 import net.liplum.mdt.utils.sub
-import net.liplum.registries.SD
-import net.liplum.utils.yesNo
+import net.liplum.registry.SD
+import net.liplum.util.yesNo
 import kotlin.math.max
 
 open class HoloWall(name: String) : Wall(name) {

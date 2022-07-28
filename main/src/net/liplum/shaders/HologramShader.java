@@ -4,7 +4,7 @@ import arc.files.Fi;
 import arc.graphics.Color;
 import arc.util.Time;
 import net.liplum.S;
-import net.liplum.common.shaders.ShaderBase;
+import net.liplum.common.shader.ShaderBase;
 
 import static mindustry.Vars.renderer;
 

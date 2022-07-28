@@ -22,15 +22,15 @@ import net.liplum.lib.Serialized
 import net.liplum.lib.assets.EmptyTR
 import net.liplum.lib.assets.TRs
 import net.liplum.mdt.*
-import net.liplum.mdt.animations.anis.AniState
-import net.liplum.mdt.animations.anis.config
+import net.liplum.mdt.animation.anis.AniState
+import net.liplum.mdt.animation.anis.config
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.DrawOn
 import net.liplum.mdt.utils.buildAt
 import net.liplum.mdt.utils.inMod
 import net.liplum.mdt.utils.sub
 import net.liplum.mdt.utils.unpack
-import net.liplum.utils.*
+import net.liplum.util.*
 import java.util.*
 
 private typealias AniStateH = AniState<StreamHost, StreamHost.HostBuild>

@@ -5,7 +5,7 @@ import arc.graphics.Color
 import arc.util.Time
 import net.liplum.S
 import net.liplum.lib.assets.TR
-import net.liplum.common.shaders.ShaderBase
+import net.liplum.common.shader.ShaderBase
 
 class VanishingShader(
     vert: Fi,

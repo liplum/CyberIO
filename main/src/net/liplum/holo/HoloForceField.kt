@@ -18,10 +18,10 @@ import mindustry.graphics.Pal
 import mindustry.ui.Bar
 import net.liplum.Meta
 import net.liplum.S
-import net.liplum.common.shaders.use
+import net.liplum.common.shader.use
 import net.liplum.mdt.utils.healthPct
 import net.liplum.mdt.utils.localized
-import net.liplum.registries.SD
+import net.liplum.registry.SD
 
 open class HoloForceField(
     val radius: Float, val regen: Float, val max: Float, val cooldown: Float,

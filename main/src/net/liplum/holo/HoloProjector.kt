@@ -1,6 +1,5 @@
 package net.liplum.holo
 
-import arc.Core
 import arc.Events
 import arc.func.Floatf
 import arc.func.Prov
@@ -13,7 +12,6 @@ import arc.math.Mathf
 import arc.math.geom.Vec2
 import arc.scene.ui.layout.Table
 import arc.struct.Seq
-import arc.util.Strings
 import arc.util.Strings.autoFixed
 import arc.util.Structs
 import arc.util.Time
@@ -27,11 +25,9 @@ import mindustry.graphics.Layer
 import mindustry.graphics.Pal
 import mindustry.logic.LAccess
 import mindustry.type.Item
-import mindustry.type.ItemStack
 import mindustry.type.Liquid
 import mindustry.type.UnitType
 import mindustry.ui.Fonts
-import mindustry.ui.ItemDisplay
 import mindustry.ui.Styles
 import mindustry.world.Block
 import mindustry.world.consumers.ConsumeItemDynamic
@@ -41,7 +37,7 @@ import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.S
 import net.liplum.UndebugOnly
-import net.liplum.common.shaders.use
+import net.liplum.common.shader.use
 import net.liplum.common.utils.bundle
 import net.liplum.common.utils.percentI
 import net.liplum.lib.Serialized
@@ -52,8 +48,8 @@ import net.liplum.mdt.ui.addItemSelectorDefault
 import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.ui.bars.removeItemsInBar
 import net.liplum.mdt.utils.*
-import net.liplum.registries.CioFluids.cyberion
-import net.liplum.registries.SD
+import net.liplum.registry.CioFluids.cyberion
+import net.liplum.registry.SD
 import net.liplum.ui.addTable
 import kotlin.math.max
 

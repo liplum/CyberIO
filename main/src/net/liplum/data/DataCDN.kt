@@ -18,7 +18,7 @@ import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.render.G
 import net.liplum.mdt.utils.MdtUnit
 import net.liplum.mdt.utils.atlas
-import net.liplum.utils.addSendingProgress
+import net.liplum.util.addSendingProgress
 import kotlin.math.max
 
 class DataCDN(name: String) :
