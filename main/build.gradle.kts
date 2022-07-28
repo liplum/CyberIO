@@ -1,163 +1,121 @@
-import org.gradle.api.tasks.testing.logging.TestExceptionFormat
-import java.io.ByteArrayOutputStream
+@file:Suppress("SpellCheckingInspection")
+
+import io.github.liplum.mindustry.antiAlias
+import io.github.liplum.mindustry.importMindustry
+import io.github.liplum.mindustry.mindustry
+import io.github.liplum.mindustry.mindustryAssets
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.6.10"
-    java
+    kotlin("jvm")
+    `maven-publish`
+    id("com.google.devtools.ksp") version "1.7.0-1.0.6"
+    id("io.github.liplum.mgpp")
 }
-val outputJarName: String get() = extra["outputJarName"] as String
-val mdtVersion: String get() = extra["mdtVersion"] as String
-val mdtVersionNum: String get() = extra["mdtVersionNum"] as String
-val sdkRoot: String? by extra(System.getenv("ANDROID_HOME") ?: System.getenv("ANDROID_SDK_ROOT"))
+val PlumyVersion: String by project
+val OpenGalVersion: String by project
+
 sourceSets {
     main {
-        java.srcDir("src")
+        java.srcDirs(
+            "src",
+            "${project(":mdt").projectDir}/src",
+            "$buildDir/generated/classGen",
+        )
+        resources.srcDir("resources")
     }
     test {
         java.srcDir("test")
+        resources.srcDir("resources")
     }
 }
-version = "3.4"
-group = "net.liplum"
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+kotlin.sourceSets.main {
+    kotlin.srcDirs(
+        file("$buildDir/generated/ksp/main/kotlin"),
+        file("${project(":mdt").projectDir}/src"),
+        file("$buildDir/generated/classGen"),
+    )
+}
+
+ksp {
+    arg("Event.FileName", "EventRegistry")
+    arg("Event.GenerateSpec", "EventRegistry")
+    arg("Dp.FileName", "Contents")
+    arg("Dp.GenerateSpec", "Contents")
+    arg("Dp.Scope", "net.liplum.registry")
+    allowSourcesFromOtherPlugins = true
+    blockOtherCompilerPlugins = true
+}
+mindustry {
+    run {
+        clearOtherMods
+    }
+    deploy {
+        baseName = "CyberIO"
+        fatJar
+    }
+}
+val antiAliasedDir = rootDir.resolve("assets-gen").resolve("sprites")
+tasks.antiAlias {
+    sourceDirectory.set(rootDir.resolve("assets-raw").resolve("sprites"))
+    destinationDirectory.set(antiAliasedDir)
+}
+tasks.jar {
+    dependsOn(tasks.antiAlias)
+}
+mindustryAssets {
+    root at "$rootDir/assets"
+    sprites {
+        dependsOn(tasks.antiAlias)
+        dir = antiAliasedDir
+    }
+}
+tasks.withType<KotlinCompile>().configureEach {
+    kotlinOptions.freeCompilerArgs += listOf(
+        "-opt-in=kotlin.RequiresOptIn",
+        "-Xcontext-receivers",
+    )
 }
 dependencies {
-    compileOnly("com.github.Anuken.Arc:arc-core:$mdtVersion")
-    compileOnly("com.github.Anuken.Mindustry:core:$mdtVersion")
-    implementation("com.github.liplum:OpenGAL:v0.4.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1")
-
-    testImplementation("com.github.Anuken.Arc:arc-core:$mdtVersion")
-    testImplementation("com.github.Anuken.Mindustry:core:$mdtVersion")
-    testImplementation("com.github.Anuken.Mindustry:desktop:$mdtVersion")
-    testImplementation("com.github.Anuken.Mindustry:server:$mdtVersion")
+    implementation(project(":annotations"))
+    implementation(project(":common"))
+    implementation(project(":lib"))
+    implementation(project(":cui"))
+    ksp(project(":processor"))
+    importMindustry("ksp")
+    importMindustry()
+    implementation("com.github.liplum:OpenGAL:$OpenGalVersion")
+    implementation("com.github.liplum.plumyjava:path-kt:$PlumyVersion")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.2")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.2")
     testImplementation("com.github.liplum:TestUtils:v0.1")
-    // annotationProcessor "com.github.Anuken:jabel:$jabelVersion"
 }
 
-tasks {
-    register("jarAndroid") {
-        group = "build"
-        dependsOn("jar")
-
-        doLast {
-            val sdkRoot = sdkRoot
-            if (sdkRoot == null || !File(sdkRoot).exists())
-                throw GradleException("No valid Android SDK found. Ensure that ANDROID_HOME is set to your Android SDK directory.")
-            val platformRoot = File("$sdkRoot/platforms/").listFiles()!!.sorted().reversed()
-                .find { f -> File(f, "android.jar").exists() }
-                ?: throw GradleException("No android.jar found. Ensure that you have an Android platform installed.")
-            //collect dependencies needed for desugaring
-            val allDependencies = configurations.compileClasspath.get().toList() +
-                    configurations.runtimeClasspath.get().toList() +
-                    listOf(File(platformRoot, "android.jar"))
-            val dependencies = allDependencies.joinToString(" ") { "--classpath ${it.path}" }
-            //dex and desugar files - this requires d8 in your PATH
-            val paras = "$dependencies --min-api 14 --output ${outputJarName}Android.jar ${outputJarName}Desktop.jar"
-            try {
-                exec {
-                    commandLine = "d8 $paras".split(' ')
-                    workingDir = File("$buildDir/libs")
-                    standardOutput = System.out
-                    errorOutput = System.err
-                }
-            } catch (_: Exception) {
-                val cmdOutput = ByteArrayOutputStream()
-                logger.lifecycle("d8 cannot be found in your PATH, so trying to use an absolute path.")
-                exec {
-                    commandLine = listOf("where", "d8")
-                    standardOutput = cmdOutput
-                    errorOutput = System.err
-                }
-                val d8FullPath = cmdOutput.toString().replace("\r", "").replace("\n", "")
-                exec {
-                    commandLine = "$d8FullPath $paras".split(' ')
-                    workingDir = File("$buildDir/libs")
-                    standardOutput = System.out
-                    errorOutput = System.err
-                }
-            }
-        }
-    }
-
-    register<Jar>("deployLocal") {
-        group = "build"
-        dependsOn("jarAndroid")
-        archiveFileName.set("${outputJarName}.jar")
-
-        from(
-            zipTree("$buildDir/libs/${outputJarName}Desktop.jar"),
-            zipTree("$buildDir/libs/${outputJarName}Android.jar")
-        )
-
-        doLast {
-            delete {
-                delete("$buildDir/libs/${outputJarName}Android.jar")
-            }
-        }
-    }
-
-    register<Jar>("deploy") {
-        group = "build"
-        dependsOn("jarAndroid")
-        archiveFileName.set("${outputJarName}.jar")
-
-        from(
-            zipTree("$buildDir/libs/${outputJarName}Desktop.jar"),
-            zipTree("$buildDir/libs/${outputJarName}Android.jar")
-        )
-
-        doLast {
-            delete {
-                delete(
-                    "$buildDir/libs/${outputJarName}Desktop.jar",
-                    "$buildDir/libs/${outputJarName}Android.jar"
-                )
-            }
-        }
-    }
-}
-tasks.withType<Test>().configureEach {
-    useJUnitPlatform {
-        includeTags("fast")
-        excludeTags("slow")
-    }
-    testLogging {
-        exceptionFormat = TestExceptionFormat.FULL
-        showStandardStreams = true
-    }
-}
-tasks.named<Jar>("jar") {
-    //dependsOn("compileGAL")
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    archiveFileName.set("${outputJarName}Desktop.jar")
+tasks.jar {
+    archiveBaseName.set("CyberIO")
     includeEmptyDirs = false
     exclude("**/**/*.java")
-    from(
-        configurations.runtimeClasspath.get().map {
-            if (it.isDirectory) it else zipTree(it)
-        }
-    )
-
-    from(rootDir) {
-        // add something into your Jar
-        include("mod.hjson")
-        include("icon.png")
-    }
-
-    from("$rootDir/assets") {
-        include("**")
-    }
 
     from("$rootDir/meta") {
         include("*.json")
     }
     from("$rootDir/extra") {
         include("**")
+    }
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+    withSourcesJar()
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            from(components["java"])
+        }
     }
 }

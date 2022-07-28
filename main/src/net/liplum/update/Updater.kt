@@ -3,13 +3,20 @@ package net.liplum.update
 import arc.Core
 import arc.util.Http
 import arc.util.io.Streams
+import arc.util.serialization.Json
 import arc.util.serialization.Jval
+import arc.util.serialization.Jval.Jformat
 import kotlinx.coroutines.*
 import mindustry.Vars
 import mindustry.ui.dialogs.ModsDialog
 import net.liplum.*
-import net.liplum.lib.getMethodBy
-import net.liplum.utils.useFakeHeader
+import net.liplum.ConfigEntry.Companion.Config
+import net.liplum.lib.UseReflection
+import net.liplum.common.replaceByteBy
+import net.liplum.common.util.getMethodBy
+import net.liplum.common.util.useFakeHeader
+import net.liplum.mdt.ClientOnly
+import net.liplum.mdt.HeadlessOnly
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.lang.reflect.Method
@@ -27,56 +34,55 @@ private fun ModsDialog.ImportMod(repo: String, isJava: Boolean) {
 
 object Updater : CoroutineScope {
     var latestVersion: Version2 = Meta.DetailedVersion
+    var updateInfo = UpdateInfo.X
     var accessJob: Job? = null
+    var json = Json()
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO
     val ClientVersionRegex = "(?<=Client:).*".toRegex()
     val ServerVersionRegex = "(?<=Server:).*".toRegex()
-    inline fun fetchLatestVersion(
-        updateInfoFileURL: String = Meta.UpdateInfoURL,
-        crossinline onFailed: (String) -> Unit = {},
+    /**
+     * Retrieve the update info from given url or file path.
+     * It's silent when any exception is raised.
+     * So you can call this safely.
+     * @param updateInfoFileURL the url for retrieving the update info. Check order: File path ->
+     * @param onFailed when it can't fetch the latest version, this will be called.
+     */
+    fun fetchLatestVersion(
+        updateInfoFileURL: String? = Meta.UpdateInfoURL,
+        onFailed: (String) -> Unit = {},
     ) {
-        Clog.info("Update checking...")
+        val url= updateInfoFileURL?:Meta.UpdateInfoURL
+        CLog.info("Update checking...")
         accessJob = launch(
             CoroutineExceptionHandler { _, e ->
-                Clog.err("Can't fetch the latest version because of ${e.javaClass} ${e.message}.")
+                CLog.err("Can't fetch the latest version because of ${e.javaClass} ${e.message}.")
                 onFailed("${e.javaClass} ${e.message}")
             }
         ) {
             val info: String
-            val testFile = File(updateInfoFileURL)
+            val testFile = File(url)
             info = if (testFile.isFile && testFile.exists()) {
                 testFile.readText()
             } else {
                 URL(updateInfoFileURL).readText()
             }
-            val allInfos = info.split('\n')
-            /*
-                Removed since 3.3
-                val versionInfo = allInfos[0]
-                latestVersion = runCatching {
-                    Version2.valueOf(versionInfo)
-                }.getOrDefault(Meta.DetailedVersion)
-            */
+            analyzeUpdateInfo(info)
+            CLog.info("The latest version is $latestVersion")
+        }
+    }
 
-            ClientOnly {
-                val clientV = allInfos[1]// Client
-                val client = ClientVersionRegex.find(clientV)
-                if (client != null)
-                    latestVersion = runCatching {
-                        Version2.valueOf(client.value)
-                    }.getOrDefault(Meta.DetailedVersion)
-            }
-            HeadlessOnly {
-                val serverV = allInfos[2]// Server
-                val server = ServerVersionRegex.find(serverV)
-                if (server != null)
-                    latestVersion = runCatching {
-                        Version2.valueOf(server.value)
-                    }.getOrDefault(Meta.DetailedVersion)
-            }
-
-            Clog.info("The latest version is $latestVersion")
+    fun analyzeUpdateInfo(text: String) {
+        val info = json.fromJson(
+            UpdateInfo::class.java,
+            Jval.read(text).toString(Jformat.plain)
+        )
+        updateInfo = info
+        ClientOnly {
+            latestVersion = Version2.valueOf(info.ClientLatest)
+        }
+        HeadlessOnly {
+            latestVersion = Version2.valueOf(info.ServerLatest)
         }
     }
     @HeadlessOnly
@@ -86,19 +92,19 @@ object Updater : CoroutineScope {
             accessJob?.join()
             if (requireUpdate) {
                 if (Config.AutoUpdate || shouldUpdateOverride) {
-                    Clog.info("[Auto-Update ON] Now updating...")
+                    CLog.info("[Auto-Update ON] Now updating...")
                     updateSelfByReplaceFinding(
                         onFailed = { error ->
-                            Clog.err(error)
+                            CLog.err(error)
                         },
                         onSuccess = {
                             Core.app.post {
-                                Clog.info("The game will close soon to reload CyberIO.")
+                                CLog.info("The game will close soon to reload CyberIO.")
                                 Core.app.exit()
                             }
                         })
                 } else {
-                    Clog.info("[Auto-Update OFF] Current version is ${Meta.DetailedVersion} and need to be updated to $latestVersion manually.")
+                    CLog.info("[Auto-Update OFF] Current version is ${Meta.DetailedVersion} and need to be updated to $latestVersion manually.")
                 }
             }
         }
@@ -156,16 +162,16 @@ object Updater : CoroutineScope {
         if (CioMod.jarFile != null) {
             val length = req.contentLength
             val bytes = ByteArrayOutputStream()
-            Clog.info("v$latestVersion is downloading.")
+            CLog.info("v$latestVersion is downloading.")
             Streams.copyProgress(
                 req.resultAsStream,
                 bytes,
                 length, Streams.defaultBufferSize,
                 onProgress
             )
-            Clog.info("v$latestVersion downloaded successfully, replacing file.")
+            CLog.info("v$latestVersion downloaded successfully, replacing file.")
             CioMod.jarFile.replaceByteBy(bytes.toByteArray())
-            Clog.info("Updated successfully.")
+            CLog.info("Updated successfully.")
             onSuccess()
         } else {
             onFailed("Jar file not found.")
@@ -174,4 +180,27 @@ object Updater : CoroutineScope {
 
     val requireUpdate: Boolean
         get() = latestVersion > Meta.DetailedVersion
+    val isCurrentBreakUpdate: Boolean
+        get() = latestVersion.toString() in updateInfo.BreakUpdateList
+    val hasUpdateDescription: Boolean
+        get() = updateInfo.Description.isNotEmpty()
+    val UpdateDescription: String
+        get() = updateInfo.Description
+    val matchMinGameVersion:Boolean
+        get() = updateInfo.MinGameVersion <= Meta.CurGameVersion
+}
+
+class UpdateInfo {
+    var Latest = ""
+    var ClientLatest = ""
+    var ServerLatest = ""
+    var Description = ""
+    var MinGameVersion = 136
+    var BreakUpdateList = emptyArray<String>()
+
+    companion object {
+        internal val X = UpdateInfo()
+        fun UpdateInfo.isDefault() =
+            this == X
+    }
 }

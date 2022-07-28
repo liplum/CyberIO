@@ -2,12 +2,13 @@ package net.liplum.holo
 
 import mindustry.type.ItemStack
 import mindustry.type.LiquidStack
-import net.liplum.registries.CioLiquids
+import net.liplum.mdt.utils.plus
+import net.liplum.registry.CioFluids
 
 open class HoloPlan(
     val unitType: HoloUnitType,
     val req: Requirement,
-    val time: Float
+    val time: Float,
 )
 
 open class Requirement(
@@ -15,34 +16,20 @@ open class Requirement(
     val cyberionReq: Float,
 ) {
     constructor(
-        cyberionReq: Float
+        cyberionReq: Float,
     ) : this(emptyArray(), cyberionReq)
 
     constructor(
-        items: Array<ItemStack>
+        items: Array<ItemStack>,
     ) : this(items, 0f)
 
-    val liquids = if (cyberionReq != 0f)
-        arrayOf(LiquidStack(CioLiquids.cyberion, cyberionReq))
+    val liquid = if (cyberionReq != 0f)
+        CioFluids.cyberion + cyberionReq
     else
-        arrayOf()
+        null
 }
 
 val HoloPlan?.itemReqs: Array<ItemStack>
-    get() {
-        if (this == null) {
-            return ItemStack.empty
-        }
-        return this.req.items
-    }
-val emptyCyberionLiquidStack: LiquidStack by lazy {
-    LiquidStack(CioLiquids.cyberion, 0f)
-}
-val emptyCyberionLiquidStackArray: Array<LiquidStack> = arrayOf()
-val HoloPlan?.cyberionReq: Array<LiquidStack>
-    get() {
-        if (this == null) {
-            return emptyCyberionLiquidStackArray
-        }
-        return req.liquids
-    }
+    get() = this?.req?.items ?: ItemStack.empty
+val HoloPlan?.cyberionReq: LiquidStack?
+    get() = this?.req?.liquid

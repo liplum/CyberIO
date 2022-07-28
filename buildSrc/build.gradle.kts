@@ -1,7 +1,12 @@
 plugins {
-    kotlin("jvm") version "1.6.10"
+    kotlin("jvm") version "1.6.21"
     groovy
     java
+}
+buildscript{
+    dependencies{
+        classpath(kotlin("gradle-plugin", version = "1.6.21"))
+    }
 }
 repositories {
     mavenCentral()
@@ -19,5 +24,5 @@ sourceSets {
 }
 dependencies {
     implementation(gradleApi())
-    implementation("com.github.liplum:OpenGalPlumy:v0.1.4")
+    implementation("com.google.code.gson:gson:2.9.0")
 }

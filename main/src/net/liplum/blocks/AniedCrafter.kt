@@ -1,20 +1,20 @@
 package net.liplum.blocks
 
-import mindustry.Vars
 import mindustry.world.blocks.production.GenericCrafter
 import net.liplum.CanRefresh
-import net.liplum.CioMod
-import net.liplum.ClientOnly
-import net.liplum.lib.animations.anis.*
-import net.liplum.utils.addAniStateInfo
-import net.liplum.utils.addProgressInfo
+import net.liplum.DebugOnly
+import net.liplum.mdt.ClientOnly
+import net.liplum.mdt.WhenNotPaused
+import net.liplum.mdt.animation.anis.*
+import net.liplum.util.addAniStateInfo
+import net.liplum.util.addProgressInfo
 
 @Suppress("UNCHECKED_CAST")
 abstract class AniedCrafter<
         TBlock : AniedCrafter<TBlock, TBuild>,
-        TBuild : AniedCrafter<TBlock, TBuild>.AniedCrafterBuild
+        TBuild : AniedCrafter<TBlock, TBuild>.AniedCrafterBuild,
         >(
-    name: String
+    name: String,
 ) :
     GenericCrafter(name), IAniSMed<TBlock, TBuild> {
     @ClientOnly
@@ -25,7 +25,7 @@ abstract class AniedCrafter<
     var callDefaultBlockDraw = true
 
     init {
-        if (CioMod.IsClient) {
+        ClientOnly {
             genAniState()
             genAniConfig()
         }
@@ -33,9 +33,9 @@ abstract class AniedCrafter<
 
     override fun setBars() {
         super.setBars()
-        if (CioMod.DebugMode) {
-            bars.addProgressInfo<GenericCrafterBuild>()
-            bars.addAniStateInfo<AniedCrafterBuild>()
+        DebugOnly {
+            addProgressInfo<GenericCrafterBuild>()
+            addAniStateInfo<AniedCrafterBuild>()
         }
     }
 
@@ -60,7 +60,7 @@ abstract class AniedCrafter<
         override lateinit var aniStateM: AniStateM<TBlock, TBuild>
 
         init {
-            if (CioMod.IsClient) {
+            ClientOnly {
                 val out = this@AniedCrafter
                 aniStateM = out.aniConfig.gen(out as TBlock, this as TBuild)
                 aniStateM.onUpdate { onAniStateMUpdate() }
@@ -77,7 +77,7 @@ abstract class AniedCrafter<
         }
 
         override fun draw() {
-            if (!Vars.state.isPaused) {
+            WhenNotPaused {
                 aniStateM.spend(delta())
                 beforeDraw()
             }

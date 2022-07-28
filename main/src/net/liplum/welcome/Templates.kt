@@ -2,19 +2,23 @@ package net.liplum.welcome
 
 import arc.scene.ui.Button
 import mindustry.ui.dialogs.BaseDialog
-import net.liplum.Meta
+import net.liplum.R
+import net.liplum.S
+import net.liplum.lib.arc.tinted
+import net.liplum.common.ui.RateStarPanelBuilder
 import net.liplum.update.Updater
 import net.liplum.welcome.Welcome.Entity
+import net.liplum.welcome.Welcome.handleTrRefer
 
 object Templates {
     val Story = object : WelcomeTemplate("Story") {
         override fun gen(entity: Entity) =
             BaseDialog(entity["title"]).apply {
+                addCloseListener()
                 val data = entity.tip.data
                 addPoster(entity.icon)
                 val showPoliteWelcome = data["ShowPoliteWelcome"] as? Boolean ?: true
-                if (showPoliteWelcome)
-                    addCenterText(entity.bundle.format("welcome", Meta.DetailedVersion))
+                if (showPoliteWelcome) addPoliteWelcome(entity)
                 addCenterText(entity.content)
                 addCloseButton(entity["read"])
             }
@@ -22,12 +26,14 @@ object Templates {
     val ButtonABC = object : WelcomeTemplate("ButtonABC") {
         override fun gen(entity: Entity) =
             BaseDialog(entity["title"]).apply {
+                addCloseListener()
                 val data = entity.tip.data
                 val yesAction = ActionRegistry[data["ActionA"]]
                 val noAction = ActionRegistry[data["ActionB"]]
                 val dontShowAction = ActionRegistry[data["ActionC"]]
+                val showPoliteWelcome = data["ShowPoliteWelcome"] as? Boolean ?: true
                 addPoster(entity.icon)
-                addCenterText(entity.content(Updater.latestVersion))
+                if (showPoliteWelcome) addPoliteWelcome(entity)
                 cont.table {
                     addCloseButton(entity["button-a"], it) {
                         yesAction(entity)
@@ -45,12 +51,14 @@ object Templates {
     val DoAction = object : WelcomeTemplate("DoAction") {
         override fun gen(entity: Entity) =
             BaseDialog(entity["title"]).apply {
+                addCloseListener()
                 val data = entity.tip.data
+                addPoster(entity.icon)
+                val showPoliteWelcome = data["ShowPoliteWelcome"] as? Boolean ?: false
+                if (showPoliteWelcome) addPoliteWelcome(entity)
                 val yesAction = ActionRegistry[data["YesAction"]]
                 val noAction = ActionRegistry[data["NoAction"]]
-                addPoster(entity.icon)
                 addCenterText(entity.content)
-                val order = data["Order"] as? String ?: "YesNo"
                 cont.table {
                     fun addButton(vararg buttons: Button) {
                         for (b in buttons)
@@ -63,10 +71,7 @@ object Templates {
                     val no = createCloseButton(entity["no"]) {
                         noAction(entity)
                     }
-                    if (order == "NoYes")
-                        addButton(no, yes)
-                    else
-                        addButton(yes, no)
+                    addButton(yes, no)
                 }.growX()
                     .row()
             }
@@ -74,6 +79,7 @@ object Templates {
     val TextIcon = object : WelcomeTemplate("TextIcon") {
         override fun gen(entity: Entity) =
             BaseDialog(entity["title"]).apply {
+                addCloseListener()
                 val data = entity.tip.data
                 val text = data["Text"] as? String ?: ""
                 val fontSize = data["FontSize"] as? Float ?: 1f
@@ -82,8 +88,7 @@ object Templates {
                     this.setFontScale(fontSize)
                 }
                 val showPoliteWelcome = data["ShowPoliteWelcome"] as? Boolean ?: true
-                if (showPoliteWelcome)
-                    addCenterText(entity.bundle.format("welcome", Meta.DetailedVersion))
+                if (showPoliteWelcome) addPoliteWelcome(entity)
                 addCenterText(entity.content)
                 addCloseButton(entity["read"])
             }
@@ -91,15 +96,63 @@ object Templates {
     val PlainText = object : WelcomeTemplate("PlainText") {
         override fun gen(entity: Entity) =
             BaseDialog(entity["title"]).apply {
+                addCloseListener()
                 val data = entity.tip.data
                 val showPoliteWelcome = data["ShowPoliteWelcome"] as? Boolean ?: true
-                if (showPoliteWelcome)
-                    addCenterText(entity.bundle.format("welcome", Meta.DetailedVersion))
+                if (showPoliteWelcome) addPoliteWelcome(entity)
                 val fontSize = data["FontSize"] as? Float ?: 1f
                 addCenterText(entity.content).pad(40f).get().apply {
                     this.setFontScale(fontSize)
                 }
                 addCloseButton(entity["read"])
+            }
+    }
+    val rateStar = object : WelcomeTemplate("RateStar") {
+        override fun gen(entity: Entity) =
+            BaseDialog(entity["title"]).apply {
+                addCloseListener()
+                val data = entity.tip.data
+                addPoster(entity.icon)
+                val showPoliteWelcome = data["ShowPoliteWelcome"] as? Boolean ?: true
+                if (showPoliteWelcome) addPoliteWelcome(entity)
+                addCenterText(entity.content)
+                val starSize = data["StarSize"] as? Float ?: 50f
+                val ratePanel = RateStarPanelBuilder().apply {
+                    starNumber = 5
+                    this.starSize = starSize
+                    (data["InactiveStarIconPath"] as? String)?.let { inactiveStar = it.handleTrRefer() }
+                    (data["ActiveStarIconPath"] as? String)?.let { activeStar = it.handleTrRefer() }
+                }.build()
+                cont.add(ratePanel).row()
+                addCloseButton(entity["submit"])
+            }
+    }
+    val Update = object : WelcomeTemplate("Update") {
+        override fun gen(entity: Entity) =
+            BaseDialog(entity["title"]).apply {
+                addCloseListener()
+                val data = entity.tip.data
+                val yesAction = ActionRegistry[data["ActionA"]]
+                val noAction = ActionRegistry[data["ActionB"]]
+                val dontShowAction = ActionRegistry[data["ActionC"]]
+                addPoster(entity.icon)
+                addCenterText(entity.content(Updater.latestVersion.toString().tinted(S.Hologram)))
+                if (Updater.isCurrentBreakUpdate)
+                    addCenterText(entity["break-update-warning"].tinted(R.C.RedAlert))
+                if (Updater.hasUpdateDescription)
+                    addBoxedText(Updater.UpdateDescription)
+                cont.table {
+                    addCloseButton(entity["button-a"], it) {
+                        yesAction(entity)
+                    }.size(150f, 50f)
+                    addCloseButton(entity["button-b"], it) {
+                        noAction(entity)
+                    }.size(150f, 50f)
+                    addCloseButton(entity["button-c"], it) {
+                        dontShowAction(entity)
+                    }.size(150f, 50f)
+                }.growX()
+                    .row()
             }
     }
 }

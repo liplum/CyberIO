@@ -1,32 +1,23 @@
 package net.liplum.render
 
-import arc.Events
 import mindustry.Vars
 import mindustry.game.EventType
-import mindustry.gen.Groups
 import net.liplum.Settings
-import net.liplum.api.cyber.IDataSender
-import net.liplum.api.cyber.IStreamHost
-import net.liplum.api.cyber.drawDataNetGraphic
-import net.liplum.api.cyber.drawStreamGraphic
+import net.liplum.annotations.Subscribe
+import net.liplum.api.cyber.*
+import net.liplum.mdt.ClientOnly
 
 object LinkDrawer {
     @JvmStatic
-    fun register() {
-        Events.run(EventType.Trigger.postDraw) {
-            draw()
-        }
-    }
-    @JvmStatic
+    @ClientOnly
+    @Subscribe(EventType.Trigger.drawOver)
     fun draw() {
         if (!Settings.AlwaysShowLink) return
-        val curTeam = Vars.player.team()
-        Groups.build.each {
-            if (it.team != curTeam) return@each
-            if (it is IDataSender) {
-                it.drawDataNetGraphic(showCircle = Settings.ShowLinkCircle)
-            } else if (it is IStreamHost) {
-                it.drawStreamGraphic(showCircle = Settings.ShowLinkCircle)
+        Vars.player.team().data().buildings.forEach {
+            when (it) {
+                is IDataSender -> it.drawDataNetGraph(showCircle = Settings.ShowLinkCircle)
+                is IStreamHost -> it.drawStreamGraph(showCircle = Settings.ShowLinkCircle)
+                is IP2pNode -> it.drawP2PConnection(showCircle = Settings.ShowLinkCircle)
             }
         }
     }

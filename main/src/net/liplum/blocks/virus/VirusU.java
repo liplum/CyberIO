@@ -29,7 +29,7 @@ public class VirusU {
             return false;
         }
 
-        for (BlockFlag flag : block.flags) {
+        for (BlockFlag flag : block.flags.array) {
             if (UninfectedBlocksRegistry.hasFlag(flag)) {
                 return false;
             }

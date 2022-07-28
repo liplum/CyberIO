@@ -4,11 +4,11 @@ import arc.util.Nullable
 import mindustry.gen.Building
 import mindustry.world.Block
 import net.liplum.CanRefresh
-import net.liplum.CioMod
-import net.liplum.ClientOnly
-import net.liplum.WhenNotPaused
-import net.liplum.lib.animations.anis.*
-import net.liplum.utils.addAniStateInfo
+import net.liplum.Meta
+import net.liplum.mdt.ClientOnly
+import net.liplum.mdt.WhenNotPaused
+import net.liplum.mdt.animation.anis.*
+import net.liplum.util.addAniStateInfo
 
 /**
  * A block which has animation state machine
@@ -19,11 +19,10 @@ import net.liplum.utils.addAniStateInfo
 @Suppress("UNCHECKED_CAST")
 abstract class AniedBlock<
         TBlock : AniedBlock<TBlock, TBuild>,
-        TBuild : AniedBlock<TBlock, TBuild>.AniedBuild
+        TBuild : AniedBlock<TBlock, TBuild>.AniedBuild,
         >(
-    name: String
-) :
-    Block(name), IAniSMed<TBlock, TBuild> {
+    name: String,
+) : Block(name), IAniSMed<TBlock, TBuild> {
     @ClientOnly
     protected val name2AniStates = HashMap<String, AniState<TBlock, TBuild>>()
     @ClientOnly
@@ -32,7 +31,7 @@ abstract class AniedBlock<
     override lateinit var aniConfig: AniConfig<TBlock, TBuild>
 
     init {
-        if (CioMod.IsClient) {
+        ClientOnly {
             genAniState()
             genAniConfig()
         }
@@ -40,8 +39,8 @@ abstract class AniedBlock<
 
     override fun setBars() {
         super.setBars()
-        if (CioMod.DebugMode) {
-            bars.addAniStateInfo<AniedBuild>()
+        if (Meta.EnableDebug) {
+            addAniStateInfo<AniedBuild>()
         }
     }
     @Nullable
@@ -68,7 +67,7 @@ abstract class AniedBlock<
         override lateinit var aniStateM: AniStateM<TBlock, TBuild>
 
         init {
-            if (CioMod.IsClient) {
+            ClientOnly {
                 val outer = this@AniedBlock
                 aniStateM = outer.aniConfig.gen(outer as TBlock, this as TBuild)
             }

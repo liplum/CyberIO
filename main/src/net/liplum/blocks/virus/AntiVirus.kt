@@ -1,5 +1,6 @@
 package net.liplum.blocks.virus
 
+import arc.func.Prov
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
 import arc.math.Mathf
@@ -18,13 +19,23 @@ import mindustry.logic.Ranged
 import mindustry.world.Block
 import mindustry.world.Tile
 import mindustry.world.meta.BlockGroup
-import net.liplum.ClientOnly
 import net.liplum.DebugOnly
 import net.liplum.R
-import net.liplum.lib.bundle
-import net.liplum.lib.ui.bars.ReverseBar
-import net.liplum.seconds
-import net.liplum.utils.*
+import net.liplum.Var
+import net.liplum.lib.assets.TR
+import net.liplum.common.util.bundle
+import net.liplum.lib.math.isZero
+import net.liplum.mdt.ClientOnly
+import net.liplum.mdt.render.G
+import net.liplum.mdt.render.G.realHeight
+import net.liplum.mdt.render.G.realWidth
+import net.liplum.mdt.render.drawEffectCirclePlace
+import net.liplum.mdt.render.smoothPlacing
+import net.liplum.mdt.render.smoothSelect
+import net.liplum.mdt.ui.bars.ReverseBar
+import net.liplum.mdt.utils.seconds
+import net.liplum.mdt.utils.sub
+import net.liplum.util.addRangeInfo
 
 internal const val T2SD = 5f / 6f * Mathf.pi
 internal const val HalfPi = 1f / 2f * Mathf.pi
@@ -55,8 +66,8 @@ val ShieldExpand: Effect = Effect(ShieldExpandEffectDuration) {
     val scale = avb.realRange / 15f
     Draw.rect(
         s, it.x, it.y,
-        G.Dw(s) * d2s * scale,
-        G.Dh(s) * d2s * scale
+        s.realWidth * d2s * scale,
+        s.realHeight * d2s * scale
     )
 }.layer(Layer.power)
 
@@ -75,10 +86,14 @@ open class AntiVirus(name: String) : Block(name) {
     @JvmField var infectedColor: Color = R.C.RedAlert
     lateinit var unenergizedTR: TR
     lateinit var shieldTR: TR
+    @ClientOnly @JvmField var maxSelectedCircleTime = Var.SelectedCircleTime
 
     init {
+        buildType = Prov { AntiVirusBuild() }
         solid = true
         update = true
+        updateInUnits = true
+        alwaysUpdateInUnits = true
         group = BlockGroup.projectors
         hasPower = true
     }
@@ -92,9 +107,9 @@ open class AntiVirus(name: String) : Block(name) {
     override fun setBars() {
         super.setBars()
         DebugOnly {
-            bars.addRangeInfo<AntiVirusBuild>(100f)
+            addRangeInfo<AntiVirusBuild>(100f)
         }
-        bars.add<AntiVirusBuild>(R.Bar.CoolDownN) {
+        addBar<AntiVirusBuild>(R.Bar.CoolDownN) {
             ReverseBar(
                 { R.Bar.CoolDown.bundle(it.coolDown.seconds) },
                 { R.C.CoolDown },
@@ -111,16 +126,9 @@ open class AntiVirus(name: String) : Block(name) {
     override fun minimapColor(tile: Tile) = R.C.GreenSafe.rgba()
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)
-        G.drawDashCircle(this, x.toShort(), y.toShort(), range, uninfectedColor)
-        Vars.indexer.eachBlock(
-            Vars.player.team(),
-            x.toDrawXY(this),
-            y.toDrawXY(this),
-            range,
-            {
-                true
-            }) {
-            G.drawSelected(it, getOtherColor(it))
+        val range = range * smoothPlacing(maxSelectedCircleTime)
+        drawEffectCirclePlace(x,y,uninfectedColor,range){
+            G.selectedBreath(this, getOtherColor(this))
         }
     }
 
@@ -137,10 +145,6 @@ open class AntiVirus(name: String) : Block(name) {
                 field = value.coerceIn(0f, maxCoolDown)
             }
 
-        open fun resetCoolDown() {
-            coolDown = reload
-        }
-
         open fun heat() {
             coolDown += reload * heatRate
         }
@@ -152,7 +156,6 @@ open class AntiVirus(name: String) : Block(name) {
                 shieldExpendCharge += Time.delta
             }
             if (coolDown <= 0f) {
-                resetCoolDown()
                 var eliminated = false
                 Vars.indexer.eachBlock(this, realRange,
                     { b ->
@@ -182,6 +185,9 @@ open class AntiVirus(name: String) : Block(name) {
                         heat()
                     }
                 }
+                if (eliminated) {
+                    coolDown = reload
+                }
                 ClientOnly {
                     if (eliminated && shieldExpendCharge >= shieldExpendMinInterval) {
                         shieldExpendCharge = 0f
@@ -200,13 +206,14 @@ open class AntiVirus(name: String) : Block(name) {
 
         override fun drawSelect() {
             if (!power.status.isZero) {
-                Vars.indexer.eachBlock(this, realRange,
+                val range = realRange * smoothSelect(maxSelectedCircleTime)
+                Vars.indexer.eachBlock(this, range,
                     {
                         true
                     }) {
-                    G.drawSelected(it, getOtherColor(it))
+                    G.selectedBreath(it, getOtherColor(it))
                 }
-                Drawf.dashCircle(x, y, realRange, uninfectedColor)
+                Drawf.dashCircle(x, y, range, uninfectedColor)
             }
         }
 

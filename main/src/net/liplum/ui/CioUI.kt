@@ -3,13 +3,11 @@ package net.liplum.ui
 import arc.Core
 import arc.Events
 import arc.math.Interp
+import arc.scene.style.TextureRegionDrawable
 import arc.scene.ui.Dialog
 import arc.scene.ui.TextButton
-import arc.scene.ui.TextField
 import arc.scene.ui.layout.Table
-import arc.scene.utils.Elem
 import arc.util.Align
-import arc.util.Http
 import kotlinx.coroutines.launch
 import mindustry.Vars
 import mindustry.core.GameState.State.menu
@@ -17,34 +15,45 @@ import mindustry.game.EventType
 import mindustry.game.EventType.Trigger
 import mindustry.gen.Sounds
 import mindustry.ui.Styles
-import mindustry.ui.dialogs.BaseDialog
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.CheckSetting
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.SliderSetting
 import net.liplum.*
-import net.liplum.lib.bundle
-import net.liplum.lib.getF
-import net.liplum.lib.ing
-import net.liplum.lib.ui.ShowTextDialog
-import net.liplum.lib.ui.addTrackTooltip
-import net.liplum.lib.ui.settings.*
-import net.liplum.lib.ui.settings.AnySetting.Companion.addAny
-import net.liplum.lib.ui.settings.CheckSettingX.Companion.addCheckPref
-import net.liplum.lib.ui.settings.SliderSettingX.Companion.addSliderSettingX
+import net.liplum.annotations.Only
+import net.liplum.annotations.SubscribeEvent
+import net.liplum.common.ing
+import net.liplum.common.util.bundle
+import net.liplum.common.util.getF
+import net.liplum.common.util.randomExcept
+import net.liplum.event.CioInitEvent
+import net.liplum.lib.UseReflection
+import net.liplum.lib.arc.invoke
+import net.liplum.mdt.ClientOnly
+import net.liplum.mdt.IsLocal
+import net.liplum.mdt.UnsteamOnly
 import net.liplum.mdt.advanced.MapCleaner
+import net.liplum.mdt.ui.MainMenus
+import net.liplum.mdt.ui.ShowTextDialog
+import net.liplum.mdt.ui.addTrackTooltip
+import net.liplum.mdt.ui.settings.*
+import net.liplum.mdt.ui.settings.AnySetting.Companion.addAny
+import net.liplum.mdt.ui.settings.CheckSettingX.Companion.addCheckPref
+import net.liplum.mdt.ui.settings.SliderSettingX.Companion.addSliderSettingX
 import net.liplum.update.Updater
-import net.liplum.utils.invoke
-import net.liplum.utils.randomExcept
-import net.liplum.utils.useFakeHeader
 import net.liplum.welcome.Conditions
 import net.liplum.welcome.Welcome
 import net.liplum.welcome.WelcomeList
 
+@ClientOnly
 object CioUI {
-    @JvmStatic
-    fun appendSettings() {
-        addCyberIOSettingMenu()
+    val textIcon by lazy {
+        TextureRegionDrawable("icon-text".inCio)
     }
     @JvmStatic
+    @SubscribeEvent(CioInitEvent::class, Only.client)
+    fun appendUI() {
+        addCyberIOSettingMenu()
+        addCyberIOMenu()
+    }
     @UseReflection
     fun addCyberIOSettingMenu() {
         val uiSettings = Vars.ui.settings
@@ -54,18 +63,36 @@ object CioUI {
             settings.rebuild()
             uiSettings.updateScrollFocus()
         }
+        val marg = 8f
         Events.run(Trigger.update) {
             if (Vars.ui.settings.isShown) {
                 val cioSettings = menu.find<TextButton>(SettingButtonName)
                 if (cioSettings == null) {
                     menu.row()
-                    menu.button(Meta.Name, Styles.cleart) {
+                    menu.button(
+                        Meta.Name,
+                        textIcon,
+                        Styles.flatt, Vars.iconMed
+                    ) {
                         prefs.clearChildren()
                         prefs.add(settings)
-                    }.get().apply {
+                    }.marginLeft(marg).get().apply {
                         name = SettingButtonName
                     }
                 }
+            }
+        }
+    }
+    @UseReflection
+    fun addCyberIOMenu() {
+        val cioMenuID = "cyber-io-menu"
+        if (!Vars.mobile) {
+            MainMenus.appendDesktopMenu("Cyber IO", textIcon, cioMenuID) {
+                CyberIOMenu.show()
+            }
+        } else {
+            MainMenus.appendMobileMenu("Cyber IO", textIcon, cioMenuID) {
+                CyberIOMenu.show()
             }
         }
     }
@@ -74,7 +101,7 @@ object CioUI {
     val settings = SettingsTableX().apply {
         var isMenu = true
         genHeader = {
-            it.add("${Meta.Name} v${Meta.DetailedVersion}").row()
+            it.add("[#${Var.ContentSpecific.color}]${Meta.Name} v${Meta.DetailedVersion} ${Var.ContentSpecific.i18nName}[]").row()
         }
         addSliderSettingX(R.Setting.LinkOpacity,
             100, 0, 100, 5, { "$it%" }
@@ -90,107 +117,39 @@ object CioUI {
         ) {
             Settings.LinkArrowDensity = pct2Density(Core.settings.getInt(R.Setting.LinkArrowDensity, 15))
         }
-        val alwaysShowLinkDefault = Vars.mobile
-        addCheckPref(R.Setting.AlwaysShowLink, alwaysShowLinkDefault) {
-            Settings.AlwaysShowLink = Core.settings.getBool(R.Setting.AlwaysShowLink, alwaysShowLinkDefault)
+        addSliderSettingX(R.Setting.LinkAnimationSpeed,
+            40, 0, 120, 5, { "$it" }
+        ) {
+            Settings.LinkArrowSpeed = Core.settings.getInt(R.Setting.LinkAnimationSpeed, 40).toFloat()
         }
-        addSliderSettingX(
-            R.Setting.LinkSize,
-            100, 0, 100, 5, { "$it%" }) {
-            Settings.LinkSize = Core.settings.getInt(R.Setting.LinkSize, 100) / 100f * 4f
+        addCheckPref(R.Setting.AlwaysShowLink, true) {
+            Settings.AlwaysShowLink = Core.settings.getBool(R.Setting.AlwaysShowLink, true)
         }
-        addCheckPref(R.Setting.ShowLinkCircle, alwaysShowLinkDefault) {
-            Settings.ShowLinkCircle = Core.settings.getBool(R.Setting.ShowLinkCircle, true)
+        addCheckPref(R.Setting.ShowLinkCircle, false) {
+            Settings.ShowLinkCircle = Core.settings.getBool(R.Setting.ShowLinkCircle, false)
+        }
+        addCheckPref(R.Setting.ShowWirelessTowerCircle, true) {
+            Settings.ShowWirelessTowerCircle = Core.settings.getBool(R.Setting.ShowWirelessTowerCircle, true)
         }
         UnsteamOnly {
             addCheckPref(
                 R.Setting.ShowUpdate, !Vars.steam
-            ).apply {
+            ) {
+                Settings.ShowUpdate = it
+            }.apply {
                 canShow = { isMenu }
             }
         }
         addCheckPref(
             R.Setting.ShowWelcome, true
-        ).apply {
+        ) {
+            Settings.ShouldShowWelcome = it
+        }.apply {
             canShow = { isMenu }
         }
+        // GitHub mirror and Check update
         UnsteamOnly {
-            addAny {
-                val prefix = "setting.${R.Setting.GitHubMirrorUrl}"
-                fun bundle(key: String, vararg args: Any) =
-                    if (args.isEmpty()) "$prefix.$key".bundle
-                    else "$prefix.$key".bundle(*args)
-
-                val button = Elem.newButton(bundle("button")) {
-                    val dialog = BaseDialog(bundle("dialog")).apply {
-                        val field = TextField(
-                            Settings.GitHubMirrorUrl, Styles.defaultField
-                        ).addTrackTooltip(bundle("field-tooltip"))
-                        onSettingsReset {
-                            Settings.GitHubMirrorUrl = Meta.GitHubMirrorUrl
-                            field.text = Meta.GitHubMirrorUrl
-                        }
-                        cont.add(field).width((Core.graphics.width / 1.2f).coerceAtMost(460f)).row()
-                        cont.table { t ->
-                            fun onFailed(error: String) {
-                                ShowTextDialog(bundle("failed", field.text, error))
-                            }
-
-                            fun onSucceeded() {
-                                val url = field.text.trim('\\').trim('/')
-                                Settings.GitHubMirrorUrl = url
-                                field.text = url
-                                ShowTextDialog(bundle("success", url))
-                            }
-
-                            fun onResetDefault() {
-                                Settings.GitHubMirrorUrl = Meta.GitHubMirrorUrl
-                                field.text = Meta.GitHubMirrorUrl
-                                ShowTextDialog(bundle("reset", field.text))
-                            }
-
-                            val saveButton = TextButton("@save").apply {
-                                update {
-                                    label.setText(if (isDisabled) R.Ctrl.Validate.bundle.ing else "@save")
-                                }
-                                changed {
-                                    if (field.text.isEmpty()) {
-                                        onResetDefault()
-                                    } else {
-                                        isDisabled = true
-                                        Http.get(field.text).useFakeHeader().error { e ->
-                                            onFailed("${e.javaClass.name} ${e.message}")
-                                            isDisabled = false
-                                        }.submit { rep ->
-                                            Core.app.post {
-                                                if (rep.status == Http.HttpStatus.OK)
-                                                    onSucceeded()
-                                                else
-                                                    onFailed(rep.status.name)
-                                                isDisabled = false
-                                            }
-                                        }
-                                    }
-                                }
-                                addTrackTooltip(bundle("save-tooltip"))
-                            }
-                            t.add(saveButton).size(200f, 50f)
-                            t.button("@cancel") {
-                                field.text = Settings.GitHubMirrorUrl
-                            }.size(200f, 50f).get().apply {
-                                addTrackTooltip(bundle("cancel-tooltip"))
-                            }
-                        }
-                        cont.row()
-                        addCloseButton()
-                    }
-                    dialog.show()
-                }.addTrackTooltip(bundle("button-tooltip")).apply {
-                }
-                it.add(button).fillX()
-            }.apply {
-                canShow = { isMenu }
-            }
+            // Check Update
             addAny {
                 fun bundle(key: String) = "setting.${R.Setting.CheckUpdate}.$key".bundle
                 val buttonI18n = bundle("button")
@@ -234,16 +193,16 @@ object CioUI {
                             isDisabled = false
                         }
                     }
+                }.addTrackTooltip(bundle("button-tooltip")).apply {
+                    canShow = { isMenu }
                 }
                 it.add(button).fillX()
-            }.apply {
-                canShow = { isMenu }
             }
         }
         addAny {
             it.add(TextButton(AdvancedFunctionDialog.bundle("title")).apply {
                 clicked {
-                    AdvancedFunctionDialog.show()
+                    AdvancedFunctionDialog.show(onReset)
                 }
             }).fillX()
         }.apply {
@@ -256,11 +215,21 @@ object CioUI {
                     Sounds.message.play()
                 }
                 update {
-                    isDisabled = !(Var.EnableMapCleaner && !isMenu && OnlyLocal())
+                    isDisabled = !(Var.EnableMapCleaner && !isMenu && IsLocal())
                 }
             }).fillX()
         }.apply {
-            canShow = { Var.EnableMapCleaner && !isMenu && OnlyLocal() }
+            canShow = { Var.EnableMapCleaner && !isMenu && IsLocal() }
+        }
+        DebugOnly {
+            addAny {
+                val button = TextButton("Debug Settings").apply {
+                    changed {
+                        DebugSettingsDialog.show()
+                    }
+                }.addTrackTooltip("Only for debugging.")
+                it.add(button).fillX()
+            }
         }
         sortBy {
             when (it) {

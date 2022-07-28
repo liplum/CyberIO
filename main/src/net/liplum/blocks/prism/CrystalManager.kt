@@ -1,17 +1,15 @@
 package net.liplum.blocks.prism
 
-import arc.math.Mathf
+import arc.struct.ObjectSet
 import arc.struct.OrderedSet
-import arc.struct.Seq
 import arc.util.io.Reads
 import arc.util.io.Writes
-import net.liplum.ClientOnly
-import net.liplum.persistance.intSet
-import net.liplum.persistance.readSeq
-import net.liplum.persistance.writeSeq
-import net.liplum.utils.TE
-import net.liplum.utils.build
-import net.liplum.utils.exists
+import net.liplum.common.entity.Queue
+import net.liplum.common.persistence.read
+import net.liplum.common.persistence.write
+import net.liplum.lib.math.Progress
+import net.liplum.mdt.ClientOnly
+import net.liplum.mdt.utils.TE
 
 enum class Status {
     Shrinking, Expending
@@ -30,10 +28,10 @@ open class CrystalManager(
         set(value) {
             field = value.coerceAtLeast(0)
         }
-    @JvmField var crystals: Seq<Crystal> = Seq(
-        maxAmount + Mathf.log2(maxAmount.toFloat()).toInt()
-    )
-    @JvmField var obelisks: OrderedSet<Int> = OrderedSet(
+    @JvmField var crystals: Queue<Crystal> = Queue(maxAmount) {
+        Crystal()
+    }
+    @JvmField var obelisks: ObjectSet<Int> = OrderedSet(
         maxAmount - 1
     )
     val inOrbitAmount: Int
@@ -47,8 +45,8 @@ open class CrystalManager(
         set(value) {
             field = value.coerceIn(0f, expendRequirement)
         }
-    @JvmField var inited: Boolean = false
-    val process: Float
+    @JvmField var initialized: Boolean = false
+    val progress: Progress
         get() = curExpendTime / expendRequirement
     val canAdd: Boolean
         get() = validAmount < maxAmount
@@ -84,7 +82,7 @@ open class CrystalManager(
             Status.Expending -> curExpendTime += delta
             Status.Shrinking -> curExpendTime -= delta
         }
-        if (process >= 0.999f && anyInQueue) {
+        if (progress >= 0.999f && anyInQueue) {
             retrieveAll()
             if (canReleaseMore) {
                 releaseAll()
@@ -114,10 +112,21 @@ open class CrystalManager(
             if (it == null) {
                 false
             } else {
-                val build = it.build
-                !build.exists || (build as? Obelisk)?.linked != prism.pos()
+                val build = it.TE<Obelisk>()
+                if (build == null) true
+                else if (build.linked != prism.pos()) {
+                    build.unlink()
+                    true
+                } else false
             }
         }
+    }
+
+    fun clearObelisk() {
+        obelisks.forEach {
+            it.TE<Obelisk>()?.unlink()
+        }
+        obelisks.clear()
     }
 
     fun updateObelisk() {
@@ -160,8 +169,7 @@ open class CrystalManager(
     }
 
     fun findFirstRemovableOutermost(): Crystal? {
-        for (i in crystals.size - 1 downTo 0) {
-            val crystal = crystals[i]
+        for (crystal in crystals.reverseIterator()) {
             if (!crystal.isRemoved) {
                 return crystal
             }
@@ -213,17 +221,17 @@ open class CrystalManager(
     companion object {
         @JvmStatic
         fun CrystalManager.write(writes: Writes) {
-            writes.writeSeq(crystals, Crystal::write)
-            writes.intSet(obelisks)
+            crystals.write(writes)
+            obelisks.write(writes)
             writes.f(curExpendTime)
             writes.b(validAmount)
             writes.b(status.ordinal)
         }
         @JvmStatic
         fun CrystalManager.read(read: Reads) {
-            crystals = read.readSeq(Crystal::read)
+            crystals.read(read)
             genCrystalImgCallback?.let { crystals.forEach(it) }
-            obelisks = read.intSet()
+            obelisks.read(read)
             curExpendTime = read.f()
             validAmount = read.b().toInt()
             status = Status.values()[read.b().toInt()]

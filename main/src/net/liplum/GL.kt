@@ -4,14 +4,17 @@ import arc.Core
 import arc.graphics.gl.GLVersion
 import arc.graphics.gl.GLVersion.GlType.GLES
 import arc.graphics.gl.GLVersion.GlType.OpenGL
-import net.liplum.Clog.log
+import net.liplum.CLog.log
 import net.liplum.Compatible.Hologram
 import net.liplum.Compatible.TvStatic
+import net.liplum.mdt.ClientOnly
 
+@ClientOnly
 object GL {
     @JvmStatic
     val GlVersion: GLVersion = Core.graphics.glVersion
     @JvmStatic
+    @ClientOnly
     fun handleCompatible() {
         Hologram = false
         TvStatic = useCompatible(
@@ -20,7 +23,7 @@ object GL {
         )
 
         CompatibleMap.log("${Meta.Name} Compatible") { name, func ->
-            Clog.info("$name|${func()}")
+            CLog.info("$name|${func()}")
         }
     }
 

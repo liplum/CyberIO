@@ -7,16 +7,27 @@ import arc.util.Time
 import arc.util.serialization.JsonValue
 import mindustry.game.EventType.Trigger
 import mindustry.io.JsonIO
-import net.liplum.*
+import net.liplum.Cio
+import net.liplum.CioMod
+import net.liplum.Meta
+import net.liplum.S
 import net.liplum.Settings.CioVersion
 import net.liplum.Settings.ClickWelcomeTimes
 import net.liplum.Settings.LastWelcomeID
 import net.liplum.Settings.ShouldShowWelcome
 import net.liplum.Settings.ShowUpdate
+import net.liplum.annotations.Only
+import net.liplum.annotations.SubscribeEvent
 import net.liplum.blocks.tmtrainer.RandomName
-import net.liplum.lib.ReferBundleWrapper
-import net.liplum.lib.Res
-import net.liplum.utils.*
+import net.liplum.common.Res
+import net.liplum.common.util.ReferBundleWrapper
+import net.liplum.common.util.allMaxBy
+import net.liplum.common.util.randomExcept
+import net.liplum.event.CioInitEvent
+import net.liplum.lib.assets.TR
+import net.liplum.lib.math.randomByWeights
+import net.liplum.mdt.ClientOnly
+import net.liplum.mdt.utils.atlas
 
 @ClientOnly
 object Welcome {
@@ -26,20 +37,29 @@ object Welcome {
     private var entity = genEntity()
     private var showWelcome = false
     @JvmStatic
+    @ClientOnly
     fun showWelcomeDialog() {
         checkLastVersion()
         judgeWelcome()
         if (showWelcome) {
             entity.showTip()
         }
+        //For debug
+        /*val tip = WelcomeList.find { it.id == "SetOutErekir" }
+        tip?.condition?.canShow(tip)*/
+        //entity.showTipByID("SetOutErekir")
     }
     @JvmStatic
     fun judgeWelcome() {
         val allTips = info.scenes.map { WelcomeList[it] }.distinct().toList()
         val tipsCanShow = allTips.filter { it.condition.canShow(it) }
         val allCandidates = tipsCanShow.allMaxBy { it.condition.priority(it) }
+        if (allCandidates.isEmpty()) {
+            showWelcome = false
+            return
+        }
         var sumChance = 0
-        val weights = Array(allCandidates.size) {
+        val weights = IntArray(allCandidates.size) {
             val chance = allCandidates[it].chance
             sumChance += chance
             chance
@@ -59,13 +79,13 @@ object Welcome {
         }
     }
     @JvmStatic
+    @SubscribeEvent(CioInitEvent::class, Only.client)
     fun modifierModInfo() {
         val meta = CioMod.Info.meta
-        meta.displayName = "[#${R.C.Holo}]${meta.displayName}[]"
+        meta.displayName = "[#${S.Hologram}]${Meta.Name}[]"
         Events.run(Trigger.update) {
             if (Time.time % 60 < 1f) {
-                val color = RandomName.oneColor()
-                meta.author = "$color${Meta.Author}[]"
+                meta.author = RandomName.randomTinted(Meta.Author)
             }
         }
     }
@@ -149,6 +169,11 @@ object Welcome {
             get() = indexOf(default)
     }
 
+    fun String.handleTrRefer(): TR =
+        if (startsWith('@'))
+            removePrefix("@").atlas()
+        else Cio.atlas()
+
     class Entity(
         val bundle: ReferBundleWrapper,
         val info: Info,
@@ -164,10 +189,18 @@ object Welcome {
             bundle.format("$tip", *args)
 
         val icon: TR
-            get() = tip.iconPath.Cio.atlas()
+            get() = tip.iconPath.handleTrRefer()
 
         fun showTip() {
             tip.template.gen(this).show()
+        }
+
+        companion object {
+            fun Entity.showTipByID(id: String): Entity {
+                tip = WelcomeList[id]
+                showTip()
+                return this
+            }
         }
     }
 }

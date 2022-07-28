@@ -1,6 +1,0 @@
-:action scriptLoaded("OnTheShip.Captain.Introduction")
-:action text(0)
-:action text(1)
-:action text(2)
-:action text(3)
-:action text(4)

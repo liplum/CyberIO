@@ -3,8 +3,8 @@ package net.liplum.welcome
 import arc.struct.Seq
 import arc.util.serialization.JsonValue
 import mindustry.io.JsonIO
-import net.liplum.lib.Res
-import net.liplum.utils.getValue
+import net.liplum.common.Res
+import net.liplum.common.util.getValue
 
 object WelcomeList {
     var list: Map<String, WelcomeTip> = emptyMap()
@@ -63,6 +63,6 @@ class WelcomeTip {
         const val DefaultCondition = "ShowWelcome"
         const val DefaultTemplateID = "Story"
         const val DefaultChance = 1000
-        const val DefaultIconPath = "welcome-cyber-io"
+        const val DefaultIconPath = "icon"
     }
 }

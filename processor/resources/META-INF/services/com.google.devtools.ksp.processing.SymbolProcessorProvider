@@ -1,0 +1,3 @@
+net.liplum.processor.dp.DpProcessorProv
+net.liplum.processor.events.SubscriptionProcessorProv
+net.liplum.processor.cacherw.CacheRwProcessorProv
