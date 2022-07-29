@@ -48,20 +48,22 @@ object CioUnitTypes {
     fun holoMiner() {
         holoMiner = NewUnitType(R.Unit.HoloMiner, ::HoloUnitType, ::HoloUnit).apply {
             VanillaSpec {
-                AutoLife(maxHealth = 1600f, lose = 0.08f)
+                limitLife(hp = 1600f, lifespan = 3 * 60f)
                 researchReq = arrayOf(
                     CioItems.ic + 1,
                     Items.titanium + 60,
                     Items.plastanium + 30,
                 )
+                mineTier = 4
             }
             ErekirSpec {
-                AutoLife(maxHealth = 4000f, lose = 0.08f)
+                limitLife(hp = 1600f, lifespan = 3 * 60f)
                 researchReq = arrayOf(
                     CioItems.ic + 3,
                     Items.oxide + 20,
                     Items.carbide + 30,
                 )
+                mineTier = 5
             }
             speed = 2f
             targetPriority = -1f
@@ -74,7 +76,6 @@ object CioUnitTypes {
             mineWalls = true
             mineFloor = true
             mineSpeed = 10f
-            mineTier = 5
             armor = 2f
             buildSpeed = 1f
             drag = 0.06f
@@ -89,7 +90,7 @@ object CioUnitTypes {
     fun holoFighter() {
         holoFighter = NewUnitType(R.Unit.HoloFighter, ::HoloUnitType, ::HoloUnit).apply {
             VanillaSpec {
-                AutoLife(maxHealth = 2400f, lose = 0.19f)
+                limitLife(hp = 3000f, lifespan = 15 * 60f)
                 researchReq = arrayOf(
                     CioItems.ic + 2,
                     Items.titanium + 100,
@@ -98,7 +99,7 @@ object CioUnitTypes {
                 )
             }
             ErekirSpec {
-                AutoLife(maxHealth = 6000f, lose = 0.1f)
+                limitLife(hp = 5000f, lifespan = 15 * 60f)
                 researchReq = arrayOf(
                     CioItems.ic + 3,
                     Items.oxide + 20,
@@ -145,14 +146,14 @@ object CioUnitTypes {
     fun holoGuardian() {
         holoGuardian = NewUnitType(R.Unit.HoloGuardian, ::HoloUnitType, ::HoloUnit).apply {
             VanillaSpec {
-                AutoLife(maxHealth = 5000f, lose = 0.28f)
+                limitLife(hp = 5000f, lifespan = 10 * 60f)
                 researchReq = arrayOf(
                     CioItems.ic + 1,
                     Items.titanium + 40,
                 )
             }
             ErekirSpec {
-                AutoLife(maxHealth = 8000f, lose = 0.12f)
+                limitLife(hp = 8000f, lifespan = 10 * 60f)
                 researchReq = arrayOf(
                     CioItems.ic + 3,
                     Items.oxide + 20,
@@ -178,14 +179,13 @@ object CioUnitTypes {
             engineOffset = 5.7f
             hitSize = 15f
             armor = 5f
-
         }
     }
     @DependOn("CioItems.ic")
     fun holoArchitect() {
         holoArchitect = NewUnitType(R.Unit.HoloArchitect, ::HoloUnitType, ::HoloUnit).apply {
             VanillaSpec {
-                AutoLife(maxHealth = 2200f, lose = 0.15f)
+                limitLife(hp = 1200f, lifespan = 8 * 60f)
                 buildSpeed = 4.6f
                 speed = 3.5f
                 researchReq = arrayOf(
@@ -196,7 +196,7 @@ object CioUnitTypes {
                 )
             }
             ErekirSpec {
-                AutoLife(maxHealth = 2800f, lose = 0.15f)
+                limitLife(hp = 1200f, lifespan = 7.5f * 60f)
                 buildSpeed = 3.6f
                 speed = 3.0f
                 researchReq = arrayOf(
@@ -255,7 +255,7 @@ object CioUnitTypes {
     fun holoSupporter() {
         holoSupporter = NewUnitType(R.Unit.HoloSupporter, ::HoloUnitType, ::HoloUnit).apply {
             VanillaSpec {
-                AutoLife(maxHealth = 3800f, lose = 0.15f)
+                limitLife(hp = 3800f, lifespan = 12f * 60f)
                 buildSpeed = 2.2f
                 speed = 2.5f
                 accel = 0.06f
@@ -274,7 +274,7 @@ object CioUnitTypes {
                 )
             }
             ErekirSpec {
-                AutoLife(maxHealth = 6000f, lose = 0.10f)
+                limitLife(hp = 6000f, lifespan = 18f * 60f)
                 buildSpeed = 1.2f
                 speed = 2.25f
                 payloadCapacity = (5f * 5f) * Vars.tilePayload

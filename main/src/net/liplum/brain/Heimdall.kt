@@ -126,6 +126,7 @@ open class Heimdall(name: String) : Block(name) {
         flags = EnumSet.of(BlockFlag.turret)
         attacks = true
         canOverdrive = false
+        conductivePower = true
     }
 
     override fun init() {
@@ -303,6 +304,10 @@ open class Heimdall(name: String) : Block(name) {
 
         override fun delta(): Float {
             return this.timeScale * Time.delta * speedScale * (1f + heatShared)
+        }
+
+        override fun shouldActiveSound(): Boolean {
+            return enabled && brainWaves.list.isNotEmpty()
         }
 
         override fun updateTile() {

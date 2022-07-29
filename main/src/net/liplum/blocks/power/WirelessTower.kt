@@ -4,7 +4,6 @@ import arc.Core
 import arc.func.Prov
 import arc.graphics.g2d.Draw
 import arc.math.Angles
-import arc.math.Interp
 import arc.math.Mathf
 import arc.struct.ObjectSet
 import arc.util.Time
@@ -25,27 +24,30 @@ import net.liplum.Settings
 import net.liplum.Var
 import net.liplum.common.entity.Radiation
 import net.liplum.common.math.PolarX
+import net.liplum.common.util.DrawLayer
 import net.liplum.lib.Serialized
 import net.liplum.lib.assets.TR
-import net.liplum.lib.math.approachR
-import net.liplum.lib.math.isZero
-import net.liplum.lib.math.radian
+import net.liplum.lib.math.*
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.WhenTheSameTeam
+import net.liplum.mdt.consumer.powerStore
 import net.liplum.mdt.render.*
 import net.liplum.mdt.utils.sub
 import net.liplum.registry.CioStats
 import net.liplum.util.addPowerUseStats
 import kotlin.math.min
 
+private typealias PowerUse = Float
+
 open class WirelessTower(name: String) : PowerBlock(name) {
     @JvmField var range = 300f
     @JvmField var distributeSpeed = 5f
-    @JvmField var radiationSpeed = 0.01f
+    @ClientOnly @JvmField var radiationSpeed = 0.01f
     @JvmField var reactivePower = 0.1f
-    @JvmField var dst2CostRate: WirelessTowerBuild.(Float) -> Float = {
-        1f + it * 1.5f / realRange
+    @JvmField var dstExtraPowerConsumeFactor = 1f
+    @JvmField var dst2CostRate: WirelessTowerBuild.(Distance) -> PowerUse = { dst ->
+        1f + dst / realRange * dstExtraPowerConsumeFactor
     }
     lateinit var BaseTR: TR
     lateinit var CoilTR: TR
@@ -121,13 +123,10 @@ open class WirelessTower(name: String) : PowerBlock(name) {
             forEachBufferedInRange {
                 val powerCons = it.block.consPower
                 val power = it.power
-                val originalStatus = power.status
                 val request = powerCons.requestedPower(it)
                 if (!request.isZero && powerCons.capacity > 0) {
-                    val provided = min(request, realSpeed) * Time.delta
-                    power.status = Mathf.clamp(
-                        originalStatus + provided / powerCons.capacity
-                    )
+                    val provided = min(request, realSpeed * Time.delta)
+                    it.powerStore += provided
                     lastNeed += provided * dst2CostRate(it.dst(this))
                     powerGraphsTemp.add(power.graph)
                 }
@@ -184,15 +183,15 @@ open class WirelessTower(name: String) : PowerBlock(name) {
             Draw.z(Layer.block + 1f)
             Drawf.shadow(CoilTR, x + offsetX - 0.5f, y + offsetY - 0.5f)
             CoilTR.Draw(x + offsetX, y + offsetY)
-            if (Time.time % Var.WirelessTowerPingFrequency <= 1f) {
-                pingingCount--
-            }
-            if (
-                Settings.ShowWirelessTowerCircle &&
-                pingingCount < Var.WirelessTowerInitialPingingNumber
-            ) {
-                // Render radiations
-                WhenTheSameTeam {
+            WhenTheSameTeam {
+                if (Time.time % Var.WirelessTowerPingFrequency <= 1f) {
+                    pingingCount--
+                }
+                if (
+                    Settings.ShowWirelessTowerCircle &&
+                    pingingCount < Var.WirelessTowerInitialPingingNumber
+                ) {
+                    // Render radiations
                     val selfPower = this.power.status
                     if (selfPower.isZero || selfPower.isNaN() ||
                         (power.graph.all.size == 1 && power.graph.all.first() == this)
@@ -207,19 +206,20 @@ open class WirelessTower(name: String) : PowerBlock(name) {
                                 pingingCount++
                             }
                         }
-                        Draw.z(Layer.power + 1f)
-                        val progress = range / realRange
-                        val nonlinearProgress = Interp.pow2Out.apply(progress)
-                        G.circle(
-                            x, y,
-                            nonlinearProgress * realRange,
-                            R.C.Power, Renderer.laserOpacity * radiationAlpha,
-                            (realRange / 100f).coerceAtLeast(1f)
-                        )
+                        DrawLayer(Layer.power + 1f) {
+                            val progress = range / realRange
+                            G.circle(
+                                x, y,
+                                rad = progress.pow2OutIntrp * realRange,
+                                color = R.C.Power,
+                                alpha = Renderer.laserOpacity * radiationAlpha,
+                                stroke = (realRange / 100f).coerceAtLeast(1f) * (1f - progress).pow2OutIntrp,
+                            )
+                        }
                     }
+                } else {
+                    radiation.range = 0f
                 }
-            } else {
-                radiation.range = 0f
             }
         }
 

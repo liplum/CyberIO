@@ -33,10 +33,7 @@ import net.liplum.mdt.animation.anis.config
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.DrawOn
 import net.liplum.mdt.render.Text
-import net.liplum.mdt.utils.PackedPos
-import net.liplum.mdt.utils.buildAt
-import net.liplum.mdt.utils.inMod
-import net.liplum.mdt.utils.sub
+import net.liplum.mdt.utils.*
 import kotlin.math.absoluteValue
 
 private typealias AniStateP = AniState<P2pNode, P2pNode.P2pBuild>
@@ -95,8 +92,8 @@ open class P2pNode(name: String) : AniedBlock<P2pNode, P2pNode.P2pBuild>(name) {
 
     override fun setBars() {
         super.setBars()
-
     }
+
     override fun icons() = arrayOf(BottomTR, region, YinAndYangTR)
     open inner class P2pBuild : AniedBuild(), IP2pNode {
         override val maxRange = this@P2pNode.maxRange
@@ -164,7 +161,7 @@ open class P2pNode(name: String) : AniedBlock<P2pNode, P2pNode.P2pBuild>(name) {
                             val data = abs
                                 .coerceAtMost(sender.currentAmount)
                                 .coerceAtMost(receiver.restRoom)
-                                .coerceAtMost(balancingSpeed) * efficiency * other.building.efficiency * delta()
+                                .coerceAtMost(balancingSpeed * efficiency * other.building.efficiency * delta())
                             if (data > 0.0001f) {
                                 sender.streamToAnother(data)
                             }
@@ -211,7 +208,7 @@ open class P2pNode(name: String) : AniedBlock<P2pNode, P2pNode.P2pBuild>(name) {
                             targetP2pColor = R.C.P2P
                         }
                     } else {
-                        val fluidColor = currentFluid.color
+                        val fluidColor = currentFluid.fluidColor
                         if (targetP2pColor != fluidColor) {
                             lastP2pColor = Changed(old = targetP2pColor)
                             targetP2pColor = fluidColor
@@ -220,7 +217,6 @@ open class P2pNode(name: String) : AniedBlock<P2pNode, P2pNode.P2pBuild>(name) {
                 }
             }
         }
-
         @ClientOnly
         var yinYangRotation = 0f
         override fun fixedDraw() {

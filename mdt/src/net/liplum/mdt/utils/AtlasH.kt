@@ -29,10 +29,8 @@ val String.inMod: TR
     get() = Vars.content.transformName(this).atlas()
 
 infix fun TR.or(texture: TR): TR =
-    if (this.found())
-        this
-    else
-        texture
+    if (this.found()) this
+    else texture
 /**
  * Gets an array of Texture Region from a single image named in pattern "sprites/{this}-{subName}" or "sprites/{this}" if subName is null.
  * @param subName the following name after a hyphen. If it's null, use the {this} name

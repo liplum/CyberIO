@@ -16,6 +16,7 @@ import mindustry.world.blocks.ItemSelection
 import mindustry.world.blocks.liquid.LiquidBlock
 import mindustry.world.meta.BlockGroup
 import net.liplum.DebugOnly
+import net.liplum.R
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
 import net.liplum.common.delegate.Delegate1
@@ -28,6 +29,7 @@ import net.liplum.mdt.animation.anis.AniState
 import net.liplum.mdt.animation.anis.config
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.DrawOn
+import net.liplum.mdt.utils.fluidColor
 import net.liplum.mdt.utils.inMod
 import net.liplum.mdt.utils.sub
 
@@ -107,7 +109,7 @@ open class StreamClient(name: String) : AniedBlock<StreamClient, StreamClient.Cl
         override val connectedHosts: ObjectSet<Int> = hosts
         override val maxHostConnection = maxConnection
         override val clientColor: Color
-            get() = outputLiquid.clientColor
+            get() = outputLiquid?.fluidColor ?: R.C.Client
         var lastTileChange = -2
         override fun updateTile() {
             // Check connection every second

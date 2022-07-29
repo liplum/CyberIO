@@ -13,7 +13,6 @@ import arc.math.geom.Vec2
 import arc.scene.ui.layout.Table
 import arc.struct.Seq
 import arc.util.Strings.autoFixed
-import arc.util.Structs
 import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
@@ -123,8 +122,8 @@ open class HoloProjector(name: String) : Block(name) {
             }
         }
         cyberionCapacity = plans.max(
-            Floatf { it.req.cyberionReq }
-        ).req.cyberionReq * 2
+            Floatf { it.req.cyberion }
+        ).req.cyberion * 2
         liquidCapacity = cyberionCapacity
         super.init()
     }
@@ -199,8 +198,9 @@ open class HoloProjector(name: String) : Block(name) {
             progressTime += edelta()
 
             if (progressTime >= plan.time) {
-                val projected = projectUnit(plan.unitType)
-                if (projected) {
+                val unitType = plan.unitType
+                if (unitType.canCreateHoloUnitIn(team)) {
+                    projectUnit(unitType)
                     consume()
                     progressTime = 0f
                 }
@@ -269,24 +269,20 @@ open class HoloProjector(name: String) : Block(name) {
         }
 
         override fun config(): Any? = planIndex
-        open fun projectUnit(unitType: HoloUnitType): Boolean {
-            if (unitType.canCreateHoloUnitIn(team)) {
-                val unit = unitType.create(team)
-                if (unit is HoloUnit) {
-                    unit.set(x, y)
-                    ServerOnly {
-                        unit.add()
-                    }
-                    unit.setProjector(findTrueHoloProjectorSource())
-                    val commandPos = commandPos
-                    if (commandPos != null && unit.isCommandable) {
-                        unit.command().commandPosition(commandPos)
-                    }
-                    Events.fire(UnitCreateEvent(unit, this))
+        open fun projectUnit(unitType: HoloUnitType) {
+            val unit = unitType.create(team)
+            if (unit is HoloUnit) {
+                unit.set(x, y)
+                ServerOnly {
+                    unit.add()
                 }
-                return true
+                unit.setProjector(findTrueHoloProjectorSource())
+                val commandPos = commandPos
+                if (commandPos != null && unit.isCommandable) {
+                    unit.command().commandPosition(commandPos)
+                }
+                Events.fire(UnitCreateEvent(unit, this))
             }
-            return false
         }
         @ClientOnly
         var alpha = 0f
@@ -376,10 +372,7 @@ open class HoloProjector(name: String) : Block(name) {
 
         override fun acceptItem(source: Building, item: Item): Boolean {
             val curPlan = curPlan ?: return false
-            return items[item] < getMaximumAccepted(item) &&
-                    Structs.contains(curPlan.req.items) {
-                        it.item === item
-                    }
+            return items[item] < getMaximumAccepted(item) && item in curPlan.req
         }
 
         override fun created() {
@@ -460,7 +453,7 @@ open class HoloProjector(name: String) : Block(name) {
                         }.left()
                         addTable {
                             right()
-                            add(autoFixed(plan.req.cyberionReq, 1))
+                            add(autoFixed(plan.req.cyberion, 1))
                                 .color(cyberion.color).padLeft(12f).left()
                             image(cyberion.uiIcon).size((8 * 3).toFloat())
                                 .padRight(2f).right()

@@ -5,17 +5,16 @@ package net.liplum.api.cyber
 import arc.scene.ui.Label
 import mindustry.world.Block
 import mindustry.world.meta.Stat
+import mindustry.world.meta.StatUnit
 import net.liplum.R
 import net.liplum.common.util.bundle
 import net.liplum.registry.CioStats
 
 fun <T> T.addLinkRangeStats(range: Float) where  T : Block {
-    stats.add(CioStats.dataRange) { stat ->
-        if (range < 0f)
-            stat.add(Label("∞"))
-        else
-            stat.add(Label("$range"))
-    }
+    if (range < 0f)
+        stats.add(CioStats.dataRange) { it.add("∞") }
+    else
+        stats.add(CioStats.dataRange, range, StatUnit.blocks)
 }
 
 fun <T> T.addLimitedStats(stat: Stat, max: Int) where  T : Block {

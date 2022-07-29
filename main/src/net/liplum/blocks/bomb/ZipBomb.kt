@@ -23,6 +23,7 @@ import mindustry.gen.Unit
 import mindustry.graphics.Drawf
 import mindustry.world.Block
 import mindustry.world.meta.BlockStatus
+import mindustry.world.meta.Stat
 import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.Var
@@ -45,7 +46,7 @@ open class ZipBomb(name: String) : Block(name) {
     @JvmField var shake = 6f
     @JvmField var shakeDuration = 16f
     @JvmField var maxSensitive = 10
-    @JvmField var autoDetectTime = 300f
+    @JvmField var autoDetectTime = 240f
     @JvmField var warningRangeFactor = 2f
     val explosionRange: Float
         get() = rangePreUnit * Vars.tilesize * size
@@ -86,6 +87,12 @@ open class ZipBomb(name: String) : Block(name) {
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)
         G.dashCircleBreath(this, x, y, explosionRange * smoothPlacing(maxSelectedCircleTime), circleColor)
+    }
+
+    override fun setStats() {
+        super.setStats()
+        stats.add(Stat.damage, explosionDamage)
+        stats.add(Stat.range, explosionRange)
     }
 
     override fun setBars() {

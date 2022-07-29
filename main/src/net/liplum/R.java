@@ -202,9 +202,6 @@ public final class R {
         };
         public static final Color Stop = RedAlert;/* Color.valueOf("#dd2c00");*/
         public static final Color Unconnected = Color.white;
-        public static Color[] LiquidColors = {};
-        public static Color[] HostLiquidColors = {};
-        public static Color[] ClientLiquidColors = {};
     }
 
     public static final class SD {

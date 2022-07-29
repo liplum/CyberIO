@@ -118,6 +118,7 @@ open class Heart(name: String) : Block(name), IComponentBlock {
         priority = TargetPriority.turret
         group = BlockGroup.turrets
         flags = EnumSet.of(BlockFlag.turret)
+        conductivePower = true
     }
 
     override fun init() {

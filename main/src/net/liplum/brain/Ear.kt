@@ -96,6 +96,7 @@ open class Ear(name: String) : Block(name), IComponentBlock {
         sync = true
         attacks = true
         canOverdrive = false
+        conductivePower = true
     }
 
     override fun init() {
@@ -284,6 +285,10 @@ open class Ear(name: String) : Block(name), IComponentBlock {
 
         override fun drawSelect() {
             G.dashCircleBreath(x, y, realRange * smoothSelect(maxSelectedCircleTime), sonicWaveColor, stroke = Var.CircleStroke)
+        }
+
+        override fun shouldActiveSound(): Boolean {
+            return enabled && sonicWaves.list.isNotEmpty()
         }
         // </editor-fold>
         override fun updateTile() {

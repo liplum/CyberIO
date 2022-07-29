@@ -15,6 +15,9 @@ import mindustry.gen.Building
 import mindustry.graphics.Pal
 import mindustry.logic.LAccess
 import mindustry.type.Item
+import mindustry.world.consumers.ConsumeItemDynamic
+import mindustry.world.consumers.ConsumeItemFilter
+import mindustry.world.consumers.ConsumeItems
 import mindustry.world.meta.BlockGroup
 import mindustry.world.meta.Stat
 import net.liplum.*
@@ -32,6 +35,8 @@ import net.liplum.mdt.animation.anims.AnimationObj
 import net.liplum.mdt.animation.anis.AniState
 import net.liplum.mdt.animation.anis.config
 import net.liplum.mdt.render.Draw
+import net.liplum.mdt.render.drawSurroundingRect
+import net.liplum.mdt.render.smoothPlacing
 import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.ui.bars.removeItemsInBar
 import net.liplum.mdt.utils.*
@@ -67,6 +72,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
         else
             Mathf.round(log2(it + 5.1f))
     }
+    @JvmField @ClientOnly var indicateAreaExtension = 2f
     @ClientOnly @JvmField var SendingTime = 60f
     @ClientOnly @JvmField var UnloadTime = 60f
     @ClientOnly @JvmField var ShrinkingAnimFrames = 13
@@ -142,6 +148,13 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)
         drawPlacingMaxRange(x, y, maxRange, R.C.Sender)
+        drawSurroundingRect(
+            x, y, indicateAreaExtension * smoothPlacing(maxSelectedCircleTime),
+            if (valid) R.C.GreenSafe else R.C.RedAlert,
+        ) { b ->
+            b.block.unloadable && !b.isDiagonalTo(this, x, y)
+        }
+        drawPlaceText(subBundle("tip"), x, y, valid)
     }
 
     override fun setBars() {

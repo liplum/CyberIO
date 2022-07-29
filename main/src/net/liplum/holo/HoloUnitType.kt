@@ -29,10 +29,10 @@ import mindustry.world.meta.Stat
 import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.S
-import net.liplum.holo.HoloProjector.HoloProjectorBuild
 import net.liplum.common.shader.use
 import net.liplum.common.util.bundle
 import net.liplum.common.util.toFloat
+import net.liplum.holo.HoloProjector.HoloProjectorBuild
 import net.liplum.lib.math.FUNC
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.Else
@@ -82,17 +82,6 @@ open class HoloUnitType(name: String) : UnitType(name) {
         envDisabled = Env.none
         isEnemy = false
         payloadCapacity = 0f
-    }
-
-    open fun AutoLife(lose: Float) {
-        this.lose = lose
-        this.lifespan = this.health / lose
-    }
-
-    open fun AutoLife(maxHealth: Float, lose: Float) {
-        this.health = maxHealth
-        this.lose = lose
-        this.lifespan = this.health / lose
     }
 
     open val Unit.holoAlpha: Float
@@ -185,8 +174,10 @@ open class HoloUnitType(name: String) : UnitType(name) {
                     unit.rotation
                 )
             } else {
-                DrawPart.params.set(0f, 0f, 0f, 0f, 0f, 0f,
-                    unit.x, unit.y, unit.rotation)
+                DrawPart.params.set(
+                    0f, 0f, 0f, 0f, 0f, 0f,
+                    unit.x, unit.y, unit.rotation
+                )
             }
             if (unit is Scaled) {
                 DrawPart.params.life = unit.fin()
@@ -280,21 +271,34 @@ open class HoloUnitType(name: String) : UnitType(name) {
                 )
                 bars.row()
             }
-
             if (unit is HoloUnit) {
-                bars.add(
-                    Bar({
-                        val p = unit.projectorPos.TE<HoloProjectorBuild>()
-                        if (p != null) "${p.tileX()},${p.tileY()}"
-                        else "${Iconc.cancel}"
-                    }, {
-                        val p = unit.projectorPos.TE<HoloProjectorBuild>()
-                        if (p != null) S.Hologram
-                        else Color.gray
-                    }, {
-                        (unit.projectorPos.TE<HoloProjectorBuild>() != null).toFloat()
-                    })
-                )
+                DebugOnly {
+                    bars.add(
+                        Bar({
+                            val p = unit.projectorPos.TE<HoloProjectorBuild>()
+                            if (p != null) "${p.tileX()},${p.tileY()}"
+                            else "${Iconc.cancel}"
+                        }, {
+                            val p = unit.projectorPos.TE<HoloProjectorBuild>()
+                            if (p != null) S.Hologram
+                            else Color.gray
+                        }, {
+                            (unit.projectorPos.TE<HoloProjectorBuild>() != null).toFloat()
+                        })
+                    )
+                }.Else {
+                    bars.add(
+                        Bar({
+                            val p = unit.projectorPos.TE<HoloProjectorBuild>()
+                            if (p != null) "${Iconc.home}"
+                            else "${Iconc.cancel}"
+                        }, {
+                            S.Hologram
+                        }, {
+                            (unit.projectorPos.TE<HoloProjectorBuild>() != null).toFloat()
+                        })
+                    )
+                }
                 bars.row()
             }
             if (unit is Payloadc && canShowPayload(unit)) {
@@ -332,4 +336,16 @@ open class HoloUnitType(name: String) : UnitType(name) {
                 .a(0.7f * alpha)
         )
     }
+}
+
+fun HoloUnitType.autoLife(hp: Float = health, lose: Float) {
+    this.health = hp
+    this.lose = lose
+    this.lifespan = this.health / lose
+}
+
+fun HoloUnitType.limitLife(hp: Float, lifespan: Float) {
+    this.health = hp
+    this.lifespan = lifespan
+    this.lose = hp / lifespan
 }

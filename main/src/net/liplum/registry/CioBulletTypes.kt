@@ -23,7 +23,7 @@ object CioBulletTypes {
             }
             ErekirSpec {
                 speed = 2.8f
-                damage = 80f
+                damage = 180f
             }
             sprite = "bullet"
             width = 10f
@@ -48,11 +48,11 @@ object CioBulletTypes {
         radiationInterference = ShaderBasicBulletT<CommonShader>().apply {
             VanillaSpec {
                 speed = 2.3f
-                damage = 30f
+                damage = 40f
             }
             ErekirSpec {
                 speed = 2.25f
-                damage = 90f
+                damage = 280f
             }
             sprite = "bullet"
             shader = { SD.TvStatic }

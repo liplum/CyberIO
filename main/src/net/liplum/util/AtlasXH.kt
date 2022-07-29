@@ -23,8 +23,8 @@ fun String.atlasX(): TR {
 /**
  * Support content specific. see [MappableContent.sub]
  */
-fun MappableContent.subX(subName: String): TR =
-    "${this.name}-$subName".atlasX()
+fun MappableContent.subX(suffix: String): TR =
+    "${this.name}-$suffix".atlasX()
 
 fun MappableContent.atlasX(): TR =
     name.atlasX()

@@ -7,15 +7,14 @@ import mindustry.graphics.Layer
 import mindustry.graphics.Pal
 import mindustry.world.Block
 import mindustry.world.draw.DrawBlock
-import net.liplum.lib.assets.TR
+import net.liplum.lib.assets.EmptyTRs
 import net.liplum.lib.assets.TRs
 import net.liplum.util.sheetX
-import net.liplum.util.subX
 
-class SpecDrawConstruct : DrawBlock() {
-    var stages = 3
-    lateinit var stageRegions: TRs
-    lateinit var topRegion: TR
+class SpecDrawConstruct(
+    var stages: Int = 3,
+) : DrawBlock() {
+    var stageRegions = EmptyTRs
     override fun draw(build: Building) {
         val stage = (build.progress() * stages).toInt()
         val stageProgress = (build.progress() * stages) % 1f
@@ -32,15 +31,12 @@ class SpecDrawConstruct : DrawBlock() {
                 0f,
                 stageProgress,
                 build.warmup() * build.efficiency(),
-                build.totalProgress() * 1.6f * build.efficiency()
+                build.totalProgress() * 1.6f
             )
         }
-
-        if (topRegion.found()) Draw.rect(topRegion, build.x, build.y)
     }
 
     override fun load(block: Block) {
-        topRegion = block.subX("top")
         stageRegions = block.sheetX("construct", stages)
     }
 }

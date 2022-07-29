@@ -8,4 +8,4 @@ typealias FUNC = (Float) -> Float
  * It belongs to 0.0f to 1.0f
  */
 typealias Progress = Float
-
+typealias Distance = Float

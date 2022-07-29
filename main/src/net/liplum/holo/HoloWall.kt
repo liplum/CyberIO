@@ -32,7 +32,6 @@ import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.animation.Floating
 import net.liplum.mdt.render.G
 import net.liplum.mdt.ui.bars.AddBar
-import net.liplum.mdt.ui.bars.removeItemsInBar
 import net.liplum.mdt.utils.healthPct
 import net.liplum.mdt.utils.or
 import net.liplum.mdt.utils.seconds
@@ -47,7 +46,7 @@ open class HoloWall(name: String) : Wall(name) {
     @ClientOnly lateinit var ImageTR: TR
     @ClientOnly lateinit var DyedImageTR: TR
     @JvmField var minHealthProportion = 0.05f
-    @ClientOnly @JvmField var FloatingRange = 2f
+    @ClientOnly @JvmField var floatingRange = 2f
     @JvmField var needPower = false
     /**
      * Used when [needPower] is true.
@@ -141,7 +140,7 @@ open class HoloWall(name: String) : Wall(name) {
         override val minHealthProportion: Float
             get() = this@HoloWall.minHealthProportion
         @ClientOnly @JvmField
-        var floating: Floating = Floating(FloatingRange).apply {
+        var floating: Floating = Floating(floatingRange).apply {
             clockwise = nextBoolean()
             randomPos()
             changeRate = 10
@@ -208,7 +207,7 @@ open class HoloWall(name: String) : Wall(name) {
         }
         @ClientOnly
         open fun updateFloating() {
-            val d = (0.1f * FloatingRange * delta() * (2f - healthPct)) * G.sclx
+            val d = (0.1f * floatingRange * delta() * (2f - healthPct)) * G.sclx
             floating.move(d * 0.3f)
         }
 

@@ -1,8 +1,10 @@
 package net.liplum
 
 import arc.Core.settings
+import arc.math.Interp
 import mindustry.Vars
 import net.liplum.common.Setting
+import net.liplum.lib.arc.invoke
 import net.liplum.mdt.ClientOnly
 import net.liplum.script.KeyNotFoundException
 import net.liplum.update.Version2
@@ -14,6 +16,9 @@ object Settings {
     @ClientOnly @JvmField var AlwaysShowLink = true
     @ClientOnly @JvmField var ShowLinkCircle = false
     @ClientOnly @JvmField var ShowWirelessTowerCircle = true
+    // input [0,100] -> output [30,0]
+    fun percentage2Density(percent: Int): Float =
+        Interp.pow2Out(1f - percent / 100f) * 30f
     @JvmStatic
     fun updateSettings() {
         LinkOpacity = settings.getInt(R.Setting.LinkOpacity, 100) / 100f

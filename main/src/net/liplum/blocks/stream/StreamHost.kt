@@ -26,10 +26,7 @@ import net.liplum.mdt.animation.anis.AniState
 import net.liplum.mdt.animation.anis.config
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.DrawOn
-import net.liplum.mdt.utils.buildAt
-import net.liplum.mdt.utils.inMod
-import net.liplum.mdt.utils.sub
-import net.liplum.mdt.utils.unpack
+import net.liplum.mdt.utils.*
 import net.liplum.util.*
 import java.util.*
 
@@ -143,7 +140,7 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
         val realNetworkSpeed: Float
             get() = networkSpeed * timeScale
         override val hostColor: Color
-            get() = liquids.current().color
+            get() = liquids.current().fluidColor
 
         var lastTileChange = -2
         override fun updateTile() {

@@ -18,6 +18,7 @@ import mindustry.ui.Styles
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.CheckSetting
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.SliderSetting
 import net.liplum.*
+import net.liplum.Settings.percentage2Density
 import net.liplum.annotations.Only
 import net.liplum.annotations.SubscribeEvent
 import net.liplum.common.ing
@@ -108,14 +109,11 @@ object CioUI {
         ) {
             Settings.LinkOpacity = Core.settings.getInt(R.Setting.LinkOpacity) / 100f
         }
-        // input [0,100] -> output [0,30]
-        val pct2Density: (Int) -> Float = {
-            Interp.pow2Out(it / 100f) * 30f
-        }
+
         addSliderSettingX(R.Setting.LinkArrowDensity,
             15, 0, 100, 5, { "$it" }
         ) {
-            Settings.LinkArrowDensity = pct2Density(Core.settings.getInt(R.Setting.LinkArrowDensity, 15))
+            Settings.LinkArrowDensity = percentage2Density(Core.settings.getInt(R.Setting.LinkArrowDensity, 15))
         }
         addSliderSettingX(R.Setting.LinkAnimationSpeed,
             40, 0, 120, 5, { "$it" }

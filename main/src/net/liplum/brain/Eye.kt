@@ -14,6 +14,7 @@ import mindustry.entities.TargetPriority
 import mindustry.entities.bullet.BulletType
 import mindustry.gen.Building
 import mindustry.gen.Bullet
+import mindustry.gen.Sounds
 import mindustry.gen.Teamc
 import mindustry.gen.Unit
 import mindustry.graphics.Drawf
@@ -81,6 +82,8 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
         buildType = Prov { EyeBuild() }
         priority = TargetPriority.turret
         canOverdrive = false
+        conductivePower = true
+        shootSound = Sounds.none
     }
 
     override fun init() {

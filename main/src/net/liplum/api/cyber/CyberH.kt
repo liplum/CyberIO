@@ -108,14 +108,18 @@ val ICyberEntity?.tileYd: Double
 //</editor-fold>
 typealias SingleItemArray = Seq<Item>
 
-object DataCenter {
+object CyberDataLoader {
     @JvmField var SingleItems: Array<SingleItemArray> = emptyArray()
-    @JvmStatic
+    @JvmField var SingleLiquid: Array<SingleLiquidArray> = emptyArray()
     @SubscribeEvent(CioInitEvent::class)
     fun initData() {
         val items = Vars.content.items()
         SingleItems = Array(items.size) {
             Seq.with(items[it])
+        }
+        val liquids = Vars.content.liquids()
+        SingleLiquid = Array(liquids.size) {
+            Seq.with(liquids[it])
         }
     }
 }
@@ -125,7 +129,7 @@ val Item?.req: SingleItemArray
     get() = if (this == null)
         EmptySingleItemArray
     else
-        DataCenter.SingleItems[this.ID]
+        CyberDataLoader.SingleItems[this.ID]
 
 fun Item?.match(requirements: SingleItemArray?): Boolean {
     this ?: return false
@@ -137,77 +141,18 @@ fun Int.isAccepted() =
     this == -1 || this > 0
 typealias SingleLiquidArray = Seq<Liquid>
 
-object StreamCenter {
-    @JvmField var SingleLiquid: Array<SingleLiquidArray> = emptyArray()
-    @JvmStatic
-    fun initStream() {
-        val liquids = Vars.content.liquids()
-        SingleLiquid = Array(liquids.size) {
-            Seq.with(liquids[it])
-        }
-    }
-    @JvmStatic
-    @ClientOnly
-    fun loadLiquidsColor() {
-        val liquids = Vars.content.liquids()
-        R.C.LiquidColors = Array(liquids.size) {
-            val liquid = liquids[it]
-            val color = liquid.color
-            // To prevent crash with the adaptor of liquid because their Liquid#color is null. @Discord Normalperson666#2826
-            // So I just cause a crash when loading and provide more details for handling with it.
-            assert(color != null) {
-                "${liquid.localizedName}(${liquid.name} of ${liquid.javaClass.name}) in ${liquid.minfo?.mod} has a nullable color." +
-                        "This message is only for notifying that you might be on a extreme condition about mods or some mods doesn't obey the rules of Mindustry." +
-                        "Try again after uninstalling some unnecessary mods."
-            }
-            color
-        }
-    }
-    @JvmStatic
-    @ClientOnly
-    fun initStreamColors() {
-        R.C.HostLiquidColors = Array(R.C.LiquidColors.size) {
-            R.C.LiquidColors[it].cpy().lerp(R.C.Host, 0.4f)
-        }
-        R.C.ClientLiquidColors = Array(R.C.LiquidColors.size) {
-            R.C.LiquidColors[it].cpy().lerp(R.C.Client, 0.4f)
-        }
-    }
-    @JvmStatic
-    @SubscribeEvent(CioInitEvent::class)
-    fun initAndLoad() {
-        initStream()
-        ClientOnly {
-            loadLiquidsColor()
-            initStreamColors()
-        }
-    }
-}
-
 val EmptySingleLiquidArray: SingleLiquidArray = Seq()
 val Liquid?.req: SingleLiquidArray
     get() = if (this == null)
         EmptySingleLiquidArray
     else
-        StreamCenter.SingleLiquid[this.ID]
+        CyberDataLoader.SingleLiquid[this.ID]
 
 fun Liquid?.match(requirements: SingleLiquidArray?): Boolean {
     this ?: return false
     requirements ?: return true
     return this in requirements
 }
-@ClientOnly
-val Liquid?.hostColor: Color
-    get() = if (this == null)
-        R.C.Host
-    else
-        R.C.HostLiquidColors[this.ID]
-@ClientOnly
-val Liquid?.clientColor: Color
-    get() = if (this == null)
-        R.C.Client
-    else
-        R.C.ClientLiquidColors[this.ID]
 
 fun transitionColor(from: Changed<Color>, to: Color): Color {
     val last = from.old

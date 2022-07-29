@@ -34,6 +34,7 @@ import net.liplum.mdt.ui.bars.genAllLiquidBars
 import net.liplum.mdt.ui.bars.removeLiquidInBar
 import net.liplum.mdt.utils.ForProximity
 import net.liplum.mdt.utils.buildAt
+import net.liplum.mdt.utils.fluidColor
 import net.liplum.mdt.utils.sub
 
 /**
@@ -105,7 +106,7 @@ open class StreamServer(name: String) : StreamHost(name) {
                 val curAmount = liquids[liquid]
                 val proportion = curAmount / total
                 if (curAmount > 0.0001f) {
-                    mixedFluidColor.lerp(liquid.color, proportion)
+                    mixedFluidColor.lerp(liquid.fluidColor, proportion)
                 }
             }
         }
