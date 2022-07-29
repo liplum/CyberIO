@@ -16,11 +16,8 @@ open class Requirement(
     val cyberion: Float = 0f,
     val items: Array<ItemStack> = emptyArray(),
 ) {
-    val liquid = if (cyberion != 0f)
-        CioFluids.cyberion + cyberion
-    else
-        null
-
+    val liquid = CioFluids.cyberion + cyberion
+    val liquidArray = arrayOf(liquid)
     operator fun contains(stack: ItemStack): Boolean {
         for (req in items)
             if (req == stack) return true

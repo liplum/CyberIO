@@ -1098,7 +1098,6 @@ object CioBlocks {
                     HoloPlan(
                         CioUnitTypes.holoMiner,
                         Requirement(
-                            items = arrayOf(CioItems.ic + 1),
                             cyberion = 300f
                         ),
                         15f * 60f
@@ -1106,7 +1105,6 @@ object CioBlocks {
                     HoloPlan(
                         CioUnitTypes.holoFighter,
                         Requirement(
-                            items = arrayOf(CioItems.ic + 1),
                             cyberion = 300f
                         ),
                         15f * 60f
@@ -1114,7 +1112,6 @@ object CioBlocks {
                     HoloPlan(
                         CioUnitTypes.holoGuardian,
                         Requirement(
-                            items = arrayOf(CioItems.ic + 1),
                             cyberion = 155f
                         ),
                         7.5f * 60f
@@ -1122,7 +1119,6 @@ object CioBlocks {
                     HoloPlan(
                         CioUnitTypes.holoArchitect,
                         Requirement(
-                            items = arrayOf(CioItems.ic + 1),
                             cyberion = 600f
                         ),
                         25f * 60f
@@ -1130,7 +1126,6 @@ object CioBlocks {
                     HoloPlan(
                         CioUnitTypes.holoSupporter,
                         Requirement(
-                            items = arrayOf(CioItems.ic + 1),
                             cyberion = 250f
                         ),
                         12f * 60f
@@ -1150,27 +1145,42 @@ object CioBlocks {
                 plans = Seq.with(
                     HoloPlan(
                         CioUnitTypes.holoMiner,
-                        Requirement(300f),
+                        Requirement(
+                            items = arrayOf(CioItems.ic + 1),
+                            cyberion = 300f
+                        ),
                         18f * 60f
                     ),
                     HoloPlan(
                         CioUnitTypes.holoFighter,
-                        Requirement(300f),
+                        Requirement(
+                            items = arrayOf(CioItems.ic + 1),
+                            cyberion = 300f
+                        ),
                         15f * 60f
                     ),
                     HoloPlan(
                         CioUnitTypes.holoGuardian,
-                        Requirement(205f),
+                        Requirement(
+                            items = arrayOf(CioItems.ic + 1),
+                            cyberion = 205f
+                        ),
                         7.5f * 60f
                     ),
                     HoloPlan(
                         CioUnitTypes.holoArchitect,
-                        Requirement(600f),
+                        Requirement(
+                            items = arrayOf(CioItems.ic + 1),
+                            cyberion = 600f
+                        ),
                         25f * 60f
                     ),
                     HoloPlan(
                         CioUnitTypes.holoSupporter,
-                        Requirement(500f),
+                        Requirement(
+                            items = arrayOf(CioItems.ic + 1),
+                            cyberion = 500f
+                        ),
                         18f * 60f
                     ),
                 )

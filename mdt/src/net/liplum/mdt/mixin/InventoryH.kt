@@ -26,3 +26,9 @@ fun LiquidModule.has(liquidStacks: Array<LiquidStack>): Boolean {
     }
     return true
 }
+
+fun LiquidModule.remove(reqs: Array<LiquidStack>, multiplier: Float) {
+    for (req in reqs) {
+        remove(req.liquid, req.amount * multiplier)
+    }
+}

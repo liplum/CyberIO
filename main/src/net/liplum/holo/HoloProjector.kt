@@ -23,9 +23,7 @@ import mindustry.gen.Unit
 import mindustry.graphics.Layer
 import mindustry.graphics.Pal
 import mindustry.logic.LAccess
-import mindustry.type.Item
-import mindustry.type.Liquid
-import mindustry.type.UnitType
+import mindustry.type.*
 import mindustry.ui.Fonts
 import mindustry.ui.Styles
 import mindustry.world.Block
@@ -41,7 +39,7 @@ import net.liplum.common.util.bundle
 import net.liplum.common.util.percentI
 import net.liplum.lib.Serialized
 import net.liplum.mdt.*
-import net.liplum.mdt.consumer.DynamicContinuousLiquidCons
+import net.liplum.mdt.consumer.ConsumeFluidDynamic
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.ui.addItemSelectorDefault
 import net.liplum.mdt.ui.bars.AddBar
@@ -89,23 +87,11 @@ open class HoloProjector(name: String) : Block(name) {
     }
 
     override fun init() {
-        consume(ConsumeItemDynamic<HoloProjectorBuild> {
-            it.curPlan.itemReqs
+        consume(ConsumeFluidDynamic<HoloProjectorBuild> {
+            it.curPlan?.req?.liquidArray ?: LiquidStack.empty
         })
-
-        consume(object : DynamicContinuousLiquidCons({
-            (it as HoloProjectorBuild).curPlan.cyberionReq
-        }) {
-            override fun update(b: Building) {
-                b as HoloProjectorBuild
-                val plan = b.curPlan
-                if (plan != null) {
-                    val liquid = plan.req.liquid
-                    if (liquid != null) {
-                        b.liquids.remove(liquid.liquid, liquid.amount / plan.time * b.edelta())
-                    }
-                }
-            }
+        consume(ConsumeItemDynamic<HoloProjectorBuild> {
+            it.curPlan?.req?.items ?: ItemStack.empty
         })
         consumePowerCond<HoloProjectorBuild>(powerUse) {
             it.curPlan != null
