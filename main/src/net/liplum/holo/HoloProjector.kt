@@ -88,10 +88,12 @@ open class HoloProjector(name: String) : Block(name) {
 
     override fun init() {
         consume(ConsumeFluidDynamic<HoloProjectorBuild> {
-            it.curPlan?.req?.liquidArray ?: LiquidStack.empty
+            val plan = it.curPlan ?: return@ConsumeFluidDynamic LiquidStack.empty
+            plan.req.liquidArray
         })
         consume(ConsumeItemDynamic<HoloProjectorBuild> {
-            it.curPlan?.req?.items ?: ItemStack.empty
+            val plan = it.curPlan ?: return@ConsumeItemDynamic ItemStack.empty
+            plan.req.items
         })
         consumePowerCond<HoloProjectorBuild>(powerUse) {
             it.curPlan != null
@@ -159,6 +161,7 @@ open class HoloProjector(name: String) : Block(name) {
             null
         else
             plans[this]
+    var hoveredInfo: Table? = null
 
     open inner class HoloProjectorBuild : Building() {
         @Serialized
@@ -205,6 +208,7 @@ open class HoloProjector(name: String) : Block(name) {
                 progressTime.coerceAtMost(p.time)
             else
                 0f
+            rebuildHoveredInfo()
         }
 
         override fun buildConfiguration(table: Table) {
@@ -236,6 +240,18 @@ open class HoloProjector(name: String) : Block(name) {
                 return false
             }
             return true
+        }
+
+        open fun rebuildHoveredInfo() {
+            try {
+                val info = hoveredInfo
+                if (info != null) {
+                    info.clear()
+                    display(info)
+                }
+            } catch (_: Exception) {
+                // Maybe null pointer or cast exception
+            }
         }
 
         @JvmField var lastUnitInPayload: MdtUnit? = null
