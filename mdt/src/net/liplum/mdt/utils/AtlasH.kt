@@ -5,6 +5,7 @@ package net.liplum.mdt.utils
 import arc.Core.atlas
 import mindustry.Vars
 import mindustry.ctype.MappableContent
+import net.liplum.common.util.StartWithHyphen
 import net.liplum.common.util.sheetOneDirection
 import net.liplum.lib.assets.TR
 import net.liplum.lib.assets.TRs
@@ -15,9 +16,10 @@ fun String.atlas(): TR =
  * Gets the Texture Region of "sprites/{this}-{subName}"
  * @param subName the following name after a hyphen
  */
+@StartWithHyphen
 fun MappableContent.sub(subName: String): TR =
     "${this.name}-$subName".atlas()
-
+@StartWithHyphen
 fun MappableContent.inMod(name: String): TR =
     "${this.minfo.mod.name}-$name".atlas()
 
@@ -36,7 +38,7 @@ infix fun TR.or(texture: TR): TR =
  * @param subName the following name after a hyphen. If it's null, use the {this} name
  * @param number the amount of frames in that image. Splits it by row.
  */
-@JvmOverloads
+@StartWithHyphen
 fun MappableContent.sheet(
     subName: String? = null,
     number: Int,
@@ -51,7 +53,7 @@ fun MappableContent.sheet(
  * @param isHorizontal if ture, splits it by row. Otherwise, splits it by column.
  * @param number the amount of frames in that image.
  */
-@JvmOverloads
+@StartWithHyphen
 fun MappableContent.anim(
     subName: String? = null,
     isHorizontal: Boolean = true,

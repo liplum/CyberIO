@@ -122,7 +122,11 @@ object DebugUI {
             }
         }
 
+        var lastEntityNumber = 0
+
         fun rebuildEntityList() {
+            if(Groups.all.size() == lastEntityNumber) return
+            lastEntityNumber = Groups.all.size()
             if (!Vars.state.isGame) return
             val searchText = search.text.lowercase().trim()
             if (searchText.isEmpty()) return

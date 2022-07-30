@@ -15,9 +15,6 @@ import mindustry.gen.Building
 import mindustry.graphics.Pal
 import mindustry.logic.LAccess
 import mindustry.type.Item
-import mindustry.world.consumers.ConsumeItemDynamic
-import mindustry.world.consumers.ConsumeItemFilter
-import mindustry.world.consumers.ConsumeItems
 import mindustry.world.meta.BlockGroup
 import mindustry.world.meta.Stat
 import net.liplum.*
@@ -35,6 +32,7 @@ import net.liplum.mdt.animation.anims.AnimationObj
 import net.liplum.mdt.animation.anis.AniState
 import net.liplum.mdt.animation.anis.config
 import net.liplum.mdt.render.Draw
+import net.liplum.mdt.render.Text
 import net.liplum.mdt.render.drawSurroundingRect
 import net.liplum.mdt.render.smoothPlacing
 import net.liplum.mdt.ui.bars.AddBar
@@ -174,11 +172,6 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
                 { Pal.bar },
                 { lastSendingTime / SendingTime }
             )
-            AddBar<SmartUnloaderBuild>("queue",
-                { "Queue: ${queue.size}" },
-                { Pal.bar },
-                { queue.size.toFloat() / maxReceiverConnection }
-            )
         }
     }
 
@@ -274,19 +267,19 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
                 }
             }
         }
-        var lastTileChange = -2
 
+        var lastTileChange = -2
         override fun updateTile() {
-            // Check connection only when any block changed
+            // Check connection and queue only when any block changed
             if (lastTileChange != Vars.world.tileChanges) {
                 lastTileChange = Vars.world.tileChanges
                 checkReceiversPos()
+                checkQueue()
             }
             if (justRestored) {
                 updateTracker()
                 justRestored = false
             }
-            checkQueue()
             ClientOnly {
                 lastUnloadTime += Time.delta
                 lastSendingTime += Time.delta
@@ -538,6 +531,12 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
         override fun beforeDraw() {
             if (canConsume() && isUnloading && isSending) {
                 shrinkingAnimObj.spend(delta())
+            }
+        }
+
+        override fun fixedDraw() {
+            DebugOnly {
+                Text.drawTextEasy("$queue", x, y + 5f)
             }
         }
 

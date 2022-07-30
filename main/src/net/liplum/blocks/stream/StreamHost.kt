@@ -144,11 +144,11 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
 
         var lastTileChange = -2
         override fun updateTile() {
-            checkQueue()
-            // Check connection only when any block changed
+            // Check connection and queue only when any block changed
             if (lastTileChange != Vars.world.tileChanges) {
                 lastTileChange = Vars.world.tileChanges
                 checkClientsPos()
+                checkQueue()
             }
             if (efficiency > 0f && timer(TransferTimer, 1f)) {
                 SharedClientSeq.clear()

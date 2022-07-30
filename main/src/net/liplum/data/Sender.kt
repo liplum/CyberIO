@@ -6,10 +6,12 @@ import arc.graphics.g2d.Draw
 import arc.math.Mathf
 import arc.math.geom.Point2
 import arc.struct.ObjectSet
+import arc.util.Eachable
 import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.Vars
+import mindustry.entities.units.BuildPlan
 import mindustry.gen.Building
 import mindustry.graphics.Pal
 import mindustry.logic.LAccess
@@ -32,9 +34,7 @@ import net.liplum.mdt.SendDataPack
 import net.liplum.mdt.animation.anims.Animation
 import net.liplum.mdt.animation.anis.AniState
 import net.liplum.mdt.animation.anis.config
-import net.liplum.mdt.render.Draw
-import net.liplum.mdt.render.DrawOn
-import net.liplum.mdt.render.SetColor
+import net.liplum.mdt.render.*
 import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.utils.*
 
@@ -103,6 +103,11 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
         drawPlacingMaxRange(x, y, maxRange, R.C.Sender)
     }
 
+    override fun drawPlanRegion(plan: BuildPlan, list: Eachable<BuildPlan>) {
+        super.drawPlanRegion(plan, list)
+        G.circle(plan.x.worldXY, plan.y.worldXY, 50f)
+    }
+
     override fun setBars() {
         super.setBars()
         DebugOnly {
@@ -111,11 +116,6 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
                 { "Last Send: ${lastSendingTime.toInt()}" },
                 { Pal.bar },
                 { lastSendingTime / SendingTime }
-            )
-            AddBar<SenderBuild>("queue",
-                { "Queue: $queue" },
-                { Pal.bar },
-                { (queue != null).toFloat() }
             )
         }
     }
@@ -204,18 +204,18 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
 
         var lastTileChange = -2
         override fun updateTile() {
-            val waiting = queue
-            if (waiting != null) {
-                val dr = waiting.dr()
-                if (dr != null) {
-                    connectToSync(dr)
-                    queue = null
-                }
-            }
-            // Check connection only when any block changed
+            // Check connection and queue only when any block changed
             if (lastTileChange != Vars.world.tileChanges) {
                 lastTileChange = Vars.world.tileChanges
                 checkReceiverPos()
+                val waiting = queue
+                if (waiting != null) {
+                    val dr = waiting.dr()
+                    if (dr != null) {
+                        connectToSync(dr)
+                        queue = null
+                    }
+                }
             }
             ClientOnly {
                 lastSendingTime += Time.delta
@@ -371,6 +371,9 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
                 Draw.alpha(highlightAlpha)
                 HighlightTR.DrawOn(this)
                 Draw.color()
+            }
+            DebugOnly {
+                Text.drawTextEasy("Queue: $queue", x, y + 5f)
             }
         }
     }

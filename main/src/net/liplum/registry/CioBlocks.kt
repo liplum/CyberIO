@@ -136,7 +136,7 @@ object CioBlocks {
                 Items.silicon + 150,
                 Items.graphite + 250,
             )
-            health = 2000
+            scaledHealth = 200f
             consumeItems(
                 //Total:100
                 Items.copper + 50,  //50%
@@ -163,7 +163,7 @@ object CioBlocks {
                 Items.silicon + 50,
                 Items.graphite + 50,
             )
-            health = 600
+            scaledHealth = 80f
             craftTime = 1150f
             itemCapacity = 40
             consumeItems(
@@ -196,7 +196,7 @@ object CioBlocks {
                     Items.metaglass + 50,
                     Items.silicon + 50,
                 )
-                health = 250
+                scaledHealth = 80f
                 consumePower(1.2f)
                 itemCapacity = 40
                 consumeItems(
@@ -215,15 +215,15 @@ object CioBlocks {
                 requirements = arrayOf(
                     Items.beryllium + 60,
                     Items.graphite + 105,
-                    Items.tungsten + 25,
-                    Items.silicon + 50,
+                    Items.tungsten + 50,
+                    Items.silicon + 200,
                 )
-                health = 250
+                scaledHealth = 120f
                 consumePower(1.1f)
                 itemCapacity = 40
                 consumeItems(
                     Items.tungsten + 2,
-                    Items.beryllium + 4,
+                    Items.beryllium + 3,
                     Items.silicon + 4,
                 )
                 craftTime = 200f
@@ -260,7 +260,7 @@ object CioBlocks {
             }
             ErekirSpec {
                 requirements = arrayOf(
-                    CioItems.ic + 35,
+                    CioItems.ic + 40,
                     Items.graphite + 80,
                     Items.tungsten + 30,
                     Items.silicon + 30,
@@ -290,7 +290,7 @@ object CioBlocks {
             }
             ErekirSpec {
                 requirements = arrayOf(
-                    CioItems.ic + 35,
+                    CioItems.ic + 40,
                     Items.graphite + 120,
                     Items.tungsten + 50,
                     Items.silicon + 50,
@@ -334,7 +334,6 @@ object CioBlocks {
                 Items.thorium + 100,
                 Items.silicon + 50
             )
-            health = 100
             size = 2
             buildCostMultiplier = 3f
         }
@@ -359,19 +358,19 @@ object CioBlocks {
                     Items.plastanium + 10,
                     Items.phaseFabric + 5,
                 )
-                health = 300
+                scaledHealth = 350f
                 powerProduction = 4.5f
                 maxPowerEFFBlocksReq = 22
                 maxGear = 5
             }
             ErekirSpec {
                 requirements = arrayOf(
-                    CioItems.ic + 20,
+                    CioItems.ic + 25,
                     Items.tungsten + 15,
                     Items.silicon + 50,
                     Items.beryllium + 80,
                 )
-                health = 250
+                scaledHealth = 250f
                 range = 45f
                 powerProduction = 2f
                 maxPowerEFFBlocksReq = 18
@@ -393,7 +392,7 @@ object CioBlocks {
                 Items.graphite + 40,
                 Items.silicon + 25
             )
-            health = 500
+            scaledHealth = 120f
             consumePower(0.5f)
             size = 1
         }.setUninfected()
@@ -427,16 +426,16 @@ object CioBlocks {
                     Items.metaglass + 350,
                     Items.titanium + 50,
                 )
-                health = 2500
+                scaledHealth = 150f
             }
             ErekirSpec {
                 requirements = arrayOf(
                     CioItems.ic + 120,
-                    Items.carbide + 120,
+                    Items.carbide + 100,
                     Items.beryllium + 250,
                     Items.tungsten + 250,
                 )
-                health = 1500
+                scaledHealth = 125f
             }
             buildCostMultiplier = 2f
             size = 4
@@ -458,16 +457,16 @@ object CioBlocks {
                     Items.metaglass + 240,
                     Items.titanium + 10,
                 )
-                health = 1000
+                scaledHealth = 160f
             }
             ErekirSpec {
                 requirements = arrayOf(
-                    CioItems.ic + 40,
+                    CioItems.ic + 45,
                     Items.beryllium + 60,
                     Items.carbide + 50,
                     Items.tungsten + 100,
                 )
-                health = 750
+                scaledHealth = 180f
             }
             size = 2
             prismType = prism
@@ -504,7 +503,7 @@ object CioBlocks {
                     CioItems.ic + 75,
                     Items.surgeAlloy + 80,
                     Items.tungsten + 120,
-                    Items.carbide + 20,
+                    Items.carbide + 30,
                 )
                 cooldownTime = 18f
                 recoil = 5f
@@ -596,11 +595,11 @@ object CioBlocks {
             }
             ErekirSpec {
                 requirements = arrayOf(
-                    CioItems.ic + 30,
+                    CioItems.ic + 35,
                     Items.beryllium + 50,
                     Items.tungsten + 25,
                 )
-                scaledHealth = 425f
+                scaledHealth = 800f
                 restoreReload = 15 * 60f
                 needPower = true
                 powerCapacity = 300f
@@ -629,17 +628,17 @@ object CioBlocks {
                     Items.plastanium + 40,
                 )
                 restoreReload = 15 * 60f
-                health = 550 * 5
+                scaledHealth = 400f
             }
             ErekirSpec {
                 requirements = arrayOf(
-                    CioItems.ic + 60,
+                    CioItems.ic + 65,
                     Items.beryllium + 100,
                     Items.tungsten + 40,
                     Items.carbide + 6,
                 )
                 restoreReload = 20 * 60f
-                scaledHealth = 450f
+                scaledHealth = 600f
                 needPower = true
                 powerCapacity = 800f
                 powerUseForChargePreUnit = 0.3f
@@ -696,7 +695,7 @@ object CioBlocks {
             }
             ErekirSpec {
                 requirements = arrayOf(
-                    CioItems.ic + 30,
+                    CioItems.ic + 35,
                     Items.tungsten + 180,
                     Items.oxide + 80,
                 )
@@ -780,7 +779,7 @@ object CioBlocks {
             }
             ErekirSpec {
                 requirements = arrayOf(
-                    CioItems.ic + 60,
+                    CioItems.ic + 65,
                     Items.tungsten + 200,
                     Items.carbide + 180,
                     Items.surgeAlloy + 100,
@@ -810,7 +809,7 @@ object CioBlocks {
             }
             ErekirSpec {
                 requirements = arrayOf(
-                    CioItems.ic + 125,
+                    CioItems.ic + 135,
                     Items.tungsten + 350,
                     Items.carbide + 80,
                     Items.phaseFabric + 100,
@@ -837,7 +836,7 @@ object CioBlocks {
                     Items.graphite + 40,
                     Items.titanium + 10,
                 )
-                health = 300
+                scaledHealth = 180f
                 maxConnection = 5
                 consumePower(1.8f)
                 liquidCapacity = 200f
@@ -849,12 +848,13 @@ object CioBlocks {
                     Items.silicon + 20,
                     Items.tungsten + 40,
                 )
-                health = 250
+                scaledHealth = 200f
                 maxConnection = 3
                 consumePower(1.5f)
                 liquidCapacity = 80f
             }
             replaceable = false
+            size = 1
         }
     }
     @DependOn("CioItems.ic")
@@ -881,9 +881,9 @@ object CioBlocks {
             }
             ErekirSpec {
                 requirements = arrayOf(
-                    CioItems.ic + 45,
+                    CioItems.ic + 50,
                     Items.tungsten + 200,
-                    Items.carbide + 120,
+                    Items.carbide + 100,
                     Items.beryllium + 300,
                 )
                 scaledHealth = 350f
@@ -925,7 +925,7 @@ object CioBlocks {
                 requirements = arrayOf(
                     CioItems.ic + 150,
                     Items.tungsten + 300,
-                    Items.carbide + 120,
+                    Items.carbide + 150,
                     Items.beryllium + 500,
                     Items.phaseFabric + 80,
                 )
@@ -1091,7 +1091,7 @@ object CioBlocks {
                 category = Category.crafting
                 buildVisibility = BuildVisibility.shown
                 requirements = arrayOf(
-                    CioItems.ic + 28,
+                    CioItems.ic + 30,
                     Items.carbide + 80,
                     Items.tungsten + 120,
                 )
@@ -1203,7 +1203,7 @@ object CioBlocks {
                     HoloPlan(
                         CioUnitTypes.holoFighter,
                         Requirement(
-                            items = arrayOf(CioItems.ic + 1),
+                            items = arrayOf(CioItems.ic + 2),
                             cyberion = 300f
                         ),
                         15f * 60f
@@ -1219,7 +1219,7 @@ object CioBlocks {
                     HoloPlan(
                         CioUnitTypes.holoArchitect,
                         Requirement(
-                            items = arrayOf(CioItems.ic + 1),
+                            items = arrayOf(CioItems.ic + 2),
                             cyberion = 600f
                         ),
                         25f * 60f
@@ -1227,7 +1227,7 @@ object CioBlocks {
                     HoloPlan(
                         CioUnitTypes.holoSupporter,
                         Requirement(
-                            items = arrayOf(CioItems.ic + 1),
+                            items = arrayOf(CioItems.ic + 3),
                             cyberion = 500f
                         ),
                         18f * 60f
@@ -1282,7 +1282,7 @@ object CioBlocks {
             }
             ErekirSpec {
                 requirements = arrayOf(
-                    CioItems.ic + 30,
+                    CioItems.ic + 35,
                     Items.beryllium + 240,
                     Items.tungsten + 60,
                 )
@@ -1709,8 +1709,8 @@ object CioBlocks {
             }
             ErekirSpec {
                 requirements = arrayOf(
-                    CioItems.ic + 3,
-                    Items.oxide + 8,
+                    CioItems.ic + 4,
+                    Items.oxide + 5,
                 )
                 damagePreUnit = 100f
             }
@@ -1742,17 +1742,19 @@ object CioBlocks {
                     Items.metaglass + 50,
                     Items.silicon + 50,
                 )
+                scaledHealth = 120f
                 liquidCapacity = 800f
                 balancingSpeed = 0.5f
                 maxRange = -1f
             }
             ErekirSpec {
                 requirements = arrayOf(
-                    CioItems.ic + 20,
+                    CioItems.ic + 35,
                     Items.tungsten + 40,
                     Items.beryllium + 240,
                     Items.silicon + 180,
                 )
+                scaledHealth = 100f
                 liquidCapacity = 600f
                 balancingSpeed = 0.3f
                 maxRange = 1800f

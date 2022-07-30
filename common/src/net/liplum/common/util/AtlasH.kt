@@ -3,6 +3,16 @@ package net.liplum.common.util
 import arc.Core
 import net.liplum.lib.assets.TR
 import net.liplum.lib.assets.TRs
+import java.lang.annotation.Inherited
+
+/**
+ * It indicates this sprite name has already taken hyphen into account.
+ * Please don't add a hyphen before its name.
+ */
+@Retention(AnnotationRetention.SOURCE)
+@MustBeDocumented
+@Inherited
+annotation class StartWithHyphen
 
 fun TR.frames(number: Int, suffix: String = "-"): TRs =
     Array(number) { Core.atlas.find("$this$suffix$it") }

@@ -41,9 +41,7 @@ object LinkDrawer {
                             showCircle = true
                     }
                     it.drawLink(showCircle)
-                    if (it == selected) {
-                        Var.GlobalLinkDrawerAlpha = unselectAlpha
-                    }
+                    Var.GlobalLinkDrawerAlpha = unselectAlpha
                 }
             } else {
                 Var.GlobalLinkDrawerAlpha = 1f
