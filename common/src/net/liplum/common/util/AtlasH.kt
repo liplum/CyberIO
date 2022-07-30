@@ -11,11 +11,24 @@ fun String.sheet(
     width: Int,
     height: Int = width,
 ): TRs = Core.atlas.find(this).sheet(width, height)
-
+/**
+ * Slice sprites in order of
+ * ```
+ * 1 2 3 4
+ * 5 6 7 8
+ * ```
+ */
 fun TR.sheet(
-    width: Int,
-    height: Int = width,
-): TRs = this.split(width, height).flatten().toTypedArray()
+    tileWidth: Int,
+    tileHeight: Int = tileWidth,
+): TRs {
+    val row = height / tileWidth
+    val column = width / tileHeight
+    return Array(row * column) { i ->
+        val rowByColumn = split(tileWidth, tileHeight)
+        rowByColumn[i % column][i / column]
+    }
+}
 
 fun String.sheetOneDirection(
     number: Int,

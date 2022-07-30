@@ -1,9 +1,8 @@
-import io.github.liplum.mindustry.displayName
 import io.github.liplum.mindustry.minGameVersion
 import net.liplum.gradle.settings.Settings.localConfig
 
 plugins{
-    id("io.github.liplum.mgpp") version "1.1.7"
+    id("io.github.liplum.mgpp") version "1.1.9"
 }
 buildscript {
     repositories {
