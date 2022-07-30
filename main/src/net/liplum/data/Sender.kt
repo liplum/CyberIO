@@ -265,7 +265,6 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
         }
         @ClientOnly
         override fun drawSelect() {
-            this.drawDataNetGraph()
             drawSelectedMaxRange()
         }
         @ClientOnly

@@ -409,7 +409,6 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
         @DebugOnly
         fun genNeedUnloadItemsText() = needUnloadItems.genText()
         override fun drawSelect() {
-            this.drawDataNetGraph()
             DebugOnly {
                 if (needUnloadItemsText.isNotEmpty()) {
                     drawPlaceText(needUnloadItemsText, tileX(), tileY(), true)

@@ -1,38 +1,66 @@
 package net.liplum.render
 
+import arc.util.Time
 import mindustry.Vars
 import mindustry.game.EventType
 import net.liplum.Settings
+import net.liplum.Var
 import net.liplum.annotations.Subscribe
+import net.liplum.api.ICyberEntity
 import net.liplum.api.cyber.*
+import net.liplum.lib.math.smooth
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.advanced.Inspector
 
 object LinkDrawer {
+    var lastSelected: ICyberEntity? = null
+    var selectedTime = 0f
+        set(value) {
+            field = value.coerceIn(0f, Var.LinkDrawerTime)
+        }
     @JvmStatic
     @ClientOnly
     @Subscribe(EventType.Trigger.drawOver)
     fun draw() {
-        if (!Settings.AlwaysShowLink) return
-        when (val selected = Inspector.curSelected) {
-            is IDataReceiver -> {
-                selected.drawDataNetGraph(showCircle = Settings.ShowLinkCircle)
-            }
-            is IStreamHost -> {
-                selected.drawStreamGraph(showCircle = Settings.ShowLinkCircle)
-            }
-            is IP2pNode -> {
-                selected.drawP2PConnection(showCircle = Settings.ShowLinkCircle)
-            }
-            else -> {
+        val selected = Inspector.curSelected
+        if (selected is IDataSender || selected is IStreamHost || selected is IP2pNode) {
+            lastSelected = selected as ICyberEntity
+            selectedTime += Time.delta
+        } else {
+            selectedTime -= Time.delta
+        }
+        val unselectAlpha = 1f - (selectedTime / Var.LinkDrawerTime).smooth
+        if (Settings.AlwaysShowLink) {
+            if (unselectAlpha > 0f) {
+                Var.GlobalLinkDrawerAlpha = unselectAlpha
                 Vars.player.team().data().buildings.forEach {
-                    when (it) {
-                        is IDataSender -> it.drawDataNetGraph(showCircle = Settings.ShowLinkCircle)
-                        is IStreamHost -> it.drawStreamGraph(showCircle = Settings.ShowLinkCircle)
-                        is IP2pNode -> it.drawP2PConnection(showCircle = Settings.ShowLinkCircle)
+                    var showCircle = Settings.ShowLinkCircle
+                    if (it == lastSelected) {
+                        Var.GlobalLinkDrawerAlpha = 1f
+                        if (it == Inspector.curSelected)
+                            showCircle = true
+                    }
+                    it.drawLink(showCircle)
+                    if (it == selected) {
+                        Var.GlobalLinkDrawerAlpha = unselectAlpha
                     }
                 }
+            } else {
+                Var.GlobalLinkDrawerAlpha = 1f
+                selected?.drawLink(true)
             }
+        } else {
+            Var.GlobalLinkDrawerAlpha = 1f
+            selected?.drawLink(true)
+        }
+        Var.GlobalLinkDrawerAlpha = 1f
+    }
+
+    fun Any.drawLink(showCircle: Boolean) {
+        when (this) {
+            is IDataSender -> drawDataNetGraph(showCircle)
+            is IStreamHost -> drawStreamGraph(showCircle)
+            is IP2pNode -> drawP2PConnection(showCircle)
         }
     }
 }

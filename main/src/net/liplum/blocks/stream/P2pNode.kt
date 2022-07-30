@@ -265,7 +265,6 @@ open class P2pNode(name: String) : AniedBlock<P2pNode, P2pNode.P2pBuild>(name) {
 
         override fun drawConfigure() {
             super.drawConfigure()
-            drawP2PConnection()
             drawConfiguringMaxRange()
         }
         @ClientOnly

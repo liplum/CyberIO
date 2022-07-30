@@ -47,4 +47,6 @@ object Var {
     const val P2pNNodeBalanceThreshold = 2f
     const val P2pArrowRotationTime = 60f
     const val YinYangRotationSpeed = 5f
+    @JvmField var GlobalLinkDrawerAlpha = 1f
+    const val LinkDrawerTime = 20f
 }

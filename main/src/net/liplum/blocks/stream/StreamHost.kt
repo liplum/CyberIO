@@ -325,7 +325,6 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
         }
 
         override fun drawSelect() {
-            this.drawStreamGraph()
             drawSelectedMaxRange()
         }
         @SendDataPack
