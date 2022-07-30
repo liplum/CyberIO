@@ -25,6 +25,8 @@ enum class LerpType {
 }
 
 fun Color(hex: String): Color = Color.valueOf(hex)
+fun ColorRGB(rgb: Int): Color = Color().a(1f).rgb888(rgb)
+fun ColorRGBA(rgba: Int): Color = Color().rgba8888(rgba)
 fun Color.darken(percentage: Float): Color {
     r *= 1f - percentage
     g *= 1f - percentage

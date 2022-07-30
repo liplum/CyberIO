@@ -57,6 +57,7 @@ import net.liplum.blocks.stream.P2pNode
 import net.liplum.blocks.stream.StreamClient
 import net.liplum.blocks.stream.StreamHost
 import net.liplum.blocks.stream.StreamServer
+import net.liplum.blocks.tmtrainer.CharBulletType
 import net.liplum.blocks.tmtrainer.RandomName
 import net.liplum.blocks.tmtrainer.TMTRAINER
 import net.liplum.blocks.tmtrainer.TMTRAINER.DrawCore
@@ -72,6 +73,7 @@ import net.liplum.lib.math.smooth
 import net.liplum.mdt.Else
 import net.liplum.mdt.render.*
 import net.liplum.mdt.ui.DynamicContentInfoDialog.Companion.registerDynamicInfo
+import net.liplum.mdt.utils.addAmmo
 import net.liplum.mdt.utils.plus
 import net.liplum.render.DrawDefaultSpec
 import net.liplum.render.DrawRegionSpec
@@ -662,10 +664,8 @@ object CioBlocks {
                     Items.graphite + 100,
                     Items.silicon + 50,
                 )
-                ammo(
-                    Items.sporePod, CioBulletTypes.virus,
-                    Items.thorium, CioBulletTypes.radiationInterference,
-                )
+                addAmmo(Items.sporePod, CioBulletTypes.virus)
+                addAmmo(Items.thorium, CioBulletTypes.radiationInterference)
                 shoot = ShootAlternate().apply {
                     spread = 4f
                 }
@@ -677,10 +677,16 @@ object CioBlocks {
                     Items.tungsten + 180,
                     Items.oxide + 80,
                 )
-                ammo(
-                    Items.tungsten, CioBulletTypes.virus,
-                    Items.thorium, CioBulletTypes.radiationInterference,
-                )
+                addAmmo(Items.tungsten, CioBulletTypes.virus)
+                addAmmo(Items.thorium, CioBulletTypes.radiationInterference)
+                addAmmo(CioItems.ic, CharBulletType().apply {
+                    speed = 1.5f
+                    damage = 150f
+                    lifetime = 180f
+                    hitSize = 5f
+                    ammoMultiplier = 5f
+                    reloadMultiplier = 0.8f
+                })
                 shoot = ShootAlternate().apply {
                     spread = 6f
                 }
