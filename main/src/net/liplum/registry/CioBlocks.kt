@@ -8,6 +8,7 @@ import arc.struct.Seq
 import arc.util.Time
 import mindustry.Vars
 import mindustry.content.*
+import mindustry.entities.bullet.BasicBulletType
 import mindustry.entities.bullet.LaserBulletType
 import mindustry.entities.bullet.LightningBulletType
 import mindustry.entities.effect.MultiEffect
@@ -66,6 +67,7 @@ import net.liplum.blocks.virus.AntiVirus
 import net.liplum.blocks.virus.Virus
 import net.liplum.brain.*
 import net.liplum.bullet.*
+import net.liplum.common.shader.ShaderBase
 import net.liplum.data.*
 import net.liplum.holo.*
 import net.liplum.lib.arc.invoke
@@ -75,6 +77,8 @@ import net.liplum.mdt.render.*
 import net.liplum.mdt.ui.DynamicContentInfoDialog.Companion.registerDynamicInfo
 import net.liplum.mdt.utils.addAmmo
 import net.liplum.mdt.utils.plus
+import net.liplum.registry.CioBulletTypes.optInRadiationInterference
+import net.liplum.registry.CioBulletTypes.optInVirus
 import net.liplum.render.DrawDefaultSpec
 import net.liplum.render.DrawRegionSpec
 import net.liplum.render.SpecDrawConstruct
@@ -650,8 +654,8 @@ object CioBlocks {
     }
     @DependOn(
         "CioItems.ic",
-        "CioBulletTypes.radiationInterference",
-        "CioBulletTypes.virus",
+        "CioSEffects.infected",
+        "CioSEffects.static",
     )
     fun TMTRAINER() {
         TMTRAINER = TMTRAINER("TMTRAINER").apply {
@@ -664,8 +668,27 @@ object CioBlocks {
                     Items.graphite + 100,
                     Items.silicon + 50,
                 )
-                addAmmo(Items.sporePod, CioBulletTypes.virus)
-                addAmmo(Items.thorium, CioBulletTypes.radiationInterference)
+                addAmmo(Items.sporePod, BasicBulletType().apply {
+                    speed = 2.5f
+                    damage = 50f
+                    width = 10f
+                    height = 12f
+                    shrinkY = 0.1f
+                    lifetime = 100f
+                    hitSize = 10f
+                    optInVirus()
+                })
+                addAmmo(Items.thorium, ShaderBasicBulletT<ShaderBase>().apply {
+                    speed = 2.3f
+                    damage = 40f
+                    width = 15f
+                    height = 15f
+                    hitSize = 15f
+                    lifetime = 80f
+                    pierce = true
+                    pierceCap = 2
+                    optInRadiationInterference()
+                })
                 shoot = ShootAlternate().apply {
                     spread = 4f
                 }
@@ -677,10 +700,29 @@ object CioBlocks {
                     Items.tungsten + 180,
                     Items.oxide + 80,
                 )
-                addAmmo(Items.tungsten, CioBulletTypes.virus)
-                addAmmo(Items.thorium, CioBulletTypes.radiationInterference)
+                addAmmo(Items.tungsten, BasicBulletType().apply {
+                    speed = 2.8f
+                    damage = 180f
+                    width = 10f
+                    height = 12f
+                    shrinkY = 0.1f
+                    lifetime = 100f
+                    hitSize = 10f
+                    optInVirus()
+                })
+                addAmmo(Items.thorium, ShaderBasicBulletT<ShaderBase>().apply {
+                    speed = 2.25f
+                    damage = 280f
+                    width = 15f
+                    height = 15f
+                    hitSize = 15f
+                    lifetime = 80f
+                    pierce = true
+                    pierceCap = 2
+                    optInRadiationInterference()
+                })
                 addAmmo(CioItems.ic, CharBulletType().apply {
-                    speed = 1.5f
+                    speed = 2.4f
                     damage = 150f
                     lifetime = 180f
                     hitSize = 5f
@@ -699,6 +741,7 @@ object CioBlocks {
             range = 260f
             shootCone = 15f
             size = 4
+            shootWarmupSpeed = 0.05f
             drawMulti {
                 drawTurret {
                     regionPart("-head") {
@@ -1468,6 +1511,7 @@ object CioBlocks {
                 damage = 8f
                 waveSpeed = 2.2f
             }
+            loopSound = Sounds.wind
             addUpgrade(
                 Upgrade(UT.Damage, false, -0.02f),
                 Upgrade(UT.Range, false, 0.1f),
