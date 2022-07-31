@@ -66,6 +66,7 @@ tasks.jar {
 }
 mindustryAssets {
     root at "$rootDir/assets"
+    icon at "$rootDir/icon-raw.png"
     sprites {
         dependsOn(tasks.antiAlias)
         dir = antiAliasedDir

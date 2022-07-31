@@ -51,6 +51,8 @@ object ContentSpecFrag : IBundlable {
         )
         val savesWarning = Label(bundle("saves-warning")).apply {
             setColor(R.C.RedAlert)
+            setAlignment(0)
+            setWrap(true)
         }
         var savesWarningVisible by savesWarning.animatedVisibility(
             isVisible = false,
@@ -86,10 +88,10 @@ object ContentSpecFrag : IBundlable {
         fun hasUnsavedChange() =
             curSpec != Var.ContentSpecific
         // Tip
-        cont.add(Table().apply {
-            add(Table().apply {
+        cont.addTable {
+            addTable {
                 add(unsavedWarning)
-            }).row()
+            }.row()
             // Options
             add(bundle("introduction")).row()
             addTable {
@@ -115,14 +117,14 @@ object ContentSpecFrag : IBundlable {
                             })
                         }).pad(5f)
                     }
-                }.pad(50f).row()
-                add(desc).row()
-                add(savesWarning)
-            }
-        }).grow()
+                }.expand().pad(25f).row()
+                add(desc).pad(10f).row()
+                add(savesWarning).pad(10f).growX()
+            }.expand()
+        }.expand()
         cont.row()
         // Buttons
-        cont.add(Table().apply {
+        cont.addTable{
             add(NewIconTextButton("@save", Icon.save) {
                 setSpec(curSpec)
             }).then {
@@ -131,7 +133,7 @@ object ContentSpecFrag : IBundlable {
                 }
                 align(Align.bottom)
             }.width(200f).row()
-        })
+        }
     }
     @JvmStatic
     fun setSpec(spec: ContentSpec) {

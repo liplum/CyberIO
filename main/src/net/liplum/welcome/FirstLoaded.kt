@@ -12,6 +12,7 @@ import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.DesktopOnly
 import net.liplum.mdt.Else
 import net.liplum.common.util.loadDynamicAsync
+import net.liplum.ui.addTable
 
 @ClientOnly
 object FirstLoaded {
@@ -58,11 +59,11 @@ object FirstLoaded {
                 }
             }
             cont.add(modIconImg).row()
-            cont.table {
-                it.left()
+            cont.addTable {
+                left()
                 val indent = if (Vars.mobile) 5f else 40f
                 fun addMailText(text: String, indentTimes: Int = 0) =
-                    it.add(Label(text).apply {
+                    add(Label(text).apply {
                         setWrap(true)
                         DesktopOnly {
                             setFontScale(1.1f)
