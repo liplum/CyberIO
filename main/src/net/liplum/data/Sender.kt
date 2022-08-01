@@ -23,7 +23,6 @@ import net.liplum.Var
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
 import net.liplum.common.Changed
-import net.liplum.common.util.toFloat
 import net.liplum.data.Sender.SenderBuild
 import net.liplum.lib.Serialized
 import net.liplum.lib.assets.TR
@@ -101,11 +100,6 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)
         drawPlacingMaxRange(x, y, maxRange, R.C.Sender)
-    }
-
-    override fun drawPlanRegion(plan: BuildPlan, list: Eachable<BuildPlan>) {
-        super.drawPlanRegion(plan, list)
-        G.circle(plan.x.worldXY, plan.y.worldXY, 50f)
     }
 
     override fun setBars() {

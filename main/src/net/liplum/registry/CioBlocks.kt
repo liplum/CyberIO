@@ -206,9 +206,9 @@ object CioBlocks {
                 )
                 craftTime = 600f
                 drawer = DrawMulti(
-                    DrawDefaultSpec(),
+                    DrawRegionSpec("-bottom"),
                     SpecDrawConstruct(stages = 3),
-                    DrawRegionSpec("-top")
+                    DrawDefaultSpec(),
                 )
             }
             ErekirSpec {
@@ -228,9 +228,9 @@ object CioBlocks {
                 )
                 craftTime = 200f
                 drawer = DrawMulti(
-                    DrawDefaultSpec(),
+                    DrawRegionSpec("-bottom"),
                     SpecDrawConstruct(stages = 4),
-                    DrawRegionSpec("-top")
+                    DrawDefaultSpec(),
                 )
                 squareSprite = false
             }
@@ -590,14 +590,15 @@ object CioBlocks {
                     Items.titanium + 12,
                     Items.plastanium + 10,
                 )
-                scaledHealth = 600f
+                scaledHealth = 1000f
                 restoreReload = 10 * 60f
             }
             ErekirSpec {
                 requirements = arrayOf(
-                    CioItems.ic + 35,
+                    CioItems.ic + 32,
                     Items.beryllium + 50,
                     Items.tungsten + 25,
+                    Items.carbide + 2,
                 )
                 scaledHealth = 800f
                 restoreReload = 15 * 60f
@@ -628,17 +629,17 @@ object CioBlocks {
                     Items.plastanium + 40,
                 )
                 restoreReload = 15 * 60f
-                scaledHealth = 400f
+                scaledHealth = 820f
             }
             ErekirSpec {
                 requirements = arrayOf(
-                    CioItems.ic + 65,
+                    CioItems.ic + 62,
                     Items.beryllium + 100,
-                    Items.tungsten + 40,
+                    Items.tungsten + 55,
                     Items.carbide + 6,
                 )
                 restoreReload = 20 * 60f
-                scaledHealth = 600f
+                scaledHealth = 700f
                 needPower = true
                 powerCapacity = 800f
                 powerUseForChargePreUnit = 0.3f
@@ -882,9 +883,9 @@ object CioBlocks {
             ErekirSpec {
                 requirements = arrayOf(
                     CioItems.ic + 50,
-                    Items.tungsten + 200,
+                    Items.tungsten + 250,
                     Items.carbide + 100,
-                    Items.beryllium + 300,
+                    Items.beryllium + 400,
                 )
                 scaledHealth = 350f
                 powerUseBase = 1.4f
@@ -892,7 +893,7 @@ object CioBlocks {
                 networkSpeed = 3f
                 liquidCapacity = 1200f
                 maxConnection = 3
-                maxRange = 1500f
+                maxRange = 1800f
             }
             size = 2
             replaceable = false
@@ -927,7 +928,7 @@ object CioBlocks {
                     Items.tungsten + 300,
                     Items.carbide + 150,
                     Items.beryllium + 500,
-                    Items.phaseFabric + 80,
+                    Items.phaseFabric + 120,
                 )
                 scaledHealth = 380f
                 networkSpeed = 15f
@@ -1333,7 +1334,7 @@ object CioBlocks {
                 reactivePower = 0.05f
                 scaledHealth = 150f
                 distributeSpeed = 15f
-                range = 480f
+                range = 520f
             }
             ErekirSpec {
                 requirements = arrayOf(
@@ -1347,7 +1348,7 @@ object CioBlocks {
                 reactivePower = 0.03f
                 scaledHealth = 200f
                 distributeSpeed = 20f
-                range = 500f
+                range = 580f
             }
             size = 2
         }
@@ -1709,7 +1710,7 @@ object CioBlocks {
             }
             ErekirSpec {
                 requirements = arrayOf(
-                    CioItems.ic + 4,
+                    CioItems.ic + 5,
                     Items.oxide + 5,
                 )
                 damagePreUnit = 100f
@@ -1757,7 +1758,7 @@ object CioBlocks {
                 scaledHealth = 100f
                 liquidCapacity = 600f
                 balancingSpeed = 0.3f
-                maxRange = 1800f
+                maxRange = 1450f
             }
             liquidPadding = 2f
             size = 2

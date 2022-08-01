@@ -11,13 +11,12 @@ import net.liplum.lib.assets.TRs
 import net.liplum.util.atlasX
 
 class DrawDefaultSpec : DrawBlock() {
-    var tr = EmptyTR
     override fun load(block: Block) = block.run {
-        tr = this.atlasX()
+        region = this.atlasX()
     }
 
     override fun draw(build: Building) = build.run {
-        Draw.rect(tr, build.x, build.y, build.drawrot())
+        Draw.rect(block.region, build.x, build.y, build.drawrot())
     }
 
     override fun drawPlan(block: Block, plan: BuildPlan?, list: Eachable<BuildPlan?>?) {
@@ -25,6 +24,6 @@ class DrawDefaultSpec : DrawBlock() {
     }
 
     override fun icons(block: Block): TRs = block.run {
-        return arrayOf(tr)
+        return arrayOf(region)
     }
 }

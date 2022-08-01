@@ -123,6 +123,8 @@ fun IDataReceiver.drawSenders(senders: Iterable<Int>, showCircle: Boolean = true
             if (showCircle && s.canShowSelfCircle()) {
                 G.surroundingCircleBreath(s.tile, s.senderColor, alpha = opacity)
             }
+            if (s.maxRange > 0f)
+                G.circle(s.building.x, s.building.y, s.maxRange, this.receiverColor)
             transferArrowLineBreath(
                 s.building, this.building,
                 arrowColor = this.receiverColor,
@@ -168,6 +170,8 @@ fun IStreamClient.drawHosts(hosts: Iterable<Int>, showCircle: Boolean = true) {
             if (showCircle && h.canShowSelfCircle()) {
                 G.surroundingCircleBreath(h.tile, h.hostColor, alpha = opacity)
             }
+            if (h.maxRange > 0f)
+                G.circle(h.building.x, h.building.y, h.maxRange, this.clientColor)
             transferArrowLineBreath(
                 h.building, this.building,
                 arrowColor = this.clientColor,

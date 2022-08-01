@@ -8,7 +8,7 @@
 */
 {
   "displayName": "[#42a5f5[]]Cyber IO[[]]",
-  "subtitle":"Untested V4 preview for Erekir",
+  "subtitle":"Re-balanced V4.1 for Erekir",
   "name": "cyber-io",
   "author": "[#42a5f5[]]Liplum[[]]",
   "main": "net.liplum.CioMod",
@@ -17,15 +17,15 @@
   '''
   [#e53935[]]The Cybernetics on Mindustry v7.[[]]
 
-  Current version is v4.0, while v4.1 is still in development.
+  Current version is v4.1, while v5 is still in development.
 
   Language Supports: English, Chinese(简体/正體中文), Japanese(日本語), Russian(Русский) and Ukrainian (українська).
 
-  To learn about the inter-mod compatibility and running Cyber IO on a server, please check the repository on GitHub by hitting the button below.
+  To learn more about Cyber IO, please check the repository on GitHub by hitting the button below.
 
   GitHub: [#42a5f5[]]github.com/liplum/CyberIO[[]]
   '''
-  "version": "4.0",
+  "version": "4.1",
   "minGameVersion": 136,
   "dependencies": [],
   "hidden": false,
