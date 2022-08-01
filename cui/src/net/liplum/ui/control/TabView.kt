@@ -65,7 +65,7 @@ class TabView(
             align(Align.left)
         }).minHeight(30f)
         table.row()
-        table.add(curContent).grow()
+        table.add(curContent).expand()
         curContent.resetAnimation()
     }
 

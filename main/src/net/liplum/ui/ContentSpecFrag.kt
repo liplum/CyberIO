@@ -18,6 +18,7 @@ import net.liplum.common.ui.UIToast
 import net.liplum.common.util.IBundlable
 import net.liplum.common.util.bundle
 import net.liplum.mdt.ClientOnly
+import net.liplum.mdt.LandscapeModeOnly
 import net.liplum.mdt.PortraitModeOnly
 import net.liplum.ui.animation.WrapAnimationSpec
 import net.liplum.ui.animation.animatedVisibility
@@ -53,6 +54,8 @@ object ContentSpecFrag : IBundlable {
         )
         val savesWarning = Label(bundle("saves-warning")).apply {
             setColor(R.C.RedAlert)
+            setAlignment(0)
+            setWrap(true)
         }
         var savesWarningVisible by savesWarning.animatedVisibility(
             isVisible = false,
@@ -87,19 +90,17 @@ object ContentSpecFrag : IBundlable {
 
         fun hasUnsavedChange() =
             curSpec != Var.ContentSpecific
-        // Tip
-        cont.add(ScrollPane(Table().apply {
-            add(Table().apply {
-                add(unsavedWarning)
-            }).row()
+
+        fun buildSpecificSelector() = Table().apply {
             // Options
-            add(bundle("introduction")).row()
             addTable {
-                val default = Core.scene.getStyle(ImageButtonStyle::class.java)
-                val style = ImageButtonStyle(default).apply {
-                    checked = default.over
-                }
-                val specificSelector = addTable {
+                add(unsavedWarning).row()
+                add(bundle("introduction")).row()
+                addTable {
+                    val default = Core.scene.getStyle(ImageButtonStyle::class.java)
+                    val style = ImageButtonStyle(default).apply {
+                        checked = default.over
+                    }
                     ContentSpec.values().forEach {
                         this.add(ImageButton(it.icon, style).apply {
                             clicked {
@@ -117,16 +118,22 @@ object ContentSpecFrag : IBundlable {
                             })
                         }).pad(5f)
                     }
-                }
-                row()
+                }.row()
                 add(desc).row()
-                add(savesWarning)
-            }
-        }).apply {
-            setScrollingDisabled(true, false)
-            setFadeScrollBars(true)
-            setSmoothScrolling(true)
-        }).grow()
+                add(savesWarning).growX()
+            }.expand().row()
+        }
+        // Tip
+        LandscapeModeOnly {
+            cont.add(ScrollPane(buildSpecificSelector()).apply {
+                setScrollingDisabled(true, false)
+                setFadeScrollBars(true)
+                setSmoothScrolling(true)
+            }).grow()
+        }
+        PortraitModeOnly {
+            cont.add(buildSpecificSelector()).grow()
+        }
         cont.row()
         // Buttons
         cont.add(Table().apply {
