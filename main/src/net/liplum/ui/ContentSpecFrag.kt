@@ -6,6 +6,7 @@ import arc.math.Interp
 import arc.scene.ui.ImageButton
 import arc.scene.ui.ImageButton.ImageButtonStyle
 import arc.scene.ui.Label
+import arc.scene.ui.ScrollPane
 import arc.scene.ui.layout.Table
 import arc.util.Align
 import mindustry.Vars
@@ -17,6 +18,7 @@ import net.liplum.common.ui.UIToast
 import net.liplum.common.util.IBundlable
 import net.liplum.common.util.bundle
 import net.liplum.mdt.ClientOnly
+import net.liplum.mdt.PortraitModeOnly
 import net.liplum.ui.animation.WrapAnimationSpec
 import net.liplum.ui.animation.animatedVisibility
 import net.liplum.ui.template.NewIconTextButton
@@ -86,7 +88,7 @@ object ContentSpecFrag : IBundlable {
         fun hasUnsavedChange() =
             curSpec != Var.ContentSpecific
         // Tip
-        cont.add(Table().apply {
+        cont.add(ScrollPane(Table().apply {
             add(Table().apply {
                 add(unsavedWarning)
             }).row()
@@ -97,7 +99,7 @@ object ContentSpecFrag : IBundlable {
                 val style = ImageButtonStyle(default).apply {
                     checked = default.over
                 }
-                addTable {
+                val specificSelector = addTable {
                     ContentSpec.values().forEach {
                         this.add(ImageButton(it.icon, style).apply {
                             clicked {
@@ -115,10 +117,15 @@ object ContentSpecFrag : IBundlable {
                             })
                         }).pad(5f)
                     }
-                }.pad(50f).row()
+                }
+                row()
                 add(desc).row()
                 add(savesWarning)
             }
+        }).apply {
+            setScrollingDisabled(true, false)
+            setFadeScrollBars(true)
+            setSmoothScrolling(true)
         }).grow()
         cont.row()
         // Buttons

@@ -2,6 +2,7 @@
 
 package net.liplum.mdt
 
+import arc.Core
 import arc.util.Log
 import mindustry.Vars
 import mindustry.gen.Teamc
@@ -128,6 +129,21 @@ inline fun ServerOnly(func: () -> Unit): Boolean {
 
 inline fun NetClientOnly(func: () -> Unit): Boolean {
     if (Vars.net.client()) {
+        func()
+        return true
+    }
+    return false
+}
+
+inline fun PortraitModeOnly(func: () -> Unit): Boolean {
+    if (Core.graphics.isPortrait) {
+        func()
+        return true
+    }
+    return false
+}
+inline fun LandscapeModeOnly(func: () -> Unit): Boolean {
+    if (!Core.graphics.isPortrait) {
         func()
         return true
     }
