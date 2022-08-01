@@ -3,6 +3,7 @@ package net.liplum.mdt.render
 import arc.graphics.g2d.TextureRegion
 import arc.struct.Seq
 import mindustry.entities.part.*
+import mindustry.entities.part.DrawPart.PartProgress
 import mindustry.world.blocks.defense.turrets.Turret
 import mindustry.world.draw.DrawBlock
 import mindustry.world.draw.DrawMulti
@@ -26,6 +27,15 @@ inline fun DrawTurret.regionPart(
     config: RegionPart.() -> Unit,
 ) {
     parts.add(RegionPart(suffix).apply(config))
+}
+
+fun RegionPart.addMove(
+    progress: PartProgress = PartProgress.warmup,
+    x: Float = 0f,
+    y: Float = 0f,
+    rot: Float = 0f,
+) {
+    moves.add(DrawPart.PartMove(progress, x, y, rot))
 }
 
 fun DrawTurret.wrapShader(drawPart: DrawPart, shader: () -> ShaderBase?) {

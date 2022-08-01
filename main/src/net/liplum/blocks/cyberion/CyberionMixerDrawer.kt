@@ -14,7 +14,7 @@ import mindustry.world.draw.DrawBlock
 import net.liplum.S
 import net.liplum.lib.math.smooth
 
-class DrawCyberionMixer : DrawBlock() {
+class DrawCyberionAgglomeration : DrawBlock() {
     var flameColor: Color = S.HologramDark
     var midColor: Color = S.Hologram
     var flameRad = 1f

@@ -28,7 +28,9 @@ import mindustry.world.blocks.production.HeatCrafter
 import mindustry.world.blocks.sandbox.ItemSource
 import mindustry.world.blocks.sandbox.LiquidSource
 import mindustry.world.blocks.sandbox.PowerSource
-import mindustry.world.draw.*
+import mindustry.world.draw.DrawLiquidTile
+import mindustry.world.draw.DrawMulti
+import mindustry.world.draw.DrawRegion
 import mindustry.world.meta.BuildVisibility
 import net.liplum.*
 import net.liplum.annotations.DependOn
@@ -40,7 +42,7 @@ import net.liplum.api.bullets.MultiBulletAbility
 import net.liplum.api.virus.setUninfected
 import net.liplum.api.virus.setUninfectedFloor
 import net.liplum.blocks.bomb.ZipBomb
-import net.liplum.blocks.cyberion.DrawCyberionMixer
+import net.liplum.blocks.cyberion.DrawCyberionAgglomeration
 import net.liplum.blocks.ddos.DDoS
 import net.liplum.blocks.decentralizer.Decentralizer
 import net.liplum.blocks.deleter.Deleter
@@ -79,9 +81,7 @@ import net.liplum.mdt.utils.addAmmo
 import net.liplum.mdt.utils.plus
 import net.liplum.registry.CioBulletTypes.optInRadiationInterference
 import net.liplum.registry.CioBulletTypes.optInVirus
-import net.liplum.render.DrawDefaultSpec
-import net.liplum.render.DrawRegionSpec
-import net.liplum.render.SpecDrawConstruct
+import net.liplum.render.*
 import net.liplum.statusFx.StaticFx
 import net.liplum.util.globalAnim
 
@@ -564,11 +564,23 @@ object CioBlocks {
                             progress = PartProgress { it.warmup.smooth }
                             moveY = 3f
                             moveRot = -20f
+                            addMove(
+                                progress = {
+                                    if (it.recoil == 0f) 0f else it.smoothReload
+                                },
+                                x = -1.5f
+                            )
                         }
                         ErekirSpec {
                             progress = PartProgress { it.warmup.smooth }
                             moveY = 5f
                             moveRot = -30f
+                            addMove(
+                                progress = {
+                                    if (it.recoil == 0f) 0f else it.smoothReload
+                                },
+                                x = -2f
+                            )
                         }
                         under = true
                         mirror = true
@@ -684,7 +696,7 @@ object CioBlocks {
                     width = 15f
                     height = 15f
                     hitSize = 15f
-                    lifetime = 80f
+                    lifetime = 120f
                     pierce = true
                     pierceCap = 2
                     optInRadiationInterference()
@@ -716,7 +728,7 @@ object CioBlocks {
                     width = 15f
                     height = 15f
                     hitSize = 15f
-                    lifetime = 80f
+                    lifetime = 120f
                     pierce = true
                     pierceCap = 2
                     optInRadiationInterference()
@@ -1079,10 +1091,10 @@ object CioBlocks {
                     DrawRegion("-bottom"),
                     DrawLiquidTile(CioFluids.cyberion, 3f),
                     DrawDefaultSpec(),
-                    DrawHeatOutput().apply {
+                    DrawHeatOutputSpec().apply {
                         heatColor = S.Hologram
                     },
-                    DrawCyberionMixer()
+                    DrawCyberionAgglomeration()
                 )
                 size = 3
             }
@@ -1101,7 +1113,6 @@ object CioBlocks {
                 liquidCapacity = 200f
                 craftTime = 90f
                 squareSprite = false
-                consumePower(1.8f)
                 consumeLiquid(Liquids.slag, 0.15f)
                 consumeItem(Items.oxide, 1)
                 heatRequirement = 8f
@@ -1111,11 +1122,11 @@ object CioBlocks {
                     DrawRegion("-bottom"),
                     DrawLiquidTile(CioFluids.cyberion, 5f),
                     DrawDefaultSpec(),
-                    DrawHeatInput().apply {
+                    DrawHeatInputSpec().apply {
                         heatColor = S.Hologram
                     },
-                    DrawHeatRegion("-glow"),
-                    DrawCyberionMixer()
+                    DrawHeatRegionSpec("-glow"),
+                    DrawCyberionAgglomeration()
                 )
                 size = 3
             }
