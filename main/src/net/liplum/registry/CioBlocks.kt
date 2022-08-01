@@ -30,7 +30,6 @@ import mindustry.world.blocks.sandbox.LiquidSource
 import mindustry.world.blocks.sandbox.PowerSource
 import mindustry.world.draw.DrawLiquidTile
 import mindustry.world.draw.DrawMulti
-import mindustry.world.draw.DrawRegion
 import mindustry.world.meta.BuildVisibility
 import net.liplum.*
 import net.liplum.annotations.DependOn
@@ -1088,13 +1087,14 @@ object CioBlocks {
                 outputLiquid = CioFluids.cyberion + 0.25f
                 heatOutput = 3f
                 drawer = DrawMulti(
-                    DrawRegion("-bottom"),
+                    DrawRegionSpec("-bottom"),
+                    DrawLiquidTile(Liquids.cryofluid, 3f),
                     DrawLiquidTile(CioFluids.cyberion, 3f),
                     DrawDefaultSpec(),
                     DrawHeatOutputSpec().apply {
                         heatColor = S.Hologram
                     },
-                    DrawCyberionAgglomeration()
+                    DrawCyberionAgglomeration(),
                 )
                 size = 3
             }
@@ -1119,14 +1119,18 @@ object CioBlocks {
                 overheatScale = 1.5f
                 outputLiquid = CioFluids.cyberion + 0.25f
                 drawer = DrawMulti(
-                    DrawRegion("-bottom"),
-                    DrawLiquidTile(CioFluids.cyberion, 5f),
+                    DrawRegionSpec("-bottom"),
+                    DrawLiquidTile(Liquids.slag, 37f / 4f),
+                    DrawLiquidTile(CioFluids.cyberion, 37f / 4f),
+                    DrawPistonsSpec().apply {
+                        sinMag = 3f
+                        sinScl = 5f
+                    },
                     DrawDefaultSpec(),
                     DrawHeatInputSpec().apply {
                         heatColor = S.Hologram
                     },
                     DrawHeatRegionSpec("-glow"),
-                    DrawCyberionAgglomeration()
                 )
                 size = 3
             }

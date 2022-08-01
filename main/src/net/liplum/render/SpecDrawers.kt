@@ -1,10 +1,10 @@
 package net.liplum.render
 
-import arc.Core
 import mindustry.world.Block
 import mindustry.world.draw.*
 import net.liplum.common.util.StartWithHyphen
 import net.liplum.mdt.render.DrawConstruct
+import net.liplum.mdt.utils.or
 import net.liplum.spec
 import net.liplum.util.atlasX
 
@@ -21,7 +21,7 @@ fun DrawGlowRegionSpec(
 ) = DrawGlowRegion(suffix.spec)
 
 fun DrawHeatInputSpec(
-    suffix: String = "",
+    suffix: String = "-heat",
 ) = DrawHeatInput(suffix.spec)
 
 fun DrawConstructSpec(
@@ -40,9 +40,17 @@ class DrawDefaultSpec : DrawDefault() {
 
 class DrawHeatOutputSpec : DrawHeatOutput() {
     override fun load(block: Block) = block.run {
-        heat = Core.atlas.find("$name-heat".spec)
-        glow = Core.atlas.find("$name-glow".spec)
-        top1 = Core.atlas.find("$name-top1".spec)
-        top2 = Core.atlas.find("$name-top2".spec)
+        heat = "$name-heat".atlasX()
+        glow = "$name-glow".atlasX()
+        top1 = "$name-top1".atlasX()
+        top2 = "$name-top2".atlasX()
+    }
+}
+
+class DrawPistonsSpec : DrawPistons() {
+    override fun load(block: Block) = block.run {
+        region1 = "$name-piston0".atlasX() or "$name-piston".atlasX()
+        region2 = "$name-piston1".atlasX() or "$name-piston".atlasX()
+        regiont = "$name-piston-t".atlasX()
     }
 }
