@@ -6,6 +6,7 @@ import arc.math.Interp
 import arc.scene.ui.ImageButton
 import arc.scene.ui.ImageButton.ImageButtonStyle
 import arc.scene.ui.Label
+import arc.scene.ui.ScrollPane
 import arc.scene.ui.layout.Table
 import arc.util.Align
 import mindustry.Vars
@@ -17,6 +18,8 @@ import net.liplum.common.ui.UIToast
 import net.liplum.common.util.IBundlable
 import net.liplum.common.util.bundle
 import net.liplum.mdt.ClientOnly
+import net.liplum.mdt.LandscapeModeOnly
+import net.liplum.mdt.PortraitModeOnly
 import net.liplum.ui.animation.WrapAnimationSpec
 import net.liplum.ui.animation.animatedVisibility
 import net.liplum.ui.template.NewIconTextButton
@@ -87,19 +90,17 @@ object ContentSpecFrag : IBundlable {
 
         fun hasUnsavedChange() =
             curSpec != Var.ContentSpecific
-        // Tip
-        cont.addTable {
-            addTable {
-                add(unsavedWarning)
-            }.row()
+
+        fun buildSpecificSelector() = Table().apply {
             // Options
-            add(bundle("introduction")).row()
             addTable {
-                val default = Core.scene.getStyle(ImageButtonStyle::class.java)
-                val style = ImageButtonStyle(default).apply {
-                    checked = default.over
-                }
+                add(unsavedWarning).row()
+                add(bundle("introduction")).row()
                 addTable {
+                    val default = Core.scene.getStyle(ImageButtonStyle::class.java)
+                    val style = ImageButtonStyle(default).apply {
+                        checked = default.over
+                    }
                     ContentSpec.values().forEach {
                         this.add(ImageButton(it.icon, style).apply {
                             clicked {
@@ -117,14 +118,25 @@ object ContentSpecFrag : IBundlable {
                             })
                         }).pad(5f)
                     }
-                }.expand().pad(25f).row()
-                add(desc).pad(10f).row()
-                add(savesWarning).pad(10f).growX()
-            }.expand()
-        }.expand()
+                }.row()
+                add(desc).row()
+                add(savesWarning).growX()
+            }.expand().row()
+        }
+        // Tip
+        LandscapeModeOnly {
+            cont.add(ScrollPane(buildSpecificSelector()).apply {
+                setScrollingDisabled(true, false)
+                setFadeScrollBars(true)
+                setSmoothScrolling(true)
+            }).grow()
+        }
+        PortraitModeOnly {
+            cont.add(buildSpecificSelector()).grow()
+        }
         cont.row()
         // Buttons
-        cont.addTable{
+        cont.add(Table().apply {
             add(NewIconTextButton("@save", Icon.save) {
                 setSpec(curSpec)
             }).then {
@@ -133,7 +145,7 @@ object ContentSpecFrag : IBundlable {
                 }
                 align(Align.bottom)
             }.width(200f).row()
-        }
+        })
     }
     @JvmStatic
     fun setSpec(spec: ContentSpec) {

@@ -5,13 +5,15 @@ import arc.scene.ui.Label
 import mindustry.Vars
 import mindustry.ui.BorderImage
 import mindustry.ui.dialogs.BaseDialog
-import net.liplum.*
-import net.liplum.common.util.ReferBundleWrapper
+import net.liplum.Meta
+import net.liplum.Settings
 import net.liplum.common.Res
+import net.liplum.common.util.ReferBundleWrapper
+import net.liplum.common.util.loadDynamicAsync
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.DesktopOnly
 import net.liplum.mdt.Else
-import net.liplum.common.util.loadDynamicAsync
+import net.liplum.ui.addScrolledTable
 import net.liplum.ui.addTable
 
 @ClientOnly
@@ -58,38 +60,40 @@ object FirstLoaded {
                     }
                 }
             }
-            cont.add(modIconImg).row()
-            cont.addTable {
-                left()
-                val indent = if (Vars.mobile) 5f else 40f
-                fun addMailText(text: String, indentTimes: Int = 0) =
-                    add(Label(text).apply {
-                        setWrap(true)
-                        DesktopOnly {
-                            setFontScale(1.1f)
+            cont.addScrolledTable {
+                add(modIconImg).row()
+                addTable {
+                    left()
+                    val indent = if (Vars.mobile) 5f else 40f
+                    fun addMailText(text: String, indentTimes: Int = 0) =
+                        add(Label(text).apply {
+                            setWrap(true)
+                            DesktopOnly {
+                                setFontScale(1.1f)
+                            }
+                        }).apply {
+                            growX()
+                            padLeft(if (Vars.mobile) 50f else 150f + indent * indentTimes).row()
+                            row()
                         }
-                    }).apply {
-                        growX()
-                        padLeft(if (Vars.mobile) 50f else 150f + indent * indentTimes).row()
-                        row()
+                    addMailText(bundle["from"])
+                    addMailText(bundle.format("to", playerName))
+                    addMailText(bundle.format("welcome", Meta.DetailedVersion))
+                    addMailText(bundle["content"], indentTimes = 1)
+                    addMailText(bundle["tip"])
+                    addMailText(bundle["address"])
+                }.apply {
+                    DesktopOnly {
+                        width(Core.scene.width / 5f * 4f)
+                    }.Else {
+                        width(Core.scene.width / 5f * 2.5f)
                     }
-                addMailText(bundle["from"])
-                addMailText(bundle.format("to", playerName))
-                addMailText(bundle.format("welcome", Meta.DetailedVersion))
-                addMailText(bundle["content"], indentTimes = 1)
-                addMailText(bundle["tip"])
-                addMailText(bundle["address"])
-            }.apply {
-                DesktopOnly {
-                    width(Core.scene.width / 5f * 4f)
-                }.Else {
-                    width(Core.scene.width / 5f * 2.5f)
+                    fillX()
+                    padBottom(4f)
+                    row()
                 }
-                fillX()
-                padBottom(4f)
-                row()
             }
-            cont.button(bundle["read"]) {
+            buttons.button(bundle["read"]) {
                 hide()
             }.size(200f, 50f)
         }.show()
