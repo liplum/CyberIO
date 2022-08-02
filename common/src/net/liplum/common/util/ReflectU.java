@@ -52,7 +52,7 @@ public class ReflectU {
      */
     public static <T> T call(Object obj, String name, Object... args) {
         return getEntry(obj.getClass()).call(obj, name, args,
-                Arrays.stream(args).map(Object::getClass).toArray(Class[]::new)
+            Arrays.stream(args).map(Object::getClass).toArray(Class[]::new)
         );
     }
 
@@ -67,8 +67,8 @@ public class ReflectU {
                 set(field.getDeclaringClass(), to, field.getName(), field.get(from));
             } catch (Exception e) {
                 throw new RuntimeException("from:[" + fromClz.getName() +
-                        "]to:[" + fromClz.getName() + "]"
-                        + field.getName(), e);
+                    "]to:[" + fromClz.getName() + "]"
+                    + field.getName(), e);
             }
         }
     }
@@ -93,7 +93,12 @@ public class ReflectU {
     }
 
     public static Entry getEntry(Class<?> clz) {
-        return AllClasses.computeIfAbsent(clz, Entry::new);
+        Entry entry = AllClasses.get(clz);
+        if (entry == null) {
+            entry = new Entry(clz);
+            AllClasses.put(clz, entry);
+        }
+        return entry;
     }
 
     @SuppressWarnings("unchecked")
@@ -114,15 +119,17 @@ public class ReflectU {
         }
 
         private Field getField(String name) {
-            return fields.computeIfAbsent(name, n -> {
+            Field field = fields.get(name);
+            if (field == null) {
                 try {
-                    Field field = clz.getDeclaredField(name);
+                    field = clz.getDeclaredField(name);
                     field.setAccessible(true);
                     return field;
                 } catch (Exception e) {
                     throw new RuntimeException(name + "doesn't exist in " + clz.getName(), e);
                 }
-            });
+            }
+            return field;
         }
 
         private Object getKey(String name, Object[] args) {
@@ -130,15 +137,17 @@ public class ReflectU {
         }
 
         public Method getMethod(String name, Class<?>[] classes) {
-            return methods.computeIfAbsent(getKey(name, classes), n -> {
+            Method method = methods.get(getKey(name, classes));
+            if (method == null) {
                 try {
-                    Method method = clz.getDeclaredMethod(name, classes);
+                    method = clz.getDeclaredMethod(name, classes);
                     method.setAccessible(true);
                     return method;
                 } catch (Exception e) {
                     throw new RuntimeException(name + "doesn't exist in " + clz.getName(), e);
                 }
-            });
+            }
+            return method;
         }
 
         public <T> T call(Object obj, String name, Object[] args, Class<?>[] clz) {
