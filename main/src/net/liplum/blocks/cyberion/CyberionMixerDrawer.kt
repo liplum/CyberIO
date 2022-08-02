@@ -19,7 +19,6 @@ class DrawCyberionAgglomeration : DrawBlock() {
     var midColor: Color = S.Hologram
     var flameRad = 1f
     var flameRadiusScl = 5f
-    var flameRadiusMag = 0.8f
     var circleStroke = 1.5f
     var alpha = 0.68f
     var coreRadius = 5f
@@ -27,7 +26,7 @@ class DrawCyberionAgglomeration : DrawBlock() {
     var particleLife = 40f
     var particleRad = 10f
     var particleStroke = 1.1f
-    var particleLen = 5f
+    var particleRadius = 2f
     var drawCenter = true
     var blending: Blending = Blending.additive
     override fun draw(build: Building) {
@@ -74,11 +73,10 @@ class DrawCyberionAgglomeration : DrawBlock() {
                 val fout = 1f - fin
                 val angle = rand.random(360f)
                 val len = particleRad * Interp.pow2Out.apply(fout)
-                Lines.lineAngle(
+                Fill.circle(
                     build.x + Angles.trnsx(angle, len),
                     build.y + Angles.trnsy(angle, len),
-                    angle,
-                    particleLen * fin * build.warmup()
+                    particleRadius * fin * build.warmup()
                 )
             }
             Draw.blend()

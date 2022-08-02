@@ -7,16 +7,19 @@ import mindustry.content.Fx
 import mindustry.entities.Effect
 import mindustry.entities.bullet.BasicBulletType
 import mindustry.gen.*
+import mindustry.graphics.Layer
 import net.liplum.S
 import net.liplum.api.IExecutioner
 import net.liplum.lib.math.quadratic
-import net.liplum.mdt.render.Draw
+import net.liplum.mdt.render.DrawSize
 import net.liplum.mdt.utils.NewEffect
 import net.liplum.mdt.utils.lostHp
 
 private val P2Alpha = quadratic(0.95f, 0.35f)
 val deleted = NewEffect(60f) {
-    Icon.trash.region.Draw(x, y)
+    Draw.z(Layer.bullet - 1f)
+    Draw.alpha(fout())
+    Icon.trash.region.DrawSize(x, y, size = 1f + fin() * 1.5f)
 }
 
 open class DeleterWave(
