@@ -1796,6 +1796,7 @@ object CioBlocks {
             size = 3
             shootSound = Sounds.none
             addAmmo(Liquids.water, FieldBulletType().apply {
+                fieldColor = R.C.CuttexCyan
             })
         }
     }

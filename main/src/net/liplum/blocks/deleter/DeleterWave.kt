@@ -17,9 +17,10 @@ import net.liplum.mdt.utils.lostHp
 
 private val P2Alpha = quadratic(0.95f, 0.35f)
 val deleted = NewEffect(60f) {
-    Draw.z(Layer.bullet - 1f)
     Draw.alpha(fout())
     Icon.trash.region.DrawSize(x, y, size = 1f + fin() * 1.5f)
+}.apply {
+    layer(Layer.bullet - 1f)
 }
 
 open class DeleterWave(

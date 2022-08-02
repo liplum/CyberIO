@@ -1,25 +1,31 @@
 package net.liplum.bullet
 
+import arc.graphics.Color
+import arc.graphics.g2d.Draw
 import arc.graphics.g2d.Lines
 import arc.math.Interp
 import mindustry.content.Fx
 import mindustry.entities.Damage
 import mindustry.entities.bullet.BulletType
 import mindustry.gen.Bullet
+import net.liplum.lib.arc.Color
 import net.liplum.lib.math.Degree
+import net.liplum.mdt.render.G
 import net.liplum.mdt.utils.WorldXY
-import net.liplum.mdt.utils.draw
 
 class FieldBulletType : BulletType {
     constructor(speed: Float, damage: Float) : super(speed, damage)
     constructor() : super()
 
     @JvmField var continuous = true
-    @JvmField var length: WorldXY = 220f
-    @JvmField var angle: Degree = 60f
+    @JvmField var length: WorldXY = 160f
+    @JvmField var angle: Degree = 80f
     @JvmField var lengthInterp: Interp = Interp.slope
+    @JvmField var fieldColor = Color("#e189f5")
+    @JvmField var fieldAlpha = 0.5f
 
     init {
+        optimalLifeFract = 0.5f
         removeAfterPierce = false
         pierceCap = -1
         speed = 0f
@@ -32,6 +38,7 @@ class FieldBulletType : BulletType {
         pierce = true
         hittable = false
         absorbable = false
+        pierceArmor = true
     }
 
     @JvmField var damageInterval = 5f
@@ -40,6 +47,8 @@ class FieldBulletType : BulletType {
     override fun calculateRange() = length.coerceAtLeast(maxRange)
     override fun init() {
         super.init()
+        if (hitColor == Color.white)
+            hitColor = fieldColor.cpy().a(1f)
         drawSize = drawSize.coerceAtLeast(length * 2f)
     }
 
@@ -52,8 +61,12 @@ class FieldBulletType : BulletType {
 
     override fun draw(b: Bullet) = b.run {
         val curLen = currentLength(this)
-        Lines.stroke(length)
-        Lines.arc(x, y, length / 2f, angle / 360f, this.rotation() - angle / 2f)
+        Lines.stroke(curLen)
+        Draw.color(fieldColor)
+        Draw.alpha(0.5f + G.sin) // breath
+        //Draw.alpha(fieldAlpha)
+        Lines.arc(x, y, curLen / 2f, angle / 360f, this.rotation() - angle / 2f)
+        Draw.reset()
     }
 
     fun applyDamage(b: Bullet) {
