@@ -13,7 +13,7 @@ class ResNotFoundException(msg: String) : RuntimeException(msg)
 class Res(
     var locator: Class<*> = Res::class.java,
     var pos: String = "",
-    var inJar: Boolean = true
+    var inJar: Boolean = true,
 ) {
     constructor(pos: String) :
             this(Res::class.java, pos = pos)
@@ -26,10 +26,8 @@ class Res(
 
     val truePos: String
         get() =
-            if (inJar && !(pos.startsWith('/')))
-                "/$pos"
-            else
-                pos
+            if (inJar && !(pos.startsWith('/'))) "/$pos"
+            else pos
 
     infix fun sub(subPos: String): Res =
         Res(locator, "$pos/$subPos", inJar)
@@ -68,11 +66,10 @@ class Res(
     @JvmOverloads
     inline fun <R> useAsReader(
         use: (Reader) -> R,
-        charset: Charset = Charsets.UTF_8
+        charset: Charset = Charsets.UTF_8,
     ): R = reader(charset).use {
         use(it)
     }
-
     /**
      * Read all text from this resource location with UTF-8 charset.
      */

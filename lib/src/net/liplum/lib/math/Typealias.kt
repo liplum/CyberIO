@@ -9,3 +9,5 @@ typealias FUNC = (Float) -> Float
  */
 typealias Progress = Float
 typealias Distance = Float
+typealias Degree = Float
+typealias Radian = Float

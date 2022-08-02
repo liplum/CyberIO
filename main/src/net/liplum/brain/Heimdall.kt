@@ -1,6 +1,5 @@
 package net.liplum.brain
 
-import arc.Core.input
 import arc.audio.Sound
 import arc.func.Prov
 import arc.graphics.Color
@@ -25,7 +24,6 @@ import mindustry.game.EventType.TapEvent
 import mindustry.gen.*
 import mindustry.graphics.Layer
 import mindustry.graphics.Pal
-import mindustry.input.Binding
 import mindustry.logic.LAccess
 import mindustry.logic.Ranged
 import mindustry.world.Block
@@ -668,15 +666,7 @@ open class Heimdall(name: String) : Block(name) {
             }
         }
 
-        override fun canControl(): Boolean {
-            val canControl = canConsume()
-            ClientOnly {
-                if (!canControl && input.keyDown(Binding.control))
-                    trigger(Trigger.failedControl)
-            }
-            return canControl
-        }
-
+        override fun canControl() = canConsume()
         override fun unit(): MdtUnit {
             //make sure stats are correct
             unit.tile(this)
@@ -808,7 +798,7 @@ open class Heimdall(name: String) : Block(name) {
         fun onTap(e: TapEvent) {
             val build = e.tile?.build
             if (build is HeimdallBuild) {
-                build.trigger(Trigger.failedControl)
+                build.trigger(Trigger.tap)
             }
         }
     }

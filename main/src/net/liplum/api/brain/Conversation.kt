@@ -19,13 +19,16 @@ import net.liplum.mdt.utils.inPayload
 
 object ConversationManager {
     var ConversationFadeTimePercent = 0.08f
-    var ConversationTime = 180f
+    var TimePerCharacter = 10f
+    var ConversationMinimumTime = 80f
     var fontSize = 0.9f
+    private fun String.textToDuration() = TimePerCharacter * length
     @ClientOnly
     fun drawConversationOn(b: Building, text: String, color: Color) {
-        Toaster.post(b.id, ConversationTime, overwrite = false) {
+        val conversationTime = text.textToDuration()
+        Toaster.post(b.id, conversationTime.coerceAtLeast(ConversationMinimumTime), overwrite = false) {
             Text.drawTextX {
-                val curText = text.progressed(curTime / (ConversationTime * 0.4f))
+                val curText = text.progressed(curTime / (conversationTime * 0.4f))
                 if (!b.inViewField(b.block.clipSize)) return@post
                 setText(it, curText)
                 it.data.setScale(1f / 4f / Scl.scl(fontSize))
@@ -90,7 +93,7 @@ open class Trigger(
          */
         var detectControlled=   Trigger("detect-controlled",    4)
         var controlled =        Trigger("controlled",           8)
-        var failedControl =     Trigger("failed-control",       6)
+        var tap =               Trigger("tap",                  7)
             .color(R.C.RedAlert)
         var earKilling =        Trigger("ear-killing",          2)
         var earKillingFlying =  Trigger("ear-killing-flying",   2)

@@ -1124,6 +1124,7 @@ object CioBlocks {
                         sinMag = 3f
                         sinScl = 5f
                     },
+                    DrawGlowRegionSpec(),
                     DrawDefaultSpec(),
                     DrawLiquidTile(Liquids.slag, 37f / 4f),
                     DrawLiquidTile(CioFluids.cyberion, 37f / 4f),
@@ -1131,7 +1132,6 @@ object CioBlocks {
                     DrawHeatInputSpec().apply {
                         heatColor = S.Hologram
                     },
-                    DrawGlowRegionSpec(),
                 )
                 size = 3
             }

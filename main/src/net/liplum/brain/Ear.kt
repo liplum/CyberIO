@@ -268,17 +268,16 @@ open class Ear(name: String) : Block(name), IComponentBlock {
                 BaseHeatTR.Draw(x, y)
             }
             Draw.z(Layer.turret)
-            EarTR.DrawSize(x, y, scale)
+            EarTR.DrawSize(x, y, scale + G.sin / 20f)
             Draw.z(Layer.turretHeat)
             heatMeta.drawHeat(heatShared) {
-                EarHeatTR.DrawSize(x, y, scale)
+                EarHeatTR.DrawSize(x, y, scale + G.sin / 20f)
             }
             Draw.z(Layer.turret)
             Draw.z(Layer.bullet)
             for (wave in sonicWaves) {
                 val alpha = Interp.pow2In(wave.range / realSonicRadius)
-                Lines.stroke(waveWidth, sonicWaveColor)
-                Draw.alpha((1f - alpha) + 0.4f)
+                Lines.stroke(waveWidth * (1f - alpha), sonicWaveColor)
                 Lines.circle(wave.x, wave.y, wave.range)
             }
         }

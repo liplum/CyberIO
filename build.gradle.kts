@@ -36,7 +36,7 @@ allprojects {
     tasks.whenTaskAdded {
         tasks.whenTaskAdded {
             when (name) {
-                "kspKotlin" -> if (settings.env == "dev") enabled = true
+                "kspKotlin" -> if (settings.env == "dev") enabled = false
             }
         }
     }

@@ -9,15 +9,15 @@ import net.liplum.spec
 import net.liplum.util.atlasX
 
 fun DrawRegionSpec(
-    suffix: String = "".spec,
+    suffix: String = "",
 ) = DrawRegion(suffix.spec)
 
 fun DrawHeatRegionSpec(
-    suffix: String = "-glow".spec,
+    suffix: String = "-glow",
 ) = DrawHeatRegion(suffix.spec)
 
 fun DrawGlowRegionSpec(
-    suffix: String = "-glow".spec,
+    suffix: String = "-glow",
 ) = DrawGlowRegion(suffix.spec)
 
 fun DrawHeatInputSpec(
@@ -27,7 +27,7 @@ fun DrawHeatInputSpec(
 fun DrawConstructSpec(
     stages: Int = 3,
     @StartWithHyphen
-    suffix: String = "construct".spec,
+    suffix: String = "construct",
 ) = DrawConstruct(stages, suffix.spec)
 
 class DrawDefaultSpec : DrawDefault() {
