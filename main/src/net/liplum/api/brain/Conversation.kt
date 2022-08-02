@@ -54,11 +54,29 @@ object ConversationManager {
     }
 }
 
-class Trigger(
+data class TriggerEntry(
+    var key: BundleKey,
+    var color: Color,
+)
+
+private val sharedEntry = TriggerEntry("", Color.white)
+
+interface ITrigger {
+    fun genEntry(): TriggerEntry
+}
+
+interface IVarianceTrigger : ITrigger {
+    val variance: Int
+    /**
+     * @param variance starts with 0
+     */
+    fun mapTriggerEntry(variance: Int): TriggerEntry
+}
+
+open class Trigger(
     val id: String,
-    var variance: Int
-) {
-    val bundleKeyPrefix = "$prefix.$id-"
+    override val variance: Int,
+) : IVarianceTrigger {
     var color: Color = R.C.BrainWave
 
     companion object {
@@ -72,6 +90,8 @@ class Trigger(
          */
         var detectControlled=   Trigger("detect-controlled",    4)
         var controlled =        Trigger("controlled",           8)
+        var failedControl =     Trigger("failed-control",       6)
+            .color(R.C.RedAlert)
         var earKilling =        Trigger("ear-killing",          2)
         var earKillingFlying =  Trigger("ear-killing-flying",   2)
         var eyeDetect =         Trigger("eye-detect",           4)
@@ -87,32 +107,79 @@ class Trigger(
         var onPayloadUnit =     Trigger("on-payload-unit",      5)
             .color(R.C.RedAlert)
         // @formatter:on
-        private const val prefix = "heimdall.msg"
-        private var lastNumber = 0
+        const val prefix = "heimdall.msg"
+        var lastNumber = 0
     }
 
-    fun trigger(
-        b: Building
-    ) {
-        ClientOnly {
-            if (!ConversationManager.hasConversationWith(b)) {
-                if (b.inViewField(b.block.clipSize)) {
-                    val key = randomOne()
-                    ConversationManager.drawConversationOn(
-                        b, text = key.bundle,
-                        color
-                    )
-                }
-            }
-        }
+    override fun mapTriggerEntry(variance: Int): TriggerEntry = sharedEntry.apply {
+        key = "$id-$variance"
+        color = this@Trigger.color
     }
 
-    fun randomOne(): BundleKey {
+    override fun genEntry(): TriggerEntry {
         var selected = variance.randomExcept(lastNumber)
         if (selected == -1)
             selected = Mathf.random(0, variance - 1)
         lastNumber = selected
-        return bundleKeyPrefix + selected
+        return mapTriggerEntry(selected)
+    }
+}
+
+fun ITrigger.trigger(
+    b: Building,
+) {
+    ClientOnly {
+        if (!ConversationManager.hasConversationWith(b)) {
+            if (b.inViewField(b.block.clipSize)) {
+                val entry = genEntry()
+                ConversationManager.drawConversationOn(
+                    b,
+                    text = "${Trigger.prefix}.${entry.key}".bundle,
+                    color = entry.color
+                )
+            }
+        }
+    }
+}
+// TODO: finish this
+class MultiTrigger(
+    vararg val triggers: Trigger,
+) : IVarianceTrigger {
+    val buckets = IntArray(triggers.size)
+    override val variance: Int
+
+    init {
+        var sum = 0
+        for (i in buckets.indices) {
+            sum += triggers[i].variance
+            buckets[i] = sum
+        }
+        variance = sum
+    }
+
+    override fun mapTriggerEntry(variance: Int): TriggerEntry {
+        var index = 0
+        var curSum = 0
+        for (i in triggers.indices) {
+            val sum = buckets[i]
+            if (i < sum) {
+                index = i
+                curSum = sum
+            }
+        }
+        val trigger = triggers[index]
+        // now index is the end of variance
+        return sharedEntry.apply {
+            key = trigger.id + (variance - curSum)
+            color = trigger.color
+        }
+    }
+
+    override fun genEntry(): TriggerEntry {
+        var selected = variance.randomExcept(Trigger.lastNumber)
+        if (selected == -1)
+            selected = Mathf.random(0, variance - 1)
+        return mapTriggerEntry(selected)
     }
 }
 

@@ -36,10 +36,7 @@ allprojects {
     tasks.whenTaskAdded {
         tasks.whenTaskAdded {
             when (name) {
-                "kspKotlin" -> if (
-                    settings.env == "dev" ||
-                    "true".equals(System.getenv("KSP_ENABLE"), ignoreCase = true)
-                ) enabled = false
+                "kspKotlin" -> if (settings.env == "dev") enabled = true
             }
         }
     }

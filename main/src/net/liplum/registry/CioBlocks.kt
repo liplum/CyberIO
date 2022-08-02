@@ -1120,17 +1120,18 @@ object CioBlocks {
                 outputLiquid = CioFluids.cyberion + 0.25f
                 drawer = DrawMulti(
                     DrawRegionSpec("-bottom"),
-                    DrawLiquidTile(Liquids.slag, 37f / 4f),
-                    DrawLiquidTile(CioFluids.cyberion, 37f / 4f),
                     DrawPistonsSpec().apply {
                         sinMag = 3f
                         sinScl = 5f
                     },
                     DrawDefaultSpec(),
+                    DrawLiquidTile(Liquids.slag, 37f / 4f),
+                    DrawLiquidTile(CioFluids.cyberion, 37f / 4f),
+                    DrawRegionSpec("-top"),
                     DrawHeatInputSpec().apply {
                         heatColor = S.Hologram
                     },
-                    DrawHeatRegionSpec("-glow"),
+                    DrawGlowRegionSpec(),
                 )
                 size = 3
             }

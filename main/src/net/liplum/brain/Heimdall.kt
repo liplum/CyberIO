@@ -1,5 +1,6 @@
 package net.liplum.brain
 
+import arc.Core.input
 import arc.audio.Sound
 import arc.func.Prov
 import arc.graphics.Color
@@ -20,9 +21,11 @@ import mindustry.ai.types.CommandAI
 import mindustry.content.Fx
 import mindustry.content.UnitTypes
 import mindustry.entities.TargetPriority
+import mindustry.game.EventType.TapEvent
 import mindustry.gen.*
 import mindustry.graphics.Layer
 import mindustry.graphics.Pal
+import mindustry.input.Binding
 import mindustry.logic.LAccess
 import mindustry.logic.Ranged
 import mindustry.world.Block
@@ -34,6 +37,8 @@ import net.liplum.CioMod
 import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.Var
+import net.liplum.annotations.Only
+import net.liplum.annotations.SubscribeEvent
 import net.liplum.api.IExecutioner
 import net.liplum.api.brain.*
 import net.liplum.common.delegate.Delegate
@@ -663,7 +668,15 @@ open class Heimdall(name: String) : Block(name) {
             }
         }
 
-        override fun canControl() = canConsume()
+        override fun canControl(): Boolean {
+            val canControl = canConsume()
+            ClientOnly {
+                if (!canControl && input.keyDown(Binding.control))
+                    trigger(Trigger.failedControl)
+            }
+            return canControl
+        }
+
         override fun unit(): MdtUnit {
             //make sure stats are correct
             unit.tile(this)
@@ -786,6 +799,16 @@ open class Heimdall(name: String) : Block(name) {
                 if (Mathf.chanceDelta((0.12f * Time.delta).toDouble())) {
                     Fx.circleColorSpark.at(unit.x, unit.y, R.C.BrainWave)
                 }
+            }
+        }
+    }
+
+    companion object {
+        @SubscribeEvent(TapEvent::class, only = Only.client)
+        fun onTap(e: TapEvent) {
+            val build = e.tile?.build
+            if (build is HeimdallBuild) {
+                build.trigger(Trigger.failedControl)
             }
         }
     }
