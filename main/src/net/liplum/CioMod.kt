@@ -14,9 +14,9 @@ import net.liplum.ContentSpec.Companion.resolveContentSpec
 import net.liplum.Var.ContentSpecific
 import net.liplum.event.CioInitEvent
 import net.liplum.event.CioLoadContentEvent
+import net.liplum.event.UnitTap
 import net.liplum.gen.Contents
 import net.liplum.gen.EventRegistry
-import net.liplum.event.UnitTap
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.HeadlessOnly
 import net.liplum.mdt.IsSteam
@@ -83,6 +83,19 @@ class CioMod : Mod() {
             ContentSpecific = Config.ContentSpecific.resolveContentSpec()
             Updater.fetchLatestVersion(updateInfoFileURL = Config.CheckUpdateInfoURL)
             Updater.checkHeadlessUpdate()
+        }
+        safeCall {
+            CLog.info(
+                """
+                [Java Info]
+                java.vm.name: ${System.getProperty("java.vm.name")}
+                java.vm.vendor: ${System.getProperty("java.vm.vendor")}
+                java.vm.specification.version: ${System.getProperty("java.vm.specification.version")}
+                java.vm.version: ${System.getProperty("java.vm.version")}
+                java.version: ${System.getProperty("java.version")}
+                java.class.version: ${System.getProperty("java.class.version")}
+                """.trimIndent()
+            )
         }
         ClientOnly {
             ContentSpecific = Settings.ContentSpecific.resolveContentSpec()
