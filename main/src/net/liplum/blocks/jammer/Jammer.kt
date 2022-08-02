@@ -20,6 +20,7 @@ import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.animation.Floating
 import net.liplum.mdt.animation.anims.Animation
 import net.liplum.mdt.render.Draw
+import net.liplum.mdt.render.DrawSize
 import net.liplum.mdt.utils.autoAnim
 import net.liplum.mdt.utils.draw
 import net.liplum.mdt.utils.sub
@@ -146,11 +147,14 @@ open class Jammer(name: String) : ContinuousLiquidTurret(name) {
                     else -> 1f
                 }
                 Draw.alpha(fadeAlpha)
-                SonicWaveAnim.draw(
-                    x + start.pos.x + Tmp.v1.x,
-                    y + start.pos.y + Tmp.v1.y,
-                    rotation.draw
-                )
+                SonicWaveAnim.draw { wave->
+                    wave.DrawSize(
+                        x + start.pos.x + Tmp.v1.x,
+                        y + start.pos.y + Tmp.v1.y,
+                        rotation = rotation.draw,
+                        size = 0.33333334f,
+                    )
+                }
             }
         }
     }
