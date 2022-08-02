@@ -1,7 +1,7 @@
 import io.github.liplum.mindustry.minGameVersion
 import net.liplum.gradle.settings.Settings.localConfig
 
-plugins{
+plugins {
     id("io.github.liplum.mgpp") version "1.1.9"
 }
 buildscript {
@@ -36,7 +36,10 @@ allprojects {
     tasks.whenTaskAdded {
         tasks.whenTaskAdded {
             when (name) {
-                "kspKotlin" -> if (settings.env == "dev") enabled = false
+                "kspKotlin" -> if (
+                    settings.env == "dev" ||
+                    "true".equals(System.getenv("KSP_ENABLE"), ignoreCase = true)
+                ) enabled = false
             }
         }
     }
