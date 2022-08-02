@@ -1,5 +1,6 @@
 package net.liplum.bullet
 
+import arc.graphics.g2d.Lines
 import arc.math.Interp
 import mindustry.content.Fx
 import mindustry.entities.Damage
@@ -7,6 +8,7 @@ import mindustry.entities.bullet.BulletType
 import mindustry.gen.Bullet
 import net.liplum.lib.math.Degree
 import net.liplum.mdt.utils.WorldXY
+import net.liplum.mdt.utils.draw
 
 class FieldBulletType : BulletType {
     constructor(speed: Float, damage: Float) : super(speed, damage)
@@ -48,7 +50,11 @@ class FieldBulletType : BulletType {
         }
     }
 
-
+    override fun draw(b: Bullet) = b.run {
+        val curLen = currentLength(this)
+        Lines.stroke(length)
+        Lines.arc(x, y, length / 2f, angle / 360f, this.rotation() - angle / 2f)
+    }
 
     fun applyDamage(b: Bullet) {
         Damage.collideLine(b, b.team, hitEffect, b.x, b.y, b.rotation(), currentLength(b), true, laserAbsorb, pierceCap)

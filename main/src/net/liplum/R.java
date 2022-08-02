@@ -185,7 +185,9 @@ public final class R {
         @NotNull
         public static final Color SonicWave = Color.valueOf("#b0bec5");
         @NotNull
-        public static final Color FutureBlue = Color.valueOf("#84fff1");
+        public static final Color
+            FutureBlue = Color.valueOf("#84fff1"),
+            CuttexCyan = Color.valueOf("#c0ecff");
 
         @NotNull
         public static final Color

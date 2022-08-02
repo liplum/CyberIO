@@ -19,6 +19,7 @@ import mindustry.game.EventType.Trigger
 import mindustry.gen.Sounds
 import mindustry.graphics.Layer
 import mindustry.type.Category
+import mindustry.world.blocks.defense.turrets.ContinuousLiquidTurret
 import mindustry.world.blocks.defense.turrets.PowerTurret.PowerTurretBuild
 import mindustry.world.blocks.environment.Floor
 import mindustry.world.blocks.heat.HeatProducer
@@ -123,6 +124,7 @@ object CioBlocks {
     @JvmStatic lateinit var zipBomb: ZipBomb
     @JvmStatic lateinit var serializer: Serializer
     @JvmStatic lateinit var p2pNode: P2pNode
+    @JvmStatic lateinit var cuttex: ContinuousLiquidTurret
     @DependOn("CioItems.ic")
     fun icMachine() {
         icMachine = ICMachine("ic-machine").apply {
@@ -997,7 +999,7 @@ object CioBlocks {
             loopSoundVolume = 0.3f
             rotateSpeed = 2f
 
-            ammo(CioFluids.cyberion, JammingLaser().apply {
+            addAmmo(CioFluids.cyberion, JammingLaser().apply {
                 VanillaSpec {
                     damage = 100f
                     length = 220f
@@ -1280,6 +1282,7 @@ object CioBlocks {
     }
     @DependOn(
         "CioItems.ic",
+        "CioFluids.cyberion"
     )
     fun stealth() {
         stealth = Stealth("stealth").apply {
@@ -1780,6 +1783,20 @@ object CioBlocks {
             size = 2
             squareSprite = false
             consumePower(1.5f)
+        }
+    }
+    @DependOn(
+        "CioItems.ic",
+        "CioFluids.cyberion"
+    )
+    fun cuttex() {
+        cuttex = ContinuousLiquidTurret("cuttex").apply {
+            category = Category.turret
+            buildVisibility = BuildVisibility.shown
+            size = 3
+            shootSound = Sounds.none
+            addAmmo(Liquids.water, FieldBulletType().apply {
+            })
         }
     }
     @DependOn
