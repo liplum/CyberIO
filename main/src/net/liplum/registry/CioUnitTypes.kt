@@ -207,6 +207,7 @@ object CioUnitTypes {
                 )
             }
             aiController = Prov { BuilderAI() }
+            controller = Func { BuilderAI() }
             HoloOpacity = 0.4f
             ColorOpacity = 0.05f
             flying = true
@@ -290,6 +291,7 @@ object CioUnitTypes {
                 )
             }
             aiController = Prov { RepairAI() }
+            controller = Func { RepairAI() }
             flying = true
             hovering = true
             HoloOpacity = 0.4f

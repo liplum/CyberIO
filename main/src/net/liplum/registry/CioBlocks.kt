@@ -4,7 +4,6 @@ import arc.func.Prov
 import arc.graphics.Color
 import arc.graphics.Texture
 import arc.math.Interp
-import arc.struct.Seq
 import arc.util.Time
 import mindustry.Vars
 import mindustry.content.*
@@ -790,15 +789,17 @@ object CioBlocks {
                     Items.surgeAlloy + 50,
                 )
                 scaledHealth = 800f
+                maxConnection = -1
             }
             ErekirSpec {
                 requirements = arrayOf(
-                    CioItems.ic + 65,
+                    CioItems.ic + 75,
                     Items.tungsten + 200,
-                    Items.carbide + 180,
-                    Items.surgeAlloy + 100,
+                    Items.carbide + 120,
+                    Items.surgeAlloy + 50,
                 )
                 scaledHealth = 500f
+                maxConnection = -1
             }
             size = 2
             ArrowsAnimFrames = 4
@@ -824,13 +825,14 @@ object CioBlocks {
             }
             ErekirSpec {
                 requirements = arrayOf(
-                    CioItems.ic + 135,
+                    CioItems.ic + 200,
                     Items.tungsten + 350,
                     Items.carbide + 120,
                     Items.phaseFabric + 120,
+                    Items.surgeAlloy + 50,
                 )
                 unloadSpeed = 6f
-                scaledHealth = 200f
+                scaledHealth = 1000f
                 maxRange = 1500f
                 maxConnection = 6
             }
@@ -904,8 +906,8 @@ object CioBlocks {
                 )
                 scaledHealth = 350f
                 powerUseBase = 1.4f
-                powerUsePerConnection = 1.2f
-                networkSpeed = 3f
+                powerUsePerConnection = 2.5f
+                networkSpeed = 5f
                 liquidCapacity = 1200f
                 maxConnection = 3
                 maxRange = 1800f
@@ -939,7 +941,7 @@ object CioBlocks {
             }
             ErekirSpec {
                 requirements = arrayOf(
-                    CioItems.ic + 150,
+                    CioItems.ic + 200,
                     Items.tungsten + 300,
                     Items.carbide + 150,
                     Items.beryllium + 500,
@@ -1162,49 +1164,50 @@ object CioBlocks {
                     Items.metaglass + 500,
                     Items.thorium + 1200,
                 )
+                liquidCapacity = 100f
                 scaledHealth = 100f
                 researchCostMultiplier = 0.8f
-                plans = Seq.with(
-                    HoloPlan(
-                        CioUnitTypes.holoMiner,
-                        Requirement(
-                            cyberion = 300f
-                        ),
-                        15f * 60f
+                plans += HoloPlan(
+                    CioUnitTypes.holoMiner,
+                    Requirement(
+                        cyberion = 3.0f / 60f
                     ),
-                    HoloPlan(
-                        CioUnitTypes.holoFighter,
-                        Requirement(
-                            cyberion = 300f
-                        ),
-                        15f * 60f
+                    15f * 60f
+                )
+
+                plans += HoloPlan(
+                    CioUnitTypes.holoFighter,
+                    Requirement(
+                        cyberion = 3.0f / 60f
                     ),
-                    HoloPlan(
-                        CioUnitTypes.holoGuardian,
-                        Requirement(
-                            cyberion = 155f
-                        ),
-                        7.5f * 60f
+                    15f * 60f
+                )
+                plans += HoloPlan(
+                    CioUnitTypes.holoGuardian,
+                    Requirement(
+                        cyberion = 1.5f / 60f
                     ),
-                    HoloPlan(
-                        CioUnitTypes.holoArchitect,
-                        Requirement(
-                            cyberion = 600f
-                        ),
-                        25f * 60f
+                    7.5f * 60f
+                )
+                plans += HoloPlan(
+                    CioUnitTypes.holoArchitect,
+                    Requirement(
+                        cyberion = 6.0f / 60f
                     ),
-                    HoloPlan(
-                        CioUnitTypes.holoSupporter,
-                        Requirement(
-                            cyberion = 250f
-                        ),
-                        12f * 60f
+                    25f * 60f
+                )
+                plans += HoloPlan(
+                    CioUnitTypes.holoSupporter,
+                    Requirement(
+                        cyberion = 2.5f / 60f
                     ),
+                    12f * 60f
                 )
             }
             ErekirSpec {
+                liquidCapacity = 100f
                 requirements = arrayOf(
-                    CioItems.ic + 80,
+                    CioItems.ic + 100,
                     Items.oxide + 220,
                     Items.thorium + 300,
                     Items.carbide + 120,
@@ -1212,49 +1215,49 @@ object CioBlocks {
                 )
                 scaledHealth = 150f
                 researchCostMultiplier = 0.75f
-                plans = Seq.with(
-                    HoloPlan(
-                        CioUnitTypes.holoMiner,
-                        Requirement(
-                            items = arrayOf(CioItems.ic + 1),
-                            cyberion = 300f
-                        ),
-                        18f * 60f
+                plans += HoloPlan(
+                    CioUnitTypes.holoMiner,
+                    Requirement(
+                        items = arrayOf(CioItems.ic + 1),
+                        cyberion = 1.5f / 60f
                     ),
-                    HoloPlan(
-                        CioUnitTypes.holoFighter,
-                        Requirement(
-                            items = arrayOf(CioItems.ic + 2),
-                            cyberion = 300f
-                        ),
-                        15f * 60f
+                    18f * 60f
+                )
+                plans += HoloPlan(
+                    CioUnitTypes.holoFighter,
+                    Requirement(
+                        items = arrayOf(CioItems.ic + 2),
+                        cyberion = 1.5f / 60f
                     ),
-                    HoloPlan(
-                        CioUnitTypes.holoGuardian,
-                        Requirement(
-                            items = arrayOf(CioItems.ic + 1),
-                            cyberion = 205f
-                        ),
-                        7.5f * 60f
+                    15f * 60f
+                )
+                plans += HoloPlan(
+                    CioUnitTypes.holoGuardian,
+                    Requirement(
+                        items = arrayOf(CioItems.ic + 1),
+                        cyberion = 1.0f / 60f
                     ),
-                    HoloPlan(
-                        CioUnitTypes.holoArchitect,
-                        Requirement(
-                            items = arrayOf(CioItems.ic + 2),
-                            cyberion = 600f
-                        ),
-                        25f * 60f
+                    7.5f * 60f
+                )
+                plans += HoloPlan(
+                    CioUnitTypes.holoArchitect,
+                    Requirement(
+                        items = arrayOf(CioItems.ic + 2),
+                        cyberion = 3.0f / 60f
                     ),
-                    HoloPlan(
-                        CioUnitTypes.holoSupporter,
-                        Requirement(
-                            items = arrayOf(CioItems.ic + 3),
-                            cyberion = 500f
-                        ),
-                        18f * 60f
+                    25f * 60f
+                )
+                plans += HoloPlan(
+                    CioUnitTypes.holoSupporter,
+                    Requirement(
+                        items = arrayOf(CioItems.ic + 3),
+                        cyberion = 6f / 60f
                     ),
+                    18f * 60f
                 )
             }
+            ambientSound = Sounds.build
+            squareSprite = false
             size = 5
             buildCostMultiplier = 2f
         }
@@ -1792,14 +1795,16 @@ object CioBlocks {
         "CioFluids.cyberion"
     )
     fun cuttex() {
-        cuttex = ContinuousLiquidTurret("cuttex").apply {
-            category = Category.turret
-            buildVisibility = BuildVisibility.shown
-            size = 3
-            shootSound = Sounds.none
-            addAmmo(Liquids.water, FieldBulletType().apply {
-                fieldColor = R.C.CuttexCyan
-            })
+        DebugOnly {
+            cuttex = ContinuousLiquidTurret("cuttex").apply {
+                category = Category.turret
+                buildVisibility = BuildVisibility.shown
+                size = 3
+                shootSound = Sounds.none
+                addAmmo(Liquids.water, FieldBulletType().apply {
+                    fieldColor = R.C.CuttexCyan
+                })
+            }
         }
     }
     @DependOn

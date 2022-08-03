@@ -1,7 +1,6 @@
 package net.liplum.holo
 
 import arc.Events
-import arc.func.Floatf
 import arc.func.Prov
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
@@ -51,9 +50,8 @@ import net.liplum.ui.addTable
 import kotlin.math.max
 
 open class HoloProjector(name: String) : Block(name) {
-    @JvmField var plans: Seq<HoloPlan> = Seq()
+    @JvmField var plans: ArrayList<HoloPlan> = ArrayList()
     @JvmField var itemCapabilities: IntArray = IntArray(0)
-    @JvmField var cyberionCapacity: Float = 0f
     @JvmField var holoUnitCapacity = 8
     @JvmField var powerUse = 3f
     @ClientOnly @JvmField var projectorShrink = 5f
@@ -109,10 +107,8 @@ open class HoloProjector(name: String) : Block(name) {
                 itemCapacity = max(itemCapacity, itemReq.amount * 2)
             }
         }
-        cyberionCapacity = plans.max(
-            Floatf { it.req.cyberion }
-        ).req.cyberion * 2
-        liquidCapacity = cyberionCapacity
+        val cyberionCapacity = plans.maxBy { it.req.cyberion * 60f }.req.cyberion * 2
+        liquidCapacity = max(liquidCapacity, cyberionCapacity)
         super.init()
     }
 
@@ -221,7 +217,7 @@ open class HoloProjector(name: String) : Block(name) {
                 table.addItemSelectorDefault(this@HoloProjector, options,
                     { curPlan?.unitType }
                 ) { unit: UnitType? ->
-                    val selected = plans.indexOf {
+                    val selected = plans.indexOfFirst {
                         it.unitType == unit
                     }
                     configure(selected)
@@ -367,7 +363,7 @@ open class HoloProjector(name: String) : Block(name) {
         }
 
         override fun acceptLiquid(source: Building, liquid: Liquid) =
-            liquid == cyberion && liquids[cyberion] < cyberionCapacity
+            liquid == cyberion && liquids[cyberion] < liquidCapacity
 
         override fun getMaximumAccepted(item: Item) =
             itemCapabilities[item.id.toInt()]
@@ -455,7 +451,7 @@ open class HoloProjector(name: String) : Block(name) {
                         }.left()
                         addTable {
                             right()
-                            add(autoFixed(plan.req.cyberion, 1))
+                            add(autoFixed(plan.req.cyberion * 60f, 1))
                                 .color(cyberion.color).padLeft(12f).left()
                             image(cyberion.uiIcon).size((8 * 3).toFloat())
                                 .padRight(2f).right()
