@@ -6,6 +6,8 @@ import mindustry.entities.bullet.BulletType
 import mindustry.game.Team
 import mindustry.gen.Bullet
 import mindustry.gen.Entityc
+import mindustry.graphics.Layer
+import net.liplum.common.util.DrawLayer
 import net.liplum.mdt.render.Text
 
 class CharBulletType : BulletType {
@@ -34,9 +36,11 @@ class CharBulletType : BulletType {
 
     override fun draw(b: Bullet) = b.run {
         super.draw(b)
-        val char = RandomName.getChar(fdata.toInt())
-        val color = data as? Color ?: Color.white
-        Text.drawTextEasy(char, x, y, color, scale = 1f / hitSize * 2f)
+        DrawLayer(Layer.bullet - 0.1f) {
+            val char = RandomName.getChar(fdata.toInt())
+            val color = data as? Color ?: Color.white
+            Text.drawTextEasy(char, x, y, color, scale = 1f / hitSize * 2f)
+        }
         return@run
     }
 }
