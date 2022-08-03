@@ -611,7 +611,7 @@ object CioBlocks {
                     CioItems.ic + 32,
                     Items.beryllium + 50,
                     Items.tungsten + 25,
-                    Items.carbide + 2,
+                    Items.carbide + 4,
                 )
                 scaledHealth = 800f
                 restoreReload = 15 * 60f
@@ -637,7 +637,7 @@ object CioBlocks {
             VanillaSpec {
                 requirements = arrayOf(
                     CioItems.ic + 2,
-                    Items.silicon + 24,
+                    Items.beryllium + 80,
                     Items.titanium + 48,
                     Items.plastanium + 40,
                 )
@@ -649,7 +649,7 @@ object CioBlocks {
                     CioItems.ic + 62,
                     Items.beryllium + 100,
                     Items.tungsten + 55,
-                    Items.carbide + 6,
+                    Items.carbide + 8,
                 )
                 restoreReload = 20 * 60f
                 scaledHealth = 700f
@@ -820,17 +820,19 @@ object CioBlocks {
                 )
                 unloadSpeed = 5f
                 scaledHealth = 300f
+                maxConnection = 5
             }
             ErekirSpec {
                 requirements = arrayOf(
                     CioItems.ic + 135,
                     Items.tungsten + 350,
-                    Items.carbide + 80,
-                    Items.phaseFabric + 100,
+                    Items.carbide + 120,
+                    Items.phaseFabric + 120,
                 )
                 unloadSpeed = 6f
                 scaledHealth = 200f
-                maxRange = 1000f
+                maxRange = 1500f
+                maxConnection = 6
             }
             size = 2
             ShrinkingAnimFrames = 7
@@ -895,7 +897,7 @@ object CioBlocks {
             }
             ErekirSpec {
                 requirements = arrayOf(
-                    CioItems.ic + 50,
+                    CioItems.ic + 54,
                     Items.tungsten + 250,
                     Items.carbide + 100,
                     Items.beryllium + 400,
@@ -1725,14 +1727,14 @@ object CioBlocks {
                     Items.pyratite + 5,
                     Items.coal + 10,
                 )
-                damagePreUnit = 80f
+                damagePreUnit = 100f
             }
             ErekirSpec {
                 requirements = arrayOf(
                     CioItems.ic + 5,
                     Items.oxide + 5,
                 )
-                damagePreUnit = 100f
+                damagePreUnit = 80f
             }
             size = 2
             maxSensitive = 5

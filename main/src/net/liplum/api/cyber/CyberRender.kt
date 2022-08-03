@@ -10,6 +10,7 @@ import mindustry.Vars
 import mindustry.gen.Building
 import mindustry.gen.Buildingc
 import mindustry.gen.Icon
+import mindustry.graphics.Layer
 import mindustry.graphics.Pal
 import mindustry.world.Block
 import net.liplum.R
@@ -447,6 +448,9 @@ fun transferArrowLineBreath(
         return
     if (alphaMultiplier <= 0f)
         return
+    val originalZ = Draw.z()
+    if (Settings.LinkBloom)
+        Draw.z(Layer.effect)
     val t = Tmp.v2.set(endDrawX, endDrawY)
         .sub(startDrawX, startDrawY)
     val angle = t.angle()
@@ -484,7 +488,8 @@ fun transferArrowLineBreath(
         Icon.right.region.DrawSize(line.x, line.y, size = size * fadeAlpha, rotation = angle)
         cur += per
     }
-    Draw.color()
+    Draw.z(originalZ)
+    Draw.reset()
 }
 
 fun transferArrowLineBreath(

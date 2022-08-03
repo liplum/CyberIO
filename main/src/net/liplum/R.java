@@ -290,6 +290,7 @@ public final class R {
             LinkArrowDensity = Gen("connection-density"),
             LinkAnimationSpeed = Gen("connection-animation-speed"),
             AlwaysShowLink = Gen("always-show-link"),
+            LinkBloom = Gen("connection-bloom"),
             ShowLinkCircle = Gen("show-link-circle"),
             ShowWirelessTowerCircle = Gen("show-wireless-tower-circle"),
             LinkSize = Gen("connection-size"),// Deprecated
