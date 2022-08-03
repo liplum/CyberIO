@@ -11,6 +11,8 @@ import mindustry.gen.Building
 import mindustry.type.Item
 import mindustry.type.Liquid
 import mindustry.world.Block
+import mindustry.world.meta.Stat
+import mindustry.world.meta.StatUnit
 import net.liplum.R
 import net.liplum.Var
 import net.liplum.annotations.SubscribeEvent
@@ -25,6 +27,7 @@ import net.liplum.lib.math.smooth
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.utils.*
+import net.liplum.registry.CioStats
 
 private val p1 = Point2f()
 private val p2 = Point2f()
@@ -291,5 +294,42 @@ inline fun <reified T> Block.addP2pLinkInfo() where T : Building, T : IP2pNode {
         { R.C.P2P },
         { isConnected.toFloat() }
     )
+}
+//</editor-fold>
+//<editor-fold desc="Statistics">
+fun <T> T.addLinkRangeStats(range: Float) where  T : Block {
+    if (range < 0f)
+        stats.add(CioStats.dataRange) { it.add("∞") }
+    else
+        stats.add(CioStats.dataRange, range, StatUnit.blocks)
+}
+
+fun <T> T.addLimitedStats(stat: Stat, max: Int) where  T : Block {
+    if (max < 0)
+        stats.add(stat, R.Bundle.Unlimited.bundle)
+    else
+        stats.add(stat, "$max")
+}
+
+fun <T> T.addMaxSenderStats(max: Int) where  T : Block {
+    addLimitedStats(CioStats.dataMaxSender, max)
+}
+
+fun <T> T.addMaxReceiverStats(max: Int) where  T : Block {
+    addLimitedStats(CioStats.dataMaxReceiver, max)
+}
+
+fun <T> T.addMaxHostStats(max: Int) where  T : Block {
+    addLimitedStats(CioStats.dataMaxHost, max)
+}
+
+fun <T> T.addMaxClientStats(max: Int) where  T : Block {
+    addLimitedStats(CioStats.dataMaxClient, max)
+}
+/**
+ * @param speed pre second
+ */
+fun <T> T.addDataTransferSpeedStats(speed: Float) where  T : Block {
+    stats.add(CioStats.dataTransferSpeed, speed, StatUnit.perSecond)
 }
 //</editor-fold>

@@ -6,12 +6,10 @@ import arc.graphics.g2d.Draw
 import arc.math.Mathf
 import arc.math.geom.Point2
 import arc.struct.ObjectSet
-import arc.util.Eachable
 import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.Vars
-import mindustry.entities.units.BuildPlan
 import mindustry.gen.Building
 import mindustry.graphics.Pal
 import mindustry.logic.LAccess
@@ -25,6 +23,7 @@ import net.liplum.blocks.AniedBlock
 import net.liplum.common.Changed
 import net.liplum.data.Sender.SenderBuild
 import net.liplum.lib.Serialized
+import net.liplum.lib.arc.Tick
 import net.liplum.lib.assets.TR
 import net.liplum.lib.math.isZero
 import net.liplum.mdt.CalledBySync
@@ -33,7 +32,10 @@ import net.liplum.mdt.SendDataPack
 import net.liplum.mdt.animation.anims.Animation
 import net.liplum.mdt.animation.anis.AniState
 import net.liplum.mdt.animation.anis.config
-import net.liplum.mdt.render.*
+import net.liplum.mdt.render.Draw
+import net.liplum.mdt.render.DrawOn
+import net.liplum.mdt.render.SetColor
+import net.liplum.mdt.render.Text
 import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.utils.*
 
@@ -124,7 +126,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
 
     open inner class SenderBuild : AniedBuild(), IDataSender {
         override val maxRange = this@Sender.maxRange
-        @ClientOnly var lastSendingTime = 0f
+        @ClientOnly var lastSendingTime: Tick = 0f
             set(value) {
                 field = value.coerceAtLeast(0f)
             }

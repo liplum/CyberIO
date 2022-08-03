@@ -56,8 +56,6 @@ public final class R {
 
     public static final class Bar {
         public static final String NeighborStateN = "neighbor-state";
-        public static final String PowerN = "power";
-
         @NotNull
         @Contract(pure = true)
         public static String Gen(String content) {

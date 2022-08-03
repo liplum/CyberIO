@@ -3,7 +3,7 @@ package net.liplum.render
 import net.liplum.ResourceLoader
 import net.liplum.annotations.SubscribeEvent
 import net.liplum.event.CioLoadContentEvent
-import net.liplum.inCio
+import net.liplum.cioTR
 import net.liplum.lib.assets.TR
 
 object Shapes {
@@ -14,10 +14,10 @@ object Shapes {
     @SubscribeEvent(CioLoadContentEvent::class)
     fun load() {
         ResourceLoader += {
-            motionCircle.set("shape-motion-circle".inCio)
-            starActive.set("star".inCio)
-            starInactive.set("star-inactive".inCio)
-            snow.set("shape-snow".inCio)
+            motionCircle.set("shape-motion-circle".cioTR)
+            starActive.set("star".cioTR)
+            starInactive.set("star-inactive".cioTR)
+            snow.set("shape-snow".cioTR)
         }
     }
 }

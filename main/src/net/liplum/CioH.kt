@@ -9,9 +9,9 @@ import net.liplum.common.Condition
 import net.liplum.lib.assets.TR
 import java.lang.annotation.Inherited
 
-val String.inCio: TR
+val String.cioTR: TR
     get() = Core.atlas.find("${Meta.ModID}-$this")
-val String.Cio: String
+val String.cio: String
     get() = R.Gen(this)
 
 inline fun VanillaSpec(func: () -> Unit) {

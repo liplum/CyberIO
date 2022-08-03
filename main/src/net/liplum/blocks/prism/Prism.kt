@@ -51,6 +51,7 @@ import net.liplum.mdt.mixin.copy
 import net.liplum.mdt.render.*
 import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.utils.*
+import net.liplum.registry.CioStats
 import kotlin.math.abs
 import kotlin.math.log2
 
@@ -129,6 +130,11 @@ open class Prism(name: String) : Block(name) {
         if (maxOutsideRange < 0f)
             maxOutsideRange = (size * tilesize * maxOutsideRangeFactor).coerceAtMost(prismRadius - 1f)
         clipSize = Agl + (prismRadius * 3 * maxCrystal) + elevation
+    }
+
+    override fun setStats() {
+        super.setStats()
+        stats.add(CioStats.maxObelisk, "${maxCrystal - 1}")
     }
 
     companion object {

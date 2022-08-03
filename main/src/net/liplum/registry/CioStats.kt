@@ -3,42 +3,26 @@ package net.liplum.registry
 import mindustry.world.meta.Stat
 import mindustry.world.meta.StatCat
 import net.liplum.R
-import net.liplum.annotations.DependOn
-
-object CioStatCats {
-    @JvmStatic lateinit var heimdall: StatCat
-    @JvmStatic lateinit var dataTransfer: StatCat
-    @DependOn
-    fun statCats() {
-        heimdall = CioStatCat("heimdall")
-        dataTransfer = CioStatCat("data-transfer")
-    }
-
-    private fun CioStatCat(name: String): StatCat =
-        StatCat(R.Gen(name))
-}
+import net.liplum.cio
 
 object CioStats {
-    @JvmStatic lateinit var heimdallBase: Stat
-    @JvmStatic lateinit var heimdallImprove: Stat
-    @JvmStatic lateinit var dataRange: Stat
-    @JvmStatic lateinit var dataMaxSender: Stat
-    @JvmStatic lateinit var dataMaxReceiver: Stat
-    @JvmStatic lateinit var dataMaxHost: Stat
-    @JvmStatic lateinit var dataMaxClient: Stat
-    @JvmStatic lateinit var powerTransferSpeed: Stat
-    @DependOn("CioStatCats.statCats")
-    fun stats() {
-        heimdallBase = CioStat("basic", CioStatCats.heimdall)
-        heimdallImprove = CioStat("improve", CioStatCats.heimdall)
-        dataRange = CioStat("range", CioStatCats.dataTransfer)
-        dataMaxSender = CioStat("max-sender", CioStatCats.dataTransfer)
-        dataMaxReceiver = CioStat("max-receiver", CioStatCats.dataTransfer)
-        dataMaxHost = CioStat("max-host", CioStatCats.dataTransfer)
-        dataMaxClient = CioStat("max-client", CioStatCats.dataTransfer)
-        powerTransferSpeed = CioStat(R.Gen("transfer-speed"), StatCat.power)
-    }
-
-    private fun CioStat(name: String, category: StatCat): Stat =
-        Stat("${category.name}-$name", category)
+    // Categories
+    @JvmStatic val heimdall = CioStatCat("heimdall")
+    @JvmStatic val dataTransfer = CioStatCat("data-transfer")
+    @JvmStatic val holography = CioStatCat("holography")
+    // Items
+    @JvmStatic val heimdallBase = heimdall("basic")
+    @JvmStatic val heimdallImprove = heimdall("improve")
+    @JvmStatic val dataRange = dataTransfer("range")
+    @JvmStatic val dataMaxSender = dataTransfer("max-sender")
+    @JvmStatic val dataMaxReceiver = dataTransfer("max-receiver")
+    @JvmStatic val dataMaxHost = dataTransfer("max-host")
+    @JvmStatic val dataMaxClient = dataTransfer("max-client")
+    @JvmStatic val dataTransferSpeed = dataTransfer("speed")
+    @JvmStatic val powerTransferSpeed = StatCat.power("transfer-speed".cio)
+    @JvmStatic val maxObelisk = StatCat.optional("max-obelisk".cio)
+    @JvmStatic val holoCharge = holography("charge")
+    @JvmStatic val holoHpAtLeast = holography("hp-at-least")
+    operator fun StatCat.invoke(name: String) = Stat("${this.name}-$name", this)
+    private fun CioStatCat(name: String) = StatCat(R.Gen(name))
 }

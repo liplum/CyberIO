@@ -3,13 +3,14 @@ package net.liplum.holo
 import mindustry.type.Item
 import mindustry.type.ItemStack
 import mindustry.type.LiquidStack
+import net.liplum.lib.arc.Tick
 import net.liplum.mdt.utils.plus
 import net.liplum.registry.CioFluids
 
 open class HoloPlan(
     val unitType: HoloUnitType,
     val req: Requirement,
-    val time: Float,
+    val time: Tick,
 )
 
 open class Requirement(

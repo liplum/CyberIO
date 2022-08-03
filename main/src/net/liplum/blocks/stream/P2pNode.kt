@@ -88,6 +88,7 @@ open class P2pNode(name: String) : AniedBlock<P2pNode, P2pNode.P2pBuild>(name) {
     override fun setStats() {
         super.setStats()
         addLinkRangeStats(maxRange)
+        addDataTransferSpeedStats(balancingSpeed)
     }
 
     override fun setBars() {

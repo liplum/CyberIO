@@ -11,3 +11,4 @@ typealias Progress = Float
 typealias Distance = Float
 typealias Degree = Float
 typealias Radian = Float
+typealias Percentage = Float

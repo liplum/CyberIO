@@ -7,7 +7,7 @@ import arc.util.Time
 import arc.util.serialization.JsonValue
 import mindustry.game.EventType.Trigger
 import mindustry.io.JsonIO
-import net.liplum.Cio
+import net.liplum.cio
 import net.liplum.CioMod
 import net.liplum.Meta
 import net.liplum.S
@@ -172,7 +172,7 @@ object Welcome {
     fun String.handleTrRefer(): TR =
         if (startsWith('@'))
             removePrefix("@").atlas()
-        else Cio.atlas()
+        else cio.atlas()
 
     class Entity(
         val bundle: ReferBundleWrapper,

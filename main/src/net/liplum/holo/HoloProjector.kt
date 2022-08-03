@@ -207,6 +207,7 @@ open class HoloProjector(name: String) : Block(name) {
             rebuildHoveredInfo()
         }
 
+        override fun shouldConsume() = enabled && curPlan != null && progress < 1f
         override fun buildConfiguration(table: Table) {
             val options = Seq.with(plans).map {
                 it.unitType

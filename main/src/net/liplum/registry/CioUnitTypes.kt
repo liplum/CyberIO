@@ -125,7 +125,7 @@ object CioUnitTypes {
             ammoType = ItemAmmoType(Items.plastanium)
             enableRuvikTip = true
             ruvikTipRange = 220f
-            weapons.add(HoloWeapon("holo-fighter-gun".Cio).apply {
+            weapons.add(HoloWeapon("holo-fighter-gun".cio).apply {
                 top = false
                 shootSound = Sounds.flame
                 shootY = 2f
@@ -301,7 +301,7 @@ object CioUnitTypes {
             engineSize = 2f
             engineOffset = 3f
 
-            weapons.add(HoloWeapon((R.Unit.HoloSupporter + "-gun").Cio).apply {
+            weapons.add(HoloWeapon((R.Unit.HoloSupporter + "-gun").cio).apply {
                 shootSound = Sounds.lasershoot
                 reload = 15f
                 x = 4f
@@ -342,7 +342,7 @@ object CioUnitTypes {
                 range = 50f
 
                 ammoType = PowerAmmoType(500f)
-                weapons.add(Weapon("${R.Unit.Brain}-hand".Cio).apply {
+                weapons.add(Weapon("${R.Unit.Brain}-hand".cio).apply {
                     x = 8f
                     y = 8f
                     recoil = -10f

@@ -2,7 +2,12 @@ package net.liplum.api.holo
 
 import mindustry.game.EventType
 import mindustry.gen.Healthc
+import mindustry.world.Block
+import mindustry.world.meta.StatUnit
 import net.liplum.annotations.SubscribeEvent
+import net.liplum.lib.arc.Tick
+import net.liplum.lib.math.Percentage
+import net.liplum.registry.CioStats
 
 interface IHoloEntity {
     fun killThoroughly()
@@ -22,5 +27,13 @@ interface IHoloEntity {
 
         val <T> T.minHealth: Float where T : Healthc, T : IHoloEntity
             get() = maxHealth() * minHealthProportion
+
+        fun <T> T.addHoloChargeTimeStats(charge: Tick) where T : Block {
+            stats.add(CioStats.holoCharge, charge, StatUnit.seconds)
+        }
+
+        fun <T> T.addHoloHpAtLeastStats(atLeast: Percentage) where T : Block {
+            stats.add(CioStats.holoHpAtLeast, "$atLeast%")
+        }
     }
 }

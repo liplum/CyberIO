@@ -603,17 +603,17 @@ object CioBlocks {
                     Items.plastanium + 10,
                 )
                 scaledHealth = 1000f
-                restoreReload = 10 * 60f
+                restoreCharge = 10 * 60f
             }
             ErekirSpec {
                 requirements = arrayOf(
-                    CioItems.ic + 32,
+                    CioItems.ic + 30,
                     Items.beryllium + 50,
                     Items.tungsten + 25,
                     Items.carbide + 4,
                 )
                 scaledHealth = 800f
-                restoreReload = 15 * 60f
+                restoreCharge = 15 * 60f
                 needPower = true
                 powerCapacity = 300f
                 powerUseForChargePreUnit = 0.2f
@@ -640,17 +640,17 @@ object CioBlocks {
                     Items.titanium + 48,
                     Items.plastanium + 40,
                 )
-                restoreReload = 15 * 60f
+                restoreCharge = 15 * 60f
                 scaledHealth = 820f
             }
             ErekirSpec {
                 requirements = arrayOf(
-                    CioItems.ic + 62,
+                    CioItems.ic + 56,
                     Items.beryllium + 100,
                     Items.tungsten + 55,
                     Items.carbide + 8,
                 )
-                restoreReload = 20 * 60f
+                restoreCharge = 20 * 60f
                 scaledHealth = 700f
                 needPower = true
                 powerCapacity = 800f
@@ -1642,7 +1642,7 @@ object CioBlocks {
                     }
                     offset = 20f // +5f when improved
                 }
-                bulletType = BBulletType("blood-bullet".Cio).apply {
+                bulletType = BBulletType("blood-bullet".cio).apply {
                     damage = 0f
                     lifetime = 0f
                     hitEffect = Fx.none

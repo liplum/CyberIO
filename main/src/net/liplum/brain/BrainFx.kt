@@ -13,7 +13,7 @@ import mindustry.gen.EffectState
 import mindustry.gen.Posc
 import mindustry.graphics.Drawf
 import mindustry.graphics.Layer
-import net.liplum.Cio
+import net.liplum.cio
 import net.liplum.R
 import net.liplum.ResourceLoader
 import net.liplum.annotations.Only
@@ -69,7 +69,7 @@ object BrainFx {
     @SubscribeEvent(CioLoadContentEvent::class, Only.client)
     fun load() {
         ResourceLoader += {
-            bloodBulletFrames = "blood-bullet-hit".Cio.sheetOneDirection(16)
+            bloodBulletFrames = "blood-bullet-hit".cio.sheetOneDirection(16)
             if (bloodBulletFrames.isNotEmpty())
                 bloodBulletFrames[0].texture.setFilter(TextureFilter.nearest)
         }

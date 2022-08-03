@@ -2,7 +2,6 @@ package net.liplum.ui
 
 import arc.Core
 import arc.Events
-import arc.math.Interp
 import arc.scene.style.TextureRegionDrawable
 import arc.scene.ui.Dialog
 import arc.scene.ui.TextButton
@@ -27,7 +26,6 @@ import net.liplum.common.util.getF
 import net.liplum.common.util.randomExcept
 import net.liplum.event.CioInitEvent
 import net.liplum.lib.UseReflection
-import net.liplum.lib.arc.invoke
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.IsLocal
 import net.liplum.mdt.UnsteamOnly
@@ -47,7 +45,7 @@ import net.liplum.welcome.WelcomeList
 @ClientOnly
 object CioUI {
     val textIcon by lazy {
-        TextureRegionDrawable("icon-text".inCio)
+        TextureRegionDrawable("icon-text".cioTR)
     }
     @JvmStatic
     @SubscribeEvent(CioInitEvent::class, Only.client)

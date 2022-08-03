@@ -19,11 +19,14 @@ import mindustry.world.meta.BlockStatus
 import net.liplum.DebugOnly
 import net.liplum.S
 import net.liplum.api.holo.IHoloEntity
+import net.liplum.api.holo.IHoloEntity.Companion.addHoloChargeTimeStats
+import net.liplum.api.holo.IHoloEntity.Companion.addHoloHpAtLeastStats
 import net.liplum.api.holo.IHoloEntity.Companion.minHealth
 import net.liplum.common.shader.use
 import net.liplum.common.util.bundle
 import net.liplum.common.util.toFloat
 import net.liplum.lib.Serialized
+import net.liplum.lib.arc.Tick
 import net.liplum.lib.assets.TR
 import net.liplum.lib.math.isZero
 import net.liplum.lib.math.nextBoolean
@@ -41,8 +44,8 @@ import net.liplum.util.yesNo
 import kotlin.math.max
 
 open class HoloWall(name: String) : Wall(name) {
-    @JvmField var restoreReload = 10 * 60f
-    @ClientOnly lateinit var BaseTR: TR
+    @JvmField var restoreCharge: Tick = 10 * 60f
+    @ClientOnly lateinit var ProjectorTR: TR
     @ClientOnly lateinit var ImageTR: TR
     @ClientOnly lateinit var DyedImageTR: TR
     @JvmField var minHealthProportion = 0.05f
@@ -85,12 +88,18 @@ open class HoloWall(name: String) : Wall(name) {
 
     override fun load() {
         super.load()
-        BaseTR = this.sub("base")
+        ProjectorTR = this.sub("base")
         ImageTR = this.sub("image")
         DyedImageTR = this.sub("dyed-image") or ImageTR
     }
 
-    override fun icons() = arrayOf(BaseTR, DyedImageTR)
+    override fun setStats() {
+        super.setStats()
+        addHoloChargeTimeStats(restoreCharge)
+        addHoloHpAtLeastStats(minHealthProportion)
+    }
+
+    override fun icons() = arrayOf(ProjectorTR, DyedImageTR)
     override fun setBars() {
         super.setBars()
         AddBar<HoloWallBuild>("health",
@@ -113,21 +122,21 @@ open class HoloWall(name: String) : Wall(name) {
                 { restRestore / maxHealth }
             )
             AddBar<HoloWallBuild>("charge",
-                { "Charge: ${restoreCharge.seconds}s" },
+                { "Charge: ${charge.seconds}s" },
                 { Pal.power },
-                { restoreCharge / restoreReload }
+                { charge / restoreCharge }
             )
             AddBar<HoloWallBuild>("last-damaged",
                 { "Last Damage: ${lastDamagedTime.seconds}s" },
                 { Pal.power },
-                { lastDamagedTime / restoreReload }
+                { lastDamagedTime / restoreCharge }
             )
         }
     }
 
     open inner class HoloWallBuild : WallBuild(), IHoloEntity {
         @Serialized
-        var restoreCharge = restoreReload
+        var charge = restoreCharge
         open val isProjecting: Boolean
             get() = health > minHealth
         @Serialized
@@ -136,7 +145,7 @@ open class HoloWall(name: String) : Wall(name) {
                 field = value.coerceAtLeast(0f)
             }
         @Serialized
-        open var lastDamagedTime = restoreReload
+        open var lastDamagedTime = restoreCharge
         override val minHealthProportion: Float
             get() = this@HoloWall.minHealthProportion
         @ClientOnly @JvmField
@@ -146,7 +155,7 @@ open class HoloWall(name: String) : Wall(name) {
             changeRate = 10
         }
         open val canRestructure: Boolean
-            get() = lastDamagedTime > restoreReload || !isProjecting
+            get() = lastDamagedTime > restoreCharge || !isProjecting
         open val canRestore: Boolean
             get() = !isProjecting || health < maxHealth
         open val isRecovering: Boolean
@@ -186,7 +195,7 @@ open class HoloWall(name: String) : Wall(name) {
             Draw.z(Layer.blockUnder)
             Drawf.shadow(x, y, 10f)
             Draw.z(Layer.block)
-            Draw.rect(BaseTR, x, y)
+            Draw.rect(ProjectorTR, x, y)
             if (isProjecting) {
                 SD.Hologram.use(Layer.flyingUnit - 0.1f) {
                     val healthPct = healthPct
@@ -214,16 +223,16 @@ open class HoloWall(name: String) : Wall(name) {
         override fun updateTile() {
             val delta = delta()
             lastDamagedTime += delta
-            if (restoreCharge < restoreReload && !isRecovering && canRestructure) {
+            if (charge < restoreCharge && !isRecovering && canRestructure) {
                 if (needPower) {
                     val stored = storedPower
                     val curChargeDelta = delta * powerUseForChargePreUnit
                     if (stored >= curChargeDelta) {
                         storedPower -= curChargeDelta
-                        restoreCharge += delta
+                        charge += delta
                     }
                 } else {
-                    restoreCharge += delta
+                    charge += delta
                 }
             }
             if (isRecovering) {
@@ -238,8 +247,8 @@ open class HoloWall(name: String) : Wall(name) {
                 }
             }
 
-            if (canRestore && restoreCharge >= restoreReload) {
-                restoreCharge = 0f
+            if (canRestore && charge >= restoreCharge) {
+                charge = 0f
                 if (health != maxHealth) {
                     dead = false
                     restRestore = maxHealth
@@ -277,14 +286,14 @@ open class HoloWall(name: String) : Wall(name) {
         override fun checkSolid(): Boolean = isProjecting
         override fun write(write: Writes) {
             super.write(write)
-            write.f(restoreCharge)
+            write.f(charge)
             write.f(restRestore)
             write.f(lastDamagedTime)
         }
 
         override fun read(read: Reads, revision: Byte) {
             super.read(read, revision)
-            restoreCharge = read.f()
+            charge = read.f()
             restRestore = read.f()
             lastDamagedTime = read.f()
         }
