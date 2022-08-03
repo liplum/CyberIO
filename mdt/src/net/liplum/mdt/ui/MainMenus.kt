@@ -72,7 +72,7 @@ object MainMenus {
             }
             buttons.add(button).marginLeft(11f).row()
             buttons.button("@quit", Icon.exit, Styles.flatToggleMenut, Core.app::exit)
-                .marginLeft(11f)
+                .marginLeft(11f).row()
         }
         rebuild()
         Events.on(EventType.ResizeEvent::class.java) {
