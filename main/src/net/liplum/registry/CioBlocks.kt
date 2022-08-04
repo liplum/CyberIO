@@ -624,6 +624,13 @@ object CioBlocks {
             size = 1
             buildCostMultiplier = 3.5f
         }
+
+        VanillaSpec {
+            HoloWall.holoTintAlpha = 0.6423f
+        }
+        ErekirSpec {
+            HoloWall.holoTintAlpha = 0.4688f
+        }
     }
     @DependOn(
         "CioItems.ic",
@@ -636,7 +643,7 @@ object CioBlocks {
             VanillaSpec {
                 requirements = arrayOf(
                     CioItems.ic + 2,
-                    Items.beryllium + 80,
+                    Items.silicon + 80,
                     Items.titanium + 48,
                     Items.plastanium + 40,
                 )

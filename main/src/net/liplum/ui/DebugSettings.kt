@@ -34,13 +34,16 @@ object DebugSettingsDialog {
             cont.add(ScrollPane(Table().apply {
                 add(Table(Tex.button).apply {
                     add("Stuff").color(Pal.ammo).row()
-                    add(Table().apply {
-                        add(TextButton("Show welcome").apply {
-                            changed {
-                                Welcome.showWelcomeDialog()
-                            }
-                        }).width(300f)
-                    }).pad(5f).row()
+                    addTable {
+                        button("Show welcome") {
+                            Welcome.showWelcomeDialog()
+                        }.width(300f)
+                    }.pad(5f).row()
+                    addTable {
+                        button("Icon Gen") {
+                            IconGenDebugDialog.show()
+                        }.width(300f)
+                    }.pad(5f).row()
                 }).fill().row()
                 add(Table(Tex.button).apply {
                     add("Settings").color(Pal.bulletYellowBack).row()
@@ -94,7 +97,7 @@ object DebugSettingsDialog {
     }
 
     fun Debug.Shader.resolveShader(
-        fragFiResolver: (String) -> Fi
+        fragFiResolver: (String) -> Fi,
     ): Element = Table().apply {
         add(type.name).pad(15f)
         add(TextButton("Reload").apply {

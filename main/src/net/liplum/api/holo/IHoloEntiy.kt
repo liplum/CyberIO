@@ -5,9 +5,9 @@ import mindustry.gen.Healthc
 import mindustry.world.Block
 import mindustry.world.meta.StatUnit
 import net.liplum.annotations.SubscribeEvent
+import net.liplum.registry.CioStats
 import plumy.core.arc.Tick
 import plumy.core.math.Percentage
-import net.liplum.registry.CioStats
 
 interface IHoloEntity {
     fun killThoroughly()
