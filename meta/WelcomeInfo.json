@@ -38,6 +38,7 @@
     "Default": "ErekirDetected",
     "Parent": "v4",
     "Scene": [
+      "CyberionForErekir"
     ]
   }
 }
