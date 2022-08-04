@@ -85,9 +85,9 @@ import net.liplum.statusFx.StaticFx
 import net.liplum.util.globalAnim
 
 object CioBlocks {
-    @JvmStatic lateinit var icMachine: GenericCrafter
+    @JvmStatic private lateinit var icMachine: GenericCrafter
     @JvmStatic lateinit var icAssembler: GenericCrafter
-    @JvmStatic lateinit var icMachineSmall: GenericCrafter
+    @JvmStatic private lateinit var icMachineSmall: GenericCrafter
     @JvmStatic lateinit var receiver: Receiver
     @JvmStatic lateinit var sender: Sender
     @JvmStatic lateinit var virus: Virus
@@ -1043,6 +1043,7 @@ object CioBlocks {
                         y = -8.5f
                         radius = 2.5f
                         color = R.C.FutureBlue
+                        layer = Layer.effect
                     }
                     haloPart {
                         y = -8.5f
@@ -1055,6 +1056,7 @@ object CioBlocks {
                             (if (it.heat > 0f) 0f else 1f) * Interp.pow10In(it.recoil)
                         }
                         color = R.C.FutureBlue
+                        layer = Layer.effect
                     }
                     regionPart("-side") {
                         mirror = true
@@ -1111,7 +1113,7 @@ object CioBlocks {
                 buildVisibility = BuildVisibility.shown
                 requirements = arrayOf(
                     CioItems.ic + 30,
-                    Items.carbide + 80,
+                    Items.oxide + 100,
                     Items.tungsten + 120,
                 )
                 buildType = Prov { HeatCrafterBuild() }

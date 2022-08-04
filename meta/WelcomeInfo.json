@@ -33,5 +33,11 @@
       "ErekirDetected",
       "SetOutErekir"
     ]
+  },
+  "v4.1": {
+    "Default": "ErekirDetected",
+    "Parent": "v4",
+    "Scene": [
+    ]
   }
 }
