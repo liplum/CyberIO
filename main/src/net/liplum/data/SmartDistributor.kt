@@ -31,8 +31,8 @@ import net.liplum.common.persistence.read
 import net.liplum.common.persistence.write
 import net.liplum.common.util.DoMultipleBool
 import net.liplum.lib.Serialized
-import net.liplum.lib.arc.equalsNoOrder
-import net.liplum.lib.arc.set
+import plumy.core.arc.equalsNoOrder
+import plumy.core.arc.set
 import net.liplum.lib.assets.TR
 import net.liplum.lib.math.isZero
 import net.liplum.mdt.ClientOnly

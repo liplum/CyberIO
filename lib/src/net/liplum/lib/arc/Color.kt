@@ -1,4 +1,4 @@
-package net.liplum.lib.arc
+package plumy.core.arc
 
 import arc.graphics.Color
 import arc.util.Time

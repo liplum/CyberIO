@@ -5,7 +5,7 @@ import mindustry.gen.Healthc
 import mindustry.world.Block
 import mindustry.world.meta.StatUnit
 import net.liplum.annotations.SubscribeEvent
-import net.liplum.lib.arc.Tick
+import plumy.core.arc.Tick
 import net.liplum.lib.math.Percentage
 import net.liplum.registry.CioStats
 

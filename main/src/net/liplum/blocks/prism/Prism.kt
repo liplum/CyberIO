@@ -39,7 +39,7 @@ import net.liplum.common.math.PolarX
 import net.liplum.common.util.bundle
 import net.liplum.common.util.percentI
 import net.liplum.lib.Serialized
-import net.liplum.lib.arc.AnimatedColor
+import plumy.core.arc.AnimatedColor
 import net.liplum.lib.assets.EmptyTRs
 import net.liplum.lib.assets.TR
 import net.liplum.lib.assets.TRs

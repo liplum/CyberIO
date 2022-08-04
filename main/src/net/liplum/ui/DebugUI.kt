@@ -20,7 +20,7 @@ import net.liplum.CLog
 import net.liplum.Var
 import net.liplum.annotations.Only
 import net.liplum.annotations.SubscribeEvent
-import net.liplum.lib.arc.tinted
+import plumy.core.arc.tinted
 import net.liplum.event.CioInitEvent
 import net.liplum.common.util.allFieldsIncludeParents
 import net.liplum.common.util.directSuperClass

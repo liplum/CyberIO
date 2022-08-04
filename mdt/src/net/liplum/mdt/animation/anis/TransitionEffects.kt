@@ -4,7 +4,7 @@ package net.liplum.mdt.animation.anis
 
 import arc.math.Interp
 import arc.math.Mathf
-import net.liplum.lib.arc.invoke
+import plumy.core.arc.invoke
 import net.liplum.mdt.render.ALPHA
 
 val None: TransitionEffect = { _, _, cur ->

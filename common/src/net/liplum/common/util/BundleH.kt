@@ -10,7 +10,7 @@ import arc.files.Fi
 import arc.struct.ObjectMap
 import arc.util.I18NBundle
 import arc.util.io.PropertiesUtils
-import net.liplum.lib.arc.set
+import plumy.core.arc.set
 import net.liplum.common.Res
 import net.liplum.lib.UseReflection
 import java.io.Reader

@@ -23,7 +23,7 @@ import net.liplum.common.delegate.Delegate1
 import net.liplum.common.persistence.read
 import net.liplum.common.persistence.write
 import net.liplum.lib.Serialized
-import net.liplum.lib.arc.isNotEmpty
+import plumy.core.arc.isNotEmpty
 import net.liplum.lib.assets.EmptyTR
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.WhenTheSameTeam

@@ -3,7 +3,7 @@ package net.liplum.holo
 import mindustry.type.Item
 import mindustry.type.ItemStack
 import mindustry.type.LiquidStack
-import net.liplum.lib.arc.Tick
+import plumy.core.arc.Tick
 import net.liplum.mdt.utils.plus
 import net.liplum.registry.CioFluids
 

@@ -4,7 +4,7 @@ import arc.graphics.Color
 import arc.math.Mathf
 import net.liplum.R
 import net.liplum.common.util.bundle
-import net.liplum.lib.arc.ColorRGB
+import plumy.core.arc.ColorRGB
 
 object RandomName {
     const val InitColorCount = 255

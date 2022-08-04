@@ -5,7 +5,7 @@ package net.liplum.mdt.utils
 import arc.math.Interp
 import mindustry.entities.Effect
 import mindustry.entities.Effect.EffectContainer
-import net.liplum.lib.arc.invoke
+import plumy.core.arc.invoke
 
 fun NewEffect(
     duration: Float,

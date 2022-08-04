@@ -23,7 +23,7 @@ import net.liplum.blocks.AniedBlock
 import net.liplum.common.Changed
 import net.liplum.data.Sender.SenderBuild
 import net.liplum.lib.Serialized
-import net.liplum.lib.arc.Tick
+import plumy.core.arc.Tick
 import net.liplum.lib.assets.TR
 import net.liplum.lib.math.isZero
 import net.liplum.mdt.CalledBySync

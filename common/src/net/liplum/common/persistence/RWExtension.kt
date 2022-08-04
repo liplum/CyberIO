@@ -7,8 +7,8 @@ import arc.struct.*
 import arc.util.io.Reads
 import arc.util.io.Writes
 import net.liplum.annotations.CacheRW
-import net.liplum.lib.arc.forEach
-import net.liplum.lib.arc.shrinkTo
+import plumy.core.arc.forEach
+import plumy.core.arc.shrinkTo
 
 fun IntSeq.read(reader: Reads): IntSeq {
     this.clear()

@@ -6,8 +6,8 @@ import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.CheckSetting
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.Setting
 import mindustry.ui.dialogs.SettingsMenuDialog.StringProcessor
-import net.liplum.lib.arc.insertAfter
-import net.liplum.lib.arc.insertBefore
+import plumy.core.arc.insertAfter
+import plumy.core.arc.insertBefore
 
 enum class InsertPos {
     After, Before

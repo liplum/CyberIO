@@ -2,7 +2,7 @@ package net.liplum.lib.math
 
 import arc.math.Interp
 import arc.math.Mathf
-import net.liplum.lib.arc.invoke
+import plumy.core.arc.invoke
 import kotlin.math.min
 
 fun Float.lerp(target: Float, progress: Float): Float =

@@ -8,8 +8,8 @@ import arc.util.pooling.Pools
 import mindustry.game.EventType
 import mindustry.gen.Building
 import net.liplum.annotations.SubscribeEvent
-import net.liplum.lib.arc.forLoop
-import net.liplum.lib.arc.set
+import plumy.core.arc.forLoop
+import plumy.core.arc.set
 import net.liplum.data.DataID
 import net.liplum.data.EmptyDataID
 import net.liplum.data.PayloadData

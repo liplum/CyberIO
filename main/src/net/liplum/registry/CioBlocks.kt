@@ -71,7 +71,7 @@ import net.liplum.bullet.*
 import net.liplum.common.shader.ShaderBase
 import net.liplum.data.*
 import net.liplum.holo.*
-import net.liplum.lib.arc.invoke
+import plumy.core.arc.invoke
 import net.liplum.lib.math.smooth
 import net.liplum.mdt.Else
 import net.liplum.mdt.render.*

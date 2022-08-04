@@ -25,7 +25,7 @@ import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.Var
 import net.liplum.common.util.bundle
-import net.liplum.lib.arc.Tick
+import plumy.core.arc.Tick
 import net.liplum.lib.assets.TR
 import net.liplum.lib.math.isZero
 import net.liplum.mdt.ClientOnly

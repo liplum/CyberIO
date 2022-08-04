@@ -8,7 +8,7 @@ import mindustry.content.Fx
 import mindustry.entities.Damage
 import mindustry.entities.bullet.BulletType
 import mindustry.gen.Bullet
-import net.liplum.lib.arc.Color
+import plumy.core.arc.Color
 import net.liplum.lib.math.Degree
 import net.liplum.mdt.render.G
 import net.liplum.mdt.utils.WorldXY

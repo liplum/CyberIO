@@ -26,7 +26,7 @@ import net.liplum.common.shader.use
 import net.liplum.common.util.bundle
 import net.liplum.common.util.toFloat
 import net.liplum.lib.Serialized
-import net.liplum.lib.arc.Tick
+import plumy.core.arc.Tick
 import net.liplum.lib.assets.TR
 import net.liplum.lib.math.isZero
 import net.liplum.lib.math.nextBoolean

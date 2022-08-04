@@ -36,7 +36,7 @@ import net.liplum.common.util.bundle
 import net.liplum.common.util.format
 import net.liplum.common.util.toDouble
 import net.liplum.lib.Serialized
-import net.liplum.lib.arc.hsvLerp
+import plumy.core.arc.hsvLerp
 import net.liplum.lib.assets.TR
 import net.liplum.lib.assets.TRs
 import net.liplum.lib.math.FUNC

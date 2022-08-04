@@ -4,7 +4,7 @@ import arc.Core.settings
 import arc.math.Interp
 import mindustry.Vars
 import net.liplum.common.Setting
-import net.liplum.lib.arc.invoke
+import plumy.core.arc.invoke
 import net.liplum.mdt.ClientOnly
 import net.liplum.script.KeyNotFoundException
 import net.liplum.update.Version2
