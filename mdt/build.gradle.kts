@@ -21,13 +21,17 @@ java {
 }
 
 dependencies {
-    implementation(project(":annotations"))
-    implementation(project(":cui"))
-    implementation(project(":lib"))
-    implementation(project(":common"))
+    api(project(":annotations"))
+    api(project(":cui"))
+    api(project(":lib"))
+    api(project(":common"))
+    testApi(project(":annotations"))
+    testApi(project(":cui"))
+    testApi(project(":lib"))
+    testApi(project(":common"))
     importMindustry()
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.2")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.0")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.0")
     testImplementation("com.github.liplum:TestUtils:v0.1")
 }
 
