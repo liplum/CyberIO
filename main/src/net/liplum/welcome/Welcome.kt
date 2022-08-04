@@ -24,8 +24,8 @@ import net.liplum.common.util.ReferBundleWrapper
 import net.liplum.common.util.allMaxBy
 import net.liplum.common.util.randomExcept
 import net.liplum.event.CioInitEvent
-import net.liplum.lib.assets.TR
-import net.liplum.lib.math.randomByWeights
+import plumy.core.assets.TR
+import plumy.core.math.randomByWeights
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.utils.atlas
 

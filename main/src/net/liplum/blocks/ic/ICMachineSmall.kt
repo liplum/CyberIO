@@ -4,11 +4,11 @@ import arc.func.Prov
 import mindustry.graphics.Pal
 import mindustry.type.Item
 import net.liplum.DebugOnly
-import net.liplum.lib.assets.TR
+import plumy.core.assets.TR
 import net.liplum.blocks.AniedCrafter
 import net.liplum.common.util.percentI
-import net.liplum.lib.math.FUNC
-import net.liplum.lib.math.isZero
+import plumy.core.math.FUNC
+import plumy.core.math.isZero
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.animation.anis.AniState
 import net.liplum.mdt.animation.anis.None

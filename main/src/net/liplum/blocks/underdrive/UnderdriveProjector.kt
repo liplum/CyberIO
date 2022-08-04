@@ -35,7 +35,7 @@ import mindustry.world.meta.StatUnit
 import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.Var
-import net.liplum.lib.Serialized
+import plumy.core.Serialized
 import net.liplum.common.util.bundle
 import net.liplum.common.util.format
 import net.liplum.common.util.percentI

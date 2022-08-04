@@ -4,7 +4,7 @@ import net.liplum.ResourceLoader
 import net.liplum.annotations.SubscribeEvent
 import net.liplum.event.CioLoadContentEvent
 import net.liplum.cioTR
-import net.liplum.lib.assets.TR
+import plumy.core.assets.TR
 
 object Shapes {
     @JvmField var motionCircle = TR()

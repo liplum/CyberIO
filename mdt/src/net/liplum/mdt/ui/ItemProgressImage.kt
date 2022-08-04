@@ -9,9 +9,9 @@ import arc.scene.style.TextureRegionDrawable
 import arc.scene.ui.Image
 import arc.scene.ui.layout.Stack
 import arc.scene.ui.layout.Table
-import net.liplum.lib.assets.EmptyTR
-import net.liplum.lib.assets.TR
-import net.liplum.lib.math.isZero
+import plumy.core.assets.EmptyTR
+import plumy.core.assets.TR
+import plumy.core.math.isZero
 
 class ItemProgressImage(
     region: TR,

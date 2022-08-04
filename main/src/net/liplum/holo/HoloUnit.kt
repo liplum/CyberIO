@@ -25,7 +25,7 @@ import mindustry.world.blocks.power.PowerGraph
 import net.liplum.S
 import net.liplum.common.persistence.*
 import net.liplum.holo.HoloProjector.HoloProjectorBuild
-import net.liplum.lib.Serialized
+import plumy.core.Serialized
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.mixin.PayloadMixin
 import net.liplum.mdt.render.G

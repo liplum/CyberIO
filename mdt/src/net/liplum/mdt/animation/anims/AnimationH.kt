@@ -5,7 +5,7 @@ package net.liplum.mdt.animation.anims
 import arc.graphics.g2d.TextureRegion
 import arc.util.Time
 import mindustry.gen.Building
-import net.liplum.lib.math.progress
+import plumy.core.math.progress
 
 /**
  * It plays animation evenly based on [Time.time].

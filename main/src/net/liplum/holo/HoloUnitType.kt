@@ -33,7 +33,7 @@ import net.liplum.common.shader.use
 import net.liplum.common.util.bundle
 import net.liplum.common.util.toFloat
 import net.liplum.holo.HoloProjector.HoloProjectorBuild
-import net.liplum.lib.math.FUNC
+import plumy.core.math.FUNC
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.Else
 import net.liplum.mdt.utils.MdtUnit

@@ -10,7 +10,7 @@ import mindustry.gen.*
 import mindustry.graphics.Layer
 import net.liplum.S
 import net.liplum.api.IExecutioner
-import net.liplum.lib.math.quadratic
+import net.liplum.math.quadratic
 import net.liplum.mdt.render.DrawSize
 import net.liplum.mdt.utils.NewEffect
 import net.liplum.mdt.utils.lostHp

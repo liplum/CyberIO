@@ -4,8 +4,8 @@ package net.liplum.mdt.render
 
 import mindustry.gen.Building
 import mindustry.world.Block
-import net.liplum.lib.math.progressT
-import net.liplum.lib.math.smooth
+import plumy.core.math.progressT
+import plumy.core.math.smooth
 import net.liplum.mdt.advanced.Inspector
 import net.liplum.mdt.advanced.Inspector.isConfiguring
 import net.liplum.mdt.advanced.Inspector.isPlacing

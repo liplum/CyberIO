@@ -6,7 +6,7 @@ import mindustry.world.Block
 import mindustry.world.meta.StatUnit
 import net.liplum.annotations.SubscribeEvent
 import plumy.core.arc.Tick
-import net.liplum.lib.math.Percentage
+import plumy.core.math.Percentage
 import net.liplum.registry.CioStats
 
 interface IHoloEntity {

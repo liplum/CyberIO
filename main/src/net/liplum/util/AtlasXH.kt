@@ -6,8 +6,8 @@ import mindustry.ctype.MappableContent
 import net.liplum.common.util.StartWithHyphen
 import net.liplum.common.util.sheet
 import net.liplum.common.util.sheetOneDirection
-import net.liplum.lib.assets.TR
-import net.liplum.lib.assets.TRs
+import plumy.core.assets.TR
+import plumy.core.assets.TRs
 import net.liplum.mdt.utils.atlas
 import net.liplum.mdt.utils.or
 import net.liplum.mdt.utils.sheet

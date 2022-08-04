@@ -25,8 +25,8 @@ import net.liplum.common.delegate.Delegate1
 import net.liplum.common.persistence.read
 import net.liplum.common.persistence.write
 import net.liplum.data.Receiver.ReceiverBuild
-import net.liplum.lib.Serialized
-import net.liplum.lib.assets.TR
+import plumy.core.Serialized
+import plumy.core.assets.TR
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.animation.anims.Animation
 import net.liplum.mdt.animation.anis.AniState

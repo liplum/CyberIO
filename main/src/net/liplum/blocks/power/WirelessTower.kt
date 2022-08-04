@@ -25,9 +25,9 @@ import net.liplum.Var
 import net.liplum.common.entity.Radiation
 import net.liplum.common.math.PolarX
 import net.liplum.common.util.DrawLayer
-import net.liplum.lib.Serialized
-import net.liplum.lib.assets.TR
-import net.liplum.lib.math.*
+import plumy.core.Serialized
+import plumy.core.assets.TR
+import plumy.core.math.*
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.WhenTheSameTeam

@@ -10,9 +10,9 @@ import net.liplum.mdt.animation.anis.AniState
 import net.liplum.mdt.render.SetAlpha
 import net.liplum.mdt.animation.anis.config
 import net.liplum.blocks.AniedCrafter
-import net.liplum.lib.math.FUNC
+import plumy.core.math.FUNC
 import net.liplum.mdt.utils.autoAnim
-import net.liplum.lib.math.isZero
+import plumy.core.math.isZero
 
 private typealias AniStateM = AniState<ICMachine, ICMachine.ICMachineBuild>
 

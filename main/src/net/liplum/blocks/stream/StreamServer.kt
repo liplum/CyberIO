@@ -22,9 +22,9 @@ import net.liplum.api.cyber.*
 import net.liplum.common.delegate.Delegate1
 import net.liplum.common.persistence.read
 import net.liplum.common.persistence.write
-import net.liplum.lib.Serialized
+import plumy.core.Serialized
 import plumy.core.arc.isNotEmpty
-import net.liplum.lib.assets.EmptyTR
+import plumy.core.assets.EmptyTR
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.WhenTheSameTeam
 import net.liplum.mdt.mixin.total

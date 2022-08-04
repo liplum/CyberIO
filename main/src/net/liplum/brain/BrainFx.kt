@@ -24,7 +24,7 @@ import net.liplum.common.entity.RadiationArray
 import net.liplum.common.util.progress
 import net.liplum.common.util.sheetOneDirection
 import net.liplum.event.CioLoadContentEvent
-import net.liplum.lib.assets.TR
+import plumy.core.assets.TR
 import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.render.DrawSize
 import net.liplum.mdt.utils.MdtUnit

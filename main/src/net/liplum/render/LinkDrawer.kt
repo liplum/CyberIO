@@ -8,7 +8,7 @@ import net.liplum.Var
 import net.liplum.annotations.Subscribe
 import net.liplum.api.ICyberEntity
 import net.liplum.api.cyber.*
-import net.liplum.lib.math.smooth
+import plumy.core.math.smooth
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.advanced.Inspector
 

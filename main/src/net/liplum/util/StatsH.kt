@@ -7,7 +7,7 @@ import mindustry.world.Block
 import mindustry.world.meta.Stat
 import mindustry.world.meta.StatCat
 import mindustry.world.meta.StatValue
-import net.liplum.lib.UseReflection
+import plumy.core.UseReflection
 import net.liplum.common.util.getF
 import net.liplum.mdt.utils.subBundle
 

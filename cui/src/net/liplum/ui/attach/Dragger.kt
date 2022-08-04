@@ -5,8 +5,8 @@ import arc.math.geom.Vec2
 import arc.scene.Element
 import arc.scene.event.InputEvent
 import arc.scene.event.InputListener
-import net.liplum.lib.math.component1
-import net.liplum.lib.math.component2
+import plumy.core.math.component1
+import plumy.core.math.component2
 
 class Dragger(
     val target: Element

@@ -8,7 +8,7 @@ import mindustry.graphics.Pal
 import mindustry.world.Block
 import mindustry.world.draw.DrawBlock
 import net.liplum.common.util.StartWithHyphen
-import net.liplum.lib.assets.EmptyTRs
+import plumy.core.assets.EmptyTRs
 import net.liplum.mdt.utils.sheet
 
 class DrawConstruct(

@@ -21,10 +21,10 @@ import mindustry.world.Block
 import mindustry.world.Tile
 import net.liplum.annotations.Subscribe
 import plumy.core.arc.darken
-import net.liplum.lib.assets.TR
-import net.liplum.lib.math.distance
-import net.liplum.lib.math.divAssign
-import net.liplum.lib.math.isZero
+import plumy.core.assets.TR
+import plumy.core.math.distance
+import plumy.core.math.divAssign
+import plumy.core.math.isZero
 import net.liplum.mdt.utils.*
 
 /**

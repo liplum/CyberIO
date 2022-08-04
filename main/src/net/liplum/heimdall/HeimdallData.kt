@@ -4,7 +4,7 @@ import arc.util.io.Reads
 import arc.util.io.Writes
 import net.liplum.common.persistence.IRWable
 import net.liplum.common.TimeH
-import net.liplum.lib.math.Progress
+import plumy.core.math.Progress
 
 internal typealias ResourceID = Int
 

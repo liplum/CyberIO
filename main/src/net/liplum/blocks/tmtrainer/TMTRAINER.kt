@@ -15,7 +15,7 @@ import mindustry.type.Category
 import mindustry.world.blocks.defense.turrets.ItemTurret
 import mindustry.world.draw.DrawBlock
 import mindustry.world.meta.StatUnit
-import net.liplum.lib.assets.TR
+import plumy.core.assets.TR
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.animation.anims.Animation

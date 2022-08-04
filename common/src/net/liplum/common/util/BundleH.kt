@@ -12,7 +12,7 @@ import arc.util.I18NBundle
 import arc.util.io.PropertiesUtils
 import plumy.core.arc.set
 import net.liplum.common.Res
-import net.liplum.lib.UseReflection
+import plumy.core.UseReflection
 import java.io.Reader
 import java.util.*
 

@@ -25,7 +25,7 @@ import net.liplum.common.util.bundle
 import net.liplum.common.util.getF
 import net.liplum.common.util.randomExcept
 import net.liplum.event.CioInitEvent
-import net.liplum.lib.UseReflection
+import plumy.core.UseReflection
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.IsLocal
 import net.liplum.mdt.UnsteamOnly

@@ -12,9 +12,9 @@ import mindustry.world.blocks.defense.turrets.ContinuousLiquidTurret
 import mindustry.world.draw.DrawBlock
 import net.liplum.common.entity.Progress
 import net.liplum.common.entity.Queue
-import net.liplum.lib.assets.TR
-import net.liplum.lib.math.nextBoolean
-import net.liplum.lib.math.smooth
+import plumy.core.assets.TR
+import plumy.core.math.nextBoolean
+import plumy.core.math.smooth
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.animation.Floating

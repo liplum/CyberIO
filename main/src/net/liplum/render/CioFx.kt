@@ -7,9 +7,9 @@ import mindustry.graphics.Layer
 import mindustry.graphics.Pal
 import net.liplum.Var.ParticleEffectNumber
 import net.liplum.Var.Rand
-import net.liplum.lib.assets.TR
+import plumy.core.assets.TR
 import net.liplum.common.math.PolarX
-import net.liplum.lib.math.random
+import plumy.core.math.random
 import net.liplum.mdt.render.G
 import net.liplum.mdt.utils.NewEffect
 

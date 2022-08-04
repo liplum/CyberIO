@@ -2,7 +2,7 @@
 
 package net.liplum.common.util
 
-import net.liplum.lib.Out
+import plumy.core.Out
 
 typealias Index = Int
 

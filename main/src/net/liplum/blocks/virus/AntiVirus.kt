@@ -26,8 +26,8 @@ import net.liplum.R
 import net.liplum.Var
 import net.liplum.common.util.bundle
 import plumy.core.arc.Tick
-import net.liplum.lib.assets.TR
-import net.liplum.lib.math.isZero
+import plumy.core.assets.TR
+import plumy.core.math.isZero
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.render.G
 import net.liplum.mdt.render.G.realHeight

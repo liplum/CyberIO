@@ -25,7 +25,7 @@ import mindustry.world.blocks.payloads.BuildPayload
 import mindustry.world.blocks.payloads.Payload
 import mindustry.world.blocks.payloads.UnitPayload
 import mindustry.world.blocks.power.PowerGraph
-import net.liplum.lib.math.sqr
+import plumy.core.math.sqr
 import net.liplum.mdt.utils.MdtUnit
 
 interface PayloadMixin : Payloadc, PowerGraphc {

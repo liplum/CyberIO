@@ -21,10 +21,10 @@ import net.liplum.common.util.bundle
 import net.liplum.common.util.inViewField
 import net.liplum.common.util.isLineInViewField
 import plumy.core.arc.darken
-import net.liplum.lib.math.Point2f
-import net.liplum.lib.math.isZero
-import net.liplum.lib.math.plusAssign
-import net.liplum.lib.math.smooth
+import plumy.core.math.Point2f
+import plumy.core.math.isZero
+import plumy.core.math.plusAssign
+import plumy.core.math.smooth
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.render.*
 import net.liplum.mdt.utils.*

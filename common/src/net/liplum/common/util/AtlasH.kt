@@ -1,8 +1,8 @@
 package net.liplum.common.util
 
 import arc.Core
-import net.liplum.lib.assets.TR
-import net.liplum.lib.assets.TRs
+import plumy.core.assets.TR
+import plumy.core.assets.TRs
 import java.lang.annotation.Inherited
 
 /**

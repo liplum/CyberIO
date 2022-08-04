@@ -7,8 +7,8 @@ import mindustry.graphics.Layer
 import mindustry.graphics.Pal
 import mindustry.world.Block
 import mindustry.world.draw.DrawBlock
-import net.liplum.lib.assets.EmptyTRs
-import net.liplum.lib.assets.TRs
+import plumy.core.assets.EmptyTRs
+import plumy.core.assets.TRs
 import net.liplum.util.sheetX
 
 class SpecDrawConstruct(

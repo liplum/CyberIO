@@ -3,7 +3,7 @@ package net.liplum.common.ui
 import arc.scene.style.TextureRegionDrawable
 import arc.scene.ui.ImageButton
 import arc.scene.ui.layout.Table
-import net.liplum.lib.assets.TR
+import plumy.core.assets.TR
 
 class RateStarPanelBuilder {
     var starNumber = 5

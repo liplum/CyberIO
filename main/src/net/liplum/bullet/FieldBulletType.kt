@@ -9,7 +9,7 @@ import mindustry.entities.Damage
 import mindustry.entities.bullet.BulletType
 import mindustry.gen.Bullet
 import plumy.core.arc.Color
-import net.liplum.lib.math.Degree
+import plumy.core.math.Degree
 import net.liplum.mdt.render.G
 import net.liplum.mdt.utils.WorldXY
 

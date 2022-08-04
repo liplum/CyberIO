@@ -10,7 +10,7 @@ import net.liplum.R
 import net.liplum.common.util.BundleKey
 import net.liplum.common.util.bundle
 import net.liplum.common.util.inViewField
-import net.liplum.lib.math.randomExcept
+import plumy.core.math.randomExcept
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.render.Text
 import net.liplum.mdt.render.Toaster

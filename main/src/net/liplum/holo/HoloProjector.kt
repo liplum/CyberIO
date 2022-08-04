@@ -36,7 +36,7 @@ import net.liplum.UndebugOnly
 import net.liplum.common.shader.use
 import net.liplum.common.util.bundle
 import net.liplum.common.util.percentI
-import net.liplum.lib.Serialized
+import plumy.core.Serialized
 import net.liplum.mdt.*
 import net.liplum.mdt.consumer.ConsumeFluidDynamic
 import net.liplum.mdt.render.Draw

@@ -39,10 +39,10 @@ import net.liplum.common.delegate.Delegate1
 import net.liplum.common.persistence.read
 import net.liplum.common.persistence.write
 import net.liplum.common.shader.use
-import net.liplum.lib.Serialized
-import net.liplum.lib.assets.TR
-import net.liplum.lib.math.isZero
-import net.liplum.lib.math.nextBoolean
+import plumy.core.Serialized
+import plumy.core.assets.TR
+import plumy.core.math.isZero
+import plumy.core.math.nextBoolean
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.animation.Floating

@@ -2,7 +2,7 @@ package net.liplum.blocks.prism
 
 import arc.util.io.Reads
 import arc.util.io.Writes
-import net.liplum.lib.assets.TR
+import plumy.core.assets.TR
 import net.liplum.common.math.PolarX
 import net.liplum.common.persistence.CacheReaderSpec
 import net.liplum.common.persistence.CacheWriter

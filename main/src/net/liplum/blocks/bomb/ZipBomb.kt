@@ -27,8 +27,8 @@ import mindustry.world.meta.Stat
 import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.Var
-import net.liplum.lib.Serialized
-import net.liplum.lib.math.smooth
+import plumy.core.Serialized
+import plumy.core.math.smooth
 import net.liplum.mdt.*
 import net.liplum.mdt.render.DrawSize
 import net.liplum.mdt.render.G

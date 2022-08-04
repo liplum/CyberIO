@@ -9,7 +9,7 @@ import mindustry.content.Items
 import mindustry.ctype.UnlockableContent
 import mindustry.gen.Tex
 import mindustry.graphics.Pal
-import net.liplum.lib.assets.TR
+import plumy.core.assets.TR
 import net.liplum.common.TimeH
 import net.liplum.common.ui.addProgressTable
 import net.liplum.common.util.IBundlable

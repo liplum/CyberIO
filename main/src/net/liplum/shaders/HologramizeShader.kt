@@ -4,7 +4,7 @@ import arc.files.Fi
 import arc.graphics.Color
 import arc.util.Time
 import net.liplum.S
-import net.liplum.lib.assets.TR
+import plumy.core.assets.TR
 import net.liplum.common.shader.ShaderBase
 
 class HologramizeShader(

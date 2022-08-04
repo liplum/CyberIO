@@ -38,12 +38,12 @@ import net.liplum.blocks.prism.CrystalManager.Companion.write
 import net.liplum.common.math.PolarX
 import net.liplum.common.util.bundle
 import net.liplum.common.util.percentI
-import net.liplum.lib.Serialized
+import plumy.core.Serialized
 import plumy.core.arc.AnimatedColor
-import net.liplum.lib.assets.EmptyTRs
-import net.liplum.lib.assets.TR
-import net.liplum.lib.assets.TRs
-import net.liplum.lib.math.*
+import plumy.core.assets.EmptyTRs
+import plumy.core.assets.TR
+import plumy.core.assets.TRs
+import plumy.core.math.*
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.advanced.Inspector
 import net.liplum.mdt.advanced.Inspector.isSelected
@@ -54,7 +54,7 @@ import net.liplum.mdt.utils.*
 import net.liplum.registry.CioStats
 import kotlin.math.abs
 import kotlin.math.log2
-
+import net.liplum.math.quadratic
 open class Prism(name: String) : Block(name) {
     var PS: FUNC = quadratic(1.2f, 0.2f)
     /** Above ground level.*/

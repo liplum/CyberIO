@@ -14,7 +14,7 @@ import net.liplum.data.DataID
 import net.liplum.data.EmptyDataID
 import net.liplum.data.PayloadData
 import net.liplum.data.PayloadDataList
-import net.liplum.lib.Serialized
+import plumy.core.Serialized
 import net.liplum.common.delegate.Delegate
 import net.liplum.common.util.Index
 import net.liplum.mdt.ClientOnly

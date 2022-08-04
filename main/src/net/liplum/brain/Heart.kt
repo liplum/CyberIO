@@ -35,12 +35,12 @@ import net.liplum.common.Smooth
 import net.liplum.common.util.bundle
 import net.liplum.common.util.format
 import net.liplum.common.util.toDouble
-import net.liplum.lib.Serialized
+import plumy.core.Serialized
 import plumy.core.arc.hsvLerp
-import net.liplum.lib.assets.TR
-import net.liplum.lib.assets.TRs
-import net.liplum.lib.math.FUNC
-import net.liplum.lib.math.isZero
+import plumy.core.assets.TR
+import plumy.core.assets.TRs
+import plumy.core.math.FUNC
+import plumy.core.math.isZero
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.Else
 import net.liplum.mdt.WhenNotPaused

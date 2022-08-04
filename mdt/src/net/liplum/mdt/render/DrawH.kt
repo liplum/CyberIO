@@ -3,7 +3,7 @@
 package net.liplum.mdt.render
 
 import mindustry.graphics.Drawf
-import net.liplum.lib.assets.TR
+import plumy.core.assets.TR
 import net.liplum.mdt.render.G.realHeight
 import net.liplum.mdt.render.G.realWidth
 

@@ -2,7 +2,7 @@ package net.liplum.ui.animation
 
 import arc.scene.Element
 import arc.util.Time
-import net.liplum.lib.Idempotent
+import plumy.core.Idempotent
 import net.liplum.ui.BindingException
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty

@@ -23,8 +23,8 @@ import mindustry.world.blocks.payloads.BuildPayload
 import mindustry.world.blocks.payloads.PayloadConveyor
 import mindustry.world.blocks.payloads.PayloadSource
 import mindustry.world.blocks.payloads.UnitPayload
-import net.liplum.lib.Out
-import net.liplum.lib.math.Point2f
+import plumy.core.Out
+import plumy.core.math.Point2f
 
 typealias TileXY = Int
 typealias TileXYs = Short
@@ -285,7 +285,7 @@ val Building.topRightY: TileXY
     get() = topLeftY
 
 fun Building.isDiagonalTo(other: Block, x: TileXY, y: TileXY) =
-    net.liplum.lib.math.isDiagonalTo(
+    plumy.core.math.isDiagonalTo(
         other.toCenterWorldXY(x), other.toCenterWorldXY(y),
         this.x, this.y,
     )

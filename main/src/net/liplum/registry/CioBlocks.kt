@@ -72,7 +72,7 @@ import net.liplum.common.shader.ShaderBase
 import net.liplum.data.*
 import net.liplum.holo.*
 import plumy.core.arc.invoke
-import net.liplum.lib.math.smooth
+import plumy.core.math.smooth
 import net.liplum.mdt.Else
 import net.liplum.mdt.render.*
 import net.liplum.mdt.ui.DynamicContentInfoDialog.Companion.registerDynamicInfo

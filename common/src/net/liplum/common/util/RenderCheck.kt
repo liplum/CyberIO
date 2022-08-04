@@ -5,7 +5,7 @@ import arc.math.geom.Geometry
 import arc.math.geom.Position
 import arc.math.geom.Rect
 import arc.math.geom.Vec2
-import net.liplum.lib.math.Point2f
+import plumy.core.math.Point2f
 
 private val r1 = Rect()
 private val r2 = Rect()

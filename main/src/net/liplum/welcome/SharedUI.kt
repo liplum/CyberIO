@@ -13,7 +13,7 @@ import mindustry.gen.Tex
 import net.liplum.Meta
 import net.liplum.Var
 import net.liplum.i18nName
-import net.liplum.lib.assets.TR
+import plumy.core.assets.TR
 import net.liplum.mdt.DesktopOnly
 
 internal fun Dialog.addPoster(

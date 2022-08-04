@@ -21,9 +21,9 @@ import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
 import net.liplum.common.Changed
 import net.liplum.common.util.DrawLayer
-import net.liplum.lib.Serialized
-import net.liplum.lib.assets.EmptyTR
-import net.liplum.lib.math.nextBoolean
+import plumy.core.Serialized
+import plumy.core.assets.EmptyTR
+import plumy.core.math.nextBoolean
 import net.liplum.mdt.CalledBySync
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.SendDataPack

@@ -7,8 +7,8 @@ import mindustry.Vars
 import mindustry.ctype.MappableContent
 import net.liplum.common.util.StartWithHyphen
 import net.liplum.common.util.sheetOneDirection
-import net.liplum.lib.assets.TR
-import net.liplum.lib.assets.TRs
+import plumy.core.assets.TR
+import plumy.core.assets.TRs
 
 fun String.atlas(): TR =
     atlas.find(this)

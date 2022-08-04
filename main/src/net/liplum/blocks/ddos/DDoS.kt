@@ -21,7 +21,7 @@ import net.liplum.api.cyber.IDataSender
 import net.liplum.api.cyber.drawLinkedLineToReceiverWhenConfiguring
 import net.liplum.api.cyber.req
 import net.liplum.common.delegate.Delegate1
-import net.liplum.lib.Serialized
+import plumy.core.Serialized
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.render.postToastTextOn
 import net.liplum.mdt.render.removeToastOn

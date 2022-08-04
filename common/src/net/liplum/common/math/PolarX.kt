@@ -5,7 +5,7 @@ import arc.util.io.Writes
 import net.liplum.common.persistence.CacheReaderSpec
 import net.liplum.common.persistence.CacheWriter
 import net.liplum.common.persistence.IRWableX
-import net.liplum.lib.math.Polar
+import plumy.core.math.Polar
 import java.io.DataInputStream
 
 /**

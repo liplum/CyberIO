@@ -7,7 +7,7 @@ import mindustry.content.Items
 import mindustry.type.Item
 import mindustry.type.ItemStack
 import mindustry.world.blocks.payloads.Payload
-import net.liplum.lib.assets.EmptyTR
+import plumy.core.assets.EmptyTR
 
 object EmptyPayload : Payload {
     override fun set(x: Float, y: Float, rotation: Float) {

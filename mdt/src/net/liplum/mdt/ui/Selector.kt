@@ -17,7 +17,7 @@ import mindustry.ui.Styles
 import mindustry.world.Block
 import mindustry.world.blocks.ItemSelection
 import plumy.core.arc.invoke
-import net.liplum.lib.assets.TR
+import plumy.core.assets.TR
 
 /**
  * Copy from [ItemSelection.buildTable]
