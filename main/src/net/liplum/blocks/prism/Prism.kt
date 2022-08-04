@@ -20,6 +20,7 @@ import mindustry.graphics.Pal
 import mindustry.logic.LAccess
 import mindustry.logic.Ranged
 import mindustry.world.Block
+import mindustry.world.Tile
 import mindustry.world.blocks.ControlBlock
 import mindustry.world.blocks.defense.turrets.ContinuousTurret
 import mindustry.world.blocks.defense.turrets.LaserTurret
@@ -137,6 +138,7 @@ open class Prism(name: String) : Block(name) {
         stats.add(CioStats.maxObelisk, "${maxCrystal - 1}")
     }
 
+    override fun minimapColor(tile: Tile) = animatedColor.color.rgba8888()
     companion object {
         @JvmField @ClientOnly
         val animatedColor = AnimatedColor(

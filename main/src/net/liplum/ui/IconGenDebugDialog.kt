@@ -2,12 +2,19 @@ package net.liplum.ui
 
 import arc.scene.ui.Label
 import arc.scene.ui.layout.Table
-import mindustry.ctype.UnlockableContent
 import mindustry.ui.dialogs.BaseDialog
 import net.liplum.holo.HoloWall
+import net.liplum.registry.CioBlocks
+import net.liplum.registry.CioUnitTypes
 
 object IconGenDebugDialog {
-    val debugged = ArrayList<UnlockableContent>()
+    val debugged by lazy {
+        listOf(
+            CioBlocks.holoWall,
+            CioBlocks.holoWallLarge,
+        )
+    }
+
     fun show() {
         BaseDialog("Debug Icon Generating").apply {
             val icons = Table()

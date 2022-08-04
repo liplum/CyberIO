@@ -16,6 +16,7 @@ import mindustry.gen.Bullet
 import mindustry.graphics.Drawf
 import mindustry.graphics.Layer
 import mindustry.graphics.Pal
+import mindustry.world.Tile
 import mindustry.world.blocks.defense.Wall
 import mindustry.world.meta.BlockStatus
 import net.liplum.DebugOnly
@@ -92,6 +93,10 @@ open class HoloWall(name: String) : Wall(name) {
         super.load()
         ProjectorTR = this.sub("base")
         ImageTR = this.sub("image")
+    }
+
+    override fun minimapColor(tile: Tile): Int {
+        return S.Hologram.rgba8888()
     }
 
     companion object {

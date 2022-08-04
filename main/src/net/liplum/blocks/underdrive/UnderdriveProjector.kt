@@ -35,7 +35,6 @@ import mindustry.world.meta.StatUnit
 import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.Var
-import plumy.core.Serialized
 import net.liplum.common.util.bundle
 import net.liplum.common.util.format
 import net.liplum.common.util.percentI
@@ -52,6 +51,7 @@ import net.liplum.mdt.utils.NewEffect
 import net.liplum.mdt.utils.sub
 import net.liplum.mdt.utils.subBundle
 import net.liplum.util.addRangeInfo
+import plumy.core.Serialized
 import kotlin.math.max
 
 const val MagicNSpiralRate = 0.1125f
@@ -128,6 +128,7 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
         }
     }
 
+    override fun minimapColor(tile: Tile) = R.C.Shadow.rgba8888()
     override fun init() {
         super.init()
         clipSize = range * 2f

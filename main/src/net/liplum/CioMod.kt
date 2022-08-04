@@ -161,12 +161,6 @@ class CioMod : Mod() {
         Settings.updateSettings()
         //RecipeCenter.recordAllRecipes()
         ResourceLoader.loadAllResources()
-        DebugOnly {
-            IconGenDebugDialog.debugged.apply {
-                add(CioBlocks.holoWall)
-                add(CioBlocks.holoWallLarge)
-            }
-        }
         CLog.info("v${Meta.DetailedVersion} $ContentSpecific initialized.")
         Settings.LastPlayTime = System.currentTimeMillis()
         Settings.CyberIOLoadedTimes++
