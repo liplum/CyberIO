@@ -100,6 +100,7 @@ open class P2pNode(name: String) : AniedBlock<P2pNode, P2pNode.P2pBuild>(name) {
 
     override fun setBars() {
         super.setBars()
+        addP2pLinkInfo<P2pBuild>()
     }
 
     override fun icons() = arrayOf(BottomTR, region, YinAndYangTR)

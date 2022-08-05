@@ -64,7 +64,10 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
     @JvmField var powerUsePerConnection = 2f
     @JvmField var powerUseBasic = 1.5f
     @JvmField val TransferTimer = timers++
-    @JvmField var unloaderComparator: Comparator<Building> = Structs.comparingBool { it.block.highUnloadPriority }
+    // TODO: Remove this for v137
+    @JvmField var unloaderComparator: Comparator<Building> = Structs.comparingBool {
+        it.block.highUnloadPriority
+    }
     @JvmField var boost2Count: (Float) -> Int = {
         if (it <= 1.1f)
             1

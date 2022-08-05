@@ -22,12 +22,12 @@ import net.liplum.common.util.Or
 import net.liplum.common.util.bundle
 import net.liplum.common.util.toFloat
 import net.liplum.event.CioInitEvent
-import plumy.core.math.Point2f
-import plumy.core.math.smooth
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.utils.*
 import net.liplum.registry.CioStats
+import plumy.core.math.Point2f
+import plumy.core.math.smooth
 
 private val p1 = Point2f()
 private val p2 = Point2f()
@@ -299,7 +299,7 @@ inline fun <reified T> Block.addP2pLinkInfo() where T : Building, T : IP2pNode {
 //<editor-fold desc="Statistics">
 fun <T> T.addLinkRangeStats(range: Float) where  T : Block {
     if (range < 0f)
-        stats.add(CioStats.dataRange) { it.add("∞") }
+        stats.add(CioStats.dataRange, R.Bundle.Unlimited.bundle)
     else
         stats.add(CioStats.dataRange, range, StatUnit.blocks)
 }

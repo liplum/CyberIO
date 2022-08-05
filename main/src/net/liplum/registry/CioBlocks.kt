@@ -248,10 +248,9 @@ object CioBlocks {
             VanillaSpec {
                 requirements = arrayOf(
                     CioItems.ic + 45,
-                    Items.lead + 150,
-                    Items.graphite + 120,
+                    Items.lead + 80,
                     Items.metaglass + 60,
-                    Items.silicon + 180,
+                    Items.silicon + 80,
                 )
                 scaledHealth = 140f
                 maxConnection = 5
@@ -279,10 +278,9 @@ object CioBlocks {
             VanillaSpec {
                 requirements = arrayOf(
                     CioItems.ic + 45,
-                    Items.lead + 150,
-                    Items.graphite + 120,
+                    Items.lead + 80,
                     Items.metaglass + 60,
-                    Items.silicon + 180,
+                    Items.silicon + 80,
                 )
                 scaledHealth = 140f
                 consumePower(1.5f)
@@ -1181,6 +1179,7 @@ object CioBlocks {
                 plans += HoloPlan(
                     CioUnitTypes.holoMiner,
                     Requirement(
+                        items = arrayOf(CioItems.ic + 2),
                         cyberion = 3.0f / 60f
                     ),
                     15f * 60f
@@ -1189,6 +1188,7 @@ object CioBlocks {
                 plans += HoloPlan(
                     CioUnitTypes.holoFighter,
                     Requirement(
+                        items = arrayOf(CioItems.ic + 1),
                         cyberion = 3.0f / 60f
                     ),
                     15f * 60f
@@ -1196,6 +1196,7 @@ object CioBlocks {
                 plans += HoloPlan(
                     CioUnitTypes.holoGuardian,
                     Requirement(
+                        items = arrayOf(CioItems.ic + 1),
                         cyberion = 1.5f / 60f
                     ),
                     7.5f * 60f
@@ -1203,6 +1204,7 @@ object CioBlocks {
                 plans += HoloPlan(
                     CioUnitTypes.holoArchitect,
                     Requirement(
+                        items = arrayOf(CioItems.ic + 3),
                         cyberion = 6.0f / 60f
                     ),
                     25f * 60f
@@ -1210,6 +1212,7 @@ object CioBlocks {
                 plans += HoloPlan(
                     CioUnitTypes.holoSupporter,
                     Requirement(
+                        items = arrayOf(CioItems.ic + 1),
                         cyberion = 2.5f / 60f
                     ),
                     12f * 60f
