@@ -3,42 +3,46 @@ package net.liplum.data
 import arc.func.Prov
 import arc.graphics.Color
 import arc.math.Mathf
-import arc.math.geom.Point2
 import arc.struct.OrderedSet
 import arc.struct.Seq
-import arc.util.Eachable
 import arc.util.Structs
 import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.Vars
-import mindustry.entities.units.BuildPlan
 import mindustry.gen.Building
 import mindustry.graphics.Pal
 import mindustry.logic.LAccess
 import mindustry.type.Item
 import mindustry.world.meta.BlockGroup
 import mindustry.world.meta.Stat
-import net.liplum.*
+import net.liplum.DebugOnly
+import net.liplum.R
+import net.liplum.UndebugOnly
+import net.liplum.Var
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
 import net.liplum.common.Changed
 import net.liplum.common.persistence.read
 import net.liplum.common.persistence.write
 import net.liplum.common.util.DoMultipleBool
-import plumy.core.Serialized
-import plumy.core.assets.TR
-import net.liplum.mdt.*
+import net.liplum.mdt.CalledBySync
+import net.liplum.mdt.ClientOnly
+import net.liplum.mdt.SendDataPack
 import net.liplum.mdt.animation.anims.Animation
 import net.liplum.mdt.animation.anims.AnimationObj
 import net.liplum.mdt.animation.anis.AniState
 import net.liplum.mdt.animation.anis.config
-import net.liplum.mdt.render.*
+import net.liplum.mdt.render.Draw
+import net.liplum.mdt.render.drawSurroundingRect
+import net.liplum.mdt.render.smoothPlacing
 import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.ui.bars.removeItemsInBar
 import net.liplum.mdt.utils.*
-import net.liplum.util.*
-import java.util.*
+import net.liplum.util.addPowerUseStats
+import net.liplum.util.genText
+import plumy.core.Serialized
+import plumy.core.assets.TR
 import kotlin.math.absoluteValue
 import kotlin.math.log2
 
@@ -95,7 +99,6 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
         schematicPriority = 20
         allowConfigInventory = false
         configurable = true
-        saveConfig = true
         acceptsItems = false
         /**
          * For connect
@@ -105,12 +108,6 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
         }
         configClear<SmartUnloaderBuild> {
             it.clearReceivers()
-        }
-        /**
-         * For schematic
-         */
-        config(Array<Point2>::class.java) { obj: SmartUnloaderBuild, relatives ->
-            obj.resolveRelativePosFromRemote(relatives)
         }
     }
 
@@ -179,12 +176,6 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
         override val maxRange = this@SmartUnloader.maxRange
         @Serialized
         var receivers = OrderedSet<Int>()
-        /**
-         * When this smart unloader was restored by schematic, it should check whether the receiver was built.
-         *
-         * It contains absolute points.
-         */
-        var queue = LinkedList<Point2>()
         var nearby: Seq<Building> = Seq()
         var trackers: Array<Tracker> = Array(ItemTypeAmount()) {
             Tracker(maxConnection)
@@ -240,40 +231,12 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
             unloadedNearbyIndex = 0
         }
 
-        fun genRelativeAllPos(): Array<Point2> {
-            return receivers.map {
-                it.unpack().apply {
-                    x -= tile.x
-                    y -= tile.y
-                }
-            }.toTypedArray()
-        }
-
-        override fun config(): Any? {
-            return genRelativeAllPos()
-        }
-
-        open fun checkQueue() {
-            if (queue.isNotEmpty()) {
-                val it = queue.iterator()
-                while (it.hasNext()) {
-                    val pos = it.next()
-                    val dr = pos.dr()
-                    if (dr != null) {
-                        connectToSync(dr)
-                        it.remove()
-                    }
-                }
-            }
-        }
-
         var lastTileChange = -2
         override fun updateTile() {
             // Check connection and queue only when any block changed
             if (lastTileChange != Vars.world.tileChanges) {
                 lastTileChange = Vars.world.tileChanges
                 checkReceiversPos()
-                checkQueue()
             }
             if (justRestored) {
                 updateTracker()
@@ -445,22 +408,6 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
             return true
         }
         @CalledBySync
-        fun resolveRelativePosFromRemote(relatives: Array<Point2>) {
-            for (relative in relatives) {
-                val rel = relative.cpy()
-                rel.x += tile.x
-                rel.y += tile.y
-                val abs = rel
-                val dr = abs.dr()
-                if (dr != null) {
-                    dr.onConnectTo(this)
-                    this.connectReceiver(dr)
-                } else {
-                    queue.add(abs)
-                }
-            }
-        }
-        @CalledBySync
         open fun addReceiverFromRemote(pos: Int) {
             if (pos in receivers) {
                 pos.dr()?.let {
@@ -530,12 +477,6 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
         override fun beforeDraw() {
             if (canConsume() && isUnloading && isSending) {
                 shrinkingAnimObj.spend(delta())
-            }
-        }
-
-        override fun fixedDraw() {
-            DebugOnly {
-                Text.drawTextEasy("$queue", x, y + 5f)
             }
         }
 

@@ -22,10 +22,6 @@ import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
 import net.liplum.common.Changed
 import net.liplum.data.Sender.SenderBuild
-import plumy.core.Serialized
-import plumy.core.arc.Tick
-import plumy.core.assets.TR
-import plumy.core.math.isZero
 import net.liplum.mdt.CalledBySync
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.SendDataPack
@@ -35,9 +31,12 @@ import net.liplum.mdt.animation.anis.config
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.DrawOn
 import net.liplum.mdt.render.SetColor
-import net.liplum.mdt.render.Text
 import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.utils.*
+import plumy.core.Serialized
+import plumy.core.arc.Tick
+import plumy.core.assets.TR
+import plumy.core.math.isZero
 
 private typealias AniStateS = AniState<Sender, SenderBuild>
 
@@ -69,7 +68,6 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
         canOverdrive = false
         schematicPriority = 20
         unloadable = false
-        saveConfig = true
         callDefaultBlockDraw = false
         /**
          * For connect
@@ -79,12 +77,6 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
         }
         configClear<SenderBuild> {
             it.receiverPos = null
-        }
-        /**
-         * For schematic
-         */
-        config(Point2::class.java) { it: SenderBuild, point ->
-            it.resolveRelativePosFromRemote(point)
         }
     }
 
@@ -152,17 +144,6 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
             val unpacked = Point2.unpack(pos)
             receiverPos = if (unpacked.dr().exists) unpacked else null
         }
-        @CalledBySync
-        fun resolveRelativePosFromRemote(relative: Point2) {
-            val abs = resolveRelativePos(relative)
-            queue = abs
-            if (abs.dr().exists) {
-                receiverPos = abs
-                queue = null
-            } else {
-                receiverPos = null
-            }
-        }
         /**
          * @param relative the relative position
          * @return
@@ -173,13 +154,6 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
             res.y += this.tile.y
             return res // now it's absolute position
         }
-        /**
-         * When this sender was restored by schematic, it should check whether the receiver was built.
-         *
-         * It's an absolute point
-         */
-        @CalledBySync
-        var queue: Point2? = null
         /**
          * Consider this block as (0,0)
          */
@@ -204,14 +178,6 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
             if (lastTileChange != Vars.world.tileChanges) {
                 lastTileChange = Vars.world.tileChanges
                 checkReceiverPos()
-                val waiting = queue
-                if (waiting != null) {
-                    val dr = waiting.dr()
-                    if (dr != null) {
-                        connectToSync(dr)
-                        queue = null
-                    }
-                }
             }
             ClientOnly {
                 lastSendingTime += Time.delta
@@ -291,10 +257,6 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
             }
             return true
         }
-        @Synchronized
-        override fun config(): Any? {
-            return genRelativePos()
-        }
 
         override fun acceptItem(source: Building, item: Item): Boolean {
             if (!canConsume()) {
@@ -367,9 +329,6 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
                 Draw.alpha(highlightAlpha)
                 HighlightTR.DrawOn(this)
                 Draw.color()
-            }
-            DebugOnly {
-                Text.drawTextEasy("Queue: $queue", x, y + 5f)
             }
         }
     }

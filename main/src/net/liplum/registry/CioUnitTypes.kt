@@ -25,12 +25,10 @@ import net.liplum.bullet.RuvikBullet
 import net.liplum.bullet.STEM_VERSION
 import net.liplum.flesh.BrainUnitType
 import net.liplum.holo.*
-import plumy.core.arc.minute
 import net.liplum.mdt.utils.NewUnitType
 import net.liplum.mdt.utils.plus
-import net.liplum.mdt.utils.registerPayloadSource
 import net.liplum.mdt.utils.registerUnitType
-import net.liplum.script.NpcUnitType
+import plumy.core.arc.minute
 
 object CioUnitTypes {
     @JvmStatic lateinit var holoMiner: HoloUnitType
@@ -39,12 +37,6 @@ object CioUnitTypes {
     @JvmStatic lateinit var holoArchitect: HoloUnitType
     @JvmStatic lateinit var holoSupporter: HoloUnitType
     @JvmStatic lateinit var brain: BrainUnitType
-    @DependOn
-    fun _preRegister() {
-        HoloUnitType::class.java.registerPayloadSource()
-        BrainUnitType::class.java.registerPayloadSource()
-        NpcUnitType::class.java.registerPayloadSource()
-    }
     @DependOn("CioItems.ic")
     fun holoMiner() {
         holoMiner = NewUnitType(R.Unit.HoloMiner, ::HoloUnitType, ::HoloUnit).apply {
@@ -62,7 +54,6 @@ object CioUnitTypes {
                 researchReq = arrayOf(
                     CioItems.ic + 3,
                     Items.oxide + 20,
-                    Items.carbide + 30,
                 )
                 mineTier = 5
             }
@@ -98,19 +89,20 @@ object CioUnitTypes {
                     Items.plastanium + 80,
                     Items.thorium + 60,
                 )
+                drag = 0.03f
+                speed = 4f
             }
             ErekirSpec {
                 limitLife(hp = 5000f, lifespan = 15.minute)
                 researchReq = arrayOf(
                     CioItems.ic + 3,
                     Items.oxide + 20,
-                    Items.carbide + 30,
                 )
+                drag = 0.05f
+                speed = 3.8f
             }
-            speed = 4f
             accel = 0.08f
             targetPriority = 1f
-            drag = 0.016f
             buildSpeed = 1f
             flying = true
             hovering = true
@@ -158,7 +150,6 @@ object CioUnitTypes {
                 researchReq = arrayOf(
                     CioItems.ic + 3,
                     Items.oxide + 20,
-                    Items.carbide + 30,
                 )
             }
             abilities.add(
@@ -203,7 +194,6 @@ object CioUnitTypes {
                 researchReq = arrayOf(
                     CioItems.ic + 3,
                     Items.oxide + 20,
-                    Items.carbide + 30,
                 )
             }
             aiController = Prov { BuilderAI() }
@@ -287,7 +277,6 @@ object CioUnitTypes {
                 researchReq = arrayOf(
                     CioItems.ic + 3,
                     Items.oxide + 20,
-                    Items.carbide + 30,
                 )
             }
             aiController = Prov { RepairAI() }
