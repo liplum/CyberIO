@@ -27,12 +27,14 @@ import java.net.URL
 import kotlin.coroutines.CoroutineContext
 
 @UseReflection
-private val ImportModFunc: Method = ModsDialog::class.java.getMethodBy(
-    "githubImportMod", String::class.java, Boolean::class.java
-)
+private val ImportModFunc: Method by lazy {
+    ModsDialog::class.java.getMethodBy(
+        "githubImportMod", String::class.java, Boolean::class.java, String::class.java
+    )
+}
 @UseReflection
-private fun ModsDialog.ImportMod(repo: String, isJava: Boolean) {
-    ImportModFunc(this, repo, isJava)
+private fun ModsDialog.ImportMod(repo: String, isJava: Boolean, release: String?) {
+    ImportModFunc(this, repo, isJava, release)
 }
 
 object Updater : CoroutineScope {
@@ -122,7 +124,7 @@ object Updater : CoroutineScope {
     fun updateSelfByBuiltIn() {
         val modsDialog = Vars.ui.mods
         modsDialog.show()
-        modsDialog.ImportMod(Meta.Repo, true)
+        modsDialog.ImportMod(Meta.Repo, true, null)
     }
     @JvmStatic
     fun updateSelfByReplaceFinding(
