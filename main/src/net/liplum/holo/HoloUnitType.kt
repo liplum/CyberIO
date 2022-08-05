@@ -2,6 +2,7 @@ package net.liplum.holo
 
 import arc.Core
 import arc.graphics.Color
+import arc.graphics.Texture
 import arc.graphics.g2d.Draw
 import arc.graphics.g2d.Fill
 import arc.graphics.g2d.Lines
@@ -29,6 +30,7 @@ import mindustry.world.meta.Stat
 import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.S
+import net.liplum.Var
 import net.liplum.common.shader.use
 import net.liplum.common.util.bundle
 import net.liplum.common.util.toFloat
@@ -42,6 +44,8 @@ import net.liplum.mdt.utils.healthPct
 import net.liplum.mdt.utils.seconds
 import net.liplum.registry.SD
 import net.liplum.util.time
+import plumy.core.assets.TR
+import plumy.texture.*
 import kotlin.math.min
 
 /**
@@ -82,6 +86,27 @@ open class HoloUnitType(name: String) : UnitType(name) {
         envDisabled = Env.none
         isEnemy = false
         payloadCapacity = 0f
+        generateIcons = false
+    }
+
+    override fun loadIcon() {
+        super.loadIcon()
+        val width = fullIcon.width
+        val height = fullIcon.height
+        val maker = StackIconMaker(width, height)
+        val rawIcon = fullIcon
+        val layers = listOf(
+            (PixmapRegionModelLayer(Core.atlas.getPixmap(rawIcon))){
+                +PlainLayerProcessor()
+            },
+            (PixmapRegionModelLayer(Core.atlas.getPixmap(rawIcon))){
+                +TintLerpLayerProcessor(S.Hologram, Var.HoloUnitTintAlpha)
+            }
+        )
+        val baked = maker.bake(layers).texture.toPixmap()
+        val icon = TR(Texture(baked))
+        fullIcon = icon
+        uiIcon = icon
     }
 
     open val Unit.holoAlpha: Float

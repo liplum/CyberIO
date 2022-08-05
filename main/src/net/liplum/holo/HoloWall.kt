@@ -21,6 +21,7 @@ import mindustry.world.blocks.defense.Wall
 import mindustry.world.meta.BlockStatus
 import net.liplum.DebugOnly
 import net.liplum.S
+import net.liplum.Var
 import net.liplum.api.holo.IHoloEntity
 import net.liplum.api.holo.IHoloEntity.Companion.addHoloChargeTimeStats
 import net.liplum.api.holo.IHoloEntity.Companion.addHoloHpAtLeastStats
@@ -99,10 +100,6 @@ open class HoloWall(name: String) : Wall(name) {
         return S.Hologram.rgba8888()
     }
 
-    companion object {
-        var holoTintAlpha = 0.6423f
-    }
-
     override fun loadIcon() {
         val size = size * 32
         val maker = StackIconMaker(size, size)
@@ -111,7 +108,7 @@ open class HoloWall(name: String) : Wall(name) {
                 +PlainLayerProcessor()
             },
             (PixmapRegionModelLayer(Core.atlas.getPixmap(ImageTR))){
-                +TintLerpLayerProcessor(S.Hologram, holoTintAlpha)
+                +TintLerpLayerProcessor(S.Hologram, Var.HoloWallTintAlpha)
             }
         )
         val baked = maker.bake(layers).texture.toPixmap()
@@ -124,10 +121,6 @@ open class HoloWall(name: String) : Wall(name) {
         super.setStats()
         addHoloChargeTimeStats(restoreCharge)
         addHoloHpAtLeastStats(minHealthProportion)
-    }
-
-    override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
-        super.drawPlace(x, y, rotation, valid)
     }
 
     override fun setBars() {

@@ -173,6 +173,14 @@ class CioMod : Mod() {
         ClientOnly {
             meta.subtitle = "[#${ContentSpecific.color}]${Meta.Version} ${ContentSpecific.i18nName}[]"
         }
+        VanillaSpec {
+            Var.HoloWallTintAlpha = 0.6423f
+            Var.HoloUnitTintAlpha = 0.404f
+        }
+        ErekirSpec {
+            Var.HoloWallTintAlpha = 0.4688f
+            Var.HoloUnitTintAlpha = 0.3442f
+        }
         Events.fire(CioLoadContentEvent())
         Contents.load()
         CioTechTree.loadAll()
