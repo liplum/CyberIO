@@ -11,6 +11,7 @@ import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.Vars
+import mindustry.core.Version
 import mindustry.entities.units.BuildPlan
 import mindustry.gen.Building
 import mindustry.graphics.Pal
@@ -237,7 +238,10 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
                     nearby.add(b)
                 }
             }
-            nearby.sort(unloaderComparator)
+            // Only work in v136
+            if (Version.build == 136) {
+                nearby.sort(unloaderComparator)
+            }
             unloadedNearbyIndex = 0
         }
 

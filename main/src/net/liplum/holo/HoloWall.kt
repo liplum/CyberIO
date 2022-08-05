@@ -5,7 +5,6 @@ import arc.func.Prov
 import arc.graphics.Color
 import arc.graphics.Texture
 import arc.graphics.g2d.Draw
-import arc.graphics.g2d.TextureRegion
 import arc.math.Mathf
 import arc.struct.Seq
 import arc.util.io.Reads
@@ -115,8 +114,10 @@ open class HoloWall(name: String) : Wall(name) {
         val icon = TR(Texture(baked))
         fullIcon = icon
         uiIcon = icon
+        region = icon
     }
 
+    override fun icons() = arrayOf(ProjectorTR)
     override fun setStats() {
         super.setStats()
         addHoloChargeTimeStats(restoreCharge)
