@@ -3,13 +3,16 @@ package net.liplum.data
 import arc.func.Prov
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
+import arc.graphics.g2d.TextureRegion
 import arc.math.Mathf
 import arc.math.geom.Point2
 import arc.struct.ObjectSet
+import arc.util.Eachable
 import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.Vars
+import mindustry.entities.units.BuildPlan
 import mindustry.gen.Building
 import mindustry.graphics.Pal
 import mindustry.logic.LAccess
@@ -94,6 +97,11 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)
         drawPlacingMaxRange(x, y, maxRange, R.C.Sender)
+    }
+
+    override fun drawPlanRegion(plan: BuildPlan, list: Eachable<BuildPlan>) {
+        super.drawPlanRegion(plan, list)
+        drawPlanMaxRange(plan.x, plan.y, maxRange, R.C.Sender)
     }
 
     override fun setBars() {

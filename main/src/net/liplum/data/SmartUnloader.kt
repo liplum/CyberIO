@@ -5,11 +5,13 @@ import arc.graphics.Color
 import arc.math.Mathf
 import arc.struct.OrderedSet
 import arc.struct.Seq
+import arc.util.Eachable
 import arc.util.Structs
 import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.Vars
+import mindustry.entities.units.BuildPlan
 import mindustry.gen.Building
 import mindustry.graphics.Pal
 import mindustry.logic.LAccess
@@ -149,6 +151,11 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
             b.block.unloadable && !b.isDiagonalTo(this, x, y)
         }
         drawPlaceText(subBundle("tip"), x, y, valid)
+    }
+
+    override fun drawPlanRegion(plan: BuildPlan, list: Eachable<BuildPlan>) {
+        super.drawPlanRegion(plan, list)
+        drawPlanMaxRange(plan.x, plan.y, maxRange, R.C.Sender)
     }
 
     override fun setBars() {

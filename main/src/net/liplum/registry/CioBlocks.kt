@@ -360,6 +360,7 @@ object CioBlocks {
                 scaledHealth = 350f
                 powerProduction = 4.5f
                 maxPowerEFFBlocksReq = 22
+                slowDownRateEFFReward = 0.6f
                 maxGear = 5
             }
             ErekirSpec {
@@ -371,7 +372,8 @@ object CioBlocks {
                 )
                 scaledHealth = 250f
                 range = 45f
-                powerProduction = 2f
+                slowDownRateEFFReward = 1.2f
+                powerProduction = 2.5f
                 maxPowerEFFBlocksReq = 18
                 maxGear = 8
             }

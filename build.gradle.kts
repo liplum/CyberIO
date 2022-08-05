@@ -51,11 +51,11 @@ mindustry {
             version = "v8.0.0",
             release = "erekir-client.jar"
         )*/
-        mindustry official "v136.1"
+        mindustry official "v137"
         clearUp
     }
     server {
-        mindustry official "v136.1"
+        mindustry official "v137"
     }
 }
 

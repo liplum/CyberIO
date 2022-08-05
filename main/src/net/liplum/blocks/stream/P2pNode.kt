@@ -3,10 +3,12 @@ package net.liplum.blocks.stream
 import arc.func.Prov
 import arc.graphics.Color
 import arc.math.Angles
+import arc.util.Eachable
 import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.Vars
+import mindustry.entities.units.BuildPlan
 import mindustry.gen.Building
 import mindustry.graphics.Layer
 import mindustry.logic.LAccess
@@ -81,8 +83,13 @@ open class P2pNode(name: String) : AniedBlock<P2pNode, P2pNode.P2pBuild>(name) {
 
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)
-        drawPlacingMaxRange(x, y, maxRange, R.C.LightBlue)
+        drawPlacingMaxRange(x, y, maxRange, R.C.P2P)
         drawLinkedLineToP2pWhenConfiguring(x, y)
+    }
+
+    override fun drawPlanRegion(plan: BuildPlan, list: Eachable<BuildPlan>) {
+        super.drawPlanRegion(plan, list)
+        drawPlanMaxRange(plan.x, plan.y, maxRange, R.C.P2P)
     }
 
     override fun setStats() {

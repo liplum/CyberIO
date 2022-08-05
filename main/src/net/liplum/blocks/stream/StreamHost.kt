@@ -5,9 +5,11 @@ import arc.graphics.Color
 import arc.math.geom.Point2
 import arc.struct.OrderedSet
 import arc.struct.Seq
+import arc.util.Eachable
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.Vars
+import mindustry.entities.units.BuildPlan
 import mindustry.gen.Building
 import mindustry.logic.LAccess
 import mindustry.type.Liquid
@@ -124,6 +126,10 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
         drawPlacingMaxRange(x, y, maxRange, R.C.Host)
     }
 
+    override fun drawPlanRegion(plan: BuildPlan, list: Eachable<BuildPlan>) {
+        super.drawPlanRegion(plan, list)
+        drawPlanMaxRange(plan.x, plan.y, maxRange, R.C.Host)
+    }
     open inner class HostBuild : AniedBuild(), IStreamHost {
         override val maxRange = this@StreamHost.maxRange
         @Serialized

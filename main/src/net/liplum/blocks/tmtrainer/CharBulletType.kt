@@ -8,6 +8,7 @@ import mindustry.gen.Bullet
 import mindustry.gen.Entityc
 import mindustry.graphics.Layer
 import net.liplum.common.util.DrawLayer
+import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.render.Text
 
 class CharBulletType : BulletType {
@@ -29,8 +30,10 @@ class CharBulletType : BulletType {
         aimY: Float,
     ): Bullet? {
         return super.create(owner, team, x, y, angle, damage, velocityScl, lifetimeScl, data, mover, aimX, aimY)?.apply {
-            if (data == null) this.data = RandomName.randomColor()
-            fdata = RandomName.randomCharIndex().toFloat()
+            ClientOnly {
+                if (data == null) this.data = RandomName.randomColor()
+                fdata = RandomName.randomCharIndex().toFloat()
+            }
         }
     }
 

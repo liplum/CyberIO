@@ -20,14 +20,14 @@ import net.liplum.api.ICyberEntity
 import net.liplum.common.util.bundle
 import net.liplum.common.util.inViewField
 import net.liplum.common.util.isLineInViewField
+import net.liplum.mdt.ClientOnly
+import net.liplum.mdt.render.*
+import net.liplum.mdt.utils.*
 import plumy.core.arc.darken
 import plumy.core.math.Point2f
 import plumy.core.math.isZero
 import plumy.core.math.plusAssign
 import plumy.core.math.smooth
-import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.render.*
-import net.liplum.mdt.utils.*
 
 @ClientOnly
 val ArrowDensity: Float
@@ -396,6 +396,18 @@ fun IP2pNode.drawSelectedMaxRange() {
             maxRange * building.smoothSelect(
                 Var.SelectedCircleTime + maxRange * Var.MaxRangeCircleTimeFactor
             ),
+            color,
+            stroke = 3f
+        )
+    }
+}
+
+fun drawPlanMaxRange(x: TileXY, y: TileXY, maxRange: Float, color: Color) {
+    if (maxRange > 0f) {
+        G.dashCircleBreath(
+            x.worldXY,
+            y.worldXY,
+            maxRange,
             color,
             stroke = 3f
         )
