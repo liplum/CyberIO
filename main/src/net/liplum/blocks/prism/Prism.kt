@@ -14,6 +14,7 @@ import arc.util.io.Writes
 import mindustry.Vars.tilesize
 import mindustry.content.UnitTypes
 import mindustry.entities.TargetPriority
+import mindustry.entities.bullet.BulletType
 import mindustry.gen.*
 import mindustry.graphics.Layer
 import mindustry.graphics.Pal
@@ -32,6 +33,7 @@ import net.liplum.R
 import net.liplum.api.cyber.BOTTOM
 import net.liplum.api.cyber.RIGHT
 import net.liplum.api.prism.PrismBlackList.canDisperse
+import net.liplum.api.prism.PrismDataColor
 import net.liplum.api.prism.PrismRegistry.isDuplicate
 import net.liplum.api.prism.PrismRegistry.setDuplicate
 import net.liplum.blocks.prism.CrystalManager.Companion.read
@@ -39,12 +41,7 @@ import net.liplum.blocks.prism.CrystalManager.Companion.write
 import net.liplum.common.math.PolarX
 import net.liplum.common.util.bundle
 import net.liplum.common.util.percentI
-import plumy.core.Serialized
-import plumy.core.arc.AnimatedColor
-import plumy.core.assets.EmptyTRs
-import plumy.core.assets.TR
-import plumy.core.assets.TRs
-import plumy.core.math.*
+import net.liplum.math.quadratic
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.advanced.Inspector
 import net.liplum.mdt.advanced.Inspector.isSelected
@@ -53,9 +50,15 @@ import net.liplum.mdt.render.*
 import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.utils.*
 import net.liplum.registry.CioStats
+import plumy.core.Serialized
+import plumy.core.arc.AnimatedColor
+import plumy.core.assets.EmptyTRs
+import plumy.core.assets.TR
+import plumy.core.assets.TRs
+import plumy.core.math.*
 import kotlin.math.abs
 import kotlin.math.log2
-import net.liplum.math.quadratic
+
 open class Prism(name: String) : Block(name) {
     var PS: FUNC = quadratic(1.2f, 0.2f)
     /** Above ground level.*/
@@ -139,6 +142,7 @@ open class Prism(name: String) : Block(name) {
     }
 
     override fun minimapColor(tile: Tile) = animatedColor.color.rgba8888()
+
     companion object {
         @JvmField @ClientOnly
         val animatedColor = AnimatedColor(
@@ -301,8 +305,8 @@ open class Prism(name: String) : Block(name) {
                     priselX = revolution.x + x
                     priselY = revolution.y + y
                     if (it.team == team &&
-                        !it.data.isDuplicate &&
-                        it.dst(priselX, priselY) <= prismRadius
+                        it.dst(priselX, priselY) <= prismRadius &&
+                        !it.data.isDuplicate
                     ) {
                         it.passThrough()
                     }
@@ -312,9 +316,8 @@ open class Prism(name: String) : Block(name) {
         /**
          * The Current is considered as green.
          */
-        open fun Bullet.passThrough() {
+        fun Bullet.passThrough() {
             if (!type.canDisperse) return
-            this.setDuplicate()
             // Current is green
             val angle = this.rotation()
             val start = angle
@@ -327,13 +330,28 @@ open class Prism(name: String) : Block(name) {
             copyRed.handleDuplicate(-perDeflectionAngle)
             this.handleDuplicate(0f)
             copyBlue.handleDuplicate(perDeflectionAngle)
-            if (tintBullet) {
-                if (!this.type.isTintIgnored) {
-                    val rgbs = tintedRGB(this.type)
-                    copyRed.type = rgbs[0]
-                    this.type = rgbs[1]
-                    copyBlue.type = rgbs[2]
-                }
+            if (tintBullet && !this.type.isIgnoreTinted) {
+                tintBullet(copyRed, this, copyBlue, this.type)
+            }
+            setDuplicate(copyRed, this, copyBlue, this.data)
+        }
+
+        fun tintBullet(r: Bullet, g: Bullet, b: Bullet, type: BulletType) {
+            val rgbs = tintedRGB(type)
+            r.type = rgbs[0]
+            g.type = rgbs[1]
+            b.type = rgbs[2]
+        }
+
+        fun setDuplicate(r: Bullet, g: Bullet, b: Bullet, data: Any?) {
+            if (data is Color) {
+                r.data = PrismDataColor(data)
+                g.data = PrismDataColor(data)
+                b.data = PrismDataColor(data)
+            } else {
+                r.setDuplicate()
+                g.setDuplicate()
+                b.setDuplicate()
             }
         }
 
@@ -417,12 +435,14 @@ open class Prism(name: String) : Block(name) {
                 else Draw.z(Layer.bullet - 1f)
                 if (isSelected)
                     G.dashCircleBreath(priselX, priselY, prismRadius * smoothSelect(maxSelectedCircleTime), circleColor)
+                // Draw.z(Layer.bullet)
                 img.DrawSize(
                     priselX,
                     priselY,
                     scale,
                     rotation.a.degree.draw
                 )
+                // Draw.z(Layer.blockOver)
             }
             Draw.reset()
         }

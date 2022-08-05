@@ -12,7 +12,7 @@ import net.liplum.bullet.BBulletType
 import net.liplum.common.util.ArrayList
 import net.liplum.common.util.copyFieldsFrom
 
-val BulletType.isTintIgnored: Boolean
+val BulletType.isIgnoreTinted: Boolean
     get() = this in IgnoredBullets || this::class.java in IgnoredClass
 
 fun tintedRGB(b: BulletType): List<BulletType> {

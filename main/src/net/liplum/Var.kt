@@ -51,4 +51,5 @@ object Var {
     const val LinkDrawerTime = 20f
     var HoloWallTintAlpha = 0.6423f // Vanilla as default
     var HoloUnitTintAlpha = 0.404f // Vanilla as default
+    const val PrismCrystalPassThroughBloomTime = 30f
 }

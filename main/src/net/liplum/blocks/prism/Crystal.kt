@@ -18,6 +18,8 @@ class Crystal : IRWableX {
     var rotation = PolarX()
     @ClientOnly
     var img = TR()
+/*    @ClientOnly
+    var lastPassThroughTime = 0f*/
     var orbitPos = 0
     var data = 0
     var isClockwise: Boolean
