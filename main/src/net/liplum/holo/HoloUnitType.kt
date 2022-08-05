@@ -86,7 +86,6 @@ open class HoloUnitType(name: String) : UnitType(name) {
         envDisabled = Env.none
         isEnemy = false
         payloadCapacity = 0f
-        generateIcons = false
     }
 
     override fun loadIcon() {
