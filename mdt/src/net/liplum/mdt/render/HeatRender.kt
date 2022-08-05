@@ -13,8 +13,8 @@ import mindustry.world.Block
 import mindustry.world.blocks.defense.turrets.Turret.TurretBuild
 import mindustry.world.blocks.heat.HeatBlock
 import mindustry.world.draw.DrawBlock
-import net.liplum.lib.assets.EmptyTR
-import net.liplum.lib.assets.TR
+import plumy.core.assets.EmptyTR
+import plumy.core.assets.TR
 import net.liplum.mdt.mixin.drawX
 import net.liplum.mdt.mixin.drawY
 import net.liplum.mdt.utils.draw

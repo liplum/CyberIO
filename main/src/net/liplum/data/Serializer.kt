@@ -15,8 +15,8 @@ import net.liplum.DebugOnly
 import net.liplum.Var
 import net.liplum.api.cyber.*
 import net.liplum.api.cyber.SideLinks.Companion.enableAllSides
-import net.liplum.lib.Serialized
-import net.liplum.lib.assets.TR
+import plumy.core.Serialized
+import plumy.core.assets.TR
 import net.liplum.common.shader.use
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.render.Draw

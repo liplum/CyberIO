@@ -3,7 +3,7 @@ package net.liplum.mdt.animation.anims
 import arc.graphics.Color
 import arc.math.Mathf
 import net.liplum.common.ITimer
-import net.liplum.lib.assets.TR
+import plumy.core.assets.TR
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.Reset
 import net.liplum.mdt.render.SetColor

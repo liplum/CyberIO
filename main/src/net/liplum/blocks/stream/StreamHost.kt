@@ -5,33 +5,35 @@ import arc.graphics.Color
 import arc.math.geom.Point2
 import arc.struct.OrderedSet
 import arc.struct.Seq
+import arc.util.Eachable
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.Vars
+import mindustry.entities.units.BuildPlan
 import mindustry.gen.Building
 import mindustry.logic.LAccess
 import mindustry.type.Liquid
 import mindustry.world.blocks.liquid.LiquidBlock
 import mindustry.world.meta.BlockGroup
-import net.liplum.*
+import net.liplum.DebugOnly
+import net.liplum.R
+import net.liplum.Var
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
 import net.liplum.common.persistence.read
 import net.liplum.common.persistence.write
-import net.liplum.lib.Serialized
-import net.liplum.lib.assets.EmptyTR
-import net.liplum.lib.assets.TRs
-import net.liplum.mdt.*
+import net.liplum.mdt.CalledBySync
+import net.liplum.mdt.ClientOnly
+import net.liplum.mdt.SendDataPack
 import net.liplum.mdt.animation.anis.AniState
 import net.liplum.mdt.animation.anis.config
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.DrawOn
-import net.liplum.mdt.utils.buildAt
-import net.liplum.mdt.utils.inMod
-import net.liplum.mdt.utils.sub
-import net.liplum.mdt.utils.unpack
-import net.liplum.util.*
-import java.util.*
+import net.liplum.mdt.utils.*
+import net.liplum.util.addPowerUseStats
+import plumy.core.Serialized
+import plumy.core.assets.EmptyTR
+import plumy.core.assets.TRs
 
 private typealias AniStateH = AniState<StreamHost, StreamHost.HostBuild>
 
@@ -69,7 +71,6 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
         noUpdateDisabled = true
         hasLiquids = true
         schematicPriority = 20
-        saveConfig = true
         callDefaultBlockDraw = false
         canOverdrive = true
         sync = true
@@ -81,12 +82,6 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
         }
         configClear<HostBuild> {
             it.clearClients()
-        }
-        /**
-         * For schematic
-         */
-        config(Array<Point2>::class.java) { obj: HostBuild, relatives ->
-            obj.resolveRelativePosFromRemote(relatives)
         }
     }
 
@@ -116,6 +111,7 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
         addPowerUseStats()
         addLinkRangeStats(maxRange)
         addMaxClientStats(maxConnection)
+        addDataTransferSpeedStats(networkSpeed)
     }
 
     override fun setBars() {
@@ -130,25 +126,21 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
         drawPlacingMaxRange(x, y, maxRange, R.C.Host)
     }
 
+    override fun drawPlanRegion(plan: BuildPlan, list: Eachable<BuildPlan>) {
+        super.drawPlanRegion(plan, list)
+        drawPlanMaxRange(plan.x, plan.y, maxRange, R.C.Host)
+    }
     open inner class HostBuild : AniedBuild(), IStreamHost {
         override val maxRange = this@StreamHost.maxRange
         @Serialized
         var clients = OrderedSet<Int>()
-        /**
-         * When this stream host was restored by schematic, it should check whether the client was built.
-         *
-         * It contains absolute points.
-         */
-        var queue = LinkedList<Point2>()
         val realNetworkSpeed: Float
             get() = networkSpeed * timeScale
         override val hostColor: Color
-            get() = liquids.current().color
-
+            get() = liquids.current().fluidColor
         var lastTileChange = -2
         override fun updateTile() {
-            checkQueue()
-            // Check connection only when any block changed
+            // Check connection and queue only when any block changed
             if (lastTileChange != Vars.world.tileChanges) {
                 lastTileChange = Vars.world.tileChanges
                 checkClientsPos()
@@ -180,36 +172,6 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
             }
         }
 
-        open fun checkQueue() {
-            if (queue.isNotEmpty()) {
-                val it = queue.iterator()
-                while (it.hasNext()) {
-                    val pos = it.next()
-                    val dr = pos.sc()
-                    if (dr != null) {
-                        connectToSync(dr)
-                        it.remove()
-                    }
-                }
-            }
-        }
-        @CalledBySync
-        fun resolveRelativePosFromRemote(relatives: Array<Point2>) {
-            for (relative in relatives) {
-                val rel = relative.cpy()
-                rel.x += tile.x
-                rel.y += tile.y
-                val abs = rel
-                val dr = abs.sc()
-                if (dr != null) {
-                    dr.onConnectFrom(this)
-                    this.connectClient(dr)
-                } else {
-                    queue.add(abs)
-                }
-            }
-        }
-
         fun genRelativeAllPos(): Array<Point2> {
             return clients.map {
                 it.unpack().apply {
@@ -217,10 +179,6 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
                     y -= tile.y
                 }
             }.toTypedArray()
-        }
-
-        override fun config(): Any? {
-            return genRelativeAllPos()
         }
 
         override fun onProximityAdded() {
@@ -328,7 +286,6 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
         }
 
         override fun drawSelect() {
-            this.drawStreamGraph()
             drawSelectedMaxRange()
         }
         @SendDataPack

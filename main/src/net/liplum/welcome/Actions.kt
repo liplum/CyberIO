@@ -51,7 +51,7 @@ object Actions {
                 loading.setProgress { progress }
                 // Cache tips because updating successfully will replace codes and cause class not found exception.
                 val successTip = R.Ctrl.UpdateModSuccess.bundle(Updater.latestVersion)
-                Updater.updateSelfByReplace(Updater.DownloadURL, onProgress = { p ->
+                Updater.updateSelfByReplace(Updater.curDownloadURL, onProgress = { p ->
                     progress = p
                 }, onSuccess = {
                     loading.hide()

@@ -1,10 +1,13 @@
 package net.liplum.registry
 
-import mindustry.content.Blocks.*
-import mindustry.content.Items.silicon
+import mindustry.content.Items.oxide
+import mindustry.content.Items.thorium
 import mindustry.content.Liquids.cryofluid
-import mindustry.content.TechTree
-import net.liplum.mdt.withContext
+import mindustry.content.Liquids.slag
+import net.liplum.ErekirSpec
+import net.liplum.Meta
+import net.liplum.VanillaSpec
+import net.liplum.mdt.CreateTechTree
 import net.liplum.registry.CioBlocks.TMTRAINER
 import net.liplum.registry.CioBlocks.cyberionMixer
 import net.liplum.registry.CioBlocks.deleter
@@ -14,9 +17,9 @@ import net.liplum.registry.CioBlocks.heimdall
 import net.liplum.registry.CioBlocks.holoProjector
 import net.liplum.registry.CioBlocks.holoWall
 import net.liplum.registry.CioBlocks.holoWallLarge
-import net.liplum.registry.CioBlocks.icMachine
-import net.liplum.registry.CioBlocks.icMachineSmall
+import net.liplum.registry.CioBlocks.icAssembler
 import net.liplum.registry.CioBlocks.jammer
+import net.liplum.registry.CioBlocks.p2pNode
 import net.liplum.registry.CioBlocks.prism
 import net.liplum.registry.CioBlocks.prismObelisk
 import net.liplum.registry.CioBlocks.receiver
@@ -29,8 +32,8 @@ import net.liplum.registry.CioBlocks.streamHost
 import net.liplum.registry.CioBlocks.streamServer
 import net.liplum.registry.CioBlocks.underdriveProjector
 import net.liplum.registry.CioBlocks.wirelessTower
+import net.liplum.registry.CioBlocks.zipBomb
 import net.liplum.registry.CioItems.ic
-import net.liplum.registry.CioFluids.cyberion
 import net.liplum.registry.CioUnitTypes.holoArchitect
 import net.liplum.registry.CioUnitTypes.holoFighter
 import net.liplum.registry.CioUnitTypes.holoGuardian
@@ -39,56 +42,108 @@ import net.liplum.registry.CioUnitTypes.holoSupporter
 
 object CioTechTree {
     fun loadAll() {
-        loadSerpulo()
+        VanillaSpec {
+            loadSerpulo()
+        }
+        ErekirSpec {
+            loadErekir()
+        }
     }
 
     fun loadSerpulo() {
-        TechTree.all.withContext {
-            at(silicon).sub(ic, icMachineSmall)
-            at(cryofluid).sub(cyberion)
-            at(salvo).sub(TMTRAINER, icMachine) {
-                sub(ear)
-                sub(heimdall, eye, ear)
-                sub(eye)
-            }
-            at(parallax).sub(deleter, icMachine) {
-                sub(jammer)
-            }
-            at(coreShard).sub(icMachineSmall) {
-                sub(icMachine) {
-                    sub(prism) {
-                        sub(prismObelisk)
+        CreateTechTree(ic, Meta.Name) {
+            node(icAssembler) {
+                node(cyberionMixer, cryofluid, thorium) {
+                    node(stealth) {
+                        node(jammer)
                     }
-                }
-                sub(holoWall) {
-                    sub(holoWallLarge)
-                }
-            }
-            at(coreShard).sub(sender, icMachineSmall) {
-                sub(receiver, sender, overwriteReq = true) {
-                    sub(smartUnloader, icMachine)
-                    sub(smartDistributor, icMachine)
-                }
-                sub(streamClient) {
-                    sub(streamHost, icMachine, streamClient, overwriteReq = true) {
-                        sub(streamServer)
-                    }
-                }
-            }
-            at(powerNodeLarge).sub(wirelessTower, icMachine)
-            at(differentialGenerator).sub(underdriveProjector)
-            at(coreShard).sub(cyberionMixer, icMachine) {
-                sub(stealth, streamHost)
-                sub(holoProjector, cyberion) {
-                    sub(holoMiner, holoProjector, overwriteReq = true) {
-                        sub(holoSupporter) {
-                            sub(holoArchitect)
+                    node(holoProjector) {
+                        node(holoMiner) {
+                            node(holoSupporter)
+                            node(holoArchitect)
+                        }
+                        node(holoGuardian) {
+                            node(holoFighter)
                         }
                     }
-                    sub(holoGuardian, holoProjector, overwriteReq = true) {
-                        sub(holoFighter)
+                }
+            }
+            node(zipBomb)
+            node(eye) {
+                node(ear) {
+                    node(heimdall)
+                }
+            }
+            node(TMTRAINER) {
+                node(deleter)
+                node(prism) {
+                    node(prismObelisk)
+                }
+            }
+            node(holoWall) {
+                node(holoWallLarge)
+            }
+            node(sender) {
+                node(receiver) {
+                    node(smartUnloader)
+                    node(smartDistributor)
+                }
+            }
+            node(p2pNode) {
+                node(streamClient)
+                node(streamHost, streamClient)
+                node(streamServer, streamClient)
+            }
+            node(wirelessTower) {
+                node(underdriveProjector)
+            }
+        }
+    }
+
+    fun loadErekir() {
+        CreateTechTree(ic, Meta.Name) {
+            node(icAssembler) {
+                node(cyberionMixer, slag, oxide) {
+                    node(stealth) {
+                        node(jammer)
+                    }
+                    node(holoProjector) {
+                        node(holoFighter)
+                        node(holoSupporter)
+                        node(holoArchitect)
+                        node(holoMiner)
+                        node(holoGuardian)
                     }
                 }
+            }
+            node(eye) {
+                node(ear) {
+                    node(heimdall)
+                }
+            }
+            node(zipBomb) {
+                node(TMTRAINER)
+                node(deleter)
+                node(prism) {
+                    node(prismObelisk)
+                }
+            }
+            node(holoWall) {
+                node(holoWallLarge)
+            }
+            node(sender) {
+                node(receiver)
+                node(smartDistributor) {
+                    node(smartUnloader)
+                }
+            }
+            node(p2pNode) {
+                node(streamHost)
+                node(streamClient)
+                node(streamServer, streamClient, streamHost)
+            }
+            node(underdriveProjector) {
+                node(wirelessTower)
             }
         }
     }

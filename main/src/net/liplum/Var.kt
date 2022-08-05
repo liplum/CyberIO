@@ -15,7 +15,7 @@ object Var {
     // Visual Effects
     /** How much time to reach max selected circle */
     @JvmField var SelectedCircleTime = 60f
-    val MaxRangeCircleTimeFactor = if(Vars.mobile) 1 / 15f else 1f / 12f
+    val MaxRangeCircleTimeFactor = if (Vars.mobile) 1 / 15f else 1f / 12f
     const val CircleStroke = 3f
     @JvmField var SurroundingRectTime = 30f
     @JvmField var AnimUpdateFrequency = 5f
@@ -47,4 +47,8 @@ object Var {
     const val P2pNNodeBalanceThreshold = 2f
     const val P2pArrowRotationTime = 60f
     const val YinYangRotationSpeed = 5f
+    @JvmField var GlobalLinkDrawerAlpha = 1f
+    const val LinkDrawerTime = 20f
+    var HoloWallTintAlpha = 0.6423f // Vanilla as default
+    var HoloUnitTintAlpha = 0.404f // Vanilla as default
 }

@@ -2,7 +2,6 @@ package net.liplum.ui
 
 import arc.Core
 import arc.Events
-import arc.math.Interp
 import arc.scene.style.TextureRegionDrawable
 import arc.scene.ui.Dialog
 import arc.scene.ui.TextButton
@@ -18,6 +17,7 @@ import mindustry.ui.Styles
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.CheckSetting
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.SliderSetting
 import net.liplum.*
+import net.liplum.Settings.percentage2Density
 import net.liplum.annotations.Only
 import net.liplum.annotations.SubscribeEvent
 import net.liplum.common.ing
@@ -25,8 +25,7 @@ import net.liplum.common.util.bundle
 import net.liplum.common.util.getF
 import net.liplum.common.util.randomExcept
 import net.liplum.event.CioInitEvent
-import net.liplum.lib.UseReflection
-import net.liplum.lib.arc.invoke
+import plumy.core.UseReflection
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.IsLocal
 import net.liplum.mdt.UnsteamOnly
@@ -46,7 +45,7 @@ import net.liplum.welcome.WelcomeList
 @ClientOnly
 object CioUI {
     val textIcon by lazy {
-        TextureRegionDrawable("icon-text".inCio)
+        TextureRegionDrawable("icon-text".cioTR)
     }
     @JvmStatic
     @SubscribeEvent(CioInitEvent::class, Only.client)
@@ -108,14 +107,11 @@ object CioUI {
         ) {
             Settings.LinkOpacity = Core.settings.getInt(R.Setting.LinkOpacity) / 100f
         }
-        // input [0,100] -> output [0,30]
-        val pct2Density: (Int) -> Float = {
-            Interp.pow2Out(it / 100f) * 30f
-        }
+
         addSliderSettingX(R.Setting.LinkArrowDensity,
             15, 0, 100, 5, { "$it" }
         ) {
-            Settings.LinkArrowDensity = pct2Density(Core.settings.getInt(R.Setting.LinkArrowDensity, 15))
+            Settings.LinkArrowDensity = percentage2Density(Core.settings.getInt(R.Setting.LinkArrowDensity, 15))
         }
         addSliderSettingX(R.Setting.LinkAnimationSpeed,
             40, 0, 120, 5, { "$it" }
@@ -124,6 +120,9 @@ object CioUI {
         }
         addCheckPref(R.Setting.AlwaysShowLink, true) {
             Settings.AlwaysShowLink = Core.settings.getBool(R.Setting.AlwaysShowLink, true)
+        }
+        addCheckPref(R.Setting.LinkBloom, true) {
+            Settings.LinkBloom = Core.settings.getBool(R.Setting.LinkBloom, true)
         }
         addCheckPref(R.Setting.ShowLinkCircle, false) {
             Settings.ShowLinkCircle = Core.settings.getBool(R.Setting.ShowLinkCircle, false)

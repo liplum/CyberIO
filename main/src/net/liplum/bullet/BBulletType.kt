@@ -10,9 +10,9 @@ import mindustry.entities.Effect
 import mindustry.entities.Lightning
 import mindustry.entities.bullet.BulletType
 import mindustry.gen.Bullet
-import net.liplum.lib.assets.EmptyTR
+import plumy.core.assets.EmptyTR
 import net.liplum.mdt.render.DrawSize
-import net.liplum.lib.assets.TR
+import plumy.core.assets.TR
 import net.liplum.mdt.utils.atlas
 
 class BBulletType() : BulletType() {

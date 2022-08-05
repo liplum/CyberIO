@@ -3,13 +3,16 @@ package net.liplum.data
 import arc.func.Prov
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
+import arc.graphics.g2d.TextureRegion
 import arc.math.Mathf
 import arc.math.geom.Point2
 import arc.struct.ObjectSet
+import arc.util.Eachable
 import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.Vars
+import mindustry.entities.units.BuildPlan
 import mindustry.gen.Building
 import mindustry.graphics.Pal
 import mindustry.logic.LAccess
@@ -21,11 +24,7 @@ import net.liplum.Var
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
 import net.liplum.common.Changed
-import net.liplum.common.util.toFloat
 import net.liplum.data.Sender.SenderBuild
-import net.liplum.lib.Serialized
-import net.liplum.lib.assets.TR
-import net.liplum.lib.math.isZero
 import net.liplum.mdt.CalledBySync
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.SendDataPack
@@ -37,6 +36,10 @@ import net.liplum.mdt.render.DrawOn
 import net.liplum.mdt.render.SetColor
 import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.utils.*
+import plumy.core.Serialized
+import plumy.core.arc.Tick
+import plumy.core.assets.TR
+import plumy.core.math.isZero
 
 private typealias AniStateS = AniState<Sender, SenderBuild>
 
@@ -68,7 +71,6 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
         canOverdrive = false
         schematicPriority = 20
         unloadable = false
-        saveConfig = true
         callDefaultBlockDraw = false
         /**
          * For connect
@@ -78,12 +80,6 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
         }
         configClear<SenderBuild> {
             it.receiverPos = null
-        }
-        /**
-         * For schematic
-         */
-        config(Point2::class.java) { it: SenderBuild, point ->
-            it.resolveRelativePosFromRemote(point)
         }
     }
 
@@ -103,6 +99,11 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
         drawPlacingMaxRange(x, y, maxRange, R.C.Sender)
     }
 
+    override fun drawPlanRegion(plan: BuildPlan, list: Eachable<BuildPlan>) {
+        super.drawPlanRegion(plan, list)
+        drawPlanMaxRange(plan.x, plan.y, maxRange, R.C.Sender)
+    }
+
     override fun setBars() {
         super.setBars()
         DebugOnly {
@@ -111,11 +112,6 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
                 { "Last Send: ${lastSendingTime.toInt()}" },
                 { Pal.bar },
                 { lastSendingTime / SendingTime }
-            )
-            AddBar<SenderBuild>("queue",
-                { "Queue: $queue" },
-                { Pal.bar },
-                { (queue != null).toFloat() }
             )
         }
     }
@@ -130,7 +126,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
 
     open inner class SenderBuild : AniedBuild(), IDataSender {
         override val maxRange = this@Sender.maxRange
-        @ClientOnly var lastSendingTime = 0f
+        @ClientOnly var lastSendingTime: Tick = 0f
             set(value) {
                 field = value.coerceAtLeast(0f)
             }
@@ -156,17 +152,6 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
             val unpacked = Point2.unpack(pos)
             receiverPos = if (unpacked.dr().exists) unpacked else null
         }
-        @CalledBySync
-        fun resolveRelativePosFromRemote(relative: Point2) {
-            val abs = resolveRelativePos(relative)
-            queue = abs
-            if (abs.dr().exists) {
-                receiverPos = abs
-                queue = null
-            } else {
-                receiverPos = null
-            }
-        }
         /**
          * @param relative the relative position
          * @return
@@ -177,13 +162,6 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
             res.y += this.tile.y
             return res // now it's absolute position
         }
-        /**
-         * When this sender was restored by schematic, it should check whether the receiver was built.
-         *
-         * It's an absolute point
-         */
-        @CalledBySync
-        var queue: Point2? = null
         /**
          * Consider this block as (0,0)
          */
@@ -204,15 +182,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
 
         var lastTileChange = -2
         override fun updateTile() {
-            val waiting = queue
-            if (waiting != null) {
-                val dr = waiting.dr()
-                if (dr != null) {
-                    connectToSync(dr)
-                    queue = null
-                }
-            }
-            // Check connection only when any block changed
+            // Check connection and queue only when any block changed
             if (lastTileChange != Vars.world.tileChanges) {
                 lastTileChange = Vars.world.tileChanges
                 checkReceiverPos()
@@ -265,7 +235,6 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
         }
         @ClientOnly
         override fun drawSelect() {
-            this.drawDataNetGraph()
             drawSelectedMaxRange()
         }
         @ClientOnly
@@ -295,10 +264,6 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
                 return false
             }
             return true
-        }
-        @Synchronized
-        override fun config(): Any? {
-            return genRelativePos()
         }
 
         override fun acceptItem(source: Building, item: Item): Boolean {

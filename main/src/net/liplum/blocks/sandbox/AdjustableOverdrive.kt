@@ -14,12 +14,12 @@ import mindustry.world.meta.Stat
 import net.liplum.R
 import net.liplum.common.util.bundle
 import net.liplum.common.util.percentI
-import net.liplum.lib.Serialized
-import net.liplum.lib.math.ExpLogGen
-import net.liplum.lib.math.FUNC
-import net.liplum.lib.math.isZero
-import net.liplum.lib.math.shrink
+import net.liplum.math.shrink
 import net.liplum.mdt.ui.bars.AddBar
+import plumy.core.Serialized
+import plumy.core.math.ExpLogGen
+import plumy.core.math.FUNC
+import plumy.core.math.isZero
 import kotlin.math.abs
 
 open class AdjustableOverdrive(name: String) : OverdriveProjector(name) {

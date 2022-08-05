@@ -66,6 +66,7 @@ tasks.jar {
 }
 mindustryAssets {
     root at "$rootDir/assets"
+    icon at "$rootDir/icon-raw.png"
     sprites {
         dependsOn(tasks.antiAlias)
         dir = antiAliasedDir
@@ -77,6 +78,8 @@ tasks.withType<KotlinCompile>().configureEach {
         "-Xcontext-receivers",
     )
 }
+val MKUtilsVersion :String by project
+
 dependencies {
     implementation(project(":annotations"))
     implementation(project(":common"))
@@ -87,6 +90,8 @@ dependencies {
     importMindustry()
     implementation("com.github.liplum:OpenGAL:$OpenGalVersion")
     implementation("com.github.liplum.plumyjava:path-kt:$PlumyVersion")
+    implementation("com.github.plumygame.mkutils:texture:$MKUtilsVersion")
+    testImplementation("com.github.plumygame.mkutils:texture:$MKUtilsVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.2")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.0")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.0")
@@ -100,9 +105,6 @@ tasks.jar {
 
     from("$rootDir/meta") {
         include("*.json")
-    }
-    from("$rootDir/extra") {
-        include("**")
     }
 }
 

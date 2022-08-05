@@ -28,7 +28,8 @@ ___
 
 ### Hologram Projector
 
-![Holo Projector](GFX/HoloProjector-new.gif)
+![Holo Projector](GFX/HoloProjectingSerpulo.gif)
+![Holo Projector](GFX/HoloProjectingErekir.gif)
 
 ## Acknowledgements
 
@@ -45,7 +46,7 @@ ___
 <br>
 
 <kbd>   <br>   [Ukrainian] [Prosta4okua](https://github.com/Prosta4okua)   <br>   </kbd>   
-<kbd>   <br>   [Chinese Simplified] woodjecket#0554   <br>   </kbd>   
+<kbd>   <br>   [Chinese Simplified] [woodjecket](https://github.com/woodjecket)   <br>   </kbd>   
 <kbd>   <br>   [Japanese] [Sakuranokwa](https://github.com/Sakuranokwa)   <br>   </kbd>
 
 <br>

@@ -9,14 +9,17 @@ import arc.util.serialization.Jval.Jformat
 import kotlinx.coroutines.*
 import mindustry.Vars
 import mindustry.ui.dialogs.ModsDialog
-import net.liplum.*
+import net.liplum.CLog
+import net.liplum.CioMod
 import net.liplum.ConfigEntry.Companion.Config
-import net.liplum.lib.UseReflection
+import net.liplum.Meta
+import net.liplum.Settings
 import net.liplum.common.replaceByteBy
 import net.liplum.common.util.getMethodBy
 import net.liplum.common.util.useFakeHeader
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.HeadlessOnly
+import plumy.core.UseReflection
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.lang.reflect.Method
@@ -52,7 +55,7 @@ object Updater : CoroutineScope {
         updateInfoFileURL: String? = Meta.UpdateInfoURL,
         onFailed: (String) -> Unit = {},
     ) {
-        val url= updateInfoFileURL?:Meta.UpdateInfoURL
+        val url = updateInfoFileURL ?: Meta.UpdateInfoURL
         CLog.info("Update checking...")
         accessJob = launch(
             CoroutineExceptionHandler { _, e ->
@@ -110,8 +113,11 @@ object Updater : CoroutineScope {
         }
     }
     @ClientOnly
-    val DownloadURL: String
-        get() = "${Settings.GitHubMirrorUrl}/${Meta.Repo}${Meta.GitHubJarDownloadFragment}"
+    val curDownloadURL: String
+        get() {
+            val version = latestVersion.toString()
+            return "${Settings.GitHubMirrorUrl}/${Meta.Repo}/releases/download/v$version/CyberIO-$version.jar"
+        }
     @JvmStatic
     fun updateSelfByBuiltIn() {
         val modsDialog = Vars.ui.mods
@@ -186,7 +192,7 @@ object Updater : CoroutineScope {
         get() = updateInfo.Description.isNotEmpty()
     val UpdateDescription: String
         get() = updateInfo.Description
-    val matchMinGameVersion:Boolean
+    val matchMinGameVersion: Boolean
         get() = updateInfo.MinGameVersion <= Meta.CurGameVersion
 }
 

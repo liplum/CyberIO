@@ -14,6 +14,7 @@ import mindustry.entities.TargetPriority
 import mindustry.entities.bullet.BulletType
 import mindustry.gen.Building
 import mindustry.gen.Bullet
+import mindustry.gen.Sounds
 import mindustry.gen.Teamc
 import mindustry.gen.Unit
 import mindustry.graphics.Drawf
@@ -27,12 +28,12 @@ import net.liplum.Var
 import net.liplum.api.brain.*
 import net.liplum.common.math.PolarX
 import net.liplum.common.util.progress
-import net.liplum.lib.assets.EmptySounds
-import net.liplum.lib.assets.TR
-import net.liplum.lib.assets.TRs
-import net.liplum.lib.math.approachA
-import net.liplum.lib.math.approachR
-import net.liplum.lib.math.radian
+import plumy.core.assets.EmptySounds
+import plumy.core.assets.TR
+import plumy.core.assets.TRs
+import plumy.core.math.approachA
+import plumy.core.math.approachR
+import plumy.core.math.radian
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.animation.anims.Anime
@@ -81,6 +82,8 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
         buildType = Prov { EyeBuild() }
         priority = TargetPriority.turret
         canOverdrive = false
+        conductivePower = true
+        shootSound = Sounds.none
     }
 
     override fun init() {

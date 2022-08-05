@@ -1,8 +1,10 @@
 package net.liplum
 
 import arc.Core.settings
+import arc.math.Interp
 import mindustry.Vars
 import net.liplum.common.Setting
+import plumy.core.arc.invoke
 import net.liplum.mdt.ClientOnly
 import net.liplum.script.KeyNotFoundException
 import net.liplum.update.Version2
@@ -12,13 +14,18 @@ object Settings {
     @ClientOnly @JvmField var LinkArrowDensity = 15f
     @ClientOnly @JvmField var LinkArrowSpeed = 40f
     @ClientOnly @JvmField var AlwaysShowLink = true
+    @ClientOnly @JvmField var LinkBloom = true
     @ClientOnly @JvmField var ShowLinkCircle = false
     @ClientOnly @JvmField var ShowWirelessTowerCircle = true
+    // input [0,100] -> output [30,0]
+    fun percentage2Density(percent: Int): Float =
+        Interp.pow2Out(1f - percent / 100f) * 30f
     @JvmStatic
     fun updateSettings() {
         LinkOpacity = settings.getInt(R.Setting.LinkOpacity, 100) / 100f
         LinkArrowSpeed = settings.getInt(R.Setting.LinkAnimationSpeed, 40).toFloat()
         AlwaysShowLink = settings.getBool(R.Setting.AlwaysShowLink, true)
+        LinkBloom = settings.getBool(R.Setting.LinkBloom, true)
         ShowLinkCircle = settings.getBool(R.Setting.ShowLinkCircle, false)
         ShowWirelessTowerCircle = settings.getBool(R.Setting.ShowWirelessTowerCircle, true)
     }
@@ -49,7 +56,7 @@ object Settings {
      * So if you want to get the real last play time, please check [CioMod.lastPlayTime].
      */
     var LastPlayTime: Long by Setting(R.Setting.LastPlayTime, -1L)
-    var GitHubMirrorUrl: String by Setting(R.Setting.GitHubMirrorUrl, Meta.GitHubMirrorUrl)
+    var GitHubMirrorUrl: String by Setting(R.Setting.GitHubMirrorUrl, Meta.GitHubUrl)
     var ShaderRootPath: String by Setting(R.Setting.ShaderRootPath, "")
     var ContentSpecific: String by Setting(R.Setting.ContentSpecific, ContentSpec.Vanilla.id)
     /** Last skipped update. If it equals to current new version detected, it will skip the update dialog. */

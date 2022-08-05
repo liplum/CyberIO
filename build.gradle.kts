@@ -2,7 +2,7 @@ import io.github.liplum.mindustry.minGameVersion
 import net.liplum.gradle.settings.Settings.localConfig
 
 plugins {
-    id("io.github.liplum.mgpp") version "1.1.7"
+    id("io.github.liplum.mgpp") version "1.1.9"
 }
 buildscript {
     repositories {
@@ -16,7 +16,7 @@ buildscript {
 val settings = localConfig
 allprojects {
     group = "net.liplum"
-    version = "4.0"
+    version = "4.1"
     repositories {
         mavenCentral()
         maven {
@@ -51,11 +51,11 @@ mindustry {
             version = "v8.0.0",
             release = "erekir-client.jar"
         )*/
-        mindustry official "v136.1"
+        mindustry official "v137"
         clearUp
     }
     server {
-        mindustry official "v136.1"
+        mindustry official "v137"
     }
 }
 

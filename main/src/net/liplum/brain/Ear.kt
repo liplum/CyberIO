@@ -34,10 +34,10 @@ import net.liplum.common.persistence.ReadFromCache
 import net.liplum.common.persistence.WriteIntoCache
 import net.liplum.common.util.forLoop
 import net.liplum.common.util.toDouble
-import net.liplum.lib.Serialized
-import net.liplum.lib.arc.invoke
-import net.liplum.lib.assets.TR
-import net.liplum.lib.math.isZero
+import plumy.core.Serialized
+import plumy.core.arc.invoke
+import plumy.core.assets.TR
+import plumy.core.math.isZero
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.render.*
 import net.liplum.mdt.utils.MdtUnit
@@ -96,6 +96,7 @@ open class Ear(name: String) : Block(name), IComponentBlock {
         sync = true
         attacks = true
         canOverdrive = false
+        conductivePower = true
     }
 
     override fun init() {
@@ -267,23 +268,26 @@ open class Ear(name: String) : Block(name), IComponentBlock {
                 BaseHeatTR.Draw(x, y)
             }
             Draw.z(Layer.turret)
-            EarTR.DrawSize(x, y, scale)
+            EarTR.DrawSize(x, y, scale + G.sin / 20f)
             Draw.z(Layer.turretHeat)
             heatMeta.drawHeat(heatShared) {
-                EarHeatTR.DrawSize(x, y, scale)
+                EarHeatTR.DrawSize(x, y, scale + G.sin / 20f)
             }
             Draw.z(Layer.turret)
             Draw.z(Layer.bullet)
             for (wave in sonicWaves) {
                 val alpha = Interp.pow2In(wave.range / realSonicRadius)
-                Lines.stroke(waveWidth, sonicWaveColor)
-                Draw.alpha((1f - alpha) + 0.4f)
+                Lines.stroke(waveWidth * (1f - alpha), sonicWaveColor)
                 Lines.circle(wave.x, wave.y, wave.range)
             }
         }
 
         override fun drawSelect() {
             G.dashCircleBreath(x, y, realRange * smoothSelect(maxSelectedCircleTime), sonicWaveColor, stroke = Var.CircleStroke)
+        }
+
+        override fun shouldActiveSound(): Boolean {
+            return enabled && sonicWaves.list.isNotEmpty()
         }
         // </editor-fold>
         override fun updateTile() {

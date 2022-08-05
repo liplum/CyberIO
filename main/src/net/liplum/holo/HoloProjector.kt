@@ -1,7 +1,6 @@
 package net.liplum.holo
 
 import arc.Events
-import arc.func.Floatf
 import arc.func.Prov
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
@@ -13,7 +12,6 @@ import arc.math.geom.Vec2
 import arc.scene.ui.layout.Table
 import arc.struct.Seq
 import arc.util.Strings.autoFixed
-import arc.util.Structs
 import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
@@ -24,9 +22,7 @@ import mindustry.gen.Unit
 import mindustry.graphics.Layer
 import mindustry.graphics.Pal
 import mindustry.logic.LAccess
-import mindustry.type.Item
-import mindustry.type.Liquid
-import mindustry.type.UnitType
+import mindustry.type.*
 import mindustry.ui.Fonts
 import mindustry.ui.Styles
 import mindustry.world.Block
@@ -40,9 +36,9 @@ import net.liplum.UndebugOnly
 import net.liplum.common.shader.use
 import net.liplum.common.util.bundle
 import net.liplum.common.util.percentI
-import net.liplum.lib.Serialized
+import plumy.core.Serialized
 import net.liplum.mdt.*
-import net.liplum.mdt.consumer.DynamicContinuousLiquidCons
+import net.liplum.mdt.consumer.ConsumeFluidDynamic
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.ui.addItemSelectorDefault
 import net.liplum.mdt.ui.bars.AddBar
@@ -54,9 +50,8 @@ import net.liplum.ui.addTable
 import kotlin.math.max
 
 open class HoloProjector(name: String) : Block(name) {
-    @JvmField var plans: Seq<HoloPlan> = Seq()
+    @JvmField var plans: ArrayList<HoloPlan> = ArrayList()
     @JvmField var itemCapabilities: IntArray = IntArray(0)
-    @JvmField var cyberionCapacity: Float = 0f
     @JvmField var holoUnitCapacity = 8
     @JvmField var powerUse = 3f
     @ClientOnly @JvmField var projectorShrink = 5f
@@ -90,23 +85,13 @@ open class HoloProjector(name: String) : Block(name) {
     }
 
     override fun init() {
-        consume(ConsumeItemDynamic<HoloProjectorBuild> {
-            it.curPlan.itemReqs
+        consume(ConsumeFluidDynamic<HoloProjectorBuild> {
+            val plan = it.curPlan ?: return@ConsumeFluidDynamic LiquidStack.empty
+            plan.req.liquidArray
         })
-
-        consume(object : DynamicContinuousLiquidCons({
-            (it as HoloProjectorBuild).curPlan.cyberionReq
-        }) {
-            override fun update(b: Building) {
-                b as HoloProjectorBuild
-                val plan = b.curPlan
-                if (plan != null) {
-                    val liquid = plan.req.liquid
-                    if (liquid != null) {
-                        b.liquids.remove(liquid.liquid, liquid.amount / plan.time * b.edelta())
-                    }
-                }
-            }
+        consume(ConsumeItemDynamic<HoloProjectorBuild> {
+            val plan = it.curPlan ?: return@ConsumeItemDynamic ItemStack.empty
+            plan.req.items
         })
         consumePowerCond<HoloProjectorBuild>(powerUse) {
             it.curPlan != null
@@ -122,10 +107,8 @@ open class HoloProjector(name: String) : Block(name) {
                 itemCapacity = max(itemCapacity, itemReq.amount * 2)
             }
         }
-        cyberionCapacity = plans.max(
-            Floatf { it.req.cyberionReq }
-        ).req.cyberionReq * 2
-        liquidCapacity = cyberionCapacity
+        val cyberionCapacity = plans.maxBy { it.req.cyberion * 60f }.req.cyberion * 2
+        liquidCapacity = max(liquidCapacity, cyberionCapacity)
         super.init()
     }
 
@@ -174,6 +157,7 @@ open class HoloProjector(name: String) : Block(name) {
             null
         else
             plans[this]
+    var hoveredInfo: Table? = null
 
     open inner class HoloProjectorBuild : Building() {
         @Serialized
@@ -199,8 +183,9 @@ open class HoloProjector(name: String) : Block(name) {
             progressTime += edelta()
 
             if (progressTime >= plan.time) {
-                val projected = projectUnit(plan.unitType)
-                if (projected) {
+                val unitType = plan.unitType
+                if (unitType.canCreateHoloUnitIn(team)) {
+                    projectUnit(unitType)
                     consume()
                     progressTime = 0f
                 }
@@ -219,8 +204,10 @@ open class HoloProjector(name: String) : Block(name) {
                 progressTime.coerceAtMost(p.time)
             else
                 0f
+            rebuildHoveredInfo()
         }
 
+        override fun shouldConsume() = enabled && curPlan != null && progress < 1f
         override fun buildConfiguration(table: Table) {
             val options = Seq.with(plans).map {
                 it.unitType
@@ -231,7 +218,7 @@ open class HoloProjector(name: String) : Block(name) {
                 table.addItemSelectorDefault(this@HoloProjector, options,
                     { curPlan?.unitType }
                 ) { unit: UnitType? ->
-                    val selected = plans.indexOf {
+                    val selected = plans.indexOfFirst {
                         it.unitType == unit
                     }
                     configure(selected)
@@ -252,6 +239,18 @@ open class HoloProjector(name: String) : Block(name) {
             return true
         }
 
+        open fun rebuildHoveredInfo() {
+            try {
+                val info = hoveredInfo
+                if (info != null) {
+                    info.clear()
+                    display(info)
+                }
+            } catch (_: Exception) {
+                // Maybe null pointer or cast exception
+            }
+        }
+
         @JvmField var lastUnitInPayload: MdtUnit? = null
         fun findTrueHoloProjectorSource(): HoloProjectorBuild {
             val unit = lastUnitInPayload
@@ -269,24 +268,20 @@ open class HoloProjector(name: String) : Block(name) {
         }
 
         override fun config(): Any? = planIndex
-        open fun projectUnit(unitType: HoloUnitType): Boolean {
-            if (unitType.canCreateHoloUnitIn(team)) {
-                val unit = unitType.create(team)
-                if (unit is HoloUnit) {
-                    unit.set(x, y)
-                    ServerOnly {
-                        unit.add()
-                    }
-                    unit.setProjector(findTrueHoloProjectorSource())
-                    val commandPos = commandPos
-                    if (commandPos != null && unit.isCommandable) {
-                        unit.command().commandPosition(commandPos)
-                    }
-                    Events.fire(UnitCreateEvent(unit, this))
+        open fun projectUnit(unitType: HoloUnitType) {
+            val unit = unitType.create(team)
+            if (unit is HoloUnit) {
+                unit.set(x, y)
+                ServerOnly {
+                    unit.add()
                 }
-                return true
+                unit.setProjector(findTrueHoloProjectorSource())
+                val commandPos = commandPos
+                if (commandPos != null && unit.isCommandable) {
+                    unit.command().commandPosition(commandPos)
+                }
+                Events.fire(UnitCreateEvent(unit, this))
             }
-            return false
         }
         @ClientOnly
         var alpha = 0f
@@ -369,17 +364,14 @@ open class HoloProjector(name: String) : Block(name) {
         }
 
         override fun acceptLiquid(source: Building, liquid: Liquid) =
-            liquid == cyberion && liquids[cyberion] < cyberionCapacity
+            liquid == cyberion && liquids[cyberion] < liquidCapacity
 
         override fun getMaximumAccepted(item: Item) =
             itemCapabilities[item.id.toInt()]
 
         override fun acceptItem(source: Building, item: Item): Boolean {
             val curPlan = curPlan ?: return false
-            return items[item] < getMaximumAccepted(item) &&
-                    Structs.contains(curPlan.req.items) {
-                        it.item === item
-                    }
+            return items[item] < getMaximumAccepted(item) && item in curPlan.req
         }
 
         override fun created() {
@@ -460,7 +452,7 @@ open class HoloProjector(name: String) : Block(name) {
                         }.left()
                         addTable {
                             right()
-                            add(autoFixed(plan.req.cyberionReq, 1))
+                            add(autoFixed(plan.req.cyberion * 60f, 1))
                                 .color(cyberion.color).padLeft(12f).left()
                             image(cyberion.uiIcon).size((8 * 3).toFloat())
                                 .padRight(2f).right()

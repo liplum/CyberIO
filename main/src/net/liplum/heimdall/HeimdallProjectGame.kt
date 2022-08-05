@@ -8,7 +8,7 @@ import mindustry.ui.Bar
 import net.liplum.ui.INavigable
 import net.liplum.common.ui.UIToast
 import net.liplum.common.util.IBundlable
-import net.liplum.inCio
+import net.liplum.cioTR
 import net.liplum.mdt.ClientOnly
 import net.liplum.ui.CyberIOMenu
 import net.liplum.ui.control.TabItem
@@ -46,7 +46,7 @@ object HeimdallProjectGame : IBundlable {
     fun buildHud(t: Table) {
         t.clear()
         t.addTable {
-            add(Image(TRD("heimdall".inCio))).left()
+            add(Image(TRD("heimdall".cioTR))).left()
             addTable {
                 addBar(
                     Bar({ data.hud.health.toString() },

@@ -11,6 +11,8 @@ import mindustry.gen.Building
 import mindustry.type.Item
 import mindustry.type.Liquid
 import mindustry.world.Block
+import mindustry.world.meta.Stat
+import mindustry.world.meta.StatUnit
 import net.liplum.R
 import net.liplum.Var
 import net.liplum.annotations.SubscribeEvent
@@ -20,11 +22,12 @@ import net.liplum.common.util.Or
 import net.liplum.common.util.bundle
 import net.liplum.common.util.toFloat
 import net.liplum.event.CioInitEvent
-import net.liplum.lib.math.Point2f
-import net.liplum.lib.math.smooth
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.utils.*
+import net.liplum.registry.CioStats
+import plumy.core.math.Point2f
+import plumy.core.math.smooth
 
 private val p1 = Point2f()
 private val p2 = Point2f()
@@ -108,14 +111,18 @@ val ICyberEntity?.tileYd: Double
 //</editor-fold>
 typealias SingleItemArray = Seq<Item>
 
-object DataCenter {
+object CyberDataLoader {
     @JvmField var SingleItems: Array<SingleItemArray> = emptyArray()
-    @JvmStatic
+    @JvmField var SingleLiquid: Array<SingleLiquidArray> = emptyArray()
     @SubscribeEvent(CioInitEvent::class)
     fun initData() {
         val items = Vars.content.items()
         SingleItems = Array(items.size) {
             Seq.with(items[it])
+        }
+        val liquids = Vars.content.liquids()
+        SingleLiquid = Array(liquids.size) {
+            Seq.with(liquids[it])
         }
     }
 }
@@ -125,7 +132,7 @@ val Item?.req: SingleItemArray
     get() = if (this == null)
         EmptySingleItemArray
     else
-        DataCenter.SingleItems[this.ID]
+        CyberDataLoader.SingleItems[this.ID]
 
 fun Item?.match(requirements: SingleItemArray?): Boolean {
     this ?: return false
@@ -137,77 +144,18 @@ fun Int.isAccepted() =
     this == -1 || this > 0
 typealias SingleLiquidArray = Seq<Liquid>
 
-object StreamCenter {
-    @JvmField var SingleLiquid: Array<SingleLiquidArray> = emptyArray()
-    @JvmStatic
-    fun initStream() {
-        val liquids = Vars.content.liquids()
-        SingleLiquid = Array(liquids.size) {
-            Seq.with(liquids[it])
-        }
-    }
-    @JvmStatic
-    @ClientOnly
-    fun loadLiquidsColor() {
-        val liquids = Vars.content.liquids()
-        R.C.LiquidColors = Array(liquids.size) {
-            val liquid = liquids[it]
-            val color = liquid.color
-            // To prevent crash with the adaptor of liquid because their Liquid#color is null. @Discord Normalperson666#2826
-            // So I just cause a crash when loading and provide more details for handling with it.
-            assert(color != null) {
-                "${liquid.localizedName}(${liquid.name} of ${liquid.javaClass.name}) in ${liquid.minfo?.mod} has a nullable color." +
-                        "This message is only for notifying that you might be on a extreme condition about mods or some mods doesn't obey the rules of Mindustry." +
-                        "Try again after uninstalling some unnecessary mods."
-            }
-            color
-        }
-    }
-    @JvmStatic
-    @ClientOnly
-    fun initStreamColors() {
-        R.C.HostLiquidColors = Array(R.C.LiquidColors.size) {
-            R.C.LiquidColors[it].cpy().lerp(R.C.Host, 0.4f)
-        }
-        R.C.ClientLiquidColors = Array(R.C.LiquidColors.size) {
-            R.C.LiquidColors[it].cpy().lerp(R.C.Client, 0.4f)
-        }
-    }
-    @JvmStatic
-    @SubscribeEvent(CioInitEvent::class)
-    fun initAndLoad() {
-        initStream()
-        ClientOnly {
-            loadLiquidsColor()
-            initStreamColors()
-        }
-    }
-}
-
 val EmptySingleLiquidArray: SingleLiquidArray = Seq()
 val Liquid?.req: SingleLiquidArray
     get() = if (this == null)
         EmptySingleLiquidArray
     else
-        StreamCenter.SingleLiquid[this.ID]
+        CyberDataLoader.SingleLiquid[this.ID]
 
 fun Liquid?.match(requirements: SingleLiquidArray?): Boolean {
     this ?: return false
     requirements ?: return true
     return this in requirements
 }
-@ClientOnly
-val Liquid?.hostColor: Color
-    get() = if (this == null)
-        R.C.Host
-    else
-        R.C.HostLiquidColors[this.ID]
-@ClientOnly
-val Liquid?.clientColor: Color
-    get() = if (this == null)
-        R.C.Client
-    else
-        R.C.ClientLiquidColors[this.ID]
 
 fun transitionColor(from: Changed<Color>, to: Color): Color {
     val last = from.old
@@ -346,5 +294,42 @@ inline fun <reified T> Block.addP2pLinkInfo() where T : Building, T : IP2pNode {
         { R.C.P2P },
         { isConnected.toFloat() }
     )
+}
+//</editor-fold>
+//<editor-fold desc="Statistics">
+fun <T> T.addLinkRangeStats(range: Float) where  T : Block {
+    if (range < 0f)
+        stats.add(CioStats.dataRange, R.Bundle.Unlimited.bundle)
+    else
+        stats.add(CioStats.dataRange, range, StatUnit.blocks)
+}
+
+fun <T> T.addLimitedStats(stat: Stat, max: Int) where  T : Block {
+    if (max < 0)
+        stats.add(stat, R.Bundle.Unlimited.bundle)
+    else
+        stats.add(stat, "$max")
+}
+
+fun <T> T.addMaxSenderStats(max: Int) where  T : Block {
+    addLimitedStats(CioStats.dataMaxSender, max)
+}
+
+fun <T> T.addMaxReceiverStats(max: Int) where  T : Block {
+    addLimitedStats(CioStats.dataMaxReceiver, max)
+}
+
+fun <T> T.addMaxHostStats(max: Int) where  T : Block {
+    addLimitedStats(CioStats.dataMaxHost, max)
+}
+
+fun <T> T.addMaxClientStats(max: Int) where  T : Block {
+    addLimitedStats(CioStats.dataMaxClient, max)
+}
+/**
+ * @param speed pre second
+ */
+fun <T> T.addDataTransferSpeedStats(speed: Float) where  T : Block {
+    stats.add(CioStats.dataTransferSpeed, speed, StatUnit.perSecond)
 }
 //</editor-fold>

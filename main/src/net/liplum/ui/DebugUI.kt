@@ -20,7 +20,7 @@ import net.liplum.CLog
 import net.liplum.Var
 import net.liplum.annotations.Only
 import net.liplum.annotations.SubscribeEvent
-import net.liplum.lib.arc.tinted
+import plumy.core.arc.tinted
 import net.liplum.event.CioInitEvent
 import net.liplum.common.util.allFieldsIncludeParents
 import net.liplum.common.util.directSuperClass
@@ -122,7 +122,11 @@ object DebugUI {
             }
         }
 
+        var lastEntityNumber = 0
+
         fun rebuildEntityList() {
+            if(Groups.all.size() == lastEntityNumber) return
+            lastEntityNumber = Groups.all.size()
             if (!Vars.state.isGame) return
             val searchText = search.text.lowercase().trim()
             if (searchText.isEmpty()) return

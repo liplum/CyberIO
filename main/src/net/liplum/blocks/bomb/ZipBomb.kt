@@ -23,11 +23,10 @@ import mindustry.gen.Unit
 import mindustry.graphics.Drawf
 import mindustry.world.Block
 import mindustry.world.meta.BlockStatus
+import mindustry.world.meta.Stat
 import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.Var
-import net.liplum.lib.Serialized
-import net.liplum.lib.math.smooth
 import net.liplum.mdt.*
 import net.liplum.mdt.render.DrawSize
 import net.liplum.mdt.render.G
@@ -35,22 +34,20 @@ import net.liplum.mdt.render.smoothPlacing
 import net.liplum.mdt.render.smoothSelect
 import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.utils.worldXY
+import plumy.core.Serialized
+import plumy.core.math.smooth
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
 open class ZipBomb(name: String) : Block(name) {
     @JvmField var explodeEffect: Effect = Fx.reactorExplosion
-    @JvmField var damagePreUnit = 150f
-    @JvmField var rangePreUnit = 10f
     @JvmField var shake = 6f
     @JvmField var shakeDuration = 16f
     @JvmField var maxSensitive = 10
-    @JvmField var autoDetectTime = 300f
+    @JvmField var autoDetectTime = 240f
     @JvmField var warningRangeFactor = 2f
-    val explosionRange: Float
-        get() = rangePreUnit * Vars.tilesize * size
-    val explosionDamage: Float
-        get() = damagePreUnit * Vars.tilesize * size
+    @JvmField var explosionRange = 10f * Vars.tilesize
+    @JvmField var explosionDamage = 150f * Vars.tilesize
     @JvmField var circleColor: Color = R.C.RedAlert
     @ClientOnly @JvmField var maxSelectedCircleTime = Var.SelectedCircleTime
 
@@ -86,6 +83,12 @@ open class ZipBomb(name: String) : Block(name) {
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)
         G.dashCircleBreath(this, x, y, explosionRange * smoothPlacing(maxSelectedCircleTime), circleColor)
+    }
+
+    override fun setStats() {
+        super.setStats()
+        stats.add(Stat.damage, explosionDamage)
+        stats.add(Stat.range, explosionRange)
     }
 
     override fun setBars() {

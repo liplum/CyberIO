@@ -13,7 +13,7 @@ import mindustry.gen.EffectState
 import mindustry.gen.Posc
 import mindustry.graphics.Drawf
 import mindustry.graphics.Layer
-import net.liplum.Cio
+import net.liplum.cio
 import net.liplum.R
 import net.liplum.ResourceLoader
 import net.liplum.annotations.Only
@@ -24,7 +24,7 @@ import net.liplum.common.entity.RadiationArray
 import net.liplum.common.util.progress
 import net.liplum.common.util.sheetOneDirection
 import net.liplum.event.CioLoadContentEvent
-import net.liplum.lib.assets.TR
+import plumy.core.assets.TR
 import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.render.DrawSize
 import net.liplum.mdt.utils.MdtUnit
@@ -69,7 +69,7 @@ object BrainFx {
     @SubscribeEvent(CioLoadContentEvent::class, Only.client)
     fun load() {
         ResourceLoader += {
-            bloodBulletFrames = "blood-bullet-hit".Cio.sheetOneDirection(16)
+            bloodBulletFrames = "blood-bullet-hit".cio.sheetOneDirection(16)
             if (bloodBulletFrames.isNotEmpty())
                 bloodBulletFrames[0].texture.setFilter(TextureFilter.nearest)
         }

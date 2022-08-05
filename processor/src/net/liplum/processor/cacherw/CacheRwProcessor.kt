@@ -9,8 +9,8 @@ import net.liplum.processor.plusAssign
 import java.io.File
 
 /**
- * arc.util.io.Reads -> net.liplum.lib.persistence.CacheReaderSpec
- * arc.util.io.Writes -> net.liplum.lib.persistence.CacheWriter
+ * arc.util.io.Reads -> plumy.core.persistence.CacheReaderSpec
+ * arc.util.io.Writes -> plumy.core.persistence.CacheWriter
  */
 class CacheRwProcessor(
     private val codeGenerator: CodeGenerator,

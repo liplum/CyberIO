@@ -16,8 +16,8 @@ import mindustry.gen.Tex
 import mindustry.ui.Styles
 import mindustry.world.Block
 import mindustry.world.blocks.ItemSelection
-import net.liplum.lib.arc.invoke
-import net.liplum.lib.assets.TR
+import plumy.core.arc.invoke
+import plumy.core.assets.TR
 
 /**
  * Copy from [ItemSelection.buildTable]
@@ -25,10 +25,10 @@ import net.liplum.lib.assets.TR
 fun <T : UnlockableContent> Table.addItemSelector(
     @Nullable block: Block?,
     items: Seq<T>,
-    holder: Prov<T?>,
+    holder: () -> T?,
     closeSelect: Boolean,
     icon: T.() -> TR = { uiIcon },
-    consumer: Cons<T?>,
+    consumer: (T?) -> Unit,
 ) {
     val group = ButtonGroup<ImageButton>()
     group.setMinCheckCount(0)
@@ -76,9 +76,9 @@ fun <T : UnlockableContent> Table.addItemSelector(
 fun <T : UnlockableContent> Table.addItemSelector(
     @Nullable block: Block?,
     items: Seq<T>,
-    holder: Prov<T?>,
+    holder: () -> T?,
     icon: T.() -> TR = { uiIcon },
-    consumer: Cons<T?>,
+    consumer: (T?) -> Unit,
 ) {
     this.addItemSelector(block, items, holder, true, icon, consumer)
 }
@@ -86,8 +86,8 @@ fun <T : UnlockableContent> Table.addItemSelector(
 fun <T : UnlockableContent> Table.addItemSelectorDefault(
     @Nullable block: Block?,
     items: Seq<T>,
-    holder: Prov<T?>,
-    consumer: Cons<T?>,
+    holder: () -> T?,
+    consumer: (T?) -> Unit,
 ) {
     ItemSelection.buildTable(block, this, items, holder, consumer)
 }

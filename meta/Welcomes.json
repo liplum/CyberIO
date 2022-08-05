@@ -97,5 +97,14 @@
       "YesAction": "Navigation",
       "Locator": "/CyberIO/ContentSpecific"
     }
+  },
+  {
+    "ID": "CyberionForErekir",
+    "Condition": "SettingsReq",
+    "IconPath": "cyberion-for-erekir",
+    "Data": {
+      "ShowPoliteWelcome": true,
+      "CExpression": "@ContentSpecific == erekir && @ShouldShowWelcome"
+    }
   }
 ]

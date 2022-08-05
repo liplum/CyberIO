@@ -19,12 +19,15 @@ import mindustry.logic.Ranged
 import mindustry.world.Block
 import mindustry.world.Tile
 import mindustry.world.meta.BlockGroup
+import mindustry.world.meta.Stat
+import mindustry.world.meta.StatUnit
 import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.Var
-import net.liplum.lib.assets.TR
 import net.liplum.common.util.bundle
-import net.liplum.lib.math.isZero
+import plumy.core.arc.Tick
+import plumy.core.assets.TR
+import plumy.core.math.isZero
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.render.G
 import net.liplum.mdt.render.G.realHeight
@@ -77,9 +80,9 @@ fun AntiVirus.AntiVirusBuild.shieldExpanding() {
 
 open class AntiVirus(name: String) : Block(name) {
     @JvmField var range: Float = 60f
-    @JvmField var reload = 120f
-    @JvmField var maxCoolDown = 240f
-    @JvmField var minPrepareTime = 30f
+    @JvmField var reload: Tick = 120f
+    @JvmField var maxCoolDown: Tick = 240f
+    @JvmField var minPrepareTime: Tick = 30f
     @JvmField var heatRate = 0.1f
     @JvmField var shieldExpendMinInterval = ShieldExpandEffectDuration * 0.6f
     @JvmField var uninfectedColor: Color = R.C.GreenSafe
@@ -122,12 +125,18 @@ open class AntiVirus(name: String) : Block(name) {
         }
     }
 
+    override fun setStats() {
+        super.setStats()
+        stats.add(Stat.range, range, StatUnit.blocks)
+        stats.add(Stat.reload, 60f / reload, StatUnit.perSecond)
+    }
+
     override fun canReplace(other: Block) = super.canReplace(other) || other is Virus
     override fun minimapColor(tile: Tile) = R.C.GreenSafe.rgba()
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)
         val range = range * smoothPlacing(maxSelectedCircleTime)
-        drawEffectCirclePlace(x,y,uninfectedColor,range){
+        drawEffectCirclePlace(x, y, uninfectedColor, range) {
             G.selectedBreath(this, getOtherColor(this))
         }
     }

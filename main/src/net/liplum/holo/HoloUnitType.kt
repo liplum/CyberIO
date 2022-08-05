@@ -2,6 +2,7 @@ package net.liplum.holo
 
 import arc.Core
 import arc.graphics.Color
+import arc.graphics.Texture
 import arc.graphics.g2d.Draw
 import arc.graphics.g2d.Fill
 import arc.graphics.g2d.Lines
@@ -29,11 +30,12 @@ import mindustry.world.meta.Stat
 import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.S
-import net.liplum.holo.HoloProjector.HoloProjectorBuild
+import net.liplum.Var
 import net.liplum.common.shader.use
 import net.liplum.common.util.bundle
 import net.liplum.common.util.toFloat
-import net.liplum.lib.math.FUNC
+import net.liplum.holo.HoloProjector.HoloProjectorBuild
+import plumy.core.math.FUNC
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.Else
 import net.liplum.mdt.utils.MdtUnit
@@ -42,6 +44,8 @@ import net.liplum.mdt.utils.healthPct
 import net.liplum.mdt.utils.seconds
 import net.liplum.registry.SD
 import net.liplum.util.time
+import plumy.core.assets.TR
+import plumy.texture.*
 import kotlin.math.min
 
 /**
@@ -84,15 +88,24 @@ open class HoloUnitType(name: String) : UnitType(name) {
         payloadCapacity = 0f
     }
 
-    open fun AutoLife(lose: Float) {
-        this.lose = lose
-        this.lifespan = this.health / lose
-    }
-
-    open fun AutoLife(maxHealth: Float, lose: Float) {
-        this.health = maxHealth
-        this.lose = lose
-        this.lifespan = this.health / lose
+    override fun loadIcon() {
+        super.loadIcon()
+        val width = fullIcon.width
+        val height = fullIcon.height
+        val maker = StackIconMaker(width, height)
+        val rawIcon = fullIcon
+        val layers = listOf(
+            (PixmapRegionModelLayer(Core.atlas.getPixmap(rawIcon))){
+                +PlainLayerProcessor()
+            },
+            (PixmapRegionModelLayer(Core.atlas.getPixmap(rawIcon))){
+                +TintLerpLayerProcessor(S.Hologram, Var.HoloUnitTintAlpha)
+            }
+        )
+        val baked = maker.bake(layers).texture.toPixmap()
+        val icon = TR(Texture(baked))
+        fullIcon = icon
+        uiIcon = icon
     }
 
     open val Unit.holoAlpha: Float
@@ -185,8 +198,10 @@ open class HoloUnitType(name: String) : UnitType(name) {
                     unit.rotation
                 )
             } else {
-                DrawPart.params.set(0f, 0f, 0f, 0f, 0f, 0f,
-                    unit.x, unit.y, unit.rotation)
+                DrawPart.params.set(
+                    0f, 0f, 0f, 0f, 0f, 0f,
+                    unit.x, unit.y, unit.rotation
+                )
             }
             if (unit is Scaled) {
                 DrawPart.params.life = unit.fin()
@@ -280,21 +295,34 @@ open class HoloUnitType(name: String) : UnitType(name) {
                 )
                 bars.row()
             }
-
             if (unit is HoloUnit) {
-                bars.add(
-                    Bar({
-                        val p = unit.projectorPos.TE<HoloProjectorBuild>()
-                        if (p != null) "${p.tileX()},${p.tileY()}"
-                        else "${Iconc.cancel}"
-                    }, {
-                        val p = unit.projectorPos.TE<HoloProjectorBuild>()
-                        if (p != null) S.Hologram
-                        else Color.gray
-                    }, {
-                        (unit.projectorPos.TE<HoloProjectorBuild>() != null).toFloat()
-                    })
-                )
+                DebugOnly {
+                    bars.add(
+                        Bar({
+                            val p = unit.projectorPos.TE<HoloProjectorBuild>()
+                            if (p != null) "${p.tileX()},${p.tileY()}"
+                            else "${Iconc.cancel}"
+                        }, {
+                            val p = unit.projectorPos.TE<HoloProjectorBuild>()
+                            if (p != null) S.Hologram
+                            else Color.gray
+                        }, {
+                            (unit.projectorPos.TE<HoloProjectorBuild>() != null).toFloat()
+                        })
+                    )
+                }.Else {
+                    bars.add(
+                        Bar({
+                            val p = unit.projectorPos.TE<HoloProjectorBuild>()
+                            if (p != null) "${Iconc.home}"
+                            else "${Iconc.cancel}"
+                        }, {
+                            S.Hologram
+                        }, {
+                            (unit.projectorPos.TE<HoloProjectorBuild>() != null).toFloat()
+                        })
+                    )
+                }
                 bars.row()
             }
             if (unit is Payloadc && canShowPayload(unit)) {
@@ -332,4 +360,16 @@ open class HoloUnitType(name: String) : UnitType(name) {
                 .a(0.7f * alpha)
         )
     }
+}
+
+fun HoloUnitType.autoLife(hp: Float = health, lose: Float) {
+    this.health = hp
+    this.lose = lose
+    this.lifespan = this.health / lose
+}
+
+fun HoloUnitType.limitLife(hp: Float, lifespan: Float) {
+    this.health = hp
+    this.lifespan = lifespan
+    this.lose = hp / lifespan
 }

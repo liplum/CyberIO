@@ -22,12 +22,14 @@ import net.liplum.mdt.HeadlessOnly
 import net.liplum.mdt.IsSteam
 import net.liplum.mdt.animation.ganim.GlobalAnimation
 import net.liplum.mdt.safeCall
+import net.liplum.registry.CioBlocks
 import net.liplum.registry.CioShaderLoader
 import net.liplum.registry.CioTechTree
 import net.liplum.registry.ServerCommands.registerCioCommands
 import net.liplum.registry.SpecificLoader
 import net.liplum.render.TestShader
 import net.liplum.script.NpcSystem
+import net.liplum.ui.IconGenDebugDialog
 import net.liplum.update.Updater
 import net.liplum.welcome.FirstLoaded
 import net.liplum.welcome.Welcome
@@ -105,6 +107,7 @@ class CioMod : Mod() {
                 val debugSpec = System.getenv("CYBERIO_SPEC")
                 if (debugSpec != null) {
                     ContentSpecific = debugSpec.resolveContentSpec()
+                    Settings.ContentSpecific = ContentSpecific.id
                 }
             }
         }
@@ -170,6 +173,14 @@ class CioMod : Mod() {
         meta.version = ContentSpecific.suffixModVersion(meta.version)
         ClientOnly {
             meta.subtitle = "[#${ContentSpecific.color}]${Meta.Version} ${ContentSpecific.i18nName}[]"
+        }
+        VanillaSpec {
+            Var.HoloWallTintAlpha = 0.6423f
+            Var.HoloUnitTintAlpha = 0.404f
+        }
+        ErekirSpec {
+            Var.HoloWallTintAlpha = 0.4688f
+            Var.HoloUnitTintAlpha = 0.3442f
         }
         Events.fire(CioLoadContentEvent())
         Contents.load()

@@ -10,20 +10,20 @@ import arc.files.Fi
 import arc.struct.ObjectMap
 import arc.util.I18NBundle
 import arc.util.io.PropertiesUtils
-import net.liplum.lib.arc.set
+import plumy.core.arc.set
 import net.liplum.common.Res
-import net.liplum.lib.UseReflection
+import plumy.core.UseReflection
 import java.io.Reader
 import java.util.*
 
 typealias BundleKey = String
 
-fun String.bundle(vararg args: Any): String = Core.bundle.format(this, *args)
-fun String.bundle(bundle: I18NBundle, vararg args: Any): String = bundle.format(this, *args)
+fun BundleKey.bundle(vararg args: Any): String = Core.bundle.format(this, *args)
+fun BundleKey.bundle(bundle: I18NBundle, vararg args: Any): String = bundle.format(this, *args)
 private val bundle2Fields: MutableMap<I18NBundle, BundleFields> = HashMap()
 
 class BundleFields(
-    val properties: ObjectMap<String, String>,
+    val properties: ObjectMap<BundleKey, String>,
     val formatter: Any,
 ) {
     @UseReflection
@@ -32,23 +32,23 @@ class BundleFields(
         String::class.java, Array<Any>::class.java
     )
 
-    operator fun get(key: String): String =
+    operator fun get(key: BundleKey): String =
         properties[key]
 
-    operator fun set(key: String, value: String) {
+    operator fun set(key: BundleKey, value: String) {
         properties[key] = value
     }
     /**
      * Find its value by key then format value
      */
-    fun format(key: String, vararg args: Any) {
+    fun format(key: BundleKey, vararg args: Any) {
         formatterFunc(formatter, properties[key], args)
     }
     /**
      * Directly format this value
      */
     @UseReflection
-    fun formatValue(value: String, vararg args: Any): String {
+    fun formatValue(value: BundleKey, vararg args: Any): String {
         return formatterFunc(formatter, value, args) as String
     }
 }
@@ -62,7 +62,7 @@ private fun I18NBundle.getBundleFields(): BundleFields {
     }
 }
 @UseReflection
-operator fun I18NBundle.set(key: String, value: String) {
+operator fun I18NBundle.set(key: BundleKey, value: String) {
     val fields = this.getBundleFields()
     fields.properties[key] = value
 }
@@ -80,10 +80,10 @@ fun I18NBundle.formatDirectly(
 /**
  * Find i18n in the default bundle
  */
-val String.bundle: String
+val BundleKey.bundle: String
     get() = Core.bundle.format(this)
 
-fun String.bundle(bundle: I18NBundle): String = bundle[this]
+fun BundleKey.bundle(bundle: I18NBundle): String = bundle[this]
 fun I18NBundle.loadMore(file: Fi) {
     file.reader().use { loadMore(it) }
 }
@@ -97,14 +97,14 @@ fun I18NBundle.loadMore(reader: Reader) {
  * To prevent stack overflow, this uses loop instead of recursion
  * @param maxDepth to prevent infinite loop, please set an appropriate value.
  */
-fun String.handleBundleRefer(maxDepth: Int = 16): String = this.handleBundleRefer(Core.bundle, maxDepth)
+fun BundleKey.handleBundleRefer(maxDepth: Int = 16): String = this.handleBundleRefer(Core.bundle, maxDepth)
 /**
  * Handle with the reference in specified bundle.
  *
  * To prevent stack overflow, this uses loop instead of recursion
  * @param maxDepth to prevent infinite loop, please set an appropriate value.
  */
-fun String.handleBundleRefer(bundle: I18NBundle, maxDepth: Int = 16): String {
+fun BundleKey.handleBundleRefer(bundle: I18NBundle, maxDepth: Int = 16): String {
     var curStr = this
     for (i in 0 until maxDepth) {
         if (curStr.startsWith('@'))
@@ -154,11 +154,11 @@ fun createModBundle(): I18NBundle {
 }
 
 interface IBundle {
-    operator fun get(key: String): String
-    operator fun set(key: String, value: String)
-    fun getOrDefault(key: String, default: String): String
-    operator fun contains(key: String): Boolean
-    fun format(key: String, vararg args: Any): String
+    operator fun get(key: BundleKey): String
+    operator fun set(key: BundleKey, value: String)
+    fun getOrDefault(key: BundleKey, default: String): String
+    operator fun contains(key: BundleKey): Boolean
+    fun format(key: BundleKey, vararg args: Any): String
 }
 /**
  * If it has new bundle pair, use new pair
@@ -169,36 +169,36 @@ class OverwriteBundle(
     /**
      * Key to value
      */
-    var overwrites: MutableMap<String, String> = HashMap()
+    var overwrites: MutableMap<BundleKey, String> = HashMap()
     /**
      * Key to value
      */
-    fun overwrite(map: Map<String, String>): OverwriteBundle {
+    fun overwrite(map: Map<BundleKey, String>): OverwriteBundle {
         overwrites.putAll(map)
         return this
     }
     /**
      * Key to value
      */
-    fun overwrite(key: String, value: String): OverwriteBundle {
+    fun overwrite(key: BundleKey, value: String): OverwriteBundle {
         overwrites[key] = value
         return this
     }
 
-    override fun get(key: String): String =
+    override fun get(key: BundleKey): String =
         overwrites[key] ?: bundle[key]
 
-    override fun set(key: String, value: String) {
+    override fun set(key: BundleKey, value: String) {
         bundle[key] = value
     }
 
-    override fun format(key: String, vararg args: Any): String =
+    override fun format(key: BundleKey, vararg args: Any): String =
         overwrites[key]?.format(*args) ?: bundle.format(key, *args)
 
-    override fun getOrDefault(key: String, default: String): String =
+    override fun getOrDefault(key: BundleKey, default: String): String =
         overwrites[key] ?: bundle[key, default]
 
-    override fun contains(key: String) =
+    override fun contains(key: BundleKey) =
         key in overwrites || bundle.has(key)
 }
 /**
@@ -210,23 +210,23 @@ class MapKeyBundle(
     /**
      * Key to new key
      */
-    var overwritesKey2Key: MutableMap<String, String> = HashMap()
+    var overwritesKey2Key: MutableMap<BundleKey, String> = HashMap()
     /**
      * Key to new key
      */
-    fun overwrite(map: Map<String, String>): MapKeyBundle {
+    fun overwrite(map: Map<BundleKey, String>): MapKeyBundle {
         overwritesKey2Key.putAll(map)
         return this
     }
     /**
      * Key to new key
      */
-    fun overwrite(key: String, value: String): MapKeyBundle {
+    fun overwrite(key: BundleKey, value: String): MapKeyBundle {
         overwritesKey2Key[key] = value
         return this
     }
 
-    override fun get(key: String): String =
+    override fun get(key: BundleKey): String =
         overwritesKey2Key[key].let {
             if (it != null)
                 bundle[it]
@@ -234,14 +234,14 @@ class MapKeyBundle(
                 bundle[key]
         }
 
-    override fun set(key: String, value: String) {
+    override fun set(key: BundleKey, value: String) {
         bundle[key] = value
     }
     /**
      * If [key] in [overwritesKey2Key], format new key's value by [args]
      * If not, format [key] by [args]
      */
-    override fun format(key: String, vararg args: Any): String =
+    override fun format(key: BundleKey, vararg args: Any): String =
         overwritesKey2Key[key].let {
             if (it != null)
                 bundle.formatDirectly(it, *args)
@@ -249,7 +249,7 @@ class MapKeyBundle(
                 bundle.format(key, *args)
         }
 
-    override fun getOrDefault(key: String, default: String): String =
+    override fun getOrDefault(key: BundleKey, default: String): String =
         overwritesKey2Key[key].let {
             if (it != null)
                 bundle[it, default]
@@ -264,26 +264,23 @@ class MapKeyBundle(
 value class ReferBundleWrapper(
     val bundle: I18NBundle,
 ) : IBundle {
-    override operator fun get(key: String): String =
+    override operator fun get(key: BundleKey): String =
         bundle[key].handleBundleRefer(bundle)
 
-    override fun getOrDefault(key: String, default: String) =
+    override fun getOrDefault(key: BundleKey, default: String) =
         bundle[key, default].handleBundleRefer(bundle)
 
-    operator fun get(key: String, default: String): String =
+    operator fun get(key: BundleKey, default: String): String =
         bundle[key, default].handleBundleRefer(bundle)
 
-    fun has(key: String) =
-        bundle.has(key)
-
-    override fun set(key: String, value: String) {
+    override fun set(key: BundleKey, value: String) {
         bundle[key] = value
     }
 
-    override operator fun contains(key: String) =
+    override operator fun contains(key: BundleKey) =
         bundle.has(key)
 
-    override fun format(key: String, vararg args: Any): String =
+    override fun format(key: BundleKey, vararg args: Any): String =
         bundle.format(key, *args)
 
     fun loadMoreFrom(folder: String, defaultLocale: String = "en") {
@@ -295,7 +292,7 @@ value class ReferBundleWrapper(
     }
 
     fun handleRefer(text: String): String =
-        if (has(text))
+        if (text in this)
             bundle[text]
         else
             text
@@ -311,7 +308,7 @@ interface IBundlable {
     val parentBundle: IBundlable?
         get() = null
 
-    fun bundle(key: String, vararg args: Any) =
+    fun bundle(key: BundleKey, vararg args: Any) =
         if (args.isEmpty()) {
             val parent = parentBundle
             if (parent != null) "${parent.bundlePrefix}.${bundlePrefix}.$key".bundle

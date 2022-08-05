@@ -3,10 +3,11 @@
 package net.liplum.util
 
 import mindustry.ctype.MappableContent
+import net.liplum.common.util.StartWithHyphen
 import net.liplum.common.util.sheet
 import net.liplum.common.util.sheetOneDirection
-import net.liplum.lib.assets.TR
-import net.liplum.lib.assets.TRs
+import plumy.core.assets.TR
+import plumy.core.assets.TRs
 import net.liplum.mdt.utils.atlas
 import net.liplum.mdt.utils.or
 import net.liplum.mdt.utils.sheet
@@ -23,8 +24,9 @@ fun String.atlasX(): TR {
 /**
  * Support content specific. see [MappableContent.sub]
  */
-fun MappableContent.subX(subName: String): TR =
-    "${this.name}-$subName".atlasX()
+@StartWithHyphen
+fun MappableContent.subX(suffix: String): TR =
+    "${this.name}-$suffix".atlasX()
 
 fun MappableContent.atlasX(): TR =
     name.atlasX()

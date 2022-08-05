@@ -3,11 +3,11 @@ package net.liplum.welcome
 import arc.Core
 import arc.Events
 import arc.struct.ObjectMap
+import arc.util.ArcRuntimeException
 import arc.util.Time
 import arc.util.serialization.JsonValue
 import mindustry.game.EventType.Trigger
 import mindustry.io.JsonIO
-import net.liplum.Cio
 import net.liplum.CioMod
 import net.liplum.Meta
 import net.liplum.S
@@ -19,15 +19,16 @@ import net.liplum.Settings.ShowUpdate
 import net.liplum.annotations.Only
 import net.liplum.annotations.SubscribeEvent
 import net.liplum.blocks.tmtrainer.RandomName
+import net.liplum.cio
 import net.liplum.common.Res
 import net.liplum.common.util.ReferBundleWrapper
 import net.liplum.common.util.allMaxBy
 import net.liplum.common.util.randomExcept
 import net.liplum.event.CioInitEvent
-import net.liplum.lib.assets.TR
-import net.liplum.lib.math.randomByWeights
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.utils.atlas
+import plumy.core.assets.TR
+import plumy.core.math.randomByWeights
 
 @ClientOnly
 object Welcome {
@@ -129,7 +130,7 @@ object Welcome {
         val json = Res("WelcomeInfo.json").readAllText()
         infoJson = JsonIO.json.fromJson(ObjectMap::class.java, json) as ObjectMap<String, JsonValue>
         val curInfo = infoJson.get(Meta.Version)
-        assert(curInfo != null) { "The welcome words information of Cyber IO ${Meta.Version} not found." }
+            ?: throw ArcRuntimeException("The welcome words information of Cyber IO ${Meta.Version} not found.")
         val default = curInfo.get("Default")?.asString() ?: "Default"
         val scenes = curInfo.get("Scene")?.asStringArray() ?: emptyArray()
         val parent: String? = curInfo.get("Parent")?.asString()
@@ -172,7 +173,7 @@ object Welcome {
     fun String.handleTrRefer(): TR =
         if (startsWith('@'))
             removePrefix("@").atlas()
-        else Cio.atlas()
+        else cio.atlas()
 
     class Entity(
         val bundle: ReferBundleWrapper,

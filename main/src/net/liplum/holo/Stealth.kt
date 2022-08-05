@@ -31,16 +31,18 @@ import net.liplum.DebugOnly
 import net.liplum.S
 import net.liplum.api.cyber.*
 import net.liplum.api.holo.IHoloEntity
+import net.liplum.api.holo.IHoloEntity.Companion.addHoloChargeTimeStats
+import net.liplum.api.holo.IHoloEntity.Companion.addHoloHpAtLeastStats
 import net.liplum.api.holo.IHoloEntity.Companion.minHealth
 import net.liplum.bullet.RuvikBullet
 import net.liplum.common.delegate.Delegate1
 import net.liplum.common.persistence.read
 import net.liplum.common.persistence.write
 import net.liplum.common.shader.use
-import net.liplum.lib.Serialized
-import net.liplum.lib.assets.TR
-import net.liplum.lib.math.isZero
-import net.liplum.lib.math.nextBoolean
+import plumy.core.Serialized
+import plumy.core.assets.TR
+import plumy.core.math.isZero
+import plumy.core.math.nextBoolean
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.animation.Floating
@@ -53,7 +55,7 @@ import net.liplum.registry.CioFluids.cyberion
 import net.liplum.registry.SD
 
 open class Stealth(name: String) : Turret(name) {
-    @JvmField var restoreReload = 10 * 60f
+    @JvmField var restoreChargeTime = 10 * 60f
     @JvmField var maxConnection = -1
     @JvmField var shootType: BulletType = Bullets.placeholder
     @JvmField var activePower = 2.5f
@@ -98,6 +100,8 @@ open class Stealth(name: String) : Turret(name) {
         stats.add(Stat.powerUse) {
             it.add("${(reactivePower * 60f).toInt()} + ${(activePower * 60f).toInt()} ${StatUnit.powerSecond.localized()}")
         }
+        addHoloChargeTimeStats(restoreChargeTime)
+        addHoloHpAtLeastStats(minHealthProportion)
     }
 
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
@@ -159,18 +163,18 @@ open class Stealth(name: String) : Turret(name) {
     open inner class StealthBuild : TurretBuild(), IStreamClient, IHoloEntity {
         // Hologram
         @Serialized
-        var restoreCharge = restoreReload
+        var restoreCharge = restoreChargeTime
         @Serialized
         override var restRestore = 0f
             set(value) {
                 field = value.coerceAtLeast(0f)
             }
         @Serialized
-        open var lastDamagedTime = restoreReload
+        open var lastDamagedTime = restoreChargeTime
         override val minHealthProportion: Float
             get() = this@Stealth.minHealthProportion
         open val canRestructure: Boolean
-            get() = lastDamagedTime > restoreReload
+            get() = lastDamagedTime > restoreChargeTime
         open val canRestore: Boolean
             get() = health < maxHealth
         open val isRecovering: Boolean
@@ -194,7 +198,7 @@ open class Stealth(name: String) : Turret(name) {
             }
             unit.ammo(unit.type().ammoCapacity * liquids.currentAmount() / liquidCapacity)
             lastDamagedTime += delta()
-            if (restoreCharge < restoreReload && !isRecovering && canRestructure) {
+            if (restoreCharge < restoreChargeTime && !isRecovering && canRestructure) {
                 restoreCharge += delta()
             }
             if (isRecovering) {
@@ -208,7 +212,7 @@ open class Stealth(name: String) : Turret(name) {
                     restRestore -= restored
                 }
             }
-            if (canRestore && restoreCharge >= restoreReload) {
+            if (canRestore && restoreCharge >= restoreChargeTime) {
                 val restoreReq = curCyberionReq
                 if (liquids[cyberion] >= curCyberionReq) {
                     restoreCharge = 0f
@@ -344,12 +348,12 @@ open class Stealth(name: String) : Turret(name) {
             AddBar<StealthBuild>("charge",
                 { "Charge: ${restoreCharge.seconds}" },
                 { Pal.power },
-                { restoreCharge / restoreReload }
+                { restoreCharge / restoreChargeTime }
             )
             AddBar<StealthBuild>("last-damage",
                 { "Last Damage:${lastDamagedTime.seconds}s" },
                 { Pal.power },
-                { lastDamagedTime / restoreReload }
+                { lastDamagedTime / restoreChargeTime }
             )
         }
     }

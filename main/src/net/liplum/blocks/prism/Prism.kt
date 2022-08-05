@@ -20,6 +20,7 @@ import mindustry.graphics.Pal
 import mindustry.logic.LAccess
 import mindustry.logic.Ranged
 import mindustry.world.Block
+import mindustry.world.Tile
 import mindustry.world.blocks.ControlBlock
 import mindustry.world.blocks.defense.turrets.ContinuousTurret
 import mindustry.world.blocks.defense.turrets.LaserTurret
@@ -38,12 +39,12 @@ import net.liplum.blocks.prism.CrystalManager.Companion.write
 import net.liplum.common.math.PolarX
 import net.liplum.common.util.bundle
 import net.liplum.common.util.percentI
-import net.liplum.lib.Serialized
-import net.liplum.lib.arc.AnimatedColor
-import net.liplum.lib.assets.EmptyTRs
-import net.liplum.lib.assets.TR
-import net.liplum.lib.assets.TRs
-import net.liplum.lib.math.*
+import plumy.core.Serialized
+import plumy.core.arc.AnimatedColor
+import plumy.core.assets.EmptyTRs
+import plumy.core.assets.TR
+import plumy.core.assets.TRs
+import plumy.core.math.*
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.advanced.Inspector
 import net.liplum.mdt.advanced.Inspector.isSelected
@@ -51,9 +52,10 @@ import net.liplum.mdt.mixin.copy
 import net.liplum.mdt.render.*
 import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.utils.*
+import net.liplum.registry.CioStats
 import kotlin.math.abs
 import kotlin.math.log2
-
+import net.liplum.math.quadratic
 open class Prism(name: String) : Block(name) {
     var PS: FUNC = quadratic(1.2f, 0.2f)
     /** Above ground level.*/
@@ -131,6 +133,12 @@ open class Prism(name: String) : Block(name) {
         clipSize = Agl + (prismRadius * 3 * maxCrystal) + elevation
     }
 
+    override fun setStats() {
+        super.setStats()
+        stats.add(CioStats.maxObelisk, "${maxCrystal - 1}")
+    }
+
+    override fun minimapColor(tile: Tile) = animatedColor.color.rgba8888()
     companion object {
         @JvmField @ClientOnly
         val animatedColor = AnimatedColor(

@@ -20,6 +20,7 @@ import mindustry.ai.types.CommandAI
 import mindustry.content.Fx
 import mindustry.content.UnitTypes
 import mindustry.entities.TargetPriority
+import mindustry.game.EventType.TapEvent
 import mindustry.gen.*
 import mindustry.graphics.Layer
 import mindustry.graphics.Pal
@@ -34,6 +35,8 @@ import net.liplum.CioMod
 import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.Var
+import net.liplum.annotations.Only
+import net.liplum.annotations.SubscribeEvent
 import net.liplum.api.IExecutioner
 import net.liplum.api.brain.*
 import net.liplum.common.delegate.Delegate
@@ -43,10 +46,10 @@ import net.liplum.common.persistence.ReadFromCache
 import net.liplum.common.persistence.WriteIntoCache
 import net.liplum.common.util.format
 import net.liplum.common.util.toDouble
-import net.liplum.lib.Serialized
-import net.liplum.lib.assets.TR
-import net.liplum.lib.math.isZero
-import net.liplum.lib.math.pow2OutIntrp
+import plumy.core.Serialized
+import plumy.core.assets.TR
+import plumy.core.math.isZero
+import plumy.core.math.pow2OutIntrp
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.HeadlessOnly
 import net.liplum.mdt.WhenNotPaused
@@ -126,6 +129,7 @@ open class Heimdall(name: String) : Block(name) {
         flags = EnumSet.of(BlockFlag.turret)
         attacks = true
         canOverdrive = false
+        conductivePower = true
     }
 
     override fun init() {
@@ -303,6 +307,10 @@ open class Heimdall(name: String) : Block(name) {
 
         override fun delta(): Float {
             return this.timeScale * Time.delta * speedScale * (1f + heatShared)
+        }
+
+        override fun shouldActiveSound(): Boolean {
+            return enabled && brainWaves.list.isNotEmpty()
         }
 
         override fun updateTile() {
@@ -781,6 +789,16 @@ open class Heimdall(name: String) : Block(name) {
                 if (Mathf.chanceDelta((0.12f * Time.delta).toDouble())) {
                     Fx.circleColorSpark.at(unit.x, unit.y, R.C.BrainWave)
                 }
+            }
+        }
+    }
+
+    companion object {
+        @SubscribeEvent(TapEvent::class, only = Only.client)
+        fun onTap(e: TapEvent) {
+            val build = e.tile?.build
+            if (build is HeimdallBuild) {
+                build.trigger(Trigger.tap)
             }
         }
     }

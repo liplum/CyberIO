@@ -15,10 +15,12 @@ object CioItems {
             VanillaSpec {
                 cost = 1.1f
                 charge = 0.2f
+                healthScaling = 0.3f
             }
             ErekirSpec {
                 cost = 1.2f
                 charge = 0.5f
+                healthScaling = 0.05f
             }
         }
     }

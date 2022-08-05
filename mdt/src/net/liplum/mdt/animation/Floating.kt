@@ -1,8 +1,8 @@
 package net.liplum.mdt.animation
 
 import arc.math.Mathf
-import net.liplum.lib.math.Polar
-import net.liplum.lib.math.nextBoolean
+import plumy.core.math.Polar
+import plumy.core.math.nextBoolean
 
 open class Floating(
     val minR: Float,

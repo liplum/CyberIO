@@ -27,9 +27,8 @@ import net.liplum.flesh.BrainUnitType
 import net.liplum.holo.*
 import net.liplum.mdt.utils.NewUnitType
 import net.liplum.mdt.utils.plus
-import net.liplum.mdt.utils.registerPayloadSource
 import net.liplum.mdt.utils.registerUnitType
-import net.liplum.script.NpcUnitType
+import plumy.core.arc.minute
 
 object CioUnitTypes {
     @JvmStatic lateinit var holoMiner: HoloUnitType
@@ -38,30 +37,25 @@ object CioUnitTypes {
     @JvmStatic lateinit var holoArchitect: HoloUnitType
     @JvmStatic lateinit var holoSupporter: HoloUnitType
     @JvmStatic lateinit var brain: BrainUnitType
-    @DependOn
-    fun _preRegister() {
-        HoloUnitType::class.java.registerPayloadSource()
-        BrainUnitType::class.java.registerPayloadSource()
-        NpcUnitType::class.java.registerPayloadSource()
-    }
     @DependOn("CioItems.ic")
     fun holoMiner() {
         holoMiner = NewUnitType(R.Unit.HoloMiner, ::HoloUnitType, ::HoloUnit).apply {
             VanillaSpec {
-                AutoLife(maxHealth = 1600f, lose = 0.08f)
+                limitLife(hp = 1600f, lifespan = 3.minute)
                 researchReq = arrayOf(
                     CioItems.ic + 1,
                     Items.titanium + 60,
                     Items.plastanium + 30,
                 )
+                mineTier = 4
             }
             ErekirSpec {
-                AutoLife(maxHealth = 4000f, lose = 0.08f)
+                limitLife(hp = 1600f, lifespan = 3.minute)
                 researchReq = arrayOf(
                     CioItems.ic + 3,
                     Items.oxide + 20,
-                    Items.carbide + 30,
                 )
+                mineTier = 5
             }
             speed = 2f
             targetPriority = -1f
@@ -74,7 +68,6 @@ object CioUnitTypes {
             mineWalls = true
             mineFloor = true
             mineSpeed = 10f
-            mineTier = 5
             armor = 2f
             buildSpeed = 1f
             drag = 0.06f
@@ -89,26 +82,27 @@ object CioUnitTypes {
     fun holoFighter() {
         holoFighter = NewUnitType(R.Unit.HoloFighter, ::HoloUnitType, ::HoloUnit).apply {
             VanillaSpec {
-                AutoLife(maxHealth = 2400f, lose = 0.19f)
+                limitLife(hp = 3000f, lifespan = 15.minute)
                 researchReq = arrayOf(
                     CioItems.ic + 2,
                     Items.titanium + 100,
                     Items.plastanium + 80,
                     Items.thorium + 60,
                 )
+                drag = 0.03f
+                speed = 4f
             }
             ErekirSpec {
-                AutoLife(maxHealth = 6000f, lose = 0.1f)
+                limitLife(hp = 5000f, lifespan = 15.minute)
                 researchReq = arrayOf(
                     CioItems.ic + 3,
                     Items.oxide + 20,
-                    Items.carbide + 30,
                 )
+                drag = 0.05f
+                speed = 3.8f
             }
-            speed = 4f
             accel = 0.08f
             targetPriority = 1f
-            drag = 0.016f
             buildSpeed = 1f
             flying = true
             hovering = true
@@ -123,7 +117,7 @@ object CioUnitTypes {
             ammoType = ItemAmmoType(Items.plastanium)
             enableRuvikTip = true
             ruvikTipRange = 220f
-            weapons.add(HoloWeapon("holo-fighter-gun".Cio).apply {
+            weapons.add(HoloWeapon("holo-fighter-gun".cio).apply {
                 top = false
                 shootSound = Sounds.flame
                 shootY = 2f
@@ -145,18 +139,17 @@ object CioUnitTypes {
     fun holoGuardian() {
         holoGuardian = NewUnitType(R.Unit.HoloGuardian, ::HoloUnitType, ::HoloUnit).apply {
             VanillaSpec {
-                AutoLife(maxHealth = 5000f, lose = 0.28f)
+                limitLife(hp = 5000f, lifespan = 10.minute)
                 researchReq = arrayOf(
                     CioItems.ic + 1,
                     Items.titanium + 40,
                 )
             }
             ErekirSpec {
-                AutoLife(maxHealth = 8000f, lose = 0.12f)
+                limitLife(hp = 8000f, lifespan = 10.minute)
                 researchReq = arrayOf(
                     CioItems.ic + 3,
                     Items.oxide + 20,
-                    Items.carbide + 30,
                 )
             }
             abilities.add(
@@ -178,14 +171,13 @@ object CioUnitTypes {
             engineOffset = 5.7f
             hitSize = 15f
             armor = 5f
-
         }
     }
     @DependOn("CioItems.ic")
     fun holoArchitect() {
         holoArchitect = NewUnitType(R.Unit.HoloArchitect, ::HoloUnitType, ::HoloUnit).apply {
             VanillaSpec {
-                AutoLife(maxHealth = 2200f, lose = 0.15f)
+                limitLife(hp = 1200f, lifespan = 8.minute)
                 buildSpeed = 4.6f
                 speed = 3.5f
                 researchReq = arrayOf(
@@ -196,16 +188,16 @@ object CioUnitTypes {
                 )
             }
             ErekirSpec {
-                AutoLife(maxHealth = 2800f, lose = 0.15f)
+                limitLife(hp = 1200f, lifespan = 7.5f.minute)
                 buildSpeed = 3.6f
                 speed = 3.0f
                 researchReq = arrayOf(
                     CioItems.ic + 3,
                     Items.oxide + 20,
-                    Items.carbide + 30,
                 )
             }
             aiController = Prov { BuilderAI() }
+            controller = Func { BuilderAI() }
             HoloOpacity = 0.4f
             ColorOpacity = 0.05f
             flying = true
@@ -251,11 +243,11 @@ object CioUnitTypes {
             })
         }
     }
-    @DependOn
+    @DependOn("CioItems.ic")
     fun holoSupporter() {
         holoSupporter = NewUnitType(R.Unit.HoloSupporter, ::HoloUnitType, ::HoloUnit).apply {
             VanillaSpec {
-                AutoLife(maxHealth = 3800f, lose = 0.15f)
+                limitLife(hp = 3800f, lifespan = 12f.minute)
                 buildSpeed = 2.2f
                 speed = 2.5f
                 accel = 0.06f
@@ -274,7 +266,7 @@ object CioUnitTypes {
                 )
             }
             ErekirSpec {
-                AutoLife(maxHealth = 6000f, lose = 0.10f)
+                limitLife(hp = 6000f, lifespan = 18f.minute)
                 buildSpeed = 1.2f
                 speed = 2.25f
                 payloadCapacity = (5f * 5f) * Vars.tilePayload
@@ -285,10 +277,10 @@ object CioUnitTypes {
                 researchReq = arrayOf(
                     CioItems.ic + 3,
                     Items.oxide + 20,
-                    Items.carbide + 30,
                 )
             }
             aiController = Prov { RepairAI() }
+            controller = Func { RepairAI() }
             flying = true
             hovering = true
             HoloOpacity = 0.4f
@@ -298,7 +290,7 @@ object CioUnitTypes {
             engineSize = 2f
             engineOffset = 3f
 
-            weapons.add(HoloWeapon((R.Unit.HoloSupporter + "-gun").Cio).apply {
+            weapons.add(HoloWeapon((R.Unit.HoloSupporter + "-gun").cio).apply {
                 shootSound = Sounds.lasershoot
                 reload = 15f
                 x = 4f
@@ -324,7 +316,7 @@ object CioUnitTypes {
             })
         }
     }
-    @DependOn
+    @DependOn("CioItems.ic")
     fun brain() {
         DebugOnly {
             registerUnitType(R.Unit.Brain)
@@ -339,7 +331,7 @@ object CioUnitTypes {
                 range = 50f
 
                 ammoType = PowerAmmoType(500f)
-                weapons.add(Weapon("${R.Unit.Brain}-hand".Cio).apply {
+                weapons.add(Weapon("${R.Unit.Brain}-hand".cio).apply {
                     x = 8f
                     y = 8f
                     recoil = -10f

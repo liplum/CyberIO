@@ -3,10 +3,12 @@ package net.liplum.blocks.stream
 import arc.func.Prov
 import arc.graphics.Color
 import arc.math.Angles
+import arc.util.Eachable
 import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.Vars
+import mindustry.entities.units.BuildPlan
 import mindustry.gen.Building
 import mindustry.graphics.Layer
 import mindustry.logic.LAccess
@@ -21,9 +23,9 @@ import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
 import net.liplum.common.Changed
 import net.liplum.common.util.DrawLayer
-import net.liplum.lib.Serialized
-import net.liplum.lib.assets.EmptyTR
-import net.liplum.lib.math.nextBoolean
+import plumy.core.Serialized
+import plumy.core.assets.EmptyTR
+import plumy.core.math.nextBoolean
 import net.liplum.mdt.CalledBySync
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.SendDataPack
@@ -33,10 +35,7 @@ import net.liplum.mdt.animation.anis.config
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.DrawOn
 import net.liplum.mdt.render.Text
-import net.liplum.mdt.utils.PackedPos
-import net.liplum.mdt.utils.buildAt
-import net.liplum.mdt.utils.inMod
-import net.liplum.mdt.utils.sub
+import net.liplum.mdt.utils.*
 import kotlin.math.absoluteValue
 
 private typealias AniStateP = AniState<P2pNode, P2pNode.P2pBuild>
@@ -84,19 +83,26 @@ open class P2pNode(name: String) : AniedBlock<P2pNode, P2pNode.P2pBuild>(name) {
 
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)
-        drawPlacingMaxRange(x, y, maxRange, R.C.LightBlue)
+        drawPlacingMaxRange(x, y, maxRange, R.C.P2P)
         drawLinkedLineToP2pWhenConfiguring(x, y)
+    }
+
+    override fun drawPlanRegion(plan: BuildPlan, list: Eachable<BuildPlan>) {
+        super.drawPlanRegion(plan, list)
+        drawPlanMaxRange(plan.x, plan.y, maxRange, R.C.P2P)
     }
 
     override fun setStats() {
         super.setStats()
         addLinkRangeStats(maxRange)
+        addDataTransferSpeedStats(balancingSpeed)
     }
 
     override fun setBars() {
         super.setBars()
-
+        addP2pLinkInfo<P2pBuild>()
     }
+
     override fun icons() = arrayOf(BottomTR, region, YinAndYangTR)
     open inner class P2pBuild : AniedBuild(), IP2pNode {
         override val maxRange = this@P2pNode.maxRange
@@ -164,7 +170,7 @@ open class P2pNode(name: String) : AniedBlock<P2pNode, P2pNode.P2pBuild>(name) {
                             val data = abs
                                 .coerceAtMost(sender.currentAmount)
                                 .coerceAtMost(receiver.restRoom)
-                                .coerceAtMost(balancingSpeed) * efficiency * other.building.efficiency * delta()
+                                .coerceAtMost(balancingSpeed * efficiency * other.building.efficiency * delta())
                             if (data > 0.0001f) {
                                 sender.streamToAnother(data)
                             }
@@ -192,7 +198,7 @@ open class P2pNode(name: String) : AniedBlock<P2pNode, P2pNode.P2pBuild>(name) {
             }
             ClientOnly {
                 val other = connected ?: return@ClientOnly
-                if (!other.isDrawer && !this.isDrawer) {
+                if (other.isDrawer  == this.isDrawer) {
                     this.isDrawer = nextBoolean()
                     other.isDrawer = !this.isDrawer
                 }
@@ -211,7 +217,7 @@ open class P2pNode(name: String) : AniedBlock<P2pNode, P2pNode.P2pBuild>(name) {
                             targetP2pColor = R.C.P2P
                         }
                     } else {
-                        val fluidColor = currentFluid.color
+                        val fluidColor = currentFluid.fluidColor
                         if (targetP2pColor != fluidColor) {
                             lastP2pColor = Changed(old = targetP2pColor)
                             targetP2pColor = fluidColor
@@ -220,7 +226,6 @@ open class P2pNode(name: String) : AniedBlock<P2pNode, P2pNode.P2pBuild>(name) {
                 }
             }
         }
-
         @ClientOnly
         var yinYangRotation = 0f
         override fun fixedDraw() {
@@ -269,7 +274,6 @@ open class P2pNode(name: String) : AniedBlock<P2pNode, P2pNode.P2pBuild>(name) {
 
         override fun drawConfigure() {
             super.drawConfigure()
-            drawP2PConnection()
             drawConfiguringMaxRange()
         }
         @ClientOnly

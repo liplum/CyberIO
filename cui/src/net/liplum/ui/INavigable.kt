@@ -1,6 +1,6 @@
 package net.liplum.ui
 
-import net.liplum.lib.Out
+import plumy.core.Out
 import java.util.*
 
 interface INavigable {

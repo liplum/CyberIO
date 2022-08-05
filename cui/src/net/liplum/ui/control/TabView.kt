@@ -43,7 +43,7 @@ class TabView(
         if (curItem == TabItem.X && defaultItem != TabItem.X)
             switchTo(defaultItem)
         table.defaults().fill().left()
-        table.add(Table().apply {
+        table.addTable {
             val group = ButtonGroup<Button>()
             val tabMenu = Table().apply {
                 for (item in items.values) {
@@ -63,7 +63,7 @@ class TabView(
             }
             add(tabMenu)
             align(Align.left)
-        }).minHeight(30f)
+        }.minHeight(30f)
         table.row()
         table.add(curContent).expand()
         curContent.resetAnimation()

@@ -10,6 +10,7 @@ import mindustry.Vars
 import mindustry.gen.Building
 import mindustry.gen.Buildingc
 import mindustry.gen.Icon
+import mindustry.graphics.Layer
 import mindustry.graphics.Pal
 import mindustry.world.Block
 import net.liplum.R
@@ -19,15 +20,14 @@ import net.liplum.api.ICyberEntity
 import net.liplum.common.util.bundle
 import net.liplum.common.util.inViewField
 import net.liplum.common.util.isLineInViewField
-import net.liplum.lib.arc.darken
-import net.liplum.lib.math.Point2f
-import net.liplum.lib.math.isZero
-import net.liplum.lib.math.plusAssign
-import net.liplum.lib.math.smooth
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.render.*
-import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.utils.*
+import plumy.core.arc.darken
+import plumy.core.math.Point2f
+import plumy.core.math.isZero
+import plumy.core.math.plusAssign
+import plumy.core.math.smooth
 
 @ClientOnly
 val ArrowDensity: Float
@@ -35,6 +35,8 @@ val ArrowDensity: Float
 @ClientOnly
 val ArrowSpeed: Float
     get() = Settings.LinkArrowSpeed
+val Alpha: Float
+    get() = Settings.LinkOpacity * Var.GlobalLinkDrawerAlpha
 private val p1 = Point2f()
 private val p2 = Point2f()
 private val c1 = Color()
@@ -54,7 +56,7 @@ fun ICyberEntity.canShowSelfCircle(): Boolean =
 fun IDataSender.drawDataNetGraph(showCircle: Boolean = true) {
     if (receiverConnectionNumber <= 0) return
     if (showCircle && this.canShowSelfCircle()) {
-        G.surroundingCircleBreath(tile, senderColor, alpha = Settings.LinkOpacity)
+        G.surroundingCircleBreath(tile, senderColor, alpha = Alpha)
     }
     this.drawReceivers(connectedReceivers, showCircle)
 }
@@ -63,7 +65,7 @@ fun IDataSender.drawDataNetGraph(showCircle: Boolean = true) {
 fun IDataReceiver.drawDataNetGraph(showCircle: Boolean = true) {
     if (senderConnectionNumber <= 0) return
     if (showCircle && this.canShowSelfCircle()) {
-        G.surroundingCircleBreath(tile, receiverColor, alpha = Settings.LinkOpacity)
+        G.surroundingCircleBreath(tile, receiverColor, alpha = Alpha)
     }
     this.drawSenders(connectedSenders, showCircle)
 }
@@ -71,7 +73,7 @@ fun IDataReceiver.drawDataNetGraph(showCircle: Boolean = true) {
 fun IStreamHost.drawStreamGraph(showCircle: Boolean = true) {
     if (clientConnectionNumber <= 0) return
     if (showCircle && this.canShowSelfCircle()) {
-        G.surroundingCircleBreath(tile, hostColor, alpha = Settings.LinkOpacity)
+        G.surroundingCircleBreath(tile, hostColor, alpha = Alpha)
     }
     this.drawClients(connectedClients, showCircle)
 }
@@ -79,7 +81,7 @@ fun IStreamHost.drawStreamGraph(showCircle: Boolean = true) {
 fun IStreamClient.drawStreamGraph(showCircle: Boolean = true) {
     if (hostConnectionNumber <= 0) return
     if (showCircle && this.canShowSelfCircle()) {
-        G.surroundingCircleBreath(tile, clientColor, alpha = Settings.LinkOpacity)
+        G.surroundingCircleBreath(tile, clientColor, alpha = Alpha)
     }
     this.drawHosts(connectedHosts, showCircle)
 }
@@ -88,7 +90,7 @@ fun IP2pNode.drawP2PConnection(showCircle: Boolean = true) {
     val other = connected ?: return
     val drawer = if (this.isDrawer) this else other
     if (showCircle && this.canShowSelfCircle()) {
-        G.surroundingCircleBreath(tile, color, alpha = Settings.LinkOpacity)
+        G.surroundingCircleBreath(tile, color, alpha = Alpha)
     }
     drawer.drawAnother(showCircle)
 }
@@ -98,14 +100,14 @@ fun IP2pNode.drawP2PConnection(showCircle: Boolean = true) {
 fun IDataReceiver.drawRequirements() {
     val reqs = this.requirements
     if (reqs != null) {
-        G.materialIcons(this.building, reqs, Settings.LinkOpacity * 0.8f)
+        G.materialIcons(this.building, reqs, Alpha * 0.8f)
     }
 }
 @ClientOnly
 fun IStreamClient.drawRequirements() {
     val reqs = this.requirements
     if (reqs != null) {
-        G.materialIcons(this.building, reqs, Settings.LinkOpacity * 0.8f)
+        G.materialIcons(this.building, reqs, Alpha * 0.8f)
     }
 }
 //</editor-fold>
@@ -115,13 +117,15 @@ fun IStreamClient.drawRequirements() {
  */
 @ClientOnly
 fun IDataReceiver.drawSenders(senders: Iterable<Int>, showCircle: Boolean = true) {
-    val opacity = Settings.LinkOpacity
+    val opacity = Alpha
     for (sender in senders) {
         val s = sender.ds() ?: continue
         if (this.toOtherInViewField(s)) {
             if (showCircle && s.canShowSelfCircle()) {
                 G.surroundingCircleBreath(s.tile, s.senderColor, alpha = opacity)
             }
+            if (s.maxRange > 0f)
+                G.circle(s.building.x, s.building.y, s.maxRange, this.receiverColor)
             transferArrowLineBreath(
                 s.building, this.building,
                 arrowColor = this.receiverColor,
@@ -137,7 +141,7 @@ fun IDataReceiver.drawSenders(senders: Iterable<Int>, showCircle: Boolean = true
  */
 @ClientOnly
 fun IDataSender.drawReceivers(receivers: Iterable<Int>, showCircle: Boolean = true) {
-    val opacity = Settings.LinkOpacity
+    val opacity = Alpha
     for (receiver in receivers) {
         val r = receiver.dr() ?: continue
         if (this.toOtherInViewField(r)) {
@@ -160,13 +164,15 @@ fun IDataSender.drawReceivers(receivers: Iterable<Int>, showCircle: Boolean = tr
  */
 @ClientOnly
 fun IStreamClient.drawHosts(hosts: Iterable<Int>, showCircle: Boolean = true) {
-    val opacity = Settings.LinkOpacity
+    val opacity = Alpha
     for (host in hosts) {
         val h = host.sh() ?: continue
         if (this.toOtherInViewField(h)) {
             if (showCircle && h.canShowSelfCircle()) {
                 G.surroundingCircleBreath(h.tile, h.hostColor, alpha = opacity)
             }
+            if (h.maxRange > 0f)
+                G.circle(h.building.x, h.building.y, h.maxRange, this.clientColor)
             transferArrowLineBreath(
                 h.building, this.building,
                 arrowColor = this.clientColor,
@@ -182,7 +188,7 @@ fun IStreamClient.drawHosts(hosts: Iterable<Int>, showCircle: Boolean = true) {
  */
 @ClientOnly
 fun IStreamHost.drawClients(clients: Iterable<Int>, showCircle: Boolean = true) {
-    val opacity = Settings.LinkOpacity
+    val opacity = Alpha
     for (client in clients) {
         val c = client.sc() ?: continue
         if (this.toOtherInViewField(c)) {
@@ -202,7 +208,7 @@ fun IStreamHost.drawClients(clients: Iterable<Int>, showCircle: Boolean = true) 
 }
 @ClientOnly
 fun IP2pNode.drawAnother(showCircle: Boolean = true) {
-    val opacity = Settings.LinkOpacity
+    val opacity = Alpha
     val other = connected ?: return
     if (!this.toOtherInViewField(other)) return
     if (isDrawer) {
@@ -223,7 +229,7 @@ fun IP2pNode.drawAnother(showCircle: Boolean = true) {
             arrowColor = color,
             density = ArrowDensity,
             speed = ArrowSpeed,
-            alphaMultiplier = 0.8f
+            alphaMultiplier = opacity
         )
     }
 }
@@ -241,7 +247,7 @@ fun Block.drawLinkedLineToReceiverWhenConfiguring(x: Int, y: Int) {
     val sender = Vars.control.input.config.selected
     if (sender !is IDataSender) return
     val selectedTile = sender.tile()
-    val opacity = Settings.LinkOpacity
+    val opacity = Alpha
     val isOverRange = if (sender.maxRange > 0f) selectedTile.dstWorld(x, y) > sender.maxRange else false
     val color = if (isOverRange) R.C.RedAlert else R.C.Receiver
     G.surroundingCircleBreath(this, x, y, color, alpha = opacity)
@@ -269,7 +275,7 @@ fun Block.drawLinkedLineToClientWhenConfiguring(x: Int, y: Int) {
     val host = Vars.control.input.config.selected
     if (host !is IStreamHost) return
     val selectedTile = host.tile()
-    val opacity = Settings.LinkOpacity
+    val opacity = Alpha
     val isOverRange = if (host.maxRange > 0f) selectedTile.dstWorld(x, y) > host.maxRange else false
     val color = if (isOverRange) R.C.RedAlert else R.C.Client
     G.surroundingCircleBreath(this, x, y, color, alpha = opacity)
@@ -297,7 +303,7 @@ fun Block.drawLinkedLineToP2pWhenConfiguring(x: Int, y: Int) {
     val node = Vars.control.input.config.selected
     if (node !is IP2pNode) return
     val selectedTile = node.tile()
-    val opacity = Settings.LinkOpacity
+    val opacity = Alpha
     val isOverRange = if (node.maxRange > 0f) selectedTile.dstWorld(x, y) > node.maxRange else false
     val color = if (isOverRange) R.C.RedAlert else R.C.P2P
     G.surroundingCircleBreath(this, x, y, color, alpha = opacity)
@@ -396,6 +402,18 @@ fun IP2pNode.drawSelectedMaxRange() {
     }
 }
 
+fun drawPlanMaxRange(x: TileXY, y: TileXY, maxRange: Float, color: Color) {
+    if (maxRange > 0f) {
+        G.dashCircleBreath(
+            x.worldXY,
+            y.worldXY,
+            maxRange,
+            color,
+            stroke = 3f
+        )
+    }
+}
+
 fun Block.drawPlacingMaxRange(x: TileXY, y: TileXY, maxRange: Float, color: Color) {
     if (maxRange > 0f) {
         G.dashCircleBreath(
@@ -442,6 +460,9 @@ fun transferArrowLineBreath(
         return
     if (alphaMultiplier <= 0f)
         return
+    val originalZ = Draw.z()
+    if (Settings.LinkBloom)
+        Draw.z(Layer.effect)
     val t = Tmp.v2.set(endDrawX, endDrawY)
         .sub(startDrawX, startDrawY)
     val angle = t.angle()
@@ -479,7 +500,8 @@ fun transferArrowLineBreath(
         Icon.right.region.DrawSize(line.x, line.y, size = size * fadeAlpha, rotation = angle)
         cur += per
     }
-    Draw.color()
+    Draw.z(originalZ)
+    Draw.reset()
 }
 
 fun transferArrowLineBreath(

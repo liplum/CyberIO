@@ -4,7 +4,7 @@ import arc.Core
 import arc.graphics.Pixmap
 import arc.graphics.Texture
 import arc.graphics.Texture.TextureFilter
-import net.liplum.lib.assets.TR
+import plumy.core.assets.TR
 import java.io.InputStream
 
 fun loadDynamic(input: InputStream): TR {

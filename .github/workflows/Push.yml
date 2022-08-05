@@ -35,7 +35,7 @@ jobs:
           name: CyberIO-Unzip-This
           path: main/build/tmp/deploy/*.jar
 
-  upload:
+  release:
     needs: build
     if: ${{ startsWith(github.event.head_commit.message,'[release]') }}
     runs-on: ubuntu-latest
@@ -61,7 +61,6 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           HEADER: ${{ steps.retrieveMeta.outputs.header }}
           VERSION: ${{ steps.retrieveMeta.outputs.version }}
-          TAG_EXIST: ${{ steps.retrieveMeta.outputs.tag_exist }}
         run: |
           gh release create "$VERSION" --title "$HEADER" --notes-file "Info/ReleaseMessage/$VERSION.md" out/*
 

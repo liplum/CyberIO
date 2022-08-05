@@ -22,7 +22,7 @@ object Text {
         text: String,
         x: WorldXY,
         y: WorldXY,
-        color: Color = Pal.accent
+        color: Color = Pal.accent,
     ): WorldXY {
         if (Vars.renderer.pixelator.enabled()) return 0f
         val font = Fonts.outline
@@ -57,14 +57,15 @@ object Text {
         text: String,
         x: WorldXY,
         y: WorldXY,
-        color: Color = Pal.accent
+        color: Color = Pal.accent,
+        scale: Float = 1f,
     ): WorldXY {
         if (Vars.renderer.pixelator.enabled()) return 0f
         val font = Fonts.outline
         val layout = Pools.obtain(GlyphLayout::class.java, ::GlyphLayout)
         val ints = font.usesIntegerPositions()
         font.setUseIntegerPositions(false)
-        font.data.setScale(1f / 4f / Scl.scl(1f))
+        font.data.setScale(1f / 4f / Scl.scl(scale))
         layout.setText(font, text)
         val width = layout.width
         font.color = color

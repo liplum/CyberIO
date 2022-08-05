@@ -5,7 +5,7 @@ package net.liplum.mdt.render
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
 import mindustry.gen.Building
-import net.liplum.lib.assets.TR
+import plumy.core.assets.TR
 import net.liplum.mdt.render.G.realHeight
 import net.liplum.mdt.render.G.realWidth
 

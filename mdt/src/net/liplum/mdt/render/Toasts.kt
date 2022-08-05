@@ -5,7 +5,7 @@ import arc.util.Align
 import mindustry.Vars
 import mindustry.gen.Building
 import net.liplum.common.util.inViewField
-import net.liplum.lib.math.Point2f
+import plumy.core.math.Point2f
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.utils.WorldXY
 

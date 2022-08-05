@@ -56,8 +56,6 @@ public final class R {
 
     public static final class Bar {
         public static final String NeighborStateN = "neighbor-state";
-        public static final String PowerN = "power";
-
         @NotNull
         @Contract(pure = true)
         public static String Gen(String content) {
@@ -185,7 +183,9 @@ public final class R {
         @NotNull
         public static final Color SonicWave = Color.valueOf("#b0bec5");
         @NotNull
-        public static final Color FutureBlue = Color.valueOf("#84fff1");
+        public static final Color
+            FutureBlue = Color.valueOf("#84fff1"),
+            CuttexCyan = Color.valueOf("#c0ecff");
 
         @NotNull
         public static final Color
@@ -202,9 +202,6 @@ public final class R {
         };
         public static final Color Stop = RedAlert;/* Color.valueOf("#dd2c00");*/
         public static final Color Unconnected = Color.white;
-        public static Color[] LiquidColors = {};
-        public static Color[] HostLiquidColors = {};
-        public static Color[] ClientLiquidColors = {};
     }
 
     public static final class SD {
@@ -291,6 +288,7 @@ public final class R {
             LinkArrowDensity = Gen("connection-density"),
             LinkAnimationSpeed = Gen("connection-animation-speed"),
             AlwaysShowLink = Gen("always-show-link"),
+            LinkBloom = Gen("connection-bloom"),
             ShowLinkCircle = Gen("show-link-circle"),
             ShowWirelessTowerCircle = Gen("show-wireless-tower-circle"),
             LinkSize = Gen("connection-size"),// Deprecated

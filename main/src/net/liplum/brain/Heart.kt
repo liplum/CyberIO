@@ -35,12 +35,12 @@ import net.liplum.common.Smooth
 import net.liplum.common.util.bundle
 import net.liplum.common.util.format
 import net.liplum.common.util.toDouble
-import net.liplum.lib.Serialized
-import net.liplum.lib.arc.hsvLerp
-import net.liplum.lib.assets.TR
-import net.liplum.lib.assets.TRs
-import net.liplum.lib.math.FUNC
-import net.liplum.lib.math.isZero
+import plumy.core.Serialized
+import plumy.core.arc.hsvLerp
+import plumy.core.assets.TR
+import plumy.core.assets.TRs
+import plumy.core.math.FUNC
+import plumy.core.math.isZero
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.Else
 import net.liplum.mdt.WhenNotPaused
@@ -94,7 +94,7 @@ open class Heart(name: String) : Block(name), IComponentBlock {
     @ClientOnly @JvmField var HeartbeatDuration = 60f
     @ClientOnly @JvmField var HeartbeatFrameNum = 20
     /** The Higher, the weaker scale*/
-    @ClientOnly @JvmField var BreathIntensity = 45f
+    @ClientOnly @JvmField var BreathIntensity = 40f
     @ClientOnly lateinit var allLiquidBars: Array<(Building) -> Bar>
     @ClientOnly @JvmField val heatMeta = HeatMeta()
     @JvmField var TemperatureEFF2ASpeed: FUNC = {
@@ -118,6 +118,7 @@ open class Heart(name: String) : Block(name), IComponentBlock {
         priority = TargetPriority.turret
         group = BlockGroup.turrets
         flags = EnumSet.of(BlockFlag.turret)
+        conductivePower = true
     }
 
     override fun init() {
@@ -314,7 +315,7 @@ open class Heart(name: String) : Block(name), IComponentBlock {
             get() = bloodConsumePreTick * (2f - temperature) * 1.5f
         @ClientOnly
         val realBreathIntensity: Float
-            get() = BreathIntensity - if (isLinkedBrain) 5f else 0f
+            get() = BreathIntensity - if (isLinkedBrain) 10f else 0f
         //</editor-fold>
         //<editor-fold desc="Meta">
         val curBulletType: BulletType
