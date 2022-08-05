@@ -113,8 +113,11 @@ object Updater : CoroutineScope {
         }
     }
     @ClientOnly
-    fun getDownloadURLByVersion(version: String) =
-        "${Settings.GitHubMirrorUrl}/${Meta.Repo}/releases/download/v$version/CyberIO-$version.jar"
+    val curDownloadURL: String
+        get() {
+            val version = latestVersion.toString()
+            return "${Settings.GitHubMirrorUrl}/${Meta.Repo}/releases/download/v$version/CyberIO-$version.jar"
+        }
     @JvmStatic
     fun updateSelfByBuiltIn() {
         val modsDialog = Vars.ui.mods
