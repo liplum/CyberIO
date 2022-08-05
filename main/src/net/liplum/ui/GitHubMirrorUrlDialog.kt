@@ -28,8 +28,8 @@ object GitHubMirrorUrlDialog : IBundlable {
                 Settings.GitHubMirrorUrl, Styles.defaultField
             ).addTrackTooltip(bundle("field-tooltip"))
             onReset.add {
-                Settings.GitHubMirrorUrl = Meta.GitHubMirrorUrl
-                field.text = Meta.GitHubMirrorUrl
+                Settings.GitHubMirrorUrl = Meta.GitHubUrl
+                field.text = Meta.GitHubUrl
             }
             cont.add(field).width((Core.graphics.width / 1.2f).coerceAtMost(460f)).row()
             cont.table { t ->
@@ -45,8 +45,8 @@ object GitHubMirrorUrlDialog : IBundlable {
                 }
 
                 fun onResetDefault() {
-                    Settings.GitHubMirrorUrl = Meta.GitHubMirrorUrl
-                    field.text = Meta.GitHubMirrorUrl
+                    Settings.GitHubMirrorUrl = Meta.GitHubUrl
+                    field.text = Meta.GitHubUrl
                     ShowTextDialog(bundle("reset", field.text))
                 }
 

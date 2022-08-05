@@ -56,7 +56,7 @@ object Settings {
      * So if you want to get the real last play time, please check [CioMod.lastPlayTime].
      */
     var LastPlayTime: Long by Setting(R.Setting.LastPlayTime, -1L)
-    var GitHubMirrorUrl: String by Setting(R.Setting.GitHubMirrorUrl, Meta.GitHubMirrorUrl)
+    var GitHubMirrorUrl: String by Setting(R.Setting.GitHubMirrorUrl, Meta.GitHubUrl)
     var ShaderRootPath: String by Setting(R.Setting.ShaderRootPath, "")
     var ContentSpecific: String by Setting(R.Setting.ContentSpecific, ContentSpec.Vanilla.id)
     /** Last skipped update. If it equals to current new version detected, it will skip the update dialog. */

@@ -13,7 +13,7 @@ import java.io.StringWriter
 object CLog {
     @JvmStatic
     fun err(text: String, vararg args: Any?) {
-        Log.log(LogLevel.err, "[${Meta.NameX}]$text", *args)
+        Log.log(LogLevel.err, "[${Meta.NameNoSpace}]$text", *args)
     }
     @JvmStatic
     fun err(th: Throwable) {
@@ -31,7 +31,7 @@ object CLog {
     }
     @JvmStatic
     fun info(text: String, vararg args: Any?) {
-        Log.log(LogLevel.info, "[${Meta.NameX}]$text", *args)
+        Log.log(LogLevel.info, "[${Meta.NameNoSpace}]$text", *args)
     }
     @JvmStatic
     fun info(`object`: Any) {
@@ -39,7 +39,7 @@ object CLog {
     }
     @JvmStatic
     fun warn(text: String, vararg args: Any?) {
-        Log.log(LogLevel.warn, "[${Meta.NameX}]$text", *args)
+        Log.log(LogLevel.warn, "[${Meta.NameNoSpace}]$text", *args)
     }
     @JvmStatic
     @JvmOverloads
