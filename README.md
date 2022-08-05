@@ -28,7 +28,8 @@ ___
 
 ### Hologram Projector
 
-![Holo Projector](GFX/HoloProjector-new.gif)
+![Holo Projector](GFX/HoloProjectingSerpulo.gif)
+![Holo Projector](GFX/HoloProjectingErekir.gif)
 
 ## Acknowledgements
 
