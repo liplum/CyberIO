@@ -203,7 +203,7 @@ class UpdateInfo {
     var ClientLatest = ""
     var ServerLatest = ""
     var Description = ""
-    var MinGameVersion = 136
+    var MinGameVersion = 137
     var BreakUpdateList = emptyArray<String>()
 
     companion object {

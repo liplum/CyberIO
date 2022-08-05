@@ -6,12 +6,10 @@ import arc.math.Mathf
 import arc.struct.OrderedSet
 import arc.struct.Seq
 import arc.util.Eachable
-import arc.util.Structs
 import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.Vars
-import mindustry.core.Version
 import mindustry.entities.units.BuildPlan
 import mindustry.gen.Building
 import mindustry.graphics.Pal
@@ -65,10 +63,6 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
     @JvmField var powerUsePerConnection = 2f
     @JvmField var powerUseBasic = 1.5f
     @JvmField val TransferTimer = timers++
-    // TODO: Remove this for v137
-    @JvmField var unloaderComparator: Comparator<Building> = Structs.comparingBool {
-        it.block.highUnloadPriority
-    }
     @JvmField var boost2Count: (Float) -> Int = {
         if (it <= 1.1f)
             1
@@ -234,13 +228,10 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
         open fun updateUnloaded() {
             nearby.clear()
             for (b in proximity) {
-                if (b.block.unloadable) {
+                // TODO: Learn form Unloader?
+                if (b.canUnload()) {
                     nearby.add(b)
                 }
-            }
-            // Only work in v136
-            if (Version.build == 136) {
-                nearby.sort(unloaderComparator)
             }
             unloadedNearbyIndex = 0
         }

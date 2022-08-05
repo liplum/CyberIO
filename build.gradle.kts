@@ -43,8 +43,8 @@ allprojects {
 }
 mindustry {
     dependency {
-        mindustry mirror "v136"
-        arc on "v136.1"
+        mindustry mirror "1a64344e5a"
+        arc on "47925a7b91"
     }
     client {
         /*mindustry from Foo(
