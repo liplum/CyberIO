@@ -190,7 +190,7 @@ open class P2pNode(name: String) : AniedBlock<P2pNode, P2pNode.P2pBuild>(name) {
             }
             ClientOnly {
                 val other = connected ?: return@ClientOnly
-                if (!other.isDrawer && !this.isDrawer) {
+                if (other.isDrawer  == this.isDrawer) {
                     this.isDrawer = nextBoolean()
                     other.isDrawer = !this.isDrawer
                 }

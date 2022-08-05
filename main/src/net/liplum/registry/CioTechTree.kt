@@ -69,9 +69,10 @@ object CioTechTree {
                 }
             }
             node(zipBomb)
-            node(heimdall) {
-                node(ear)
-                node(eye)
+            node(eye) {
+                node(ear) {
+                    node(heimdall)
+                }
             }
             node(TMTRAINER) {
                 node(deleter)
@@ -115,9 +116,10 @@ object CioTechTree {
                     }
                 }
             }
-            node(heimdall) {
-                node(ear)
-                node(eye)
+            node(eye) {
+                node(ear) {
+                    node(heimdall)
+                }
             }
             node(zipBomb) {
                 node(TMTRAINER)
