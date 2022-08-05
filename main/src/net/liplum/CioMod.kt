@@ -107,6 +107,7 @@ class CioMod : Mod() {
                 val debugSpec = System.getenv("CYBERIO_SPEC")
                 if (debugSpec != null) {
                     ContentSpecific = debugSpec.resolveContentSpec()
+                    Settings.ContentSpecific = ContentSpecific.id
                 }
             }
         }

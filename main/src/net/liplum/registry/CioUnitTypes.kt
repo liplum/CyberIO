@@ -243,7 +243,7 @@ object CioUnitTypes {
             })
         }
     }
-    @DependOn
+    @DependOn("CioItems.ic")
     fun holoSupporter() {
         holoSupporter = NewUnitType(R.Unit.HoloSupporter, ::HoloUnitType, ::HoloUnit).apply {
             VanillaSpec {
@@ -316,7 +316,7 @@ object CioUnitTypes {
             })
         }
     }
-    @DependOn
+    @DependOn("CioItems.ic")
     fun brain() {
         DebugOnly {
             registerUnitType(R.Unit.Brain)

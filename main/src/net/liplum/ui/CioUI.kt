@@ -121,8 +121,8 @@ object CioUI {
         addCheckPref(R.Setting.AlwaysShowLink, true) {
             Settings.AlwaysShowLink = Core.settings.getBool(R.Setting.AlwaysShowLink, true)
         }
-        addCheckPref(R.Setting.LinkBloom, false) {
-            Settings.LinkBloom = Core.settings.getBool(R.Setting.LinkBloom, false)
+        addCheckPref(R.Setting.LinkBloom, true) {
+            Settings.LinkBloom = Core.settings.getBool(R.Setting.LinkBloom, true)
         }
         addCheckPref(R.Setting.ShowLinkCircle, false) {
             Settings.ShowLinkCircle = Core.settings.getBool(R.Setting.ShowLinkCircle, false)
