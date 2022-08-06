@@ -14,7 +14,7 @@ import net.liplum.blocks.decentralizer.RecipeCenter.AllRecipes
 import net.liplum.blocks.decentralizer.RecipeCenter.calcuID
 import net.liplum.common.util.getF
 import net.liplum.mdt.render.postToastTextOn
-import net.liplum.mdt.ui.bars.AddBar
+import plumy.world.AddBar
 import net.liplum.mdt.utils.ItemTypeAmount
 import plumy.world.ID
 import java.util.*

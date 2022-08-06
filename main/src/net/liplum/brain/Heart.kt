@@ -51,7 +51,7 @@ import net.liplum.mdt.animation.anims.randomCurTime
 import net.liplum.mdt.animation.anims.setEnd
 import net.liplum.mdt.mixin.Mover
 import net.liplum.mdt.render.*
-import net.liplum.mdt.ui.bars.AddBar
+import plumy.world.AddBar
 import net.liplum.mdt.ui.bars.appendDisplayLiquidsDynamic
 import net.liplum.mdt.ui.bars.genAllLiquidBars
 import net.liplum.mdt.ui.bars.removeLiquidInBar

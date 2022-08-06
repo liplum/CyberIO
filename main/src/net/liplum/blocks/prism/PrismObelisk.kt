@@ -21,7 +21,7 @@ import net.liplum.mdt.animation.anims.pingPong
 import net.liplum.mdt.render.G
 import net.liplum.mdt.render.drawSurroundingRect
 import net.liplum.mdt.render.smoothPlacing
-import net.liplum.mdt.ui.bars.AddBar
+import plumy.world.AddBar
 import net.liplum.mdt.utils.*
 import plumy.world.castBuild
 import plumy.world.exists

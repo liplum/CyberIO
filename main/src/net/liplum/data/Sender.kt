@@ -33,7 +33,7 @@ import net.liplum.mdt.animation.anis.config
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.DrawOn
 import net.liplum.mdt.render.SetColor
-import net.liplum.mdt.ui.bars.AddBar
+import plumy.world.AddBar
 import net.liplum.mdt.utils.*
 import plumy.core.Serialized
 import plumy.core.arc.Tick

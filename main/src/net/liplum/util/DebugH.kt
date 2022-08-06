@@ -14,7 +14,7 @@ import net.liplum.common.util.bundle
 import net.liplum.common.util.format
 import net.liplum.common.util.percentI
 import net.liplum.mdt.animation.anis.IAniSMedBuild
-import net.liplum.mdt.ui.bars.AddBar
+import plumy.world.AddBar
 
 inline fun <reified T> Block.addRangeInfo(maxRange: Float) where T : Building, T : Ranged {
     AddBar<T>(R.Bar.RangeN,

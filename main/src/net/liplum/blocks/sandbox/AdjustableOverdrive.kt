@@ -15,7 +15,7 @@ import net.liplum.R
 import net.liplum.common.util.bundle
 import net.liplum.common.util.percentI
 import net.liplum.math.shrink
-import net.liplum.mdt.ui.bars.AddBar
+import plumy.world.AddBar
 import plumy.core.Serialized
 import plumy.core.math.ExpLogGen
 import plumy.core.math.FUNC

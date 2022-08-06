@@ -32,7 +32,7 @@ import net.liplum.mdt.render.DrawSize
 import net.liplum.mdt.render.G
 import net.liplum.mdt.render.smoothPlacing
 import net.liplum.mdt.render.smoothSelect
-import net.liplum.mdt.ui.bars.AddBar
+import plumy.world.AddBar
 import plumy.world.worldXY
 import plumy.core.Serialized
 import plumy.core.math.smooth

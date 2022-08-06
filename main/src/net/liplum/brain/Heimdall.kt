@@ -58,7 +58,7 @@ import net.liplum.mdt.advanced.Inspector.isSelected
 import net.liplum.mdt.animation.anims.Anime
 import net.liplum.mdt.animation.anims.linearFrames
 import net.liplum.mdt.render.*
-import net.liplum.mdt.ui.bars.AddBar
+import plumy.world.AddBar
 import net.liplum.mdt.utils.MdtUnit
 import net.liplum.mdt.utils.atUnit
 import net.liplum.mdt.utils.sheet

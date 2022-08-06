@@ -49,7 +49,7 @@ import net.liplum.mdt.advanced.Inspector
 import net.liplum.mdt.advanced.Inspector.isSelected
 import net.liplum.mdt.mixin.copy
 import net.liplum.mdt.render.*
-import net.liplum.mdt.ui.bars.AddBar
+import plumy.world.AddBar
 import net.liplum.mdt.utils.*
 import net.liplum.registry.CioStats
 import plumy.core.Serialized

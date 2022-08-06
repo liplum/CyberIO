@@ -26,7 +26,7 @@ import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.render.postToastTextOn
 import net.liplum.mdt.render.removeToastOn
 import net.liplum.mdt.ui.ItemProgressImage
-import net.liplum.mdt.ui.bars.AddBar
+import plumy.world.AddBar
 import net.liplum.mdt.utils.ItemTypeAmount
 import net.liplum.mdt.utils.subBundle
 import plumy.world.ID

@@ -1,6 +1,5 @@
 package net.liplum.mdt.ui.bars
 
-import arc.graphics.Color
 import arc.scene.ui.layout.Table
 import arc.util.Time
 import mindustry.Vars
@@ -22,38 +21,6 @@ fun Block.removeHealthInBar() {
     this.removeBar("health")
 }
 
-inline fun <reified T : Building> Block.AddBar(
-    key: String,
-    crossinline name: T.() -> String,
-    crossinline color: T.() -> Color,
-    crossinline fraction: T.() -> Float,
-    crossinline config: Bar.() -> Unit = {},
-) {
-    addBar<T>(key) {
-        Bar(
-            { it.name() },
-            { it.color() },
-            { it.fraction() }
-        ).apply(config)
-    }
-}
-
-inline fun Block.addBar(
-    key: String,
-    crossinline name: Building.() -> String,
-    crossinline color: Building.() -> Color,
-    crossinline fraction: Building.() -> Float,
-    crossinline config: Bar.() -> Unit = {},
-    ) {
-    addBar<Building>(key) {
-        Bar(
-            { it.name() },
-            { it.color() },
-            { it.fraction() }
-        ).apply(config)
-    }
-}
-
 const val minIntervalBarDisplay = 10f
 fun Block.genAllLiquidBars(): Array<(Building) -> Bar> =
     Array(LiquidTypeAmount()) { i ->
@@ -69,7 +36,7 @@ fun Block.genAllLiquidBars(): Array<(Building) -> Bar> =
 inline fun Building.appendDisplayLiquidsDynamic(
     table: Table,
     allLiquidBars: Array<(Building) -> Bar>,
-    crossinline superDisplayBars: (Table) -> Unit
+    crossinline superDisplayBars: (Table) -> Unit,
 ) {
     table.update {
         if (Time.time % minIntervalBarDisplay < Time.delta) {

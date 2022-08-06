@@ -44,7 +44,7 @@ import net.liplum.mdt.render.G.realWidth
 import net.liplum.mdt.render.drawEffectCirclePlace
 import net.liplum.mdt.render.smoothPlacing
 import net.liplum.mdt.render.smoothSelect
-import net.liplum.mdt.ui.bars.AddBar
+import plumy.world.AddBar
 import net.liplum.mdt.ui.bars.ReverseBar
 import net.liplum.mdt.utils.NewEffect
 import net.liplum.mdt.utils.sub

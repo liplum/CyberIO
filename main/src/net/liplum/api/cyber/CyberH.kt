@@ -23,7 +23,7 @@ import net.liplum.common.util.bundle
 import net.liplum.common.util.toFloat
 import net.liplum.event.CioInitEvent
 import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.ui.bars.AddBar
+import plumy.world.AddBar
 import net.liplum.mdt.utils.*
 import net.liplum.registry.CioStats
 import plumy.core.math.Point2f

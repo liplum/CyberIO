@@ -12,7 +12,7 @@ import net.liplum.mdt.animation.anis.None
 import net.liplum.mdt.animation.anis.config
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.SetAlpha
-import net.liplum.mdt.ui.bars.AddBar
+import plumy.world.AddBar
 import net.liplum.mdt.utils.sub
 import plumy.core.assets.EmptyTR
 import plumy.core.math.FUNC

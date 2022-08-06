@@ -41,7 +41,7 @@ import net.liplum.mdt.*
 import net.liplum.mdt.consumer.ConsumeFluidDynamic
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.ui.addItemSelectorDefault
-import net.liplum.mdt.ui.bars.AddBar
+import plumy.world.AddBar
 import net.liplum.mdt.ui.bars.removeItemsInBar
 import net.liplum.mdt.utils.*
 import net.liplum.registry.CioFluid.cyberion
