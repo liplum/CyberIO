@@ -5,7 +5,7 @@ import mindustry.type.ItemStack
 import mindustry.type.LiquidStack
 import plumy.core.arc.Tick
 import net.liplum.mdt.utils.plus
-import net.liplum.registry.CioFluids
+import net.liplum.registry.CioFluid
 
 open class HoloPlan(
     val unitType: HoloUnitType,
@@ -17,7 +17,7 @@ open class Requirement(
     val cyberion: Float = 0f,
     val items: Array<ItemStack> = emptyArray(),
 ) {
-    val liquid = CioFluids.cyberion + cyberion
+    val liquid = CioFluid.cyberion + cyberion
     val liquidArray = arrayOf(liquid)
     operator fun contains(stack: ItemStack): Boolean {
         for (req in items)

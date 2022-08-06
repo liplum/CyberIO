@@ -51,7 +51,7 @@ import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.G
 import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.utils.*
-import net.liplum.registry.CioFluids.cyberion
+import net.liplum.registry.CioFluid.cyberion
 import net.liplum.registry.SD
 
 open class Stealth(name: String) : Turret(name) {

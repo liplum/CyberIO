@@ -1,5 +1,6 @@
 package net.liplum.brain
 
+import arc.func.Prov
 import arc.graphics.g2d.Draw
 import arc.graphics.g2d.Lines
 import arc.math.Interp
@@ -97,6 +98,7 @@ open class Ear(name: String) : Block(name), IComponentBlock {
         attacks = true
         canOverdrive = false
         conductivePower = true
+        buildType = Prov { EarBuild() }
     }
 
     override fun init() {

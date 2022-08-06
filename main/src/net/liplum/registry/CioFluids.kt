@@ -6,7 +6,7 @@ import net.liplum.*
 import net.liplum.annotations.DependOn
 import net.liplum.type.SpecFluid
 
-object CioFluids {
+object CioFluid {
     @JvmStatic lateinit var cyberion: Liquid
     @JvmStatic lateinit var blood: Liquid
     @DependOn

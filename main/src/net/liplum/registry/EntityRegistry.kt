@@ -21,7 +21,7 @@ object EntityRegistry {
         this[HoloUnit::class.java] = { HoloUnit() }
         //this[MagneticField::class.java] = { MagneticField.create() }
         //this[NpcUnit::class.java] = { NpcUnit() }
-        this[DataNetworkUpdater::class.java] = { DataNetworkUpdater.create() }
+        // this[DataNetworkUpdater::class.java] = { DataNetworkUpdater.create() }
     }
 
     private operator fun <T : Entityc> set(c: Class<T>, p: ProvEntry) {
