@@ -47,6 +47,8 @@ import net.liplum.mdt.utils.*
 import net.liplum.registry.CioFluid.cyberion
 import net.liplum.registry.SD
 import net.liplum.ui.addTable
+import plumy.world.ID
+import plumy.world.castBuild
 import kotlin.math.max
 
 open class HoloProjector(name: String) : Block(name) {
@@ -255,7 +257,7 @@ open class HoloProjector(name: String) : Block(name) {
         fun findTrueHoloProjectorSource(): HoloProjectorBuild {
             val unit = lastUnitInPayload
             if (unit is HoloUnit) {
-                val trueProjector = unit.projectorPos.TE<HoloProjectorBuild>()
+                val trueProjector = unit.projectorPos.castBuild<HoloProjectorBuild>()
                 if (trueProjector != null)
                     return trueProjector
             }

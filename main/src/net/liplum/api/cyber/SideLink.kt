@@ -3,8 +3,8 @@ package net.liplum.api.cyber
 import arc.math.geom.Geometry
 import arc.math.geom.Point2
 import net.liplum.common.util.copyFrom
-import net.liplum.mdt.utils.PackedPos
-import net.liplum.mdt.utils.TEAny
+import plumy.world.PackedPos
+import plumy.world.castBuild
 
 typealias Side = Int
 
@@ -51,22 +51,22 @@ class SideLinks {
             links[BOTTOM] = value
         }
     var rightNode: INetworkNode?
-        get() = links[0].TEAny()
+        get() = links[0].castBuild()
         set(value) {
             right = value?.building?.pos() ?: -1
         }
     var topNode: INetworkNode?
-        get() = links[1].TEAny()
+        get() = links[1].castBuild()
         set(value) {
             top = value?.building?.pos() ?: -1
         }
     var leftNode: INetworkNode?
-        get() = links[2].TEAny()
+        get() = links[2].castBuild()
         set(value) {
             left = value?.building?.pos() ?: -1
         }
     var bottomNode: INetworkNode?
-        get() = links[3].TEAny()
+        get() = links[3].castBuild()
         set(value) {
             bottom = value?.building?.pos() ?: -1
         }
@@ -172,18 +172,19 @@ class SideLinks {
      */
     inline fun forEachNode(cons: (INetworkNode) -> Unit) {
         for (side in RIGHT..BOTTOM) {
-            val node = links[side].TEAny<INetworkNode>()
+            val node = links[side].castBuild<INetworkNode>()
             if (node != null)
                 cons(node)
         }
     }
+
     /**
      * Only iterate [PackedPos] on the non-empty sides.
      * In order of [RIGHT] to [BOTTOM]
      */
     inline fun forEachNodeWithSide(cons: (Side, INetworkNode) -> Unit) {
         for (side in RIGHT..BOTTOM) {
-            val node = links[side].TEAny<INetworkNode>()
+            val node = links[side].castBuild<INetworkNode>()
             if (node != null)
                 cons(side, node)
         }
@@ -194,12 +195,13 @@ class SideLinks {
      */
     inline fun forEachUnlinkSide(cons: (Side) -> Unit) {
         for (side in RIGHT..BOTTOM) {
-            if(links[side] == -1)
+            if (links[side] == -1)
                 cons(side)
         }
     }
 
     override fun toString() = links.toString()
+
     companion object {
         /**
          * Get the reflected side index in [Geometry.d4]
@@ -210,6 +212,5 @@ class SideLinks {
         val enableAllSides = SideEnable(4) { true }
     }
 }
-
 typealias SideEnable = BooleanArray
 

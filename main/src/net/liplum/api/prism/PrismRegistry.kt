@@ -4,6 +4,7 @@ import arc.graphics.Color
 import mindustry.entities.bullet.BulletType
 import mindustry.gen.Bullet
 import mindustry.type.UnitType
+import net.liplum.R
 import net.liplum.blocks.prism.RgbList
 import net.liplum.common.util.directSuperClass
 
@@ -17,6 +18,11 @@ class PrismDataColor : Color {
     constructor(r: Float, g: Float, b: Float, a: Float) : super(r, g, b, a)
     constructor(r: Float, g: Float, b: Float) : super(r, g, b)
     constructor(color: Color) : super(color)
+
+    companion object {
+        val RgbFG = R.C.PrismRgbFG.map { PrismDataColor(it) }
+        val RgbBK = R.C.PrismRgbBK.map { PrismDataColor(it) }
+    }
 }
 
 object PrismRegistry {

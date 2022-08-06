@@ -22,7 +22,7 @@ import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.smoothSelect
 import net.liplum.mdt.utils.MdtUnit
-import net.liplum.mdt.utils.WorldXY
+import plumy.world.WorldXY
 import net.liplum.mdt.utils.atlas
 import net.liplum.registry.SD
 import net.liplum.util.addSendingProgress

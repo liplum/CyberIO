@@ -33,6 +33,7 @@ import net.liplum.mdt.advanced.Inspector.isSelected
 import net.liplum.mdt.render.*
 import net.liplum.mdt.utils.*
 import net.liplum.registry.SD
+import plumy.world.*
 import kotlin.math.absoluteValue
 
 /**
@@ -66,7 +67,7 @@ fun INetworkNode.updateCardinalDirections() = building.run body@{
                 run firstCheck@{
                     // Firstly, if the target has a link on this side(of course, reflected)
                     // check whether this node is closer than the old one target has
-                    val targetReflectSideNode = dest.links[side.reflect].TEAny<INetworkNode>()
+                    val targetReflectSideNode = dest.links[side.reflect].castBuild<INetworkNode>()
                     // The current node this target links on the corresponding side
                     if (targetReflectSideNode != null) {
                         // If this node is nearer than the old one target linked, let target link to this.
@@ -81,7 +82,7 @@ fun INetworkNode.updateCardinalDirections() = building.run body@{
                 run secondCheck@{
                     // Secondly, if this has a link on this side
                     // check whether the target is closer than the old one.
-                    val preNode = pre.TEAny<INetworkNode>()
+                    val preNode = pre.castBuild<INetworkNode>()
                     if (preNode != null) {
                         if (destBuild.dst(this) < preNode.building.dst(this)) {
                             if (canLink(side, dest)) {
@@ -256,7 +257,7 @@ fun INetworkNode.drawLinkInfo() = building.run {
             val size = block.size.worldXY / 2f
             val dir = coordinates[side]
             val pos = links[side]
-            val text = pos.TEAny<INetworkNode>()?.let { "${it.tile.x},${it.tile.y}" } ?: "-1"
+            val text = pos.castBuild<INetworkNode>()?.let { "${it.tile.x},${it.tile.y}" } ?: "-1"
             Text.drawTextEasy(
                 text,
                 x + size * dir.x, y + size * dir.y,
@@ -295,7 +296,7 @@ fun INetworkNode.drawRangeCircle(alpha: Float) = building.run {
 }
 
 fun INetworkBlock.drawRangeCircle(x: TileXY, y: TileXY, alpha: Float) = block.run {
-    G.circleBreath(toCenterWorldXY(x), toCenterWorldXY(y), linkRange, alpha = alpha)
+    G.circleBreath(getCenterWorldXY(x), getCenterWorldXY(y), linkRange, alpha = alpha)
 }
 
 fun INetworkNode.drawRail(beamTR: TR, beamEndTR: TR) {

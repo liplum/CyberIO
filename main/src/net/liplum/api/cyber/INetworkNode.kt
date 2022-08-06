@@ -16,13 +16,13 @@ import net.liplum.data.EmptyDataID
 import net.liplum.data.PayloadData
 import net.liplum.data.PayloadDataList
 import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.utils.TEAny
-import net.liplum.mdt.utils.TileXY
-import net.liplum.mdt.utils.WorldXY
 import plumy.core.Out
 import plumy.core.Serialized
 import plumy.core.math.Progress
 import plumy.pathkt.IVertex
+import plumy.world.TileXY
+import plumy.world.WorldXY
+import plumy.world.castBuild
 
 interface INetworkNode : ICyberEntity, IVertex<INetworkNode> {
     var network: DataNetwork
@@ -41,7 +41,7 @@ interface INetworkNode : ICyberEntity, IVertex<INetworkNode> {
     var currentOriented: Side
     val currentOrientedNode: INetworkNode?
         get() = if (currentOriented == -1) null
-        else links[currentOriented].TEAny()
+        else links[currentOriented].castBuild()
     var sendingProgress: Progress
         get() = if (totalSendingDistance == 0f) 0f else curSendingLength / totalSendingDistance
         set(value) {
@@ -268,7 +268,7 @@ interface INetworkNode : ICyberEntity, IVertex<INetworkNode> {
             it.curLength = 0f
             it.totalLength = 0f
         }
-        old.TEAny<INetworkNode>()?.let {
+        old.castBuild<INetworkNode>()?.let {
             // If this is a node existed on this side, separate the network
             it.links[side.reflect] = -1
             if (it.network == this.network) {

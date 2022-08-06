@@ -7,8 +7,8 @@ import mindustry.Vars
 import mindustry.gen.Building
 import mindustry.ui.Bar
 import mindustry.world.Block
-import net.liplum.mdt.utils.ID
 import net.liplum.mdt.utils.LiquidTypeAmount
+import plumy.world.ID
 
 fun Block.removeItemsInBar() {
     this.removeBar("items")

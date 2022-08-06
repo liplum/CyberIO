@@ -10,10 +10,10 @@ import mindustry.gen.Building
 import mindustry.graphics.Drawf
 import mindustry.world.Block
 import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.utils.TileXY
-import net.liplum.mdt.utils.TileXYf
-import net.liplum.mdt.utils.toCenterWorldXY
-import net.liplum.mdt.utils.worldXY
+import plumy.world.TileXY
+import plumy.world.TileXYf
+import plumy.world.getCenterWorldXY
+import plumy.world.worldXY
 
 @ClientOnly
 inline fun Block.drawSurroundingRect(
@@ -46,11 +46,11 @@ fun Block.drawEffectCirclePlace(
     func: Building. () -> Unit,
 ) {
     G.dashCircleBreath(
-        toCenterWorldXY(x), toCenterWorldXY(y), range,
+        getCenterWorldXY(x), getCenterWorldXY(y), range,
         circleColor, stroke = stroke
     )
     Vars.indexer.eachBlock(
-        Vars.player.team(), toCenterWorldXY(x), toCenterWorldXY(y), range,
+        Vars.player.team(), getCenterWorldXY(x), getCenterWorldXY(y), range,
         filter, func
     )
 }

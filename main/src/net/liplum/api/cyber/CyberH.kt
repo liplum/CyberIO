@@ -28,6 +28,10 @@ import net.liplum.mdt.utils.*
 import net.liplum.registry.CioStats
 import plumy.core.math.Point2f
 import plumy.core.math.smooth
+import plumy.world.ID
+import plumy.world.build
+import plumy.world.castBuild
+import plumy.world.exists
 
 private val p1 = Point2f()
 private val p2 = Point2f()
@@ -36,15 +40,11 @@ private val c2 = Color()
 val ICyberEntity.isFlying: Boolean
     get() = tile == Vars.emptyTile
 //<editor-fold desc="Try Cast">
-fun Int.dr(): IDataReceiver? =
-    this.build as? IDataReceiver
-
+fun Int.dr(): IDataReceiver? = this.castBuild()
 fun Int.drOrPayload(): IDataReceiver? =
     this.dr() Or { this.inPayload() }
 
-fun Int.ds(): IDataSender? =
-    this.build as? IDataSender
-
+fun Int.ds(): IDataSender? = this.castBuild()
 fun Int.dsOrPayload(): IDataSender? =
     this.ds() Or { this.inPayload() }
 
@@ -60,24 +60,16 @@ fun Point2?.ds(): IDataSender? =
 fun Point2?.dsOrPayload(): IDataSender? =
     this?.let { this.ds() Or { this.inPayload() } }
 
-fun Int.sc(): IStreamClient? =
-    this.build as? IStreamClient
-
-fun Int.sh(): IStreamHost? =
-    this.build as? IStreamHost
-
+fun Int.sc(): IStreamClient? = this.castBuild()
+fun Int.sh(): IStreamHost? = this.castBuild()
 fun Point2?.sc(): IStreamClient? =
     this?.let { this.build as? IStreamClient }
 
 fun Point2?.sh(): IStreamHost? =
     this?.let { this.build as? IStreamHost }
 
-fun Int.nn(): INetworkNode? =
-    this.build as? INetworkNode
-
-fun Int.p2p(): IP2pNode? =
-    this.build as? IP2pNode
-
+fun Int.nn(): INetworkNode? = this.castBuild()
+fun Int.p2p(): IP2pNode? = this.castBuild()
 fun Point2?.p2p(): IP2pNode? =
     this?.let { this.build as? IP2pNode }
 //</editor-fold>

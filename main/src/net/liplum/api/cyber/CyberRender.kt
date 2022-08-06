@@ -22,12 +22,13 @@ import net.liplum.common.util.inViewField
 import net.liplum.common.util.isLineInViewField
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.render.*
-import net.liplum.mdt.utils.*
+import net.liplum.mdt.utils.worldPos
 import plumy.core.arc.darken
 import plumy.core.math.Point2f
 import plumy.core.math.isZero
 import plumy.core.math.plusAssign
 import plumy.core.math.smooth
+import plumy.world.*
 
 @ClientOnly
 val ArrowDensity: Float
@@ -335,8 +336,8 @@ fun Block.drawOverRangeOnTile(x: TileXY, y: TileXY, color: Color) {
         setText(it, text)
         it.color.set(color)
         it.draw(
-            text, toCenterWorldXY(x),
-            toCenterWorldXY(y) + size * Vars.tilesize / 2f,
+            text, getCenterWorldXY(x),
+            getCenterWorldXY(y) + size * Vars.tilesize / 2f,
             Align.center
         )
     }
@@ -515,10 +516,10 @@ fun transferArrowLineBreath(
     alphaMultiplier: Float = 1f,
 ) {
     transferArrowLineBreath(
-        startBlock.toCenterWorldXY(startBlockX),
-        startBlock.toCenterWorldXY(startBlockY),
-        endBlock.toCenterWorldXY(endBlockX),
-        endBlock.toCenterWorldXY(endBlockY),
+        startBlock.getCenterWorldXY(startBlockX),
+        startBlock.getCenterWorldXY(startBlockY),
+        endBlock.getCenterWorldXY(endBlockX),
+        endBlock.getCenterWorldXY(endBlockY),
         arrowColor = arrowColor,
         density = density,
         speed = speed,

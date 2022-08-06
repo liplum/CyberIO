@@ -5,7 +5,7 @@ import mindustry.type.Liquid
 import net.liplum.api.ICyberEntity
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.SendDataPack
-import net.liplum.mdt.utils.PackedPos
+import plumy.world.PackedPos
 
 enum class P2pStatus {
     None, Sender, Receiver

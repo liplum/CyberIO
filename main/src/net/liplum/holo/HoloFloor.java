@@ -12,11 +12,4 @@ public class HoloFloor extends Floor {
     public void drawBase(Tile tile) {
         super.drawBase(tile);
     }
-    /*
-    public class HoloFloorBuilding extends Building {
-        @Override
-        public void updateTile() {
-
-        }
-    }*/
 }

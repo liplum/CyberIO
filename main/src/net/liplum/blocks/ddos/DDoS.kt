@@ -27,9 +27,9 @@ import net.liplum.mdt.render.postToastTextOn
 import net.liplum.mdt.render.removeToastOn
 import net.liplum.mdt.ui.ItemProgressImage
 import net.liplum.mdt.ui.bars.AddBar
-import net.liplum.mdt.utils.ID
 import net.liplum.mdt.utils.ItemTypeAmount
 import net.liplum.mdt.utils.subBundle
+import plumy.world.ID
 
 class DDoS(name: String) : Turret(name) {
     @DebugOnly @ClientOnly var itemRow = 5

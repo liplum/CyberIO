@@ -11,7 +11,7 @@ import mindustry.gen.Bullet
 import plumy.core.arc.Color
 import plumy.core.math.Degree
 import net.liplum.mdt.render.G
-import net.liplum.mdt.utils.WorldXY
+import plumy.world.WorldXY
 
 class FieldBulletType : BulletType {
     constructor(speed: Float, damage: Float) : super(speed, damage)

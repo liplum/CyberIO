@@ -42,6 +42,8 @@ import net.liplum.mdt.animation.anims.randomCurTime
 import net.liplum.mdt.render.*
 import net.liplum.mdt.ui.ammoStats
 import net.liplum.mdt.utils.*
+import plumy.world.TileXY
+import plumy.world.getCenterWorldXY
 
 open class Eye(name: String) : PowerTurret(name), IComponentBlock {
     var normalBullet: BulletType = Bullets.placeholder
@@ -127,8 +129,8 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
 
     override fun drawPlace(x: TileXY, y: TileXY, rotation: Int, valid: Boolean) {
         drawPotentialLinks(x, y)
-        val worldX = toCenterWorldXY(x)
-        val worldY = toCenterWorldXY(y)
+        val worldX = getCenterWorldXY(x)
+        val worldY = getCenterWorldXY(y)
         drawOverlay(worldX, worldY, rotation)
         G.dashCircleBreath(worldX, worldY, range * smoothPlacing(maxSelectedCircleTime), Pal.placing, stroke = Var.CircleStroke)
     }

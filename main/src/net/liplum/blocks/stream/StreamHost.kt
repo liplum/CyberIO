@@ -34,6 +34,8 @@ import net.liplum.util.addPowerUseStats
 import plumy.core.Serialized
 import plumy.core.assets.EmptyTR
 import plumy.core.assets.TRs
+import plumy.world.buildAt
+import plumy.world.unpack
 
 private typealias AniStateH = AniState<StreamHost, StreamHost.HostBuild>
 

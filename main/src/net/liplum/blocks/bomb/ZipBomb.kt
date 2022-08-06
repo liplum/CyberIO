@@ -33,7 +33,7 @@ import net.liplum.mdt.render.G
 import net.liplum.mdt.render.smoothPlacing
 import net.liplum.mdt.render.smoothSelect
 import net.liplum.mdt.ui.bars.AddBar
-import net.liplum.mdt.utils.worldXY
+import plumy.world.worldXY
 import plumy.core.Serialized
 import plumy.core.math.smooth
 import kotlin.math.roundToInt

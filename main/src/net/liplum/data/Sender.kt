@@ -3,7 +3,6 @@ package net.liplum.data
 import arc.func.Prov
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
-import arc.graphics.g2d.TextureRegion
 import arc.math.Mathf
 import arc.math.geom.Point2
 import arc.struct.ObjectSet
@@ -40,6 +39,9 @@ import plumy.core.Serialized
 import plumy.core.arc.Tick
 import plumy.core.assets.TR
 import plumy.core.math.isZero
+import plumy.world.PackedPos
+import plumy.world.buildAt
+import plumy.world.unpack
 
 private typealias AniStateS = AniState<Sender, SenderBuild>
 

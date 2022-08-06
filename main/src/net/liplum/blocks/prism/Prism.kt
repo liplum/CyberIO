@@ -190,7 +190,7 @@ open class Prism(name: String) : Block(name) {
             prism = this@PrismBuild
             ClientOnly {
                 genCrystalImgCallback = {
-                    img = CrystalTRs.randomOne()
+                    img = CrystalTRs.random()
                 }
             }
             addCrystalCallback = {
@@ -357,9 +357,9 @@ open class Prism(name: String) : Block(name) {
 
         fun setDuplicate(r: Bullet, g: Bullet, b: Bullet, data: Any?) {
             if (data is Color) {
-                r.data = PrismDataColor(data)
-                g.data = PrismDataColor(data)
-                b.data = PrismDataColor(data)
+                r.data = PrismDataColor.RgbFG[0]
+                g.data = PrismDataColor.RgbFG[1]
+                b.data = PrismDataColor.RgbFG[2]
             } else {
                 r.setDuplicate()
                 g.setDuplicate()

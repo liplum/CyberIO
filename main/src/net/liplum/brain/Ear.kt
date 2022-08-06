@@ -42,9 +42,9 @@ import plumy.core.math.isZero
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.render.*
 import net.liplum.mdt.utils.MdtUnit
-import net.liplum.mdt.utils.TileXY
+import plumy.world.TileXY
 import net.liplum.mdt.utils.sub
-import net.liplum.mdt.utils.toCenterWorldXY
+import plumy.world.getCenterWorldXY
 
 /**
  * ### Since 1
@@ -127,8 +127,8 @@ open class Ear(name: String) : Block(name), IComponentBlock {
     override fun drawPlace(x: TileXY, y: TileXY, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)
         G.dashCircleBreath(
-            toCenterWorldXY(x),
-            toCenterWorldXY(y),
+            getCenterWorldXY(x),
+            getCenterWorldXY(y),
             range * smoothPlacing(maxSelectedCircleTime),
             sonicWaveColor, stroke = Var.CircleStroke
         )

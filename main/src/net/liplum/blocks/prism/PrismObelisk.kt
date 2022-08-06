@@ -23,6 +23,8 @@ import net.liplum.mdt.render.drawSurroundingRect
 import net.liplum.mdt.render.smoothPlacing
 import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.utils.*
+import plumy.world.castBuild
+import plumy.world.exists
 
 open class PrismObelisk(name: String) : Block(name) {
     @JvmField var prismType: Prism? = null
@@ -79,7 +81,7 @@ open class PrismObelisk(name: String) : Block(name) {
         val isLinked: Boolean
             get() = linked != -1
         val prism: PrismBuild?
-            get() = linked.TE()
+            get() = linked.castBuild()
         /**
          * Left->Down->Right->Up
          */
@@ -97,7 +99,7 @@ open class PrismObelisk(name: String) : Block(name) {
         override fun onProximityUpdate() {
             super.onProximityUpdate()
             val mayLinked = linked
-            if (mayLinked != -1 && !mayLinked.TE<PrismBuild>().exists) {
+            if (mayLinked != -1 && !mayLinked.castBuild<PrismBuild>().exists) {
                 linked = -1
             }
         }

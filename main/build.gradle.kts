@@ -92,6 +92,8 @@ dependencies {
     implementation("com.github.liplum.plumyjava:path-kt:$PlumyVersion")
     implementation("com.github.plumygame.mkutils:texture:$MKUtilsVersion")
     testImplementation("com.github.plumygame.mkutils:texture:$MKUtilsVersion")
+    implementation("com.github.plumygame.mkutils:world:$MKUtilsVersion")
+    testImplementation("com.github.plumygame.mkutils:world:$MKUtilsVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.2")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.0")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.0")

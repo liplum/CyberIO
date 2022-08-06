@@ -23,9 +23,6 @@ import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
 import net.liplum.common.Changed
 import net.liplum.common.util.DrawLayer
-import plumy.core.Serialized
-import plumy.core.assets.EmptyTR
-import plumy.core.math.nextBoolean
 import net.liplum.mdt.CalledBySync
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.SendDataPack
@@ -35,7 +32,14 @@ import net.liplum.mdt.animation.anis.config
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.DrawOn
 import net.liplum.mdt.render.Text
-import net.liplum.mdt.utils.*
+import net.liplum.mdt.utils.fluidColor
+import net.liplum.mdt.utils.inMod
+import net.liplum.mdt.utils.sub
+import plumy.core.Serialized
+import plumy.core.assets.EmptyTR
+import plumy.core.math.nextBoolean
+import plumy.world.PackedPos
+import plumy.world.buildAt
 import kotlin.math.absoluteValue
 
 private typealias AniStateP = AniState<P2pNode, P2pNode.P2pBuild>
@@ -198,7 +202,7 @@ open class P2pNode(name: String) : AniedBlock<P2pNode, P2pNode.P2pBuild>(name) {
             }
             ClientOnly {
                 val other = connected ?: return@ClientOnly
-                if (other.isDrawer  == this.isDrawer) {
+                if (other.isDrawer == this.isDrawer) {
                     this.isDrawer = nextBoolean()
                     other.isDrawer = !this.isDrawer
                 }

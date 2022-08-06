@@ -39,13 +39,13 @@ import plumy.core.math.FUNC
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.Else
 import net.liplum.mdt.utils.MdtUnit
-import net.liplum.mdt.utils.TE
 import net.liplum.mdt.utils.healthPct
 import net.liplum.mdt.utils.seconds
 import net.liplum.registry.SD
 import net.liplum.util.time
 import plumy.core.assets.TR
 import plumy.texture.*
+import plumy.world.castBuild
 import kotlin.math.min
 
 /**
@@ -299,27 +299,27 @@ open class HoloUnitType(name: String) : UnitType(name) {
                 DebugOnly {
                     bars.add(
                         Bar({
-                            val p = unit.projectorPos.TE<HoloProjectorBuild>()
+                            val p = unit.projectorPos.castBuild<HoloProjectorBuild>()
                             if (p != null) "${p.tileX()},${p.tileY()}"
                             else "${Iconc.cancel}"
                         }, {
-                            val p = unit.projectorPos.TE<HoloProjectorBuild>()
+                            val p = unit.projectorPos.castBuild<HoloProjectorBuild>()
                             if (p != null) S.Hologram
                             else Color.gray
                         }, {
-                            (unit.projectorPos.TE<HoloProjectorBuild>() != null).toFloat()
+                            (unit.projectorPos.castBuild<HoloProjectorBuild>() != null).toFloat()
                         })
                     )
                 }.Else {
                     bars.add(
                         Bar({
-                            val p = unit.projectorPos.TE<HoloProjectorBuild>()
+                            val p = unit.projectorPos.castBuild<HoloProjectorBuild>()
                             if (p != null) "${Iconc.home}"
                             else "${Iconc.cancel}"
                         }, {
                             S.Hologram
                         }, {
-                            (unit.projectorPos.TE<HoloProjectorBuild>() != null).toFloat()
+                            (unit.projectorPos.castBuild<HoloProjectorBuild>() != null).toFloat()
                         })
                     )
                 }

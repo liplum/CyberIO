@@ -44,6 +44,8 @@ import net.liplum.util.addPowerUseStats
 import net.liplum.util.genText
 import plumy.core.Serialized
 import plumy.core.assets.TR
+import plumy.world.ID
+import plumy.world.buildAt
 import kotlin.math.absoluteValue
 import kotlin.math.log2
 

@@ -29,12 +29,12 @@ import plumy.core.Serialized
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.mixin.PayloadMixin
 import net.liplum.mdt.render.G
-import net.liplum.mdt.utils.TE
-import net.liplum.mdt.utils.build
-import net.liplum.mdt.utils.exists
 import net.liplum.mdt.utils.hasShields
 import net.liplum.registry.CioFluid
 import net.liplum.registry.EntityRegistry
+import plumy.world.build
+import plumy.world.castBuild
+import plumy.world.exists
 
 open class HoloUnit : UnitEntity(), PayloadMixin, IRevisionable {
     override val revisionID = 0
@@ -235,7 +235,7 @@ open class HoloUnit : UnitEntity(), PayloadMixin, IRevisionable {
     }
 
     override fun updatePayload() {
-        val projector = projectorPos.TE<HoloProjectorBuild>()
+        val projector = projectorPos.castBuild<HoloProjectorBuild>()
         if (projector?.power != null)
             payloadPower = projector.power?.graph
 
@@ -256,7 +256,7 @@ open class HoloUnit : UnitEntity(), PayloadMixin, IRevisionable {
     }
 
     fun tryTransferCyberionInto(payload: Payload) {
-        val projector = projectorPos.TE<HoloProjectorBuild>() ?: return
+        val projector = projectorPos.castBuild<HoloProjectorBuild>() ?: return
         val type = type as? HoloUnitType ?: return
         if (payload is BuildPayload) {
             val build = payload.build

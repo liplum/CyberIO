@@ -19,6 +19,7 @@ java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
 }
+val MKUtilsVersion :String by project
 
 dependencies {
     api(project(":annotations"))
@@ -30,6 +31,8 @@ dependencies {
     testApi(project(":lib"))
     testApi(project(":common"))
     importMindustry()
+    implementation("com.github.plumygame.mkutils:world:$MKUtilsVersion")
+    testImplementation("com.github.plumygame.mkutils:world:$MKUtilsVersion")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.0")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.0")
     testImplementation("com.github.liplum:TestUtils:v0.1")
