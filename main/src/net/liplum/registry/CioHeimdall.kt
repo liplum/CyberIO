@@ -110,7 +110,7 @@ object CioHeimdall {
             )
             normalSounds = CioSound.laserWeak
             improvedSounds = CioSound.laser
-            soundVolume = 0.15f
+            soundVolume = 0.2f
             normalBullet = LightningBulletType().apply {
                 VanillaSpec {
                     damage = 90f

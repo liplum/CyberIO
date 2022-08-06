@@ -25,7 +25,6 @@ import net.liplum.mdt.utils.MdtUnit
 import plumy.world.WorldXY
 import net.liplum.mdt.utils.atlas
 import net.liplum.registry.SD
-import net.liplum.util.addSendingProgress
 
 class Serializer(name: String) :
     PayloadBlock(name), INetworkBlock {
