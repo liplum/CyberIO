@@ -9,9 +9,10 @@ import mindustry.graphics.Pal
 import mindustry.logic.Ranged
 import mindustry.world.Block
 import net.liplum.R
-import net.liplum.api.brain.IUpgradeComponent
-import net.liplum.api.cyber.INetworkNode
-import net.liplum.common.util.*
+import net.liplum.common.util.Float
+import net.liplum.common.util.bundle
+import net.liplum.common.util.format
+import net.liplum.common.util.percentI
 import net.liplum.mdt.animation.anis.IAniSMedBuild
 import net.liplum.mdt.ui.bars.AddBar
 
@@ -43,14 +44,6 @@ inline fun <reified T> Block.addProgressInfo() where T : Building {
         { "${"bar.loadprogress".bundle}: ${progress().percentI}" },
         { Pal.power },
         { progress() }
-    )
-}
-
-inline fun <reified T> Block.addSendingProgress() where T : Building, T : INetworkNode {
-    AddBar<T>("sending-progress",
-        { "Sending: $sendingProgress" },
-        { R.C.Power },
-        { sendingProgress }
     )
 }
 

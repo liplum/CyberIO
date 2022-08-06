@@ -287,6 +287,15 @@ inline fun <reified T> Block.addP2pLinkInfo() where T : Building, T : IP2pNode {
         { isConnected.toFloat() }
     )
 }
+
+inline fun <reified T> Block.addSendingProgress() where T : Building, T : INetworkNode {
+    AddBar<T>("sending-progress",
+        { "Sending: $sendingProgress" },
+        { R.C.Power },
+        { sendingProgress }
+    )
+}
+
 //</editor-fold>
 //<editor-fold desc="Statistics">
 fun <T> T.addLinkRangeStats(range: Float) where  T : Block {
