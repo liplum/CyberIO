@@ -25,9 +25,6 @@ import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.Var
 import net.liplum.common.util.bundle
-import plumy.core.arc.Tick
-import plumy.core.assets.TR
-import plumy.core.math.isZero
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.render.G
 import net.liplum.mdt.render.G.realHeight
@@ -39,6 +36,9 @@ import net.liplum.mdt.ui.bars.ReverseBar
 import net.liplum.mdt.utils.seconds
 import net.liplum.mdt.utils.sub
 import net.liplum.util.addRangeInfo
+import plumy.core.arc.Tick
+import plumy.core.assets.EmptyTR
+import plumy.core.math.isZero
 
 internal const val T2SD = 5f / 6f * Mathf.pi
 internal const val HalfPi = 1f / 2f * Mathf.pi
@@ -87,8 +87,8 @@ open class AntiVirus(name: String) : Block(name) {
     @JvmField var shieldExpendMinInterval = ShieldExpandEffectDuration * 0.6f
     @JvmField var uninfectedColor: Color = R.C.GreenSafe
     @JvmField var infectedColor: Color = R.C.RedAlert
-    lateinit var unenergizedTR: TR
-    lateinit var shieldTR: TR
+    @ClientOnly @JvmField var unenergizedTR = EmptyTR
+    @ClientOnly @JvmField var shieldTR = EmptyTR
     @ClientOnly @JvmField var maxSelectedCircleTime = Var.SelectedCircleTime
 
     init {

@@ -40,6 +40,7 @@ import net.liplum.registry.SD
 import net.liplum.util.yesNo
 import plumy.core.Serialized
 import plumy.core.arc.Tick
+import plumy.core.assets.EmptyTR
 import plumy.core.assets.TR
 import plumy.core.math.isZero
 import plumy.core.math.nextBoolean
@@ -48,8 +49,8 @@ import kotlin.math.max
 
 open class HoloWall(name: String) : Wall(name) {
     @JvmField var restoreCharge: Tick = 10 * 60f
-    @ClientOnly lateinit var ProjectorTR: TR
-    @ClientOnly lateinit var ImageTR: TR
+    @ClientOnly @JvmField var ProjectorTR = EmptyTR
+    @ClientOnly @JvmField var ImageTR = EmptyTR
     @JvmField var minHealthProportion = 0.05f
     @ClientOnly @JvmField var floatingRange = 2f
     @JvmField var needPower = false

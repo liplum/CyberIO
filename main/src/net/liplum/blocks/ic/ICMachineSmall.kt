@@ -4,11 +4,8 @@ import arc.func.Prov
 import mindustry.graphics.Pal
 import mindustry.type.Item
 import net.liplum.DebugOnly
-import plumy.core.assets.TR
 import net.liplum.blocks.AniedCrafter
 import net.liplum.common.util.percentI
-import plumy.core.math.FUNC
-import plumy.core.math.isZero
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.animation.anis.AniState
 import net.liplum.mdt.animation.anis.None
@@ -17,6 +14,9 @@ import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.SetAlpha
 import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.utils.sub
+import plumy.core.assets.EmptyTR
+import plumy.core.math.FUNC
+import plumy.core.math.isZero
 import kotlin.math.sqrt
 
 private typealias AniStateMS = AniState<ICMachineSmall, ICMachineSmall.ICMachineSmallBuild>
@@ -32,8 +32,8 @@ private val P2A: FUNC = {
 
 open class ICMachineSmall(name: String) : AniedCrafter<ICMachineSmall, ICMachineSmall.ICMachineSmallBuild>(name) {
     @ClientOnly var phase = 3
-    @ClientOnly lateinit var Baffle: TR
-    @ClientOnly lateinit var processIcons: Array<Item>
+    @ClientOnly @JvmField var Baffle = EmptyTR
+    @ClientOnly @JvmField var processIcons = emptyArray<Item>()
     @ClientOnly @JvmField var baffleMinAlpha = 0.65f
     @ClientOnly @JvmField var baffleMaxAlpha = 1f
 

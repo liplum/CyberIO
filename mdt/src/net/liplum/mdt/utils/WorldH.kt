@@ -21,7 +21,6 @@ import mindustry.world.Block
 import mindustry.world.Tile
 import mindustry.world.blocks.payloads.BuildPayload
 import mindustry.world.blocks.payloads.PayloadConveyor
-import mindustry.world.blocks.payloads.PayloadSource
 import mindustry.world.blocks.payloads.UnitPayload
 import plumy.core.Out
 import plumy.core.math.Point2f
@@ -37,10 +36,6 @@ typealias Pos = Point2
 fun PackedPos.unpack(): Pos =
     Point2.unpack(this)
 
-val Pos.isEmpty: Boolean
-    get() = x < 0 || y < 0
-
-fun NewEmptyPos() = Pos(-1, -1)
 fun tileAt(x: TileXY, y: TileXY): Tile? =
     Vars.world.tile(x, y)
 
@@ -314,7 +309,7 @@ fun worldWidth(): Float =
 fun worldHeight(): Float =
     Vars.world.tiles.height * Vars.tilesize + Vars.finalWorldBounds
 
-fun Position.inWorld(): Boolean {
+fun Position.inTheWorld(): Boolean {
     if (x < -Vars.finalWorldBounds ||
         y < -Vars.finalWorldBounds
     ) return false

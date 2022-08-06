@@ -24,6 +24,7 @@ import net.liplum.mdt.render.DrawSize
 import net.liplum.mdt.utils.autoAnim
 import net.liplum.mdt.utils.draw
 import net.liplum.mdt.utils.sub
+import plumy.core.assets.EmptyTR
 
 open class Jammer(name: String) : ContinuousLiquidTurret(name) {
     @ClientOnly var dx = -15f
@@ -100,7 +101,7 @@ open class Jammer(name: String) : ContinuousLiquidTurret(name) {
     }
 
     inner class DrawStereo : DrawBlock() {
-        @ClientOnly lateinit var StereoTR: TR
+        @ClientOnly @JvmField var StereoTR = EmptyTR
         @ClientOnly lateinit var SonicWaveAnim: Animation
         override fun load(block: Block) = block.run {
             super.load(this)

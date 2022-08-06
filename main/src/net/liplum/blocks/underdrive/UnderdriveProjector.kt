@@ -4,7 +4,6 @@ import arc.func.Prov
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
 import arc.graphics.g2d.Lines
-import arc.graphics.g2d.TextureRegion
 import arc.math.Mathf
 import arc.math.geom.Geometry
 import arc.math.geom.Intersector
@@ -52,6 +51,7 @@ import net.liplum.mdt.utils.sub
 import net.liplum.mdt.utils.subBundle
 import net.liplum.util.addRangeInfo
 import plumy.core.Serialized
+import plumy.core.assets.EmptyTR
 import kotlin.math.max
 
 const val MagicNSpiralRate = 0.1125f
@@ -103,7 +103,7 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
     @JvmField var slowDownRateEFFReward = 0.3f
     @JvmField var maxPowerEFFBlocksReq = 10
     @JvmField var maxGear = 1
-    lateinit var spiralTR: TextureRegion
+    @ClientOnly @JvmField var spiralTR = EmptyTR
     @ClientOnly @JvmField var maxSelectedCircleTime = Var.SelectedCircleTime
 
     init {

@@ -25,11 +25,11 @@ import net.liplum.mdt.mixin.drawRotation
 import net.liplum.mdt.mixin.drawX
 import net.liplum.mdt.mixin.drawY
 import net.liplum.mdt.utils.autoAnim
+import plumy.core.assets.EmptyTR
 
 open class TMTRAINER(name: String) : ItemTurret(name) {
     @ClientOnly lateinit var CoreAnim: Animation
     @ClientOnly lateinit var EmptyCoreAnim: Animation
-    @ClientOnly lateinit var HeadTR: TR
     @JvmField @ClientOnly var headMax = 0.45f
     @JvmField @ClientOnly var headMin = -3f
     @JvmField var CoreAnimFrames = 8

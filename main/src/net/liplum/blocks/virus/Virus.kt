@@ -3,7 +3,6 @@ package net.liplum.blocks.virus
 import arc.func.Prov
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
-import arc.graphics.g2d.TextureRegion
 import arc.math.Mathf
 import arc.struct.Seq
 import arc.util.io.Reads
@@ -21,18 +20,20 @@ import mindustry.world.Tile
 import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.api.virus.UninfectedBlocksRegistry
-import plumy.core.Serialized
-import plumy.core.UseRandom
 import net.liplum.common.shader.use
 import net.liplum.common.util.bundle
 import net.liplum.common.util.off
 import net.liplum.common.util.on
+import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.Else
 import net.liplum.mdt.ServerOnly
 import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.utils.sub
 import net.liplum.registry.SD
 import net.liplum.util.yesNo
+import plumy.core.Serialized
+import plumy.core.UseRandom
+import plumy.core.assets.EmptyTR
 
 typealias UBR = UninfectedBlocksRegistry
 
@@ -69,7 +70,7 @@ open class Virus(name: String) : Block(name) {
     @JvmField var maxMutationNumber: Int = -1
     @JvmField var canMutate: Boolean = false
     @JvmField var startMutationPercent: Float = 0.8f
-    lateinit var raceMaskTR: TextureRegion
+    @ClientOnly @JvmField var raceMaskTR = EmptyTR
 
     init {
         buildType = Prov { VirusBuild() }

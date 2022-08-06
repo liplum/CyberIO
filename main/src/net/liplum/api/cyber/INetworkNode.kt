@@ -9,19 +9,19 @@ import net.liplum.Var
 import net.liplum.api.ICyberEntity
 import net.liplum.api.cyber.SideLinks.Companion.coordinates
 import net.liplum.api.cyber.SideLinks.Companion.reflect
-import plumy.core.Out
-import plumy.core.Serialized
 import net.liplum.common.util.isEven
 import net.liplum.common.util.raycastInThis
 import net.liplum.data.DataID
 import net.liplum.data.EmptyDataID
 import net.liplum.data.PayloadData
 import net.liplum.data.PayloadDataList
-import plumy.core.math.Progress
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.utils.TEAny
 import net.liplum.mdt.utils.TileXY
 import net.liplum.mdt.utils.WorldXY
+import plumy.core.Out
+import plumy.core.Serialized
+import plumy.core.math.Progress
 import plumy.pathkt.IVertex
 
 interface INetworkNode : ICyberEntity, IVertex<INetworkNode> {
@@ -43,7 +43,7 @@ interface INetworkNode : ICyberEntity, IVertex<INetworkNode> {
         get() = if (currentOriented == -1) null
         else links[currentOriented].TEAny()
     var sendingProgress: Progress
-        get() = curSendingLength / totalSendingDistance
+        get() = if (totalSendingDistance == 0f) 0f else curSendingLength / totalSendingDistance
         set(value) {
             curSendingLength = totalSendingDistance * value
         }

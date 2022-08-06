@@ -21,7 +21,7 @@ import net.liplum.api.bullets.BulletAbility
 import net.liplum.common.util.DrawLayer
 import net.liplum.mdt.render.G
 import net.liplum.mdt.utils.MdtUnit
-import net.liplum.mdt.utils.inWorld
+import net.liplum.mdt.utils.inTheWorld
 import net.liplum.mdt.utils.worldXY
 import net.liplum.render.CioFx
 import net.liplum.render.Shape
@@ -98,7 +98,7 @@ open class SlowDownBA : BulletAbility() {
 
 open class InfiniteBA : BulletAbility() {
     override fun update(b: Bullet) = b.run {
-        if (!b.inWorld()) {
+        if (!b.inTheWorld()) {
             b.remove()
         }
         time = 0f

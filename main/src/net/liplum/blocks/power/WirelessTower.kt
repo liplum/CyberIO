@@ -36,6 +36,7 @@ import net.liplum.mdt.render.*
 import net.liplum.mdt.utils.sub
 import net.liplum.registry.CioStats
 import net.liplum.util.addPowerUseStats
+import plumy.core.assets.EmptyTR
 import kotlin.math.min
 
 private typealias PowerUse = Float
@@ -49,10 +50,10 @@ open class WirelessTower(name: String) : PowerBlock(name) {
     @JvmField var dst2CostRate: WirelessTowerBuild.(Distance) -> PowerUse = { dst ->
         1f + dst / realRange * dstExtraPowerConsumeFactor
     }
-    lateinit var BaseTR: TR
-    lateinit var CoilTR: TR
-    lateinit var CoreTR: TR
-    lateinit var SupportTR: TR
+    @ClientOnly @JvmField var BaseTR = EmptyTR
+    @ClientOnly @JvmField var CoilTR = EmptyTR
+    @ClientOnly @JvmField var CoreTR = EmptyTR
+    @ClientOnly @JvmField var SupportTR = EmptyTR
     @ClientOnly @JvmField var rotationRadius = 0.7f
     @ClientOnly @JvmField var maxSelectedCircleTime = Var.SelectedCircleTime
     @JvmField var range2Stroke: (Float) -> Float = { (it / 100f).coerceAtLeast(1f) }

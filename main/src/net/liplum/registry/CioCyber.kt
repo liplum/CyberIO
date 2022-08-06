@@ -312,7 +312,7 @@ object CioCyber {
     fun serializer() {
         DebugOnly {
             serializer = Serializer("serializer").apply {
-                category = Category.effect
+                category = Category.units
                 buildVisibility = BuildVisibility.shown
                 requirements = arrayOf()
                 size = 5
