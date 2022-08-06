@@ -6,7 +6,6 @@ import mindustry.ui.dialogs.BaseDialog
 import net.liplum.Var
 import net.liplum.registry.CioBlock
 import net.liplum.registry.CioHoloUnits
-import net.liplum.registry.CioUnitTypes
 
 object IconGenDebugDialog {
     val debugged by lazy {
@@ -31,7 +30,7 @@ object IconGenDebugDialog {
                         image(it.uiIcon).size(100f).row()
                         add(it.localizedName)
                     }.size(120f).pad(10f)
-                    if(i != 0 && i % 5 == 0){
+                    if (i != 0 && i % 5 == 0) {
                         icons.row()
                     }
                 }

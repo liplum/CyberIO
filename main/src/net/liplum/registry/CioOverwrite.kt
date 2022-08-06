@@ -4,10 +4,9 @@ import mindustry.Vars
 import mindustry.content.Blocks
 import mindustry.content.Liquids
 import mindustry.content.UnitTypes
+import mindustry.world.blocks.heat.HeatProducer
 import mindustry.world.blocks.payloads.*
-import mindustry.world.blocks.sandbox.ItemSource
-import mindustry.world.blocks.sandbox.LiquidSource
-import mindustry.world.blocks.sandbox.PowerSource
+import mindustry.world.blocks.sandbox.*
 import mindustry.world.meta.BuildVisibility
 import net.liplum.DebugOnly
 import net.liplum.ExperimentalOnly
@@ -15,7 +14,7 @@ import net.liplum.annotations.DependOn
 
 object CioOverwrite {
     @DependOn
-    fun _overwriteVanilla() {
+    fun debugOnly() {
         DebugOnly {
             (Blocks.powerSource as PowerSource).apply {
                 buildVisibility = BuildVisibility.shown
@@ -33,10 +32,22 @@ object CioOverwrite {
                 buildVisibility = BuildVisibility.shown
                 health = Int.MAX_VALUE
             }
-            Blocks.powerVoid.buildVisibility = BuildVisibility.shown
-            Blocks.itemVoid.buildVisibility = BuildVisibility.shown
-            Blocks.liquidVoid.buildVisibility = BuildVisibility.shown
-            Blocks.payloadVoid.buildVisibility = BuildVisibility.shown
+            (Blocks.heatSource as HeatProducer).apply {
+                buildVisibility = BuildVisibility.shown
+                health = Int.MAX_VALUE
+            }
+            (Blocks.powerVoid as PowerVoid).apply {
+                buildVisibility = BuildVisibility.shown
+            }
+            (Blocks.itemVoid as ItemVoid).apply {
+                buildVisibility = BuildVisibility.shown
+            }
+            (Blocks.liquidVoid as LiquidVoid).apply {
+                buildVisibility = BuildVisibility.shown
+            }
+            (Blocks.payloadVoid as PayloadVoid).apply {
+                buildVisibility = BuildVisibility.shown
+            }
             val blockSize = 10f
             (Blocks.payloadConveyor as PayloadConveyor).payloadLimit = blockSize
             (Blocks.payloadLoader as PayloadLoader).maxBlockSize = blockSize.toInt()
@@ -59,6 +70,8 @@ object CioOverwrite {
             Blocks.titaniumConveyor.sync = true
             Blocks.armoredConveyor.sync = true
             Blocks.plastaniumConveyor.sync = true
+            Blocks.duct.sync = true
+            Blocks.armoredDuct.sync = true
         }
     }
 }

@@ -32,7 +32,7 @@ object CioFluid {
         }
     }
     @DependOn
-    fun tissueFluid() {
+    fun blood() {
         DebugOnly {
             blood = Liquid(R.Liquid.Blood, R.C.Blood).apply {
                 flammability = 0f
