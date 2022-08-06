@@ -6,7 +6,7 @@ import net.liplum.statusFx.Static
 import net.liplum.statusFx.Vulnerable
 import net.liplum.util.globalAnim
 
-object CioSEffects {
+object CioSEffect {
     @JvmStatic lateinit var infected: Infected
     @JvmStatic lateinit var vulnerable: Vulnerable
     @JvmStatic lateinit var static: Static

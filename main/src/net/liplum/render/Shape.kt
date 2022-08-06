@@ -6,7 +6,7 @@ import net.liplum.event.CioLoadContentEvent
 import net.liplum.cioTR
 import plumy.core.assets.TR
 
-object Shapes {
+object Shape {
     @JvmField var motionCircle = TR()
     @JvmField var starActive = TR()
     @JvmField var starInactive = TR()

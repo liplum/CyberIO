@@ -61,7 +61,7 @@ object CioOverwrite {
             UnitTypes.incite.payloadCapacity = blockSize * blockSize * Vars.tilePayload
             UnitTypes.emanate.payloadCapacity = blockSize * blockSize * Vars.tilePayload
             /*val coreBlock = Blocks.coreShard as CoreBlock
-            coreBlock.unitType = CioUnitTypes.holoFighter
+            coreBlock.unitType = CioUnitType.holoFighter
             coreBlock.solid = false*/
             Liquids.neoplasm.hidden = false
         }

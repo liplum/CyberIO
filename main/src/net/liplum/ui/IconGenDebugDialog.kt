@@ -5,18 +5,18 @@ import arc.scene.ui.layout.Table
 import mindustry.ui.dialogs.BaseDialog
 import net.liplum.Var
 import net.liplum.registry.CioBlock
-import net.liplum.registry.CioHoloUnits
+import net.liplum.registry.CioHoloUnit
 
 object IconGenDebugDialog {
     val debugged by lazy {
         listOf(
             CioBlock.holoWall,
             CioBlock.holoWallLarge,
-            CioHoloUnits.holoMiner,
-            CioHoloUnits.holoFighter,
-            CioHoloUnits.holoGuardian,
-            CioHoloUnits.holoSupporter,
-            CioHoloUnits.holoArchitect,
+            CioHoloUnit.holoMiner,
+            CioHoloUnit.holoFighter,
+            CioHoloUnit.holoGuardian,
+            CioHoloUnit.holoSupporter,
+            CioHoloUnit.holoArchitect,
         )
     }
 

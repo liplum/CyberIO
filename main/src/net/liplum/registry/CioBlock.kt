@@ -61,8 +61,8 @@ import net.liplum.mdt.render.*
 import net.liplum.mdt.ui.DynamicContentInfoDialog.Companion.registerDynamicInfo
 import net.liplum.mdt.utils.addAmmo
 import net.liplum.mdt.utils.plus
-import net.liplum.registry.CioBulletTypes.optInRadiationInterference
-import net.liplum.registry.CioBulletTypes.optInVirus
+import net.liplum.registry.CioBulletType.optInRadiationInterference
+import net.liplum.registry.CioBulletType.optInVirus
 import net.liplum.render.*
 import net.liplum.statusFx.StaticFx
 import net.liplum.util.globalAnim
@@ -346,7 +346,7 @@ object CioBlock {
                 )
                 scaledHealth = 125f
             }
-            crystalSounds = CioSounds.crystal
+            crystalSounds = CioSound.crystal
             crystalSoundVolume = 0.8f
             buildCostMultiplier = 2f
             size = 4
@@ -729,9 +729,9 @@ object CioBlock {
             shake = 2f
             reload = 240f
             shoot.firstShotDelay = 90f
-            chargeSound = CioSounds.jammerPreShoot
+            chargeSound = CioSound.jammerPreShoot
             shootSound = Sounds.none
-            loopSound = CioSounds.tvStatic
+            loopSound = CioSound.tvStatic
             loopSoundVolume = 0.3f
             rotateSpeed = 2f
 
@@ -750,7 +750,7 @@ object CioBlock {
                 divisions = 5
                 hitEffect = StaticFx
                 hitColor = Color.white
-                status = CioSEffects.static
+                status = CioSEffect.static
                 incendChance = 0.4f
                 incendSpread = 5f
                 incendAmount = 1

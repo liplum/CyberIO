@@ -4,7 +4,7 @@ import net.liplum.mdt.shader.CommonShader;
 import net.liplum.mdt.shader.ProgressShader;
 import net.liplum.shaders.*;
 
-public class CioShaders {
+public class CioShader {
     public static CommonShader DynamicColor;
     public static CommonShader Monochrome;
     public static CommonShader InvertColor;

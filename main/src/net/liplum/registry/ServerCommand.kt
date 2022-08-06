@@ -11,7 +11,7 @@ import net.liplum.mdt.advanced.MapCleaner
 import net.liplum.update.Updater
 
 @HeadlessOnly
-object ServerCommands {
+object ServerCommand {
     @HeadlessOnly
     @JvmStatic
     fun CommandHandler.registerCioCommands() {

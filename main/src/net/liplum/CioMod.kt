@@ -24,7 +24,7 @@ import net.liplum.mdt.animation.ganim.GlobalAnimation
 import net.liplum.mdt.safeCall
 import net.liplum.registry.CioShaderLoader
 import net.liplum.registry.CioTechTree
-import net.liplum.registry.ServerCommands.registerCioCommands
+import net.liplum.registry.ServerCommand.registerCioCommands
 import net.liplum.registry.SpecificLoader
 import net.liplum.render.TestShader
 import net.liplum.script.NpcSystem

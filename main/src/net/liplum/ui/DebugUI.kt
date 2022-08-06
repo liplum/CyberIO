@@ -25,7 +25,7 @@ import net.liplum.event.CioInitEvent
 import net.liplum.common.util.allFieldsIncludeParents
 import net.liplum.common.util.directSuperClass
 import net.liplum.mdt.Screen
-import net.liplum.render.Shapes
+import net.liplum.render.Shape
 import net.liplum.ui.attach.Dragger.Companion.dragToMove
 import java.lang.reflect.Field
 
@@ -147,7 +147,7 @@ object DebugUI {
             starList.forEach {
                 listView.add(Table(Tex.button).apply {
                     add(Table().apply {
-                        add(ImageButton(Shapes.starActive).apply {
+                        add(ImageButton(Shape.starActive).apply {
                             clicked {
                                 starList.remove(it)
                                 rebuildEntityList()
@@ -171,7 +171,7 @@ object DebugUI {
             entityList.forEach {
                 listView.add(Table(Tex.button).apply {
                     add(Table().apply {
-                        add(ImageButton(Shapes.starInactive).apply {
+                        add(ImageButton(Shape.starInactive).apply {
                             clicked {
                                 starList.add(it)
                                 rebuildEntityList()

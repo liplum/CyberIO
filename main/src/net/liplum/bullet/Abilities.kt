@@ -24,7 +24,7 @@ import net.liplum.mdt.utils.MdtUnit
 import net.liplum.mdt.utils.inWorld
 import net.liplum.mdt.utils.worldXY
 import net.liplum.render.CioFx
-import net.liplum.render.Shapes
+import net.liplum.render.Shape
 
 open class ProvidenceBA : BulletAbility() {
     var range = 25f
@@ -44,7 +44,7 @@ open class ProvidenceBA : BulletAbility() {
             Draw.color(Tmp.c1.set(lightColor).lerp(bulletType.lightColor, 0.5f))
             Draw.alpha(lightAlpha)
             val range = range * (1f + G.sin / 9f) * 2f
-            Draw.rect(Shapes.motionCircle, x, y, range, range)
+            Draw.rect(Shape.motionCircle, x, y, range, range)
         }
         DebugOnly {
             G.circle(x, y, this@ProvidenceBA.range, alpha = 0.3f)
@@ -81,7 +81,7 @@ open class SlowDownBA : BulletAbility() {
             val range = range * (1f + G.sin / 9f) * 2f
             Draw.color(darkColor)
             Draw.alpha(darkAlpha)
-            Draw.rect(Shapes.motionCircle, x, y, range, range)
+            Draw.rect(Shape.motionCircle, x, y, range, range)
         }
         DebugOnly {
             G.circle(x, y, range, alpha = 0.3f)
@@ -178,7 +178,7 @@ open class BlackHoleBA : BulletAbility() {
             Draw.color(R.C.Black)
             Draw.alpha(0.5f)
             val range = range * (1f + G.sin / 9f) * 2f
-            Draw.rect(Shapes.motionCircle, x, y, range, range)
+            Draw.rect(Shape.motionCircle, x, y, range, range)
         }
         DebugOnly {
             G.circle(x, y, range, alpha = 0.3f)

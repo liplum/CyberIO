@@ -12,13 +12,13 @@ import net.liplum.common.shader.*
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.shader.CommonShader
 import net.liplum.mdt.shader.ProgressShader
-import net.liplum.registry.CioShaders.*
+import net.liplum.registry.CioShader.*
 import net.liplum.shaders.HologramShader
 import net.liplum.shaders.HologramizeShader
 import net.liplum.shaders.SurfaceShader
 import net.liplum.shaders.VanishingShader
 import net.liplum.useCompatible
-typealias SD = CioShaders
+typealias SD = CioShader
 
 object CioShaderLoader {
     @JvmStatic

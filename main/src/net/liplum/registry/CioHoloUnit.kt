@@ -28,7 +28,7 @@ import net.liplum.mdt.utils.NewUnitType
 import net.liplum.mdt.utils.plus
 import plumy.core.arc.minute
 
-object CioHoloUnits {
+object CioHoloUnit {
     @JvmStatic lateinit var holoProjector: HoloProjector
     @JvmStatic lateinit var holoMiner: HoloUnitType
     @JvmStatic lateinit var holoFighter: HoloUnitType
@@ -38,11 +38,11 @@ object CioHoloUnits {
     @DependOn(
         "CioItem.ic",
         "CioFluid.cyberion",
-        "CioHoloUnits.holoMiner",
-        "CioHoloUnits.holoFighter",
-        "CioHoloUnits.holoGuardian",
-        "CioHoloUnits.holoArchitect",
-        "CioHoloUnits.holoSupporter",
+        "CioHoloUnit.holoMiner",
+        "CioHoloUnit.holoFighter",
+        "CioHoloUnit.holoGuardian",
+        "CioHoloUnit.holoArchitect",
+        "CioHoloUnit.holoSupporter",
     )
 
     fun holoProjector() {

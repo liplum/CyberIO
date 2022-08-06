@@ -8,7 +8,7 @@ import net.liplum.util.LoadSound
 import net.liplum.util.LoadSounds
 import plumy.core.assets.EmptySounds
 
-object CioSounds {
+object CioSound {
     @JvmField var tvStatic: Sound = Sounds.none
     @JvmField var jammerPreShoot: Sound = Sounds.none
     @JvmField var laserWeak: Array<Sound> = EmptySounds

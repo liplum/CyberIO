@@ -32,12 +32,12 @@ import net.liplum.registry.CioCyber.streamServer
 import net.liplum.registry.CioHeimdall.ear
 import net.liplum.registry.CioHeimdall.eye
 import net.liplum.registry.CioHeimdall.heimdall
-import net.liplum.registry.CioHoloUnits.holoArchitect
-import net.liplum.registry.CioHoloUnits.holoFighter
-import net.liplum.registry.CioHoloUnits.holoGuardian
-import net.liplum.registry.CioHoloUnits.holoMiner
-import net.liplum.registry.CioHoloUnits.holoProjector
-import net.liplum.registry.CioHoloUnits.holoSupporter
+import net.liplum.registry.CioHoloUnit.holoArchitect
+import net.liplum.registry.CioHoloUnit.holoFighter
+import net.liplum.registry.CioHoloUnit.holoGuardian
+import net.liplum.registry.CioHoloUnit.holoMiner
+import net.liplum.registry.CioHoloUnit.holoProjector
+import net.liplum.registry.CioHoloUnit.holoSupporter
 import net.liplum.registry.CioItem.ic
 
 object CioTechTree {

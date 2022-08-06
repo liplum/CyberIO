@@ -1,6 +1,5 @@
 package net.liplum.registry
 
-import arc.func.Prov
 import arc.graphics.Texture
 import mindustry.content.Fx
 import mindustry.content.Items
@@ -59,7 +58,7 @@ object CioHeimdall {
             }
             loopSound = Sounds.minebeam
             size = 4
-            connectedSound = CioSounds.connected
+            connectedSound = CioSound.connected
             addFormationPatterns(
                 FaceFE, FunnyFaceFE, ForceFieldFE
             )
@@ -109,8 +108,8 @@ object CioHeimdall {
                 Upgrade(UT.PowerUse, false, 0.55f),
                 Upgrade(UT.MaxBrainWaveNum, true, 0.2f),
             )
-            normalSounds = CioSounds.laserWeak
-            improvedSounds = CioSounds.laser
+            normalSounds = CioSound.laserWeak
+            improvedSounds = CioSound.laser
             soundVolume = 0.15f
             normalBullet = LightningBulletType().apply {
                 VanillaSpec {
@@ -276,9 +275,9 @@ object CioHeimdall {
                     }
                     soundGetter = {
                         when (it) {
-                            in Float.MIN_VALUE..0.1f -> CioSounds.heartbeat
-                            in 0.1f..Float.MAX_VALUE -> CioSounds.heartbeatFaster
-                            else -> CioSounds.heartbeat
+                            in Float.MIN_VALUE..0.1f -> CioSound.heartbeat
+                            in 0.1f..Float.MAX_VALUE -> CioSound.heartbeatFaster
+                            else -> CioSound.heartbeat
                         }
                     }
                     offset = 20f // +5f when improved

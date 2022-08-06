@@ -10,7 +10,7 @@ import net.liplum.cio
 import net.liplum.flesh.BrainUnitType
 import net.liplum.mdt.utils.registerUnitType
 
-object CioUnitTypes {
+object CioUnitType {
     @JvmStatic lateinit var brain: BrainUnitType
     @DependOn("CioItem.ic")
     fun brain() {
