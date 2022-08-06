@@ -118,7 +118,7 @@ object Updater : CoroutineScope {
     val curDownloadURL: String
         get() {
             val version = latestVersion.toString()
-            return "${Settings.GitHubMirrorUrl}/${Meta.Repo}/releases/download/v$version/CyberIO-$version.jar"
+            return "${Meta.GitHubUrl}/${Meta.Repo}/releases/download/v$version/CyberIO-$version.jar"
         }
     @JvmStatic
     fun updateSelfByBuiltIn() {

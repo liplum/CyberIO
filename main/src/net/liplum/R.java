@@ -304,7 +304,7 @@ public final class R {
             CyberIOLoadedTimes = Gen("cio-loaded-times"),
             ClassLoadedTimes = Gen("clz-loaded-times"),
             LastPlayTime = Gen("last-play-time"),
-            GitHubMirrorUrl = Gen("github-mirror"),
+            GitHubMirrorUrl = Gen("github-mirror"),// Deprecated
             ShaderRootPath = Gen("shader-root-path"),
             ContentSpecific = Gen("content-specific"),
             CheckUpdate = Gen("check-update");

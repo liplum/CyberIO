@@ -23,15 +23,6 @@ object AdvancedFunctionDialog : IBundlable {
         BaseDialog(bundle("title")).apply {
             addCloseButton()
             cont.add(ScrollPane(Table().apply {
-                // GitHub Mirror
-                addFunction {
-                    add(TextButton(GitHubMirrorUrlDialog.bundle("button")).apply {
-                        changed {
-                            GitHubMirrorUrlDialog.show(onReset)
-                        }
-                    }).applyButtonStyle().row()
-                    add(GitHubMirrorUrlDialog.bundle("button-tooltip")).applyLabelStyle()
-                }
                 // Map Cleaner
                 addFunction {
                     fun enableButtonText() =
