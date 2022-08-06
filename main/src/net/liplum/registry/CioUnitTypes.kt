@@ -57,6 +57,7 @@ object CioUnitTypes {
                 )
                 mineTier = 5
             }
+            isEnemy = false
             speed = 2f
             targetPriority = -1f
             aiController = Prov { MinerAI() }
@@ -101,6 +102,7 @@ object CioUnitTypes {
                 drag = 0.05f
                 speed = 3.8f
             }
+            isEnemy = false
             accel = 0.08f
             targetPriority = 1f
             buildSpeed = 1f
@@ -157,6 +159,7 @@ object CioUnitTypes {
                     60f, 4f, 2200f, 60f * 8
                 )
             )
+            isEnemy = false
             targetPriority = 5f
             aiController = Prov { DefenderAI() }
             HoloOpacity = 0.4f
@@ -196,6 +199,7 @@ object CioUnitTypes {
                     Items.oxide + 20,
                 )
             }
+            isEnemy = false
             aiController = Prov { BuilderAI() }
             controller = Func { BuilderAI() }
             HoloOpacity = 0.4f
@@ -279,6 +283,7 @@ object CioUnitTypes {
                     Items.oxide + 20,
                 )
             }
+            isEnemy = false
             aiController = Prov { RepairAI() }
             controller = Func { RepairAI() }
             flying = true

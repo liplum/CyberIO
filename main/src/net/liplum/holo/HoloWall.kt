@@ -1,6 +1,5 @@
 package net.liplum.holo
 
-import arc.Core
 import arc.func.Prov
 import arc.graphics.Color
 import arc.graphics.Texture
@@ -103,10 +102,10 @@ open class HoloWall(name: String) : Wall(name) {
         val size = size * 32
         val maker = StackIconMaker(size, size)
         val layers = listOf(
-            (PixmapRegionModelLayer(Core.atlas.getPixmap(ProjectorTR))){
+            (PixmapRegionModelLayerFrom(ProjectorTR)){
                 +PlainLayerProcessor()
             },
-            (PixmapRegionModelLayer(Core.atlas.getPixmap(ImageTR))){
+            (PixmapRegionModelLayerFrom(ImageTR)){
                 +TintLerpLayerProcessor(S.Hologram, Var.HoloWallTintAlpha)
             }
         )

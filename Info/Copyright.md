@@ -18,14 +18,17 @@ To respect your works and copyrights, if your artifacts are used unexpectedly in
 Note: the headers following doesn't mean they are the original authors of those resources but means those resources have been copied from them.
 #### The Binding of Isaac
 In [assets/sounds](/assets/sounds):
-1. jammer-pre-shoot.wav
-2. laser0.wav to laser2.wav
-3. laser-weak0.wav to laser-weak2.wav
-4. laser-strong0.wav to laser-strong2.wav
-5. tv-static.wav
-6. heartbeat.wav
-7. heartbeat-faster.wav
+1. `jammer-pre-shoot.wav`
+2. `laser0.wav` to `laser2.wav`
+3. `laser-weak0.wav` to `laser-weak2.wav`
+4. `laser-strong0.wav` to `laser-strong2.wav`
+5. `tv-static.wav`
+6. `heartbeat.wav`
+7. `heartbeat-faster.wav`
 
-In [assets/sprites](/assets/sprites):
-1. blood-bullet.png
-2. blood-bullet-hit.png
+#### [Zapsplat](https://www.zapsplat.com)
+1. `crystal0.mp3` to `crystal3.mp3` 
+
+In [assets/sprites](/assets-raw/sprites):
+1. `blood-bullet.png`
+2. `blood-bullet-hit.png`

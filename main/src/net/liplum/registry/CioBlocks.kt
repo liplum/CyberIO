@@ -436,6 +436,8 @@ object CioBlocks {
                 )
                 scaledHealth = 125f
             }
+            crystalSounds = CioSounds.crystal
+            crystalSoundVolume = 0.8f
             buildCostMultiplier = 2f
             size = 4
         }

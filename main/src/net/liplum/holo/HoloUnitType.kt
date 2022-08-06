@@ -95,10 +95,10 @@ open class HoloUnitType(name: String) : UnitType(name) {
         val maker = StackIconMaker(width, height)
         val rawIcon = fullIcon
         val layers = listOf(
-            (PixmapRegionModelLayer(Core.atlas.getPixmap(rawIcon))){
+            (PixmapRegionModelLayerFrom(rawIcon)){
                 +PlainLayerProcessor()
             },
-            (PixmapRegionModelLayer(Core.atlas.getPixmap(rawIcon))){
+            (PixmapRegionModelLayerFrom(rawIcon)){
                 +TintLerpLayerProcessor(S.Hologram, Var.HoloUnitTintAlpha)
             }
         )

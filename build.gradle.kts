@@ -44,7 +44,7 @@ allprojects {
 mindustry {
     dependency {
         mindustry mirror "1a64344e5a"
-        arc on "47925a7b91"
+        arc on "v137"
     }
     client {
         /*mindustry from Foo(

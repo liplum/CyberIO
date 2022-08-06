@@ -3,10 +3,10 @@ package net.liplum.registry
 import arc.audio.Sound
 import mindustry.gen.Sounds
 import net.liplum.annotations.SubscribeEvent
-import plumy.core.assets.EmptySounds
 import net.liplum.event.CioLoadContentEvent
 import net.liplum.util.LoadSound
 import net.liplum.util.LoadSounds
+import plumy.core.assets.EmptySounds
 
 object CioSounds {
     @JvmField var tvStatic: Sound = Sounds.none
@@ -14,6 +14,7 @@ object CioSounds {
     @JvmField var laserWeak: Array<Sound> = EmptySounds
     @JvmField var laser: Array<Sound> = EmptySounds
     @JvmField var laserStrong: Array<Sound> = EmptySounds
+    @JvmField var crystal: Array<Sound> = EmptySounds
     @JvmField var connected: Sound = Sounds.none
     @JvmField var heartbeat: Sound = Sounds.none
     @JvmField var heartbeatFaster: Sound = Sounds.none
@@ -28,5 +29,6 @@ object CioSounds {
         connected = "connected".LoadSound()
         heartbeat = "heartbeat".LoadSound()
         heartbeatFaster = "heartbeat-faster".LoadSound()
+        crystal = "crystal".LoadSounds(4)
     }
 }

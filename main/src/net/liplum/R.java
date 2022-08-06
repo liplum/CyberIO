@@ -56,6 +56,7 @@ public final class R {
 
     public static final class Bar {
         public static final String NeighborStateN = "neighbor-state";
+
         @NotNull
         @Contract(pure = true)
         public static String Gen(String content) {
@@ -242,7 +243,7 @@ public final class R {
             wav = "wav",
             mp3 = "mp3";
         public static final String[] extensions = {
-            wav, ogg, mp3
+            wav, mp3, ogg
         };
 
         @NotNull

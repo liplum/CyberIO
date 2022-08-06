@@ -25,10 +25,10 @@ import net.liplum.common.util.ReferBundleWrapper
 import net.liplum.common.util.allMaxBy
 import net.liplum.common.util.randomExcept
 import net.liplum.event.CioInitEvent
+import net.liplum.math.randomByWeights
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.utils.atlas
 import plumy.core.assets.TR
-import plumy.core.math.randomByWeights
 
 @ClientOnly
 object Welcome {
@@ -130,7 +130,7 @@ object Welcome {
         val json = Res("WelcomeInfo.json").readAllText()
         infoJson = JsonIO.json.fromJson(ObjectMap::class.java, json) as ObjectMap<String, JsonValue>
         val curInfo = infoJson.get(Meta.Version)
-            ?: throw ArcRuntimeException("The welcome words information of Cyber IO ${Meta.Version} not found.")
+            ?: throw ArcRuntimeException("The welcome message information of Cyber IO ${Meta.Version} not found.")
         val default = curInfo.get("Default")?.asString() ?: "Default"
         val scenes = curInfo.get("Scene")?.asStringArray() ?: emptyArray()
         val parent: String? = curInfo.get("Parent")?.asString()
