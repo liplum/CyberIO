@@ -83,11 +83,12 @@ val MKUtilsVersion :String by project
 dependencies {
     implementation(project(":annotations"))
     implementation(project(":common"))
-    implementation(project(":lib"))
     implementation(project(":cui"))
     ksp(project(":processor"))
     importMindustry("ksp")
     importMindustry()
+    api("com.github.plumygame.mkutils:core:$MKUtilsVersion")
+    testApi("com.github.plumygame.mkutils:core:$MKUtilsVersion")
     implementation("com.github.liplum:OpenGAL:$OpenGalVersion")
     implementation("com.github.liplum.plumyjava:path-kt:$PlumyVersion")
     implementation("com.github.plumygame.mkutils:texture:$MKUtilsVersion")

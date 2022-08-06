@@ -11,7 +11,6 @@ pluginManagement {
 }
 include(
     "main",
-    "lib",
     "cui",
     "mdt",
     "common",

@@ -15,10 +15,12 @@ sourceSets {
         resources.srcDir("resources")
     }
 }
+val MKUtilsVersion :String by project
+
 dependencies {
     importMindustry()
-    api(project(":lib"))
-    testApi(project(":lib"))
+    api("com.github.plumygame.mkutils:core:$MKUtilsVersion")
+    testApi("com.github.plumygame.mkutils:core:$MKUtilsVersion")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.0")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.0")
     testImplementation("com.github.liplum:TestUtils:v0.1")
