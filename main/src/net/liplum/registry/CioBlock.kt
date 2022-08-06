@@ -577,8 +577,8 @@ object CioBlock {
     }
     @DependOn(
         "CioItem.ic",
-        "CioSEffects.infected",
-        "CioSEffects.static",
+        "CioSEffect.infected",
+        "CioSEffect.static",
     )
     fun TMTRAINER() {
         TMTRAINER = TMTRAINER("TMTRAINER").apply {
