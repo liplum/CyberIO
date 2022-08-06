@@ -12,10 +12,7 @@ import mindustry.Vars
 import mindustry.content.Bullets
 import mindustry.entities.TargetPriority
 import mindustry.entities.bullet.BulletType
-import mindustry.gen.Building
-import mindustry.gen.Bullet
-import mindustry.gen.Sounds
-import mindustry.gen.Teamc
+import mindustry.gen.*
 import mindustry.gen.Unit
 import mindustry.graphics.Drawf
 import mindustry.graphics.Layer
@@ -28,12 +25,6 @@ import net.liplum.Var
 import net.liplum.api.brain.*
 import net.liplum.common.math.PolarX
 import net.liplum.common.util.progress
-import plumy.core.assets.EmptySounds
-import plumy.core.assets.TR
-import plumy.core.assets.TRs
-import plumy.core.math.approachA
-import plumy.core.math.approachR
-import plumy.core.math.radian
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.animation.anims.Anime
@@ -41,7 +32,16 @@ import net.liplum.mdt.animation.anims.genFramesBy
 import net.liplum.mdt.animation.anims.randomCurTime
 import net.liplum.mdt.render.*
 import net.liplum.mdt.ui.ammoStats
-import net.liplum.mdt.utils.*
+import net.liplum.mdt.utils.draw
+import net.liplum.mdt.utils.sheet
+import net.liplum.mdt.utils.sub
+import plumy.core.assets.EmptySounds
+import plumy.core.assets.TR
+import plumy.core.assets.TRs
+import plumy.core.math.approachA
+import plumy.core.math.approachR
+import plumy.core.math.radian
+import plumy.core.math.random
 import plumy.world.TileXY
 import plumy.world.getCenterWorldXY
 
@@ -49,7 +49,9 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
     var normalBullet: BulletType = Bullets.placeholder
     var improvedBullet: BulletType = Bullets.placeholder
     @ClientOnly @JvmField var normalSounds: Array<Sound> = EmptySounds
+    @ClientOnly @JvmField var normalSoundPitchRange = 0.8f..1.2f
     @ClientOnly @JvmField var improvedSounds: Array<Sound> = EmptySounds
+    @ClientOnly @JvmField var improvedSoundPitchRange = 0.8f..1.2f
     @ClientOnly @JvmField var soundVolume = 1f
     /**
      * Cooling per tick. It should be multiplied by [Time.delta]
@@ -317,9 +319,9 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
         override fun handleBullet(bullet: Bullet, offsetX: Float, offsetY: Float, angleOffset: Float) {
             super.handleBullet(bullet, offsetX, offsetY, angleOffset)
             if (isLinkedBrain)
-                improvedSounds.random().at(x, y, soundPitchMin, soundVolume)
+                improvedSounds.random().at(x, y, improvedSoundPitchRange.random(), soundVolume)
             else
-                normalSounds.random().at(x, y, 1f, soundVolume)
+                normalSounds.random().at(x, y, normalSoundPitchRange.random(), soundVolume)
         }
 
         override fun drawSelect() {

@@ -83,6 +83,8 @@ open class Ear(name: String) : Block(name), IComponentBlock {
     @ClientOnly @JvmField var scaleTime = 30f
     @ClientOnly @JvmField var maxScale = 0.3f
     @ClientOnly @JvmField var sonicWaveColor = R.C.SonicWave
+    @ClientOnly @JvmField var sounds = 0.8f..1.2f
+    @ClientOnly @JvmField var soundPitchRange = 0.8f..1.2f
     override val upgrades: MutableMap<UpgradeType, Upgrade> = HashMap()
 
     init {
