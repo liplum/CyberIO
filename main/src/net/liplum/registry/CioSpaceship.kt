@@ -8,7 +8,7 @@ import mindustry.world.meta.BuildVisibility
 import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.annotations.DependOn
-import net.liplum.bullet.FieldBulletType
+import net.liplum.bullet.ArcFieldBulletType
 import net.liplum.mdt.utils.addAmmo
 
 object CioSpaceship {
@@ -24,8 +24,11 @@ object CioSpaceship {
                 buildVisibility = BuildVisibility.shown
                 size = 3
                 shootSound = Sounds.none
-                addAmmo(Liquids.water, FieldBulletType().apply {
-                    fieldColor = R.C.CuttexCyan
+                shootY = 2.8f
+                addAmmo(Liquids.water, ArcFieldBulletType().apply {
+                    hitColor = R.C.CuttexCyan
+                    damage = 20f
+                    length = 150f
                 })
             }
         }
