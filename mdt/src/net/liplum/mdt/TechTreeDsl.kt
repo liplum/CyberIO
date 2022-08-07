@@ -19,13 +19,13 @@ inline fun CreateTechTree(
     origin: UnlockableContent,
     name: String,
     requireUnlock: Boolean = false,
-    config: TechtreeDeclaration.() -> Unit,
+    config: TechTreeDeclaration.() -> Unit,
 ): TechNode {
     val root = TechNode(null, origin, origin.researchRequirements())
     root.name = name
     root.requiresUnlock = requireUnlock
     TechTree.roots.add(root)
-    val declaration = TechtreeDeclaration(root)
+    val declaration = TechTreeDeclaration(root)
     declaration.config()
     return root
 }
@@ -84,7 +84,7 @@ value class TechtreeModification(
     }
 }
 @JvmInline
-value class TechtreeDeclaration(
+value class TechTreeDeclaration(
     val root: TechNode,
 ) {
     inline fun node(
