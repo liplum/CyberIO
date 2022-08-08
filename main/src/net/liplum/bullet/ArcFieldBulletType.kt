@@ -10,6 +10,7 @@ import mindustry.entities.Units
 import mindustry.entities.bullet.ContinuousBulletType
 import mindustry.gen.Bullet
 import mindustry.world.blocks.ControlBlock
+import net.liplum.mdt.render.Text
 import net.liplum.mdt.utils.MdtUnit
 import plumy.core.arc.lighten
 import plumy.core.math.Degree
@@ -52,7 +53,7 @@ class ArcFieldBulletType : ContinuousBulletType() {
             Draw.color(Tmp.c1.set(hitColor).lighten(lightenIntensity))
         else Draw.color(hitColor)
         if (fdata < highlightTime) Draw.alpha(1f)
-        else Draw.alpha(fieldAlpha)
+        else Draw.alpha(fieldAlpha * b.fin(lengthInterp))
         Lines.arc(x, y, curLen / 2f, angle / 360f, this.rotation() - angle / 2f)
         Draw.reset()
     }
