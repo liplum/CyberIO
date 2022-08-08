@@ -32,7 +32,7 @@ object ServerCommand {
             "Check update of CyberIO."
         ) {
             Updater.fetchLatestVersion(updateInfoFileURL = Config.CheckUpdateInfoURL)
-            Updater.checkHeadlessUpdate(shouldUpdateOverride = true)
+            Updater.Headless.tryUpdateHeadless(shouldUpdateOverride = true)
         }
         register(
             R.CMD.ClearCyberIOConetnt,

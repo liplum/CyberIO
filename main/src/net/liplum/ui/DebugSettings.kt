@@ -67,6 +67,11 @@ object DebugSettingsDialog {
                     }
                 }).fill().row()
                 add(Table(Tex.button).apply {
+                    add("Debug Preview").color(Pal.darkFlame).row()
+                    button("Update") {
+                    }.row()
+                })
+                add(Table(Tex.button).apply {
                     add("Unlock Content").color(Color.white).row()
                     lockOrUnlock("Unlock", UnlockableContent::forceUnlock)
                     lockOrUnlock("Lock", UnlockableContent::lock)

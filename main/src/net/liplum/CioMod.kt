@@ -82,7 +82,7 @@ class CioMod : Mod() {
             ConfigEntry.load()
             ContentSpecific = Config.ContentSpecific.resolveContentSpec()
             Updater.fetchLatestVersion(updateInfoFileURL = Config.CheckUpdateInfoURL)
-            Updater.checkHeadlessUpdate()
+            Updater.Headless.tryUpdateHeadless()
         }
         safeCall {
             CLog.info(
