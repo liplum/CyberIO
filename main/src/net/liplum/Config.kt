@@ -1,102 +1,59 @@
 package net.liplum
 
-import arc.struct.ObjectMap
-import arc.util.serialization.JsonValue
-import mindustry.io.JsonIO
-import net.liplum.scripts.KeyNotFoundException
-import net.liplum.utils.component1
-import net.liplum.utils.component2
+import arc.util.Log
+import arc.util.serialization.Json
+import arc.util.serialization.JsonWriter
+import net.liplum.common.F
+import net.liplum.mdt.HeadlessOnly
 
 @HeadlessOnly
-object Config {
-    val Default = """
-    {
-        "AutoUpdate": false,
-        "CheckUpdateInfoURL": null
-    }
-    """.trimIndent()
-    var metas: Map<String, ConfigEntry<*>> = mapOf(
-        "AutoUpdate" to ConfigEntry(false),
-        "CheckUpdateInfoURL" to ConfigEntry(null, String::class.java),
-    )
-    val AutoUpdate: Boolean
-        get() = Config["AutoUpdate"] ?: false
-    val CheckUpdateInfoURL: String
-        get() = Config["CheckUpdateInfoURL"] ?: Meta.UpdateInfoURL
-    const val configName = "config.json"
-    var pairs: Map<String, Any?> = emptyMap()
-    @Suppress("UNCHECKED_CAST")
-    operator fun <T> get(key: String): T? {
-        if (key in pairs) {
-            return pairs[key] as T?
-        }
-        if (key in metas) {
-            return metas[key]?.default as T?
-        }
-        throw KeyNotFoundException(key)
-    }
-    @JvmStatic
-    fun load() {
-        runCatching {
-            tryLoad()
-        }.onFailure {
-            Clog.err(
-                "Can't load config because ${it.message}. Please check the format at ${configFile.file.path}. Or you can delete it directly and it will be regenerated next time starting up.",
-                it
-            )
-        }
-    }
+class ConfigEntry private constructor() {
+    var AutoUpdate: Boolean = false
+    var CheckUpdateInfoURL: String? = null
+    var ContentSpecific: String = "vanilla"
 
-    val configFile: F
-        get() = FileSys.CyberIoFolder.subF(configName)
-    @JvmStatic
-    fun resetConfigFile() {
-        configFile.delete().getOrCreate(Default) {
-            Clog.info("${configFile.file.path} has created with initial config.")
-        }
-    }
-    @Suppress("UNCHECKED_CAST")
-    private fun tryLoad() {
-        val config = configFile.getOrCreate(Default) {
-            Clog.info("${configFile.file.path} has created with initial config.")
-        }
-        val text = config.file.readText()
-        val map = JsonIO.json.fromJson(ObjectMap::class.java, text) as ObjectMap<String, Any?>
-        val loaded = HashMap<String, Any?>()
-        for ((name, v) in map) {
-            val meta = metas[name]
-            if (meta != null) {
-                if (v == null) {
-                    if (meta.allowNull)
-                        loaded[name] = null
-                    else
-                        continue
-                } else {
-                    if (v is JsonValue)
-                        loaded[name] = meta.convert(v)
-                    else if (meta.matchClz(v))
-                        loaded[name] = v
-                }
-            } else {
-                Clog.info("Can't recognize $name=$v in config.")
+    companion object {
+        lateinit var Config: ConfigEntry
+        var json = Json(JsonWriter.OutputType.json)
+        const val configName = "config.json"
+        @Suppress("UNCHECKED_CAST")
+        @JvmStatic
+        fun load() {
+            runCatching {
+                tryLoad()
+            }.onFailure {
+                CLog.err(
+                    "Can't load config because ${it.message}. Please check the format at ${configFile.file.path}. Or you can delete it directly and it will be regenerated next time starting up.",
+                    it
+                )
             }
         }
-        pairs = loaded
+
+        val configFile: F
+            get() = FileSys.CyberIoFolder.subF(configName)
+        val emptyConfigContent: String by lazy { json.toJson(ConfigEntry()) }
+        @JvmStatic
+        fun resetConfigFile() {
+            configFile.overwrite(emptyConfigContent)
+            CLog.info("${configFile.file.path} has created with initial config.")
+        }
+
+        private fun tryLoad() {
+            val configFile = configFile.getOrCreate({ emptyConfigContent }) {
+                CLog.info("${configFile.file.path} has created with initial config.")
+            }
+            val text = configFile.file.readText()
+            Config = try {
+                json.fromJson(ConfigEntry::class.java, text)
+            } catch (e: Exception) {
+                Log.err(e)
+                ConfigEntry()
+            }
+        }
+    }
+
+    fun trySave() {
+        val json = json.toJson(this)
+        configFile.file.writeText(json)
     }
 }
-
-class ConfigEntry<T : Any>(val default: T?, val clz: Class<T>, val allowNull: Boolean = true) {
-    constructor(default: T) : this(default, clz = default.javaClass)
-    @Suppress("UNCHECKED_CAST")
-    fun convert(value: JsonValue): T {
-        return when (clz) {
-            Int::class.java -> value.asInt()
-            String::class.java -> value.asString()
-            Boolean::class.java -> value.asBoolean()
-            else -> throw ClassCastException("No corresponding type as $clz")
-        } as T
-    }
-
-    fun matchClz(value: Any) = clz.isInstance(value)
-}
-

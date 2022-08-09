@@ -1,5 +1,6 @@
 package net.liplum.blocks.virus
 
+import arc.func.Prov
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
 import arc.graphics.g2d.TextureRegion
@@ -15,18 +16,23 @@ import mindustry.gen.Building
 import mindustry.gen.Call
 import mindustry.graphics.Layer
 import mindustry.graphics.Pal
-import mindustry.ui.Bar
 import mindustry.world.Block
 import mindustry.world.Tile
-import net.liplum.*
+import net.liplum.DebugOnly
+import net.liplum.R
 import net.liplum.api.virus.UninfectedBlocksRegistry
-import net.liplum.lib.bundle
-import net.liplum.lib.yesNo
-import net.liplum.registries.CioShaders
-import net.liplum.utils.addSleepInfo
-import net.liplum.utils.off
-import net.liplum.utils.on
-import net.liplum.utils.sub
+import plumy.core.Serialized
+import plumy.core.UseRandom
+import net.liplum.common.shader.use
+import net.liplum.common.util.bundle
+import net.liplum.common.util.off
+import net.liplum.common.util.on
+import net.liplum.mdt.Else
+import net.liplum.mdt.ServerOnly
+import net.liplum.mdt.ui.bars.AddBar
+import net.liplum.mdt.utils.sub
+import net.liplum.registry.SD
+import net.liplum.util.yesNo
 
 typealias UBR = UninfectedBlocksRegistry
 
@@ -66,6 +72,7 @@ open class Virus(name: String) : Block(name) {
     lateinit var raceMaskTR: TextureRegion
 
     init {
+        buildType = Prov { VirusBuild() }
         solid = true
         update = true
         canOverdrive = true
@@ -91,29 +98,22 @@ open class Virus(name: String) : Block(name) {
 
     override fun setBars() {
         super.setBars()
-        bars.add<VirusBuild>(R.Bar.GenerationN) {
-            Bar(
-                { R.Bar.Generation.bundle(it.curGeneration) },
-                { R.C.VirusBK },
-                { it.curGeneration / maxGenerationOrDefault.toFloat() }
-            )
-        }
+        AddBar<VirusBuild>(R.Bar.GenerationN,
+            { R.Bar.Generation.bundle(curGeneration) },
+            { R.C.VirusBK },
+            { curGeneration / maxGenerationOrDefault.toFloat() }
+        )
         DebugOnly {
-            bars.add<VirusBuild>(R.Bar.IsAliveN) {
-                Bar(
-                    { R.Bar.IsAlive.bundle(it.isAlive.yesNo()) },
-                    { R.C.IsAive },
-                    { if (it.isAlive) 1f else 0f }
-                )
-            }
-            bars.add<VirusBuild>(R.Bar.NeighborStateN) {
-                Bar(
-                    { "${it.neighborState.countOneBits()}" },
-                    { Pal.bar },
-                    { it.neighborState.countOneBits() / 8f }
-                )
-            }
-            bars.addSleepInfo()
+            AddBar<VirusBuild>(R.Bar.IsAliveN,
+                { R.Bar.IsAlive.bundle(isAlive.yesNo()) },
+                { R.C.IsAive },
+                { if (isAlive) 1f else 0f }
+            )
+            AddBar<VirusBuild>(R.Bar.NeighborStateN,
+                { "${neighborState.countOneBits()}" },
+                { Pal.bar },
+                { neighborState.countOneBits() / 8f }
+            )
         }
     }
 
@@ -200,16 +200,13 @@ open class Virus(name: String) : Block(name) {
 
         override fun draw() {
             DebugOnly {
-                Draw.draw(Layer.block) {
-                    Draw.shader(CioShaders.DynamicColor)
+                SD.DynamicColor.use(Layer.block) {
                     Draw.rect(block.region, x, y)
                     if (raceColor != null) {
                         Draw.color(raceColor)
                         Draw.rect(raceMaskTR, x, y)
                         Draw.color()
                     }
-                    Draw.shader()
-                    Draw.reset()
                 }
             } Else {
                 Draw.rect(block.region, x, y)

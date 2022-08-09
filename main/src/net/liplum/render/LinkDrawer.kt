@@ -1,33 +1,64 @@
 package net.liplum.render
 
-import arc.Events
+import arc.util.Time
 import mindustry.Vars
 import mindustry.game.EventType
-import mindustry.gen.Groups
 import net.liplum.Settings
-import net.liplum.api.cyber.IDataSender
-import net.liplum.api.cyber.IStreamHost
-import net.liplum.api.cyber.drawDataNetGraphic
-import net.liplum.api.cyber.drawStreamGraphic
+import net.liplum.Var
+import net.liplum.annotations.Subscribe
+import net.liplum.api.ICyberEntity
+import net.liplum.api.cyber.*
+import plumy.core.math.smooth
+import net.liplum.mdt.ClientOnly
+import net.liplum.mdt.advanced.Inspector
 
 object LinkDrawer {
-    @JvmStatic
-    fun register() {
-        Events.run(EventType.Trigger.postDraw) {
-            draw()
+    var lastSelected: ICyberEntity? = null
+    var selectedTime = 0f
+        set(value) {
+            field = value.coerceIn(0f, Var.LinkDrawerTime)
         }
-    }
     @JvmStatic
+    @ClientOnly
+    @Subscribe(EventType.Trigger.drawOver)
     fun draw() {
-        if (!Settings.AlwaysShowLink) return
-        val curTeam = Vars.player.team()
-        Groups.build.each {
-            if (it.team != curTeam) return@each
-            if (it is IDataSender) {
-                it.drawDataNetGraphic(showCircle = Settings.ShowLinkCircle)
-            } else if (it is IStreamHost) {
-                it.drawStreamGraphic(showCircle = Settings.ShowLinkCircle)
+        val selected = Inspector.curSelected
+        if (selected is IDataSender || selected is IStreamHost || selected is IP2pNode) {
+            lastSelected = selected as ICyberEntity
+            selectedTime += Time.delta
+        } else {
+            selectedTime -= Time.delta
+        }
+        val unselectAlpha = 1f - (selectedTime / Var.LinkDrawerTime).smooth
+        if (Settings.AlwaysShowLink) {
+            if (unselectAlpha > 0f) {
+                Var.GlobalLinkDrawerAlpha = unselectAlpha
+                Vars.player.team().data().buildings.forEach {
+                    var showCircle = Settings.ShowLinkCircle
+                    if (it == lastSelected) {
+                        Var.GlobalLinkDrawerAlpha = 1f
+                        if (it == Inspector.curSelected)
+                            showCircle = true
+                    }
+                    it.drawLink(showCircle)
+                    Var.GlobalLinkDrawerAlpha = unselectAlpha
+                }
+            } else {
+                Var.GlobalLinkDrawerAlpha = 1f
+                selected?.drawLink(true)
             }
+        } else {
+            Var.GlobalLinkDrawerAlpha = 1f
+            selected?.drawLink(true)
+        }
+        Var.GlobalLinkDrawerAlpha = 1f
+    }
+
+    fun Any.drawLink(showCircle: Boolean) {
+        when (this) {
+            is IDataSender -> drawDataNetGraph(showCircle)
+            is IStreamHost -> drawStreamGraph(showCircle)
+            is IP2pNode -> drawP2PConnection(showCircle)
         }
     }
 }

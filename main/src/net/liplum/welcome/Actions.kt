@@ -4,10 +4,9 @@ import arc.Core
 import arc.util.Log
 import arc.util.Time
 import mindustry.Vars
-import net.liplum.CioMod
-import net.liplum.R
-import net.liplum.Settings
-import net.liplum.lib.bundle
+import net.liplum.*
+import net.liplum.ui.Navigator
+import net.liplum.common.util.bundle
 import net.liplum.ui.CioUI
 import net.liplum.update.Updater
 
@@ -35,6 +34,12 @@ object Actions {
             Settings.ShowUpdate = false
         }
     }
+    val SkipThisUpdate = object : Action("SkipThisUpdate") {
+        override fun doAction(entity: Welcome.Entity) {
+            val latest = Updater.latestVersion
+            Settings.LastSkippedUpdate = latest.toString()
+        }
+    }
     val UpdateCyberIO = object : Action("UpdateCyberIO") {
         override fun doAction(entity: Welcome.Entity) {
             if (CioMod.jarFile == null) {
@@ -46,7 +51,7 @@ object Actions {
                 loading.setProgress { progress }
                 // Cache tips because updating successfully will replace codes and cause class not found exception.
                 val successTip = R.Ctrl.UpdateModSuccess.bundle(Updater.latestVersion)
-                Updater.updateSelfByReplace(Updater.DownloadURL, onProgress = { p ->
+                Updater.updateSelfByReplace(Updater.curDownloadURL, onProgress = { p ->
                     progress = p
                 }, onSuccess = {
                     loading.hide()
@@ -62,6 +67,32 @@ object Actions {
                         CioUI.showUpdateFailed(error)
                     }
                 })
+            }
+        }
+    }
+    val CallStaticFunction = object : Action("CallStaticFunction") {
+        override fun doAction(entity: Welcome.Entity) {
+            val data = entity.tip.data
+            val clzName = data["ClassFullName"] as? String
+            val funcName = data["StaticFunctionName"] as? String
+            if (clzName != null && funcName != null) {
+                try {
+                    val clz = Class.forName(clzName)
+                    val method = clz.getMethod(funcName)
+                    method.invoke(null)
+                } catch (e: Exception) {
+                    CLog.err("In action [$id]",e)
+                }
+            }
+        }
+    }
+    val Navigation = object : Action("Navigation") {
+        override fun doAction(entity: Welcome.Entity) {
+            val data = entity.tip.data
+            val locatorText = data["Locator"] as? String
+            if (locatorText != null) {
+                val locator = Navigator.by(locatorText)
+                Var.Navigation.navigate(locator)
             }
         }
     }

@@ -7,7 +7,9 @@
       "NewBrains",
       "Discord",
       "AdBlock",
-      "404NotFound"
+      "404NotFound",
+      "OhNo",
+      "RateUs"
     ]
   },
   "v0": {},
@@ -22,6 +24,21 @@
     "Parent": "common",
     "Scene": [
       "ResearchProject"
+    ]
+  },
+  "v4": {
+    "Default": "ErekirDetected",
+    "Parent": "common",
+    "Scene": [
+      "ErekirDetected",
+      "SetOutErekir"
+    ]
+  },
+  "v4.1": {
+    "Default": "ErekirDetected",
+    "Parent": "v4",
+    "Scene": [
+      "CyberionForErekir"
     ]
   }
 }

@@ -16,7 +16,10 @@ object Conditions {
     }
     val CheckUpdate = object : Condition("CheckUpdate") {
         override fun canShow(tip: WelcomeTip): Boolean {
-            return !Vars.steam && Settings.ShowUpdate && Updater.requireUpdate
+            return !Vars.steam && Settings.ShowUpdate &&
+                    Updater.requireUpdate &&
+                    !Updater.latestVersion.equalsString(Settings.LastSkippedUpdate) &&
+                    Updater.matchMinGameVersion
         }
 
         override fun priority(tip: WelcomeTip) = 10
@@ -34,8 +37,7 @@ object Conditions {
             val data = tip.data
             val exprRaw = data["CExpression"] as? String ?: ""
             val expr = ExpressionParser.by(exprRaw).parse<Boolean>()
-            val res = expr.calculate(ExprSettingsWrapper)
-            return res
+            return expr.calculate(ExprSettingsWrapper)
         }
 
         override fun priority(tip: WelcomeTip) = 0

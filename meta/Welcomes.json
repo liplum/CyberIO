@@ -20,10 +20,10 @@
   {
     "ID": "UpdateECHO",
     "IconPath": "update-icon",
-    "Template": "ButtonABC",
+    "Template": "Update",
     "Data": {
       "ActionA": "UpdateCyberIO",
-      "ActionC": "StopCheckUpdate"
+      "ActionC": "SkipThisUpdate"
     },
     "Condition": "CheckUpdate"
   },
@@ -47,8 +47,7 @@
     "Template": "DoAction",
     "IconPath": "ad-block",
     "Data": {
-      "YesAction": "StopReceiveWelcome",
-      "Order": "NoYes"
+      "NoAction": "StopReceiveWelcome"
     },
     "Chance": 300
   },
@@ -59,8 +58,53 @@
     "Data": {
       "FontSize": 1.2,
       "ShowPoliteWelcome": false,
-      "CExpression": "@ClickWelcomeTimes > 3"
+      "CExpression": "@ClickWelcomeTimes > 5 && @ShouldShowWelcome"
     },
     "Chance": 200
+  },
+  {
+    "ID": "OhNo",
+    "IconPath": "@error",
+    "Data": {
+      "ShowPoliteWelcome": false
+    },
+    "Chance": 200
+  },
+  {
+    "ID": "RateUs",
+    "Template": "RateStar",
+    "Data": {
+      "StarNumber": 5,
+      "InactiveStarIconPath": "star-inactive",
+      "ActiveStarIconPath": "star",
+      "StarSize": 60.0
+    },
+    "Chance": 200
+  },
+  {
+    "ID": "ErekirDetected",
+    "Condition": "SpecialDishes",
+    "IconPath": "spec-erekir"
+  },
+  {
+    "ID": "SetOutErekir",
+    "Condition": "SettingsReq",
+    "IconPath": "spec-erekir",
+    "Template": "DoAction",
+    "Data": {
+      "ShowPoliteWelcome": true,
+      "CExpression": "@ContentSpecific == vanilla && @ShouldShowWelcome",
+      "YesAction": "Navigation",
+      "Locator": "/CyberIO/ContentSpecific"
+    }
+  },
+  {
+    "ID": "CyberionForErekir",
+    "Condition": "SettingsReq",
+    "IconPath": "cyberion-for-erekir",
+    "Data": {
+      "ShowPoliteWelcome": true,
+      "CExpression": "@ContentSpecific == erekir && @ShouldShowWelcome"
+    }
   }
 ]

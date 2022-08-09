@@ -3,18 +3,39 @@
 package net.liplum.api.cyber
 
 import arc.graphics.Color
-import arc.graphics.g2d.Draw
+import arc.math.geom.Point2
+import arc.struct.Seq
+import arc.util.Time
 import mindustry.Vars
+import mindustry.gen.Building
 import mindustry.type.Item
 import mindustry.type.Liquid
 import mindustry.world.Block
+import mindustry.world.meta.Stat
+import mindustry.world.meta.StatUnit
 import net.liplum.R
-import net.liplum.Settings
-import net.liplum.utils.*
+import net.liplum.Var
+import net.liplum.annotations.SubscribeEvent
+import net.liplum.api.ICyberEntity
+import net.liplum.common.Changed
+import net.liplum.common.util.Or
+import net.liplum.common.util.bundle
+import net.liplum.common.util.toFloat
+import net.liplum.event.CioInitEvent
+import net.liplum.mdt.ClientOnly
+import net.liplum.mdt.ui.bars.AddBar
+import net.liplum.mdt.utils.*
+import net.liplum.registry.CioStats
+import plumy.core.math.Point2f
+import plumy.core.math.smooth
 
-fun Int.db(): IDataBuilding? =
-    this.build as? IDataBuilding
-
+private val p1 = Point2f()
+private val p2 = Point2f()
+private val c1 = Color()
+private val c2 = Color()
+val ICyberEntity.isFlying: Boolean
+    get() = tile == Vars.emptyTile
+//<editor-fold desc="Try Cast">
 fun Int.dr(): IDataReceiver? =
     this.build as? IDataReceiver
 
@@ -27,8 +48,42 @@ fun Int.ds(): IDataSender? =
 fun Int.dsOrPayload(): IDataSender? =
     this.ds() Or { this.inPayload() }
 
-val IDataBuilding?.exists: Boolean
+fun Point2?.dr(): IDataReceiver? =
+    this?.let { this.build as? IDataReceiver }
+
+fun Point2?.drOrPayload(): IDataReceiver? =
+    this?.let { this.dr() Or { this.inPayload() } }
+
+fun Point2?.ds(): IDataSender? =
+    this?.let { this.build as? IDataSender }
+
+fun Point2?.dsOrPayload(): IDataSender? =
+    this?.let { this.ds() Or { this.inPayload() } }
+
+fun Int.sc(): IStreamClient? =
+    this.build as? IStreamClient
+
+fun Int.sh(): IStreamHost? =
+    this.build as? IStreamHost
+
+fun Point2?.sc(): IStreamClient? =
+    this?.let { this.build as? IStreamClient }
+
+fun Point2?.sh(): IStreamHost? =
+    this?.let { this.build as? IStreamHost }
+
+fun Int.nn(): INetworkNode? =
+    this.build as? INetworkNode
+
+fun Int.p2p(): IP2pNode? =
+    this.build as? IP2pNode
+
+fun Point2?.p2p(): IP2pNode? =
+    this?.let { this.build as? IP2pNode }
+//</editor-fold>
+val ICyberEntity?.exists: Boolean
     get() = this != null && this.building.exists
+//<editor-fold desc="Tile Position">
 val ICyberEntity.bottomLeftX: Int
     get() = building.bottomLeftX
 val ICyberEntity.bottomLeftY: Int
@@ -45,26 +100,39 @@ val ICyberEntity.topRightX: Int
     get() = building.topRightX
 val ICyberEntity.topRightY: Int
     get() = building.topRightY
+val ICyberEntity?.tileX: Int
+    get() = (this?.tile?.x ?: 0).toInt()
+val ICyberEntity?.tileY: Int
+    get() = (this?.tile?.y ?: 0).toInt()
+val ICyberEntity?.tileXd: Double
+    get() = (this?.tile?.x ?: 0).toDouble()
+val ICyberEntity?.tileYd: Double
+    get() = (this?.tile?.y ?: 0).toDouble()
+//</editor-fold>
+typealias SingleItemArray = Seq<Item>
 
-typealias SingleItemArray = Array<Item>
-
-object DataCenter {
+object CyberDataLoader {
     @JvmField var SingleItems: Array<SingleItemArray> = emptyArray()
-    @JvmStatic
+    @JvmField var SingleLiquid: Array<SingleLiquidArray> = emptyArray()
+    @SubscribeEvent(CioInitEvent::class)
     fun initData() {
         val items = Vars.content.items()
         SingleItems = Array(items.size) {
-            arrayOf(items[it])
+            Seq.with(items[it])
+        }
+        val liquids = Vars.content.liquids()
+        SingleLiquid = Array(liquids.size) {
+            Seq.with(liquids[it])
         }
     }
 }
 
-val EmptySingleItemArray: SingleItemArray = emptyArray()
+val EmptySingleItemArray: SingleItemArray = Seq()
 val Item?.req: SingleItemArray
     get() = if (this == null)
         EmptySingleItemArray
     else
-        DataCenter.SingleItems[this.ID]
+        CyberDataLoader.SingleItems[this.ID]
 
 fun Item?.match(requirements: SingleItemArray?): Boolean {
     this ?: return false
@@ -74,78 +142,14 @@ fun Item?.match(requirements: SingleItemArray?): Boolean {
 
 fun Int.isAccepted() =
     this == -1 || this > 0
+typealias SingleLiquidArray = Seq<Liquid>
 
-val ICyberEntity?.tileX: Int
-    get() = (this?.tile?.x ?: 0).toInt()
-val ICyberEntity?.tileY: Int
-    get() = (this?.tile?.y ?: 0).toInt()
-val ICyberEntity?.tileXd: Double
-    get() = (this?.tile?.x ?: 0).toDouble()
-val ICyberEntity?.tileYd: Double
-    get() = (this?.tile?.y ?: 0).toDouble()
-
-fun Int.sn(): IStreamNode? =
-    this.build as? IStreamNode
-
-fun Int.sc(): IStreamClient? =
-    this.build as? IStreamClient
-
-fun Int.sh(): IStreamHost? =
-    this.build as? IStreamHost
-
-val IStreamNode?.exists: Boolean
-    get() = this != null && this.building.exists
-
-typealias SingleLiquidArray = Array<Liquid>
-
-object StreamCenter {
-    @JvmField var SingleLiquid: Array<SingleLiquidArray> = emptyArray()
-    @JvmStatic
-    fun initStream() {
-        val liquids = Vars.content.liquids()
-        SingleLiquid = Array(liquids.size) {
-            arrayOf(liquids[it])
-        }
-    }
-    @JvmStatic
-    fun loadLiquidsColor() {
-        val liquids = Vars.content.liquids()
-        R.C.LiquidColors = Array(liquids.size) {
-            val liquid = liquids[it]
-            val color = liquid.color
-            // To prevent crash with the adaptor of liquid because their Liquid#color is null. @Discord Normalperson666#2826
-            // So I just cause a crash when loading and provide more details for handling with it.
-            assert(color != null){
-                "${liquid.localizedName}(${liquid.name} of ${liquid.javaClass.name}) in ${liquid.minfo?.mod} has a nullable color." +
-                        "This message is only for notifying that you might be on a extreme condition about mods or some mods doesn't obey the rules of Mindustry." +
-                        "Try again after uninstalling some unnecessary mods."
-            }
-            color
-        }
-    }
-    @JvmStatic
-    fun initStreamColors() {
-        R.C.HostLiquidColors = Array(R.C.LiquidColors.size) {
-            R.C.LiquidColors[it].cpy().lerp(R.C.Host, 0.4f)
-        }
-        R.C.ClientLiquidColors = Array(R.C.LiquidColors.size) {
-            R.C.LiquidColors[it].cpy().lerp(R.C.Client, 0.4f)
-        }
-    }
-    @JvmStatic
-    fun initAndLoad() {
-        initStream()
-        loadLiquidsColor()
-        initStreamColors()
-    }
-}
-
-val EmptySingleLiquidArray: SingleLiquidArray = emptyArray()
+val EmptySingleLiquidArray: SingleLiquidArray = Seq()
 val Liquid?.req: SingleLiquidArray
     get() = if (this == null)
         EmptySingleLiquidArray
     else
-        StreamCenter.SingleLiquid[this.ID]
+        CyberDataLoader.SingleLiquid[this.ID]
 
 fun Liquid?.match(requirements: SingleLiquidArray?): Boolean {
     this ?: return false
@@ -153,277 +157,179 @@ fun Liquid?.match(requirements: SingleLiquidArray?): Boolean {
     return this in requirements
 }
 
-val Liquid?.hostColor: Color
-    get() = if (this == null)
-        R.C.Host
-    else
-        R.C.HostLiquidColors[this.ID]
-val Liquid?.clientColor: Color
-    get() = if (this == null)
-        R.C.Client
-    else
-        R.C.ClientLiquidColors[this.ID]
+fun transitionColor(from: Changed<Color>, to: Color): Color {
+    val last = from.old
+    return if (last != null) c1.set(last).lerp(
+        to,
+        ((Time.time - from.timestamp) / Var.RsColorTransitionTime).smooth
+    ) else to
+}
 
 fun Float.isAccepted() =
     this <= -1f || this > 0f
-@JvmOverloads
-fun IDataSender.drawDataNetGraphic(showCircle: Boolean = true) {
-    if (receiverConnectionNumber <= 0) return
-    if (showCircle) {
-        G.drawSurroundingCircle(tile, R.C.Sender, alpha = Settings.LinkOpacity)
-    }
-    if (canMultipleConnect()) {
-        this.drawReceivers(connectedReceivers, showCircle)
-    } else {
-        this.drawReceiver(connectedReceiver, showCircle)
-    }
-}
-@JvmOverloads
-fun IDataReceiver.drawDataNetGraphic(showCircle: Boolean = true) {
-    if (senderConnectionNumber <= 0) return
-    if (showCircle) {
-        G.drawSurroundingCircle(tile, R.C.Receiver, alpha = Settings.LinkOpacity)
-    }
-    this.drawSenders(connectedSenders, showCircle)
-}
-
-fun IDataReceiver.drawRequirements() {
-    val reqs = this.requirements
-    if (reqs != null) {
-        G.drawMaterialIcons(this.building, reqs, Settings.LinkOpacity * 0.8f)
-    }
-}
-/**
- * Called in an [IDataReceiver] block
- *
- * @param x        tile x
- * @param y        tile y
- */
-fun Block.drawLinkedLineToReceiverWhenConfiguring(x: Int, y: Int) {
-    if (!Vars.control.input.frag.config.isShown) return
-    val selected = Vars.control.input.frag.config.selectedTile
-    if (selected !is IDataSender) {
-        return
-    }
-    val selectedTile = selected.tile()
-    val opacity = Settings.LinkOpacity
-    G.drawSurroundingCircle(this, x, y, R.C.Receiver, alpha = opacity)
-    G.drawArrowLine(
-        selected.block,
-        selectedTile.x, selectedTile.y,
-        this, x.toShort(), y.toShort(),
-        ArrowDensity, R.C.Receiver, alpha = opacity, size = Settings.LinkSize
-    )
-}
-
+//<editor-fold desc="Check if Configuring">
+@ClientOnly
 inline fun whenNotConfiguringSender(func: () -> Unit) {
     if (!isConfiguringSender()) {
         func()
     }
 }
-
-fun IStreamHost.drawStreamGraphic(showCircle: Boolean = true) {
-    if (clientConnectionNumber <= 0) return
-    if (showCircle) {
-        G.drawSurroundingCircle(tile, hostColor, alpha = Settings.LinkOpacity)
-    }
-    this.drawClients(connectedClients, showCircle)
-}
-
-fun IStreamClient.drawStreamGraphic(showCircle: Boolean = true) {
-    if (hostConnectionNumber <= 0) return
-    if (showCircle) {
-        G.drawSurroundingCircle(tile, clientColor, alpha = Settings.LinkOpacity)
-    }
-    this.drawHosts(connectedHosts, showCircle)
-}
-
-fun IStreamClient.drawRequirements() {
-    val reqs = this.requirements
-    if (reqs != null) {
-        G.drawMaterialIcons(this.building, reqs, Settings.LinkOpacity * 0.8f)
-    }
-}
-/**
- * Called in an [IStreamClient] block
- *
- * @param x        tile x
- * @param y        tile y
- */
-fun Block.drawLinkedLineToClientWhenConfiguring(x: Int, y: Int) {
-    if (!Vars.control.input.frag.config.isShown) return
-    val selected = Vars.control.input.frag.config.selectedTile
-    if (selected !is IStreamHost) {
-        return
-    }
-    val host = selected as IStreamHost
-    val selectedTile = selected.tile()
-    val opacity = Settings.LinkOpacity
-    G.drawSurroundingCircle(this, x, y, R.C.Client, alpha = opacity)
-    G.drawArrowLine(
-        selected.block,
-        selectedTile.x, selectedTile.y,
-        this, x.toShort(), y.toShort(),
-        ArrowDensity, host.hostColor,
-        alpha = opacity, size = Settings.LinkSize
-    )
-}
-
+@ClientOnly
 inline fun whenNotConfiguringHost(func: () -> Unit) {
     if (!isConfiguringHost()) {
         func()
     }
 }
-
-val ArrowDensity: Float
-    get() = Settings.LinkArrowDensity
-/**
- * Called in Receiver block
- */
-fun IDataReceiver.drawSender(sender: Int?, showCircle: Boolean = true) {
-    if (sender == null) {
-        return
-    }
-    val sb = Vars.world.build(sender)
-    val opacity = Settings.LinkOpacity
-    if (sb is IDataSender) {
-        val senderT = sb.tile()
-        if (showCircle) {
-            G.drawSurroundingCircle(senderT, sb.senderColor, alpha = opacity)
-        }
-        G.drawArrowLine(
-            sb, this.building, ArrowDensity, this.receiverColor,
-            alpha = opacity, size = Settings.LinkSize
-        )
-    }
-    /* deprecated for payload
-    else {
-        if (sb is PayloadConveyor.PayloadConveyorBuild) {
-            if ((sb.payload as? BuildPayload)?.build is IDataSender) {
-                G.drawSurroundingCircle(sb.tile, R.C.Sender)
-                G.drawArrowLine(sb, this.building, ArrowDensity, R.C.Receiver)
-            }
-        }
-    }*/
-}
-/**
- * Called in Receiver block
- */
-fun IDataReceiver.drawSenders(senders: Iterable<Int>, showCircle: Boolean = true) {
-    val opacity = Settings.LinkOpacity
-    for (sender in senders) {
-        val sb = Vars.world.build(sender)
-        if (sb is IDataSender) {
-            val senderT = sb.tile()
-            if (showCircle) {
-                G.drawSurroundingCircle(senderT, sb.senderColor, alpha = opacity)
-            }
-            G.drawArrowLine(
-                sb, this.building, ArrowDensity, this.receiverColor,
-                alpha = opacity, size = Settings.LinkSize
-            )
-        }
+@ClientOnly
+inline fun whenNotConfiguringP2P(func: () -> Unit) {
+    if (!isConfiguringP2P()) {
+        func()
     }
 }
-/**
- * Called in Sender block
- */
-fun IDataSender.drawReceiver(receiver: Int?, showCircle: Boolean = true) {
-    if (receiver == null) {
-        return
-    }
-    val opacity = Settings.LinkOpacity
-    val rb = Vars.world.build(receiver)
-    if (rb is IDataReceiver) {
-        val receiverT = rb.tile()
-        if (showCircle) {
-            G.drawSurroundingCircle(receiverT, rb.receiverColor, alpha = opacity)
-        }
-        G.drawArrowLine(
-            this.building, rb, ArrowDensity, this.senderColor,
-            alpha = opacity, size = Settings.LinkSize
-        )
-        rb.drawRequirements()
-    }
-    /* deprecated for payload
-    else if (rb is PayloadConveyor.PayloadConveyorBuild) {
-        val dr = (rb.payload as? BuildPayload)?.build as? IDataReceiver
-        if (dr != null) {
-            G.drawSurroundingCircle(rb.tile, R.C.Receiver)
-            G.drawArrowLine(this.building, rb, ArrowDensity, R.C.Sender)
-            dr.drawRequirements()
-        }
-    }*/
-}
-/**
- * Called in Sender block
- */
-fun IDataSender.drawReceivers(receivers: Iterable<Int>, showCircle: Boolean = true) {
-    val original = Draw.z()
-    val opacity = Settings.LinkOpacity
-    for (receiver in receivers) {
-        val rb = Vars.world.build(receiver)
-        if (rb is IDataReceiver) {
-            val receiverT = rb.tile()
-            Draw.z(original)
-            if (showCircle) {
-                G.drawSurroundingCircle(receiverT, rb.receiverColor, alpha = opacity)
-            }
-            G.drawArrowLine(
-                this.building, rb, ArrowDensity, this.senderColor,
-                alpha = opacity, size = Settings.LinkSize
-            )
-            rb.drawRequirements()
-        }
-    }
-    Draw.z(original)
-}
-
+@ClientOnly
 fun isConfiguringSender(): Boolean {
-    val selected = Vars.control.input.frag.config.selectedTile
+    val selected = Vars.control.input.config.selected
     return selected is IDataSender
 }
-/**
- * Called in Client block
- */
-fun IStreamClient.drawHosts(hosts: Iterable<Int>, showCircle: Boolean = true) {
-    val opacity = Settings.LinkOpacity
-    for (host in hosts) {
-        val hostB = Vars.world.build(host)
-        if (hostB is IStreamHost) {
-            val hostT = hostB.tile()
-            if (showCircle) {
-                G.drawSurroundingCircle(hostT, hostB.hostColor, alpha = opacity)
-            }
-            G.drawArrowLine(
-                hostB, this.building, ArrowDensity, this.clientColor,
-                alpha = opacity, size = Settings.LinkSize
-            )
-        }
-    }
-}
-/**
- * Called in Host block
- */
-fun IStreamHost.drawClients(clients: Iterable<Int>, showCircle: Boolean = true) {
-    val opacity = Settings.LinkOpacity
-    for (client in clients) {
-        val clientB = Vars.world.build(client)
-        if (clientB is IStreamClient) {
-            val clientT = clientB.tile()
-            if (showCircle) {
-                G.drawSurroundingCircle(clientT, clientB.clientColor, alpha = opacity)
-            }
-            G.drawArrowLine(
-                this.building, clientB, ArrowDensity, this.hostColor,
-                alpha = opacity, size = Settings.LinkSize
-            )
-            clientB.drawRequirements()
-        }
-    }
-}
-
+@ClientOnly
 fun isConfiguringHost(): Boolean {
-    val selected = Vars.control.input.frag.config.selectedTile
+    val selected = Vars.control.input.config.selected
     return selected is IStreamHost
 }
+
+fun isConfiguringP2P(): Boolean {
+    val selected = Vars.control.input.config.selected
+    return selected is IP2pNode
+}
+//</editor-fold>
+//<editor-fold desc="Check Connection">
+fun IDataReceiver.checkSendersPos() =
+    connectedSenders.removeAll { !it.ds().exists }
+
+fun IDataSender.checkReceiversPos() =
+    connectedReceivers.removeAll { !it.dr().exists }
+
+fun IStreamHost.checkClientsPos() =
+    connectedClients.removeAll { !it.sc().exists }
+
+fun IStreamClient.checkHostsPos() =
+    connectedHosts.removeAll { !it.sh().exists }
+
+fun IP2pNode.checkConnection() =
+    if (!connected.exists) {
+        connectedPos = -1
+        true
+    } else false
+//</editor-fold>
+//<editor-fold desc="Bars">
+inline fun <reified T> Block.addReceiverInfo() where T : Building, T : IDataSender {
+    AddBar<T>(
+        R.Bar.ReceiverN,
+        {
+            "${R.Bar.Receiver.bundle}: ${connectedReceivers.size}"
+        },
+        { R.C.Receiver },
+        {
+            var max = maxReceiverConnection
+            if (max == -1) {
+                max = 10
+            }
+            connectedReceivers.size.toFloat() / max
+        }
+    )
+}
+
+inline fun <reified T> Block.addSenderInfo() where T : Building, T : IDataReceiver {
+    AddBar<T>(
+        R.Bar.SenderN,
+        { "${R.Bar.Sender.bundle}: ${connectedSenders.size}" },
+        { R.C.Sender },
+        {
+            var max = maxSenderConnection
+            if (max == -1) {
+                max = 10
+            }
+            connectedSenders.size.toFloat() / max
+        }
+    )
+}
+
+inline fun <reified T> Block.addClientInfo() where T : Building, T : IStreamHost {
+    AddBar<T>(
+        R.Bar.ClientN,
+        { "${R.Bar.Client.bundle}: ${connectedClients.size}" },
+        { R.C.Client },
+        {
+            var max = maxClientConnection
+            if (max == -1) {
+                max = 10
+            }
+            connectedClients.size.toFloat() / max
+        }
+    )
+}
+
+inline fun <reified T> Block.addHostInfo() where T : Building, T : IStreamClient {
+    AddBar<T>(
+        R.Bar.HostN,
+        { "${R.Bar.Host.bundle}: ${connectedHosts.size}" },
+        { R.C.Host },
+        {
+            var max = maxHostConnection
+            if (max == -1) {
+                max = 10
+            }
+            connectedHosts.size.toFloat() / max
+        }
+    )
+}
+
+inline fun <reified T> Block.addP2pLinkInfo() where T : Building, T : IP2pNode {
+    AddBar<T>(
+        R.Bar.LinkedN,
+        {
+            if (isConnected) R.Bar.Linked.bundle
+            else R.Bar.Unlinked.bundle
+        },
+        { R.C.P2P },
+        { isConnected.toFloat() }
+    )
+}
+//</editor-fold>
+//<editor-fold desc="Statistics">
+fun <T> T.addLinkRangeStats(range: Float) where  T : Block {
+    if (range < 0f)
+        stats.add(CioStats.dataRange, R.Bundle.Unlimited.bundle)
+    else
+        stats.add(CioStats.dataRange, range, StatUnit.blocks)
+}
+
+fun <T> T.addLimitedStats(stat: Stat, max: Int) where  T : Block {
+    if (max < 0)
+        stats.add(stat, R.Bundle.Unlimited.bundle)
+    else
+        stats.add(stat, "$max")
+}
+
+fun <T> T.addMaxSenderStats(max: Int) where  T : Block {
+    addLimitedStats(CioStats.dataMaxSender, max)
+}
+
+fun <T> T.addMaxReceiverStats(max: Int) where  T : Block {
+    addLimitedStats(CioStats.dataMaxReceiver, max)
+}
+
+fun <T> T.addMaxHostStats(max: Int) where  T : Block {
+    addLimitedStats(CioStats.dataMaxHost, max)
+}
+
+fun <T> T.addMaxClientStats(max: Int) where  T : Block {
+    addLimitedStats(CioStats.dataMaxClient, max)
+}
+/**
+ * @param speed pre second
+ */
+fun <T> T.addDataTransferSpeedStats(speed: Float) where  T : Block {
+    stats.add(CioStats.dataTransferSpeed, speed, StatUnit.perSecond)
+}
+//</editor-fold>

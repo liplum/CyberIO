@@ -1,3 +1,22 @@
-3.4
-Client:3.4
-Server:3.4
+Latest: "4.1"
+ClientLatest: "4.1"
+ServerLatest: "4.1"
+MinGameVersion: "136"
+Description:
+'''
+Changes
+- A new techtree of Cyber IO was added.
+- Cyber IO has been balanced.
+- Bug fix.
+- Better visual effects.
+- It's getting weirder.
+
+Warnings
+- The last version supports Mindustry v136.
+- Do not touch any block.
+
+'''
+BreakUpdateList: [
+    "4.1"
+    "4.0"
+]

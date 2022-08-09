@@ -1,33 +1,42 @@
 package net.liplum.blocks.prism
 
+import arc.func.Prov
 import arc.math.Mathf
 import arc.struct.EnumSet
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.gen.Building
-import mindustry.ui.Bar
 import mindustry.world.Block
 import mindustry.world.meta.BlockFlag
 import mindustry.world.meta.BlockGroup
-import net.liplum.ClientOnly
 import net.liplum.R
-import net.liplum.WhenNotPaused
+import net.liplum.Var
 import net.liplum.blocks.prism.Prism.PrismBuild
-import net.liplum.lib.animations.anims.Animation
-import net.liplum.lib.animations.anims.AnimationObj
-import net.liplum.lib.animations.anims.pingPong
-import net.liplum.lib.bundle
-import net.liplum.utils.TE
-import net.liplum.utils.autoAnim
-import net.liplum.utils.exists
+import net.liplum.common.util.bundle
+import net.liplum.mdt.ClientOnly
+import net.liplum.mdt.WhenNotPaused
+import net.liplum.mdt.animation.anims.Animation
+import net.liplum.mdt.animation.anims.AnimationObj
+import net.liplum.mdt.animation.anims.pingPong
+import net.liplum.mdt.render.G
+import net.liplum.mdt.render.drawSurroundingRect
+import net.liplum.mdt.render.smoothPlacing
+import net.liplum.mdt.ui.bars.AddBar
+import net.liplum.mdt.utils.*
 
 open class PrismObelisk(name: String) : Block(name) {
     @JvmField var prismType: Prism? = null
-    lateinit var BlinkAnim: Animation
-    @JvmField var BlinkFrames = 6
-    @JvmField var BlinkDuration = 20f
+    @ClientOnly lateinit var BlinkAnim: Animation
+    /**
+     * The area(tile xy) indicates the surrounding prism can be linked.
+     */
+    @JvmField @ClientOnly var indicateAreaExtension = 2f
+    @JvmField @ClientOnly var BlinkFrames = 6
+    @JvmField @ClientOnly var BlinkDuration = 20f
+    @ClientOnly @JvmField var maxSelectedCircleTime = Var.SurroundingRectTime
 
     init {
+        buildType = Prov { ObeliskBuild() }
         absorbLasers = true
         update = true
         solid = true
@@ -44,21 +53,33 @@ open class PrismObelisk(name: String) : Block(name) {
 
     override fun setBars() {
         super.setBars()
-        bars.add<ObeliskBuild>(R.Bar.LinkedN) {
-            Bar(
-                {
-                    if (it.linked != -1)
-                        R.Bar.Linked.bundle()
-                    else
-                        R.Bar.NoLink.bundle()
-                }, AutoRGB,
-                { if (it.linked != -1) 1f else 0f }
-            )
+        AddBar<ObeliskBuild>(R.Bar.LinkedN,
+            {
+                if (isLinked) R.Bar.Linked.bundle
+                else R.Bar.Unlinked.bundle
+            },
+            { Prism.animatedColor.color },
+            { if (linked != -1) 1f else 0f }
+        )
+    }
+
+    override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
+        super.drawPlace(x, y, rotation, valid)
+        drawSurroundingRect(
+            x, y, indicateAreaExtension * smoothPlacing(maxSelectedCircleTime),
+            if (valid) Prism.animatedColor.color else R.C.RedAlert,
+        ) {
+            it.block == prismType && !it.isDiagonalTo(this, x, y)
         }
+        drawPlaceText(subBundle("tip"), x, y, valid)
     }
 
     open inner class ObeliskBuild : Building() {
         var linked: Int = -1
+        val isLinked: Boolean
+            get() = linked != -1
+        val prism: PrismBuild?
+            get() = linked.TE()
         /**
          * Left->Down->Right->Up
          */
@@ -104,6 +125,12 @@ open class PrismObelisk(name: String) : Block(name) {
                     obj.spend(d + Mathf.random())
                     obj.draw(x, y, i * 90f)
                 }
+            }
+        }
+
+        override fun drawSelect() {
+            prism?.apply {
+                G.selected(this, Prism.animatedColor.color)
             }
         }
 

@@ -1,74 +1,70 @@
 package net.liplum
 
 import arc.Core.settings
+import arc.math.Interp
 import mindustry.Vars
-import net.liplum.scripts.KeyNotFoundException
+import net.liplum.common.Setting
+import plumy.core.arc.invoke
+import net.liplum.mdt.ClientOnly
+import net.liplum.script.KeyNotFoundException
+import net.liplum.update.Version2
 
 object Settings {
     @ClientOnly @JvmField var LinkOpacity = 1f
     @ClientOnly @JvmField var LinkArrowDensity = 15f
-    @ClientOnly @JvmField var AlwaysShowLink = false
+    @ClientOnly @JvmField var LinkArrowSpeed = 40f
+    @ClientOnly @JvmField var AlwaysShowLink = true
+    @ClientOnly @JvmField var LinkBloom = true
     @ClientOnly @JvmField var ShowLinkCircle = false
-    @ClientOnly @JvmField var LinkSize = 4f
+    @ClientOnly @JvmField var ShowWirelessTowerCircle = true
+    // input [0,100] -> output [30,0]
+    fun percentage2Density(percent: Int): Float =
+        Interp.pow2Out(1f - percent / 100f) * 30f
     @JvmStatic
     fun updateSettings() {
         LinkOpacity = settings.getInt(R.Setting.LinkOpacity, 100) / 100f
-        AlwaysShowLink = settings.getBool(R.Setting.AlwaysShowLink)
-        LinkSize = settings.getInt(R.Setting.LinkSize, 100) / 100f * 4f
-        ShowLinkCircle = settings.getBool(R.Setting.ShowLinkCircle)
+        LinkArrowSpeed = settings.getInt(R.Setting.LinkAnimationSpeed, 40).toFloat()
+        AlwaysShowLink = settings.getBool(R.Setting.AlwaysShowLink, true)
+        LinkBloom = settings.getBool(R.Setting.LinkBloom, true)
+        ShowLinkCircle = settings.getBool(R.Setting.ShowLinkCircle, false)
+        ShowWirelessTowerCircle = settings.getBool(R.Setting.ShowWirelessTowerCircle, true)
     }
 
-    var ShouldShowWelcome: Boolean
-        get() = settings.getBool(R.Setting.ShowWelcome, true)
-        set(value) = settings.put(R.Setting.ShowWelcome, value)
-    var ClickWelcomeTimes: Int
-        get() = settings.getInt(R.Setting.ClickWelcomeTimes, 0)
-        set(value) = settings.put(R.Setting.ClickWelcomeTimes, value)
-    @Deprecated("Use Settings.LastWelcomeID instead",
+    internal val settingsMap = HashMap<String, Setting<Settings, *>>()
+    var ShouldShowWelcome: Boolean by Setting(R.Setting.ShowWelcome, true)
+    var ClickWelcomeTimes: Int by Setting(R.Setting.ClickWelcomeTimes, 0)
+    @Deprecated(
+        "Use Settings.LastWelcomeID instead",
         ReplaceWith("Settings.LastWelcomeID"),
-        level = DeprecationLevel.ERROR)
-    var LastWelcome: Int
-        get() = settings.getInt(R.Setting.LastWelcome, 0)
-        set(value) = settings.put(R.Setting.LastWelcome, value)
-    var LastWelcomeID: String
-        get() = settings.getString(R.Setting.LastWelcomeID, "")
-        set(value) = settings.put(R.Setting.LastWelcomeID, value)
-    var CioVersion: String
-        get() = settings.getString(R.Setting.Version, "v0")
-        set(value) = settings.put(R.Setting.Version, value)
-    var ShowUpdate: Boolean
-        get() = settings.getBool(R.Setting.ShowUpdate, !Vars.steam)
-        set(value) = settings.put(R.Setting.ShowUpdate, value)
-    var FirstInstallationTime: Long
-        get() = settings.getLong(R.Setting.FirstInstallationTime, -1)
-        set(value) = settings.put(R.Setting.FirstInstallationTime, value)
+        level = DeprecationLevel.ERROR
+    )
+    var LastWelcome: Int by Setting(R.Setting.LastWelcome, 0)
+    /** Used to prevent from displaying the same welcome words as last time */
+    var LastWelcomeID: String by Setting(R.Setting.LastWelcomeID, "")
+    /** Represent the major version of Cyber IO */
+    var CioVersion: String by Setting(R.Setting.Version, "v0")
+    /** Whether the update should show up when judging the welcome content. */
+    var ShowUpdate: Boolean by Setting(R.Setting.ShowUpdate, !Vars.steam)
+    /** Represent the first time player installed Cyber IO */
+    var FirstInstallationTime: Long by Setting(R.Setting.FirstInstallationTime, -1L)
+    /** Represent how many times player loaded Cyber IO's content */
+    var CyberIOLoadedTimes: Int by Setting(R.Setting.CyberIOLoadedTimes, 0)
+    /** Represent how many times player loaded Cyber IO's main class */
+    var ClassLoadedTimes: Int by Setting(R.Setting.ClassLoadedTimes, 0)
     /**
      * It will be updated when [CioMod.init] call ends.
      * So if you want to get the real last play time, please check [CioMod.lastPlayTime].
      */
-    var LastPlayTime: Long
-        get() = settings.getLong(R.Setting.LastPlayTime, -1)
-        set(value) = settings.put(R.Setting.LastPlayTime, value)
-    var GitHubMirrorUrl: String
-        get() = settings.getString(R.Setting.GitHubMirrorUrl, Meta.GitHubMirrorUrl)
-        set(value) = settings.put(R.Setting.GitHubMirrorUrl, value)
-    val settingsMap = mapOf(
-        "LinkOpacity" to Pair(R.Setting.LinkOpacity, 100),
-        "AlwaysShowLink" to Pair(R.Setting.AlwaysShowLink, Vars.mobile),
-        "LinkSize" to Pair(R.Setting.LinkSize, 100),
-        "ShowLinkCircle" to Pair(R.Setting.ShowLinkCircle, Vars.mobile),
-        "ShouldShowWelcome" to Pair(R.Setting.ShowWelcome, true),
-        "ClickWelcomeTimes" to Pair(R.Setting.ClickWelcomeTimes, 0),
-        "LastWelcomeID" to Pair(R.Setting.LastWelcomeID, ""),
-        "CioVersion" to Pair(R.Setting.Version, "v0"),
-        "ShowUpdate" to Pair(R.Setting.ShowUpdate, !Vars.steam),
-        "FirstInstallationTime" to Pair(R.Setting.FirstInstallationTime, -1),
-        "LastPlayTime" to Pair(R.Setting.LastPlayTime, -1),
-        "GitHubMirrorUrl" to Pair(R.Setting.LastPlayTime, GitHubMirrorUrl),
-    )
+    var LastPlayTime: Long by Setting(R.Setting.LastPlayTime, -1L)
+    var GitHubMirrorUrl: String by Setting(R.Setting.GitHubMirrorUrl, Meta.GitHubUrl)
+    var ShaderRootPath: String by Setting(R.Setting.ShaderRootPath, "")
+    var ContentSpecific: String by Setting(R.Setting.ContentSpecific, ContentSpec.Vanilla.id)
+    /** Last skipped update. If it equals to current new version detected, it will skip the update dialog. */
+    var LastSkippedUpdate: String by Setting(R.Setting.LastSkippedUpdate, Version2.Zero.toString())
     @Suppress("UNCHECKED_CAST")
     operator fun <T> get(key: String): T =
-        settingsMap[key]?.let {
-            settings.get(it.first, it.second) as T
-        } ?: throw KeyNotFoundException("Can't find $key in Cyber IO settings.")
+        settingsMap[key]?.let { it[key] as T } ?: throw KeyNotFoundException("Can't find $key in Cyber IO settings.")
+
+    internal inline fun <reified T> Setting(key: String, default: T): Setting<Settings, T> =
+        Setting(key, default) { settingsMap[it] = this }
 }

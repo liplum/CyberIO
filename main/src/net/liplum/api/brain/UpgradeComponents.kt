@@ -1,114 +1,15 @@
 package net.liplum.api.brain
 
 import arc.util.Log
-import mindustry.Vars
-import mindustry.gen.Building
 import mindustry.world.Block
-import mindustry.world.meta.StatUnit.*
-import net.liplum.ClientOnly
-import net.liplum.api.brain.Direction2.Companion.Part0Pos
-import net.liplum.api.brain.Direction2.Companion.Part1Pos
-import net.liplum.api.cyber.*
-import net.liplum.brains.FormationEffects
-import net.liplum.lib.delegates.Delegate
-import net.liplum.lib.percent
-import net.liplum.lib.value
-import net.liplum.utils.*
+import net.liplum.common.CoerceLength
+import net.liplum.common.fill
+import net.liplum.common.util.isOn
+import net.liplum.common.util.rotateOnce
 
-typealias UT = UpgradeType
-
-@JvmInline
-value class UpgradeType(val type: Int) {
-    companion object {
-        val Damage = UpgradeType(0)
-        val Range = UpgradeType(1)
-        val WaveSpeed = UpgradeType(2)
-        val WaveWidth = UpgradeType(3)
-        val ReloadTime = UpgradeType(4)
-        /**
-         * To prevent radiating too many waves, it doesn't mean the absolute value will be used.
-         */
-        val MaxBrainWaveNum = UpgradeType(5)
-        val ControlLine = UpgradeType(6)
-        val ForceFieldMax = UpgradeType(7)
-        val ForceFieldRegen = UpgradeType(8)
-        val ForceFieldRadius = UpgradeType(9)
-        val ForceFieldRestoreTime = UpgradeType(10)
-        val PowerUse = UpgradeType(11)
-        val I18ns: Array<UpgradeI18n> = arrayOf(
-            UpgradeI18n("damage", {
-                it.value(1)
-            }, {
-                it.percent(1)
-            }),
-            UpgradeI18n("range", {
-                "${(it / Vars.tilesize).value(0)} ${blocks.localized()}"
-            }, {
-                "${it.percent(0)} ${blocks.localized()}"
-            }),
-            UpgradeI18n("wave-speed", {
-                it.value(2)
-            }, {
-                it.percent(2)
-            }),
-            UpgradeI18n("wave-width", {
-                it.value(2)
-            }, {
-                it.percent(2)
-            }),
-            UpgradeI18n("reload-time", {
-                "${(it / 60f).value(1)} ${seconds.localized()}"
-            }, {
-                it.percent(1)
-            }),
-            UpgradeI18n("max-brain-wave-num", {
-                if (it == it.toInt().toFloat()) it.toInt().value() else it.value(1)
-            }, {
-                it.value(1)
-            }),
-            UpgradeI18n("control-line", {
-                "|${it.percent(2)}|"
-            }, {
-                it.percent(2)
-            }),
-            UpgradeI18n("force-field-max", {
-                it.value(0)
-            }, {
-                it.percent(0)
-            }),
-            UpgradeI18n("force-field-regen", {
-                it.value(1)
-            }, {
-                it.percent(1)
-            }),
-            UpgradeI18n("force-field-radius", {
-                "${(it / Vars.tilesize).value(1)} ${blocks.localized()}"
-            }, {
-                "${it.percent(1)} ${blocks.localized()}"
-            }),
-            UpgradeI18n("force-field-restore-time", {
-                "${(it / 60f).value(1)} ${seconds.localized()}"
-            }, {
-                it.percent(1)
-            }),
-            UpgradeI18n("power-use", {
-                "${(it * 60f).value(0)} ${powerSecond.localized()}"
-            }, {
-                it.percent(0)
-            }),
-        )
-    }
-}
-
-class UpgradeI18n(
-    val name: String, val delta: (Float) -> String, val percent: (Float) -> String,
-)
-
-data class Upgrade(val type: UpgradeType, val isDelta: Boolean, val value: Float)
-data class UpgradeEntry(var value: Float = 0f)
-interface IUpgradeComponent : ICyberEntity {
+interface IUpgradeComponent : IHeimdallEntity {
     var directionInfo: Direction2
-    var brain: IBrain?
+    val componentName: String
     val isLinkedBrain: Boolean
         get() = brain != null
     val upgrades: Map<UpgradeType, Upgrade>
@@ -119,18 +20,70 @@ interface IUpgradeComponent : ICyberEntity {
         if (canLinked(brain)) {
             this.brain = brain
             directionInfo = dire
+            onLinkedBrain()
             return true
         }
         return false
     }
 
+    fun onLinkedBrain() {
+    }
+
+    fun onUnlikedBrain() {
+    }
+
     fun unlinkBrain() {
-        brain = null
-        directionInfo = Direction2.Empty
+        if (brain != null) {
+            brain = null
+            directionInfo = Direction2.Empty
+            onUnlikedBrain()
+        }
     }
 
     fun clear() {
         unlinkBrain()
+    }
+}
+/**
+ * Iterate other linked parts and run a closure on them.
+ * Brain first.
+ * If this doesn't link with a brain, nothing will happen
+ */
+inline fun IUpgradeComponent.onOtherParts(func: IHeimdallEntity.() -> Unit) {
+    val brain = brain
+    if (brain != null) {
+        brain.func()
+        for (component in brain) {
+            if (component != this)
+                component.func()
+        }
+    }
+}
+/**
+ * Iterate other linked parts and run a closure on them.
+ * Brain first.
+ * If this doesn't link with a brain, nothing will happen
+ */
+inline fun IUpgradeComponent.onAllParts(func: IHeimdallEntity.() -> Unit) {
+    val brain = brain
+    if (brain != null) {
+        brain.func()
+        for (component in brain) {
+            component.func()
+        }
+    }
+}
+/**
+ * Iterate other linked upgrade components and run a closure on them.
+ * If this doesn't link with a brain, nothing will happen
+ */
+inline fun IUpgradeComponent.onOtherComponents(func: IUpgradeComponent.() -> Unit) {
+    val brain = brain
+    if (brain != null) {
+        for (component in brain) {
+            if (component != this)
+                component.func()
+        }
     }
 }
 
@@ -152,6 +105,82 @@ interface IComponentBlock {
             size = 2
         }
     }
+}
+class Sides(
+    val sides: Array<Side2>
+) : Iterable<Side2> {
+    operator fun get(index: Int) =
+        sides[index]
+
+    operator fun set(index: Int, side: Side2) {
+        sides[index] = side
+    }
+
+    override fun iterator() = sides.iterator()
+    /**
+     * @return [destination]
+     */
+    fun copyInto(destination: Sides): Sides {
+        sides.copyInto(destination.sides)
+        return destination
+    }
+
+    val right: Side2
+        get() = this[0]
+    val top: Side2
+        get() = this[1]
+    val left: Side2
+        get() = this[2]
+    val bottom: Side2
+        get() = this[3]
+
+    fun clockwiseRotate() {
+        sides.rotateOnce(forward = false)
+    }
+
+    fun anticlockwiseRotate() {
+        sides.rotateOnce(forward = true)
+    }
+
+    val visualFormation: String
+        get() {
+            val s = StringBuilder()
+            val maxLen = 5
+            // Row 0
+            s.fill(maxLen)
+            s.append('|')
+            s.append("${top[1]?.componentName}".CoerceLength(maxLen))
+            s.append('|')
+            s.append("${top[0]?.componentName}".CoerceLength(maxLen))
+            s.append('\n')
+            // Row 1
+            s.append("${left[0]?.componentName}".CoerceLength(maxLen))
+            s.append('|')
+            s.fill(maxLen)
+            s.append('|')
+            s.fill(maxLen)
+            s.append('|')
+            s.append("${right[1]?.componentName}".CoerceLength(maxLen))
+            s.append('\n')
+            // Row 2
+            s.append("${left[1]?.componentName}".CoerceLength(maxLen))
+            s.append('|')
+            s.fill(maxLen)
+            s.append('|')
+            s.fill(maxLen)
+            s.append('|')
+            s.append("${right[0]?.componentName}".CoerceLength(maxLen))
+            s.append('\n')
+            // Row 3
+            s.fill(maxLen)
+            s.append('|')
+            s.append("${bottom[0]?.componentName}".CoerceLength(maxLen))
+            s.append('|')
+            s.append("${bottom[1]?.componentName}".CoerceLength(maxLen))
+            return s.toString()
+        }
+
+    override fun toString(): String = visualFormation
 }
 /**
  * For 2 part: 0 and 1.
@@ -184,8 +213,11 @@ class Side2(val brain: IBrain) : Iterable<IUpgradeComponent> {
         if (changed)
             brain.onComponentChanged()
     }
-
-    fun statsTrueCount(): Int {
+    /**
+     * Calculate the actual number of components.
+     * It will ignore empty slot.
+     */
+    fun calcuComponentNumber(): Int {
         val p0 = components[0]
         val p1 = components[1]
         if (p0 == p1) {
@@ -214,6 +246,14 @@ class Side2(val brain: IBrain) : Iterable<IUpgradeComponent> {
         for (com in components)
             com?.unlinkBrain()
     }
+
+    fun swapComponents() {
+        val tmp = components[0]
+        components[0] = components[1]
+        components[1] = tmp
+    }
+
+    override fun toString() = "[0]${components[0]?.componentName}[1]${components[1]?.componentName}"
 }
 /**
  * For 4 sides: top, bottom, left and right
@@ -245,115 +285,4 @@ value class Direction2(val value: Int = -1) {
         get() = value isOn 3
     val occupySide: Boolean
         get() = onPart0 && onPart1
-}
-
-internal val Array<Side2>.right: Side2
-    get() = this[0]
-internal val Array<Side2>.top: Side2
-    get() = this[1]
-internal val Array<Side2>.left: Side2
-    get() = this[2]
-internal val Array<Side2>.bottom: Side2
-    get() = this[3]
-
-interface IBrain : ICyberEntity, Iterable<IUpgradeComponent> {
-    /**
-     * 4 sides of this brain block.
-     * - 0 is [right]
-     * - 1 is [top]
-     * - 2 is [left]
-     * - 3 is [bottom]
-     */
-    val sides: Array<Side2>
-    val components: MutableSet<IUpgradeComponent>
-    val onComponentChanged: Delegate
-    val right: Side2
-        get() = sides[0]
-    val top: Side2
-        get() = sides[1]
-    val left: Side2
-        get() = sides[2]
-    val bottom: Side2
-        get() = sides[3]
-    val Direction2.sideObj: Side2
-        get() = sides[this.side]
-    var formationEffects: FormationEffects
-    var shieldAmount: Float
-    fun clear() {
-        for (side in sides)
-            side.clear()
-        components.clear()
-    }
-
-    fun unlinkAll() {
-        for (side in sides)
-            side.unlinkAll()
-    }
-    /**
-     * ## Contract
-     * 1. This tile entity's size is 4
-     * 2. The return value has 4 bits
-     * ### For side (2 bits)
-     * - 0 is [right]
-     * - 1 is [top]
-     * - 2 is [left]
-     * - 3 is [bottom]
-     * ### For part (2 bits)
-     * - 0 is Up/Left
-     * - 1 is Down/Right
-     * @return the direction of [b] relative to this tile entity.
-     */
-    @Suppress("KotlinConstantConditions")
-    fun sideOn(b: Building): Direction2 {
-        val side = building.relativeTo(b).toInt()
-        var res = side
-        when (side) {
-            //right
-            0 -> {
-                if (topRightX + 1 == b.topLeftX && topRightY == b.topLeftY)
-                    res = res on Part0Pos
-                if (bottomRightX + 1 == b.bottomLeftX && bottomRightY == b.bottomLeftY)
-                    res = res on Part1Pos
-            }
-            // top
-            1 -> {
-                if (topLeftX == b.bottomLeftX && topLeftY + 1 == b.bottomLeftY)
-                    res = res on Part0Pos
-                if (topRightX == b.bottomRightX && topRightY + 1 == b.bottomRightY)
-                    res = res on Part1Pos
-            }
-            // left
-            2 -> {
-                if (topLeftX - 1 == b.topRightX && topLeftY == b.topRightY)
-                    res = res on Part0Pos
-                if (bottomLeftX - 1 == b.bottomRightX && bottomLeftY == b.bottomRightY)
-                    res = res on Part1Pos
-            }
-            // bottom
-            3 -> {
-                if (bottomLeftX == b.topLeftX && bottomLeftY - 1 == b.topLeftY)
-                    res = res on Part0Pos
-                if (bottomRightX == b.topRightX && bottomRightY - 1 == b.topRightY)
-                    res = res on Part1Pos
-            }
-        }
-        return Direction2(res)
-    }
-
-    override fun iterator() = components.iterator()
-
-    companion object {
-        inline fun IBrain.find(filter: (IUpgradeComponent) -> Boolean): IUpgradeComponent? {
-            for (c in components)
-                if (filter(c))
-                    return c
-            return null
-        }
-        @ClientOnly
-        val XSign = arrayOf(+1, -1, -1, -1)
-        @ClientOnly
-        val YSign = arrayOf(+1, +1, +1, -1)
-        @ClientOnly
-        val Mirror = arrayOf(+1, +1, -1, -1)
-    }
 }

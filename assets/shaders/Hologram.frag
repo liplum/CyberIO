@@ -2,17 +2,16 @@
 
 #define Density 1.3
 #define OpacityScanline .3
-#define Holo vec3(0.2588, 0.6471, 0.9608)
 uniform sampler2D u_texture;
 uniform float u_time;
-//uniform vec2 u_resolution;
+uniform vec4 u_holo_color;
 uniform float u_alpha;//1f as default
 uniform float u_opacityNoise;//0.2f as default
 uniform float u_flickering;//0.03f as default
 uniform float u_blendHoloColorOpacity;//0.8f as default
 uniform float u_blendFormerColorOpacity;//0.6f as default
 varying vec2 v_texCoords;
-varying lowp vec4 v_color;
+varying lowp vec4 v_color;// Draw.color()
 
 float random(vec2 st) {
     return fract(sin(dot(st.xy,
@@ -33,6 +32,7 @@ void main(){
     vec2 uv = v_texCoords.xy;
     vec4 original = texture2D(u_texture, uv);
     if (original.a < 0.01){
+        gl_FragColor = vec4(0.0);
         return;
     }
     vec3 col = original.rgb;
@@ -40,7 +40,7 @@ void main(){
         col = blend(col, v_color.rgb, u_blendFormerColorOpacity);
     }
     if (u_blendHoloColorOpacity > 0.01){
-        col = blend(col, Holo, u_blendHoloColorOpacity);
+        col = blend(col, u_holo_color.rgb, u_blendHoloColorOpacity);
     }
     float count = Density;
     vec2 sl = vec2(sin(uv.y * count), cos(uv.y * count));

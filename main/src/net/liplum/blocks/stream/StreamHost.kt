@@ -1,42 +1,48 @@
 package net.liplum.blocks.stream
 
+import arc.func.Prov
 import arc.graphics.Color
+import arc.math.geom.Point2
 import arc.struct.OrderedSet
 import arc.struct.Seq
-import arc.util.Time
+import arc.util.Eachable
 import arc.util.io.Reads
 import arc.util.io.Writes
+import mindustry.Vars
+import mindustry.entities.units.BuildPlan
 import mindustry.gen.Building
-import mindustry.graphics.Drawf
 import mindustry.logic.LAccess
 import mindustry.type.Liquid
+import mindustry.world.blocks.liquid.LiquidBlock
 import mindustry.world.meta.BlockGroup
-import net.liplum.*
+import net.liplum.DebugOnly
+import net.liplum.R
+import net.liplum.Var
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
-import net.liplum.lib.DrawOn
-import net.liplum.lib.DrawSize
-import net.liplum.lib.SetAlpha
-import net.liplum.lib.animations.Floating
-import net.liplum.lib.animations.anis.AniState
-import net.liplum.lib.animations.anis.config
-import net.liplum.persistance.intSet
-import net.liplum.utils.*
+import net.liplum.common.persistence.read
+import net.liplum.common.persistence.write
+import net.liplum.mdt.CalledBySync
+import net.liplum.mdt.ClientOnly
+import net.liplum.mdt.SendDataPack
+import net.liplum.mdt.animation.anis.AniState
+import net.liplum.mdt.animation.anis.config
+import net.liplum.mdt.render.Draw
+import net.liplum.mdt.render.DrawOn
+import net.liplum.mdt.utils.*
+import net.liplum.util.addPowerUseStats
+import plumy.core.Serialized
+import plumy.core.assets.EmptyTR
+import plumy.core.assets.TRs
 
 private typealias AniStateH = AniState<StreamHost, StreamHost.HostBuild>
 
 open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuild>(name) {
+    @ClientOnly var liquidPadding = 0f
     @JvmField var maxConnection = 5
     @JvmField var liquidColorLerp = 0.5f
     @JvmField var powerUseBase = 1f
     @JvmField var powerUsePerConnection = 1f
-    @ClientOnly lateinit var BaseTR: TR
-    @ClientOnly lateinit var LiquidTR: TR
-    @ClientOnly lateinit var TopTR: TR
-    @ClientOnly lateinit var NoPowerAni: AniStateH
-    @ClientOnly lateinit var NormalAni: AniStateH
-    @ClientOnly lateinit var NoPowerTR: TR
-    @ClientOnly @JvmField var IconFloatingRange = 1f
     /**
      * 1 networkSpeed = 60 per seconds
      */
@@ -44,8 +50,19 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
     @JvmField var SharedClientSeq: Seq<IStreamClient> = Seq(
         if (maxConnection == -1) 10 else maxConnection
     )
+    /**
+     * The max range when trying to connect. -1f means no limit.
+     */
+    @JvmField var maxRange = -1f
+    @ClientOnly var BottomTR = EmptyTR
+    @ClientOnly var NoPowerTR = EmptyTR
+    @ClientOnly lateinit var NoPowerAni: AniStateH
+    @ClientOnly lateinit var NormalAni: AniStateH
+    @ClientOnly @JvmField var maxSelectedCircleTime = Var.SelectedCircleTime
+    @JvmField val TransferTimer = timers++
 
     init {
+        buildType = Prov { HostBuild() }
         update = true
         solid = true
         configurable = true
@@ -53,8 +70,13 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
         group = BlockGroup.liquids
         noUpdateDisabled = true
         hasLiquids = true
+        schematicPriority = 20
+        callDefaultBlockDraw = false
         canOverdrive = true
         sync = true
+        /**
+         * For connect
+         */
         config(Integer::class.java) { obj: HostBuild, clientPackedPos ->
             obj.setClient(clientPackedPos.toInt())
         }
@@ -65,14 +87,16 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
 
     override fun load() {
         super.load()
-        BaseTR = this.sub("base")
-        LiquidTR = this.sub("liquid")
-        TopTR = this.sub("top")
-        NoPowerTR = this.inMod("rs-no-power-large")
+        BottomTR = this.sub("bottom")
+        NoPowerTR = this.inMod("rs-no-power")
+    }
+
+    override fun icons(): TRs {
+        return arrayOf(BottomTR, region)
     }
 
     open fun initPowerUse() {
-        consumes.powerDynamic<HostBuild> {
+        consumePowerDynamic<HostBuild> {
             powerUseBase + it.clients.size * powerUsePerConnection
         }
     }
@@ -80,63 +104,81 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
     override fun init() {
         initPowerUse()
         super.init()
-        IconFloatingRange = IconFloatingRange / 8f * size
     }
 
     override fun setStats() {
         super.setStats()
         addPowerUseStats()
+        addLinkRangeStats(maxRange)
+        addMaxClientStats(maxConnection)
+        addDataTransferSpeedStats(networkSpeed)
     }
 
     override fun setBars() {
         super.setBars()
         DebugOnly {
-            bars.addClientInfo<HostBuild>()
+            addClientInfo<HostBuild>()
         }
     }
 
+    override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
+        super.drawPlace(x, y, rotation, valid)
+        drawPlacingMaxRange(x, y, maxRange, R.C.Host)
+    }
+
+    override fun drawPlanRegion(plan: BuildPlan, list: Eachable<BuildPlan>) {
+        super.drawPlanRegion(plan, list)
+        drawPlanMaxRange(plan.x, plan.y, maxRange, R.C.Host)
+    }
     open inner class HostBuild : AniedBuild(), IStreamHost {
+        override val maxRange = this@StreamHost.maxRange
         @Serialized
         var clients = OrderedSet<Int>()
-        @ClientOnly @JvmField var liquidFlow = 0f
-        open fun checkClientsPos() {
-            clients.removeAll { !it.sc().exists }
-        }
-
         val realNetworkSpeed: Float
             get() = networkSpeed * timeScale
-        @ClientOnly @JvmField
-        var floating: Floating = Floating(IconFloatingRange).randomXY().changeRate(1)
-        override fun getHostColor(): Color = liquids.current().color
+        override val hostColor: Color
+            get() = liquids.current().fluidColor
+        var lastTileChange = -2
         override fun updateTile() {
-            // Check connection every second
-            if (Time.time % 60f < 1) {
+            // Check connection and queue only when any block changed
+            if (lastTileChange != Vars.world.tileChanges) {
+                lastTileChange = Vars.world.tileChanges
                 checkClientsPos()
             }
-            if (!consValid()) return
-            SharedClientSeq.clear()
-            for (pos in clients) {
-                val client = pos.sc()
-                if (client != null) {
-                    SharedClientSeq.add(client)
+            if (efficiency > 0f && timer(TransferTimer, 1f)) {
+                SharedClientSeq.clear()
+                for (pos in clients) {
+                    val client = pos.sc()
+                    if (client != null) {
+                        SharedClientSeq.add(client)
+                    }
                 }
+                val liquid = liquids.current()
+                val needPumped = (realNetworkSpeed * efficiency).coerceAtMost(liquids.currentAmount())
+                var restNeedPumped = needPumped
+                var per = restNeedPumped / clients.size
+                var resetClient = clients.size
+                for (client in SharedClientSeq) {
+                    if (liquid.match(client.requirements)) {
+                        val rest = streamTo(client, liquid, per)
+                        restNeedPumped -= (per - rest)
+                    }
+                    resetClient--
+                    if (resetClient > 0) {
+                        per = restNeedPumped / resetClient
+                    }
+                }
+                liquids.remove(liquid, needPumped - restNeedPumped)
             }
-            val liquid = liquids.current()
-            val needPumped = realNetworkSpeed.coerceAtMost(liquids.currentAmount())
-            var restNeedPumped = needPumped
-            var per = restNeedPumped / clients.size
-            var resetClient = clients.size
-            for (client in SharedClientSeq) {
-                if (liquid.match(client.requirements)) {
-                    val rest = streaming(client, liquid, per)
-                    restNeedPumped -= (per - rest)
+        }
+
+        fun genRelativeAllPos(): Array<Point2> {
+            return clients.map {
+                it.unpack().apply {
+                    x -= tile.x
+                    y -= tile.y
                 }
-                resetClient--
-                if (resetClient > 0) {
-                    per = restNeedPumped / resetClient
-                }
-            }
-            liquids.remove(liquid, needPumped - restNeedPumped)
+            }.toTypedArray()
         }
 
         override fun onProximityAdded() {
@@ -159,19 +201,19 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
         }
 
         override fun acceptLiquid(source: Building, liquid: Liquid): Boolean {
-            return consValid() && liquids.current() == liquid || liquids.currentAmount() < 0.2f
+            return canConsume() && (liquids.current() == liquid && liquids[liquid] < liquidCapacity) || liquids.currentAmount() < 0.2f
         }
         @CalledBySync
         open fun setClient(pos: Int) {
             if (pos in clients) {
                 pos.sc()?.let {
                     disconnectClient(it)
-                    it.disconnect(this)
+                    it.onDisconnectFrom(this)
                 }
             } else {
                 pos.sc()?.let {
                     connectClient(it)
-                    it.connect(this)
+                    it.onConnectFrom(this)
                 }
             }
         }
@@ -193,7 +235,7 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
         open fun clearClients() {
             clients.forEach { pos ->
                 pos.sc()?.let {
-                    it.disconnect(this)
+                    it.onDisconnectFrom(this)
                     it.onRequirementUpdated -= ::onClientRequirementsUpdated
                 }
             }
@@ -201,8 +243,8 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
             onClientsChanged()
         }
 
-        override fun onConfigureTileTapped(other: Building): Boolean {
-            if (this === other) {
+        override fun onConfigureBuildTapped(other: Building): Boolean {
+            if (this == other) {
                 deselect()
                 configure(null)
                 return false
@@ -212,17 +254,25 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
                 if (maxConnection == 1) {
                     deselect()
                 }
-                pos.sc()?.let { disconnectSync(it) }
+                pos.sc()?.let { disconnectFromSync(it) }
                 return false
             }
             if (other is IStreamClient) {
-                if (maxConnection == 1) {
-                    deselect()
-                }
-                if (canHaveMoreClientConnection() &&
-                    other.acceptConnection(this)
-                ) {
-                    connectSync(other)
+                if (maxRange > 0f && other.dst(this) >= maxRange) {
+                    postOverRangeOn(other)
+                } else {
+                    if (maxConnection == 1) {
+                        deselect()
+                    }
+                    if (canHaveMoreClientConnection) {
+                        if (other.acceptConnectionTo(this)) {
+                            connectToSync(other)
+                        } else {
+                            postFullHostOn(other)
+                        }
+                    } else {
+                        postFullClientOn(other)
+                    }
                 }
                 return false
             }
@@ -231,57 +281,51 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
 
         override fun drawConfigure() {
             super.drawConfigure()
-            this.drawStreamGraphic()
+            this.drawStreamGraph()
+            drawConfiguringMaxRange()
         }
 
         override fun drawSelect() {
-            this.drawStreamGraphic()
+            drawSelectedMaxRange()
         }
         @SendDataPack
-        override fun connectSync(client: IStreamClient) {
+        override fun connectToSync(client: IStreamClient) {
             if (client.building.pos() !in clients) {
                 configure(client.building.pos())
             }
         }
         @SendDataPack
-        override fun disconnectSync(client: IStreamClient) {
+        override fun disconnectFromSync(client: IStreamClient) {
             if (client.building.pos() in clients) {
                 configure(client.building.pos())
             }
         }
 
-        override fun maxClientConnection() = maxConnection
-        override fun getConnectedClients(): OrderedSet<Int> = clients
-        override fun beforeDraw() {
-            val d = G.D(0.1f * IconFloatingRange * delta())
-            floating.move(d)
-        }
-
+        override val maxClientConnection = maxConnection
+        override val connectedClients: OrderedSet<Int> = clients
         override fun read(read: Reads, revision: Byte) {
             super.read(read, revision)
-            clients = read.intSet()
+            clients.read(read)
         }
 
         override fun write(write: Writes) {
             super.write(write)
-            write.intSet(clients)
+            clients.write(write)
         }
 
         override fun fixedDraw() {
-            BaseTR.DrawOn(this)
-            Drawf.liquid(
-                LiquidTR, x, y,
-                liquids.currentAmount() / liquidCapacity,
-                liquids.current().color,
-                (rotation - 90).toFloat()
+            BottomTR.DrawOn(this)
+            LiquidBlock.drawTiledFrames(
+                size, x, y, liquidPadding,
+                liquids.current(), liquids.currentAmount() / liquidCapacity
             )
-            TopTR.DrawOn(this)
+            region.DrawOn(this)
         }
 
         override fun control(type: LAccess, p1: Any?, p2: Double, p3: Double, p4: Double) {
             when (type) {
                 LAccess.shoot ->
-                    if (p1 is IStreamClient) connectSync(p1)
+                    if (p1 is IStreamClient) connectToSync(p1)
                 else -> super.control(type, p1, p2, p3, p4)
             }
         }
@@ -290,7 +334,7 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
             when (type) {
                 LAccess.shoot -> {
                     val receiver = buildAt(p1, p2)
-                    if (receiver is IStreamClient) connectSync(receiver)
+                    if (receiver is IStreamClient) connectToSync(receiver)
                 }
                 else -> super.control(type, p1, p2, p3, p4)
             }
@@ -299,12 +343,7 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
 
     override fun genAniState() {
         NoPowerAni = addAniState("NoPower") {
-            SetAlpha(0.8f)
-            NoPowerTR.DrawSize(
-                x + floating.dx,
-                y + floating.dy,
-                1f / 7f * this@StreamHost.size
-            )
+            NoPowerTR.Draw(x, y)
         }
         NormalAni = addAniState("Normal")
     }
@@ -312,11 +351,11 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
     override fun genAniConfig() {
         config {
             From(NoPowerAni) To NormalAni When {
-                consValid()
+                canConsume()
             }
 
             From(NormalAni) To NoPowerAni When {
-                !consValid()
+                !canConsume()
             }
         }
     }

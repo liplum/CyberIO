@@ -9,8 +9,13 @@ import arc.scene.ui.layout.Cell
 import arc.scene.ui.layout.Table
 import arc.scene.utils.Elem
 import arc.util.Scaling
-import net.liplum.DesktopOnly
-import net.liplum.utils.TR
+import mindustry.gen.Tex
+import net.liplum.Meta
+import net.liplum.S
+import net.liplum.Var
+import net.liplum.i18nName
+import plumy.core.assets.TR
+import net.liplum.mdt.DesktopOnly
 
 internal fun Dialog.addPoster(
     icon: TR,
@@ -21,8 +26,7 @@ internal fun Dialog.addPoster(
     val minFilter = tx.minFilter
     val img = Image(icon)
     shown {
-        if (!(nearest == tx.magFilter && nearest == tx.minFilter))
-            tx.setFilter(nearest)
+        tx.setFilter(nearest)
     }
     hidden {
         if (magFilter != tx.magFilter || minFilter != tx.minFilter)
@@ -30,6 +34,15 @@ internal fun Dialog.addPoster(
     }
     table.add(img).minSize(200f).scaling(Scaling.fill).row()
     return img
+}
+
+internal fun Dialog.addPoliteWelcome(entity: Welcome.Entity) {
+    addCenterText(
+        entity.bundle.format(
+            "welcome",
+            "${Meta.DetailedVersion} ${Var.ContentSpecific.i18nName}"
+        )
+    ).color(S.Hologram)
 }
 
 internal fun Dialog.addCenterText(
@@ -45,6 +58,22 @@ internal fun Dialog.addCenterText(
         }
     })
     cell.growX().row()
+    return cell
+}
+
+internal fun Dialog.addBoxedText(
+    text: String,
+    table: Table = this.cont
+): Cell<Table> {
+    val cell = table.add(Table(Tex.button).apply {
+        add(Label(text).apply {
+            DesktopOnly {
+                // On the high resolution screen, the text looks too small.
+                setFontScale(1.1f)
+            }
+        }).pad(10f)
+    })
+    cell.pad(5f).row()
     return cell
 }
 

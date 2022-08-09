@@ -1,5 +1,6 @@
 package net.liplum.blocks.underdrive
 
+import arc.func.Prov
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
 import arc.graphics.g2d.Lines
@@ -26,19 +27,31 @@ import mindustry.graphics.Layer
 import mindustry.graphics.Pal
 import mindustry.input.Placement
 import mindustry.logic.Ranged
-import mindustry.ui.Bar
 import mindustry.world.Tile
 import mindustry.world.blocks.power.PowerGenerator
 import mindustry.world.meta.BlockGroup
 import mindustry.world.meta.Stat
 import mindustry.world.meta.StatUnit
-import net.liplum.ClientOnly
 import net.liplum.DebugOnly
 import net.liplum.R
-import net.liplum.Serialized
-import net.liplum.lib.bundle
-import net.liplum.lib.ui.bars.ReverseBar
-import net.liplum.utils.*
+import net.liplum.Var
+import net.liplum.common.util.bundle
+import net.liplum.common.util.format
+import net.liplum.common.util.percentI
+import net.liplum.mdt.ClientOnly
+import net.liplum.mdt.render.G
+import net.liplum.mdt.render.G.realHeight
+import net.liplum.mdt.render.G.realWidth
+import net.liplum.mdt.render.drawEffectCirclePlace
+import net.liplum.mdt.render.smoothPlacing
+import net.liplum.mdt.render.smoothSelect
+import net.liplum.mdt.ui.bars.AddBar
+import net.liplum.mdt.ui.bars.ReverseBar
+import net.liplum.mdt.utils.NewEffect
+import net.liplum.mdt.utils.sub
+import net.liplum.mdt.utils.subBundle
+import net.liplum.util.addRangeInfo
+import plumy.core.Serialized
 import kotlin.math.max
 
 const val MagicNSpiralRate = 0.1125f
@@ -52,21 +65,24 @@ enum class AttenuationType {
 }
 private typealias UnitC = mindustry.gen.Unit
 
-val SpiralShrink: Effect = Effect(20f) {
-    val upb = it.data as UnderdriveProjector.UnderdriveBuild
+val SpiralShrink: Effect = NewEffect(30f) {
+    val upb = data as UnderdriveProjector.UnderdriveBuild
     val up = upb.block as UnderdriveProjector
-    Draw.color(it.color, it.fout())
+    Draw.color(color, fout())
     val scale = Mathf.lerp(1f, G.sin, 0.5f)
     val realRange = upb.realRange
-    val sr = scale * MagicNSpiralRate * realRange * it.fout()
+    val sr = scale * MagicNSpiralRate * realRange * fout()
     val srm = realRange * MagicNSpiralMin
     val s = up.spiralTR
     Draw.rect(
-        s, it.x, it.y,
-        G.Dw(s) * sr + srm,
-        G.Dh(s) * sr + srm,
+        s, x, y,
+        s.realWidth * sr + srm,
+        s.realHeight * sr + srm,
         Time.time * upb.realSpiralRotateSpeed
     )
+    Draw.z(Layer.weather)
+    Drawf.shadow(x, y, realRange, 1f * fout())
+    Draw.z()
 }.layer(Layer.shields)
 
 fun UnderdriveProjector.UnderdriveBuild.spiralShrinking() {
@@ -88,8 +104,10 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
     @JvmField var maxPowerEFFBlocksReq = 10
     @JvmField var maxGear = 1
     lateinit var spiralTR: TextureRegion
+    @ClientOnly @JvmField var maxSelectedCircleTime = Var.SelectedCircleTime
 
     init {
+        buildType = Prov { UnderdriveBuild() }
         solid = true
         update = true
         group = BlockGroup.projectors
@@ -110,9 +128,10 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
         }
     }
 
+    override fun minimapColor(tile: Tile) = R.C.Shadow.rgba8888()
     override fun init() {
         super.init()
-        clipSize = range * 1.2f
+        clipSize = range * 2f
         maxGear = maxGear.coerceAtLeast(1)
         maxPowerEFFBlocksReq = maxPowerEFFBlocksReq.coerceAtLeast(1)
     }
@@ -146,17 +165,9 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
 
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)
-        G.drawDashCircle(this, x.toShort(), y.toShort(), range, color)
-        Vars.indexer.eachBlock(
-            Vars.player.team(),
-            x.toDrawXY(this),
-            y.toDrawXY(this),
-            range,
-            {
-                it.block.canOverdrive
-            }
-        ) {
-            G.drawSelected(it, color)
+        val range = range * smoothPlacing(maxSelectedCircleTime)
+        drawEffectCirclePlace(x, y, color, range, { block.canOverdrive }) {
+            G.selectedBreath(this, color)
         }
     }
 
@@ -164,16 +175,21 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
         super.setStats()
         stats.remove(Stat.basePowerGeneration)
         stats.add(Stat.basePowerGeneration) {
-            it.add("$contentType.$name.stats.power-gen".bundle(
-                "${powerProduction * Time.toSeconds} ${StatUnit.powerSecond.localized()}", maxPowerEFFBlocksReq
-            ))
+            it.add(
+                subBundle(
+                    "stats.power-gen",
+                    "${powerProduction * Time.toSeconds} ${StatUnit.powerSecond.localized()}", maxPowerEFFBlocksReq
+                )
+            )
         }
         stats.add(Stat.speedIncrease) {
             val max = maxSlowDownRate
             val min = maxSlowDownRate / maxGear
-            it.add(R.Bundle.Gen("speed-increase.range").bundle(
-                -min.percentI, -max.percentI
-            ))
+            it.add(
+                R.Bundle.Gen("speed-increase.range").bundle(
+                    -min.percentI, -max.percentI
+                )
+            )
         }
         stats.add(
             Stat.range,
@@ -184,44 +200,32 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
 
     override fun setBars() {
         super.setBars()
-        bars.add<UnderdriveBuild>(
-            R.Bar.SlowDownN
-        ) {
+        addBar<UnderdriveBuild>(R.Bar.SlowDownN) {
             ReverseBar(
                 { R.Bar.SlowDown.bundle(it.realSlowDown.percentI) },
                 { color },
                 { it.restEfficiency / 1f }
             )
         }
-        bars.add<UnderdriveBuild>(
-            R.Bar.EfficiencyAbsorptionN
-        ) {
-            Bar(
-                { R.Bar.EfficiencyAbsorption.bundle(it.productionEfficiency.percentI) },
-                { Pal.powerBar },
-                { it.productionEfficiency / 1f }
-            )
-        }
+        AddBar<UnderdriveBuild>(R.Bar.EfficiencyAbsorptionN,
+            { R.Bar.EfficiencyAbsorption.bundle(productionEfficiency.percentI) },
+            { Pal.powerBar },
+            { productionEfficiency / 1f }
+        )
         DebugOnly {
-            bars.add<UnderdriveBuild>(
-                R.Bar.SpiralRotationSpeedN
-            ) {
-                Bar(
-                    { R.Bar.SpiralRotationSpeed.bundle(it.realSpiralRotateSpeed.format(2)) },
-                    { Pal.powerBar },
-                    { it.realSpiralRotateSpeed / 10f }
-                )
-            }
-            bars.add<UnderdriveBuild>(
-                R.Bar.AlphaN
-            ) {
-                Bar(
-                    { R.Bar.Alpha.bundle(it.alpha.format(2)) },
-                    { Color.blue },
-                    { it.alpha / 1f }
-                )
-            }
-            bars.addRangeInfo<UnderdriveBuild>(100f)
+            AddBar<UnderdriveBuild>(
+                "spiral-rotate-speed",
+                { "RotateSPD:${realSpiralRotateSpeed.format(2)}" },
+                { Pal.powerBar },
+                { realSpiralRotateSpeed / 10f }
+            )
+            AddBar<UnderdriveBuild>(
+                "alpha",
+                { "alpha:${alpha.format(2)}" },
+                { Color.blue },
+                { alpha / 1f }
+            )
+            addRangeInfo<UnderdriveBuild>(100f)
         }
     }
 
@@ -284,7 +288,7 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
                     (1f - similarInRange * attenuationRateStep).coerceAtLeast(0f)
             }
 
-        open fun forEachTargetInRange(cons: (Building) -> Unit) {
+        open fun forEachTargetInRange(range: Float = realRange, cons: (Building) -> Unit) {
             Vars.indexer.eachBlock(
                 this, realRange,
                 { it.block.canOverdrive },
@@ -318,9 +322,6 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
 
         override fun onRemoved() {
             super.onRemoved()
-            forEachTargetInRange {
-                it.resetBoost()
-            }
             ClientOnly {
                 if (canShowSpiral) {
                     this.spiralShrinking()
@@ -343,7 +344,7 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
                 forEachBuildingInRange {
                     if (it.block.canOverdrive) {
                         underdrivedBlock++
-                        it.applyBoostOrSlow(restEfficiency, reload + 1f)
+                        it.applySlowdown(restEfficiency, reload + 1f)
                     } else if (it is UnderdriveBuild && it != this) {
                         similarInRange++
                     }
@@ -361,17 +362,6 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
                     productionEfficiency = 0f
                 }
             }
-            /*
-            val velFactor = 1 - realSlowDown
-             forEachBulletInRange {
-                 it.vel.x *= velFactor
-                 it.vel.y *= velFactor
-             }
-             forEachUnitInRange {
-                 it.vel.x *= velFactor
-                 it.vel.y *= velFactor
-             }
-             */
         }
 
         override fun buildConfiguration(table: Table) {
@@ -388,10 +378,11 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
 
         override fun config(): Int = curGear
         override fun drawSelect() {
-            forEachTargetInRange {
-                G.drawSelected(it, color)
+            val range = realRange * smoothSelect(maxSelectedCircleTime)
+            forEachTargetInRange(range) {
+                G.selectedBreath(it, color)
             }
-            G.dashCircle(x, y, realRange, color)
+            G.dashCircleBreath(x, y, range, color)
         }
 
         override fun draw() {
@@ -437,8 +428,8 @@ open class UnderdriveProjector(name: String) : PowerGenerator(name) {
                 val srm = realRange * MagicNSpiralMin
                 Draw.rect(
                     spiralTR, x, y,
-                    G.Dw(spiralTR) * sr + srm,
-                    G.Dh(spiralTR) * sr + srm,
+                    spiralTR.realWidth * sr + srm,
+                    spiralTR.realHeight * sr + srm,
                     Time.time * realSpiralRotateSpeed
                 )
             }
