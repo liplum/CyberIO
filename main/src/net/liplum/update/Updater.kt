@@ -20,6 +20,7 @@ import net.liplum.common.replaceByteBy
 import net.liplum.common.util.useFakeHeader
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.HeadlessOnly
+import net.liplum.util.ZipUtil
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.net.URL
@@ -32,6 +33,7 @@ object Updater : CoroutineScope {
     var json = Json()
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO
+    var modImportProgress = 0f
     /**
      * Retrieve the update info from given url or file path.
      * It's silent when any exception is raised.
@@ -88,11 +90,58 @@ object Updater : CoroutineScope {
     val matchMinGameVersion: Boolean
         get() = updateInfo.MinGameVersion <= Meta.CurGameVersion
 
+    private fun updateFailed(error: Throwable) {
+        Vars.ui.loadfrag.hide()
+        if (error is NoSuchMethodError ||
+            Strings.getCauses(error).toList().any { t ->
+                val msg = t.message
+                msg != null && ("trust anchor" in msg || "SSL" in msg || "protocol" in msg)
+            }
+        ) {
+            Vars.ui.showErrorMessage("@feature.unsupported");
+        } else if (error is Http.HttpStatusException) {
+            Vars.ui.showErrorMessage(
+                Core.bundle.format("connectfail", Strings.capitalize("${error.status}".lowercase()))
+            )
+        } else {
+            Vars.ui.showException(error);
+        }
+    }
+
     object Preview {
         val url get() = "https://nightly.link/liplum/CyberIO/workflows/Push/${Meta.GitHubBranch}/CyberIO-Unzip-This.zip"
         @JvmStatic
         fun updateDebugPreview() {
-
+            modImportProgress = 0f
+            Vars.ui.loadfrag.show("@downloading")
+            Vars.ui.loadfrag.setProgress { modImportProgress }
+            Http.get(url, { res ->
+                val zipFile = Vars.tmpDirectory.child("CyberIO-Preview-packed.zip")
+                val len = res.contentLength
+                val cons = if (len <= 0) Floatc { modImportProgress = 0.5f }
+                else Floatc { modImportProgress = it }
+                Streams.copyProgress(res.resultAsStream, zipFile.write(false), len, Streams.defaultBufferSize, cons)
+                modImportProgress = 1f
+                val unpackedDir = Vars.tmpDirectory.child("CyberIO-Preview-unpacked")
+                ZipUtil.unzip(zipFile.file(), unpackedDir.path())
+                val jar = unpackedDir.list().first() ?: throw ArcRuntimeException("There is no jar in this preview.")
+                try {
+                    if (CioMod.jarFile != null) {
+                        CioMod.jarFile.replaceByteBy(jar.file())
+                    } else {
+                        val mod = Vars.mods.importMod(jar)
+                        mod.repo = Meta.Repo
+                    }
+                } catch (e: Exception) {
+                    throw e
+                } finally {
+                    zipFile.delete()
+                    unpackedDir.deleteDirectory()
+                }
+                Time.run(10f) {
+                    Vars.ui.showInfoOnHidden("@mods.reloadexit", Core.app::exit)
+                }
+            }, ::updateFailed)
         }
     }
 
@@ -103,8 +152,8 @@ object Updater : CoroutineScope {
             updateModBuiltin("CyberIO-$version.jar")
         }
 
-        var modImportProgress = 0f
         private fun updateModBuiltin(fileName: String? = null) {
+            modImportProgress = 0f
             Vars.ui.loadfrag.show("@downloading")
             Vars.ui.loadfrag.setProgress { modImportProgress }
             //grab latest release
@@ -141,24 +190,6 @@ object Updater : CoroutineScope {
                 }
             } catch (e: Throwable) {
                 updateFailed(e)
-            }
-        }
-
-        private fun updateFailed(error: Throwable) {
-            Vars.ui.loadfrag.hide()
-            if (error is NoSuchMethodError ||
-                Strings.getCauses(error).toList().any { t ->
-                    val msg = t.message
-                    msg != null && ("trust anchor" in msg || "SSL" in msg || "protocol" in msg)
-                }
-            ) {
-                Vars.ui.showErrorMessage("@feature.unsupported");
-            } else if (error is Http.HttpStatusException) {
-                Vars.ui.showErrorMessage(
-                    Core.bundle.format("connectfail", Strings.capitalize("${error.status}".lowercase()))
-                )
-            } else {
-                Vars.ui.showException(error);
             }
         }
     }

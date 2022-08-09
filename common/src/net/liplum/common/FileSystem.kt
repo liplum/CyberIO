@@ -94,8 +94,22 @@ value class Dir(val folder: File) {
 fun File.replaceByteBy(
     bytes: ByteArray,
 ) {
+    val fos = this.outputStream()
     Streams.copy(
         bytes.inputStream(),
-        this.outputStream()
+        fos
     )
+    fos.close()
+}
+fun File.replaceByteBy(
+    replacement: File,
+) {
+    val ins = replacement.inputStream()
+    val fos = this.outputStream()
+    Streams.copy(
+        ins,
+        fos
+    )
+    ins.close()
+    fos.close()
 }

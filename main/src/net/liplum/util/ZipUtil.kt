@@ -1,12 +1,19 @@
 package net.liplum.util
 
-import java.io.*
+import java.io.BufferedOutputStream
+import java.io.File
+import java.io.FileOutputStream
+import java.io.InputStream
 import java.util.zip.ZipFile
 
 /**
  * ZipUtil can extract files and subdirectories of a standard zip file to a destination directory.
  */
 object ZipUtil {
+    /**
+     * Size of the buffer to read/write data
+     */
+    private const val BUFFER_SIZE = 4096
     fun unzip(zipFilePath: File, destDirectory: String) {
         File(destDirectory).run {
             if (!exists()) {
@@ -31,6 +38,7 @@ object ZipUtil {
             }
         }
     }
+
     private fun extractFile(inputStream: InputStream, destFilePath: String) {
         val bos = BufferedOutputStream(FileOutputStream(destFilePath))
         val bytesIn = ByteArray(BUFFER_SIZE)
@@ -40,8 +48,4 @@ object ZipUtil {
         }
         bos.close()
     }
-    /**
-     * Size of the buffer to read/write data
-     */
-    private const val BUFFER_SIZE = 4096
 }

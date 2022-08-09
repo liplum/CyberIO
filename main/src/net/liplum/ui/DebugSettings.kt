@@ -24,6 +24,7 @@ import net.liplum.mdt.forceUnlock
 import net.liplum.mdt.lock
 import net.liplum.mdt.ui.ShowTextDialog
 import net.liplum.mdt.ui.lockOrUnlock
+import net.liplum.update.Updater
 import net.liplum.welcome.Welcome
 
 object DebugSettingsDialog {
@@ -69,8 +70,9 @@ object DebugSettingsDialog {
                 add(Table(Tex.button).apply {
                     add("Debug Preview").color(Pal.darkFlame).row()
                     button("Update") {
-                    }.row()
-                })
+                        Updater.Preview.updateDebugPreview()
+                    }.width(180f).row()
+                }).fill().row()
                 add(Table(Tex.button).apply {
                     add("Unlock Content").color(Color.white).row()
                     lockOrUnlock("Unlock", UnlockableContent::forceUnlock)
