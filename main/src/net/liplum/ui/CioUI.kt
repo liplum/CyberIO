@@ -25,7 +25,6 @@ import net.liplum.common.util.bundle
 import net.liplum.common.util.getF
 import net.liplum.common.util.randomExcept
 import net.liplum.event.CioInitEvent
-import plumy.core.UseReflection
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.IsLocal
 import net.liplum.mdt.UnsteamOnly
@@ -41,6 +40,7 @@ import net.liplum.update.Updater
 import net.liplum.welcome.Conditions
 import net.liplum.welcome.Welcome
 import net.liplum.welcome.WelcomeList
+import plumy.core.UseReflection
 
 @ClientOnly
 object CioUI {
@@ -157,17 +157,15 @@ object CioUI {
                         label.setText(if (isDisabled) buttonI18n.ing else buttonI18n)
                     }
                     changed {
-                        var failed: String? = null
-                        Updater.fetchLatestVersion(onFailed = { e ->
-                            failed = e
-                        })
+                        var failed = false
+                        Updater.fetchLatestVersion {
+                            failed = true
+                            Updater.updateFailed(it)
+                        }
                         isDisabled = true
                         Updater.launch {
                             Updater.accessJob?.join()
-                            val errorInfo = failed
-                            if (errorInfo != null) {
-                                showUpdateFailed(errorInfo)
-                            } else {
+                            if (!failed) {
                                 if (Updater.requireUpdate) {
                                     val updateTips = WelcomeList.findAll { tip ->
                                         tip.condition == Conditions.CheckUpdate
@@ -247,18 +245,5 @@ object CioUI {
                 rebuild()
             }
         }
-    }
-
-    fun showUpdateFailed(error: String) {
-        Dialog().apply {
-            getCell(cont).growX()
-            cont.margin(15f).add(
-                R.Ctrl.UpdateModFailed.bundle(error)
-            ).width(400f).wrap().get().setAlignment(Align.center, Align.center)
-            buttons.button("@ok") {
-                this.hide()
-            }.size(110f, 50f).pad(4f)
-            closeOnBack()
-        }.show()
     }
 }

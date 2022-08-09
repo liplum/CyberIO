@@ -15,7 +15,7 @@ public class Meta {
     public static final String GitHubBranch = "v5";
     public static final int CurGameVersion = 137;
     public static final String DefaultLang = "en";
-    public static final Version2 DetailedVersion = new Version2(5, 0);
+    public static final Version2 DetailedVersion = new Version2(4, 0);
     public static final String Repo = "liplum/CyberIO";
     public static final String RepoFileSystem = "liplumCyberIO";
     public static final String RepoInSettingsKey = "mod-cyber-io-repo";

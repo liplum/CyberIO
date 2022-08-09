@@ -1,13 +1,10 @@
 package net.liplum.welcome
 
 import arc.Core
-import arc.util.Log
-import arc.util.Time
-import mindustry.Vars
-import net.liplum.*
+import net.liplum.CLog
+import net.liplum.Settings
+import net.liplum.Var
 import net.liplum.ui.Navigator
-import net.liplum.common.util.bundle
-import net.liplum.ui.CioUI
 import net.liplum.update.Updater
 
 object Actions {
@@ -42,32 +39,7 @@ object Actions {
     }
     val UpdateCyberIO = object : Action("UpdateCyberIO") {
         override fun doAction(entity: Welcome.Entity) {
-            if (CioMod.jarFile == null) {
-                Updater.Android.updateSelfByBuiltIn()
-            } else {
-                var progress = 0f
-                val loading = Vars.ui.loadfrag
-                loading.show("@downloading")
-                loading.setProgress { progress }
-                // Cache tips because updating successfully will replace codes and cause class not found exception.
-                val successTip = R.Ctrl.UpdateModSuccess.bundle(Updater.latestVersion)
-                Updater.Desktop.updateSelfByReplace(Updater.Desktop.curDownloadURL, onProgress = { p ->
-                    progress = p
-                }, onSuccess = {
-                    loading.hide()
-                    Time.run(10f) {
-                        Vars.ui.showInfoOnHidden(successTip) {
-                            Core.app.exit()
-                        }
-                    }
-                }, onFailed = { error ->
-                    Log.err(error)
-                    Core.app.post {
-                        loading.hide()
-                        CioUI.showUpdateFailed(error)
-                    }
-                })
-            }
+            Updater.Release.update()
         }
     }
     val CallStaticFunction = object : Action("CallStaticFunction") {
@@ -81,7 +53,7 @@ object Actions {
                     val method = clz.getMethod(funcName)
                     method.invoke(null)
                 } catch (e: Exception) {
-                    CLog.err("In action [$id]",e)
+                    CLog.err("In action [$id]", e)
                 }
             }
         }

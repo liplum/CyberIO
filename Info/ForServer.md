@@ -10,7 +10,9 @@ It locates in **./config/cyberio/config.json**.
 
 Cyber IO supports auto-update when you run it on the server version, whether you use it as *.zip* or *.jar*.
 
-For security, auto-update is disabled as default in the config. 
+For security, auto-update is disabled as default in the config.
+
+The command `cio-update` let you check and update to the latest version manually.
 
 Cyber IO will check the latest version from [update info file](../update) on this GitHub repository.
 To do so, you should keep the network be able to access GitHub and firewall open at a specific port.

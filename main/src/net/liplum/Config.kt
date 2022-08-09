@@ -9,7 +9,6 @@ import net.liplum.mdt.HeadlessOnly
 @HeadlessOnly
 class ConfigEntry private constructor() {
     var AutoUpdate: Boolean = false
-    var CheckUpdateInfoURL: String? = null
     var ContentSpecific: String = "vanilla"
 
     companion object {

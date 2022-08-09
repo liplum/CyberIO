@@ -113,11 +113,7 @@ public final class R {
 
     public static final class Ctrl {
         public static final String
-            Enable = Gen("enable"),
-            Validate = Gen("validate"),
-            UpdateModSuccess = Gen("update-mod.success"),
-            UpdateModFailed = Gen("update-mod.failed"),
-            UpdateModBreakUpdateWarning = Gen("update-mod.break-update-warning");
+            Enable = Gen("enable");
 
         @NotNull
         @Contract(pure = true)
@@ -314,8 +310,8 @@ public final class R {
         public static final String
             ResetConfig = "cio-reset-config",
             ReloadConfig = "cio-reload-config",
-            CheckUpdate = "cio-check-update",
-            ClearCyberIOConetnt = "cio-clean-map",
+            CheckUpdate = "cio-update",
+            ClearContent = "cio-clean-map",
             SwitchSpec = "cio-spec";
     }
 }

@@ -17,11 +17,8 @@ import net.liplum.event.CioLoadContentEvent
 import net.liplum.event.UnitTap
 import net.liplum.gen.Contents
 import net.liplum.gen.EventRegistry
-import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.HeadlessOnly
-import net.liplum.mdt.IsSteam
+import net.liplum.mdt.*
 import net.liplum.mdt.animation.ganim.GlobalAnimation
-import net.liplum.mdt.safeCall
 import net.liplum.registry.CioShaderLoader
 import net.liplum.registry.CioTechTree
 import net.liplum.registry.ServerCommand.registerCioCommands
@@ -75,13 +72,13 @@ class CioMod : Mod() {
         objCreated = true
         lastPlayTime = Settings.LastPlayTime
         CLog.info("v${Meta.DetailedVersion} loading started.")
-        (net.liplum.mdt.IsClient and !IsSteam) {
-            Updater.fetchLatestVersion(updateInfoFileURL = Meta.UpdateInfoURL)
+        (IsClient and !IsSteam) {
+            Updater.fetchLatestVersion()
         }
         HeadlessOnly {
             ConfigEntry.load()
             ContentSpecific = Config.ContentSpecific.resolveContentSpec()
-            Updater.fetchLatestVersion(updateInfoFileURL = Config.CheckUpdateInfoURL)
+            Updater.fetchLatestVersion()
             Updater.Headless.tryUpdateHeadless()
         }
         safeCall {

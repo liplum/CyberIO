@@ -31,11 +31,16 @@ object ServerCommand {
             R.CMD.CheckUpdate,
             "Check update of CyberIO."
         ) {
-            Updater.fetchLatestVersion(updateInfoFileURL = Config.CheckUpdateInfoURL)
-            Updater.Headless.tryUpdateHeadless(shouldUpdateOverride = true)
+            var failed = false
+            Updater.fetchLatestVersion {
+                failed = true
+                CLog.err("Can't fetch the latest version because $it.")
+            }
+            if (!failed)
+                Updater.Headless.tryUpdateHeadless(shouldUpdate = true)
         }
         register(
-            R.CMD.ClearCyberIOConetnt,
+            R.CMD.ClearContent,
             "Clear all contents from Cyber IO in current map."
         ) {
             MapCleaner.cleanCurrentMap(Meta.ModID)
