@@ -114,7 +114,7 @@ open class RuvikBullet : BulletType {
     override fun draw(b: Bullet) {
         super.draw(b)
         Draw.color(trailColor)
-        Drawf.tri(b.x, b.y, arrowWidth, arrowLength, b.vel.angle())
+        Drawf.tri(b.x, b.y, arrowWidth, arrowLength, b.rotation())
         Draw.color()
     }
 

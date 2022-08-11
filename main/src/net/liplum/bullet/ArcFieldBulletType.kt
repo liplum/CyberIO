@@ -107,7 +107,7 @@ class ArcFieldBulletType : ContinuousBulletType() {
     }
 
     companion object {
-        operator fun invoke(config: ArcFieldBulletType.() -> Unit) =
+        inline operator fun invoke(config: ArcFieldBulletType.() -> Unit) =
             ArcFieldBulletType().apply(config)
     }
 }
