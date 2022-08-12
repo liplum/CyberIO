@@ -87,18 +87,18 @@ object Updater : CoroutineScope {
                 msg != null && ("trust anchor" in msg || "SSL" in msg || "protocol" in msg)
             }
         ) {
-            Vars.ui.showErrorMessage("@feature.unsupported");
+            Vars.ui.showErrorMessage("@feature.unsupported")
         } else if (error is Http.HttpStatusException) {
             Vars.ui.showErrorMessage(
                 Core.bundle.format("connectfail", Strings.capitalize("${error.status}".lowercase()))
             )
         } else {
-            Vars.ui.showException(error);
+            Vars.ui.showException(error)
         }
     }
 
     object Preview {
-        val previewUrl get() = "https://nightly.link/liplum/CyberIO/workflows/Push/${Meta.GitHubBranch}/CyberIO-Unzip-This.zip"
+        val previewUrl get() = "https://nightly.link/liplum/CyberIO/workflows/Push/${Meta.GitHubBranch}/CyberIO.zip"
         fun update() {
             modImportProgress = 0f
             Vars.ui.loadfrag.show("@downloading")
@@ -162,11 +162,8 @@ object Updater : CoroutineScope {
                 if (shouldUpdate) {
                     CLog.info("[Auto-Update ON] Now updating...")
                     Http.get(releaseUrl("$latestVersion"), { download ->
-                        val new = Vars.tmpDirectory.child("${Meta.RepoFileSystem}.zip")
-
                         CLog.info("v$latestVersion is downloading.")
                         val bos = ByteArrayOutputStream()
-                        val length = download.contentLength
                         Streams.copy(download.resultAsStream, bos, Streams.defaultBufferSize)
                         CLog.info("v$latestVersion downloaded successfully, replacing file.")
                         if (CioMod.jarFile == null) {

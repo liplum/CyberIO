@@ -53,7 +53,7 @@ jobs:
 
       - uses: actions/download-artifact@v2
         with:
-          name: CyberIO-Unzip-This
+          name: CyberIO
           path: out
 
       - name: Retrieve meta

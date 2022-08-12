@@ -1,7 +1,7 @@
 import os
 from zipfile import ZipFile
 
-deployDir = "build/tmp/deploy"
+deployDir = "main/build/tmp/deploy"
 unzipDir = "UnzipJar"
 
 from os import listdir
