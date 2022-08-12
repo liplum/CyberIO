@@ -25,20 +25,15 @@ jobs:
           chmod +x gradlew
           ./gradlew test
 
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
-
       - name: Build Cyber-IO
         run: |
           chmod +x gradlew
           ./gradlew :main:deploy
-          python .github/workflows/scripts/unzip_jar.py
 
       - uses: actions/upload-artifact@v2
         with:
-          name: CyberIO
-          path: UnzipJar/**
+          name: CyberIO-Unzip-This
+          path: main/build/tmp/deploy/*.jar
 
   release:
     needs: build

@@ -2,6 +2,7 @@ package net.liplum.update
 
 import arc.Core
 import arc.func.Floatc
+import arc.util.ArcRuntimeException
 import arc.util.Http
 import arc.util.Strings
 import arc.util.Time
@@ -18,6 +19,7 @@ import net.liplum.Meta
 import net.liplum.common.replaceBy
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.HeadlessOnly
+import net.liplum.util.ZipUtil
 import java.io.ByteArrayOutputStream
 import java.net.URL
 import kotlin.coroutines.CoroutineContext
@@ -98,18 +100,22 @@ object Updater : CoroutineScope {
     }
 
     object Preview {
-        val previewUrl get() = "https://nightly.link/liplum/CyberIO/workflows/Push/${Meta.GitHubBranch}/CyberIO.zip"
+        val previewUrl get() = "https://nightly.link/liplum/CyberIO/workflows/Push/${Meta.GitHubBranch}/CyberIO-Unzip-This.zip"
         fun update() {
             modImportProgress = 0f
             Vars.ui.loadfrag.show("@downloading")
             Vars.ui.loadfrag.setProgress { modImportProgress }
             Http.get(previewUrl, { res ->
-                val jar = Vars.tmpDirectory.child("CyberIO-Preview.zip")
+                val zipFile = Vars.tmpDirectory.child("CyberIO-Preview-packed.zip")
                 val len = res.contentLength
                 val cons = if (len <= 0) Floatc { modImportProgress = 0.5f }
                 else Floatc { modImportProgress = it }
-                Streams.copyProgress(res.resultAsStream, jar.write(false), len, Streams.defaultBufferSize, cons)
+                Streams.copyProgress(res.resultAsStream, zipFile.write(false), len, Streams.defaultBufferSize, cons)
                 modImportProgress = 1f
+                val unpackedDir = Vars.tmpDirectory.child("CyberIO-Preview-unpacked")
+                unpackedDir.deleteDirectory()
+                ZipUtil.unzip(zipFile.file(), unpackedDir.path())
+                val jar = unpackedDir.list().first() ?: throw ArcRuntimeException("There is no jar in this preview.")
                 if (CioMod.jarFile != null) {
                     CioMod.jarFile.replaceBy(jar.file())
                 } else {
