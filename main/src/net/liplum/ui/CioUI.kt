@@ -3,10 +3,8 @@ package net.liplum.ui
 import arc.Core
 import arc.Events
 import arc.scene.style.TextureRegionDrawable
-import arc.scene.ui.Dialog
 import arc.scene.ui.TextButton
 import arc.scene.ui.layout.Table
-import arc.util.Align
 import kotlinx.coroutines.launch
 import mindustry.Vars
 import mindustry.core.GameState.State.menu
@@ -158,9 +156,9 @@ object CioUI {
                     }
                     changed {
                         var failed = false
-                        Updater.fetchLatestVersion {
+                        Updater.fetchLatestVersion { e ->
                             failed = true
-                            Updater.updateFailed(it)
+                            Updater.updateFailed(e)
                         }
                         isDisabled = true
                         Updater.launch {
