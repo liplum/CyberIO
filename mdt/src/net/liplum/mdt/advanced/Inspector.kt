@@ -78,7 +78,8 @@ object Inspector {
             (curSelected as? IFocusable)?.onFocused()
         }
     }
-    fun updateConfiguringTile(){
+
+    fun updateConfiguringTile() {
         if (Vars.state.isMenu) return
         if (curConfiguring != null) configuringTime += Time.delta
         else configuringTime = 0f
@@ -92,6 +93,7 @@ object Inspector {
             configuringTime = 0f
         }
     }
+
     fun Building.isSelected(): Boolean =
         this == curSelected
 
@@ -100,5 +102,4 @@ object Inspector {
 
     fun Building.isConfiguring(): Boolean =
         this == curConfiguring
-
 }

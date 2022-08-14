@@ -106,8 +106,9 @@ interface IComponentBlock {
         }
     }
 }
+
 class Sides(
-    val sides: Array<Side2>
+    val sides: Array<Side2>,
 ) : Iterable<Side2> {
     operator fun get(index: Int) =
         sides[index]

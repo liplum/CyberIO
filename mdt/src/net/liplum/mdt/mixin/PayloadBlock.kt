@@ -28,6 +28,7 @@ interface PayloadBlockMixin<T : Payload> {
     fun updatePayload() {
         payload?.set(self.x + payVec2.x, self.y + payVec2.y, payRotation)
     }
+
     fun blends(direction: Int): Boolean {
         return PayloadBlock.blends(self, direction)
     }

@@ -23,7 +23,7 @@ void main() {
     vec2 coords = altasXY / (u_uv2 - u_uv);// belongs to [0f,1f]
     // scanline progress
     float p = u_progress * (1.0 + u_scanline_width);
-    bool isTopDown = u_topDown != 0; // true: topDown; false: bottomUp
+    bool isTopDown = u_topDown != 0;// true: topDown; false: bottomUp
     if (isTopDown){
         p = 1.0 - p;
     }

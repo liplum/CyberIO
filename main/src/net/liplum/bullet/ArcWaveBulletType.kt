@@ -55,6 +55,7 @@ class ArcWaveBulletType : BulletType {
         super.init()
         drawSize = drawSize.coerceAtLeast(angle)
     }
+
     val tmp = Vec2()
     fun findArcCenter(b: Bullet): Vec2 = b.run {
         val o = tmp.set(this)

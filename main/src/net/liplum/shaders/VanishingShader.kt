@@ -9,14 +9,13 @@ import net.liplum.common.shader.ShaderBase
 
 class VanishingShader(
     vert: Fi,
-    frag: Fi
+    frag: Fi,
 ) : ShaderBase(vert, frag) {
     var progress = 0f
     var scanlineWidthPct = 0.1f // [0f,1f] <= 0.2 is better
     var scanlineColor = Color(S.Hologram)
     var region = TR()
     var isTopDown = true
-
     override fun apply() {
         setUniformf("u_time", Time.time)
         setUniformf("u_scanline_width", scanlineWidthPct)

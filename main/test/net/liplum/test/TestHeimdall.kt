@@ -43,7 +43,7 @@ class TestHeimdall {
         assert(b6 == a6)
     }
 
-    fun printOut(id: String, value: Int) :Int{
+    fun printOut(id: String, value: Int): Int {
         println("$id:$value")
         return value
     }

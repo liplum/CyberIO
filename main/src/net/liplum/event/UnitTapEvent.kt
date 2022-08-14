@@ -21,7 +21,7 @@ object UnitTap : InputProcessor {
         val player = Vars.player
         if (player != null) {
             val closest: MdtUnit? = Units.closest(Vars.player.team(), worldXY.x, worldXY.y) {
-                !it.dead && it.dst(worldXY.x, worldXY.y) <10f
+                !it.dead && it.dst(worldXY.x, worldXY.y) < 10f
             }
             if (closest != null) {
                 Events.fire(UnitTapEvent(Vars.player, closest))

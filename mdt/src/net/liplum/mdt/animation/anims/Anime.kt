@@ -10,13 +10,13 @@ import net.liplum.mdt.render.SetColor
 
 data class Frame(
     val image: TR,
-    val duration: Float
+    val duration: Float,
 )
 /**
  * The anime will stop after a single playing ends(the same as reversed playing).
  */
 class Anime(
-    val frames: Array<Frame>
+    val frames: Array<Frame>,
 ) : IAnimated, ITimer {
     init {
         assert(frames.isNotEmpty()) {

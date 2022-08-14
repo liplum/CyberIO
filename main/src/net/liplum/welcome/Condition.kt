@@ -21,7 +21,7 @@ object ConditionRegistry {
 }
 
 abstract class Condition(
-    val id: String
+    val id: String,
 ) {
     init {
         this.register()

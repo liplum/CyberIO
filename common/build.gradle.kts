@@ -1,4 +1,5 @@
 import io.github.liplum.mindustry.importMindustry
+
 plugins {
     kotlin("jvm")
     id("com.google.devtools.ksp") version "1.7.0-1.0.6"
@@ -22,7 +23,7 @@ kotlin.sourceSets.main {
         file("$buildDir/generated/ksp/main/kotlin"),
     )
 }
-val MKUtilsVersion :String by project
+val MKUtilsVersion: String by project
 
 dependencies {
     api(project(":annotations"))

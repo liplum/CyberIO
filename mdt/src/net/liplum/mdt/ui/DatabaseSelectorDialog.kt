@@ -69,7 +69,8 @@ open class DatabaseSelectorDialog : BaseDialog("") {
                     if (!Vars.mobile) {
                         image.addListener(HandCursorListener())
                         image.update {
-                            image.color.lerp(if (!listener.isOver) Color.lightGray else Color.white,
+                            image.color.lerp(
+                                if (!listener.isOver) Color.lightGray else Color.white,
                                 Mathf.clamp(0.4f * Time.delta)
                             )
                         }

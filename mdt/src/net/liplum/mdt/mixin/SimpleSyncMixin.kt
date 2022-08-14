@@ -28,12 +28,16 @@ interface SimpleSyncMixin : Syncc {
 
     override fun readSyncManual(buffer: FloatBuffer) {
     }
-    override fun isSyncHidden(player: Player): Boolean  =
+
+    override fun isSyncHidden(player: Player): Boolean =
         false
+
     override fun afterSync() {
     }
+
     override fun handleSyncHidden() {
     }
+
     override fun readSync(reader: Reads) {
     }
 
@@ -48,5 +52,4 @@ interface SimpleSyncMixin : Syncc {
 
     override fun writeSyncManual(buffer: FloatBuffer) {
     }
-
 }

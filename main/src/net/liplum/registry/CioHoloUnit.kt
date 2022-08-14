@@ -44,7 +44,6 @@ object CioHoloUnit {
         "CioHoloUnit.holoArchitect",
         "CioHoloUnit.holoSupporter",
     )
-
     fun holoProjector() {
         holoProjector = HoloProjector("holo-projector").apply {
             category = Category.units
@@ -160,7 +159,6 @@ object CioHoloUnit {
             buildCostMultiplier = 2f
         }
     }
-
     @DependOn("CioItem.ic")
     fun holoMiner() {
         holoMiner = NewUnitType(R.Unit.HoloMiner, ::HoloUnitType, ::HoloUnit).apply {

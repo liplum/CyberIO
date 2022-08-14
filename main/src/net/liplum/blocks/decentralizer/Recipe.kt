@@ -152,7 +152,7 @@ object RecipeCenter {
 
     inline fun doOnCrafter(
         filter: GenericCrafter.() -> Boolean,
-        func: GenericCrafter.() -> Unit
+        func: GenericCrafter.() -> Unit,
     ) {
         for (block in Vars.content.blocks()) {
             if (block is GenericCrafter)

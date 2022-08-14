@@ -46,7 +46,7 @@ inline fun DebugOnly(func: () -> Unit): Boolean {
 }
 
 enum class DebugLevel(
-    val level: Int
+    val level: Int,
 ) {
     Any(0), Inspector(1), Important(2);
     /**

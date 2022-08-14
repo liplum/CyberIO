@@ -9,7 +9,7 @@ import net.liplum.common.shader.ShaderBase
 
 class HologramizeShader(
     vert: Fi,
-    frag: Fi
+    frag: Fi,
 ) : ShaderBase(vert, frag) {
     var progress = 0f
     var scanlineWidthPct = 0.1f // [0f,1f] <= 0.2 is better

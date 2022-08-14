@@ -9,7 +9,7 @@ import java.io.DataInputStream
 
 open class Radiation(
     @JvmField
-    var range: Float = 0f
+    var range: Float = 0f,
 ) : IRWableX {
     override fun read(reader: Reads) {
         range = reader.f()
@@ -40,7 +40,7 @@ open class PosRadiation(
     @JvmField
     var x: Float = 0f,
     @JvmField
-    var y: Float = 0f
+    var y: Float = 0f,
 ) : Radiation(range) {
     override fun read(reader: Reads) {
         super.read(reader)

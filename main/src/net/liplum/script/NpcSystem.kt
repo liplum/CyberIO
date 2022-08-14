@@ -9,7 +9,7 @@ object NpcSystem {
     var curText =
         "To be, or not to be, that is the question."
     var showNpcDialog = false
-    var curNpc : MdtUnit? = null
+    var curNpc: MdtUnit? = null
     val npcDialog = NpcDialogFrag().apply {
         showDialog = { showNpcDialog }
         text = { curText }
@@ -17,17 +17,14 @@ object NpcSystem {
             Script.goNext()
         }
     }
-
     @JvmStatic
     fun showDialog() {
         showNpcDialog = true
     }
-
     @JvmStatic
-    fun closeDialog(){
+    fun closeDialog() {
         showNpcDialog = false
     }
-
     @JvmStatic
     fun register() {
         val hudGroup = Vars.ui.hudGroup

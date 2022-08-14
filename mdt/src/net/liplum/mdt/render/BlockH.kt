@@ -21,7 +21,7 @@ inline fun Block.drawSurroundingRect(
     tileY: TileXY,
     extension: TileXYf,
     color: Color,
-    crossinline filter: (Building) -> Boolean
+    crossinline filter: (Building) -> Boolean,
 ) {
     val worldX = tileX.worldXY
     val worldY = tileY.worldXY

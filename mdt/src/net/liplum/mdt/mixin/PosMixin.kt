@@ -12,7 +12,7 @@ import mindustry.world.Tile
 import mindustry.world.blocks.environment.Floor
 
 open class PosMixin(
-    val pos: Vec2 = Vec2()
+    val pos: Vec2 = Vec2(),
 ) : EntityMixin(), Posc, Position by pos {
     override fun floorOn(): Floor {
         val tile = tileOn()

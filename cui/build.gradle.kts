@@ -15,7 +15,7 @@ sourceSets {
         resources.srcDir("resources")
     }
 }
-val MKUtilsVersion :String by project
+val MKUtilsVersion: String by project
 
 dependencies {
     importMindustry()

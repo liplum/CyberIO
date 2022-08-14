@@ -7,7 +7,7 @@ fun not(condition: Condition): Condition =
     condition.not()
 
 open class Condition(
-    val condition: () -> Boolean
+    val condition: () -> Boolean,
 ) {
     val and: HashMap<BCondition, ResultCondition> = HashMap()
     val or: HashMap<BCondition, ResultCondition> = HashMap()

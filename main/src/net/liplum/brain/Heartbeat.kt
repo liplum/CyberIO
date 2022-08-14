@@ -32,14 +32,13 @@ class Heartbeat {
     // normal: 0.192f, improved: 0.175f
     @JvmField var systole = FProp()
 }
-
 internal typealias Monotone = Boolean
 
 internal const val Increase = true
 internal const val Decrease = false
 
 class FProp(
-    val isIncrease: Monotone = Increase
+    val isIncrease: Monotone = Increase,
 ) {
     @JvmField var base = 0f
     @JvmField var downRange = 0f
@@ -76,7 +75,7 @@ class FProp(
 }
 
 class IntProp(
-    val isIncrease: Monotone = Increase
+    val isIncrease: Monotone = Increase,
 ) {
     @JvmField var base = 0
     @JvmField var downRange = 0

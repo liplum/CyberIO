@@ -8,7 +8,7 @@ object SpecificLoader {
         when (Var.ContentSpecific) {
             ContentSpec.Erekir -> {
                 S.Hologram = R.C.HoloOrange
-                S.HologramDark =  R.C.HoloDarkOrange
+                S.HologramDark = R.C.HoloDarkOrange
             }
             else -> {
             }

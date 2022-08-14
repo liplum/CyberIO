@@ -148,7 +148,7 @@ open class Jammer(name: String) : ContinuousLiquidTurret(name) {
                     else -> 1f
                 }
                 Draw.alpha(fadeAlpha)
-                SonicWaveAnim.draw { wave->
+                SonicWaveAnim.draw { wave ->
                     wave.DrawSize(
                         x + start.pos.x + Tmp.v1.x,
                         y + start.pos.y + Tmp.v1.y,

@@ -18,6 +18,7 @@ import net.liplum.shaders.HologramizeShader
 import net.liplum.shaders.SurfaceShader
 import net.liplum.shaders.VanishingShader
 import net.liplum.useCompatible
+
 typealias SD = CioShader
 
 object CioShaderLoader {
@@ -118,7 +119,6 @@ Hologramize                 = default("Hologramize",                   ::Hologra
 
     private var AllShaders: HashSet<ShaderBase> = HashSet()
 }
-
 typealias ShaderCtor<T> = (FragFi, VertFi) -> T
 
 val String.compatible: String

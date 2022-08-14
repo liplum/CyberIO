@@ -21,9 +21,8 @@ open class BulletAbility : IBulletAbility {
 
 object EmptyBulletAbility : BulletAbility()
 class MultiBulletAbility(
-    vararg val abilities: IBulletAbility
+    vararg val abilities: IBulletAbility,
 ) : BulletAbility() {
-
     override var bulletType: BulletType = Bullets.placeholder
         set(value) {
             field = value
@@ -45,9 +44,11 @@ class MultiBulletAbility(
     override fun despawned(b: Bullet) {
         abilities.forEach { it.despawned(b) }
     }
+
     override fun preInit(type: BulletType) {
         abilities.forEach { it.preInit(type) }
     }
+
     override fun postInit(type: BulletType) {
         abilities.forEach { it.postInit(type) }
     }

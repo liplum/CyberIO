@@ -32,12 +32,6 @@ public final class R {
     }
 
     public static final class Bundle {
-        @NotNull
-        @Contract(pure = true)
-        public static String Gen(String content) {
-            return Meta.ModID + "." + content;
-        }
-
         public static final String Unlimited = Gen("unlimited");
         public static final String
             CostSecond = Gen("cost.second"),
@@ -52,6 +46,12 @@ public final class R {
             UnsavedChange = Gen("unsaved-change");
         public static final String
             RandomName = Gen("random-name");
+
+        @NotNull
+        @Contract(pure = true)
+        public static String Gen(String content) {
+            return Meta.ModID + "." + content;
+        }
     }
 
     public static final class Bar {
@@ -63,13 +63,13 @@ public final class R {
             return "bar." + Meta.ModID + "." + content;
         }
 
-        public static final String GenerationN = "generation",
-            Generation = Gen(GenerationN);
-
         public static final class Vanilla {
             public static final String UnitsN = "units",
                 UnitCapacity = "bar.unitcap";
-        }
+        }        public static final String GenerationN = "generation",
+            Generation = Gen(GenerationN);
+
+
 
         public static final String SlowDownN = "slow-down",
             SlowDown = Gen(SlowDownN);
@@ -218,6 +218,9 @@ public final class R {
     }
 
     public static final class Welcome {
+        public static final String WelcomeVariants = "WelcomeVariants";
+        public static final String IconPath = "IconPath";
+
         @NotNull
         @Contract(pure = true)
         public static String Gen(String name) {
@@ -229,9 +232,6 @@ public final class R {
         public static String Atlas(String name) {
             return Meta.ModID + "-welcome-" + name;
         }
-
-        public static final String WelcomeVariants = "WelcomeVariants";
-        public static final String IconPath = "IconPath";
     }
 
     public static final class Sound {

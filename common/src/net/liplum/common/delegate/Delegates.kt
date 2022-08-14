@@ -32,7 +32,6 @@ class Delegate {
         subscribers.add(handler)
     }
 }
-
 typealias DelegateHandler1<Arg1> = (Arg1) -> Unit
 
 class Delegate1<Arg1> {
@@ -65,7 +64,6 @@ class Delegate1<Arg1> {
         subscribers.add(handler)
     }
 }
-
 typealias DelegateHandler2<Arg1, Arg2> = (Arg1, Arg2) -> Unit
 
 class Delegate2<Arg1, Arg2> {
@@ -98,7 +96,6 @@ class Delegate2<Arg1, Arg2> {
         subscribers.add(handler)
     }
 }
-
 typealias DelegateHandler3<Arg1, Arg2, Arg3> = (Arg1, Arg2, Arg3) -> Unit
 
 class Delegate3<Arg1, Arg2, Arg3> {
@@ -131,7 +128,6 @@ class Delegate3<Arg1, Arg2, Arg3> {
         subscribers.add(handler)
     }
 }
-
 typealias DelegateHandler4<Arg1, Arg2, Arg3, Arg4> = (Arg1, Arg2, Arg3, Arg4) -> Unit
 
 class Delegate4<Arg1, Arg2, Arg3, Arg4> {
@@ -164,7 +160,6 @@ class Delegate4<Arg1, Arg2, Arg3, Arg4> {
         subscribers.add(handler)
     }
 }
-
 typealias DelegateHandler5<Arg1, Arg2, Arg3, Arg4, Arg5> = (Arg1, Arg2, Arg3, Arg4, Arg5) -> Unit
 
 class Delegate5<Arg1, Arg2, Arg3, Arg4, Arg5> {
@@ -197,7 +192,6 @@ class Delegate5<Arg1, Arg2, Arg3, Arg4, Arg5> {
         subscribers.add(handler)
     }
 }
-
 typealias DelegateHandler6<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6> = (Arg1, Arg2, Arg3, Arg4, Arg5, Arg6) -> Unit
 
 class Delegate6<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6> {
@@ -230,7 +224,6 @@ class Delegate6<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6> {
         subscribers.add(handler)
     }
 }
-
 typealias DelegateHandler7<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7> = (Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7) -> Unit
 
 class Delegate7<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7> {
@@ -263,7 +256,6 @@ class Delegate7<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7> {
         subscribers.add(handler)
     }
 }
-
 typealias DelegateHandler8<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8> = (Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8) -> Unit
 
 class Delegate8<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8> {
@@ -276,7 +268,7 @@ class Delegate8<Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8> {
         arg5: Arg5,
         arg6: Arg6,
         arg7: Arg7,
-        arg8: Arg8
+        arg8: Arg8,
     ) {
         for (handler in subscribers)
             handler(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8)

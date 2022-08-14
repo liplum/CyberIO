@@ -11,7 +11,7 @@ val CacheWriterWrapX = CacheWriterWrapped()
 inline fun WriteIntoCache(
     write: Writes,
     revision: Int,
-    writing: CacheWriter.() -> Unit
+    writing: CacheWriter.() -> Unit,
 ) {
     CacheWriterX.init().apply {
         writing()
@@ -20,7 +20,7 @@ inline fun WriteIntoCache(
 }
 
 inline fun CacheWriter.Wrap(
-    writing: CacheWriterWrapped.() -> Unit
+    writing: CacheWriterWrapped.() -> Unit,
 ) {
     CacheWriterWrapX.init(this).apply(writing)
 }
@@ -28,7 +28,7 @@ inline fun CacheWriter.Wrap(
 inline fun ReadFromCache(
     read: Reads,
     revision: Int,
-    reading: CacheReaderSpec.() -> Unit
+    reading: CacheReaderSpec.() -> Unit,
 ) {
     CacheReader.startRead(read, revision) {
         reading()
@@ -36,7 +36,7 @@ inline fun ReadFromCache(
 }
 
 inline fun CacheReaderSpec.Warp(
-    reading: CacheReaderWrapped.() -> Unit
+    reading: CacheReaderWrapped.() -> Unit,
 ) {
     CacheReaderWrapX.init(this).apply(reading)
 }

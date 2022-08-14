@@ -3,8 +3,8 @@ plugins {
     groovy
     java
 }
-buildscript{
-    dependencies{
+buildscript {
+    dependencies {
         classpath(kotlin("gradle-plugin", version = "1.6.21"))
     }
 }

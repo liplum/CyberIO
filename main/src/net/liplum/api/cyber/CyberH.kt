@@ -295,7 +295,6 @@ inline fun <reified T> Block.addSendingProgress() where T : Building, T : INetwo
         { sendingProgress }
     )
 }
-
 //</editor-fold>
 //<editor-fold desc="Statistics">
 fun <T> T.addLinkRangeStats(range: Float) where  T : Block {

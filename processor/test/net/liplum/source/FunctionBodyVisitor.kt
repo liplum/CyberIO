@@ -2,7 +2,8 @@ package net.liplum.source
 
 import com.tschuchort.compiletesting.SourceFile
 
-val TestFunctionBody = SourceFile.kotlin("TestFunctionBody.kt", """
+val TestFunctionBody = SourceFile.kotlin(
+    "TestFunctionBody.kt", """
 package net.liplum
 import net.liplum.annotations.CacheRW
 @CacheRW("TestFileName")

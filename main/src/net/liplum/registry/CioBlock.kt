@@ -91,7 +91,6 @@ object CioBlock {
     @JvmStatic lateinit var stealth: Stealth
     @JvmStatic lateinit var wirelessTower: WirelessTower
     @JvmStatic lateinit var zipBomb: ZipBomb
-
     @DependOn("CioItem.ic")
     fun icMachine() {
         icMachine = ICMachine("ic-machine").apply {
@@ -208,7 +207,6 @@ object CioBlock {
             craftEffect = Fx.smeltsmoke
         }
     }
-  
     @DependOn
     fun virus() {
         virus = Virus("virus").apply {
@@ -693,7 +691,6 @@ object CioBlock {
             TMTRAINER.description = RandomName.one(25)
         }
     }
- 
     @DependOn(
         "CioItem.ic",
         "CioFluid.cyberion",
@@ -877,7 +874,6 @@ object CioBlock {
             }
         }
     }
-
     @DependOn("CioFluid.cyberion")
     fun aquacyberion() {
         aquacyberion = Floor("aqua-cyberion").apply {
@@ -993,7 +989,6 @@ object CioBlock {
             size = 2
         }
     }
-
     @DependOn("CioItem.ic")
     fun zipBomb() {
         zipBomb = ZipBomb("zip-bomb").apply {

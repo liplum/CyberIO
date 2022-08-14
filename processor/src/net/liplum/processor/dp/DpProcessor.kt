@@ -83,7 +83,7 @@ class DpProcessor(
                     else -> split.subList(0, split.size - 1).joinToString(".")
                 }
             }.distinct()
-            if(counter!=functions.size){
+            if (counter != functions.size) {
                 logger.warn("There is any entry missing. Excepted: $counter != Actual: ${functions.size} ")
             }
             for (qualifier in qualifiers) {

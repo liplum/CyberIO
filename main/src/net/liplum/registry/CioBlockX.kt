@@ -12,7 +12,6 @@ import net.liplum.bullet.*
 object CioBlockX {
     @JvmStatic lateinit var DDoS: DDoS
     @JvmStatic lateinit var decentralizer: Decentralizer
-
     fun decentralizer() {
         DebugOnly {
             decentralizer = Decentralizer("decentralizer").apply {

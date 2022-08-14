@@ -177,7 +177,6 @@ class SideLinks {
                 cons(node)
         }
     }
-
     /**
      * Only iterate [PackedPos] on the non-empty sides.
      * In order of [RIGHT] to [BOTTOM]

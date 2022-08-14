@@ -14,6 +14,7 @@ class FadeAnimationSpec : AnimationSpec {
     override fun decorate(progress: Float): Float =
         Interp.fade(progress)
 }
+
 class SmoothAnimationSpec : AnimationSpec {
     override fun decorate(progress: Float): Float =
         Interp.smooth(progress)

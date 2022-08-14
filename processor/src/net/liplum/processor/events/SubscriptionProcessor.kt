@@ -168,14 +168,14 @@ class SubscriptionProcessor(
 }
 @JvmInline
 value class TriggerType(
-    val fName: String
+    val fName: String,
 ) {
     val simpleName: String
         get() = fName.simpleName()
 }
 @JvmInline
 value class EventType(
-    val fName: String
+    val fName: String,
 ) {
     val simpleName: String
         get() = fName.simpleName()
@@ -199,11 +199,11 @@ fun OnlySpec.addTail(file: OutputStream) {
 
 class TriggerSubscriber(
     val funcName: String,
-    val onlySpec: OnlySpec
+    val onlySpec: OnlySpec,
 )
 
 class EventSubscriber(
     val funcName: String,
     val onlySpec: OnlySpec,
-    val isZeroArg: Boolean
+    val isZeroArg: Boolean,
 )

@@ -14,7 +14,6 @@ fun OutputStream.line() {
 fun String.simpleName() =
     split('.').last()
 
-
 operator fun String.times(times: Int) =
     this.repeat(times)
 

@@ -142,6 +142,7 @@ inline fun PortraitModeOnly(func: () -> Unit): Boolean {
     }
     return false
 }
+
 inline fun LandscapeModeOnly(func: () -> Unit): Boolean {
     if (!Core.graphics.isPortrait) {
         func()

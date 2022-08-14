@@ -14,7 +14,7 @@ import net.liplum.mdt.utils.sheet
 class DrawConstruct(
     var stages: Int = 3,
     @StartWithHyphen
-    var suffix: String = "construct"
+    var suffix: String = "construct",
 ) : DrawBlock() {
     var stageRegions = EmptyTRs
     override fun draw(build: Building) {

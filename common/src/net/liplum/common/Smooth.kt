@@ -4,7 +4,7 @@ import arc.math.Mathf
 import arc.util.Time
 
 class Smooth(
-    var value: Float = 0f
+    var value: Float = 0f,
 ) {
     var target = { 0f }
     var speed = 1f

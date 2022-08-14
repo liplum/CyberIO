@@ -9,13 +9,13 @@ import plumy.core.math.component1
 import plumy.core.math.component2
 
 class Dragger(
-    val target: Element
+    val target: Element,
 ) : InputListener() {
     private var temp = Vec2()
     var lastX = 0f
     var lastY = 0f
     override fun touchDown(
-        event: InputEvent, x: Float, y: Float, pointer: Int, button: KeyCode
+        event: InputEvent, x: Float, y: Float, pointer: Int, button: KeyCode,
     ): Boolean {
         val (svX, svY) = target.localToStageCoordinates(temp.set(x, y))
         lastX = svX
@@ -25,7 +25,7 @@ class Dragger(
     }
 
     override fun touchDragged(
-        event: InputEvent, dx: Float, dy: Float, pointer: Int
+        event: InputEvent, dx: Float, dy: Float, pointer: Int,
     ) {
         val (svX, svY) = target.localToStageCoordinates(temp.set(dx, dy))
         target.setPosition(
@@ -35,7 +35,8 @@ class Dragger(
         lastX = svX
         lastY = svY
     }
-    companion object{
+
+    companion object {
         @JvmStatic
         fun <T : Element> T.dragToMove(): T {
             addListener(Dragger(this))

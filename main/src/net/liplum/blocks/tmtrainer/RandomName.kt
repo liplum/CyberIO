@@ -50,6 +50,6 @@ object RandomName {
 
     fun randomChar() = AllChars[Mathf.random(AllChars.size - 1)]
     fun randomCharIndex() = Mathf.random(AllChars.size - 1)
-    fun getChar(index: Int)= AllChars[index.coerceIn(0, AllChars.size - 1)]
-    fun getColor(index: Int)= AllColors[index.coerceIn(0, AllChars.size - 1)]
+    fun getChar(index: Int) = AllChars[index.coerceIn(0, AllChars.size - 1)]
+    fun getColor(index: Int) = AllColors[index.coerceIn(0, AllChars.size - 1)]
 }

@@ -4,9 +4,9 @@ import mindustry.content.Planets
 import mindustry.ctype.UnlockableContent
 
 object HeimdallVars {
-    var resourceMetas: MutableMap<UnlockableContent,ResourceMeta> = HashMap()
+    var resourceMetas: MutableMap<UnlockableContent, ResourceMeta> = HashMap()
     var planets: MutableList<Planet> = ArrayList()
-    var mapping = object :IResourceMetaMapping{
+    var mapping = object : IResourceMetaMapping {
         override fun get(context: UnlockableContent): ResourceMeta? =
             resourceMetas[context]
     }
@@ -18,6 +18,7 @@ object HeimdallVars {
             planets,
             listOf(
                 Planets.serpulo
-            ))
+            )
+        )
     }
 }

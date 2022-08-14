@@ -26,13 +26,13 @@ fun SetAlpha(alpha: Float) {
     Draw.alpha(alpha)
 }
 
-fun AddAlpha(alpha: Float){
+fun AddAlpha(alpha: Float) {
     Draw.alpha(Draw.getColor().a * alpha)
 }
 @JvmOverloads
 fun TR.DrawSize(
     x: Float, y: Float, size: Float,
-    rotation: Float = 0f
+    rotation: Float = 0f,
 ) {
     Draw.alpha(Draw.getColor().a * ALPHA)
     Draw.rect(this, x, y, this.realWidth * size, this.realHeight * size, rotation)
@@ -43,7 +43,7 @@ fun TR.DrawOn(build: Building, rotation: Float = 0f) {
 }
 @JvmOverloads
 fun TR.Draw(
-    x: Float, y: Float, rotation: Float = 0f
+    x: Float, y: Float, rotation: Float = 0f,
 ) {
     Draw.alpha(Draw.getColor().a * ALPHA)
     Draw.rect(this, x, y, rotation)
@@ -52,7 +52,7 @@ fun TR.Draw(
 fun TR.DrawAny(
     x: Float, y: Float,
     width: Float = this.realWidth, height: Float = this.realHeight,
-    rotation: Float = 0f
+    rotation: Float = 0f,
 ) {
     Draw.alpha(Draw.getColor().a * ALPHA)
     Draw.rect(this, x, y, width, height, rotation)

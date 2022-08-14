@@ -135,7 +135,6 @@ inline fun ForEachUnlockableContent(func: (UnlockableContent) -> Unit) {
         if (it is UnlockableContent) func(it)
     }
 }
-
 @JvmOverloads
 fun Tile.left(distance: TileXY = 1): Tile? {
     return Vars.world.tile(x.toInt() - distance, y.toInt())

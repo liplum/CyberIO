@@ -13,6 +13,7 @@ import net.liplum.mdt.utils.subBundle
 open class Deleter(name: String) : PowerTurret(name) {
     var executeProportion: Float = 0.2f
     @JvmField var extraLostHpBounce = 0.01f
+
     init {
         buildType = Prov { PowerTurretBuild() }
     }

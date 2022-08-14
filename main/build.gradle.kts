@@ -78,7 +78,7 @@ tasks.withType<KotlinCompile>().configureEach {
         "-Xcontext-receivers",
     )
 }
-val MKUtilsVersion :String by project
+val MKUtilsVersion: String by project
 
 dependencies {
     implementation(project(":annotations"))

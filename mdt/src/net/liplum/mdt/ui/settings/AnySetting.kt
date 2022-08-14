@@ -21,6 +21,7 @@ class AnySetting(
         if (description == null) return
         elem.addTrackTooltip(description)
     }
+
     companion object {
         fun SettingsTable.addAny(
             ctor: AnySetting.(SettingsTable) -> Unit,

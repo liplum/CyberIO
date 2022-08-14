@@ -8,10 +8,11 @@ import net.liplum.mdt.render.RESET_CONTEXT
 interface ISwitchAniStateListener<TBlock : Block, TBuild : Building> {
     fun onSwitch(block: TBlock, build: TBuild, from: AniState<TBlock, TBuild>, to: AniState<TBlock, TBuild>)
 }
+
 open class AniStateM<TBlock : Block, TBuild : Building>(
     val config: AniConfig<TBlock, TBuild>,
     val block: TBlock,
-    val build: TBuild
+    val build: TBuild,
 ) {
     var transition: TransitionEffect = config.transition
     var transitionDuration: Float = config.transitionDuration
@@ -54,7 +55,6 @@ open class AniStateM<TBlock : Block, TBuild : Building>(
     }
 
     open fun curOverwriteBlock(): Boolean = curState.isOverwriteBlock
-
     open fun update() {
         onUpdate?.invoke()
         for (to in config.getAllEntrances(curState)) {

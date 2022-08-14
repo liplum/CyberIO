@@ -41,7 +41,8 @@ class DynamicContentInfoDialog(
 
         table.table { title1: Table ->
             title1.image(content.uiIcon).size(Vars.iconXLarge).scaling(Scaling.fit)
-            title1.label { "[accent]" + content.localizedName + if (Core.settings.getBool("console")) "\n[gray]${content.name}" else "" }.padLeft(5f)
+            title1.label { "[accent]" + content.localizedName + if (Core.settings.getBool("console")) "\n[gray]${content.name}" else "" }
+                .padLeft(5f)
         }
 
         table.row()

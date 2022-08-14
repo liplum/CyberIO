@@ -94,8 +94,8 @@ class Serializer(name: String) :
             set(value) {
                 field = value.coerceIn(0f, 1f)
             }
-        override var totalSendingDistance= 0f
-        override var curSendingLength= 0f
+        override var totalSendingDistance = 0f
+        override var curSendingLength = 0f
         @ClientOnly
         override val expendSelectingLineTime = this@Serializer.expendPlacingLineTime
         override val linkRange = this@Serializer.linkRange

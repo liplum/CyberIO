@@ -8,5 +8,5 @@ annotation class CacheRW(
     /**
      * The mirror file name, empty as default which represents the mirror file's name is based on annotated file.
      */
-    val fileName: String = ""
+    val fileName: String = "",
 )

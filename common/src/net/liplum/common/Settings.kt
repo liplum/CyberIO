@@ -7,7 +7,7 @@ import kotlin.reflect.KProperty
 
 @Suppress("UNCHECKED_CAST")
 class Setting<Owner, T>(
-    val key: String, val default: T, val mapping: Setting<Owner, T>.(String) -> Unit = {}
+    val key: String, val default: T, val mapping: Setting<Owner, T>.(String) -> Unit = {},
 ) : ReadWriteProperty<Owner, T>, PropertyDelegateProvider<Owner, Setting<Owner, T>> {
     override fun provideDelegate(thisRef: Owner, property: KProperty<*>): Setting<Owner, T> {
         mapping(property.name)

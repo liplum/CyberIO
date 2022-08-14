@@ -12,11 +12,14 @@ class CommonShader(
 ) : ShaderBase(vert, frag) {
     override fun apply() {
         setUniformf("u_time", Time.time)
-        setUniformf("u_resolution",
+        setUniformf(
+            "u_resolution",
             Core.graphics.width.toFloat(),
             Core.graphics.height
-                .toFloat())
-        setUniformf("u_offset",
+                .toFloat()
+        )
+        setUniformf(
+            "u_offset",
             Core.camera.position.x,
             Core.camera.position.y
         )

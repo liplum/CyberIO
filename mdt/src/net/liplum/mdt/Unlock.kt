@@ -16,7 +16,6 @@ fun UnlockableContent.lock() {
     Events.fire(LockEvent(this))
     this.techNode?.reset()
 }
-
 @UseReflection
 fun UnlockableContent.forceUnlock() {
     Core.settings.put("$name-unlocked", true)

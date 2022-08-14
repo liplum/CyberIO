@@ -10,6 +10,7 @@ import net.liplum.common.delegate.Delegate1
 import net.liplum.mdt.CalledBySync
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.SendDataPack
+
 interface IStreamServer : IStreamHost, IStreamClient
 interface IStreamHost : ICyberEntity {
     /**

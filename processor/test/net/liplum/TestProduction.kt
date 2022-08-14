@@ -25,10 +25,12 @@ class TestProcess {
         val compilation = KotlinCompilation().apply {
             sources = sourceFiles
             inheritClassPath = true
-            kspArgs = HashMap(mapOf(
-                "PackageName" to "net.liplum",
-                "GenerateSpec" to "Contents"
-            ))
+            kspArgs = HashMap(
+                mapOf(
+                    "PackageName" to "net.liplum",
+                    "GenerateSpec" to "Contents"
+                )
+            )
             symbolProcessorProviders = listOf(DpProcessorProv())
             messageOutputStream = System.out
         }
@@ -36,9 +38,8 @@ class TestProcess {
         println(compilation.kspSourcesDir.absoluteFile)
         assert(result.exitCode == OK)
     }
-
     @Test
-    fun `test process inspect function body`(){
+    fun `test process inspect function body`() {
         val sourceFiles = listOf(TestFunctionBody)
         val compilation = KotlinCompilation().apply {
             sources = sourceFiles

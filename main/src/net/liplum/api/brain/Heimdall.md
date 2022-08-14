@@ -31,7 +31,6 @@ Clockwise
 
 ### Anti-clockwise
 
-
 |     | 0.1  | 0.0  |     |
 |-----|------|------|-----|
 | 1.0 | Self | Self | 1.1 |

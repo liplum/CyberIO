@@ -1,4 +1,5 @@
 import io.github.liplum.mindustry.*
+
 plugins {
     kotlin("jvm")
     `maven-publish`
@@ -19,7 +20,7 @@ java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
 }
-val MKUtilsVersion :String by project
+val MKUtilsVersion: String by project
 
 dependencies {
     api(project(":annotations"))

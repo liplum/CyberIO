@@ -10,6 +10,7 @@ import plumy.core.assets.TR
 
 open class LiquidImage() : Stack() {
     var fontScale = 0.85f
+
     constructor(tr: TR, amount: Float) : this() {
         add(Table { o: Table ->
             o.left()
