@@ -15,11 +15,13 @@ import net.liplum.R
 import net.liplum.common.util.bundle
 import net.liplum.common.util.percentI
 import net.liplum.math.shrink
-import plumy.world.AddBar
 import plumy.core.Serialized
 import plumy.core.math.ExpLogGen
 import plumy.core.math.FUNC
 import plumy.core.math.isZero
+import plumy.world.AddBar
+import plumy.world.config
+import plumy.world.configNull
 import kotlin.math.abs
 
 open class AdjustableOverdrive(name: String) : OverdriveProjector(name) {
@@ -37,11 +39,12 @@ open class AdjustableOverdrive(name: String) : OverdriveProjector(name) {
         saveConfig = true
         updateInUnits = true
         alwaysUpdateInUnits = true
-        config(Integer::class.java) { b: AOBuild, i ->
-            b.setGear(i.toInt())
+        // For connect
+        config<AOBuild, Int> {
+            setGear(it)
         }
-        configClear<AOBuild> {
-            it.setGear(0)
+        configNull<AOBuild> {
+            setGear(0)
         }
     }
 

@@ -30,7 +30,7 @@ import plumy.core.assets.TR
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.animation.anims.Animation
 import net.liplum.mdt.animation.anis.AniState
-import net.liplum.mdt.animation.anis.config
+import net.liplum.mdt.animation.anis.configStates
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.DrawOn
 import net.liplum.mdt.render.SetColor
@@ -257,7 +257,7 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
     }
 
     override fun genAniConfig() {
-        config {
+        configStates {
             // UnconnectedAni
             From(UnconnectedAni) To DownloadAni When {
                 outputItem != null

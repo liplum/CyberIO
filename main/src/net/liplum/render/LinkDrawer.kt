@@ -1,5 +1,6 @@
 package net.liplum.render
 
+import arc.graphics.g2d.Draw
 import arc.util.Time
 import mindustry.Vars
 import mindustry.game.EventType
@@ -52,6 +53,7 @@ object LinkDrawer {
             selected?.drawLink(true)
         }
         Var.GlobalLinkDrawerAlpha = 1f
+        Draw.reset()
     }
 
     fun Any.drawLink(showCircle: Boolean) {

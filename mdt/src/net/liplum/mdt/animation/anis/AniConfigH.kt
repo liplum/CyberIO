@@ -3,7 +3,7 @@ package net.liplum.mdt.animation.anis
 import mindustry.gen.Building
 import mindustry.world.Block
 
-inline fun <TBlock, TBuild> IAniSMed<TBlock, TBuild>.config(config: AniConfig<TBlock, TBuild>.() -> Unit)
+inline fun <TBlock, TBuild> IAniSMed<TBlock, TBuild>.configStates(config: AniConfig<TBlock, TBuild>.() -> Unit)
         : AniConfig<TBlock, TBuild>
         where TBlock : Block, TBuild : Building {
     val aniConfig = this.createAniConfig()
@@ -22,7 +22,7 @@ inline fun <TBlock, TBuild> IAniSMed<TBlock, TBuild>.config(config: AniConfig<TB
     return aniConfig
 }
 
-inline fun <TBlock, TBuild> config(config: AniConfig<TBlock, TBuild>.() -> Unit)
+inline fun <TBlock, TBuild> configStates(config: AniConfig<TBlock, TBuild>.() -> Unit)
         : AniConfig<TBlock, TBuild>
         where TBlock : Block, TBuild : Building {
     val aniConfig = AniConfig<TBlock, TBuild>()

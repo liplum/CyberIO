@@ -39,7 +39,7 @@ import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.animation.anims.Animation
 import net.liplum.mdt.animation.anims.AnimationObj
 import net.liplum.mdt.animation.anis.AniState
-import net.liplum.mdt.animation.anis.config
+import net.liplum.mdt.animation.anis.configStates
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.drawSurroundingRect
 import net.liplum.mdt.render.smoothPlacing
@@ -384,7 +384,7 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
     @ClientOnly lateinit var NoPowerAni: AniStateD
     @ClientOnly lateinit var NoDistributeAni: AniStateD
     override fun genAniConfig() {
-        config {
+        configStates {
             From(NoPowerAni) To DistributingAni When {
                 !power.status.isZero && isDistributing
             } To NoDistributeAni When {

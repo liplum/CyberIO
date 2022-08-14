@@ -9,7 +9,7 @@ import net.liplum.common.util.percentI
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.animation.anis.AniState
 import net.liplum.mdt.animation.anis.None
-import net.liplum.mdt.animation.anis.config
+import net.liplum.mdt.animation.anis.configStates
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.SetAlpha
 import plumy.world.AddBar
@@ -109,7 +109,7 @@ open class ICMachineSmall(name: String) : AniedCrafter<ICMachineSmall, ICMachine
     }
 
     override fun genAniConfig() {
-        config {
+        configStates {
             transition(None)
             From(IdleState) To WorkingState When {
                 !progress.isZero && !power.status.isZero

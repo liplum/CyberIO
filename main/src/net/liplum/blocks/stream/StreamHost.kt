@@ -26,7 +26,7 @@ import net.liplum.mdt.CalledBySync
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.SendDataPack
 import net.liplum.mdt.animation.anis.AniState
-import net.liplum.mdt.animation.anis.config
+import net.liplum.mdt.animation.anis.configStates
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.DrawOn
 import net.liplum.mdt.utils.*
@@ -34,8 +34,7 @@ import net.liplum.util.addPowerUseStats
 import plumy.core.Serialized
 import plumy.core.assets.EmptyTR
 import plumy.core.assets.TRs
-import plumy.world.buildAt
-import plumy.world.unpack
+import plumy.world.*
 
 private typealias AniStateH = AniState<StreamHost, StreamHost.HostBuild>
 
@@ -76,14 +75,12 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
         callDefaultBlockDraw = false
         canOverdrive = true
         sync = true
-        /**
-         * For connect
-         */
-        config(Integer::class.java) { obj: HostBuild, clientPackedPos ->
-            obj.setClient(clientPackedPos.toInt())
+        // For connect
+        config<HostBuild, PackedPos> {
+            setClient(it)
         }
-        configClear<HostBuild> {
-            it.clearClients()
+        configNull<HostBuild> {
+            clearClients()
         }
     }
 
@@ -132,6 +129,7 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
         super.drawPlanRegion(plan, list)
         drawPlanMaxRange(plan.x, plan.y, maxRange, R.C.Host)
     }
+
     open inner class HostBuild : AniedBuild(), IStreamHost {
         override val maxRange = this@StreamHost.maxRange
         @Serialized
@@ -351,7 +349,7 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
     }
 
     override fun genAniConfig() {
-        config {
+        configStates {
             From(NoPowerAni) To NormalAni When {
                 canConsume()
             }

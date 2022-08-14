@@ -28,7 +28,7 @@ import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.SendDataPack
 import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.animation.anis.AniState
-import net.liplum.mdt.animation.anis.config
+import net.liplum.mdt.animation.anis.configStates
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.DrawOn
 import net.liplum.mdt.render.Text
@@ -40,6 +40,8 @@ import plumy.core.assets.EmptyTR
 import plumy.core.math.nextBoolean
 import plumy.world.PackedPos
 import plumy.world.buildAt
+import plumy.world.config
+import plumy.world.configNull
 import kotlin.math.absoluteValue
 
 private typealias AniStateP = AniState<P2pNode, P2pNode.P2pBuild>
@@ -69,12 +71,12 @@ open class P2pNode(name: String) : AniedBlock<P2pNode, P2pNode.P2pBuild>(name) {
         callDefaultBlockDraw = false
         canOverdrive = false
         sync = true
-        config(java.lang.Integer::class.java) { b: P2pBuild, pos ->
-            b.connectedPos = pos.toInt()
+        config<P2pBuild, PackedPos> {
+            connectedPos = it
         }
-        configClear<P2pBuild> {
-            it.connected?.connectedPos = -1
-            it.connectedPos = -1
+        configNull<P2pBuild> {
+            connected?.connectedPos = -1
+            connectedPos = -1
         }
     }
 
@@ -356,7 +358,7 @@ open class P2pNode(name: String) : AniedBlock<P2pNode, P2pNode.P2pBuild>(name) {
     }
 
     override fun genAniConfig() {
-        config {
+        configStates {
             From(NormalAni) To NoPowerAni When {
                 !canConsume()
             }

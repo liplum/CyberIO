@@ -29,19 +29,16 @@ import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.SendDataPack
 import net.liplum.mdt.animation.anims.Animation
 import net.liplum.mdt.animation.anis.AniState
-import net.liplum.mdt.animation.anis.config
+import net.liplum.mdt.animation.anis.configStates
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.DrawOn
 import net.liplum.mdt.render.SetColor
-import plumy.world.AddBar
 import net.liplum.mdt.utils.*
 import plumy.core.Serialized
 import plumy.core.arc.Tick
 import plumy.core.assets.TR
 import plumy.core.math.isZero
-import plumy.world.PackedPos
-import plumy.world.buildAt
-import plumy.world.unpack
+import plumy.world.*
 
 private typealias AniStateS = AniState<Sender, SenderBuild>
 
@@ -74,14 +71,12 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
         schematicPriority = 20
         unloadable = false
         callDefaultBlockDraw = false
-        /**
-         * For connect
-         */
-        config(Integer::class.java) { it: SenderBuild, receiver ->
-            it.setReceiverFromRemote(receiver.toInt())
+        // For connect
+        config<SenderBuild, PackedPos> {
+            setReceiverFromRemote(it)
         }
-        configClear<SenderBuild> {
-            it.receiverPos = null
+        configNull<SenderBuild> {
+            receiverPos = null
         }
     }
 
@@ -363,7 +358,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
     }
     @ClientOnly
     override fun genAniConfig() {
-        config {
+        configStates {
             // Idle
             From(IdleAni) To UploadAni When {
                 val reb = receiver

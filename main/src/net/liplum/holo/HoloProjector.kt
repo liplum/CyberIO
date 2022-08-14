@@ -36,19 +36,19 @@ import net.liplum.UndebugOnly
 import net.liplum.common.shader.use
 import net.liplum.common.util.bundle
 import net.liplum.common.util.percentI
-import plumy.core.Serialized
 import net.liplum.mdt.*
 import net.liplum.mdt.consumer.ConsumeFluidDynamic
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.ui.addItemSelectorDefault
-import plumy.world.AddBar
 import net.liplum.mdt.ui.bars.removeItemsInBar
-import net.liplum.mdt.utils.*
+import net.liplum.mdt.utils.ItemTypeAmount
+import net.liplum.mdt.utils.MdtUnit
+import net.liplum.mdt.utils.inPayload
 import net.liplum.registry.CioFluid.cyberion
 import net.liplum.registry.SD
 import net.liplum.ui.addTable
-import plumy.world.ID
-import plumy.world.castBuild
+import plumy.core.Serialized
+import plumy.world.*
 import kotlin.math.max
 
 open class HoloProjector(name: String) : Block(name) {
@@ -78,11 +78,12 @@ open class HoloProjector(name: String) : Block(name) {
         configurable = true
         sync = true
         commandable = true
-        config(Integer::class.java) { obj: HoloProjectorBuild, plan ->
-            obj.setPlan(plan.toInt())
+
+        config<HoloProjectorBuild, PackedPos> {
+            setPlan(it)
         }
-        configClear { obj: HoloProjectorBuild ->
-            obj.setPlan(-1)
+        configNull<HoloProjectorBuild> {
+            setPlan(-1)
         }
     }
 

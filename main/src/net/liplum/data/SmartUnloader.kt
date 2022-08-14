@@ -33,19 +33,17 @@ import net.liplum.mdt.SendDataPack
 import net.liplum.mdt.animation.anims.Animation
 import net.liplum.mdt.animation.anims.AnimationObj
 import net.liplum.mdt.animation.anis.AniState
-import net.liplum.mdt.animation.anis.config
+import net.liplum.mdt.animation.anis.configStates
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.drawSurroundingRect
 import net.liplum.mdt.render.smoothPlacing
-import plumy.world.AddBar
 import net.liplum.mdt.ui.bars.removeItemsInBar
 import net.liplum.mdt.utils.*
 import net.liplum.util.addPowerUseStats
 import net.liplum.util.genText
 import plumy.core.Serialized
 import plumy.core.assets.TR
-import plumy.world.ID
-import plumy.world.buildAt
+import plumy.world.*
 import kotlin.math.absoluteValue
 import kotlin.math.log2
 
@@ -102,14 +100,12 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
         allowConfigInventory = false
         configurable = true
         acceptsItems = false
-        /**
-         * For connect
-         */
-        config(Integer::class.java) { obj: SmartUnloaderBuild, receiverPackedPos ->
-            obj.addReceiverFromRemote(receiverPackedPos.toInt())
+        // For connect
+        config<SmartUnloaderBuild, PackedPos> {
+            addReceiverFromRemote(it)
         }
-        configClear<SmartUnloaderBuild> {
-            it.clearReceivers()
+        configNull<SmartUnloaderBuild> {
+            clearReceivers()
         }
     }
 
@@ -524,7 +520,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
     @ClientOnly lateinit var NoPowerAni: AniStateU
     @ClientOnly lateinit var BlockedAni: AniStateU
     override fun genAniConfig() {
-        config {
+        configStates {
             From(NoPowerAni) To UnloadingAni When {
                 canConsume()
             }

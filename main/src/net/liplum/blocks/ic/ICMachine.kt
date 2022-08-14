@@ -8,7 +8,7 @@ import net.liplum.mdt.animation.anims.Animation
 import net.liplum.mdt.animation.anims.AnimationObj
 import net.liplum.mdt.animation.anis.AniState
 import net.liplum.mdt.render.SetAlpha
-import net.liplum.mdt.animation.anis.config
+import net.liplum.mdt.animation.anis.configStates
 import net.liplum.blocks.AniedCrafter
 import plumy.core.math.FUNC
 import net.liplum.mdt.utils.autoAnim
@@ -64,7 +64,7 @@ open class ICMachine(name: String) : AniedCrafter<ICMachine, ICMachine.ICMachine
     }
 
     override fun genAniConfig() {
-        config {
+        configStates {
             From(IdleState) To WorkingState When {
                 !progress.isZero && !power.status.isZero
             }
