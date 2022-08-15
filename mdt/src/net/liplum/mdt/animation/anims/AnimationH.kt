@@ -5,7 +5,7 @@ package net.liplum.mdt.animation.anims
 import arc.graphics.g2d.TextureRegion
 import arc.util.Time
 import mindustry.gen.Building
-import plumy.core.math.progress
+import plumy.core.math.inProgress
 
 /**
  * It plays animation evenly based on [Time.time].
@@ -14,11 +14,11 @@ import plumy.core.math.progress
 fun Animation.ixAuto(tileEntity: Building? = null) =
     if (tileEntity == null) IFrameIndexer {
         val progress = Time.time % duration / duration//percent
-        it.progress(progress)
+        it.inProgress(progress)
     } else IFrameIndexer {
         val fixedTotalDuration = duration / tileEntity.timeScale()
         val progress = Time.time % fixedTotalDuration / fixedTotalDuration//percent
-        it.progress(progress)
+        it.inProgress(progress)
     }
 @JvmOverloads
 fun Animation.ixSpeed(tileEntity: Building? = null, speedUpPct: () -> Float) =
@@ -26,11 +26,11 @@ fun Animation.ixSpeed(tileEntity: Building? = null, speedUpPct: () -> Float) =
         var fixedTotalDuration = duration / tileEntity.timeScale()
         fixedTotalDuration /= speedUpPct()
         val progress = Time.time % fixedTotalDuration / fixedTotalDuration//percent
-        it.progress(progress)
+        it.inProgress(progress)
     } else IFrameIndexer {
         val fixedTotalDuration = duration / speedUpPct()
         val progress = Time.time % fixedTotalDuration / fixedTotalDuration//percent
-        it.progress(progress)
+        it.inProgress(progress)
     }
 @JvmOverloads
 fun Animation.ixReciprocate(tileEntity: Building? = null) =
