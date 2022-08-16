@@ -1,9 +1,9 @@
-package net.liplum.mdt.animation.anis
+package net.liplum.mdt.animation.state
 
 import mindustry.gen.Building
 
-inline fun <TBuild> IAniSMed<TBuild>.configStates(config: AniConfig<TBuild>.() -> Unit)
-        : AniConfig<TBuild>
+inline fun <TBuild> IAniSMed<TBuild>.configStates(config: StateConfig<TBuild>.() -> Unit)
+        : StateConfig<TBuild>
         where TBuild : Building {
     val aniConfig = this.createAniConfig()
     aniConfig.config()
@@ -21,10 +21,10 @@ inline fun <TBuild> IAniSMed<TBuild>.configStates(config: AniConfig<TBuild>.() -
     return aniConfig
 }
 
-inline fun <TBuild> configStates(config: AniConfig<TBuild>.() -> Unit)
-        : AniConfig<TBuild>
+inline fun <TBuild> configStates(config: StateConfig<TBuild>.() -> Unit)
+        : StateConfig<TBuild>
         where TBuild : Building {
-    val aniConfig = AniConfig<TBuild>()
+    val aniConfig = StateConfig<TBuild>()
     aniConfig.config()
     if (!aniConfig.built) {
         if (aniConfig.defaultState == null) {

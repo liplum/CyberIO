@@ -25,15 +25,15 @@ import net.liplum.common.persistence.write
 import plumy.core.Serialized
 import plumy.core.assets.EmptyTR
 import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.animation.anis.AniState
-import net.liplum.mdt.animation.anis.configStates
+import net.liplum.mdt.animation.state.State
+import net.liplum.mdt.animation.state.configStates
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.DrawOn
 import net.liplum.mdt.utils.fluidColor
 import net.liplum.mdt.utils.inMod
 import net.liplum.mdt.utils.sub
 
-private typealias AniStateC = AniState<StreamClient.ClientBuild>
+private typealias AniStateC = State<StreamClient.ClientBuild>
 
 open class StreamClient(name: String) : AniedBlock<StreamClient.ClientBuild>(name) {
     @JvmField var maxConnection = -1

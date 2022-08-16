@@ -32,9 +32,9 @@ import net.liplum.common.persistence.write
 import net.liplum.common.util.DoMultipleBool
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.animation.AnimationMeta
-import net.liplum.mdt.animation.anis.AniState
-import net.liplum.mdt.animation.anis.configStates
 import net.liplum.mdt.animation.draw
+import net.liplum.mdt.animation.state.State
+import net.liplum.mdt.animation.state.configStates
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.drawSurroundingRect
 import net.liplum.mdt.render.smoothPlacing
@@ -50,7 +50,7 @@ import plumy.core.math.isZero
 import plumy.world.AddBar
 import kotlin.math.log2
 
-private typealias AniStateD = AniState< SmartDistributor.SmartDistributorBuild>
+private typealias AniStateD = State<SmartDistributor.SmartDistributorBuild>
 
 open class SmartDistributor(name: String) : AniedBlock<SmartDistributor.SmartDistributorBuild>(name) {
     @JvmField var maxConnection = -1

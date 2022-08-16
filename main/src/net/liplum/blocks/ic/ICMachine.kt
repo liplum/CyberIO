@@ -5,8 +5,8 @@ import arc.util.Time
 import net.liplum.blocks.AniedCrafter
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.animation.AnimationMeta
-import net.liplum.mdt.animation.anis.AniState
-import net.liplum.mdt.animation.anis.configStates
+import net.liplum.mdt.animation.state.State
+import net.liplum.mdt.animation.state.configStates
 import net.liplum.mdt.animation.draw
 import net.liplum.mdt.render.SetAlpha
 import net.liplum.mdt.utils.animationMeta
@@ -15,7 +15,7 @@ import plumy.core.math.FUNC
 import plumy.core.math.isZero
 import plumy.core.math.lerp
 
-private typealias AniStateM = AniState<ICMachine.ICMachineBuild>
+private typealias AniStateM = State<ICMachine.ICMachineBuild>
 
 private const val workingAnimAlphaA = 0.1f / (0.03f * 0.03f)
 

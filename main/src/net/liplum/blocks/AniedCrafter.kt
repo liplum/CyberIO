@@ -5,7 +5,7 @@ import net.liplum.CanRefresh
 import net.liplum.DebugOnly
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.WhenNotPaused
-import net.liplum.mdt.animation.anis.*
+import net.liplum.mdt.animation.state.*
 import net.liplum.util.addAniStateInfo
 import net.liplum.util.addProgressInfo
 
@@ -17,9 +17,9 @@ abstract class AniedCrafter<
 ) :
     GenericCrafter(name), IAniSMed<TBuild> {
     @ClientOnly
-    override lateinit var aniConfig: AniConfig<TBuild>
+    override lateinit var aniConfig: StateConfig<TBuild>
     @ClientOnly
-    val name2AniStates = HashMap<String, AniState<TBuild>>()
+    val name2AniStates = HashMap<String, State<TBuild>>()
     @ClientOnly
     var callDefaultBlockDraw = true
 
@@ -38,25 +38,25 @@ abstract class AniedCrafter<
         }
     }
 
-    override fun createAniConfig(): AniConfig<TBuild> {
-        aniConfig = AniConfig()
+    override fun createAniConfig(): StateConfig<TBuild> {
+        aniConfig = StateConfig()
         return aniConfig
     }
 
-    override fun getAniStateByName(name: String): AniState<TBuild>? {
+    override fun getAniStateByName(name: String): State<TBuild>? {
         return name2AniStates[name]
     }
 
-    override val allAniStates: Collection<AniState<TBuild>>
+    override val allAniStates: Collection<State<TBuild>>
         get() = name2AniStates.values
 
-    override fun addAniState(aniState: AniState<TBuild>): AniState<TBuild> {
+    override fun addAniState(aniState: State<TBuild>): State<TBuild> {
         name2AniStates[aniState.stateName] = aniState
         return aniState
     }
 
     abstract inner class AniedCrafterBuild : GenericCrafterBuild(), IAniSMedBuild<TBuild> {
-        override lateinit var aniStateM: AniStateM<TBuild>
+        override lateinit var aniStateM: StateMachine<TBuild>
 
         init {
             ClientOnly {

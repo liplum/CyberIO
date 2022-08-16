@@ -31,8 +31,8 @@ import net.liplum.mdt.CalledBySync
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.SendDataPack
 import net.liplum.mdt.animation.AnimationMeta
-import net.liplum.mdt.animation.anis.AniState
-import net.liplum.mdt.animation.anis.configStates
+import net.liplum.mdt.animation.state.State
+import net.liplum.mdt.animation.state.configStates
 import net.liplum.mdt.animation.draw
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.drawSurroundingRect
@@ -47,7 +47,7 @@ import plumy.world.*
 import kotlin.math.absoluteValue
 import kotlin.math.log2
 
-private typealias AniStateU = AniState<SmartUnloader.SmartUnloaderBuild>
+private typealias AniStateU = State<SmartUnloader.SmartUnloaderBuild>
 private typealias SmartDIS = SmartDistributor.SmartDistributorBuild
 
 open class SmartUnloader(name: String) : AniedBlock< SmartUnloader.SmartUnloaderBuild>(name) {

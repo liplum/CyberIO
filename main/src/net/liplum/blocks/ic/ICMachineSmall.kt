@@ -7,9 +7,9 @@ import net.liplum.DebugOnly
 import net.liplum.blocks.AniedCrafter
 import net.liplum.common.util.percentI
 import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.animation.anis.AniState
-import net.liplum.mdt.animation.anis.None
-import net.liplum.mdt.animation.anis.configStates
+import net.liplum.mdt.animation.state.State
+import net.liplum.mdt.animation.state.None
+import net.liplum.mdt.animation.state.configStates
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.SetAlpha
 import plumy.world.AddBar
@@ -19,7 +19,7 @@ import plumy.core.math.FUNC
 import plumy.core.math.isZero
 import kotlin.math.sqrt
 
-private typealias AniStateMS = AniState<ICMachineSmall.ICMachineSmallBuild>
+private typealias AniStateMS = State<ICMachineSmall.ICMachineSmallBuild>
 
 private val P2ALeft = (3 - sqrt(3f)) / 6
 private val P2ARight = (3 + sqrt(3f)) / 6

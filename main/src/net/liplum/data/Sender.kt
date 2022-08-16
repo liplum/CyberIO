@@ -28,8 +28,8 @@ import net.liplum.mdt.CalledBySync
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.SendDataPack
 import net.liplum.mdt.animation.SharedAnimation
-import net.liplum.mdt.animation.anis.AniState
-import net.liplum.mdt.animation.anis.configStates
+import net.liplum.mdt.animation.state.State
+import net.liplum.mdt.animation.state.configStates
 import net.liplum.mdt.animation.draw
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.DrawOn
@@ -44,7 +44,7 @@ import plumy.core.assets.TR
 import plumy.core.math.isZero
 import plumy.world.*
 
-private typealias AniStateS = AniState<SenderBuild>
+private typealias AniStateS = State<SenderBuild>
 
 open class Sender(name: String) : AniedBlock<SenderBuild>(name) {
     @ClientOnly lateinit var BaseTR: TR

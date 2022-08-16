@@ -1,7 +1,6 @@
-package net.liplum.mdt.animation.anis
+package net.liplum.mdt.animation.state
 
 import mindustry.gen.Building
-import mindustry.world.Block
 import net.liplum.mdt.ClientOnly
 
 /**
@@ -15,18 +14,18 @@ interface IAniSMed<TBuild : Building> {
     /**
      * Gets the Animation State by its name
      *
-     * @param name [AniState.stateName]
+     * @param name [State.stateName]
      * @return if the name was registered, return the animation state. Otherwise, return null.
      */
     @ClientOnly
-    fun getAniStateByName(name: String): AniState<TBuild>?
+    fun getAniStateByName(name: String): State<TBuild>?
     /**
      * Gets all Animation States.
      *
      * @return the collection of all Animation States
      */
     @ClientOnly
-    val allAniStates: Collection<AniState<TBuild>>
+    val allAniStates: Collection<State<TBuild>>
     /**
      * Overwrite this.
      * Generates the Animation State.
@@ -43,7 +42,7 @@ interface IAniSMed<TBuild : Building> {
      * the Animation State Machine Configuration of this
      */
     @ClientOnly
-    var aniConfig: AniConfig<TBuild>
+    var aniConfig: StateConfig<TBuild>
     /**
      * Adds An Animation State
      *
@@ -51,14 +50,14 @@ interface IAniSMed<TBuild : Building> {
      * @return `aniState` self
      */
     @ClientOnly
-    fun addAniState(aniState: AniState< TBuild>): AniState<TBuild>
+    fun addAniState(aniState: State< TBuild>): State<TBuild>
     /**
      * Creates a new Animation Config, and it will be returned.
      *
      * @return the Animation Config of this
      */
     @ClientOnly
-    fun createAniConfig(): AniConfig<TBuild>
+    fun createAniConfig(): StateConfig<TBuild>
     /**
      * @param name     name
      * @param renderer how to render
@@ -66,19 +65,19 @@ interface IAniSMed<TBuild : Building> {
      * For Kotlin
      */
     @ClientOnly
-    fun addAniState(name: String, renderer: TBuild.() -> Unit): AniState<TBuild> {
-        return addAniState(AniState(name, renderer))
+    fun addAniState(name: String, renderer: TBuild.() -> Unit): State<TBuild> {
+        return addAniState(State(name, renderer))
     }
     /**
      * @param name name
      * @return `aniState` self
      */
     @ClientOnly
-    fun addAniState(name: String): AniState<TBuild> {
-        return addAniState(AniState(name))
+    fun addAniState(name: String): State<TBuild> {
+        return addAniState(State(name))
     }
 }
 
 interface IAniSMedBuild< TBuild : Building> {
-    val aniStateM: AniStateM<TBuild>
+    val aniStateM: StateMachine<TBuild>
 }

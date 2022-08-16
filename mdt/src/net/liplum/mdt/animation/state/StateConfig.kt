@@ -1,4 +1,4 @@
-package net.liplum.mdt.animation.anis
+package net.liplum.mdt.animation.state
 
 import arc.util.Nullable
 import mindustry.gen.Building
@@ -12,7 +12,7 @@ typealias TransitionEffect = (Float, () -> Unit, () -> Unit) -> Unit
  * @param <TBlock> the type of block which has this animation configuration
  * @param <TBuild> the corresponding [Building] type
 </TBuild></TBlock> */
-open class AniConfig<TBuild : Building> {
+open class StateConfig<TBuild : Building> {
     /**
      * Key --to--> When can go to the next State
      */
@@ -20,8 +20,8 @@ open class AniConfig<TBuild : Building> {
     /**
      * Current State --to--> The next all possible State
      */
-    private val allEntrances = HashMap<AniState<TBuild>, MutableList<AniState<TBuild>>>()
-    var firstConfigedState: AniState<TBuild>? = null
+    private val allEntrances = HashMap<State<TBuild>, MutableList<State<TBuild>>>()
+    var firstConfigedState: State<TBuild>? = null
     /**
      * Gets the default State
      *
@@ -30,7 +30,7 @@ open class AniConfig<TBuild : Building> {
     /**
      * [NotNull,lateinit] The default and initial State.
      */
-    var defaultState: AniState<TBuild>? = null
+    var defaultState: State<TBuild>? = null
         private set
     /**
      * Whether this configuration has built
@@ -50,11 +50,11 @@ open class AniConfig<TBuild : Building> {
     /**
      * Which from State is configuring
      */
-    private var curConfiguringFromState: AniState<TBuild>? = null
+    private var curConfiguringFromState: State<TBuild>? = null
     /**
      * Which to State is configuring
      */
-    private var curConfiguringToState: AniState<TBuild>? = null
+    private var curConfiguringToState: State<TBuild>? = null
     /**
      * Sets default State
      *
@@ -62,7 +62,7 @@ open class AniConfig<TBuild : Building> {
      * @return this
      * @throws AlreadyBuiltException thrown when this configuration has already built
      */
-    open fun defaultState(state: AniState<TBuild>): AniConfig<TBuild> {
+    open fun defaultState(state: State<TBuild>): StateConfig<TBuild> {
         checkBuilt()
         defaultState = state
         return this
@@ -70,13 +70,13 @@ open class AniConfig<TBuild : Building> {
     /**
      * Sets the transition effect
      */
-    open fun transition(transitionEffect: TransitionEffect): AniConfig<TBuild> {
+    open fun transition(transitionEffect: TransitionEffect): StateConfig<TBuild> {
         checkBuilt()
         transition = transitionEffect
         return this
     }
 
-    open fun transitionDuration(duration: Float): AniConfig<TBuild> {
+    open fun transitionDuration(duration: Float): StateConfig<TBuild> {
         checkBuilt()
         transitionDuration = duration
         return this
@@ -92,7 +92,7 @@ open class AniConfig<TBuild : Building> {
         }
     }
 
-    val allConfigedStates: MutableSet<AniState<TBuild>>
+    val allConfigedStates: MutableSet<State<TBuild>>
         get() = allEntrances.keys
     /**
      * Creates an entry
@@ -105,9 +105,9 @@ open class AniConfig<TBuild : Building> {
      * @throws CannotEnterSelfException thrown when `from` equals to `to`
      */
     open fun entry(
-        from: AniState<TBuild>, to: AniState<TBuild>,
+        from: State<TBuild>, to: State<TBuild>,
         canEnter: TBuild.() -> Boolean,
-    ): AniConfig<TBuild> {
+    ): StateConfig<TBuild> {
         checkBuilt()
         if (from == to || from.stateName == to.stateName) {
             throw CannotEnterSelfException(this.toString())
@@ -125,7 +125,7 @@ open class AniConfig<TBuild : Building> {
      * @param from the current State
      * @return this
      */
-    open infix fun From(from: AniState<TBuild>): AniConfig<TBuild> {
+    open infix fun From(from: State<TBuild>): StateConfig<TBuild> {
         checkBuilt()
         if (firstConfigedState == null) {
             firstConfigedState = from
@@ -140,7 +140,7 @@ open class AniConfig<TBuild : Building> {
      * @param canEnter When the State Machine can go from current State to next State
      * @return this
      */
-    open fun To(to: AniState<TBuild>, canEnter: TBuild.() -> Boolean): AniConfig<TBuild> {
+    open fun To(to: State<TBuild>, canEnter: TBuild.() -> Boolean): StateConfig<TBuild> {
         checkBuilt()
         if (curConfiguringFromState == null) {
             throw NoFromStateException(this.toString())
@@ -161,7 +161,7 @@ open class AniConfig<TBuild : Building> {
      * @param to the next State
      * @return this
      */
-    open infix fun To(to: AniState<TBuild>): AniConfig<TBuild> {
+    open infix fun To(to: State<TBuild>): StateConfig<TBuild> {
         checkBuilt()
         curConfiguringToState = to
         return this
@@ -172,7 +172,7 @@ open class AniConfig<TBuild : Building> {
      * @param canEnter When the State Machine can go from current State to next State
      * @return this
      */
-    open infix fun When(canEnter: TBuild.() -> Boolean): AniConfig<TBuild> {
+    open infix fun When(canEnter: TBuild.() -> Boolean): StateConfig<TBuild> {
         checkBuilt()
         if (curConfiguringFromState == null) {
             throw NoFromStateException(this.toString())
@@ -198,7 +198,7 @@ open class AniConfig<TBuild : Building> {
      * @return this
      * @throws NoDefaultStateException thrown when the default State hasn't been set yet
      */
-    open fun build(): AniConfig<TBuild> {
+    open fun build(): StateConfig<TBuild> {
         if (defaultState == null) {
             throw NoDefaultStateException(this.toString())
         }
@@ -212,11 +212,11 @@ open class AniConfig<TBuild : Building> {
      * @return an Animation State Machine
      * @throws HasNotBuiltYetException thrown when this hasn't built yet
      */
-    open fun gen(build: TBuild): AniStateM<TBuild> {
+    open fun gen(build: TBuild): StateMachine<TBuild> {
         if (!built) {
             throw HasNotBuiltYetException(this.toString())
         }
-        return AniStateM(this, build)
+        return StateMachine(this, build)
     }
     /**
      * Gets the condition for entering the `to` State from `from`
@@ -226,7 +226,7 @@ open class AniConfig<TBuild : Building> {
      * @return if the key of `form`->`to` exists, return the condition. Otherwise, return null.
      */
     @Nullable
-    open fun getCanEnter(from: AniState<TBuild>, to: AniState<TBuild>): (TBuild.() -> Boolean)? {
+    open fun getCanEnter(from: State<TBuild>, to: State<TBuild>): (TBuild.() -> Boolean)? {
         return canEnters[getKey(from, to)]
     }
     /**
@@ -235,7 +235,7 @@ open class AniConfig<TBuild : Building> {
      * @param from the current State
      * @return a collection of States
      */
-    open fun getAllEntrances(from: AniState<TBuild>): Collection<AniState<TBuild>> {
+    open fun getAllEntrances(from: State<TBuild>): Collection<State<TBuild>> {
         return allEntrances.getOrPut(from) { LinkedList() }
     }
 
@@ -254,7 +254,7 @@ open class AniConfig<TBuild : Building> {
          * @return the key
          */
         @JvmStatic
-        private fun getKey(from: AniState<*>, to: AniState<*>): Any {
+        private fun getKey(from: State<*>, to: State<*>): Any {
             return from.hashCode() xor to.hashCode() * 2
         }
     }

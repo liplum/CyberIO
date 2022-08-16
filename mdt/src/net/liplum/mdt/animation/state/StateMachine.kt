@@ -1,34 +1,33 @@
-package net.liplum.mdt.animation.anis
+package net.liplum.mdt.animation.state
 
 import arc.graphics.g2d.Draw
 import mindustry.gen.Building
-import mindustry.world.Block
 import net.liplum.mdt.render.RESET_CONTEXT
 
-interface ISwitchAniStateListener<TBuild : Building> {
-    fun onSwitch(build: TBuild, from: AniState<TBuild>, to: AniState<TBuild>)
+interface ISwitchStateListener<TBuild : Building> {
+    fun onSwitch(build: TBuild, from: State<TBuild>, to: State<TBuild>)
 }
 
-open class AniStateM<TBuild : Building>(
-    val config: AniConfig<TBuild>,
+open class StateMachine<TBuild : Building>(
+    val config: StateConfig<TBuild>,
     val build: TBuild,
 ) {
     var transition: TransitionEffect = config.transition
     var transitionDuration: Float = config.transitionDuration
-    var curState: AniState<TBuild> = config.defaultState!!
-    var lastState: AniState<TBuild>? = null
-    var switchAniStateListener: ISwitchAniStateListener<TBuild>? = null
+    var curState: State<TBuild> = config.defaultState!!
+    var lastState: State<TBuild>? = null
+    var switchAniStateListener: ISwitchStateListener<TBuild>? = null
     var onUpdate: (() -> Unit)? = null
         private set
 
-    open fun onUpdate(onUpdate: () -> Unit): AniStateM<TBuild> {
+    open fun onUpdate(onUpdate: () -> Unit): StateMachine<TBuild> {
         this.onUpdate = onUpdate
         return this
     }
     /**
      * For java
      */
-    fun onUpdate(onUpdate: Runnable): AniStateM<TBuild> {
+    fun onUpdate(onUpdate: Runnable): StateMachine<TBuild> {
         onUpdate {
             onUpdate.run()
         }

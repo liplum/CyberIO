@@ -25,8 +25,8 @@ import net.liplum.common.persistence.write
 import net.liplum.mdt.CalledBySync
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.SendDataPack
-import net.liplum.mdt.animation.anis.AniState
-import net.liplum.mdt.animation.anis.configStates
+import net.liplum.mdt.animation.state.State
+import net.liplum.mdt.animation.state.configStates
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.DrawOn
 import net.liplum.mdt.utils.*
@@ -36,7 +36,7 @@ import plumy.core.assets.EmptyTR
 import plumy.core.assets.TRs
 import plumy.world.*
 
-private typealias AniStateH = AniState<StreamHost.HostBuild>
+private typealias AniStateH = State<StreamHost.HostBuild>
 
 open class StreamHost(name: String) : AniedBlock<StreamHost.HostBuild>(name) {
     @ClientOnly var liquidPadding = 0f

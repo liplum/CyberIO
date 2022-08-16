@@ -27,8 +27,8 @@ import net.liplum.common.persistence.write
 import net.liplum.data.Receiver.ReceiverBuild
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.animation.SharedAnimation
-import net.liplum.mdt.animation.anis.AniState
-import net.liplum.mdt.animation.anis.configStates
+import net.liplum.mdt.animation.state.State
+import net.liplum.mdt.animation.state.configStates
 import net.liplum.mdt.animation.draw
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.DrawOn
@@ -40,7 +40,7 @@ import net.liplum.mdt.utils.sub
 import plumy.core.Serialized
 import plumy.core.assets.TR
 
-private typealias AniStateR = AniState<ReceiverBuild>
+private typealias AniStateR = State<ReceiverBuild>
 
 open class Receiver(name: String) : AniedBlock< ReceiverBuild>(name) {
     @ClientOnly lateinit var BaseTR: TR

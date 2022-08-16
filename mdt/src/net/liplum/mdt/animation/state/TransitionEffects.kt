@@ -1,6 +1,6 @@
 @file:JvmName("TransitionEffects")
 
-package net.liplum.mdt.animation.anis
+package net.liplum.mdt.animation.state
 
 import arc.math.Interp
 import arc.math.Mathf
