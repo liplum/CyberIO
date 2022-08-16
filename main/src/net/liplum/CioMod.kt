@@ -11,6 +11,7 @@ import mindustry.mod.Mods
 import mindustry.ui.dialogs.PlanetDialog
 import net.liplum.ConfigEntry.Companion.Config
 import net.liplum.ContentSpec.Companion.resolveContentSpec
+import net.liplum.ContentSpec.Companion.tryResolveContentSpec
 import net.liplum.Var.ContentSpecific
 import net.liplum.event.CioInitEvent
 import net.liplum.event.CioLoadContentEvent
@@ -97,12 +98,13 @@ class CioMod : Mod() {
         ClientOnly {
             ContentSpecific = Settings.ContentSpecific.resolveContentSpec()
         }
-        DebugOnly {
-            safeCall {
-                val debugSpec = System.getenv("CYBERIO_SPEC")
-                if (debugSpec != null) {
-                    ContentSpecific = debugSpec.resolveContentSpec()
-                    Settings.ContentSpecific = ContentSpecific.id
+        safeCall {
+            val debugSpec = System.getenv("CYBERIO_SPEC")
+            if (debugSpec != null) {
+                val env = debugSpec.tryResolveContentSpec()
+                if (env != null) {
+                    ContentSpecific = env
+                    Settings.ContentSpecific = env.id
                 }
             }
         }

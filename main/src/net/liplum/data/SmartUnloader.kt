@@ -23,7 +23,7 @@ import net.liplum.UndebugOnly
 import net.liplum.Var
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
-import net.liplum.common.Changed
+import net.liplum.common.Remember
 import net.liplum.common.persistence.read
 import net.liplum.common.persistence.write
 import net.liplum.common.util.DoMultipleBool
@@ -210,7 +210,7 @@ open class SmartUnloader(name: String) : AniedBlock< SmartUnloader.SmartUnloader
         @ClientOnly var shrinkingAnimObj = ShrinkingAnim.instantiate()
         var justRestored = false
         @ClientOnly
-        var lastSenderColor = Changed.empty<Color>()
+        var lastSenderColor = Remember.empty<Color>()
         @ClientOnly
         var targetSenderColor = R.C.Sender
         @ClientOnly
@@ -343,7 +343,7 @@ open class SmartUnloader(name: String) : AniedBlock< SmartUnloader.SmartUnloader
                         c.lerp(color, 0.5f)
                     }
                 }
-                lastSenderColor = Changed(old = targetSenderColor)
+                lastSenderColor = Remember(old = targetSenderColor)
                 targetSenderColor = if (hasAny) c else R.C.Sender
             }
             DebugOnly {

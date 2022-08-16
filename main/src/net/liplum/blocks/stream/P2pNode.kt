@@ -21,7 +21,7 @@ import net.liplum.Var
 import net.liplum.Var.YinYangRotationSpeed
 import net.liplum.api.cyber.*
 import net.liplum.blocks.AniedBlock
-import net.liplum.common.Changed
+import net.liplum.common.Remember
 import net.liplum.common.util.DrawLayer
 import net.liplum.mdt.CalledBySync
 import net.liplum.mdt.ClientOnly
@@ -186,7 +186,7 @@ open class P2pNode(name: String) : AniedBlock<P2pNode.P2pBuild>(name) {
             }
         }
         @ClientOnly
-        var lastP2pColor = Changed.empty<Color>()
+        var lastP2pColor = Remember.empty<Color>()
         @ClientOnly
         var targetP2pColor = R.C.P2P
         override val color: Color
@@ -213,19 +213,19 @@ open class P2pNode(name: String) : AniedBlock<P2pNode.P2pBuild>(name) {
                 val other = connected
                 if (other == null) {
                     if (targetP2pColor != R.C.P2P) {
-                        lastP2pColor = Changed(old = targetP2pColor)
+                        lastP2pColor = Remember(old = targetP2pColor)
                         targetP2pColor = R.C.P2P
                     }
                 } else {
                     if (currentAmount < 0.0001f) {
                         if (targetP2pColor != R.C.P2P) {
-                            lastP2pColor = Changed(old = targetP2pColor)
+                            lastP2pColor = Remember(old = targetP2pColor)
                             targetP2pColor = R.C.P2P
                         }
                     } else {
                         val fluidColor = currentFluid.fluidColor
                         if (targetP2pColor != fluidColor) {
-                            lastP2pColor = Changed(old = targetP2pColor)
+                            lastP2pColor = Remember(old = targetP2pColor)
                             targetP2pColor = fluidColor
                         }
                     }

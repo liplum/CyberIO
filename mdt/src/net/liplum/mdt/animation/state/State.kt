@@ -1,66 +1,29 @@
 package net.liplum.mdt.animation.state
 
-import arc.util.Nullable
-import mindustry.gen.Building
-import java.util.function.Consumer
-
 /**
  * The animation state which decide how to render
- *
- * @param <TBlock> the type of block which has this animation state
- * @param <TBuild> the corresponding [Building] type
-</TBuild></TBlock> */
-class State<TBuild : Building> {
-    /**
-     * Gets the name
-     *
-     * @return name
-     */
-    val stateName: String
-    @Nullable
-    var renderer: (TBuild.() -> Unit)?
-        private set
+ */
+class State<T>(
+    val stateName: String,
+    var renderer: (T.() -> Unit)? = null,
+) {
     var isOverwriteBlock = false
         private set
-    /**
-     * @param stateName a name
-     */
-    constructor(stateName: String) {
-        this.stateName = stateName
-        renderer = null
-    }
-    /**
-     * @param stateName a name
-     * @param renderer  how to render
-     */
-    constructor(stateName: String, renderer: TBuild.() -> Unit) {
-        this.stateName = stateName
-        this.renderer = renderer
-    }
-    /**
-     * @param stateName a name
-     * @param renderer  how to render
-     * For Java
-     */
-    constructor(stateName: String, renderer: Consumer<TBuild>) {
-        this.stateName = stateName
-        this.renderer = { renderer.accept(this) }
-    }
     /**
      * Renders the current image
      *
      * @param build the subject to be rendered
      */
-    fun drawBuilding(build: TBuild) {
+    fun drawBuilding(build: T) {
         renderer?.invoke(build)
     }
 
-    fun setOverwriteBlock(overwriteBlock: Boolean): State<TBuild> {
+    fun setOverwriteBlock(overwriteBlock: Boolean): State<T> {
         isOverwriteBlock = overwriteBlock
         return this
     }
 
-    fun setRenderer(renderer: TBuild.() -> Unit): State<TBuild> {
+    fun setRenderer(renderer: T.() -> Unit): State<T> {
         this.renderer = renderer
         return this
     }

@@ -16,21 +16,19 @@ import mindustry.gen.Building
 import mindustry.graphics.Pal
 import mindustry.logic.LAccess
 import mindustry.type.Item
+import mindustry.world.Block
 import mindustry.world.meta.BlockGroup
 import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.Var
 import net.liplum.api.cyber.*
-import net.liplum.blocks.AniedBlock
-import net.liplum.common.Changed
-import net.liplum.data.Sender.SenderBuild
+import net.liplum.common.Remember
 import net.liplum.mdt.CalledBySync
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.SendDataPack
 import net.liplum.mdt.animation.SharedAnimation
-import net.liplum.mdt.animation.state.State
-import net.liplum.mdt.animation.state.configStateMachine
 import net.liplum.mdt.animation.draw
+import net.liplum.mdt.animation.state.*
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.DrawOn
 import net.liplum.mdt.render.SetColor
@@ -44,9 +42,7 @@ import plumy.core.assets.TR
 import plumy.core.math.isZero
 import plumy.world.*
 
-private typealias AniStateS = State<SenderBuild>
-
-open class Sender(name: String) : AniedBlock<SenderBuild>(name) {
+open class Sender(name: String) : Block(name) {
     @ClientOnly lateinit var BaseTR: TR
     @ClientOnly lateinit var HighlightTR: TR
     @ClientOnly lateinit var UpArrowTR: TR
@@ -63,6 +59,7 @@ open class Sender(name: String) : AniedBlock<SenderBuild>(name) {
     @JvmField var maxRange = -1f
     @ClientOnly @JvmField var maxSelectedCircleTime = Var.SelectedCircleTime
     @ClientOnly @JvmField var SendingTime = 60f
+    @ClientOnly var stateMachineConfig = StateConfig<SenderBuild>()
 
     init {
         buildType = Prov { SenderBuild() }
@@ -74,13 +71,19 @@ open class Sender(name: String) : AniedBlock<SenderBuild>(name) {
         canOverdrive = false
         schematicPriority = 20
         unloadable = false
-        callDefaultBlockDraw = false
         // For connect
         config<SenderBuild, PackedPos> {
             setReceiverFromRemote(it)
         }
         configNull<SenderBuild> {
             receiverPos = null
+        }
+    }
+
+    override fun init() {
+        super.init()
+        ClientOnly {
+            configAnimationStateMachine()
         }
     }
 
@@ -125,7 +128,8 @@ open class Sender(name: String) : AniedBlock<SenderBuild>(name) {
 
     val sharedReceiverSet = ObjectSet<Int>()
 
-    open inner class SenderBuild : AniedBuild(), IDataSender {
+    open inner class SenderBuild : Building(), IAniSMedBuild<SenderBuild>, IDataSender {
+        override val stateMachine by lazy { stateMachineConfig.instantiate(this) }
         override val maxRange = this@Sender.maxRange
         @ClientOnly var lastSendingTime: Tick = 0f
             set(value) {
@@ -192,7 +196,7 @@ open class Sender(name: String) : AniedBlock<SenderBuild>(name) {
                 lastSendingTime += Time.delta
                 val target = receiver?.receiverColor?.let { if (it == R.C.Receiver) R.C.Sender else it } ?: R.C.Sender
                 if (target != targetSenderColor) {
-                    lastSenderColor = Changed(old = targetSenderColor)
+                    lastSenderColor = Remember(old = targetSenderColor)
                     targetSenderColor = target
                 }
             }
@@ -222,7 +226,7 @@ open class Sender(name: String) : AniedBlock<SenderBuild>(name) {
             }
         }
         @ClientOnly
-        var lastSenderColor = Changed.empty<Color>()
+        var lastSenderColor = Remember.empty<Color>()
         @ClientOnly
         var targetSenderColor = R.C.Sender
         @ClientOnly
@@ -326,9 +330,10 @@ open class Sender(name: String) : AniedBlock<SenderBuild>(name) {
         }
         @ClientOnly @JvmField
         var highlightAlpha = 1f
-        override fun fixedDraw() {
+        override fun draw() {
+            stateMachine.update(delta())
             BaseTR.DrawOn(this)
-            if (aniStateM.curState == IdleAni) {
+            if (stateMachine.curState == IdleState) {
                 highlightAlpha = Mathf.approach(highlightAlpha, 1f, 0.01f)
                 Draw.alpha(highlightAlpha)
                 HighlightTR.DrawOn(this)
@@ -339,58 +344,46 @@ open class Sender(name: String) : AniedBlock<SenderBuild>(name) {
                 HighlightTR.DrawOn(this)
                 Draw.color()
             }
+            stateMachine.draw()
         }
     }
 
-    @ClientOnly lateinit var IdleAni: AniStateS
-    @ClientOnly lateinit var UploadAni: AniStateS
-    @ClientOnly lateinit var BlockedAni: AniStateS
-    @ClientOnly lateinit var NoPowerAni: AniStateS
+    @ClientOnly lateinit var IdleState: State<SenderBuild>
+    @ClientOnly lateinit var UploadState: State<SenderBuild>
+    @ClientOnly lateinit var BlockedState: State<SenderBuild>
+    @ClientOnly lateinit var NoPowerState: State<SenderBuild>
     @ClientOnly
-    override fun genAniState() {
-        IdleAni = addAniState("Idle")
-        UploadAni = addAniState("Upload") {
+    fun configAnimationStateMachine() {
+        IdleState = State("Idle")
+        UploadState = State("Upload") {
             UploadAnim.draw(Color.green, x, y)
         }
-        BlockedAni = addAniState("Blocked") {
+        BlockedState = State("Blocked") {
             SetColor(R.C.Stop)
             UpArrowTR.Draw(x, y)
         }
-        NoPowerAni = addAniState("NoPower") {
+        NoPowerState = State("NoPower") {
             NoPowerTR.Draw(x, y)
         }
-    }
-    @ClientOnly
-    override fun genAniConfig() {
-        configStateMachine {
-            // Idle
-            From(IdleAni) To UploadAni When {
-                val reb = receiver
-                reb != null
-            } To NoPowerAni When {
-                !canConsume()
+
+        stateMachineConfig.configuring {
+            IdleState.asDefaultState()
+            IdleState {
+                UploadState { receiver != null }
+                NoPowerState { !canConsume() }
             }
-            // Upload
-            From(UploadAni) To IdleAni When {
-                receiverPos == null
-            } To BlockedAni When {
-                val reb = receiver
-                reb != null && isBlocked
-            } To NoPowerAni When {
-                !canConsume()
+            UploadState {
+                IdleState { receiverPos == null }
+                BlockedState { receiver != null && isBlocked }
+                NoPowerState { !canConsume() }
             }
-            // Blocked
-            From(BlockedAni) To IdleAni When {
-                receiverPos == null
-            } To UploadAni When {
-                val reb = receiver
-                reb != null && !isBlocked
-            } To NoPowerAni When {
-                !canConsume()
+            BlockedState {
+                IdleState { receiverPos == null }
+                UploadState { receiver != null && !isBlocked }
+                NoPowerState { !canConsume() }
             }
-            // NoPower
-            From(NoPowerAni) To IdleAni When {
-                canConsume()
+            NoPowerState {
+                IdleState { canConsume() }
             }
         }
     }

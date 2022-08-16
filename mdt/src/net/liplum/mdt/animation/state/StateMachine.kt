@@ -7,30 +7,30 @@ import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.render.RESET_CONTEXT
 import plumy.core.arc.Tick
 
-interface ISwitchStateListener<TBuild : Building> {
-    fun onSwitch(build: TBuild, from: State<TBuild>, to: State<TBuild>)
+interface ISwitchStateListener<T> {
+    fun onSwitch(build: T, from: State<T>, to: State<T>)
 }
 
-open class StateMachine<TBuild : Building>(
-    val config: StateConfig<TBuild>,
-    val build: TBuild,
+open class StateMachine<T>(
+    val config: StateConfig<T>,
+    val build: T,
 ) {
     var transition: TransitionEffect = config.transition
     var transitionDuration: Float = config.transitionDuration
-    var curState: State<TBuild> = config.defaultState!!
-    var lastState: State<TBuild>? = null
-    var switchAniStateListener: ISwitchStateListener<TBuild>? = null
+    var curState: State<T> = config.defaultState!!
+    var lastState: State<T>? = null
+    var switchAniStateListener: ISwitchStateListener<T>? = null
     var onUpdate: (() -> Unit)? = null
         private set
 
-    open fun onUpdate(onUpdate: () -> Unit): StateMachine<TBuild> {
+    open fun onUpdate(onUpdate: () -> Unit): StateMachine<T> {
         this.onUpdate = onUpdate
         return this
     }
     /**
      * For java
      */
-    fun onUpdate(onUpdate: Runnable): StateMachine<TBuild> {
+    fun onUpdate(onUpdate: Runnable): StateMachine<T> {
         onUpdate {
             onUpdate.run()
         }
@@ -43,7 +43,7 @@ open class StateMachine<TBuild : Building>(
         curTime += time
     }
 
-    open fun drawBuilding() {
+    open fun draw() {
         val delta = curTime - lastSwitchTime
         val progress = (delta / transitionDuration).coerceIn(0f, 1f)
         transition(progress, {
@@ -71,7 +71,7 @@ open class StateMachine<TBuild : Building>(
     }
 }
 
-fun <T:Building> StateMachine<T>.update(delta:Tick){
+fun <T : Building> StateMachine<T>.update(delta: Tick) {
     WhenNotPaused {
         spend(delta)
     }

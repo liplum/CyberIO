@@ -3,10 +3,8 @@ package net.liplum.blocks
 import arc.util.Nullable
 import mindustry.gen.Building
 import mindustry.world.Block
-import net.liplum.CanRefresh
 import net.liplum.Meta
 import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.animation.state.*
 import net.liplum.util.addAniStateInfo
 
@@ -63,12 +61,12 @@ abstract class AniedBlock<
      * You have to make the [Building] of your subclass extend this
      */
     abstract inner class AniedBuild : Building(), IAniSMedBuild<TBuild> {
-        override lateinit var aniStateM: StateMachine<TBuild>
+        override lateinit var stateMachine: StateMachine<TBuild>
 
         init {
             ClientOnly {
                 val outer = this@AniedBlock
-                aniStateM = outer.aniConfig.instantiate(this as TBuild)
+                stateMachine = outer.aniConfig.instantiate(this as TBuild)
             }
         }
         /**
@@ -87,13 +85,13 @@ abstract class AniedBlock<
          * Don't overwrite it unless you want a custom function
          */
         override fun draw() {
-            aniStateM.update(delta())
+            stateMachine.update(delta())
             beforeDraw()
-            if (callDefaultBlockDraw && !aniStateM.curOverwriteBlock()) {
+            if (callDefaultBlockDraw && !stateMachine.curOverwriteBlock()) {
                 super.draw()
             }
             fixedDraw()
-            aniStateM.drawBuilding()
+            stateMachine.draw()
         }
     }
 }

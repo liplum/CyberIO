@@ -56,13 +56,13 @@ abstract class AniedCrafter<
     }
 
     abstract inner class AniedCrafterBuild : GenericCrafterBuild(), IAniSMedBuild<TBuild> {
-        override lateinit var aniStateM: StateMachine<TBuild>
+        override lateinit var stateMachine: StateMachine<TBuild>
 
         init {
             ClientOnly {
                 val out = this@AniedCrafter
-                aniStateM = out.aniConfig.instantiate(this as TBuild)
-                aniStateM.onUpdate { onAniStateMUpdate() }
+                stateMachine = out.aniConfig.instantiate(this as TBuild)
+                stateMachine.onUpdate { onAniStateMUpdate() }
             }
         }
         @ClientOnly
@@ -77,16 +77,16 @@ abstract class AniedCrafter<
 
         override fun draw() {
             WhenNotPaused {
-                aniStateM.spend(delta())
+                stateMachine.spend(delta())
                 beforeDraw()
             }
             if (CanRefresh()) {
-                aniStateM.updateState()
+                stateMachine.updateState()
             }
-            if (!aniStateM.curOverwriteBlock()) {
+            if (!stateMachine.curOverwriteBlock()) {
                 super.draw()
             }
-            aniStateM.drawBuilding()
+            stateMachine.draw()
         }
     }
 }

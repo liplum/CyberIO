@@ -26,16 +26,16 @@ inline fun <reified T> Block.addRangeInfo(maxRange: Float) where T : Building, T
 
 inline fun <reified T> Block.addAniStateInfo() where T : Building, T : IAniSMedBuild<*> {
     AddBar<T>("ani-state",
-        { aniStateM.curState.stateName },
+        { stateMachine.curState.stateName },
         { Pal.bar },
         { 1f }
     )
     AddBar<T>("ani-state-last",
         {
-            "Last: ${aniStateM.lastState?.stateName ?: R.Bar.Null.bundle}"
+            "Last: ${stateMachine.lastState?.stateName ?: R.Bar.Null.bundle}"
         },
         { Pal.bar },
-        { (aniStateM.lastState != null).Float }
+        { (stateMachine.lastState != null).Float }
     )
 }
 

@@ -17,7 +17,7 @@ import net.liplum.R
 import net.liplum.Var
 import net.liplum.annotations.SubscribeEvent
 import net.liplum.api.ICyberEntity
-import net.liplum.common.Changed
+import net.liplum.common.Remember
 import net.liplum.common.util.Or
 import net.liplum.common.util.bundle
 import net.liplum.common.util.toFloat
@@ -149,7 +149,7 @@ fun Liquid?.match(requirements: SingleLiquidArray?): Boolean {
     return this in requirements
 }
 
-fun transitionColor(from: Changed<Color>, to: Color): Color {
+fun transitionColor(from: Remember<Color>, to: Color): Color {
     val last = from.old
     return if (last != null) c1.set(last).lerp(
         to,

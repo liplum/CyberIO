@@ -50,7 +50,7 @@ interface IStateMachined<TBuild : Building> {
      * @return `aniState` self
      */
     @ClientOnly
-    fun addAniState(aniState: State< TBuild>): State<TBuild>
+    fun addAniState(aniState: State<TBuild>): State<TBuild>
     /**
      * Creates a new Animation Config, and it will be returned.
      *
@@ -78,6 +78,6 @@ interface IStateMachined<TBuild : Building> {
     }
 }
 
-interface IAniSMedBuild< TBuild : Building> {
-    val aniStateM: StateMachine<TBuild>
+interface IAniSMedBuild<TBuild : Building> {
+    val stateMachine: StateMachine<TBuild>
 }

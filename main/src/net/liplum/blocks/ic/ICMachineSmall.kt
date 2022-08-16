@@ -68,7 +68,7 @@ open class ICMachineSmall(name: String) : AniedCrafter<ICMachineSmall.ICMachineS
             }
         var processEffectShown = true
         override fun onAniStateMUpdate() {
-            when (aniStateM.curState) {
+            when (stateMachine.curState) {
                 WorkingState -> {
                     baffleAlpha -= 0.01f * delta()
                 }
