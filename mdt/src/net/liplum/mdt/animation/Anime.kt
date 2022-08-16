@@ -14,7 +14,7 @@ data class Frame(
  */
 class Anime(
     val frames: Array<Frame>,
-) : IFramed,ITimer {
+) : IFramed, ITimer {
     init {
         if (frames.isEmpty()) throw IllegalArgumentException("The frame is empty.")
     }

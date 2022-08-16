@@ -13,6 +13,7 @@ import net.liplum.mdt.utils.animationMeta
 import net.liplum.mdt.utils.instantiateSideOnly
 import plumy.core.math.FUNC
 import plumy.core.math.isZero
+import plumy.core.math.lerp
 
 private typealias AniStateM = AniState<ICMachine, ICMachine.ICMachineBuild>
 
@@ -39,18 +40,8 @@ open class ICMachine(name: String) : AniedCrafter<ICMachine, ICMachine.ICMachine
     open inner class ICMachineBuild : AniedCrafter<ICMachine, ICMachineBuild>.AniedCrafterBuild() {
         var workingAnimObj = WorkingAnim.instantiateSideOnly()
 
-        init {
-            ClientOnly {
-                /*workingAnimObj.tmod {
-                    it * (0.1f + Mathf.lerp(
-                        progress, progress * 8, 0.5f
-                    ))
-                }*/
-            }
-        }
-
         override fun beforeDraw() {
-            workingAnimObj.spend(Time.delta)
+            workingAnimObj.spend(Time.delta * (0.1f + progress.lerp(progress * 8, 0.5f)))
         }
     }
 

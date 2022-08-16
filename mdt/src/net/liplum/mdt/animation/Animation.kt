@@ -33,7 +33,7 @@ class Animation(
 ) : IFramed, ITimer {
     var curTime = 0f
     override fun spend(time: Float) {
-        this.curTime = time
+        this.curTime += time
     }
 
     override val curFrame: TR

@@ -1,6 +1,7 @@
 package net.liplum.mdt.animation
 
 import arc.math.Mathf
+import arc.math.geom.Vec2
 import plumy.core.math.Polar
 import plumy.core.math.nextBoolean
 
@@ -44,4 +45,18 @@ open class Floating(
         else
             pos.a += delta
     }
+}
+
+fun Vec2.add(floating: Floating): Vec2 =
+    this.add(floating.x, floating.y)
+
+fun Vec2.sub(floating: Floating): Vec2 =
+    this.sub(floating.x, floating.y)
+
+operator fun Vec2.plusAssign(floating: Floating) {
+    this.add(floating.x, floating.y)
+}
+
+operator fun Vec2.minusAssign(floating: Floating) {
+    this.sub(floating.x, floating.y)
 }

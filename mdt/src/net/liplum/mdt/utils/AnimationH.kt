@@ -6,13 +6,12 @@ import net.liplum.common.util.sheetOneDirection
 import net.liplum.mdt.animation.Animation
 import net.liplum.mdt.animation.AnimationMeta
 import net.liplum.mdt.animation.SharedAnimation
-import net.liplum.mdt.animation.anims.AutoAnimation
 
-fun MappableContent.animation(
+fun MappableContent.sharedAnimation(
     subName: String? = null,
     frame: Int,
     totalDuration: Float,
-) = AutoAnimation(totalDuration, *this.anim(subName, true, frame))
+) = SharedAnimation(this.anim(subName, true, frame), totalDuration)
 
 fun MappableContent.animationMeta(
     subName: String? = null,
