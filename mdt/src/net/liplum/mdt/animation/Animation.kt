@@ -1,5 +1,6 @@
 package net.liplum.mdt.animation
 
+import mindustry.Vars
 import net.liplum.common.ITimer
 import net.liplum.common.util.progress
 import net.liplum.mdt.animation.AnimationBehaviors.linerLoopByTime
@@ -15,7 +16,12 @@ class AnimationMeta(
     val duration: Tick,
     val behavior: AnimationBehavior = linerLoopByTime,
 ) {
-    fun instantiate() = Animation(
+    /**
+     * Instantiate an [Animation] with the metadata.
+     * When this runs on [Vars.headless] side, it will return [Animation.Empty]
+     */
+    fun instantiate() = if (Vars.headless) Animation.Empty
+    else Animation(
         allFrames = allFrames,
         duration = duration,
         behavior = behavior
@@ -54,10 +60,14 @@ private typealias SAB = SharedAnimationBehaviors
 val behaviorMapping = mutableMapOf(
     SAB.linerLoopByTime to linerLoopByTime
 )
-
+/**
+ * Instantiate an [Animation] with the [SharedAnimation] as a metadata.
+ * When this runs on [Vars.headless] side, it will return [Animation.Empty]
+ */
 fun SharedAnimation.instantiate(
     behavior: AnimationBehavior = behaviorMapping[this.behavior] ?: linerLoopByTime,
-) = Animation(
+) = if (Vars.headless) Animation.Empty
+else Animation(
     allFrames = allFrames,
     duration = duration,
     behavior = behavior,

@@ -32,7 +32,7 @@ import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.SendDataPack
 import net.liplum.mdt.animation.AnimationMeta
 import net.liplum.mdt.animation.state.State
-import net.liplum.mdt.animation.state.configStates
+import net.liplum.mdt.animation.state.configStateMachine
 import net.liplum.mdt.animation.draw
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.drawSurroundingRect
@@ -207,7 +207,7 @@ open class SmartUnloader(name: String) : AniedBlock< SmartUnloader.SmartUnloader
             get() = lastSendingTime < SendingTime
         @ClientOnly val isUnloading: Boolean
             get() = lastUnloadTime < UnloadTime
-        @ClientOnly var shrinkingAnimObj = ShrinkingAnim.instantiateSideOnly()
+        @ClientOnly var shrinkingAnimObj = ShrinkingAnim.instantiate()
         var justRestored = false
         @ClientOnly
         var lastSenderColor = Changed.empty<Color>()
@@ -514,7 +514,7 @@ open class SmartUnloader(name: String) : AniedBlock< SmartUnloader.SmartUnloader
     @ClientOnly lateinit var NoPowerAni: AniStateU
     @ClientOnly lateinit var BlockedAni: AniStateU
     override fun genAniConfig() {
-        configStates {
+        configStateMachine {
             From(NoPowerAni) To UnloadingAni When {
                 canConsume()
             }

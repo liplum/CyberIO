@@ -5,12 +5,11 @@ import arc.util.Time
 import net.liplum.blocks.AniedCrafter
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.animation.AnimationMeta
-import net.liplum.mdt.animation.state.State
-import net.liplum.mdt.animation.state.configStates
 import net.liplum.mdt.animation.draw
+import net.liplum.mdt.animation.state.State
+import net.liplum.mdt.animation.state.configStateMachine
 import net.liplum.mdt.render.SetAlpha
 import net.liplum.mdt.utils.animationMeta
-import net.liplum.mdt.utils.instantiateSideOnly
 import plumy.core.math.FUNC
 import plumy.core.math.isZero
 import plumy.core.math.lerp
@@ -19,7 +18,7 @@ private typealias AniStateM = State<ICMachine.ICMachineBuild>
 
 private const val workingAnimAlphaA = 0.1f / (0.03f * 0.03f)
 
-open class ICMachine(name: String) : AniedCrafter< ICMachine.ICMachineBuild>(name) {
+open class ICMachine(name: String) : AniedCrafter<ICMachine.ICMachineBuild>(name) {
     @ClientOnly lateinit var IdleState: AniStateM
     @ClientOnly lateinit var WorkingState: AniStateM
     @ClientOnly var WorkingAnim = AnimationMeta.Empty
@@ -38,8 +37,7 @@ open class ICMachine(name: String) : AniedCrafter< ICMachine.ICMachineBuild>(nam
     }
 
     open inner class ICMachineBuild : AniedCrafterBuild() {
-        var workingAnimObj = WorkingAnim.instantiateSideOnly()
-
+        var workingAnimObj = WorkingAnim.instantiate()
         override fun beforeDraw() {
             workingAnimObj.spend(Time.delta * (0.1f + progress.lerp(progress * 8, 0.5f)))
         }
@@ -54,7 +52,7 @@ open class ICMachine(name: String) : AniedCrafter< ICMachine.ICMachineBuild>(nam
     }
 
     override fun genAniConfig() {
-        configStates {
+        configStateMachine {
             From(IdleState) To WorkingState When {
                 !progress.isZero && !power.status.isZero
             }

@@ -28,7 +28,7 @@ import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.SendDataPack
 import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.animation.state.State
-import net.liplum.mdt.animation.state.configStates
+import net.liplum.mdt.animation.state.configStateMachine
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.DrawOn
 import net.liplum.mdt.render.Text
@@ -358,7 +358,7 @@ open class P2pNode(name: String) : AniedBlock<P2pNode.P2pBuild>(name) {
     }
 
     override fun genAniConfig() {
-        configStates {
+        configStateMachine {
             From(NormalAni) To NoPowerAni When {
                 !canConsume()
             }

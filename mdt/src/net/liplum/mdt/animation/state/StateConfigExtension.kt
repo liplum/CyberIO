@@ -2,7 +2,7 @@ package net.liplum.mdt.animation.state
 
 import mindustry.gen.Building
 
-inline fun <TBuild> IAniSMed<TBuild>.configStates(config: StateConfig<TBuild>.() -> Unit)
+inline fun <TBuild> IStateMachined<TBuild>.configStateMachine(config: StateConfig<TBuild>.() -> Unit)
         : StateConfig<TBuild>
         where TBuild : Building {
     val aniConfig = this.createAniConfig()
@@ -21,7 +21,7 @@ inline fun <TBuild> IAniSMed<TBuild>.configStates(config: StateConfig<TBuild>.()
     return aniConfig
 }
 
-inline fun <TBuild> configStates(config: StateConfig<TBuild>.() -> Unit)
+inline fun <TBuild> configStateMachine(config: StateConfig<TBuild>.() -> Unit)
         : StateConfig<TBuild>
         where TBuild : Building {
     val aniConfig = StateConfig<TBuild>()

@@ -21,7 +21,7 @@ abstract class AniedBlock<
         TBuild : AniedBlock<TBuild>.AniedBuild,
         >(
     name: String,
-) : Block(name), IAniSMed<TBuild> {
+) : Block(name), IStateMachined<TBuild> {
     @ClientOnly
     protected val name2AniStates = HashMap<String, State<TBuild>>()
     @ClientOnly
@@ -68,7 +68,7 @@ abstract class AniedBlock<
         init {
             ClientOnly {
                 val outer = this@AniedBlock
-                aniStateM = outer.aniConfig.gen(this as TBuild)
+                aniStateM = outer.aniConfig.instantiate(this as TBuild)
             }
         }
         /**
@@ -87,13 +87,8 @@ abstract class AniedBlock<
          * Don't overwrite it unless you want a custom function
          */
         override fun draw() {
-            WhenNotPaused {
-                aniStateM.spend(delta())
-                beforeDraw()
-            }
-            if (CanRefresh()) {
-                aniStateM.update()
-            }
+            aniStateM.update(delta())
+            beforeDraw()
             if (callDefaultBlockDraw && !aniStateM.curOverwriteBlock()) {
                 super.draw()
             }

@@ -22,7 +22,6 @@ import net.liplum.mdt.render.G
 import net.liplum.mdt.render.drawSurroundingRect
 import net.liplum.mdt.render.smoothPlacing
 import net.liplum.mdt.utils.animationMeta
-import net.liplum.mdt.utils.instantiateSideOnly
 import net.liplum.mdt.utils.isDiagonalTo
 import net.liplum.mdt.utils.subBundle
 import plumy.world.AddBar
@@ -90,7 +89,7 @@ open class PrismObelisk(name: String) : Block(name) {
          */
         @JvmField var prismOrient = 0
         @ClientOnly val BlinkObjs = if (Vars.headless) emptyArray()
-        else Array(4) { BlinkAnim.instantiateSideOnly() }
+        else Array(4) { BlinkAnim.instantiate() }
 
         init {
             /*ClientOnly {

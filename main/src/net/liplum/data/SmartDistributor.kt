@@ -34,7 +34,7 @@ import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.animation.AnimationMeta
 import net.liplum.mdt.animation.draw
 import net.liplum.mdt.animation.state.State
-import net.liplum.mdt.animation.state.configStates
+import net.liplum.mdt.animation.state.configStateMachine
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.drawSurroundingRect
 import net.liplum.mdt.render.smoothPlacing
@@ -113,6 +113,7 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor.SmartDis
         super.load()
         NoPowerTR = this.inMod("rs-no-power")
         ArrowsAnim = this.animationMeta("arrows", ArrowsAnimFrames, ArrowsAnimDuration)
+        NoPowerTR.texture.textureData
     }
 
     override fun setStats() {
@@ -161,7 +162,7 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor.SmartDis
             set(value) {
                 field = value.coerceAtLeast(0f)
             }
-        @ClientOnly val arrowsAnimObj = ArrowsAnim.instantiateSideOnly()
+        @ClientOnly val arrowsAnimObj = ArrowsAnim.instantiate()
         @ClientOnly open val isDistributing: Boolean
             get() = lastDistributionTime < DistributionTime
         var hasDynamicRequirements: Boolean = false
@@ -375,7 +376,7 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor.SmartDis
     @ClientOnly lateinit var NoPowerAni: AniStateD
     @ClientOnly lateinit var NoDistributeAni: AniStateD
     override fun genAniConfig() {
-        configStates {
+        configStateMachine {
             From(NoPowerAni) To DistributingAni When {
                 !power.status.isZero && isDistributing
             } To NoDistributeAni When {

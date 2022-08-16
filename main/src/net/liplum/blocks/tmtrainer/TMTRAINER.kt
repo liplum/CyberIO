@@ -23,7 +23,6 @@ import net.liplum.mdt.mixin.drawRotation
 import net.liplum.mdt.mixin.drawX
 import net.liplum.mdt.mixin.drawY
 import net.liplum.mdt.utils.animationMeta
-import net.liplum.mdt.utils.instantiateSideOnly
 
 open class TMTRAINER(name: String) : ItemTurret(name) {
     @ClientOnly var CoreAnim = AnimationMeta.Empty
@@ -44,8 +43,8 @@ open class TMTRAINER(name: String) : ItemTurret(name) {
     }
 
     open inner class TMTRAINERBUILD : ItemTurretBuild() {
-        @ClientOnly val coreAnimObj = CoreAnim.instantiateSideOnly()
-        @ClientOnly val emptyCoreAnimObj = EmptyCoreAnim.instantiateSideOnly()
+        @ClientOnly val coreAnimObj = CoreAnim.instantiate()
+        @ClientOnly val emptyCoreAnimObj = EmptyCoreAnim.instantiate()
         open var virusCharge = 0f
             set(value) {
                 field = value.coerceIn(0f, 60f)
@@ -162,18 +161,10 @@ open class TMTRAINER(name: String) : ItemTurret(name) {
 
     class DrawCore : DrawBlock() {
         override fun draw(build: Building) = (build as TMTRAINERBUILD).run {
-            emptyCoreAnimObj.draw(
-                drawX,
-                drawY,
-                drawRotation
-            )
+            emptyCoreAnimObj.draw(drawX, drawY, drawRotation)
             if (unit.ammo() > 0) {
                 Draw.alpha(unit.ammof())
-                coreAnimObj.draw(
-                    drawX,
-                    drawY,
-                    drawRotation
-                )
+                coreAnimObj.draw(drawX, drawY, drawRotation)
                 Draw.color()
             }
         }

@@ -10,7 +10,7 @@ import net.liplum.mdt.ClientOnly
  * @param <TBuild> its corresponding building type
  */
 @ClientOnly
-interface IAniSMed<TBuild : Building> {
+interface IStateMachined<TBuild : Building> {
     /**
      * Gets the Animation State by its name
      *

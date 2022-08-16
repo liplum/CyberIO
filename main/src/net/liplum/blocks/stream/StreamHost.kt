@@ -26,7 +26,7 @@ import net.liplum.mdt.CalledBySync
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.SendDataPack
 import net.liplum.mdt.animation.state.State
-import net.liplum.mdt.animation.state.configStates
+import net.liplum.mdt.animation.state.configStateMachine
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.DrawOn
 import net.liplum.mdt.utils.*
@@ -349,7 +349,7 @@ open class StreamHost(name: String) : AniedBlock<StreamHost.HostBuild>(name) {
     }
 
     override fun genAniConfig() {
-        configStates {
+        configStateMachine {
             From(NoPowerAni) To NormalAni When {
                 canConsume()
             }

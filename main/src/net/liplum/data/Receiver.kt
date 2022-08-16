@@ -28,7 +28,7 @@ import net.liplum.data.Receiver.ReceiverBuild
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.animation.SharedAnimation
 import net.liplum.mdt.animation.state.State
-import net.liplum.mdt.animation.state.configStates
+import net.liplum.mdt.animation.state.configStateMachine
 import net.liplum.mdt.animation.draw
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.DrawOn
@@ -258,7 +258,7 @@ open class Receiver(name: String) : AniedBlock< ReceiverBuild>(name) {
     }
 
     override fun genAniConfig() {
-        configStates {
+        configStateMachine {
             // UnconnectedAni
             From(UnconnectedAni) To DownloadAni When {
                 outputItem != null

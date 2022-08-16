@@ -26,7 +26,7 @@ import plumy.core.Serialized
 import plumy.core.assets.EmptyTR
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.animation.state.State
-import net.liplum.mdt.animation.state.configStates
+import net.liplum.mdt.animation.state.configStateMachine
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.DrawOn
 import net.liplum.mdt.utils.fluidColor
@@ -206,7 +206,7 @@ open class StreamClient(name: String) : AniedBlock<StreamClient.ClientBuild>(nam
     }
 
     override fun genAniConfig() {
-        configStates {
+        configStateMachine {
             From(NormalAni) To NoPowerAni When {
                 !canConsume()
             }

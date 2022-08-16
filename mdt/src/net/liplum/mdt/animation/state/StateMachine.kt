@@ -2,7 +2,10 @@ package net.liplum.mdt.animation.state
 
 import arc.graphics.g2d.Draw
 import mindustry.gen.Building
+import net.liplum.CanRefresh
+import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.render.RESET_CONTEXT
+import plumy.core.arc.Tick
 
 interface ISwitchStateListener<TBuild : Building> {
     fun onSwitch(build: TBuild, from: State<TBuild>, to: State<TBuild>)
@@ -53,7 +56,7 @@ open class StateMachine<TBuild : Building>(
     }
 
     open fun curOverwriteBlock(): Boolean = curState.isOverwriteBlock
-    open fun update() {
+    open fun updateState() {
         onUpdate?.invoke()
         for (to in config.getAllEntrances(curState)) {
             val canEnter = config.getCanEnter(curState, to)
@@ -65,5 +68,14 @@ open class StateMachine<TBuild : Building>(
                 return
             }
         }
+    }
+}
+
+fun <T:Building> StateMachine<T>.update(delta:Tick){
+    WhenNotPaused {
+        spend(delta)
+    }
+    if (CanRefresh()) {
+        updateState()
     }
 }

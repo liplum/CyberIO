@@ -60,7 +60,7 @@ open class StateConfig<TBuild : Building> {
      *
      * @param state the default State
      * @return this
-     * @throws AlreadyBuiltException thrown when this configuration has already built
+     * @throws IllegalStateException thrown when this configuration has already built
      */
     open fun defaultState(state: State<TBuild>): StateConfig<TBuild> {
         checkBuilt()
@@ -83,12 +83,11 @@ open class StateConfig<TBuild : Building> {
     }
     /**
      * Check whether this Animation Config has been built.
-     * Raising [AlreadyBuiltException] when built
-     * @throws AlreadyBuiltException thrown when this configuration has already built
+     * @throws IllegalStateException thrown when this configuration has already built
      */
     private fun checkBuilt() {
         if (built) {
-            throw AlreadyBuiltException(this.toString())
+            throw IllegalStateException("$this has already built.")
         }
     }
 
@@ -101,7 +100,7 @@ open class StateConfig<TBuild : Building> {
      * @param to       the next State
      * @param canEnter When the State Machine can go from current State to next State
      * @return this
-     * @throws AlreadyBuiltException    thrown when this configuration has already built
+     * @throws IllegalStateException    thrown when this configuration has already built
      * @throws CannotEnterSelfException thrown when `from` equals to `to`
      */
     open fun entry(
@@ -206,15 +205,15 @@ open class StateConfig<TBuild : Building> {
         return this
     }
     /**
-     * Generates the Animation State Machine object
+     * Instantiate the [StateMachine]
      *
      * @param build which has the State Machine
      * @return an Animation State Machine
-     * @throws HasNotBuiltYetException thrown when this hasn't built yet
+     * @throws IllegalStateException thrown when this hasn't built yet
      */
-    open fun gen(build: TBuild): StateMachine<TBuild> {
+    open fun instantiate(build: TBuild): StateMachine<TBuild> {
         if (!built) {
-            throw HasNotBuiltYetException(this.toString())
+            throw IllegalStateException("$this has not built.")
         }
         return StateMachine(this, build)
     }
@@ -240,8 +239,6 @@ open class StateConfig<TBuild : Building> {
     }
 
     class NoDefaultStateException(message: String) : RuntimeException(message)
-    class AlreadyBuiltException(message: String) : RuntimeException(message)
-    class HasNotBuiltYetException(message: String) : RuntimeException(message)
     class CannotEnterSelfException(message: String) : RuntimeException(message)
     class NoFromStateException(message: String) : RuntimeException(message)
     class NoToStateException(message: String) : RuntimeException(message)
