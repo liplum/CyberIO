@@ -25,9 +25,6 @@ import net.liplum.Var
 import net.liplum.common.entity.Radiation
 import net.liplum.common.math.PolarX
 import net.liplum.common.util.DrawLayer
-import plumy.core.Serialized
-import plumy.core.assets.TR
-import plumy.core.math.*
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.WhenTheSameTeam
@@ -36,7 +33,9 @@ import net.liplum.mdt.render.*
 import net.liplum.mdt.utils.sub
 import net.liplum.registry.CioStats
 import net.liplum.util.addPowerUseStats
+import plumy.core.Serialized
 import plumy.core.assets.EmptyTR
+import plumy.core.math.*
 import kotlin.math.min
 
 private typealias PowerUse = Float
@@ -93,11 +92,11 @@ open class WirelessTower(name: String) : PowerBlock(name) {
     override fun icons() = arrayOf(BaseTR, SupportTR, CoilTR)
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)
-        val range = range * smoothPlacing(maxSelectedCircleTime)
+        val range = range * smoothPlacing(maxSelectedCircleTime + range * Var.MaxRangeCircleTimeFactor)
         drawEffectCirclePlace(x, y, R.C.Power, range, {
             val consPower = block.consPower
             block.hasPower && consPower != null && consPower.buffered
-        }, stroke = range2Stroke(range)) {
+        }, stroke = range2Stroke(this.range)) {
             G.wrappedSquareBreath(this)
         }
     }
@@ -138,7 +137,7 @@ open class WirelessTower(name: String) : PowerBlock(name) {
         }
 
         override fun drawSelect() {
-            val range = realRange * smoothSelect(maxSelectedCircleTime)
+            val range = realRange * smoothSelect(maxSelectedCircleTime + realRange * Var.MaxRangeCircleTimeFactor)
             G.dashCircleBreath(
                 x, y, range,
                 R.C.Power, stroke = range2Stroke(this.realRange)

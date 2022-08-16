@@ -25,11 +25,8 @@ import net.liplum.common.delegate.Delegate1
 import net.liplum.common.persistence.read
 import net.liplum.common.persistence.write
 import net.liplum.data.Receiver.ReceiverBuild
-import plumy.core.Serialized
-import plumy.core.assets.TR
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.animation.SharedAnimation
-import net.liplum.mdt.animation.anims.Animation
 import net.liplum.mdt.animation.anis.AniState
 import net.liplum.mdt.animation.anis.configStates
 import net.liplum.mdt.animation.draw
@@ -37,9 +34,11 @@ import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.DrawOn
 import net.liplum.mdt.render.SetColor
 import net.liplum.mdt.ui.bars.removeItemsInBar
-import net.liplum.mdt.utils.sharedAnimationInMod
 import net.liplum.mdt.utils.inMod
+import net.liplum.mdt.utils.sharedAnimationInMod
 import net.liplum.mdt.utils.sub
+import plumy.core.Serialized
+import plumy.core.assets.TR
 
 private typealias AniStateR = AniState<Receiver, ReceiverBuild>
 
