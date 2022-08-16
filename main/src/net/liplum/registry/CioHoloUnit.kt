@@ -134,7 +134,7 @@ object CioHoloUnit {
                         items = arrayOf(CioItem.ic + 1),
                         cyberion = 1.0f / 60f
                     ),
-                    7.5f * 60f
+                    10f * 60f
                 )
                 plans += HoloPlan(
                     holoArchitect,
@@ -148,7 +148,7 @@ object CioHoloUnit {
                     holoSupporter,
                     Requirement(
                         items = arrayOf(CioItem.ic + 3),
-                        cyberion = 6f / 60f
+                        cyberion = 5f / 60f
                     ),
                     18f * 60f
                 )

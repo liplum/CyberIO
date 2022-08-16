@@ -455,7 +455,7 @@ open class HoloProjector(name: String) : Block(name) {
                         }.left()
                         addTable {
                             right()
-                            add(autoFixed(plan.req.cyberion * 60f, 1))
+                            add(autoFixed(plan.req.cyberion * plan.time, 1))
                                 .color(cyberion.color).padLeft(12f).left()
                             image(cyberion.uiIcon).size((8 * 3).toFloat())
                                 .padRight(2f).right()
