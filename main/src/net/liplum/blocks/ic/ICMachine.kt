@@ -1,17 +1,17 @@
 package net.liplum.blocks.ic
 
 import arc.func.Prov
-import arc.math.Mathf
 import arc.util.Time
-import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.animation.anims.Animation
-import net.liplum.mdt.animation.anims.AnimationObj
-import net.liplum.mdt.animation.anis.AniState
-import net.liplum.mdt.render.SetAlpha
-import net.liplum.mdt.animation.anis.configStates
 import net.liplum.blocks.AniedCrafter
+import net.liplum.mdt.ClientOnly
+import net.liplum.mdt.animation.AnimationMeta
+import net.liplum.mdt.animation.anis.AniState
+import net.liplum.mdt.animation.anis.configStates
+import net.liplum.mdt.animation.draw
+import net.liplum.mdt.render.SetAlpha
+import net.liplum.mdt.utils.animationMeta
+import net.liplum.mdt.utils.instantiateSideOnly
 import plumy.core.math.FUNC
-import net.liplum.mdt.utils.autoAnim
 import plumy.core.math.isZero
 
 private typealias AniStateM = AniState<ICMachine, ICMachine.ICMachineBuild>
@@ -21,7 +21,7 @@ private const val workingAnimAlphaA = 0.1f / (0.03f * 0.03f)
 open class ICMachine(name: String) : AniedCrafter<ICMachine, ICMachine.ICMachineBuild>(name) {
     @ClientOnly lateinit var IdleState: AniStateM
     @ClientOnly lateinit var WorkingState: AniStateM
-    @ClientOnly lateinit var WorkingAnim: Animation
+    @ClientOnly var WorkingAnim = AnimationMeta.Empty
     @ClientOnly @JvmField var WorkingAnimFrameNumber = 4
     @ClientOnly @JvmField var WorkingAnimDuration = 120f
     var workingAnimAlpha: FUNC = { workingAnimAlphaA * it * it }
@@ -33,20 +33,19 @@ open class ICMachine(name: String) : AniedCrafter<ICMachine, ICMachine.ICMachine
 
     override fun load() {
         super.load()
-        WorkingAnim = this.autoAnim("indicator-light", WorkingAnimFrameNumber, WorkingAnimDuration)
+        WorkingAnim = this.animationMeta("indicator-light", WorkingAnimFrameNumber, WorkingAnimDuration)
     }
 
     open inner class ICMachineBuild : AniedCrafter<ICMachine, ICMachineBuild>.AniedCrafterBuild() {
-        lateinit var workingAnimObj: AnimationObj
+        var workingAnimObj = WorkingAnim.instantiateSideOnly()
 
         init {
             ClientOnly {
-                workingAnimObj = WorkingAnim.gen()
-                workingAnimObj.tmod {
+                /*workingAnimObj.tmod {
                     it * (0.1f + Mathf.lerp(
                         progress, progress * 8, 0.5f
                     ))
-                }
+                }*/
             }
         }
 

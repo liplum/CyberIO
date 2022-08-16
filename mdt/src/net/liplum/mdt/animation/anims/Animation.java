@@ -117,7 +117,7 @@ public class Animation implements IAnimated {
         TextureRegion curTR = getCurTR();
         if (curTR != null) {
             DrawT.Draw(curTR, x, y, rotation);
-            DrawT.Reset();
+            DrawT.ResetDraw();
         }
     }
 
@@ -127,7 +127,7 @@ public class Animation implements IAnimated {
         if (curTR != null) {
             DrawT.SetColor(color);
             DrawT.Draw(curTR, x, y, rotation);
-            DrawT.Reset();
+            DrawT.ResetDraw();
         }
     }
 
@@ -136,7 +136,7 @@ public class Animation implements IAnimated {
         TextureRegion curTR = getCurTR();
         if (curTR != null) {
             howToRender.render(curTR);
-            DrawT.Reset();
+            DrawT.ResetDraw();
         }
     }
 
@@ -145,7 +145,7 @@ public class Animation implements IAnimated {
         TextureRegion curTR = getCurTR(indexer);
         if (curTR != null) {
             howToRender.render(curTR);
-            DrawT.Reset();
+            DrawT.ResetDraw();
         }
     }
 
@@ -153,7 +153,7 @@ public class Animation implements IAnimated {
         TextureRegion curTR = getCurTRByObj(obj);
         if (curTR != null) {
             DrawT.Draw(curTR, x, y, rotation);
-            DrawT.Reset();
+            DrawT.ResetDraw();
         }
     }
 
@@ -162,7 +162,7 @@ public class Animation implements IAnimated {
         if (curTR != null) {
             DrawT.SetColor(color);
             DrawT.Draw(curTR, x, y, rotation);
-            DrawT.Reset();
+            DrawT.ResetDraw();
         }
     }
 
@@ -171,7 +171,7 @@ public class Animation implements IAnimated {
             TextureRegion curTR = getCurTRByObj(obj);
             if (curTR != null) {
                 howToRender.render(curTR);
-                DrawT.Reset();
+                DrawT.ResetDraw();
             }
         }
     }

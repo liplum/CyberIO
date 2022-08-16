@@ -21,7 +21,7 @@ import net.liplum.mdt.animation.Floating
 import net.liplum.mdt.animation.anims.Animation
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.DrawSize
-import net.liplum.mdt.utils.autoAnim
+import net.liplum.mdt.utils.animation
 import net.liplum.mdt.utils.draw
 import net.liplum.mdt.utils.sub
 import plumy.core.assets.EmptyTR
@@ -106,7 +106,7 @@ open class Jammer(name: String) : ContinuousLiquidTurret(name) {
         override fun load(block: Block) = block.run {
             super.load(this)
             StereoTR = this.sub("stereo")
-            SonicWaveAnim = this.autoAnim("sonic-wave", 6, 30f)
+            SonicWaveAnim = this.animation("sonic-wave", 6, 30f)
         }
 
         override fun draw(build: Building) = (build as JammerBuild).run {

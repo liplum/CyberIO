@@ -27,13 +27,17 @@ import net.liplum.data.Sender.SenderBuild
 import net.liplum.mdt.CalledBySync
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.SendDataPack
-import net.liplum.mdt.animation.anims.Animation
+import net.liplum.mdt.animation.SharedAnimation
 import net.liplum.mdt.animation.anis.AniState
 import net.liplum.mdt.animation.anis.configStates
+import net.liplum.mdt.animation.draw
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.DrawOn
 import net.liplum.mdt.render.SetColor
-import net.liplum.mdt.utils.*
+import net.liplum.mdt.utils.inMod
+import net.liplum.mdt.utils.sharedAnimationInMod
+import net.liplum.mdt.utils.sub
+import net.liplum.mdt.utils.tileEquals
 import plumy.core.Serialized
 import plumy.core.arc.Tick
 import plumy.core.assets.TR
@@ -49,7 +53,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
     @ClientOnly lateinit var CrossTR: TR
     @ClientOnly lateinit var NoPowerTR: TR
     @ClientOnly lateinit var UnconnectedTR: TR
-    @ClientOnly lateinit var UploadAnim: Animation
+    @ClientOnly var UploadAnim = SharedAnimation.Empty
     @JvmField var UploadAnimFrameNumber = 7
     @JvmField var UploadAnimDuration = 30f
     @JvmField val TransferTimer = timers++
@@ -88,7 +92,7 @@ open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
         CrossTR = this.inMod("rs-cross")
         UnconnectedTR = this.inMod("rs-unconnected")
         NoPowerTR = this.inMod("rs-no-power")
-        UploadAnim = this.autoAnimInMod("rs-up-arrow", UploadAnimFrameNumber, UploadAnimDuration)
+        UploadAnim = this.sharedAnimationInMod("rs-up-arrow", UploadAnimFrameNumber, UploadAnimDuration)
     }
 
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {

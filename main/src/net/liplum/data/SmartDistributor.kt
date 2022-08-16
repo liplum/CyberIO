@@ -30,27 +30,24 @@ import net.liplum.common.delegate.Delegate1
 import net.liplum.common.persistence.read
 import net.liplum.common.persistence.write
 import net.liplum.common.util.DoMultipleBool
+import net.liplum.mdt.ClientOnly
+import net.liplum.mdt.animation.AnimationMeta
+import net.liplum.mdt.animation.anis.AniState
+import net.liplum.mdt.animation.anis.configStates
+import net.liplum.mdt.animation.draw
+import net.liplum.mdt.render.Draw
+import net.liplum.mdt.render.drawSurroundingRect
+import net.liplum.mdt.render.smoothPlacing
+import net.liplum.mdt.ui.bars.removeItemsInBar
+import net.liplum.mdt.utils.*
+import net.liplum.util.addPowerUseStats
+import net.liplum.util.genText
 import plumy.core.Serialized
 import plumy.core.arc.equalsNoOrder
 import plumy.core.arc.set
 import plumy.core.assets.TR
 import plumy.core.math.isZero
-import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.animation.anims.Animation
-import net.liplum.mdt.animation.anims.AnimationObj
-import net.liplum.mdt.animation.anis.AniState
-import net.liplum.mdt.animation.anis.configStates
-import net.liplum.mdt.render.Draw
-import net.liplum.mdt.render.drawSurroundingRect
-import net.liplum.mdt.render.smoothPlacing
 import plumy.world.AddBar
-import net.liplum.mdt.ui.bars.removeItemsInBar
-import net.liplum.mdt.utils.autoAnim
-import net.liplum.mdt.utils.inMod
-import net.liplum.mdt.utils.isDiagonalTo
-import net.liplum.mdt.utils.subBundle
-import net.liplum.util.addPowerUseStats
-import net.liplum.util.genText
 import kotlin.math.log2
 
 private typealias AniStateD = AniState<SmartDistributor, SmartDistributor.SmartDistributorBuild>
@@ -58,7 +55,7 @@ private typealias AniStateD = AniState<SmartDistributor, SmartDistributor.SmartD
 open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDistributor.SmartDistributorBuild>(name) {
     @JvmField var maxConnection = -1
     @ClientOnly lateinit var NoPowerTR: TR
-    @ClientOnly lateinit var ArrowsAnim: Animation
+    @ClientOnly var ArrowsAnim = AnimationMeta.Empty
     @JvmField @ClientOnly var ArrowsAnimFrames = 9
     @JvmField @ClientOnly var ArrowsAnimDuration = 70f
     @JvmField @ClientOnly var DistributionTime = 60f
@@ -115,7 +112,7 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
     override fun load() {
         super.load()
         NoPowerTR = this.inMod("rs-no-power")
-        ArrowsAnim = this.autoAnim("arrows", ArrowsAnimFrames, ArrowsAnimDuration)
+        ArrowsAnim = this.animationMeta("arrows", ArrowsAnimFrames, ArrowsAnimDuration)
     }
 
     override fun setStats() {
@@ -164,7 +161,7 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
             set(value) {
                 field = value.coerceAtLeast(0f)
             }
-        @ClientOnly lateinit var arrowsAnimObj: AnimationObj
+        @ClientOnly val arrowsAnimObj = ArrowsAnim.instantiateSideOnly()
         @ClientOnly open val isDistributing: Boolean
             get() = lastDistributionTime < DistributionTime
         var hasDynamicRequirements: Boolean = false
@@ -177,12 +174,6 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
                     field = value
                 }
             }
-
-        init {
-            ClientOnly {
-                arrowsAnimObj = ArrowsAnim.gen()
-            }
-        }
 
         override fun onRemoved() {
             onRequirementUpdated.clear()

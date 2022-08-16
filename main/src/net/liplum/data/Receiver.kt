@@ -28,14 +28,16 @@ import net.liplum.data.Receiver.ReceiverBuild
 import plumy.core.Serialized
 import plumy.core.assets.TR
 import net.liplum.mdt.ClientOnly
+import net.liplum.mdt.animation.SharedAnimation
 import net.liplum.mdt.animation.anims.Animation
 import net.liplum.mdt.animation.anis.AniState
 import net.liplum.mdt.animation.anis.configStates
+import net.liplum.mdt.animation.draw
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.DrawOn
 import net.liplum.mdt.render.SetColor
 import net.liplum.mdt.ui.bars.removeItemsInBar
-import net.liplum.mdt.utils.autoAnimInMod
+import net.liplum.mdt.utils.sharedAnimationInMod
 import net.liplum.mdt.utils.inMod
 import net.liplum.mdt.utils.sub
 
@@ -47,7 +49,7 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
     @ClientOnly lateinit var DownArrowTR: TR
     @ClientOnly lateinit var UnconnectedTR: TR
     @ClientOnly lateinit var NoPowerTR: TR
-    @ClientOnly lateinit var DownloadAnim: Animation
+    @ClientOnly var DownloadAnim = SharedAnimation.Empty
     @JvmField var maxConnection = -1
     @JvmField var DownloadAnimFrameNumber = 7
     @JvmField var DownloadAnimDuration = 30f
@@ -90,7 +92,7 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
         DownArrowTR = this.inMod("rs-down-arrow")
         UnconnectedTR = this.inMod("rs-unconnected")
         NoPowerTR = this.inMod("rs-no-power")
-        DownloadAnim = this.autoAnimInMod("rs-down-arrow", DownloadAnimFrameNumber, DownloadAnimDuration)
+        DownloadAnim = this.sharedAnimationInMod("rs-down-arrow", DownloadAnimFrameNumber, DownloadAnimDuration)
     }
 
     override fun setBars() {

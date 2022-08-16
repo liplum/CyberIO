@@ -5,9 +5,9 @@ package net.liplum.mdt.render
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
 import mindustry.gen.Building
-import plumy.core.assets.TR
 import net.liplum.mdt.render.G.realHeight
 import net.liplum.mdt.render.G.realWidth
+import plumy.core.assets.TR
 
 var ALPHA: Float = 1f
     set(value) {
@@ -62,6 +62,6 @@ fun ResetColor() {
     Draw.color()
 }
 
-fun Reset() {
+fun ResetDraw() {
     Draw.reset()
 }

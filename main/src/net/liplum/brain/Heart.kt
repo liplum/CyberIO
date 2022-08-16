@@ -45,10 +45,7 @@ import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.Else
 import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.WhenTheSameTeam
-import net.liplum.mdt.animation.anims.Anime
-import net.liplum.mdt.animation.anims.linearFrames
-import net.liplum.mdt.animation.anims.randomCurTime
-import net.liplum.mdt.animation.anims.setEnd
+import net.liplum.mdt.animation.*
 import net.liplum.mdt.mixin.Mover
 import net.liplum.mdt.render.*
 import plumy.world.AddBar

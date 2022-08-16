@@ -27,9 +27,10 @@ import net.liplum.common.math.PolarX
 import net.liplum.common.util.progress
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.WhenNotPaused
-import net.liplum.mdt.animation.anims.Anime
-import net.liplum.mdt.animation.anims.genFramesBy
-import net.liplum.mdt.animation.anims.randomCurTime
+import net.liplum.mdt.animation.Anime
+import net.liplum.mdt.animation.draw
+import net.liplum.mdt.animation.genFramesBy
+import net.liplum.mdt.animation.randomCurTime
 import net.liplum.mdt.render.*
 import net.liplum.mdt.ui.ammoStats
 import net.liplum.mdt.utils.draw

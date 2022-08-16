@@ -30,10 +30,10 @@ import net.liplum.common.util.DoMultipleBool
 import net.liplum.mdt.CalledBySync
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.SendDataPack
-import net.liplum.mdt.animation.anims.Animation
-import net.liplum.mdt.animation.anims.AnimationObj
+import net.liplum.mdt.animation.AnimationMeta
 import net.liplum.mdt.animation.anis.AniState
 import net.liplum.mdt.animation.anis.configStates
+import net.liplum.mdt.animation.draw
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.drawSurroundingRect
 import net.liplum.mdt.render.smoothPlacing
@@ -56,7 +56,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
      */
     @JvmField var unloadSpeed = 1f
     @JvmField var maxConnection = 5
-    @ClientOnly lateinit var ShrinkingAnim: Animation
+    @ClientOnly var ShrinkingAnim = AnimationMeta.Empty
     @ClientOnly lateinit var CoverTR: TR
     @ClientOnly lateinit var NoPowerTR: TR
     @JvmField var powerUsePerItem = 2.5f
@@ -125,7 +125,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
     override fun load() {
         super.load()
         NoPowerTR = this.inMod("rs-no-power")
-        ShrinkingAnim = this.autoAnim("shrink", ShrinkingAnimFrames, ShrinkingAnimDuration)
+        ShrinkingAnim = this.animationMeta("shrink", ShrinkingAnimFrames, ShrinkingAnimDuration)
         CoverTR = this.sub("cover")
     }
 
@@ -207,7 +207,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
             get() = lastSendingTime < SendingTime
         @ClientOnly val isUnloading: Boolean
             get() = lastUnloadTime < UnloadTime
-        @ClientOnly lateinit var shrinkingAnimObj: AnimationObj
+        @ClientOnly var shrinkingAnimObj = ShrinkingAnim.instantiateSideOnly()
         var justRestored = false
         @ClientOnly
         var lastSenderColor = Changed.empty<Color>()
@@ -216,12 +216,6 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
         @ClientOnly
         override val senderColor: Color
             get() = transitionColor(lastSenderColor, targetSenderColor)
-
-        init {
-            ClientOnly {
-                shrinkingAnimObj = ShrinkingAnim.gen()
-            }
-        }
 
         open fun updateUnloaded() {
             nearby.clear()

@@ -15,7 +15,6 @@ import mindustry.type.Category
 import mindustry.world.blocks.defense.turrets.ItemTurret
 import mindustry.world.draw.DrawBlock
 import mindustry.world.meta.StatUnit
-import plumy.core.assets.TR
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.animation.anims.Animation
@@ -24,8 +23,7 @@ import net.liplum.mdt.animation.anims.ITimeModifier
 import net.liplum.mdt.mixin.drawRotation
 import net.liplum.mdt.mixin.drawX
 import net.liplum.mdt.mixin.drawY
-import net.liplum.mdt.utils.autoAnim
-import plumy.core.assets.EmptyTR
+import net.liplum.mdt.utils.animation
 
 open class TMTRAINER(name: String) : ItemTurret(name) {
     @ClientOnly lateinit var CoreAnim: Animation
@@ -41,8 +39,8 @@ open class TMTRAINER(name: String) : ItemTurret(name) {
 
     override fun load() {
         super.load()
-        CoreAnim = autoAnim("core", CoreAnimFrames, 60f)
-        EmptyCoreAnim = autoAnim("core-empty", CoreAnimFrames, 60f)
+        CoreAnim = animation("core", CoreAnimFrames, 60f)
+        EmptyCoreAnim = animation("core-empty", CoreAnimFrames, 60f)
     }
 
     open inner class TMTRAINERBUILD : ItemTurretBuild() {

@@ -1,12 +1,9 @@
-package net.liplum.mdt.animation.anims
+package net.liplum.mdt.animation
 
-import arc.graphics.Color
 import arc.math.Mathf
 import net.liplum.common.ITimer
 import plumy.core.assets.TR
-import net.liplum.mdt.render.Draw
-import net.liplum.mdt.render.Reset
-import net.liplum.mdt.render.SetColor
+import plumy.core.math.FUNC
 
 data class Frame(
     val image: TR,
@@ -17,11 +14,9 @@ data class Frame(
  */
 class Anime(
     val frames: Array<Frame>,
-) : IAnimated, ITimer {
+) : IFramed,ITimer {
     init {
-        assert(frames.isNotEmpty()) {
-            "The frame is empty."
-        }
+        if (frames.isEmpty()) throw IllegalArgumentException("The frame is empty.")
     }
 
     operator fun get(index: Int): TR =
@@ -35,7 +30,7 @@ class Anime(
     var isForward = { true }
     val curDuration: Float
         get() = frames[index].duration
-    val curImage: TR
+    override val curFrame: TR
         get() = frames[index].image
     var onEnd = {}
     var isEnd: Boolean = false
@@ -80,31 +75,6 @@ class Anime(
                 }
             }
         }
-    }
-
-    override fun draw(x: Float, y: Float, rotation: Float) {
-        curImage.Draw(x, y, rotation)
-    }
-
-    override fun draw(color: Color, x: Float, y: Float, rotation: Float) {
-        SetColor(color)
-        curImage.Draw(x, y, rotation)
-        Reset()
-    }
-
-    inline fun draw(draw: (TR) -> Unit) {
-        draw(curImage)
-    }
-
-    override fun draw(howToRender: IHowToRender) {
-        howToRender.render(curImage)
-        Reset()
-    }
-
-    override fun draw(indexer: IFrameIndexer, howToRender: IHowToRender) {
-        val curIndex = indexer.getCurIndex(frames.size)
-        val curImage = frames[curIndex.coerceIn(0, frames.size - 1)].image
-        howToRender.render(curImage)
     }
 }
 
@@ -153,7 +123,7 @@ fun Array<TR>.linearFrames(duration: Float): Array<Frame> =
  * @param interpolation an increasing function and x∈[0,1], y∈[0,1]
  * @return the corresponding frames
  */
-fun Array<TR>.genFramesBy(duration: Float, interpolation: (Float) -> Float): Array<Frame> {
+fun Array<TR>.genFramesBy(duration: Float, interpolation: FUNC): Array<Frame> {
     if (size == 1)
         return arrayOf(Frame(this[0], duration))
     var accumulation = 0f

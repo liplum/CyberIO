@@ -55,8 +55,9 @@ import net.liplum.mdt.HeadlessOnly
 import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.advanced.Inspector.isPlacing
 import net.liplum.mdt.advanced.Inspector.isSelected
-import net.liplum.mdt.animation.anims.Anime
-import net.liplum.mdt.animation.anims.linearFrames
+import net.liplum.mdt.animation.Anime
+import net.liplum.mdt.animation.draw
+import net.liplum.mdt.animation.linearFrames
 import net.liplum.mdt.render.*
 import plumy.world.AddBar
 import net.liplum.mdt.utils.MdtUnit
