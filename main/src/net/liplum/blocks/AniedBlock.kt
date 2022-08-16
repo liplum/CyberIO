@@ -18,17 +18,16 @@ import net.liplum.util.addAniStateInfo
  */
 @Suppress("UNCHECKED_CAST")
 abstract class AniedBlock<
-        TBlock : AniedBlock<TBlock, TBuild>,
-        TBuild : AniedBlock<TBlock, TBuild>.AniedBuild,
+        TBuild : AniedBlock<TBuild>.AniedBuild,
         >(
     name: String,
-) : Block(name), IAniSMed<TBlock, TBuild> {
+) : Block(name), IAniSMed<TBuild> {
     @ClientOnly
-    protected val name2AniStates = HashMap<String, AniState<TBlock, TBuild>>()
+    protected val name2AniStates = HashMap<String, AniState<TBuild>>()
     @ClientOnly
     var callDefaultBlockDraw = true
     @ClientOnly
-    override lateinit var aniConfig: AniConfig<TBlock, TBuild>
+    override lateinit var aniConfig: AniConfig<TBuild>
 
     init {
         ClientOnly {
@@ -44,32 +43,32 @@ abstract class AniedBlock<
         }
     }
     @Nullable
-    override fun getAniStateByName(name: String): AniState<TBlock, TBuild>? {
+    override fun getAniStateByName(name: String): AniState<TBuild>? {
         return name2AniStates[name]
     }
 
-    override val allAniStates: Collection<AniState<TBlock, TBuild>>
+    override val allAniStates: Collection<AniState<TBuild>>
         get() = name2AniStates.values
 
-    override fun addAniState(aniState: AniState<TBlock, TBuild>): AniState<TBlock, TBuild> {
+    override fun addAniState(aniState: AniState<TBuild>): AniState<TBuild> {
         name2AniStates[aniState.stateName] = aniState
         return aniState
     }
 
-    override fun createAniConfig(): AniConfig<TBlock, TBuild> {
+    override fun createAniConfig(): AniConfig<TBuild> {
         aniConfig = AniConfig()
         return aniConfig
     }
     /**
      * You have to make the [Building] of your subclass extend this
      */
-    abstract inner class AniedBuild : Building(), IAniSMedBuild<TBlock, TBuild> {
-        override lateinit var aniStateM: AniStateM<TBlock, TBuild>
+    abstract inner class AniedBuild : Building(), IAniSMedBuild<TBuild> {
+        override lateinit var aniStateM: AniStateM<TBuild>
 
         init {
             ClientOnly {
                 val outer = this@AniedBlock
-                aniStateM = outer.aniConfig.gen(outer as TBlock, this as TBuild)
+                aniStateM = outer.aniConfig.gen(this as TBuild)
             }
         }
         /**

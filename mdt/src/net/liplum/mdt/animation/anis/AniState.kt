@@ -2,7 +2,6 @@ package net.liplum.mdt.animation.anis
 
 import arc.util.Nullable
 import mindustry.gen.Building
-import mindustry.world.Block
 import java.util.function.Consumer
 
 /**
@@ -11,7 +10,7 @@ import java.util.function.Consumer
  * @param <TBlock> the type of block which has this animation state
  * @param <TBuild> the corresponding [Building] type
 </TBuild></TBlock> */
-class AniState<TBlock : Block, TBuild : Building> {
+class AniState<TBuild : Building> {
     /**
      * Gets the name
      *
@@ -56,12 +55,12 @@ class AniState<TBlock : Block, TBuild : Building> {
         renderer?.invoke(build)
     }
 
-    fun setOverwriteBlock(overwriteBlock: Boolean): AniState<TBlock, TBuild> {
+    fun setOverwriteBlock(overwriteBlock: Boolean): AniState<TBuild> {
         isOverwriteBlock = overwriteBlock
         return this
     }
 
-    fun setRenderer(renderer: TBuild.() -> Unit): AniState<TBlock, TBuild> {
+    fun setRenderer(renderer: TBuild.() -> Unit): AniState<TBuild> {
         this.renderer = renderer
         return this
     }
@@ -74,7 +73,7 @@ class AniState<TBlock : Block, TBuild : Building> {
 
     override fun equals(other: Any?): Boolean {
         return when (other) {
-            is AniState<*, *> -> other.stateName == this.stateName
+            is AniState<*> -> other.stateName == this.stateName
             is String -> other == this.stateName
             else -> false
         }

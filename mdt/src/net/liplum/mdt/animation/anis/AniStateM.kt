@@ -5,31 +5,30 @@ import mindustry.gen.Building
 import mindustry.world.Block
 import net.liplum.mdt.render.RESET_CONTEXT
 
-interface ISwitchAniStateListener<TBlock : Block, TBuild : Building> {
-    fun onSwitch(block: TBlock, build: TBuild, from: AniState<TBlock, TBuild>, to: AniState<TBlock, TBuild>)
+interface ISwitchAniStateListener<TBuild : Building> {
+    fun onSwitch(build: TBuild, from: AniState<TBuild>, to: AniState<TBuild>)
 }
 
-open class AniStateM<TBlock : Block, TBuild : Building>(
-    val config: AniConfig<TBlock, TBuild>,
-    val block: TBlock,
+open class AniStateM<TBuild : Building>(
+    val config: AniConfig<TBuild>,
     val build: TBuild,
 ) {
     var transition: TransitionEffect = config.transition
     var transitionDuration: Float = config.transitionDuration
-    var curState: AniState<TBlock, TBuild> = config.defaultState!!
-    var lastState: AniState<TBlock, TBuild>? = null
-    var switchAniStateListener: ISwitchAniStateListener<TBlock, TBuild>? = null
+    var curState: AniState<TBuild> = config.defaultState!!
+    var lastState: AniState<TBuild>? = null
+    var switchAniStateListener: ISwitchAniStateListener<TBuild>? = null
     var onUpdate: (() -> Unit)? = null
         private set
 
-    open fun onUpdate(onUpdate: () -> Unit): AniStateM<TBlock, TBuild> {
+    open fun onUpdate(onUpdate: () -> Unit): AniStateM<TBuild> {
         this.onUpdate = onUpdate
         return this
     }
     /**
      * For java
      */
-    fun onUpdate(onUpdate: Runnable): AniStateM<TBlock, TBuild> {
+    fun onUpdate(onUpdate: Runnable): AniStateM<TBuild> {
         onUpdate {
             onUpdate.run()
         }
@@ -60,7 +59,7 @@ open class AniStateM<TBlock : Block, TBuild : Building>(
         for (to in config.getAllEntrances(curState)) {
             val canEnter = config.getCanEnter(curState, to)
             if (canEnter != null && canEnter(build)) {
-                switchAniStateListener?.onSwitch(block, build, curState, to)
+                switchAniStateListener?.onSwitch(build, curState, to)
                 lastState = curState
                 curState = to
                 lastSwitchTime = curTime

@@ -19,7 +19,7 @@ import plumy.core.math.FUNC
 import plumy.core.math.isZero
 import kotlin.math.sqrt
 
-private typealias AniStateMS = AniState<ICMachineSmall, ICMachineSmall.ICMachineSmallBuild>
+private typealias AniStateMS = AniState<ICMachineSmall.ICMachineSmallBuild>
 
 private val P2ALeft = (3 - sqrt(3f)) / 6
 private val P2ARight = (3 + sqrt(3f)) / 6
@@ -30,7 +30,7 @@ private val P2A: FUNC = {
         -6 * it * it + 6 * it
 }
 
-open class ICMachineSmall(name: String) : AniedCrafter<ICMachineSmall, ICMachineSmall.ICMachineSmallBuild>(name) {
+open class ICMachineSmall(name: String) : AniedCrafter<ICMachineSmall.ICMachineSmallBuild>(name) {
     @ClientOnly var phase = 3
     @ClientOnly @JvmField var Baffle = EmptyTR
     @ClientOnly @JvmField var processIcons = emptyArray<Item>()
@@ -61,7 +61,7 @@ open class ICMachineSmall(name: String) : AniedCrafter<ICMachineSmall, ICMachine
         region, Baffle
     )
 
-    open inner class ICMachineSmallBuild : AniedCrafter<ICMachineSmall, ICMachineSmallBuild>.AniedCrafterBuild() {
+    open inner class ICMachineSmallBuild : AniedCrafterBuild() {
         @ClientOnly open var baffleAlpha = baffleMinAlpha
             set(value) {
                 field = value.coerceIn(baffleMinAlpha, baffleMaxAlpha)

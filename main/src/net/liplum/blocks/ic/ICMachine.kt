@@ -15,11 +15,11 @@ import plumy.core.math.FUNC
 import plumy.core.math.isZero
 import plumy.core.math.lerp
 
-private typealias AniStateM = AniState<ICMachine, ICMachine.ICMachineBuild>
+private typealias AniStateM = AniState<ICMachine.ICMachineBuild>
 
 private const val workingAnimAlphaA = 0.1f / (0.03f * 0.03f)
 
-open class ICMachine(name: String) : AniedCrafter<ICMachine, ICMachine.ICMachineBuild>(name) {
+open class ICMachine(name: String) : AniedCrafter< ICMachine.ICMachineBuild>(name) {
     @ClientOnly lateinit var IdleState: AniStateM
     @ClientOnly lateinit var WorkingState: AniStateM
     @ClientOnly var WorkingAnim = AnimationMeta.Empty
@@ -37,7 +37,7 @@ open class ICMachine(name: String) : AniedCrafter<ICMachine, ICMachine.ICMachine
         WorkingAnim = this.animationMeta("indicator-light", WorkingAnimFrameNumber, WorkingAnimDuration)
     }
 
-    open inner class ICMachineBuild : AniedCrafter<ICMachine, ICMachineBuild>.AniedCrafterBuild() {
+    open inner class ICMachineBuild : AniedCrafterBuild() {
         var workingAnimObj = WorkingAnim.instantiateSideOnly()
 
         override fun beforeDraw() {

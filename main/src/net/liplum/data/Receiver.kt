@@ -40,9 +40,9 @@ import net.liplum.mdt.utils.sub
 import plumy.core.Serialized
 import plumy.core.assets.TR
 
-private typealias AniStateR = AniState<Receiver, ReceiverBuild>
+private typealias AniStateR = AniState<ReceiverBuild>
 
-open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
+open class Receiver(name: String) : AniedBlock< ReceiverBuild>(name) {
     @ClientOnly lateinit var BaseTR: TR
     @ClientOnly lateinit var HighlightTR: TR
     @ClientOnly lateinit var DownArrowTR: TR

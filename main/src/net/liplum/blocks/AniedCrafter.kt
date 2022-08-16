@@ -11,16 +11,15 @@ import net.liplum.util.addProgressInfo
 
 @Suppress("UNCHECKED_CAST")
 abstract class AniedCrafter<
-        TBlock : AniedCrafter<TBlock, TBuild>,
-        TBuild : AniedCrafter<TBlock, TBuild>.AniedCrafterBuild,
+        TBuild : AniedCrafter<TBuild>.AniedCrafterBuild,
         >(
     name: String,
 ) :
-    GenericCrafter(name), IAniSMed<TBlock, TBuild> {
+    GenericCrafter(name), IAniSMed<TBuild> {
     @ClientOnly
-    override lateinit var aniConfig: AniConfig<TBlock, TBuild>
+    override lateinit var aniConfig: AniConfig<TBuild>
     @ClientOnly
-    val name2AniStates = HashMap<String, AniState<TBlock, TBuild>>()
+    val name2AniStates = HashMap<String, AniState<TBuild>>()
     @ClientOnly
     var callDefaultBlockDraw = true
 
@@ -39,30 +38,30 @@ abstract class AniedCrafter<
         }
     }
 
-    override fun createAniConfig(): AniConfig<TBlock, TBuild> {
+    override fun createAniConfig(): AniConfig<TBuild> {
         aniConfig = AniConfig()
         return aniConfig
     }
 
-    override fun getAniStateByName(name: String): AniState<TBlock, TBuild>? {
+    override fun getAniStateByName(name: String): AniState<TBuild>? {
         return name2AniStates[name]
     }
 
-    override val allAniStates: Collection<AniState<TBlock, TBuild>>
+    override val allAniStates: Collection<AniState<TBuild>>
         get() = name2AniStates.values
 
-    override fun addAniState(aniState: AniState<TBlock, TBuild>): AniState<TBlock, TBuild> {
+    override fun addAniState(aniState: AniState<TBuild>): AniState<TBuild> {
         name2AniStates[aniState.stateName] = aniState
         return aniState
     }
 
-    abstract inner class AniedCrafterBuild : GenericCrafterBuild(), IAniSMedBuild<TBlock, TBuild> {
-        override lateinit var aniStateM: AniStateM<TBlock, TBuild>
+    abstract inner class AniedCrafterBuild : GenericCrafterBuild(), IAniSMedBuild<TBuild> {
+        override lateinit var aniStateM: AniStateM<TBuild>
 
         init {
             ClientOnly {
                 val out = this@AniedCrafter
-                aniStateM = out.aniConfig.gen(out as TBlock, this as TBuild)
+                aniStateM = out.aniConfig.gen(this as TBuild)
                 aniStateM.onUpdate { onAniStateMUpdate() }
             }
         }

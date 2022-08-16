@@ -50,9 +50,9 @@ import plumy.core.math.isZero
 import plumy.world.AddBar
 import kotlin.math.log2
 
-private typealias AniStateD = AniState<SmartDistributor, SmartDistributor.SmartDistributorBuild>
+private typealias AniStateD = AniState< SmartDistributor.SmartDistributorBuild>
 
-open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDistributor.SmartDistributorBuild>(name) {
+open class SmartDistributor(name: String) : AniedBlock<SmartDistributor.SmartDistributorBuild>(name) {
     @JvmField var maxConnection = -1
     @ClientOnly lateinit var NoPowerTR: TR
     @ClientOnly var ArrowsAnim = AnimationMeta.Empty
@@ -151,7 +151,7 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
         drawPlaceText(subBundle("tip"), x, y, valid)
     }
 
-    open inner class SmartDistributorBuild : AniedBlock<SmartDistributor, SmartDistributorBuild>.AniedBuild(),
+    open inner class SmartDistributorBuild : AniedBuild(),
         IDataReceiver {
         @JvmField var _requirements = Seq<Item>()
         @Serialized

@@ -24,7 +24,7 @@ inline fun <reified T> Block.addRangeInfo(maxRange: Float) where T : Building, T
     )
 }
 
-inline fun <reified T> Block.addAniStateInfo() where T : Building, T : IAniSMedBuild<*, *> {
+inline fun <reified T> Block.addAniStateInfo() where T : Building, T : IAniSMedBuild<*> {
     AddBar<T>("ani-state",
         { aniStateM.curState.stateName },
         { Pal.bar },

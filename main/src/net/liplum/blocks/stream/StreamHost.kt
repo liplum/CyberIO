@@ -36,9 +36,9 @@ import plumy.core.assets.EmptyTR
 import plumy.core.assets.TRs
 import plumy.world.*
 
-private typealias AniStateH = AniState<StreamHost, StreamHost.HostBuild>
+private typealias AniStateH = AniState<StreamHost.HostBuild>
 
-open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuild>(name) {
+open class StreamHost(name: String) : AniedBlock<StreamHost.HostBuild>(name) {
     @ClientOnly var liquidPadding = 0f
     @JvmField var maxConnection = 5
     @JvmField var liquidColorLerp = 0.5f

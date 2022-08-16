@@ -44,9 +44,9 @@ import plumy.world.config
 import plumy.world.configNull
 import kotlin.math.absoluteValue
 
-private typealias AniStateP = AniState<P2pNode, P2pNode.P2pBuild>
+private typealias AniStateP = AniState<P2pNode.P2pBuild>
 
-open class P2pNode(name: String) : AniedBlock<P2pNode, P2pNode.P2pBuild>(name) {
+open class P2pNode(name: String) : AniedBlock<P2pNode.P2pBuild>(name) {
     @ClientOnly var liquidPadding = 0f
     @ClientOnly var NoPowerTR = EmptyTR
     @JvmField var balancingSpeed = 1f

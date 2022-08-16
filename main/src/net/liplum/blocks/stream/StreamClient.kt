@@ -33,9 +33,9 @@ import net.liplum.mdt.utils.fluidColor
 import net.liplum.mdt.utils.inMod
 import net.liplum.mdt.utils.sub
 
-private typealias AniStateC = AniState<StreamClient, StreamClient.ClientBuild>
+private typealias AniStateC = AniState<StreamClient.ClientBuild>
 
-open class StreamClient(name: String) : AniedBlock<StreamClient, StreamClient.ClientBuild>(name) {
+open class StreamClient(name: String) : AniedBlock<StreamClient.ClientBuild>(name) {
     @JvmField var maxConnection = -1
     @ClientOnly var NoPowerTR = EmptyTR
     @ClientOnly var BottomTR = EmptyTR

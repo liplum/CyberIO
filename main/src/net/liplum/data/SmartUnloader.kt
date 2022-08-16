@@ -47,10 +47,10 @@ import plumy.world.*
 import kotlin.math.absoluteValue
 import kotlin.math.log2
 
-private typealias AniStateU = AniState<SmartUnloader, SmartUnloader.SmartUnloaderBuild>
+private typealias AniStateU = AniState<SmartUnloader.SmartUnloaderBuild>
 private typealias SmartDIS = SmartDistributor.SmartDistributorBuild
 
-open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader.SmartUnloaderBuild>(name) {
+open class SmartUnloader(name: String) : AniedBlock< SmartUnloader.SmartUnloaderBuild>(name) {
     /**
      * The lager the number the slower the unloading speed. Belongs to [0,+inf)
      */
@@ -174,7 +174,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
         }
     }
 
-    open inner class SmartUnloaderBuild : AniedBlock<SmartUnloader, SmartUnloaderBuild>.AniedBuild(),
+    open inner class SmartUnloaderBuild : AniedBuild(),
         IDataSender {
         override val maxRange = this@SmartUnloader.maxRange
         @Serialized

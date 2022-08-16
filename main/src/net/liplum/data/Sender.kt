@@ -44,9 +44,9 @@ import plumy.core.assets.TR
 import plumy.core.math.isZero
 import plumy.world.*
 
-private typealias AniStateS = AniState<Sender, SenderBuild>
+private typealias AniStateS = AniState<SenderBuild>
 
-open class Sender(name: String) : AniedBlock<Sender, SenderBuild>(name) {
+open class Sender(name: String) : AniedBlock<SenderBuild>(name) {
     @ClientOnly lateinit var BaseTR: TR
     @ClientOnly lateinit var HighlightTR: TR
     @ClientOnly lateinit var UpArrowTR: TR
