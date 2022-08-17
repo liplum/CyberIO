@@ -1,41 +1,28 @@
 package net.liplum.mdt.animation.state
 
 import arc.graphics.g2d.Draw
-import net.liplum.mdt.render.RESET_CONTEXT
+import net.liplum.mdt.animation.ITimer
+import net.liplum.mdt.animation.ContextDraw.RESET_CONTEXT
 
-interface ISwitchStateListener<T> {
-    fun onSwitch(build: T, from: State<T>, to: State<T>)
+typealias SwitchStateEvent<T> = (e: T, from: State<T>, to: State<T>) -> Unit
+
+interface IStateful<T> {
+    val stateMachine: StateMachine<T>
 }
 
 open class StateMachine<T>(
     val config: StateConfig<T>,
-    val build: T,
-) {
+    val entity: T,
+) : ITimer {
     var transition: TransitionEffect = config.transition
     var transitionDuration: Float = config.transitionDuration
-    var curState: State<T> = config.defaultState!!
+    var curState: State<T> = config.defaultState ?: throw IllegalArgumentException("StateConfig's defaultState is null.")
     var lastState: State<T>? = null
-    var switchAniStateListener: ISwitchStateListener<T>? = null
-    var onUpdate: (() -> Unit)? = null
-        private set
-
-    open fun onUpdate(onUpdate: () -> Unit): StateMachine<T> {
-        this.onUpdate = onUpdate
-        return this
-    }
-    /**
-     * For java
-     */
-    fun onUpdate(onUpdate: Runnable): StateMachine<T> {
-        onUpdate {
-            onUpdate.run()
-        }
-        return this
-    }
-
+    var onStateSwitched: SwitchStateEvent<T>? = null
+    var onUpdateState: (() -> Unit)? = null
     var lastSwitchTime = 0f
     var curTime = 0f
-    open fun spend(time: Float) {
+    override fun spend(time: Float) {
         curTime += time
     }
 
@@ -43,9 +30,9 @@ open class StateMachine<T>(
         val delta = curTime - lastSwitchTime
         val progress = (delta / transitionDuration).coerceIn(0f, 1f)
         transition(progress, {
-            lastState?.drawBuilding(build)
+            lastState?.drawBuilding(entity)
         }, {
-            curState.drawBuilding(build)
+            curState.drawBuilding(entity)
         })
         Draw.reset()
         RESET_CONTEXT()
@@ -53,11 +40,11 @@ open class StateMachine<T>(
 
     open fun curOverwriteBlock(): Boolean = curState.isOverwriteBlock
     open fun updateState() {
-        onUpdate?.invoke()
+        onUpdateState?.invoke()
         for (to in config.getAllEntrances(curState)) {
-            val canEnter = config.getCanEnter(curState, to)
-            if (canEnter != null && canEnter(build)) {
-                switchAniStateListener?.onSwitch(build, curState, to)
+            val canEnter = config.getEntranceCondition(curState, to)
+            if (canEnter != null && canEnter(entity)) {
+                onStateSwitched?.invoke(entity, curState, to)
                 lastState = curState
                 curState = to
                 lastSwitchTime = curTime
@@ -65,4 +52,16 @@ open class StateMachine<T>(
             }
         }
     }
+}
+
+fun <T> StateMachine<T>.onUpdate(onUpdate: () -> Unit): StateMachine<T> {
+    this.onUpdateState = onUpdate
+    return this
+}
+
+fun <T> StateMachine<T>.onUpdate(onUpdate: Runnable): StateMachine<T> {
+    this.onUpdateState = {
+        onUpdate.run()
+    }
+    return this
 }

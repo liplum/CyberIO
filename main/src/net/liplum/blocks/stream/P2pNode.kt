@@ -31,8 +31,8 @@ import net.liplum.mdt.animation.state.IStateful
 import net.liplum.mdt.animation.state.State
 import net.liplum.mdt.animation.state.StateConfig
 import net.liplum.mdt.animation.state.configuring
-import net.liplum.mdt.render.Draw
-import net.liplum.mdt.render.DrawOn
+import net.liplum.mdt.animation.ContextDraw.Draw
+import net.liplum.mdt.animation.ContextDraw.DrawOn
 import net.liplum.mdt.render.Text
 import net.liplum.mdt.utils.fluidColor
 import net.liplum.mdt.utils.inMod

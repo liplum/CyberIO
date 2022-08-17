@@ -28,14 +28,13 @@ import plumy.core.assets.EmptyTR
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.WhenTheSameTeam
 import net.liplum.mdt.mixin.total
-import net.liplum.mdt.render.DrawOn
+import net.liplum.mdt.animation.ContextDraw.DrawOn
 import net.liplum.mdt.ui.bars.appendDisplayLiquidsDynamic
 import net.liplum.mdt.ui.bars.genAllLiquidBars
 import net.liplum.mdt.ui.bars.removeLiquidInBar
 import net.liplum.mdt.utils.ForProximity
 import net.liplum.mdt.utils.fluidColor
 import net.liplum.mdt.utils.sub
-import net.liplum.util.addStateMachineInfo
 import plumy.world.buildAt
 
 /**

@@ -38,7 +38,7 @@ import net.liplum.common.util.bundle
 import net.liplum.common.util.percentI
 import net.liplum.mdt.*
 import net.liplum.mdt.consumer.ConsumeFluidDynamic
-import net.liplum.mdt.render.Draw
+import net.liplum.mdt.animation.ContextDraw.Draw
 import net.liplum.mdt.ui.addItemSelectorDefault
 import net.liplum.mdt.ui.bars.removeItemsInBar
 import net.liplum.mdt.utils.ItemTypeAmount

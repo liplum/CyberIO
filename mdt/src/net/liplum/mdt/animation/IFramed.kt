@@ -1,9 +1,9 @@
 package net.liplum.mdt.animation
 
 import arc.graphics.Color
-import net.liplum.mdt.render.Draw
-import net.liplum.mdt.render.ResetDraw
-import net.liplum.mdt.render.SetColor
+import net.liplum.mdt.animation.ContextDraw.Draw
+import net.liplum.mdt.animation.ContextDraw.ResetDraw
+import net.liplum.mdt.animation.ContextDraw.SetColor
 import plumy.core.assets.TR
 
 interface IFramed {

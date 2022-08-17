@@ -28,6 +28,7 @@ import net.liplum.common.util.progress
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.animation.Anime
+import net.liplum.mdt.animation.ContextDraw.Draw
 import net.liplum.mdt.animation.draw
 import net.liplum.mdt.animation.genFramesBy
 import net.liplum.mdt.animation.randomCurTime

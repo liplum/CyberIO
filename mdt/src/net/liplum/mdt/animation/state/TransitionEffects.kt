@@ -4,8 +4,8 @@ package net.liplum.mdt.animation.state
 
 import arc.math.Interp
 import arc.math.Mathf
+import net.liplum.mdt.animation.ContextDraw.ALPHA
 import plumy.core.arc.invoke
-import net.liplum.mdt.render.ALPHA
 
 val None: TransitionEffect = { _, _, cur ->
     cur()

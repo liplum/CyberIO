@@ -35,26 +35,28 @@ import net.liplum.common.Smooth
 import net.liplum.common.util.bundle
 import net.liplum.common.util.format
 import net.liplum.common.util.toDouble
-import plumy.core.Serialized
-import plumy.core.arc.hsvLerp
-import plumy.core.assets.TR
-import plumy.core.assets.TRs
-import plumy.core.math.FUNC
-import plumy.core.math.isZero
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.Else
 import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.WhenTheSameTeam
 import net.liplum.mdt.animation.*
+import net.liplum.mdt.animation.ContextDraw.Draw
+import net.liplum.mdt.animation.ContextDraw.DrawScale
 import net.liplum.mdt.mixin.Mover
 import net.liplum.mdt.render.*
-import plumy.world.AddBar
 import net.liplum.mdt.ui.bars.appendDisplayLiquidsDynamic
 import net.liplum.mdt.ui.bars.genAllLiquidBars
 import net.liplum.mdt.ui.bars.removeLiquidInBar
 import net.liplum.mdt.utils.MdtUnit
 import net.liplum.mdt.utils.sheet
 import net.liplum.mdt.utils.sub
+import plumy.core.Serialized
+import plumy.core.arc.hsvLerp
+import plumy.core.assets.TR
+import plumy.core.assets.TRs
+import plumy.core.math.FUNC
+import plumy.core.math.isZero
+import plumy.world.AddBar
 
 open class Heart(name: String) : Block(name), IComponentBlock {
     // Upgrade component
@@ -501,7 +503,7 @@ open class Heart(name: String) : Block(name), IComponentBlock {
             BaseTR.Draw(x, y)
             //heartbeatAnime.draw(x, y)
             heartbeatAnime.draw {
-                it.DrawSize(x, y, 1f + G.sin / realBreathIntensity)
+                it.DrawScale(x, y, 1f + G.sin / realBreathIntensity)
             }
             heatMeta.drawHeat(this, HeatTRs[heartbeatAnime.index])
         }

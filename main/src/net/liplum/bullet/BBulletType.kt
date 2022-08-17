@@ -11,7 +11,7 @@ import mindustry.entities.Lightning
 import mindustry.entities.bullet.BulletType
 import mindustry.gen.Bullet
 import plumy.core.assets.EmptyTR
-import net.liplum.mdt.render.DrawSize
+import net.liplum.mdt.animation.ContextDraw.DrawScale
 import plumy.core.assets.TR
 import net.liplum.mdt.utils.atlas
 
@@ -43,7 +43,7 @@ class BBulletType() : BulletType() {
         super.draw(b)
         Draw.z(layer)
         Draw.mixcol(color, color.a)
-        texture.DrawSize(
+        texture.DrawScale(
             b.x, b.y, scale(b),
             if (enableRotate) b.rotation() else 0f
         )

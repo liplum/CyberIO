@@ -28,7 +28,7 @@ import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.Var
 import net.liplum.mdt.*
-import net.liplum.mdt.render.DrawSize
+import net.liplum.mdt.animation.ContextDraw.DrawScale
 import net.liplum.mdt.render.G
 import net.liplum.mdt.render.smoothPlacing
 import net.liplum.mdt.render.smoothSelect
@@ -201,12 +201,12 @@ open class ZipBomb(name: String) : Block(name) {
             WhenTheSameTeam {
                 // only players in the same team can find this
                 Drawf.shadow(x, y, size.worldXY * 1.5f)
-                block.region.DrawSize(x, y, 1f + scl, drawrot())
+                block.region.DrawScale(x, y, 1f + scl, drawrot())
             }.Else {
                 if (dst2 != null) {
                     Drawf.shadow(x, y, size.worldXY * 1.5f, progress)
                     Draw.alpha(progress)
-                    block.region.DrawSize(x, y, 1f + scl, drawrot())
+                    block.region.DrawScale(x, y, 1f + scl, drawrot())
                 }
             }
             DebugOnly {

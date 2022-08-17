@@ -40,6 +40,8 @@ import plumy.core.arc.invoke
 import plumy.core.assets.TR
 import plumy.core.math.isZero
 import net.liplum.mdt.ClientOnly
+import net.liplum.mdt.animation.ContextDraw.Draw
+import net.liplum.mdt.animation.ContextDraw.DrawScale
 import net.liplum.mdt.render.*
 import net.liplum.mdt.utils.MdtUnit
 import plumy.world.TileXY
@@ -272,10 +274,10 @@ open class Ear(name: String) : Block(name), IComponentBlock {
                 BaseHeatTR.Draw(x, y)
             }
             Draw.z(Layer.turret)
-            EarTR.DrawSize(x, y, scale + G.sin / 20f)
+            EarTR.DrawScale(x, y, scale + G.sin / 20f)
             Draw.z(Layer.turretHeat)
             heatMeta.drawHeat(heatShared) {
-                EarHeatTR.DrawSize(x, y, scale + G.sin / 20f)
+                EarHeatTR.DrawScale(x, y, scale + G.sin / 20f)
             }
             Draw.z(Layer.turret)
             Draw.z(Layer.bullet)

@@ -11,14 +11,14 @@ import mindustry.graphics.Layer
 import net.liplum.S
 import net.liplum.api.IExecutioner
 import net.liplum.math.quadratic
-import net.liplum.mdt.render.DrawSize
+import net.liplum.mdt.animation.ContextDraw.DrawScale
 import net.liplum.mdt.utils.NewEffect
 import net.liplum.mdt.utils.lostHp
 
 private val P2Alpha = quadratic(0.95f, 0.35f)
 val deleted = NewEffect(60f) {
     Draw.alpha(fout())
-    Icon.trash.region.DrawSize(x, y, size = 1f + fin() * 1.5f)
+    Icon.trash.region.DrawScale(x, y, scale = 1f + fin() * 1.5f)
 }.apply {
     layer(Layer.bullet - 1f)
 }

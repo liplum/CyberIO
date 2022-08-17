@@ -32,12 +32,12 @@ import net.liplum.common.persistence.write
 import net.liplum.common.util.DoMultipleBool
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.animation.AnimationMeta
+import net.liplum.mdt.animation.ContextDraw.Draw
 import net.liplum.mdt.animation.draw
 import net.liplum.mdt.animation.state.IStateful
 import net.liplum.mdt.animation.state.State
 import net.liplum.mdt.animation.state.StateConfig
 import net.liplum.mdt.animation.state.configuring
-import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.drawSurroundingRect
 import net.liplum.mdt.render.smoothPlacing
 import net.liplum.mdt.ui.bars.removeItemsInBar

@@ -26,7 +26,7 @@ import net.liplum.common.util.sheetOneDirection
 import net.liplum.event.CioLoadContentEvent
 import plumy.core.assets.TR
 import net.liplum.mdt.WhenNotPaused
-import net.liplum.mdt.render.DrawSize
+import net.liplum.mdt.animation.ContextDraw.DrawScale
 import net.liplum.mdt.utils.MdtUnit
 import net.liplum.mdt.utils.NewEffect
 import net.liplum.mdt.utils.fadeInOutPct
@@ -61,7 +61,7 @@ object BrainFx {
         val scale = it.data as? Float ?: -1f
         Draw.mixcol(it.color, it.color.a)
         bloodBulletFrames.progress(it.fin())
-            .DrawSize(it.x, it.y, if (scale < 0f) 1f else scale)
+            .DrawScale(it.x, it.y, if (scale < 0f) 1f else scale)
     }.apply {
         layer = Layer.bullet - 0.1f
     }

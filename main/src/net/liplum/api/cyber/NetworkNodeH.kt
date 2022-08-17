@@ -30,8 +30,9 @@ import plumy.core.math.between
 import plumy.core.math.pow3InIntrp
 import net.liplum.mdt.advanced.Inspector.isPlacing
 import net.liplum.mdt.advanced.Inspector.isSelected
+import net.liplum.mdt.animation.ContextDraw.Draw
+import net.liplum.mdt.animation.ContextDraw.DrawSize
 import net.liplum.mdt.render.*
-import net.liplum.mdt.utils.*
 import net.liplum.registry.SD
 import plumy.world.*
 import kotlin.math.absoluteValue
@@ -447,14 +448,14 @@ fun INetworkNode.drawDataInSending(
         if (side % 2 == 1) { // Top or Bottom
             val thisY = oy + dir.y * thisOffset
             val targY = ty - dir.y * tOffset
-            payload.icon().DrawAny(
+            payload.icon().DrawSize(
                 x, progress.between(thisY, targY),
                 width = Var.NetworkPayloadSizeInRail, height = Var.NetworkPayloadSizeInRail,
             )
         } else { // Right or Left
             val thisX = ox + dir.x * thisOffset
             val targX = tx - dir.x * tOffset
-            payload.icon().DrawAny(
+            payload.icon().DrawSize(
                 progress.between(thisX, targX), y,
                 width = Var.NetworkPayloadSizeInRail, height = Var.NetworkPayloadSizeInRail,
             )

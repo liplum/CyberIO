@@ -1,7 +1,6 @@
 package net.liplum.mdt.animation
 
 import arc.math.Mathf
-import net.liplum.common.ITimer
 import plumy.core.assets.TR
 import plumy.core.math.FUNC
 
@@ -11,6 +10,7 @@ data class Frame(
 )
 /**
  * The anime will stop after a single playing ends(the same as reversed playing).
+ *
  */
 class Anime(
     val frames: Array<Frame>,

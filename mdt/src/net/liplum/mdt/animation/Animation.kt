@@ -1,7 +1,6 @@
 package net.liplum.mdt.animation
 
 import mindustry.Vars
-import net.liplum.common.ITimer
 import net.liplum.common.util.progress
 import net.liplum.mdt.animation.AnimationBehaviors.linerLoopByTime
 import plumy.core.arc.Tick

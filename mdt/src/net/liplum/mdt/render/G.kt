@@ -20,12 +20,12 @@ import mindustry.graphics.Pal
 import mindustry.world.Block
 import mindustry.world.Tile
 import net.liplum.annotations.Subscribe
+import net.liplum.mdt.animation.ContextDraw.DrawScale
 import plumy.core.arc.darken
 import plumy.core.assets.TR
 import plumy.core.math.distance
 import plumy.core.math.divAssign
 import plumy.core.math.isZero
-import net.liplum.mdt.utils.*
 import plumy.world.*
 
 /**
@@ -218,15 +218,15 @@ object G {
             t.set(startDrawX, startDrawY).add(endDrawX, endDrawY)
             t /= 2f
             Draw.color(outline)
-            Icon.right.region.DrawSize(t.x, t.y, size = size + 0.4f, rotation = angle)
+            Icon.right.region.DrawScale(t.x, t.y, scale = size + 0.4f, rotation = angle)
             Draw.color(inner)
-            Icon.right.region.DrawSize(t.x, t.y, size = size, rotation = angle)
+            Icon.right.region.DrawScale(t.x, t.y, scale = size, rotation = angle)
         } else {
             for (i in 0 until count - 1) {
                 Draw.color(outline)
-                Icon.right.region.DrawSize(curX, curY, size = size + 0.4f, rotation = angle)
+                Icon.right.region.DrawScale(curX, curY, scale = size + 0.4f, rotation = angle)
                 Draw.color(inner)
-                Icon.right.region.DrawSize(curX, curY, size = size, rotation = angle)
+                Icon.right.region.DrawScale(curX, curY, scale = size, rotation = angle)
                 curX += per.x
                 curY += per.y
             }

@@ -21,6 +21,7 @@ import net.liplum.common.util.bundle
 import net.liplum.common.util.inViewField
 import net.liplum.common.util.isLineInViewField
 import net.liplum.mdt.ClientOnly
+import net.liplum.mdt.animation.ContextDraw.DrawScale
 import net.liplum.mdt.render.*
 import net.liplum.mdt.utils.worldPos
 import plumy.core.arc.darken
@@ -496,9 +497,9 @@ fun transferArrowLineBreath(
             else -> 1f
         }
         Draw.color(outline)
-        Icon.right.region.DrawSize(line.x, line.y, size = outlineSize * fadeAlpha, rotation = angle)
+        Icon.right.region.DrawScale(line.x, line.y, scale = outlineSize * fadeAlpha, rotation = angle)
         Draw.color(inner)
-        Icon.right.region.DrawSize(line.x, line.y, size = size * fadeAlpha, rotation = angle)
+        Icon.right.region.DrawScale(line.x, line.y, scale = size * fadeAlpha, rotation = angle)
         cur += per
     }
     Draw.z(originalZ)
