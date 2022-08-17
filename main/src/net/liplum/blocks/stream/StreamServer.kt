@@ -35,6 +35,7 @@ import net.liplum.mdt.ui.bars.removeLiquidInBar
 import net.liplum.mdt.utils.ForProximity
 import net.liplum.mdt.utils.fluidColor
 import net.liplum.mdt.utils.sub
+import net.liplum.util.addStateMachineInfo
 import plumy.world.buildAt
 
 /**
@@ -50,7 +51,6 @@ open class StreamServer(name: String) : StreamHost(name) {
 
     init {
         buildType = Prov { ServerBuild() }
-        callDefaultBlockDraw = false
         saveConfig = false
         configurations.remove(Array<Point2>::class.java)
     }
@@ -176,7 +176,8 @@ open class StreamServer(name: String) : StreamHost(name) {
             return canConsume() && liquids.get(liquid) < liquidCapacity
         }
 
-        override fun fixedDraw() {
+        override fun draw() {
+            stateMachine.spend(delta())
             BottomTR.DrawOn(this)
             Drawf.liquid(
                 LiquidTR, x, y,
@@ -185,6 +186,7 @@ open class StreamServer(name: String) : StreamHost(name) {
                 0f
             )
             region.DrawOn(this)
+            stateMachine.draw()
         }
 
         override fun drawSelect() {

@@ -1,11 +1,7 @@
 package net.liplum.mdt.animation.state
 
 import arc.graphics.g2d.Draw
-import mindustry.gen.Building
-import net.liplum.CanRefresh
-import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.render.RESET_CONTEXT
-import plumy.core.arc.Tick
 
 interface ISwitchStateListener<T> {
     fun onSwitch(build: T, from: State<T>, to: State<T>)
@@ -68,14 +64,5 @@ open class StateMachine<T>(
                 return
             }
         }
-    }
-}
-
-fun <T : Building> StateMachine<T>.update(delta: Tick) {
-    WhenNotPaused {
-        spend(delta)
-    }
-    if (CanRefresh()) {
-        updateState()
     }
 }

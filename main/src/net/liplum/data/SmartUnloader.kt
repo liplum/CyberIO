@@ -15,6 +15,7 @@ import mindustry.gen.Building
 import mindustry.graphics.Pal
 import mindustry.logic.LAccess
 import mindustry.type.Item
+import mindustry.world.Block
 import mindustry.world.meta.BlockGroup
 import mindustry.world.meta.Stat
 import net.liplum.DebugOnly
@@ -22,7 +23,6 @@ import net.liplum.R
 import net.liplum.UndebugOnly
 import net.liplum.Var
 import net.liplum.api.cyber.*
-import net.liplum.blocks.AniedBlock
 import net.liplum.common.Remember
 import net.liplum.common.persistence.read
 import net.liplum.common.persistence.write
@@ -31,15 +31,18 @@ import net.liplum.mdt.CalledBySync
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.SendDataPack
 import net.liplum.mdt.animation.AnimationMeta
-import net.liplum.mdt.animation.state.State
-import net.liplum.mdt.animation.state.configStateMachine
 import net.liplum.mdt.animation.draw
+import net.liplum.mdt.animation.state.IStateful
+import net.liplum.mdt.animation.state.State
+import net.liplum.mdt.animation.state.StateConfig
+import net.liplum.mdt.animation.state.configuring
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.drawSurroundingRect
 import net.liplum.mdt.render.smoothPlacing
 import net.liplum.mdt.ui.bars.removeItemsInBar
 import net.liplum.mdt.utils.*
 import net.liplum.util.addPowerUseStats
+import net.liplum.util.addStateMachineInfo
 import net.liplum.util.genText
 import plumy.core.Serialized
 import plumy.core.assets.TR
@@ -47,10 +50,7 @@ import plumy.world.*
 import kotlin.math.absoluteValue
 import kotlin.math.log2
 
-private typealias AniStateU = State<SmartUnloader.SmartUnloaderBuild>
-private typealias SmartDIS = SmartDistributor.SmartDistributorBuild
-
-open class SmartUnloader(name: String) : AniedBlock< SmartUnloader.SmartUnloaderBuild>(name) {
+open class SmartUnloader(name: String) : Block(name) {
     /**
      * The lager the number the slower the unloading speed. Belongs to [0,+inf)
      */
@@ -83,6 +83,7 @@ open class SmartUnloader(name: String) : AniedBlock< SmartUnloader.SmartUnloader
      * The max range when trying to connect. -1f means no limit.
      */
     @JvmField var maxRange = -1f
+    @ClientOnly var stateMachineConfig = StateConfig<SmartUnloaderBuild>()
 
     init {
         buildType = Prov { SmartUnloaderBuild() }
@@ -100,13 +101,6 @@ open class SmartUnloader(name: String) : AniedBlock< SmartUnloader.SmartUnloader
         allowConfigInventory = false
         configurable = true
         acceptsItems = false
-        // For connect
-        config<SmartUnloaderBuild, PackedPos> {
-            addReceiverFromRemote(it)
-        }
-        configNull<SmartUnloaderBuild> {
-            clearReceivers()
-        }
     }
 
     open fun initPowerUse() {
@@ -120,6 +114,16 @@ open class SmartUnloader(name: String) : AniedBlock< SmartUnloader.SmartUnloader
     override fun init() {
         initPowerUse()
         super.init()
+        // For connect
+        config<SmartUnloaderBuild, PackedPos> {
+            addReceiverFromRemote(it)
+        }
+        configNull<SmartUnloaderBuild> {
+            clearReceivers()
+        }
+        ClientOnly {
+            configAnimationStateMachine()
+        }
     }
 
     override fun load() {
@@ -160,6 +164,7 @@ open class SmartUnloader(name: String) : AniedBlock< SmartUnloader.SmartUnloader
             removeItemsInBar()
         }
         DebugOnly {
+            addStateMachineInfo<SmartUnloaderBuild>()
             addReceiverInfo<SmartUnloaderBuild>()
             AddBar<SmartUnloaderBuild>("last-unloading",
                 { "Last Unload: ${lastUnloadTime.toInt()}" },
@@ -174,8 +179,9 @@ open class SmartUnloader(name: String) : AniedBlock< SmartUnloader.SmartUnloader
         }
     }
 
-    open inner class SmartUnloaderBuild : AniedBuild(),
-        IDataSender {
+    open inner class SmartUnloaderBuild : Building(),
+        IStateful<SmartUnloaderBuild>, IDataSender {
+        override val stateMachine by lazy { stateMachineConfig.instantiate(this) }
         override val maxRange = this@SmartUnloader.maxRange
         @Serialized
         var receivers = OrderedSet<Int>()
@@ -471,10 +477,13 @@ open class SmartUnloader(name: String) : AniedBlock< SmartUnloader.SmartUnloader
             }
         }
 
-        override fun beforeDraw() {
+        override fun draw() {
+            stateMachine.spend(delta())
             if (canConsume() && isUnloading && isSending) {
                 shrinkingAnimObj.spend(delta())
             }
+            super.draw()
+            stateMachine.draw()
         }
 
         override val maxReceiverConnection = maxConnection
@@ -510,38 +519,32 @@ open class SmartUnloader(name: String) : AniedBlock< SmartUnloader.SmartUnloader
         }
     }
 
-    @ClientOnly lateinit var UnloadingAni: AniStateU
-    @ClientOnly lateinit var NoPowerAni: AniStateU
-    @ClientOnly lateinit var BlockedAni: AniStateU
-    override fun genAniConfig() {
-        configStateMachine {
-            From(NoPowerAni) To UnloadingAni When {
-                canConsume()
-            }
-
-            From(UnloadingAni) To NoPowerAni When {
-                !canConsume()
-            } To BlockedAni When {
-                !isUnloading || !isSending
-            }
-
-            From(BlockedAni) To NoPowerAni When {
-                !canConsume()
-            } To UnloadingAni When {
-                isUnloading && isSending
-            }
-        }
-    }
-
-    override fun genAniState() {
-        UnloadingAni = addAniState("Unloading") {
+    @ClientOnly lateinit var UnloadingState: State<SmartUnloaderBuild>
+    @ClientOnly lateinit var NoPowerState: State<SmartUnloaderBuild>
+    @ClientOnly lateinit var BlockedState: State<SmartUnloaderBuild>
+    fun configAnimationStateMachine() {
+        UnloadingState = State("Unloading") {
             shrinkingAnimObj.draw(x, y)
         }
-        NoPowerAni = addAniState("NoPower") {
+        NoPowerState = State("NoPower") {
             NoPowerTR.Draw(x, y)
         }
-        BlockedAni = addAniState("Blocked") {
+        BlockedState = State("Blocked") {
             shrinkingAnimObj.draw(R.C.Stop, x, y)
+        }
+        stateMachineConfig.configuring {
+            NoPowerState {
+                setDefaultState
+                UnloadingState { canConsume() }
+            }
+            UnloadingState {
+                NoPowerState { !canConsume() }
+                BlockedState { !isUnloading || !isSending }
+            }
+            BlockedState {
+                NoPowerState { !canConsume() }
+                UnloadingState { isUnloading && isSending }
+            }
         }
     }
 }

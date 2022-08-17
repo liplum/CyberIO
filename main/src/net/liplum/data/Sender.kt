@@ -28,7 +28,10 @@ import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.SendDataPack
 import net.liplum.mdt.animation.SharedAnimation
 import net.liplum.mdt.animation.draw
-import net.liplum.mdt.animation.state.*
+import net.liplum.mdt.animation.state.IStateful
+import net.liplum.mdt.animation.state.State
+import net.liplum.mdt.animation.state.StateConfig
+import net.liplum.mdt.animation.state.configuring
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.DrawOn
 import net.liplum.mdt.render.SetColor
@@ -36,6 +39,8 @@ import net.liplum.mdt.utils.inMod
 import net.liplum.mdt.utils.sharedAnimationInMod
 import net.liplum.mdt.utils.sub
 import net.liplum.mdt.utils.tileEquals
+import net.liplum.util.addStateMachineInfo
+import net.liplum.util.update
 import plumy.core.Serialized
 import plumy.core.arc.Tick
 import plumy.core.assets.TR
@@ -71,6 +76,10 @@ open class Sender(name: String) : Block(name) {
         canOverdrive = false
         schematicPriority = 20
         unloadable = false
+    }
+
+    override fun init() {
+        super.init()
         // For connect
         config<SenderBuild, PackedPos> {
             setReceiverFromRemote(it)
@@ -78,10 +87,6 @@ open class Sender(name: String) : Block(name) {
         configNull<SenderBuild> {
             receiverPos = null
         }
-    }
-
-    override fun init() {
-        super.init()
         ClientOnly {
             configAnimationStateMachine()
         }
@@ -111,6 +116,7 @@ open class Sender(name: String) : Block(name) {
     override fun setBars() {
         super.setBars()
         DebugOnly {
+            addStateMachineInfo<SenderBuild>()
             addReceiverInfo<SenderBuild>()
             AddBar<SenderBuild>("last-sending",
                 { "Last Send: ${lastSendingTime.toInt()}" },
@@ -128,7 +134,8 @@ open class Sender(name: String) : Block(name) {
 
     val sharedReceiverSet = ObjectSet<Int>()
 
-    open inner class SenderBuild : Building(), IAniSMedBuild<SenderBuild>, IDataSender {
+    open inner class SenderBuild : Building(),
+        IStateful<SenderBuild>, IDataSender {
         override val stateMachine by lazy { stateMachineConfig.instantiate(this) }
         override val maxRange = this@Sender.maxRange
         @ClientOnly var lastSendingTime: Tick = 0f
@@ -367,7 +374,6 @@ open class Sender(name: String) : Block(name) {
         }
 
         stateMachineConfig.configuring {
-            IdleState.asDefaultState()
             IdleState {
                 UploadState { receiver != null }
                 NoPowerState { !canConsume() }
@@ -383,6 +389,7 @@ open class Sender(name: String) : Block(name) {
                 NoPowerState { !canConsume() }
             }
             NoPowerState {
+                setDefaultState
                 IdleState { canConsume() }
             }
         }

@@ -78,6 +78,6 @@ interface IStateMachined<TBuild : Building> {
     }
 }
 
-interface IAniSMedBuild<TBuild : Building> {
-    val stateMachine: StateMachine<TBuild>
+interface IStateful<T> {
+    val stateMachine: StateMachine<T>
 }

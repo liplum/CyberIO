@@ -12,35 +12,37 @@ import mindustry.Vars
 import mindustry.entities.units.BuildPlan
 import mindustry.gen.Building
 import mindustry.type.Liquid
+import mindustry.world.Block
 import mindustry.world.blocks.ItemSelection
 import mindustry.world.blocks.liquid.LiquidBlock
 import mindustry.world.meta.BlockGroup
 import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.api.cyber.*
-import net.liplum.blocks.AniedBlock
 import net.liplum.common.delegate.Delegate1
 import net.liplum.common.persistence.read
 import net.liplum.common.persistence.write
-import plumy.core.Serialized
-import plumy.core.assets.EmptyTR
 import net.liplum.mdt.ClientOnly
+import net.liplum.mdt.animation.state.IStateful
 import net.liplum.mdt.animation.state.State
-import net.liplum.mdt.animation.state.configStateMachine
+import net.liplum.mdt.animation.state.StateConfig
+import net.liplum.mdt.animation.state.configuring
 import net.liplum.mdt.render.Draw
 import net.liplum.mdt.render.DrawOn
 import net.liplum.mdt.utils.fluidColor
 import net.liplum.mdt.utils.inMod
 import net.liplum.mdt.utils.sub
+import net.liplum.util.addStateMachineInfo
+import plumy.core.Serialized
+import plumy.core.assets.EmptyTR
 
-private typealias AniStateC = State<StreamClient.ClientBuild>
-
-open class StreamClient(name: String) : AniedBlock<StreamClient.ClientBuild>(name) {
+open class StreamClient(name: String) : Block(name) {
     @JvmField var maxConnection = -1
     @ClientOnly var NoPowerTR = EmptyTR
     @ClientOnly var BottomTR = EmptyTR
     @JvmField var dumpScale = 2f
     @ClientOnly var liquidPadding = 0f
+    @ClientOnly var stateMachineConfig = StateConfig<ClientBuild>()
 
     init {
         buildType = Prov { ClientBuild() }
@@ -53,7 +55,6 @@ open class StreamClient(name: String) : AniedBlock<StreamClient.ClientBuild>(nam
         schematicPriority = 25
         saveConfig = true
         noUpdateDisabled = true
-        callDefaultBlockDraw = false
         canOverdrive = false
         sync = true
         config(
@@ -67,6 +68,7 @@ open class StreamClient(name: String) : AniedBlock<StreamClient.ClientBuild>(nam
     override fun setBars() {
         super.setBars()
         DebugOnly {
+            addStateMachineInfo<ClientBuild>()
             addHostInfo<ClientBuild>()
         }
     }
@@ -82,6 +84,12 @@ open class StreamClient(name: String) : AniedBlock<StreamClient.ClientBuild>(nam
         BottomTR = this.sub("bottom")
     }
 
+    override fun init() {
+        super.init()
+        ClientOnly {
+            configAnimationStateMachine()
+        }
+    }
     override fun icons() = arrayOf(BottomTR, region)
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)
@@ -92,7 +100,8 @@ open class StreamClient(name: String) : AniedBlock<StreamClient.ClientBuild>(nam
         drawPlanConfigCenter(req, req.config, "center", true)
     }
 
-    open inner class ClientBuild : AniedBuild(), IStreamClient {
+    open inner class ClientBuild : Building(), IStateful<ClientBuild>, IStreamClient {
+        override val stateMachine by lazy { stateMachineConfig.instantiate(this) }
         @Serialized
         var hosts = ObjectSet<Int>()
         @Serialized
@@ -185,33 +194,33 @@ open class StreamClient(name: String) : AniedBlock<StreamClient.ClientBuild>(nam
             hosts.read(read)
         }
 
-        override fun fixedDraw() {
+        override fun draw() {
+            stateMachine.spend(delta())
             BottomTR.DrawOn(this)
             LiquidBlock.drawTiledFrames(
                 size, x, y, liquidPadding,
                 liquids.current(), liquids.currentAmount() / liquidCapacity
             )
             region.DrawOn(this)
+            stateMachine.draw()
         }
     }
 
-    @ClientOnly lateinit var NormalAni: AniStateC
-    @ClientOnly lateinit var NoPowerAni: AniStateC
-    override fun genAniState() {
-        NormalAni = addAniState("Normal") {
-        }
-        NoPowerAni = addAniState("NoPower") {
+    @ClientOnly lateinit var NormalState: State<StreamClient.ClientBuild>
+    @ClientOnly lateinit var NoPowerState: State<StreamClient.ClientBuild>
+    @ClientOnly
+    fun configAnimationStateMachine() {
+        NormalState = State("Normal")
+        NoPowerState = State("NoPower") {
             NoPowerTR.Draw(x, y)
         }
-    }
-
-    override fun genAniConfig() {
-        configStateMachine {
-            From(NormalAni) To NoPowerAni When {
-                !canConsume()
+        stateMachineConfig.configuring {
+            NormalState {
+                setDefaultState
+                NoPowerState { !canConsume() }
             }
-            From(NoPowerAni) To NormalAni When {
-                canConsume()
+            NoPowerState {
+                NormalState { canConsume() }
             }
         }
     }

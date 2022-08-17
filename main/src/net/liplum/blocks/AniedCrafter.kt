@@ -6,7 +6,7 @@ import net.liplum.DebugOnly
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.animation.state.*
-import net.liplum.util.addAniStateInfo
+import net.liplum.util.addStateMachineInfo
 import net.liplum.util.addProgressInfo
 
 @Suppress("UNCHECKED_CAST")
@@ -34,7 +34,7 @@ abstract class AniedCrafter<
         super.setBars()
         DebugOnly {
             addProgressInfo<GenericCrafterBuild>()
-            addAniStateInfo<AniedCrafterBuild>()
+            addStateMachineInfo<AniedCrafterBuild>()
         }
     }
 
@@ -55,7 +55,7 @@ abstract class AniedCrafter<
         return aniState
     }
 
-    abstract inner class AniedCrafterBuild : GenericCrafterBuild(), IAniSMedBuild<TBuild> {
+    abstract inner class AniedCrafterBuild : GenericCrafterBuild(), IStateful<TBuild> {
         override lateinit var stateMachine: StateMachine<TBuild>
 
         init {

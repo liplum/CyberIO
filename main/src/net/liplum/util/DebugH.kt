@@ -13,7 +13,7 @@ import net.liplum.common.util.Float
 import net.liplum.common.util.bundle
 import net.liplum.common.util.format
 import net.liplum.common.util.percentI
-import net.liplum.mdt.animation.state.IAniSMedBuild
+import net.liplum.mdt.animation.state.IStateful
 import plumy.world.AddBar
 
 inline fun <reified T> Block.addRangeInfo(maxRange: Float) where T : Building, T : Ranged {
@@ -24,13 +24,14 @@ inline fun <reified T> Block.addRangeInfo(maxRange: Float) where T : Building, T
     )
 }
 
-inline fun <reified T> Block.addAniStateInfo() where T : Building, T : IAniSMedBuild<*> {
-    AddBar<T>("ani-state",
+inline fun <reified T> Block.addStateMachineInfo()
+        where T : Building, T : IStateful<*> {
+    AddBar<T>("state-machine",
         { stateMachine.curState.stateName },
         { Pal.bar },
         { 1f }
     )
-    AddBar<T>("ani-state-last",
+    AddBar<T>("state-machine-last",
         {
             "Last: ${stateMachine.lastState?.stateName ?: R.Bar.Null.bundle}"
         },

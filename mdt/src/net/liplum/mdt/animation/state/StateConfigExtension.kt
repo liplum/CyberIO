@@ -43,7 +43,11 @@ inline fun <TBuild> configStateMachine(config: StateConfig<TBuild>.() -> Unit)
 inline fun <T> StateConfig<T>.configuring(
     config: StateConfiguringSpec<T>.() -> Unit,
 ): StateConfig<T> {
-    StateConfiguringSpec(this).apply(config)
+    val spec = StateConfiguringSpec(this).apply(config)
+    val firstAdded = spec.firstAddedState
+    if (firstAdded != null && this.defaultState == null) {
+        defaultState(firstAdded)
+    }
     if (!this.built) this.build()
     return this
 }
@@ -51,15 +55,20 @@ inline fun <T> StateConfig<T>.configuring(
 class StateConfiguringSpec<T>(
     val config: StateConfig<T>,
 ) {
-    fun State<T>.asDefaultState() {
+    var firstAddedState: State<T>? = null
+    fun State<T>.seDefaultState() {
         config.defaultState(this)
     }
 
     inline operator fun State<T>.invoke(config: StateEntrySpec.() -> Unit) {
+        if (firstAddedState == null) firstAddedState = this
         StateEntrySpec(this).apply(config)
     }
 
     inner class StateEntrySpec(val from: State<T>) {
+        val setDefaultState: Unit
+            get() = from.seDefaultState()
+
         operator fun State<T>.invoke(
             condition: T.() -> Boolean,
         ) {
