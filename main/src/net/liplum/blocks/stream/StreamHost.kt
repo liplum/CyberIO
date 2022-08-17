@@ -76,13 +76,6 @@ open class StreamHost(name: String) : Block(name) {
         schematicPriority = 20
         canOverdrive = true
         sync = true
-        // For connect
-        config<HostBuild, PackedPos> {
-            setClient(it)
-        }
-        configNull<HostBuild> {
-            clearClients()
-        }
     }
 
     override fun load() {
@@ -104,6 +97,16 @@ open class StreamHost(name: String) : Block(name) {
     override fun init() {
         initPowerUse()
         super.init()
+        // For connect
+        config<HostBuild, PackedPos> {
+            setClient(it)
+        }
+        configNull<HostBuild> {
+            clearClients()
+        }
+        ClientOnly {
+            configAnimationStateMachine()
+        }
     }
 
     override fun setStats() {

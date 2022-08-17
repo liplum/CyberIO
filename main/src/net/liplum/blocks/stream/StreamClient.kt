@@ -35,6 +35,8 @@ import net.liplum.mdt.utils.sub
 import net.liplum.util.addStateMachineInfo
 import plumy.core.Serialized
 import plumy.core.assets.EmptyTR
+import plumy.world.config
+import plumy.world.configNull
 
 open class StreamClient(name: String) : Block(name) {
     @JvmField var maxConnection = -1
@@ -57,12 +59,6 @@ open class StreamClient(name: String) : Block(name) {
         noUpdateDisabled = true
         canOverdrive = false
         sync = true
-        config(
-            Liquid::class.java
-        ) { obj: ClientBuild, liquid ->
-            obj.outputLiquid = liquid
-        }
-        configClear { tile: ClientBuild -> tile.outputLiquid = null }
     }
 
     override fun setBars() {
@@ -86,10 +82,17 @@ open class StreamClient(name: String) : Block(name) {
 
     override fun init() {
         super.init()
+        config<ClientBuild, Liquid> {
+            outputLiquid = it
+        }
+        configNull<ClientBuild> {
+            outputLiquid = null
+        }
         ClientOnly {
             configAnimationStateMachine()
         }
     }
+
     override fun icons() = arrayOf(BottomTR, region)
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)

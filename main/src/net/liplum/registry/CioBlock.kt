@@ -36,8 +36,6 @@ import net.liplum.blocks.cyberion.DrawCyberionAgglomeration
 import net.liplum.blocks.deleter.Deleter
 import net.liplum.blocks.deleter.DeleterWave
 import net.liplum.blocks.deleter.deleted
-import net.liplum.blocks.ic.ICMachine
-import net.liplum.blocks.ic.ICMachineSmall
 import net.liplum.blocks.jammer.Jammer
 import net.liplum.blocks.jammer.JammingLaser
 import net.liplum.blocks.power.WirelessTower
@@ -55,7 +53,10 @@ import net.liplum.bullet.RuvikBullet
 import net.liplum.bullet.STEM_VERSION
 import net.liplum.bullet.ShaderBasicBulletT
 import net.liplum.common.shader.ShaderBase
-import net.liplum.holo.*
+import net.liplum.holo.HoloFloor
+import net.liplum.holo.HoloWall
+import net.liplum.holo.LandProjector
+import net.liplum.holo.Stealth
 import net.liplum.mdt.Else
 import net.liplum.mdt.render.*
 import net.liplum.mdt.ui.DynamicContentInfoDialog.Companion.registerDynamicInfo
@@ -70,9 +71,7 @@ import plumy.core.arc.invoke
 import plumy.core.math.smooth
 
 object CioBlock {
-    @JvmStatic private lateinit var icMachine: GenericCrafter
     @JvmStatic lateinit var icAssembler: GenericCrafter
-    @JvmStatic private lateinit var icMachineSmall: GenericCrafter
     @JvmStatic lateinit var virus: Virus
     @JvmStatic lateinit var landProjector: LandProjector
     @JvmStatic lateinit var holoFloor: HoloFloor
@@ -91,66 +90,6 @@ object CioBlock {
     @JvmStatic lateinit var stealth: Stealth
     @JvmStatic lateinit var wirelessTower: WirelessTower
     @JvmStatic lateinit var zipBomb: ZipBomb
-    @DependOn("CioItem.ic")
-    fun icMachine() {
-        icMachine = ICMachine("ic-machine").apply {
-            category = Category.crafting
-            buildVisibility = BuildVisibility.shown
-            requirements = arrayOf(
-                CioItem.ic + 2,
-                Items.copper + 550,
-                Items.lead + 280,
-                Items.silicon + 150,
-                Items.graphite + 250,
-            )
-            scaledHealth = 200f
-            consumeItems(
-                //Total:100
-                Items.copper + 50,  //50%
-                Items.silicon + 20,  //20%
-                Items.metaglass + 30, //30%
-            )
-            consumePower(10f)
-            craftTime = 400f
-            fogRadius = 3
-            outputItem = CioItem.ic + 2
-            size = 3
-            buildCostMultiplier = 1.5f
-            craftEffect = Fx.smeltsmoke
-            itemCapacity = 60
-        }
-    }
-    @DependOn("CioItem.ic")
-    fun icMachineSmall() {
-        icMachineSmall = ICMachineSmall("ic-machine-s").apply {
-            category = Category.crafting
-            buildVisibility = BuildVisibility.hidden
-            requirements = arrayOf(
-                Items.copper + 150,
-                Items.silicon + 50,
-                Items.graphite + 50,
-            )
-            scaledHealth = 80f
-            craftTime = 1150f
-            itemCapacity = 40
-            consumeItems(
-                Items.copper + 25,
-                Items.sand + 40,
-                Items.lead + 15,
-            )
-            consumePower(2f)
-            outputItem = CioItem.ic + 1
-            fogRadius = 2
-            size = 2
-            craftEffect = Fx.formsmoke
-
-            processIcons = arrayOf(
-                Items.metaglass,
-                Items.silicon,
-                CioItem.ic
-            )
-        }
-    }
     @DependOn("CioItem.ic")
     fun icAssembler() {
         icAssembler = GenericCrafter("ic-assembler").apply {
