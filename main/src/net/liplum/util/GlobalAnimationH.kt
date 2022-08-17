@@ -7,8 +7,8 @@ import mindustry.world.Block
 import net.liplum.ResourceLoader
 import net.liplum.common.util.sheetOneDirection
 import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.animation.ganim.GlobalAnimation
-import net.liplum.mdt.animation.ganim.GlobalAnimation.Companion.register
+import net.liplum.render.GlobalAnimation
+import net.liplum.render.GlobalAnimation.Companion.register
 import net.liplum.mdt.utils.anim
 
 fun <T : Block> T.globalAnim(

@@ -1,4 +1,4 @@
-package net.liplum.mdt.animation.ganim
+package net.liplum.render
 
 import arc.func.Cons
 import arc.graphics.g2d.TextureRegion
@@ -10,8 +10,12 @@ import net.liplum.annotations.Subscribe
 import net.liplum.common.util.progress
 import net.liplum.mdt.ClientOnly
 
-typealias GlobalAnimationIndexer = GlobalAnimation.() -> TextureRegion
-
+typealias GlobalAnimationBehavior = GlobalAnimation.() -> TextureRegion
+interface IGlobalAnimation {
+    val canUpdate: Boolean
+    @ClientOnly
+    fun update()
+}
 open class GlobalAnimation(
     val duration: Float,
     val setTR: Cons<TextureRegion>,
@@ -19,7 +23,7 @@ open class GlobalAnimation(
     var allFrames: Array<TextureRegion>? = null
     val frames: Array<TextureRegion>
         get() = allFrames!!
-    var frameIndexer: GlobalAnimationIndexer = loopIndexer
+    var frameIndexer: GlobalAnimationBehavior = loop
     override val canUpdate: Boolean
         get() = CanPlay
     var lastTR: TextureRegion? = null
@@ -38,11 +42,11 @@ open class GlobalAnimation(
     }
 
     companion object {
-        val loopIndexer: GlobalAnimationIndexer = {
+        val loop: GlobalAnimationBehavior = {
             val progress = Time.globalTime % duration / duration //percent
             frames.progress(progress)
         }
-        val randomSelectIndexr: GlobalAnimationIndexer = {
+        val randomSelect: GlobalAnimationBehavior = {
             frames[Mathf.randomSeed((Time.globalTime / 3f).toLong(), 0, frames.size - 1)]
         }
         var CanPlay = false
@@ -58,7 +62,7 @@ open class GlobalAnimation(
         }
 
         fun GlobalAnimation.useRandom(): GlobalAnimation {
-            this.frameIndexer = randomSelectIndexr
+            this.frameIndexer = randomSelect
             return this
         }
 

@@ -19,7 +19,7 @@ import net.liplum.event.UnitTap
 import net.liplum.gen.Contents
 import net.liplum.gen.EventRegistry
 import net.liplum.mdt.*
-import net.liplum.mdt.animation.ganim.GlobalAnimation
+import net.liplum.render.GlobalAnimation
 import net.liplum.registry.CioShaderLoader
 import net.liplum.registry.CioTechTree
 import net.liplum.registry.ServerCommand.registerCioCommands

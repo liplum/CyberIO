@@ -6,6 +6,7 @@ import arc.math.Interp
 import arc.math.Mathf
 import net.liplum.mdt.animation.ContextDraw.ALPHA
 import plumy.core.arc.invoke
+typealias TransitionEffect = (Float, () -> Unit, () -> Unit) -> Unit
 
 val None: TransitionEffect = { _, _, cur ->
     cur()

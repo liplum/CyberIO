@@ -1,6 +1,6 @@
 package net.liplum.mdt.animation.state
 
-typealias TransitionEffect = (Float, () -> Unit, () -> Unit) -> Unit
+typealias SwitchStateEvent<T> = (m: StateMachine<T>, from: State<T>, to: State<T>) -> Unit
 
 /**
  * The configuration of an Animation State Machine
@@ -15,10 +15,9 @@ open class StateConfig<T> {
      */
     private val allEntrances = HashMap<State<T>, ArrayList<State<T>>>()
     /**
-     * Gets the default State
-     *
-     * @return the default State
+     * Call when [StateMachine] changed its [StateMachine.curState]
      */
+    var onSwitchState: SwitchStateEvent<T>? = null
     /**
      * [NotNull,lateinit] The default and initial State.
      * @throws IllegalStateException thrown when this configuration has already built

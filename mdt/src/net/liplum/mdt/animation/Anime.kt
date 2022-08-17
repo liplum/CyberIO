@@ -2,6 +2,7 @@ package net.liplum.mdt.animation
 
 import arc.math.Mathf
 import plumy.core.assets.TR
+import plumy.core.assets.TRs
 import plumy.core.math.FUNC
 
 data class Frame(
@@ -112,7 +113,7 @@ fun Anime.pingpong(): Anime {
  * @param duration total duration of these frames
  * @return the corresponding frames
  */
-fun Array<TR>.linearFrames(duration: Float): Array<Frame> =
+fun TRs.linearFrames(duration: Float): Array<Frame> =
     Array(size) {
         Frame(this[it], duration / size)
     }
@@ -123,7 +124,7 @@ fun Array<TR>.linearFrames(duration: Float): Array<Frame> =
  * @param interpolation an increasing function and x∈[0,1], y∈[0,1]
  * @return the corresponding frames
  */
-fun Array<TR>.genFramesBy(duration: Float, interpolation: FUNC): Array<Frame> {
+fun TRs.genFramesBy(duration: Float, interpolation: FUNC): Array<Frame> {
     if (size == 1)
         return arrayOf(Frame(this[0], duration))
     var accumulation = 0f
