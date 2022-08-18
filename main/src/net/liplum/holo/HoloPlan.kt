@@ -4,7 +4,7 @@ import mindustry.type.Item
 import mindustry.type.ItemStack
 import mindustry.type.LiquidStack
 import plumy.core.arc.Tick
-import net.liplum.mdt.utils.plus
+import plumy.dsl.plus
 import net.liplum.registry.CioFluid
 
 open class HoloPlan(

@@ -16,7 +16,7 @@ import net.liplum.api.brain.UT
 import net.liplum.api.brain.Upgrade
 import net.liplum.brain.*
 import net.liplum.bullet.BBulletType
-import net.liplum.mdt.utils.plus
+import plumy.dsl.plus
 
 object CioHeimdall {
     @JvmStatic lateinit var heimdall: Heimdall

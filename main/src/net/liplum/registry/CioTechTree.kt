@@ -7,7 +7,6 @@ import mindustry.content.Liquids.slag
 import net.liplum.ErekirSpec
 import net.liplum.Meta
 import net.liplum.VanillaSpec
-import net.liplum.mdt.CreateTechTree
 import net.liplum.registry.CioBlock.TMTRAINER
 import net.liplum.registry.CioBlock.cyberionMixer
 import net.liplum.registry.CioBlock.deleter
@@ -39,6 +38,7 @@ import net.liplum.registry.CioHoloUnit.holoMiner
 import net.liplum.registry.CioHoloUnit.holoProjector
 import net.liplum.registry.CioHoloUnit.holoSupporter
 import net.liplum.registry.CioItem.ic
+import plumy.dsl.CreateTechTree
 
 object CioTechTree {
     fun loadAll() {

@@ -23,15 +23,11 @@ import net.liplum.common.util.bundle
 import net.liplum.common.util.toFloat
 import net.liplum.event.CioInitEvent
 import net.liplum.mdt.ClientOnly
-import plumy.world.AddBar
 import net.liplum.mdt.utils.*
 import net.liplum.registry.CioStats
 import plumy.core.math.Point2f
 import plumy.core.math.smooth
-import plumy.world.ID
-import plumy.world.build
-import plumy.world.castBuild
-import plumy.world.exists
+import plumy.world.*
 
 private val p1 = Point2f()
 private val p2 = Point2f()
@@ -100,6 +96,8 @@ val ICyberEntity?.tileXd: Double
     get() = (this?.tile?.x ?: 0).toDouble()
 val ICyberEntity?.tileYd: Double
     get() = (this?.tile?.y ?: 0).toDouble()
+val Liquid.fluidColor: Color
+    get() = if (gas) gasColor else color
 //</editor-fold>
 typealias SingleItemArray = Seq<Item>
 

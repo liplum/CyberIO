@@ -14,9 +14,9 @@ import net.liplum.VanillaSpec
 import net.liplum.annotations.DependOn
 import net.liplum.bullet.ArcFieldBulletType
 import net.liplum.bullet.ArcWaveBulletType
-import net.liplum.mdt.render.drawTurret
-import net.liplum.mdt.render.regionPart
-import net.liplum.mdt.utils.addAmmo
+import plumy.dsl.addAmmo
+import plumy.dsl.drawTurret
+import plumy.dsl.regionPart
 
 object CioSpaceship {
     @JvmStatic lateinit var cuttex: ContinuousLiquidTurret

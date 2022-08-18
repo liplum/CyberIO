@@ -53,6 +53,7 @@ import plumy.world.AddBar
 import net.liplum.mdt.utils.*
 import net.liplum.registry.CioFluid.cyberion
 import net.liplum.registry.SD
+import plumy.core.arc.toSecond
 
 open class Stealth(name: String) : Turret(name) {
     @JvmField var restoreChargeTime = 10 * 60f
@@ -346,12 +347,12 @@ open class Stealth(name: String) : Turret(name) {
                 { restRestore / maxHealth }
             )
             AddBar<StealthBuild>("charge",
-                { "Charge: ${restoreCharge.seconds}" },
+                { "Charge: ${restoreCharge.toSecond}" },
                 { Pal.power },
                 { restoreCharge / restoreChargeTime }
             )
             AddBar<StealthBuild>("last-damage",
-                { "Last Damage:${lastDamagedTime.seconds}s" },
+                { "Last Damage:${lastDamagedTime.toSecond}s" },
                 { Pal.power },
                 { lastDamagedTime / restoreChargeTime }
             )

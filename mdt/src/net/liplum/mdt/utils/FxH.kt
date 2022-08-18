@@ -7,13 +7,6 @@ import mindustry.entities.Effect
 import mindustry.entities.Effect.EffectContainer
 import plumy.core.arc.invoke
 
-inline fun NewEffect(
-    duration: Float,
-    clipSize: Float = 50f,
-    crossinline render: EffectContainer.() -> Unit,
-) = Effect(duration, clipSize) {
-    it.render()
-}
 /**
  * @param duration the duration of fade-in&out
  */

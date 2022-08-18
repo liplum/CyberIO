@@ -11,9 +11,9 @@ import mindustry.graphics.Layer
 import net.liplum.S
 import net.liplum.api.IExecutioner
 import net.liplum.math.quadratic
-import net.liplum.mdt.utils.NewEffect
 import plumy.animation.ContextDraw.DrawScale
 import net.liplum.mdt.utils.lostHp
+import plumy.dsl.NewEffect
 
 private val P2Alpha = quadratic(0.95f, 0.35f)
 val deleted = NewEffect(60f) {

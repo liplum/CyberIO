@@ -58,10 +58,8 @@ import net.liplum.holo.HoloWall
 import net.liplum.holo.LandProjector
 import net.liplum.holo.Stealth
 import net.liplum.mdt.Else
-import net.liplum.mdt.render.*
+import net.liplum.mdt.render.DrawTurretHeat
 import net.liplum.mdt.ui.DynamicContentInfoDialog.Companion.registerDynamicInfo
-import net.liplum.mdt.utils.addAmmo
-import net.liplum.mdt.utils.plus
 import net.liplum.registry.CioBulletType.optInRadiationInterference
 import net.liplum.registry.CioBulletType.optInVirus
 import net.liplum.render.*
@@ -69,6 +67,7 @@ import net.liplum.statusFx.StaticFx
 import net.liplum.util.globalAnim
 import plumy.core.arc.invoke
 import plumy.core.math.smooth
+import plumy.dsl.*
 
 object CioBlock {
     @JvmStatic lateinit var icAssembler: GenericCrafter

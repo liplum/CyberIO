@@ -25,7 +25,7 @@ import net.liplum.bullet.RuvikBullet
 import net.liplum.bullet.STEM_VERSION
 import net.liplum.holo.*
 import net.liplum.mdt.utils.NewUnitType
-import net.liplum.mdt.utils.plus
+import plumy.dsl.plus
 import plumy.core.arc.minute
 
 object CioHoloUnit {

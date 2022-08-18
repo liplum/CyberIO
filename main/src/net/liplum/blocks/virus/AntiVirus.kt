@@ -33,10 +33,10 @@ import net.liplum.mdt.render.drawEffectCirclePlace
 import net.liplum.input.smoothPlacing
 import net.liplum.input.smoothSelect
 import net.liplum.mdt.ui.bars.ReverseBar
-import net.liplum.mdt.utils.seconds
 import net.liplum.mdt.utils.sub
 import net.liplum.util.addRangeInfo
 import plumy.core.arc.Tick
+import plumy.core.arc.toSecond
 import plumy.core.assets.EmptyTR
 import plumy.core.math.isZero
 
@@ -114,7 +114,7 @@ open class AntiVirus(name: String) : Block(name) {
         }
         addBar<AntiVirusBuild>(R.Bar.CoolDownN) {
             ReverseBar(
-                { R.Bar.CoolDown.bundle(it.coolDown.seconds) },
+                { R.Bar.CoolDown.bundle(it.coolDown.toSecond) },
                 { R.C.CoolDown },
                 {
                     if (it.coolDown > reload)

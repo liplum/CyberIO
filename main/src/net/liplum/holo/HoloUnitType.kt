@@ -40,9 +40,9 @@ import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.Else
 import net.liplum.mdt.utils.MdtUnit
 import net.liplum.mdt.utils.healthPct
-import net.liplum.mdt.utils.seconds
 import net.liplum.registry.SD
 import net.liplum.util.time
+import plumy.core.arc.toSecond
 import plumy.core.assets.TR
 import plumy.texture.*
 import plumy.world.castBuild
@@ -236,7 +236,7 @@ open class HoloUnitType(name: String) : UnitType(name) {
     override fun setStats() {
         super.setStats()
         stats.add(Stat.health) {
-            it.add(lifespan.seconds.time())
+            it.add(lifespan.toSecond.time())
             it.row()
         }
     }
@@ -245,7 +245,7 @@ open class HoloUnitType(name: String) : UnitType(name) {
         if (unit is HoloUnit) {
             DebugOnly {
                 bars.add(Bar(
-                    { R.Bar.RestLifeFigure.bundle(unit.restLife.seconds) },
+                    { R.Bar.RestLifeFigure.bundle(unit.restLife.toSecond) },
                     { S.Hologram },
                     { unit.restLifePercent }
                 ))

@@ -79,6 +79,12 @@ tasks.withType<KotlinCompile>().configureEach {
     )
 }
 val MKUtilsVersion: String by project
+fun DependencyHandlerScope.mkutls(vararg modules: String) {
+    for (module in modules) {
+        implementation("com.github.plumygame.mkutils:$module:$MKUtilsVersion")
+        testImplementation("com.github.plumygame.mkutils:$module:$MKUtilsVersion")
+    }
+}
 
 dependencies {
     implementation(project(":annotations"))
@@ -89,18 +95,13 @@ dependencies {
     importMindustry()
     implementation("com.github.liplum:OpenGAL:$OpenGalVersion")
     implementation("com.github.liplum.plumyjava:path-kt:$PlumyVersion")
-    // mkutils core
-    implementation("com.github.plumygame.mkutils:core:$MKUtilsVersion")
-    testImplementation("com.github.plumygame.mkutils:core:$MKUtilsVersion")
-    // mkutils texture
-    implementation("com.github.plumygame.mkutils:texture:$MKUtilsVersion")
-    testImplementation("com.github.plumygame.mkutils:texture:$MKUtilsVersion")
-    // mkutils world
-    implementation("com.github.plumygame.mkutils:world:$MKUtilsVersion")
-    testImplementation("com.github.plumygame.mkutils:world:$MKUtilsVersion")
-    // mkutils animation
-    implementation("com.github.plumygame.mkutils:animation:$MKUtilsVersion")
-    testImplementation("com.github.plumygame.mkutils:animation:$MKUtilsVersion")
+    mkutls(
+        "core",
+        "texture",
+        "world",
+        "animation",
+        "dsl"
+    )
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.2")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.0")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.0")

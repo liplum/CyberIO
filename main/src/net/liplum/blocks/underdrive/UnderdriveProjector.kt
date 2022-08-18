@@ -37,21 +37,21 @@ import net.liplum.Var
 import net.liplum.common.util.bundle
 import net.liplum.common.util.format
 import net.liplum.common.util.percentI
+import net.liplum.input.smoothPlacing
+import net.liplum.input.smoothSelect
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.render.G
 import net.liplum.mdt.render.G.realHeight
 import net.liplum.mdt.render.G.realWidth
 import net.liplum.mdt.render.drawEffectCirclePlace
-import net.liplum.input.smoothPlacing
-import net.liplum.input.smoothSelect
-import plumy.world.AddBar
 import net.liplum.mdt.ui.bars.ReverseBar
-import net.liplum.mdt.utils.NewEffect
 import net.liplum.mdt.utils.sub
 import net.liplum.mdt.utils.subBundle
 import net.liplum.util.addRangeInfo
 import plumy.core.Serialized
 import plumy.core.assets.EmptyTR
+import plumy.dsl.NewEffect
+import plumy.world.AddBar
 import kotlin.math.max
 
 const val MagicNSpiralRate = 0.1125f

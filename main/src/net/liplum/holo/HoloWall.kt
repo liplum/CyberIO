@@ -34,12 +34,12 @@ import net.liplum.animation.Floating
 import net.liplum.mdt.render.G
 import plumy.world.AddBar
 import net.liplum.mdt.utils.healthPct
-import net.liplum.mdt.utils.seconds
 import net.liplum.mdt.utils.sub
 import net.liplum.registry.SD
 import net.liplum.util.yesNo
 import plumy.core.Serialized
 import plumy.core.arc.Tick
+import plumy.core.arc.toSecond
 import plumy.core.assets.EmptyTR
 import plumy.core.assets.TR
 import plumy.core.math.isZero
@@ -146,12 +146,12 @@ open class HoloWall(name: String) : Wall(name) {
                 { restRestore / maxHealth }
             )
             AddBar<HoloWallBuild>("charge",
-                { "Charge: ${charge.seconds}s" },
+                { "Charge: ${charge.toSecond}s" },
                 { Pal.power },
                 { charge / restoreCharge }
             )
             AddBar<HoloWallBuild>("last-damaged",
-                { "Last Damage: ${lastDamagedTime.seconds}s" },
+                { "Last Damage: ${lastDamagedTime.toSecond}s" },
                 { Pal.power },
                 { lastDamagedTime / restoreCharge }
             )

@@ -11,7 +11,7 @@ import plumy.core.assets.TR
 import net.liplum.common.math.PolarX
 import plumy.core.math.random
 import net.liplum.mdt.render.G
-import net.liplum.mdt.utils.NewEffect
+import plumy.dsl.NewEffect
 
 object CioFx {
     val upgrade = NewEffect(25f) {
