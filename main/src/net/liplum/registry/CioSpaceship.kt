@@ -35,7 +35,8 @@ object CioSpaceship {
             shootSound = Sounds.none
             shootY = 2.8f
             rotateSpeed = 8f
-            VanillaSpec {
+            scaledHealth = 250f
+             VanillaSpec {
                 range = 160f
                 addAmmo(Liquids.water, ArcFieldBulletType {
                     hitColor = R.C.CuttexCyan
@@ -83,7 +84,7 @@ object CioSpaceship {
                     length = 165f
                 })
             }
-            minWarmup = 0.8f
+            //minWarmup = 0.8f
             shootWarmupSpeed = 0.05f
             drawTurret {
                 regionPart("-side") {

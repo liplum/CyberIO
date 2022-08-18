@@ -8,10 +8,11 @@ import arc.util.Time
 import arc.util.Tmp
 import mindustry.entities.Units
 import mindustry.entities.bullet.ContinuousBulletType
+import mindustry.gen.Building
 import mindustry.gen.Bullet
+import mindustry.gen.Hitboxc
 import mindustry.world.blocks.ControlBlock
-import net.liplum.mdt.render.Text
-import net.liplum.mdt.utils.MdtUnit
+import plumy.core.arc.invoke
 import plumy.core.arc.lighten
 import plumy.core.math.Degree
 
@@ -53,7 +54,7 @@ class ArcFieldBulletType : ContinuousBulletType() {
             Draw.color(Tmp.c1.set(hitColor).lighten(lightenIntensity))
         else Draw.color(hitColor)
         if (fdata < highlightTime) Draw.alpha(1f)
-        else Draw.alpha(fieldAlpha * b.fin(lengthInterp))
+        else Draw.alpha(fieldAlpha * fin(lengthInterp))
         Lines.arc(x, y, curLen / 2f, angle / 360f, this.rotation() - angle / 2f)
         Draw.reset()
     }
@@ -62,28 +63,47 @@ class ArcFieldBulletType : ContinuousBulletType() {
     override fun applyDamage(b: Bullet) = b.run {
         hasCausedDamage = false
         val curLen = currentLength(this)
+
         Units.nearbyEnemies(team, x, y, curLen) {
-            tryCauseDamageTo(it)
+            tryHitTarget(it)
+        }
+        if (collidesTiles) {
+            Units.nearbyBuildings(x, y, curLen) {
+                if(it.team != this.team || collidesTeam)
+                    tryHitTarget(it)
+            }
         }
         if (hasCausedDamage) {
             fdata = 0f
         }
     }
 
-    fun Bullet.tryCauseDamageTo(unit: MdtUnit) {
-        if (this.team != unit.team) {
-            val aimAngle = rotation()
-            val bullet2Enemy = this.angleTo(unit)
-            if (Angles.within(aimAngle, bullet2Enemy, angle / 2f)) {
-                damageTarget(unit)
-                hasCausedDamage = true
-            }
+    fun Bullet.tryHitTarget(target: Hitboxc) {
+        val aimAngle = rotation()
+        val bullet2Enemy = this.angleTo(target)
+        if (Angles.within(aimAngle, bullet2Enemy, angle / 2f)) {
+            hitTarget(target)
+            hasCausedDamage = true
         }
     }
 
-    fun Bullet.damageTarget(unit: MdtUnit) {
-        unit.collision(this, unit.x, unit.y)
-        this.collision(unit, unit.x, unit.y)
+    fun Bullet.tryHitTarget(target: Building) {
+        val aimAngle = rotation()
+        val bullet2Enemy = this.angleTo(target)
+        if (Angles.within(aimAngle, bullet2Enemy, angle / 2f)) {
+            hitTarget(target)
+            hasCausedDamage = true
+        }
+    }
+
+    fun Bullet.hitTarget(target: Hitboxc) {
+        target.collision(this, target.x, target.y)
+        this.collision(target, target.x, target.y)
+    }
+
+    fun Bullet.hitTarget(target: Building) {
+        target.collision(this)
+        hit(this, target.x, target.y)
     }
 
     fun isControlledByPlayer(b: Bullet): Boolean {
@@ -94,12 +114,12 @@ class ArcFieldBulletType : ContinuousBulletType() {
     override fun currentLength(b: Bullet): Float = b.run {
         if (pointField) {
             if (pointFieldEnabledWhenPlayer && isControlledByPlayer(this)) {
-                return@run Tmp.v1.set(aimX, aimY).sub(x, y).len()
+                return@run Tmp.v1.set(aimX, aimY).sub(x, y).len() * lengthInterp(fin())
             } else {
-                return@run length * b.fin(lengthInterp)
+                return@run length * lengthInterp(fin())
             }
         } else {
-            return@run length * b.fin(lengthInterp)
+            return@run length * lengthInterp(fin())
         }
     }
 

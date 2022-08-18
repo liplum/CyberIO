@@ -3,7 +3,7 @@ package net.liplum
 import arc.Core.settings
 import arc.math.Interp
 import mindustry.Vars
-import net.liplum.common.Setting
+import plumy.dsl.Setting
 import plumy.core.arc.invoke
 import net.liplum.mdt.ClientOnly
 import net.liplum.script.KeyNotFoundException
