@@ -16,8 +16,8 @@ import net.liplum.blocks.prism.Prism.PrismBuild
 import net.liplum.common.util.bundle
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.WhenNotPaused
-import net.liplum.mdt.animation.AnimationMeta
-import net.liplum.mdt.animation.draw
+import plumy.animation.AnimationMeta
+import plumy.animation.draw
 import net.liplum.mdt.render.G
 import net.liplum.mdt.render.drawSurroundingRect
 import net.liplum.mdt.render.smoothPlacing

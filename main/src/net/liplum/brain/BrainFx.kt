@@ -26,7 +26,7 @@ import net.liplum.common.util.sheetOneDirection
 import net.liplum.event.CioLoadContentEvent
 import plumy.core.assets.TR
 import net.liplum.mdt.WhenNotPaused
-import net.liplum.mdt.animation.ContextDraw.DrawScale
+import plumy.animation.ContextDraw.DrawScale
 import net.liplum.mdt.utils.MdtUnit
 import net.liplum.mdt.utils.NewEffect
 import net.liplum.mdt.utils.fadeInOutPct

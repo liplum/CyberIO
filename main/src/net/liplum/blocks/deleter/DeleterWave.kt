@@ -11,7 +11,7 @@ import mindustry.graphics.Layer
 import net.liplum.S
 import net.liplum.api.IExecutioner
 import net.liplum.math.quadratic
-import net.liplum.mdt.animation.ContextDraw.DrawScale
+import plumy.animation.ContextDraw.DrawScale
 import net.liplum.mdt.utils.NewEffect
 import net.liplum.mdt.utils.lostHp
 

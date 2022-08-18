@@ -46,8 +46,8 @@ import net.liplum.math.quadratic
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.advanced.Inspector
 import net.liplum.mdt.advanced.Inspector.isSelected
-import net.liplum.mdt.animation.ContextDraw.Draw
-import net.liplum.mdt.animation.ContextDraw.DrawScale
+import plumy.animation.ContextDraw.Draw
+import plumy.animation.ContextDraw.DrawScale
 import net.liplum.mdt.mixin.copy
 import net.liplum.mdt.render.*
 import plumy.world.AddBar

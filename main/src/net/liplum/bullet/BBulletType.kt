@@ -11,7 +11,7 @@ import mindustry.entities.Lightning
 import mindustry.entities.bullet.BulletType
 import mindustry.gen.Bullet
 import plumy.core.assets.EmptyTR
-import net.liplum.mdt.animation.ContextDraw.DrawScale
+import plumy.animation.ContextDraw.DrawScale
 import plumy.core.assets.TR
 import net.liplum.mdt.utils.atlas
 

@@ -20,7 +20,7 @@ import mindustry.graphics.Pal
 import mindustry.world.Block
 import mindustry.world.Tile
 import net.liplum.annotations.Subscribe
-import net.liplum.mdt.animation.ContextDraw.DrawScale
+import plumy.animation.ContextDraw.DrawScale
 import plumy.core.arc.darken
 import plumy.core.assets.TR
 import plumy.core.math.distance
@@ -48,7 +48,7 @@ object G {
         get() = width * Draw.scl * Draw.xscl
     @JvmStatic
     val TR.realHeight: Float
-        get() = width * Draw.scl * Draw.yscl
+        get() = height * Draw.scl * Draw.yscl
     @JvmStatic
     val sclx: Float
         get() = Draw.scl * Draw.xscl

@@ -40,8 +40,8 @@ import plumy.core.arc.invoke
 import plumy.core.assets.TR
 import plumy.core.math.isZero
 import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.animation.ContextDraw.Draw
-import net.liplum.mdt.animation.ContextDraw.DrawScale
+import plumy.animation.ContextDraw.Draw
+import plumy.animation.ContextDraw.DrawScale
 import net.liplum.mdt.render.*
 import net.liplum.mdt.utils.MdtUnit
 import plumy.world.TileXY

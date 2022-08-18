@@ -28,7 +28,7 @@ import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.Var
 import net.liplum.mdt.*
-import net.liplum.mdt.animation.ContextDraw.DrawScale
+import plumy.animation.ContextDraw.DrawScale
 import net.liplum.mdt.render.G
 import net.liplum.mdt.render.smoothPlacing
 import net.liplum.mdt.render.smoothSelect

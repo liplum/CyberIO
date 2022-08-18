@@ -51,10 +51,10 @@ import net.liplum.mdt.HeadlessOnly
 import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.advanced.Inspector.isPlacing
 import net.liplum.mdt.advanced.Inspector.isSelected
-import net.liplum.mdt.animation.Anime
-import net.liplum.mdt.animation.ContextDraw.Draw
-import net.liplum.mdt.animation.draw
-import net.liplum.mdt.animation.linearFrames
+import plumy.animation.Anime
+import plumy.animation.ContextDraw.Draw
+import plumy.animation.draw
+import plumy.animation.linearFrames
 import net.liplum.mdt.render.*
 import net.liplum.mdt.utils.MdtUnit
 import net.liplum.mdt.utils.atUnit

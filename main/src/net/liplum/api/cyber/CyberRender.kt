@@ -21,7 +21,7 @@ import net.liplum.common.util.bundle
 import net.liplum.common.util.inViewField
 import net.liplum.common.util.isLineInViewField
 import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.animation.ContextDraw.DrawScale
+import plumy.animation.ContextDraw.DrawScale
 import net.liplum.mdt.render.*
 import net.liplum.mdt.utils.worldPos
 import plumy.core.arc.darken

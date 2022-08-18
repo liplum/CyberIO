@@ -28,7 +28,7 @@ import net.liplum.common.util.DrawLayer
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.WhenNotPaused
 import net.liplum.mdt.WhenTheSameTeam
-import net.liplum.mdt.animation.ContextDraw.Draw
+import plumy.animation.ContextDraw.Draw
 import net.liplum.mdt.consumer.powerStore
 import net.liplum.mdt.render.*
 import net.liplum.mdt.utils.sub

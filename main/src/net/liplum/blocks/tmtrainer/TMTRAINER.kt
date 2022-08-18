@@ -17,8 +17,8 @@ import mindustry.world.draw.DrawBlock
 import mindustry.world.meta.StatUnit
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.WhenNotPaused
-import net.liplum.mdt.animation.AnimationMeta
-import net.liplum.mdt.animation.draw
+import plumy.animation.AnimationMeta
+import plumy.animation.draw
 import net.liplum.mdt.mixin.drawRotation
 import net.liplum.mdt.mixin.drawX
 import net.liplum.mdt.mixin.drawY

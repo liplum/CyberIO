@@ -30,8 +30,8 @@ import plumy.core.math.between
 import plumy.core.math.pow3InIntrp
 import net.liplum.mdt.advanced.Inspector.isPlacing
 import net.liplum.mdt.advanced.Inspector.isSelected
-import net.liplum.mdt.animation.ContextDraw.Draw
-import net.liplum.mdt.animation.ContextDraw.DrawSize
+import plumy.animation.ContextDraw.Draw
+import plumy.animation.ContextDraw.DrawSize
 import net.liplum.mdt.render.*
 import net.liplum.registry.SD
 import plumy.world.*

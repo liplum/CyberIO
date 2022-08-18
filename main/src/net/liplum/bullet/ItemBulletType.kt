@@ -7,7 +7,7 @@ import mindustry.content.Items
 import mindustry.entities.bullet.BulletType
 import mindustry.gen.Bullet
 import mindustry.type.Item
-import net.liplum.mdt.animation.ContextDraw.DrawScale
+import plumy.animation.ContextDraw.DrawScale
 
 open class ItemBulletType : BulletType() {
     var drawSizer: Bullet.() -> Float = { 1f }

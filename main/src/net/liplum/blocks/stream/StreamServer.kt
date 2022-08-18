@@ -28,7 +28,7 @@ import plumy.core.assets.EmptyTR
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.WhenTheSameTeam
 import net.liplum.mdt.mixin.total
-import net.liplum.mdt.animation.ContextDraw.DrawOn
+import plumy.animation.ContextDraw.DrawOn
 import net.liplum.mdt.ui.bars.appendDisplayLiquidsDynamic
 import net.liplum.mdt.ui.bars.genAllLiquidBars
 import net.liplum.mdt.ui.bars.removeLiquidInBar

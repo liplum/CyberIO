@@ -13,7 +13,7 @@ import net.liplum.common.util.Float
 import net.liplum.common.util.bundle
 import net.liplum.common.util.format
 import net.liplum.common.util.percentI
-import net.liplum.mdt.animation.state.IStateful
+import plumy.animation.state.IStateful
 import plumy.world.AddBar
 
 inline fun <reified T> Block.addRangeInfo(maxRange: Float) where T : Building, T : Ranged {
