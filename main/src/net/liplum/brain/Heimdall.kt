@@ -49,8 +49,10 @@ import net.liplum.common.util.toDouble
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.HeadlessOnly
 import net.liplum.mdt.WhenNotPaused
-import net.liplum.mdt.advanced.Inspector.isPlacing
-import net.liplum.mdt.advanced.Inspector.isSelected
+import net.liplum.input.Inspector.isPlacing
+import net.liplum.input.Inspector.isSelected
+import net.liplum.input.smoothPlacing
+import net.liplum.input.smoothSelect
 import plumy.animation.Anime
 import plumy.animation.ContextDraw.Draw
 import plumy.animation.draw

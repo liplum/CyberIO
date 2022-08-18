@@ -1,4 +1,4 @@
-package net.liplum.mdt.advanced
+package net.liplum.input
 
 import arc.util.Time
 import mindustry.Vars
@@ -7,9 +7,8 @@ import mindustry.gen.Building
 import mindustry.world.Block
 import net.liplum.annotations.Only
 import net.liplum.annotations.Subscribe
-import net.liplum.mdt.Screen
 import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.render.IFocusable
+import net.liplum.mdt.Screen
 
 @ClientOnly
 object Inspector {

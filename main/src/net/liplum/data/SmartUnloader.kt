@@ -38,7 +38,7 @@ import plumy.animation.state.StateConfig
 import plumy.animation.state.configuring
 import plumy.animation.draw
 import net.liplum.mdt.render.drawSurroundingRect
-import net.liplum.mdt.render.smoothPlacing
+import net.liplum.input.smoothPlacing
 import net.liplum.mdt.ui.bars.removeItemsInBar
 import net.liplum.mdt.utils.*
 import net.liplum.util.addPowerUseStats

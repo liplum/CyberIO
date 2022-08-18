@@ -30,8 +30,8 @@ import net.liplum.mdt.render.G
 import net.liplum.mdt.render.G.realHeight
 import net.liplum.mdt.render.G.realWidth
 import net.liplum.mdt.render.drawEffectCirclePlace
-import net.liplum.mdt.render.smoothPlacing
-import net.liplum.mdt.render.smoothSelect
+import net.liplum.input.smoothPlacing
+import net.liplum.input.smoothSelect
 import net.liplum.mdt.ui.bars.ReverseBar
 import net.liplum.mdt.utils.seconds
 import net.liplum.mdt.utils.sub

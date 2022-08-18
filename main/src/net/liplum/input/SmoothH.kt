@@ -1,14 +1,14 @@
 @file:JvmName("SmoothH")
 
-package net.liplum.mdt.render
+package net.liplum.input
 
 import mindustry.gen.Building
 import mindustry.world.Block
 import plumy.core.math.smooth
-import net.liplum.mdt.advanced.Inspector
-import net.liplum.mdt.advanced.Inspector.isConfiguring
-import net.liplum.mdt.advanced.Inspector.isPlacing
-import net.liplum.mdt.advanced.Inspector.isSelected
+import net.liplum.input.Inspector
+import net.liplum.input.Inspector.isConfiguring
+import net.liplum.input.Inspector.isPlacing
+import net.liplum.input.Inspector.isSelected
 import plumy.core.math.progressTime
 
 /**

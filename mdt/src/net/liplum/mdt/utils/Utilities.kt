@@ -6,6 +6,5 @@ import net.liplum.common.util.format
 val Float.seconds: Int
     get() = (this / Time.toSeconds).toInt()
 
-fun Float.toSeconds(digits: Int): String = (this / Time.toSeconds).format(digits)
 val Float.draw: Float
     get() = this - 90

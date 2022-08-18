@@ -45,7 +45,7 @@ import plumy.core.math.isZero
 import plumy.core.math.nextBoolean
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.WhenNotPaused
-import net.liplum.mdt.animation.Floating
+import net.liplum.animation.Floating
 import net.liplum.mdt.consumer.LiquidTurretCons
 import plumy.animation.ContextDraw.Draw
 import net.liplum.mdt.render.G

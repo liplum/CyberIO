@@ -28,8 +28,10 @@ import net.liplum.data.PayloadData
 import plumy.core.math.Progress
 import plumy.core.math.between
 import plumy.core.math.pow3InIntrp
-import net.liplum.mdt.advanced.Inspector.isPlacing
-import net.liplum.mdt.advanced.Inspector.isSelected
+import net.liplum.input.Inspector.isPlacing
+import net.liplum.input.Inspector.isSelected
+import net.liplum.input.smoothPlacing
+import net.liplum.input.smoothSelect
 import plumy.animation.ContextDraw.Draw
 import plumy.animation.ContextDraw.DrawSize
 import net.liplum.mdt.render.*

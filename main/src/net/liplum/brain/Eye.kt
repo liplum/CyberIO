@@ -25,6 +25,8 @@ import net.liplum.Var
 import net.liplum.api.brain.*
 import net.liplum.common.math.PolarX
 import net.liplum.common.util.progress
+import net.liplum.input.smoothPlacing
+import net.liplum.input.smoothSelect
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.WhenNotPaused
 import plumy.animation.Anime

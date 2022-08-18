@@ -20,7 +20,7 @@ import plumy.core.assets.TR
 import net.liplum.common.shader.use
 import net.liplum.mdt.ClientOnly
 import plumy.animation.ContextDraw.Draw
-import net.liplum.mdt.render.smoothSelect
+import net.liplum.input.smoothSelect
 import net.liplum.mdt.utils.MdtUnit
 import plumy.world.WorldXY
 import net.liplum.mdt.utils.atlas

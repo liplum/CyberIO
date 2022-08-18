@@ -30,8 +30,8 @@ import net.liplum.Var
 import net.liplum.mdt.*
 import plumy.animation.ContextDraw.DrawScale
 import net.liplum.mdt.render.G
-import net.liplum.mdt.render.smoothPlacing
-import net.liplum.mdt.render.smoothSelect
+import net.liplum.input.smoothPlacing
+import net.liplum.input.smoothSelect
 import plumy.core.Serialized
 import plumy.core.math.smooth
 import plumy.world.AddBar

@@ -19,8 +19,8 @@ import net.liplum.common.entity.Queue
 import net.liplum.common.util.DrawLayer
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.WhenNotPaused
-import net.liplum.mdt.animation.Floating
-import net.liplum.mdt.animation.add
+import net.liplum.animation.Floating
+import net.liplum.animation.add
 import plumy.animation.ContextDraw.Draw
 import net.liplum.mdt.utils.draw
 import net.liplum.mdt.utils.sub

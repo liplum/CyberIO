@@ -7,7 +7,7 @@ import net.liplum.*
 import net.liplum.ConfigEntry.Companion.Config
 import net.liplum.ContentSpec.Companion.tryResolveContentSpec
 import net.liplum.mdt.HeadlessOnly
-import net.liplum.mdt.advanced.MapCleaner
+import net.liplum.advanced.MapCleaner
 import net.liplum.update.Updater
 
 @HeadlessOnly

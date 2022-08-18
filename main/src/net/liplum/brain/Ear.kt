@@ -35,6 +35,8 @@ import net.liplum.common.persistence.ReadFromCache
 import net.liplum.common.persistence.WriteIntoCache
 import net.liplum.common.util.forLoop
 import net.liplum.common.util.toDouble
+import net.liplum.input.smoothPlacing
+import net.liplum.input.smoothSelect
 import plumy.core.Serialized
 import plumy.core.arc.invoke
 import plumy.core.assets.TR

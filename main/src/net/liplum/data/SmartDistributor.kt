@@ -39,7 +39,7 @@ import plumy.animation.state.State
 import plumy.animation.state.StateConfig
 import plumy.animation.state.configuring
 import net.liplum.mdt.render.drawSurroundingRect
-import net.liplum.mdt.render.smoothPlacing
+import net.liplum.input.smoothPlacing
 import net.liplum.mdt.ui.bars.removeItemsInBar
 import net.liplum.mdt.utils.animationMeta
 import net.liplum.mdt.utils.inMod

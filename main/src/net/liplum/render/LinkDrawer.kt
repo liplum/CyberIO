@@ -11,7 +11,7 @@ import net.liplum.api.ICyberEntity
 import net.liplum.api.cyber.*
 import plumy.core.math.smooth
 import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.advanced.Inspector
+import net.liplum.input.Inspector
 
 object LinkDrawer {
     var lastSelected: ICyberEntity? = null

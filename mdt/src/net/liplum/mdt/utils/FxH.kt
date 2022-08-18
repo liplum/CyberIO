@@ -7,11 +7,11 @@ import mindustry.entities.Effect
 import mindustry.entities.Effect.EffectContainer
 import plumy.core.arc.invoke
 
-fun NewEffect(
+inline fun NewEffect(
     duration: Float,
     clipSize: Float = 50f,
-    render: EffectContainer.() -> Unit,
-): Effect = Effect(duration, clipSize) {
+    crossinline render: EffectContainer.() -> Unit,
+) = Effect(duration, clipSize) {
     it.render()
 }
 /**

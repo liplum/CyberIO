@@ -30,10 +30,15 @@ dependencies {
     testApi(project(":cui"))
     testApi(project(":common"))
     importMindustry()
+    // mkutils core
     api("com.github.plumygame.mkutils:core:$MKUtilsVersion")
     testApi("com.github.plumygame.mkutils:core:$MKUtilsVersion")
-    implementation("com.github.plumygame.mkutils:world:$MKUtilsVersion")
-    testImplementation("com.github.plumygame.mkutils:world:$MKUtilsVersion")
+    // mkutils world
+    api("com.github.plumygame.mkutils:world:$MKUtilsVersion")
+    testApi("com.github.plumygame.mkutils:world:$MKUtilsVersion")
+    // mkutils animation
+    api("com.github.plumygame.mkutils:animation:$MKUtilsVersion")
+    testApi("com.github.plumygame.mkutils:animation:$MKUtilsVersion")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.0")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.0")
     testImplementation("com.github.liplum:TestUtils:v0.1")

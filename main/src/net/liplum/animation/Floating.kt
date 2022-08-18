@@ -1,4 +1,4 @@
-package net.liplum.mdt.animation
+package net.liplum.animation
 
 import arc.math.Mathf
 import arc.math.geom.Vec2

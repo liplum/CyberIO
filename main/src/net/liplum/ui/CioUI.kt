@@ -26,7 +26,7 @@ import net.liplum.event.CioInitEvent
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.IsLocal
 import net.liplum.mdt.UnsteamOnly
-import net.liplum.mdt.advanced.MapCleaner
+import net.liplum.advanced.MapCleaner
 import net.liplum.mdt.ui.MainMenus
 import net.liplum.mdt.ui.ShowTextDialog
 import net.liplum.mdt.ui.addTrackTooltip

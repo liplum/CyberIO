@@ -20,7 +20,7 @@ import plumy.animation.AnimationMeta
 import plumy.animation.draw
 import net.liplum.mdt.render.G
 import net.liplum.mdt.render.drawSurroundingRect
-import net.liplum.mdt.render.smoothPlacing
+import net.liplum.input.smoothPlacing
 import net.liplum.mdt.utils.animationMeta
 import net.liplum.mdt.utils.isDiagonalTo
 import net.liplum.mdt.utils.subBundle

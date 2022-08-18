@@ -11,8 +11,8 @@ import mindustry.graphics.Layer
 import net.liplum.S
 import net.liplum.api.IExecutioner
 import net.liplum.math.quadratic
-import plumy.animation.ContextDraw.DrawScale
 import net.liplum.mdt.utils.NewEffect
+import plumy.animation.ContextDraw.DrawScale
 import net.liplum.mdt.utils.lostHp
 
 private val P2Alpha = quadratic(0.95f, 0.35f)

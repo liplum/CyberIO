@@ -44,8 +44,9 @@ import net.liplum.common.util.bundle
 import net.liplum.common.util.percentI
 import net.liplum.math.quadratic
 import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.advanced.Inspector
-import net.liplum.mdt.advanced.Inspector.isSelected
+import net.liplum.input.Inspector
+import net.liplum.input.Inspector.isSelected
+import net.liplum.input.smoothSelect
 import plumy.animation.ContextDraw.Draw
 import plumy.animation.ContextDraw.DrawScale
 import net.liplum.mdt.mixin.copy

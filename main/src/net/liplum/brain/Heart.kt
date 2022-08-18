@@ -35,6 +35,8 @@ import net.liplum.common.Smooth
 import net.liplum.common.util.bundle
 import net.liplum.common.util.format
 import net.liplum.common.util.toDouble
+import net.liplum.input.smoothPlacing
+import net.liplum.input.smoothSelect
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.Else
 import net.liplum.mdt.WhenNotPaused
