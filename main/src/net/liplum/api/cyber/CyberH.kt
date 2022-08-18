@@ -19,7 +19,7 @@ import net.liplum.annotations.SubscribeEvent
 import net.liplum.api.ICyberEntity
 import net.liplum.common.Remember
 import net.liplum.common.util.Or
-import net.liplum.common.util.bundle
+import plumy.dsl.bundle
 import net.liplum.common.util.toFloat
 import net.liplum.event.CioInitEvent
 import net.liplum.mdt.ClientOnly

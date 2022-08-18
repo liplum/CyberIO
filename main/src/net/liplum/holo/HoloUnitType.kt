@@ -32,7 +32,7 @@ import net.liplum.R
 import net.liplum.S
 import net.liplum.Var
 import net.liplum.common.shader.use
-import net.liplum.common.util.bundle
+import plumy.dsl.bundle
 import net.liplum.common.util.toFloat
 import net.liplum.holo.HoloProjector.HoloProjectorBuild
 import plumy.core.math.FUNC

@@ -34,7 +34,7 @@ import net.liplum.R
 import net.liplum.S
 import net.liplum.UndebugOnly
 import net.liplum.common.shader.use
-import net.liplum.common.util.bundle
+import plumy.dsl.bundle
 import net.liplum.common.util.percentI
 import net.liplum.mdt.*
 import net.liplum.mdt.consumer.ConsumeFluidDynamic

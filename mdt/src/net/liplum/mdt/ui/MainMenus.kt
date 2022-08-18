@@ -12,7 +12,7 @@ import mindustry.gen.Icon
 import mindustry.gen.Tex
 import mindustry.ui.MobileButton
 import mindustry.ui.Styles
-import net.liplum.common.util.bundle
+import plumy.dsl.bundle
 import net.liplum.ui.template.NewIconTextButton
 
 object MainMenus {

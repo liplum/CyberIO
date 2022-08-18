@@ -12,7 +12,7 @@ import mindustry.graphics.Drawf
 import mindustry.world.blocks.defense.OverdriveProjector
 import mindustry.world.meta.Stat
 import net.liplum.R
-import net.liplum.common.util.bundle
+import plumy.dsl.bundle
 import net.liplum.common.util.percentI
 import net.liplum.math.shrink
 import plumy.core.Serialized

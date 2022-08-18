@@ -41,7 +41,6 @@ import net.liplum.blocks.jammer.JammingLaser
 import net.liplum.blocks.power.WirelessTower
 import net.liplum.blocks.prism.Prism
 import net.liplum.blocks.prism.PrismObelisk
-import net.liplum.blocks.sandbox.AdjustableOverdrive
 import net.liplum.blocks.tmtrainer.CharBulletType
 import net.liplum.blocks.tmtrainer.RandomName
 import net.liplum.blocks.tmtrainer.TMTRAINER
@@ -79,7 +78,6 @@ object CioBlock {
     @JvmStatic lateinit var prism: Prism
     @JvmStatic lateinit var prismObelisk: PrismObelisk
     @JvmStatic lateinit var deleter: Deleter
-    @JvmStatic lateinit var hyperOverdriveSphere: AdjustableOverdrive
     @JvmStatic lateinit var holoWall: HoloWall
     @JvmStatic lateinit var holoWallLarge: HoloWall
     @JvmStatic lateinit var TMTRAINER: TMTRAINER
@@ -241,23 +239,6 @@ object CioBlock {
             consumePower(0.5f)
             size = 1
         }.setUninfected()
-    }
-    @DependOn
-    fun hyperOverdriveSphere() {
-        hyperOverdriveSphere = AdjustableOverdrive("hyper-overdrive-sphere").apply {
-            category = Category.effect
-            DebugOnly {
-                buildVisibility = BuildVisibility.shown
-            }.Else {
-                buildVisibility = BuildVisibility.sandboxOnly
-            }
-            requirements = emptyArray()
-            size = 3
-            maxBoost = 50f
-            minBoost = 0.5f
-            speedBoost = 50f
-            range = 1000f
-        }
     }
     @DependOn("CioItem.ic")
     fun prism() {
@@ -433,7 +414,7 @@ object CioBlock {
                         mirror = true
                     }
                 }
-                then add DrawTurretHeat<PowerTurretBuild>("-glow") { warmup() }
+                +DrawTurretHeat<PowerTurretBuild>("-glow") { warmup() }
             }
         }
     }
@@ -618,7 +599,7 @@ object CioBlock {
                         under = true
                     }
                 }
-                then add DrawCore()
+                +DrawCore()
             }
         }.registerDynamicInfo()
     }
@@ -732,7 +713,7 @@ object CioBlock {
                         moveY = -4f
                     }
                 }
-                then add DrawStereo()
+                +DrawStereo()
             }
         }
     }

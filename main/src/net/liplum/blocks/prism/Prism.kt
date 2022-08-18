@@ -39,8 +39,8 @@ import net.liplum.api.prism.PrismRegistry.setDuplicate
 import net.liplum.blocks.prism.CrystalManager.Companion.read
 import net.liplum.blocks.prism.CrystalManager.Companion.write
 import net.liplum.common.math.PolarX
-import net.liplum.common.util.DrawLayer
-import net.liplum.common.util.bundle
+import plumy.dsl.DrawLayer
+import plumy.dsl.bundle
 import net.liplum.common.util.percentI
 import net.liplum.math.quadratic
 import net.liplum.mdt.ClientOnly

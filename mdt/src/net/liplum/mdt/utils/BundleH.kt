@@ -3,7 +3,7 @@
 package net.liplum.mdt.utils
 
 import mindustry.world.Block
-import net.liplum.common.util.bundle
+import plumy.dsl.bundle
 import net.liplum.mdt.ClientOnly
 
 /**

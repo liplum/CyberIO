@@ -21,7 +21,7 @@ import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.api.virus.UninfectedBlocksRegistry
 import net.liplum.common.shader.use
-import net.liplum.common.util.bundle
+import plumy.dsl.bundle
 import net.liplum.common.util.off
 import net.liplum.common.util.on
 import net.liplum.mdt.ClientOnly

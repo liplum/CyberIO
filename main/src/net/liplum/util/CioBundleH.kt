@@ -1,7 +1,7 @@
 package net.liplum.util
 
 import net.liplum.R
-import net.liplum.common.util.bundle
+import plumy.dsl.bundle
 import net.liplum.common.util.format
 import kotlin.math.absoluteValue
 

@@ -32,7 +32,7 @@ import net.liplum.R
 import net.liplum.Var
 import net.liplum.api.brain.*
 import net.liplum.common.Smooth
-import net.liplum.common.util.bundle
+import plumy.dsl.bundle
 import net.liplum.common.util.format
 import net.liplum.common.util.toDouble
 import net.liplum.input.smoothPlacing

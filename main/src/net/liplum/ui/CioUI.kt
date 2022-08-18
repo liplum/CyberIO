@@ -19,7 +19,7 @@ import net.liplum.Settings.percentage2Density
 import net.liplum.annotations.Only
 import net.liplum.annotations.SubscribeEvent
 import net.liplum.common.ing
-import net.liplum.common.util.bundle
+import plumy.dsl.bundle
 import net.liplum.common.util.getF
 import net.liplum.common.util.randomExcept
 import net.liplum.event.CioInitEvent

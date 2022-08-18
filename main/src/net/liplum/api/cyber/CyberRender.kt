@@ -17,7 +17,7 @@ import net.liplum.R
 import net.liplum.Settings
 import net.liplum.Var
 import net.liplum.api.ICyberEntity
-import net.liplum.common.util.bundle
+import plumy.dsl.bundle
 import net.liplum.common.util.inViewField
 import net.liplum.common.util.isLineInViewField
 import net.liplum.input.smoothPlacing

@@ -10,7 +10,7 @@ import mindustry.logic.Ranged
 import mindustry.world.Block
 import net.liplum.R
 import net.liplum.common.util.Float
-import net.liplum.common.util.bundle
+import plumy.dsl.bundle
 import net.liplum.common.util.format
 import net.liplum.common.util.percentI
 import plumy.animation.state.IStateful

@@ -26,7 +26,7 @@ import net.liplum.api.holo.IHoloEntity.Companion.addHoloChargeTimeStats
 import net.liplum.api.holo.IHoloEntity.Companion.addHoloHpAtLeastStats
 import net.liplum.api.holo.IHoloEntity.Companion.minHealth
 import net.liplum.common.shader.use
-import net.liplum.common.util.bundle
+import plumy.dsl.bundle
 import net.liplum.common.util.toFloat
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.WhenNotPaused

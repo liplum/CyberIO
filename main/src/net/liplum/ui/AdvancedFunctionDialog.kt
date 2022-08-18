@@ -14,7 +14,7 @@ import net.liplum.R
 import net.liplum.Var
 import net.liplum.common.delegate.Delegate
 import net.liplum.common.util.IBundlable
-import net.liplum.common.util.bundle
+import plumy.dsl.bundle
 
 object AdvancedFunctionDialog : IBundlable {
     override val bundlePrefix = "setting.${R.Gen("advanced-function")}"

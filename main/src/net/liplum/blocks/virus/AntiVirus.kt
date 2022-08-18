@@ -24,7 +24,7 @@ import mindustry.world.meta.StatUnit
 import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.Var
-import net.liplum.common.util.bundle
+import plumy.dsl.bundle
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.render.G
 import net.liplum.mdt.render.G.realHeight

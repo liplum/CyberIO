@@ -16,7 +16,7 @@ import mindustry.gen.Tex
 import net.liplum.*
 import net.liplum.common.ui.UIToast
 import net.liplum.common.util.IBundlable
-import net.liplum.common.util.bundle
+import plumy.dsl.bundle
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.LandscapeModeOnly
 import net.liplum.mdt.PortraitModeOnly

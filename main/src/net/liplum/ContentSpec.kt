@@ -1,7 +1,7 @@
 package net.liplum
 
 import arc.graphics.Color
-import net.liplum.common.util.bundle
+import plumy.dsl.bundle
 import plumy.core.assets.TR
 import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.utils.atlas
