@@ -46,9 +46,9 @@ import net.liplum.common.persistence.ReadFromCache
 import net.liplum.common.persistence.WriteIntoCache
 import net.liplum.common.util.format
 import net.liplum.common.util.toDouble
-import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.HeadlessOnly
-import net.liplum.mdt.WhenNotPaused
+import plumy.core.ClientOnly
+import plumy.core.HeadlessOnly
+import plumy.core.WhenNotPaused
 import net.liplum.input.Inspector.isPlacing
 import net.liplum.input.Inspector.isSelected
 import net.liplum.input.smoothPlacing

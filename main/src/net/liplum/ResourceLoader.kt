@@ -1,7 +1,7 @@
 package net.liplum
 
 import net.liplum.common.delegate.Delegate
-import net.liplum.mdt.ClientOnly
+import plumy.core.ClientOnly
 
 object ResourceLoader {
     private val loadingTask: Delegate = Delegate()

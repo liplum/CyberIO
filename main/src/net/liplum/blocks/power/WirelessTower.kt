@@ -27,8 +27,8 @@ import net.liplum.common.math.PolarX
 import plumy.dsl.DrawLayer
 import net.liplum.input.smoothPlacing
 import net.liplum.input.smoothSelect
-import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.WhenNotPaused
+import plumy.core.ClientOnly
+import plumy.core.WhenNotPaused
 import net.liplum.mdt.WhenTheSameTeam
 import plumy.animation.ContextDraw.Draw
 import net.liplum.mdt.consumer.powerStore

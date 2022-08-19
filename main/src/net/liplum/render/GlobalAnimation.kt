@@ -8,7 +8,7 @@ import mindustry.game.EventType
 import net.liplum.annotations.Only
 import net.liplum.annotations.Subscribe
 import net.liplum.common.util.progress
-import net.liplum.mdt.ClientOnly
+import plumy.core.ClientOnly
 
 typealias GlobalAnimationBehavior = GlobalAnimation.() -> TextureRegion
 interface IGlobalAnimation {

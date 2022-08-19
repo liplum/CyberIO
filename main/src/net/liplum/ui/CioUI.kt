@@ -18,15 +18,15 @@ import net.liplum.*
 import net.liplum.Settings.percentage2Density
 import net.liplum.annotations.Only
 import net.liplum.annotations.SubscribeEvent
+import net.liplum.common.UseReflection
 import net.liplum.common.ing
 import plumy.dsl.bundle
 import net.liplum.common.util.getF
 import net.liplum.common.util.randomExcept
 import net.liplum.event.CioInitEvent
-import net.liplum.mdt.ClientOnly
+import plumy.core.ClientOnly
 import net.liplum.mdt.IsLocal
-import net.liplum.mdt.UnsteamOnly
-import net.liplum.advanced.MapCleaner
+import net.liplum.function.MapCleaner
 import net.liplum.mdt.ui.MainMenus
 import net.liplum.mdt.ui.ShowTextDialog
 import net.liplum.mdt.ui.addTrackTooltip
@@ -38,7 +38,7 @@ import net.liplum.update.Updater
 import net.liplum.welcome.Conditions
 import net.liplum.welcome.Welcome
 import net.liplum.welcome.WelcomeList
-import plumy.core.UseReflection
+import plumy.core.NonSteamOnly
 
 @ClientOnly
 object CioUI {
@@ -80,7 +80,6 @@ object CioUI {
             }
         }
     }
-    @UseReflection
     fun addCyberIOMenu() {
         val cioMenuID = "cyber-io-menu"
         if (!Vars.mobile) {
@@ -128,7 +127,7 @@ object CioUI {
         addCheckPref(R.Setting.ShowWirelessTowerCircle, true) {
             Settings.ShowWirelessTowerCircle = Core.settings.getBool(R.Setting.ShowWirelessTowerCircle, true)
         }
-        UnsteamOnly {
+        NonSteamOnly {
             addCheckPref(
                 R.Setting.ShowUpdate, !Vars.steam
             ) {
@@ -145,7 +144,7 @@ object CioUI {
             canShow = { isMenu }
         }
         // GitHub mirror and Check update
-        UnsteamOnly {
+        NonSteamOnly {
             // Check Update
             addAny {
                 fun bundle(key: String) = "setting.${R.Setting.CheckUpdate}.$key".bundle

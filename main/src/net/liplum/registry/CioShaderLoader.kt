@@ -9,7 +9,7 @@ import net.liplum.annotations.SubscribeEvent
 import net.liplum.event.CioInitEvent
 import net.liplum.common.insertLineNumber
 import net.liplum.common.shader.*
-import net.liplum.mdt.ClientOnly
+import plumy.core.ClientOnly
 import net.liplum.mdt.shader.CommonShader
 import net.liplum.mdt.shader.ProgressShader
 import net.liplum.registry.CioShader.*

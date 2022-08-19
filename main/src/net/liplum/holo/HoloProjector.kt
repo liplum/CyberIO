@@ -34,11 +34,10 @@ import net.liplum.R
 import net.liplum.S
 import net.liplum.UndebugOnly
 import net.liplum.common.shader.use
-import plumy.dsl.bundle
 import net.liplum.common.util.percentI
-import net.liplum.mdt.*
+import net.liplum.mdt.CalledBySync
+import net.liplum.mdt.ServerOnly
 import net.liplum.mdt.consumer.ConsumeFluidDynamic
-import plumy.animation.ContextDraw.Draw
 import net.liplum.mdt.ui.addItemSelectorDefault
 import net.liplum.mdt.ui.bars.removeItemsInBar
 import net.liplum.mdt.utils.ItemTypeAmount
@@ -47,7 +46,12 @@ import net.liplum.mdt.utils.inPayload
 import net.liplum.registry.CioFluid.cyberion
 import net.liplum.registry.SD
 import net.liplum.ui.addTable
+import plumy.animation.ContextDraw.Draw
+import plumy.core.ClientOnly
+import plumy.core.Else
 import plumy.core.Serialized
+import plumy.core.WhenNotPaused
+import plumy.dsl.bundle
 import plumy.world.*
 import kotlin.math.max
 

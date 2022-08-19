@@ -26,7 +26,7 @@ import net.liplum.S
 import net.liplum.common.persistence.*
 import net.liplum.holo.HoloProjector.HoloProjectorBuild
 import plumy.core.Serialized
-import net.liplum.mdt.ClientOnly
+import plumy.core.ClientOnly
 import net.liplum.mdt.mixin.PayloadMixin
 import net.liplum.mdt.render.G
 import net.liplum.mdt.utils.hasShields

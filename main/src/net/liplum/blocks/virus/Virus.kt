@@ -20,19 +20,19 @@ import mindustry.world.Tile
 import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.api.virus.UninfectedBlocksRegistry
+import net.liplum.common.UseRandom
 import net.liplum.common.shader.use
 import plumy.dsl.bundle
 import net.liplum.common.util.off
 import net.liplum.common.util.on
-import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.Else
 import net.liplum.mdt.ServerOnly
+import plumy.core.Else
 import plumy.world.AddBar
 import net.liplum.mdt.utils.sub
 import net.liplum.registry.SD
 import net.liplum.util.yesNo
+import plumy.core.ClientOnly
 import plumy.core.Serialized
-import plumy.core.UseRandom
 import plumy.core.assets.EmptyTR
 
 typealias UBR = UninfectedBlocksRegistry

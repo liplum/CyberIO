@@ -9,7 +9,7 @@ import mindustry.Vars
 import mindustry.gen.Building
 import mindustry.graphics.Drawf
 import mindustry.world.Block
-import net.liplum.mdt.ClientOnly
+import plumy.core.ClientOnly
 import plumy.world.TileXY
 import plumy.world.TileXYf
 import plumy.world.getCenterWorldXY

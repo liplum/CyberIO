@@ -2,7 +2,7 @@ package net.liplum.util
 
 import mindustry.gen.Building
 import net.liplum.CanRefresh
-import net.liplum.mdt.WhenNotPaused
+import plumy.core.WhenNotPaused
 import plumy.animation.state.StateMachine
 import plumy.core.arc.Tick
 

@@ -6,8 +6,8 @@ import arc.util.pooling.Pool
 import arc.util.pooling.Pools
 import mindustry.game.EventType
 import net.liplum.annotations.Subscribe
-import plumy.core.arc.invoke
-import net.liplum.mdt.ClientOnly
+import plumy.core.ClientOnly
+import plumy.core.math.invoke
 
 object Toaster {
     /**

@@ -1,4 +1,4 @@
-package net.liplum.advanced
+package net.liplum.function
 
 import mindustry.Vars
 import mindustry.gen.Buildingc

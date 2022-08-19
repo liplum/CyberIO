@@ -17,12 +17,12 @@ import net.liplum.*
 import net.liplum.common.ui.UIToast
 import net.liplum.common.util.IBundlable
 import plumy.dsl.bundle
-import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.LandscapeModeOnly
-import net.liplum.mdt.PortraitModeOnly
+import plumy.core.ClientOnly
 import net.liplum.ui.animation.WrapAnimationSpec
 import net.liplum.ui.animation.animatedVisibility
 import net.liplum.ui.template.NewIconTextButton
+import plumy.core.LandscapeModeOnly
+import plumy.core.PortraitModeOnly
 
 @ClientOnly
 object ContentSpecFrag : IBundlable {

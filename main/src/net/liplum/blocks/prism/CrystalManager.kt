@@ -8,7 +8,7 @@ import net.liplum.common.entity.Queue
 import net.liplum.common.persistence.read
 import net.liplum.common.persistence.write
 import plumy.core.math.Progress
-import net.liplum.mdt.ClientOnly
+import plumy.core.ClientOnly
 import plumy.world.castBuild
 
 enum class Status {

@@ -17,8 +17,8 @@ import net.liplum.CioMod
 import net.liplum.ConfigEntry.Companion.Config
 import net.liplum.Meta
 import net.liplum.common.replaceBy
-import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.HeadlessOnly
+import plumy.core.ClientOnly
+import plumy.core.HeadlessOnly
 import net.liplum.util.ZipUtil
 import java.io.ByteArrayOutputStream
 import java.net.URL

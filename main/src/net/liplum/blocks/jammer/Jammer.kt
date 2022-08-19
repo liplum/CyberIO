@@ -17,8 +17,8 @@ import net.liplum.R
 import net.liplum.common.entity.Progress
 import net.liplum.common.entity.Queue
 import plumy.dsl.DrawLayer
-import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.WhenNotPaused
+import plumy.core.ClientOnly
+import plumy.core.WhenNotPaused
 import net.liplum.animation.Floating
 import net.liplum.animation.add
 import plumy.animation.ContextDraw.Draw

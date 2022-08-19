@@ -1,6 +1,6 @@
 package net.liplum.render
 
-import net.liplum.mdt.ClientOnly
+import plumy.core.ClientOnly
 import net.liplum.DebugOnly
 
 @ClientOnly

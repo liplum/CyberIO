@@ -3,7 +3,7 @@ package net.liplum
 import arc.graphics.Color
 import plumy.dsl.bundle
 import plumy.core.assets.TR
-import net.liplum.mdt.ClientOnly
+import plumy.core.ClientOnly
 import net.liplum.mdt.utils.atlas
 
 enum class ContentSpec(

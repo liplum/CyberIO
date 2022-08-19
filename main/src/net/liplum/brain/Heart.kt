@@ -37,9 +37,9 @@ import net.liplum.common.util.format
 import net.liplum.common.util.toDouble
 import net.liplum.input.smoothPlacing
 import net.liplum.input.smoothSelect
-import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.Else
-import net.liplum.mdt.WhenNotPaused
+import plumy.core.ClientOnly
+import plumy.core.Else
+import plumy.core.WhenNotPaused
 import net.liplum.mdt.WhenTheSameTeam
 import plumy.animation.*
 import plumy.animation.ContextDraw.Draw

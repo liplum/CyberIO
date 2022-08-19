@@ -22,7 +22,7 @@ import net.liplum.common.util.inViewField
 import net.liplum.common.util.isLineInViewField
 import net.liplum.input.smoothPlacing
 import net.liplum.input.smoothSelect
-import net.liplum.mdt.ClientOnly
+import plumy.core.ClientOnly
 import plumy.animation.ContextDraw.DrawScale
 import net.liplum.mdt.render.*
 import net.liplum.mdt.utils.worldPos

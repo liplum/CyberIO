@@ -182,13 +182,13 @@ value class EventType(
 }
 
 fun OnlySpec.addHead(file: OutputStream) {
-    if (client) file += "net.liplum.mdt.ClientOnly{\n"
+    if (client) file += "plumy.core.ClientOnly{\n"
     if (debug) file += "net.liplum.DebugOnly{\n"
-    if (headless) file += "net.liplum.mdt.HeadlessOnly{\n"
-    if (steam) file += "net.liplum.mdt.SteamOnly{\n"
-    if (unsteam) file += "net.liplum.mdt.UnsteamOnly{\n"
-    if (desktop) file += "net.liplum.mdt.DesktopOnly{\n"
-    if (mobile) file += "net.liplum.mdt.MobileOnly{\n"
+    if (headless) file += "plumy.core.HeadlessOnly{\n"
+    if (steam) file += "plumy.core.SteamOnly{\n"
+    if (unsteam) file += "plumy.core.NonSteamOnly{\n"
+    if (desktop) file += "plumy.core.DesktopOnly{\n"
+    if (mobile) file += "plumy.core.MobileOnly{\n"
 }
 
 fun OnlySpec.addTail(file: OutputStream) {

@@ -3,7 +3,7 @@ package net.liplum.api.cyber
 import arc.graphics.Color
 import mindustry.type.Liquid
 import net.liplum.api.ICyberEntity
-import net.liplum.mdt.ClientOnly
+import plumy.core.ClientOnly
 import net.liplum.mdt.SendDataPack
 import plumy.world.PackedPos
 

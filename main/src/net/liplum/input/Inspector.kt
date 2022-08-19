@@ -7,7 +7,7 @@ import mindustry.gen.Building
 import mindustry.world.Block
 import net.liplum.annotations.Only
 import net.liplum.annotations.Subscribe
-import net.liplum.mdt.ClientOnly
+import plumy.core.ClientOnly
 import net.liplum.mdt.Screen
 
 @ClientOnly

@@ -6,8 +6,8 @@ import arc.util.Log
 import net.liplum.*
 import net.liplum.ConfigEntry.Companion.Config
 import net.liplum.ContentSpec.Companion.tryResolveContentSpec
-import net.liplum.mdt.HeadlessOnly
-import net.liplum.advanced.MapCleaner
+import plumy.core.HeadlessOnly
+import net.liplum.function.MapCleaner
 import net.liplum.update.Updater
 
 @HeadlessOnly

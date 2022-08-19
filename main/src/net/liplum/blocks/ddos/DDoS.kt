@@ -22,7 +22,7 @@ import net.liplum.api.cyber.drawLinkedLineToReceiverWhenConfiguring
 import net.liplum.api.cyber.req
 import net.liplum.common.delegate.Delegate1
 import plumy.core.Serialized
-import net.liplum.mdt.ClientOnly
+import plumy.core.ClientOnly
 import net.liplum.mdt.render.postToastTextOn
 import net.liplum.mdt.render.removeToastOn
 import net.liplum.mdt.ui.ItemProgressImage

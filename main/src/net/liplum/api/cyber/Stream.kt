@@ -8,7 +8,7 @@ import mindustry.type.Liquid
 import net.liplum.api.ICyberEntity
 import net.liplum.common.delegate.Delegate1
 import net.liplum.mdt.CalledBySync
-import net.liplum.mdt.ClientOnly
+import plumy.core.ClientOnly
 import net.liplum.mdt.SendDataPack
 
 interface IStreamServer : IStreamHost, IStreamClient

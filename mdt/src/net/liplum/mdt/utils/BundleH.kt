@@ -4,7 +4,7 @@ package net.liplum.mdt.utils
 
 import mindustry.world.Block
 import plumy.dsl.bundle
-import net.liplum.mdt.ClientOnly
+import plumy.core.ClientOnly
 
 /**
  * Localize the bundle by the key: ContentType.Name.key

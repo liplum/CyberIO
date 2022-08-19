@@ -25,7 +25,7 @@ import net.liplum.common.persistence.write
 import plumy.core.Serialized
 import plumy.core.arc.isNotEmpty
 import plumy.core.assets.EmptyTR
-import net.liplum.mdt.ClientOnly
+import plumy.core.ClientOnly
 import net.liplum.mdt.WhenTheSameTeam
 import net.liplum.mdt.mixin.total
 import plumy.animation.ContextDraw.DrawOn

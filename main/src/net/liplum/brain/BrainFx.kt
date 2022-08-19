@@ -24,7 +24,7 @@ import net.liplum.common.entity.RadiationArray
 import net.liplum.common.util.progress
 import net.liplum.common.util.sheetOneDirection
 import net.liplum.event.CioLoadContentEvent
-import net.liplum.mdt.WhenNotPaused
+import plumy.core.WhenNotPaused
 import net.liplum.mdt.utils.MdtUnit
 import net.liplum.mdt.utils.fadeInOutPct
 import plumy.animation.ContextDraw.DrawScale

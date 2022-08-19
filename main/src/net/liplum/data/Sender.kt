@@ -24,7 +24,7 @@ import net.liplum.Var
 import net.liplum.api.cyber.*
 import net.liplum.common.Remember
 import net.liplum.mdt.CalledBySync
-import net.liplum.mdt.ClientOnly
+import plumy.core.ClientOnly
 import net.liplum.mdt.SendDataPack
 import plumy.animation.ContextDraw.Draw
 import plumy.animation.ContextDraw.DrawOn

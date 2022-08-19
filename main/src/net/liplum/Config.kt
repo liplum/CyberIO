@@ -4,7 +4,7 @@ import arc.util.Log
 import arc.util.serialization.Json
 import arc.util.serialization.JsonWriter
 import net.liplum.common.F
-import net.liplum.mdt.HeadlessOnly
+import plumy.core.HeadlessOnly
 
 @HeadlessOnly
 class ConfigEntry private constructor() {

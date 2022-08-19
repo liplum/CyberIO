@@ -18,7 +18,7 @@ import net.liplum.api.cyber.SideLinks.Companion.enableAllSides
 import plumy.core.Serialized
 import plumy.core.assets.TR
 import net.liplum.common.shader.use
-import net.liplum.mdt.ClientOnly
+import plumy.core.ClientOnly
 import plumy.animation.ContextDraw.Draw
 import net.liplum.input.smoothSelect
 import net.liplum.mdt.utils.MdtUnit

@@ -23,7 +23,7 @@ import net.liplum.api.cyber.*
 import net.liplum.common.persistence.read
 import net.liplum.common.persistence.write
 import net.liplum.mdt.CalledBySync
-import net.liplum.mdt.ClientOnly
+import plumy.core.ClientOnly
 import net.liplum.mdt.SendDataPack
 import net.liplum.mdt.utils.inMod
 import net.liplum.mdt.utils.sub

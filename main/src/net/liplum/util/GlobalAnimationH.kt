@@ -6,7 +6,7 @@ import mindustry.ctype.UnlockableContent
 import mindustry.world.Block
 import net.liplum.ResourceLoader
 import net.liplum.common.util.sheetOneDirection
-import net.liplum.mdt.ClientOnly
+import plumy.core.ClientOnly
 import net.liplum.render.GlobalAnimation
 import net.liplum.render.GlobalAnimation.Companion.register
 import net.liplum.mdt.utils.anim

@@ -5,7 +5,7 @@ import arc.assets.loaders.SoundLoader
 import arc.audio.Sound
 import arc.func.Cons
 import mindustry.gen.Sounds
-import net.liplum.mdt.ClientOnly
+import plumy.core.ClientOnly
 
 val EmptySound: Sound = Sounds.none
 fun loadSound(path: String): Sound {

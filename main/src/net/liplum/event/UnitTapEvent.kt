@@ -7,7 +7,7 @@ import mindustry.Vars
 import mindustry.entities.Units
 import mindustry.gen.Player
 import net.liplum.mdt.Screen
-import net.liplum.mdt.ClientOnly
+import plumy.core.ClientOnly
 import net.liplum.mdt.utils.MdtUnit
 
 @ClientOnly

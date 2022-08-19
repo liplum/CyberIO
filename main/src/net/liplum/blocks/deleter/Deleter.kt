@@ -6,7 +6,7 @@ import mindustry.world.blocks.defense.turrets.PowerTurret
 import mindustry.world.meta.Stat
 import net.liplum.common.util.MapKeyBundle
 import net.liplum.common.util.format
-import net.liplum.mdt.ClientOnly
+import plumy.core.ClientOnly
 import net.liplum.mdt.ui.ammoStats
 import net.liplum.mdt.utils.subBundle
 

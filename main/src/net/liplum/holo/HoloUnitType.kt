@@ -36,8 +36,8 @@ import plumy.dsl.bundle
 import net.liplum.common.util.toFloat
 import net.liplum.holo.HoloProjector.HoloProjectorBuild
 import plumy.core.math.FUNC
-import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.Else
+import plumy.core.ClientOnly
+import plumy.core.Else
 import net.liplum.mdt.utils.MdtUnit
 import net.liplum.mdt.utils.healthPct
 import net.liplum.registry.SD

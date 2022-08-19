@@ -10,7 +10,7 @@ import net.liplum.common.persistence.IRWableX
 import net.liplum.common.util.isOn
 import net.liplum.common.util.off
 import net.liplum.common.util.on
-import net.liplum.mdt.ClientOnly
+import plumy.core.ClientOnly
 import plumy.core.assets.TR
 import java.io.DataInputStream
 

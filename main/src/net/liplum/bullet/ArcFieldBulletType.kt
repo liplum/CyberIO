@@ -14,9 +14,9 @@ import mindustry.gen.Bullet
 import mindustry.gen.Healthc
 import mindustry.gen.Hitboxc
 import mindustry.world.blocks.ControlBlock
-import plumy.core.arc.invoke
 import plumy.core.arc.lighten
 import plumy.core.math.Degree
+import plumy.core.math.invoke
 
 class ArcFieldBulletType : ContinuousBulletType() {
     @JvmField var angle: Degree = 80f

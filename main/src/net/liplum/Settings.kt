@@ -4,10 +4,10 @@ import arc.Core.settings
 import arc.math.Interp
 import mindustry.Vars
 import plumy.dsl.Setting
-import plumy.core.arc.invoke
-import net.liplum.mdt.ClientOnly
+import plumy.core.ClientOnly
 import net.liplum.script.KeyNotFoundException
 import net.liplum.update.Version2
+import plumy.core.math.invoke
 
 object Settings {
     @ClientOnly @JvmField var LinkOpacity = 1f

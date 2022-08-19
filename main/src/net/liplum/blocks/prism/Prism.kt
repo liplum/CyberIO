@@ -43,7 +43,7 @@ import plumy.dsl.DrawLayer
 import plumy.dsl.bundle
 import net.liplum.common.util.percentI
 import net.liplum.math.quadratic
-import net.liplum.mdt.ClientOnly
+import plumy.core.ClientOnly
 import net.liplum.input.Inspector
 import net.liplum.input.Inspector.isSelected
 import net.liplum.input.smoothSelect

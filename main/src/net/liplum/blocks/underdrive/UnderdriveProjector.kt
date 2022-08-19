@@ -39,7 +39,7 @@ import net.liplum.common.util.format
 import net.liplum.common.util.percentI
 import net.liplum.input.smoothPlacing
 import net.liplum.input.smoothSelect
-import net.liplum.mdt.ClientOnly
+import plumy.core.ClientOnly
 import net.liplum.mdt.render.G
 import net.liplum.mdt.render.G.realHeight
 import net.liplum.mdt.render.G.realWidth

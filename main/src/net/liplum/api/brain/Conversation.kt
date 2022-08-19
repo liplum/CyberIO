@@ -10,7 +10,7 @@ import net.liplum.R
 import plumy.dsl.bundle
 import net.liplum.common.util.inViewField
 import net.liplum.math.randomExcept
-import net.liplum.mdt.ClientOnly
+import plumy.core.ClientOnly
 import net.liplum.mdt.render.Text
 import net.liplum.mdt.render.Toaster
 import net.liplum.mdt.render.fadeInOutPct

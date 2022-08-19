@@ -22,7 +22,7 @@ import net.liplum.common.util.Or
 import plumy.dsl.bundle
 import net.liplum.common.util.toFloat
 import net.liplum.event.CioInitEvent
-import net.liplum.mdt.ClientOnly
+import plumy.core.ClientOnly
 import net.liplum.mdt.utils.*
 import net.liplum.registry.CioStats
 import plumy.core.math.Point2f

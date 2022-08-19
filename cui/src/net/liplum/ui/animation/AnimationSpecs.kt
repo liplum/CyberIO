@@ -1,7 +1,7 @@
 package net.liplum.ui.animation
 
 import arc.math.Interp
-import plumy.core.arc.invoke
+import plumy.core.math.invoke
 
 class WrapAnimationSpec(
     val interp: Interp,

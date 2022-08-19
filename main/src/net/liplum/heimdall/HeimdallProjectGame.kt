@@ -9,7 +9,7 @@ import net.liplum.ui.INavigable
 import net.liplum.common.ui.UIToast
 import net.liplum.common.util.IBundlable
 import net.liplum.cioTR
-import net.liplum.mdt.ClientOnly
+import plumy.core.ClientOnly
 import net.liplum.ui.CyberIOMenu
 import net.liplum.ui.control.TabItem
 import net.liplum.ui.control.TabView

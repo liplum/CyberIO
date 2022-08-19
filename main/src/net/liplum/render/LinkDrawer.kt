@@ -10,7 +10,7 @@ import net.liplum.annotations.Subscribe
 import net.liplum.api.ICyberEntity
 import net.liplum.api.cyber.*
 import plumy.core.math.smooth
-import net.liplum.mdt.ClientOnly
+import plumy.core.ClientOnly
 import net.liplum.input.Inspector
 
 object LinkDrawer {

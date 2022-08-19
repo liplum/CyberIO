@@ -28,8 +28,8 @@ import net.liplum.api.holo.IHoloEntity.Companion.minHealth
 import net.liplum.common.shader.use
 import plumy.dsl.bundle
 import net.liplum.common.util.toFloat
-import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.WhenNotPaused
+import plumy.core.ClientOnly
+import plumy.core.WhenNotPaused
 import net.liplum.animation.Floating
 import net.liplum.mdt.render.G
 import plumy.world.AddBar

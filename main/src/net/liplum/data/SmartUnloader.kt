@@ -28,7 +28,7 @@ import net.liplum.common.persistence.read
 import net.liplum.common.persistence.write
 import net.liplum.common.util.DoMultipleBool
 import net.liplum.mdt.CalledBySync
-import net.liplum.mdt.ClientOnly
+import plumy.core.ClientOnly
 import net.liplum.mdt.SendDataPack
 import plumy.animation.AnimationMeta
 import plumy.animation.ContextDraw.Draw

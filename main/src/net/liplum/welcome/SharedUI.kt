@@ -15,7 +15,7 @@ import net.liplum.S
 import net.liplum.Var
 import net.liplum.i18nName
 import plumy.core.assets.TR
-import net.liplum.mdt.DesktopOnly
+import plumy.core.DesktopOnly
 
 internal fun Dialog.addPoster(
     icon: TR,

@@ -5,7 +5,7 @@ import mindustry.world.meta.BuildVisibility
 import net.liplum.DebugOnly
 import net.liplum.annotations.DependOn
 import net.liplum.blocks.sandbox.AdjustableOverdrive
-import net.liplum.mdt.Else
+import plumy.core.Else
 
 object CioSandbox {
     @JvmStatic lateinit var hyperOverdriveSphere: AdjustableOverdrive

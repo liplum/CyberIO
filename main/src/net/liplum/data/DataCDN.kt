@@ -14,7 +14,7 @@ import net.liplum.api.cyber.*
 import net.liplum.api.cyber.SideLinks.Companion.enableAllSides
 import plumy.core.Serialized
 import plumy.core.assets.TR
-import net.liplum.mdt.ClientOnly
+import plumy.core.ClientOnly
 import net.liplum.mdt.render.G
 import net.liplum.mdt.utils.MdtUnit
 import net.liplum.mdt.utils.atlas

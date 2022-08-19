@@ -15,7 +15,7 @@ import net.liplum.data.DataID
 import net.liplum.data.EmptyDataID
 import net.liplum.data.PayloadData
 import net.liplum.data.PayloadDataList
-import net.liplum.mdt.ClientOnly
+import plumy.core.ClientOnly
 import plumy.core.Out
 import plumy.core.Serialized
 import plumy.core.math.Progress

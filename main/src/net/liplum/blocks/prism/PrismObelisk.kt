@@ -14,8 +14,8 @@ import net.liplum.R
 import net.liplum.Var
 import net.liplum.blocks.prism.Prism.PrismBuild
 import plumy.dsl.bundle
-import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.WhenNotPaused
+import plumy.core.ClientOnly
+import plumy.core.WhenNotPaused
 import plumy.animation.AnimationMeta
 import plumy.animation.draw
 import net.liplum.mdt.render.G

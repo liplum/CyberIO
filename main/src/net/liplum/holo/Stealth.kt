@@ -43,8 +43,8 @@ import plumy.core.Serialized
 import plumy.core.assets.TR
 import plumy.core.math.isZero
 import plumy.core.math.nextBoolean
-import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.WhenNotPaused
+import plumy.core.ClientOnly
+import plumy.core.WhenNotPaused
 import net.liplum.animation.Floating
 import net.liplum.mdt.consumer.LiquidTurretCons
 import plumy.animation.ContextDraw.Draw

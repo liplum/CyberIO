@@ -5,7 +5,7 @@ package net.liplum.mdt.utils
 import arc.math.Interp
 import mindustry.entities.Effect
 import mindustry.entities.Effect.EffectContainer
-import plumy.core.arc.invoke
+import plumy.core.math.invoke
 
 /**
  * @param duration the duration of fade-in&out

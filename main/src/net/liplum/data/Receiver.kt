@@ -24,7 +24,7 @@ import net.liplum.api.cyber.*
 import net.liplum.common.delegate.Delegate1
 import net.liplum.common.persistence.read
 import net.liplum.common.persistence.write
-import net.liplum.mdt.ClientOnly
+import plumy.core.ClientOnly
 import plumy.animation.ContextDraw.Draw
 import plumy.animation.ContextDraw.DrawOn
 import plumy.animation.ContextDraw.SetColor
