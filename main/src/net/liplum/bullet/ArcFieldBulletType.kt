@@ -1,15 +1,17 @@
 package net.liplum.bullet
 
 import arc.graphics.g2d.Draw
-import arc.graphics.g2d.Lines
+import arc.graphics.g2d.Fill
 import arc.math.Angles
 import arc.math.Interp
 import arc.util.Time
 import arc.util.Tmp
+import mindustry.entities.Damage
 import mindustry.entities.Units
 import mindustry.entities.bullet.ContinuousBulletType
 import mindustry.gen.Building
 import mindustry.gen.Bullet
+import mindustry.gen.Healthc
 import mindustry.gen.Hitboxc
 import mindustry.world.blocks.ControlBlock
 import plumy.core.arc.invoke
@@ -49,13 +51,12 @@ class ArcFieldBulletType : ContinuousBulletType() {
 
     override fun draw(b: Bullet) = b.run {
         val curLen = currentLength(this)
-        Lines.stroke(curLen)
         if (lightenIntensity > 0f)
             Draw.color(Tmp.c1.set(hitColor).lighten(lightenIntensity))
         else Draw.color(hitColor)
         if (fdata < highlightTime) Draw.alpha(1f)
         else Draw.alpha(fieldAlpha * fin(lengthInterp))
-        Lines.arc(x, y, curLen / 2f, angle / 360f, this.rotation() - angle / 2f)
+        Fill.arc(x, y, curLen, angle / 360f, this.rotation() - angle / 2f)
         Draw.reset()
     }
 
@@ -65,12 +66,12 @@ class ArcFieldBulletType : ContinuousBulletType() {
         val curLen = currentLength(this)
 
         Units.nearbyEnemies(team, x, y, curLen) {
-            tryHitTarget(it)
+            tryHit(it)
         }
-        if (collidesTiles) {
+        if (collidesGround) {
             Units.nearbyBuildings(x, y, curLen) {
-                if(it.team != this.team || collidesTeam)
-                    tryHitTarget(it)
+                if (it.team != this.team || collidesTeam)
+                    tryHit(it)
             }
         }
         if (hasCausedDamage) {
@@ -78,22 +79,11 @@ class ArcFieldBulletType : ContinuousBulletType() {
         }
     }
 
-    fun Bullet.tryHitTarget(target: Hitboxc) {
-        val aimAngle = rotation()
-        val bullet2Enemy = this.angleTo(target)
-        if (Angles.within(aimAngle, bullet2Enemy, angle / 2f)) {
-            hitTarget(target)
-            hasCausedDamage = true
-        }
-    }
-
-    fun Bullet.tryHitTarget(target: Building) {
-        val aimAngle = rotation()
-        val bullet2Enemy = this.angleTo(target)
-        if (Angles.within(aimAngle, bullet2Enemy, angle / 2f)) {
-            hitTarget(target)
-            hasCausedDamage = true
-        }
+    fun Bullet.tryHit(t: Healthc) {
+        val ang = rotation()
+        val angToTarget = angleTo(t)
+        if (Angles.within(ang, angToTarget, angle / 2f))
+            Damage.collidePoint(this, team, hitEffect, t.x, t.y)
     }
 
     fun Bullet.hitTarget(target: Hitboxc) {
