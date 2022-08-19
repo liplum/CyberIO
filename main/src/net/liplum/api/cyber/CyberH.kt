@@ -27,7 +27,7 @@ import net.liplum.mdt.utils.*
 import net.liplum.registry.CioStats
 import plumy.core.math.Point2f
 import plumy.core.math.smooth
-import plumy.world.*
+import plumy.dsl.*
 
 private val p1 = Point2f()
 private val p2 = Point2f()

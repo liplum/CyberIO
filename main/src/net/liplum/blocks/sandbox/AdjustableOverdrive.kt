@@ -19,9 +19,9 @@ import plumy.core.Serialized
 import plumy.core.math.ExpLogGen
 import plumy.core.math.FUNC
 import plumy.core.math.isZero
-import plumy.world.AddBar
-import plumy.world.config
-import plumy.world.configNull
+import plumy.dsl.AddBar
+import plumy.dsl.config
+import plumy.dsl.configNull
 import kotlin.math.abs
 
 open class AdjustableOverdrive(name: String) : OverdriveProjector(name) {

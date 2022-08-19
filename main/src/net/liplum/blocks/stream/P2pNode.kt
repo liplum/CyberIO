@@ -41,10 +41,10 @@ import plumy.animation.state.configuring
 import plumy.core.Serialized
 import plumy.core.assets.EmptyTR
 import plumy.core.math.nextBoolean
-import plumy.world.PackedPos
-import plumy.world.buildAt
-import plumy.world.config
-import plumy.world.configNull
+import plumy.dsl.PackedPos
+import plumy.dsl.build
+import plumy.dsl.config
+import plumy.dsl.configNull
 import kotlin.math.absoluteValue
 
 open class P2pNode(name: String) : Block(name) {
@@ -346,7 +346,7 @@ open class P2pNode(name: String) : Block(name) {
         override fun control(type: LAccess, p1: Double, p2: Double, p3: Double, p4: Double) {
             when (type) {
                 LAccess.shoot -> {
-                    val receiver = buildAt(p1, p2)
+                    val receiver = Vars.world.build(p1, p2)
                     if (receiver is IP2pNode) connectToSync(receiver)
                 }
                 else -> super.control(type, p1, p2, p3, p4)

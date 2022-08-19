@@ -24,8 +24,13 @@ import net.liplum.Var
 import net.liplum.api.cyber.*
 import net.liplum.common.Remember
 import net.liplum.mdt.CalledBySync
-import plumy.core.ClientOnly
 import net.liplum.mdt.SendDataPack
+import net.liplum.mdt.utils.inMod
+import net.liplum.mdt.utils.sharedAnimationInMod
+import net.liplum.mdt.utils.sub
+import net.liplum.mdt.utils.tileEquals
+import net.liplum.util.addStateMachineInfo
+import net.liplum.util.update
 import plumy.animation.ContextDraw.Draw
 import plumy.animation.ContextDraw.DrawOn
 import plumy.animation.ContextDraw.SetColor
@@ -35,17 +40,12 @@ import plumy.animation.state.IStateful
 import plumy.animation.state.State
 import plumy.animation.state.StateConfig
 import plumy.animation.state.configuring
-import net.liplum.mdt.utils.inMod
-import net.liplum.mdt.utils.sharedAnimationInMod
-import net.liplum.mdt.utils.sub
-import net.liplum.mdt.utils.tileEquals
-import net.liplum.util.addStateMachineInfo
-import net.liplum.util.update
+import plumy.core.ClientOnly
 import plumy.core.Serialized
 import plumy.core.arc.Tick
 import plumy.core.assets.TR
 import plumy.core.math.isZero
-import plumy.world.*
+import plumy.dsl.*
 
 open class Sender(name: String) : Block(name) {
     @ClientOnly lateinit var BaseTR: TR
@@ -321,7 +321,7 @@ open class Sender(name: String) : Block(name) {
         override fun control(type: LAccess, p1: Double, p2: Double, p3: Double, p4: Double) {
             when (type) {
                 LAccess.shoot -> {
-                    val receiver = buildAt(p1, p2)
+                    val receiver = Vars.world.build(p1, p2)
                     if (!p3.isZero && receiver is IDataReceiver) connectToSync(receiver)
                 }
                 else -> super.control(type, p1, p2, p3, p4)

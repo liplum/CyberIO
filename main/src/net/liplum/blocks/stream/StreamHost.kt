@@ -38,7 +38,7 @@ import plumy.animation.state.configuring
 import plumy.core.Serialized
 import plumy.core.assets.EmptyTR
 import plumy.core.assets.TRs
-import plumy.world.*
+import plumy.dsl.*
 
 open class StreamHost(name: String) : Block(name) {
     @ClientOnly var liquidPadding = 0f
@@ -340,7 +340,7 @@ open class StreamHost(name: String) : Block(name) {
         override fun control(type: LAccess, p1: Double, p2: Double, p3: Double, p4: Double) {
             when (type) {
                 LAccess.shoot -> {
-                    val receiver = buildAt(p1, p2)
+                    val receiver = Vars.world.build(p1, p2)
                     if (receiver is IStreamClient) connectToSync(receiver)
                 }
                 else -> super.control(type, p1, p2, p3, p4)

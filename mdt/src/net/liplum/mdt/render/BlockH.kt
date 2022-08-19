@@ -10,10 +10,10 @@ import mindustry.gen.Building
 import mindustry.graphics.Drawf
 import mindustry.world.Block
 import plumy.core.ClientOnly
-import plumy.world.TileXY
-import plumy.world.TileXYf
-import plumy.world.getCenterWorldXY
-import plumy.world.worldXY
+import plumy.dsl.TileXY
+import plumy.dsl.TileXYf
+import plumy.dsl.getCenterWorldXY
+import plumy.dsl.worldXY
 
 @ClientOnly
 inline fun Block.drawSurroundingRect(

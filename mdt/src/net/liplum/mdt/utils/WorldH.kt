@@ -16,7 +16,7 @@ import mindustry.world.blocks.payloads.PayloadConveyor
 import mindustry.world.blocks.payloads.UnitPayload
 import plumy.core.Out
 import plumy.core.math.Point2f
-import plumy.world.*
+import plumy.dsl.*
 
 /**
  * Get the world coordinate of building

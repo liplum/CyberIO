@@ -9,7 +9,7 @@ import net.liplum.CLog
 import plumy.core.Out
 import net.liplum.common.util.littleEndianByteB
 import net.liplum.common.util.bigEndianByteB
-import plumy.world.ID
+import plumy.dsl.ID
 import java.util.*
 
 class Recipe(

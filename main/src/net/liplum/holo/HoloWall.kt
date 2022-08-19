@@ -32,7 +32,7 @@ import plumy.core.ClientOnly
 import plumy.core.WhenNotPaused
 import net.liplum.animation.Floating
 import net.liplum.mdt.render.G
-import plumy.world.AddBar
+import plumy.dsl.AddBar
 import net.liplum.mdt.utils.healthPct
 import net.liplum.mdt.utils.sub
 import net.liplum.registry.SD

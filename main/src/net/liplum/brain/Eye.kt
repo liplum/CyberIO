@@ -46,8 +46,8 @@ import plumy.core.math.approachA
 import plumy.core.math.approachR
 import plumy.core.math.radian
 import plumy.core.math.random
-import plumy.world.TileXY
-import plumy.world.getCenterWorldXY
+import plumy.dsl.TileXY
+import plumy.dsl.getCenterWorldXY
 
 open class Eye(name: String) : PowerTurret(name), IComponentBlock {
     var normalBullet: BulletType = Bullets.placeholder

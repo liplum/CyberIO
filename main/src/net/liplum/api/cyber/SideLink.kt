@@ -3,8 +3,8 @@ package net.liplum.api.cyber
 import arc.math.geom.Geometry
 import arc.math.geom.Point2
 import net.liplum.common.util.copyFrom
-import plumy.world.PackedPos
-import plumy.world.castBuild
+import plumy.dsl.PackedPos
+import plumy.dsl.castBuild
 
 typealias Side = Int
 

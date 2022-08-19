@@ -58,7 +58,7 @@ import plumy.core.assets.TR
 import plumy.core.assets.TRs
 import plumy.core.math.FUNC
 import plumy.core.math.isZero
-import plumy.world.AddBar
+import plumy.dsl.AddBar
 
 open class Heart(name: String) : Block(name), IComponentBlock {
     // Upgrade component

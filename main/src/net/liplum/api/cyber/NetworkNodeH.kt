@@ -36,7 +36,7 @@ import plumy.animation.ContextDraw.Draw
 import plumy.animation.ContextDraw.DrawSize
 import net.liplum.mdt.render.*
 import net.liplum.registry.SD
-import plumy.world.*
+import plumy.dsl.*
 import kotlin.math.absoluteValue
 
 /**
@@ -140,7 +140,7 @@ fun INetworkNode.drawSelectingCardinalDirections() = building.run {
                 break
             }
             DebugOnly {
-                val tile = tileAt(tileX + j * dir.x, tileY + j * dir.y)
+                val tile = world.tile(tileX + j * dir.x, tileY + j * dir.y)
                 if (tile != null) {
                     Tmp.r1.setCenter(tile.x.worldXY, tile.y.worldXY)
                         .setSize(Vars.tilesize.toFloat())

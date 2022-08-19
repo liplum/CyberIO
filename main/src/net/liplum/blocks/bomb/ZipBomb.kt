@@ -36,9 +36,9 @@ import plumy.core.ClientOnly
 import plumy.core.Else
 import plumy.core.Serialized
 import plumy.core.math.smooth
-import plumy.world.AddBar
-import plumy.world.config
-import plumy.world.worldXY
+import plumy.dsl.AddBar
+import plumy.dsl.config
+import plumy.dsl.worldXY
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
 

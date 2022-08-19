@@ -24,9 +24,9 @@ import net.liplum.input.smoothPlacing
 import net.liplum.mdt.utils.animationMeta
 import net.liplum.mdt.utils.isDiagonalTo
 import net.liplum.mdt.utils.subBundle
-import plumy.world.AddBar
-import plumy.world.castBuild
-import plumy.world.exists
+import plumy.dsl.AddBar
+import plumy.dsl.castBuild
+import plumy.dsl.exists
 
 open class PrismObelisk(name: String) : Block(name) {
     @JvmField var prismType: Prism? = null

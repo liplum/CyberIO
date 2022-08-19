@@ -41,8 +41,8 @@ import net.liplum.mdt.utils.sub
 import net.liplum.util.update
 import plumy.core.Serialized
 import plumy.core.assets.TR
-import plumy.world.config
-import plumy.world.configNull
+import plumy.dsl.config
+import plumy.dsl.configNull
 
 open class Receiver(name: String) : Block(name) {
     @ClientOnly lateinit var BaseTR: TR

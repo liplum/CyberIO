@@ -26,7 +26,7 @@ import plumy.core.assets.TR
 import plumy.core.math.distance
 import plumy.core.math.divAssign
 import plumy.core.math.isZero
-import plumy.world.*
+import plumy.dsl.*
 
 /**
  * G means graphics.

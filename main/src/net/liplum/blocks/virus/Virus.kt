@@ -27,7 +27,7 @@ import net.liplum.common.util.off
 import net.liplum.common.util.on
 import net.liplum.mdt.ServerOnly
 import plumy.core.Else
-import plumy.world.AddBar
+import plumy.dsl.AddBar
 import net.liplum.mdt.utils.sub
 import net.liplum.registry.SD
 import net.liplum.util.yesNo

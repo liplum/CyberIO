@@ -45,10 +45,10 @@ import plumy.animation.ContextDraw.Draw
 import plumy.animation.ContextDraw.DrawScale
 import net.liplum.mdt.render.*
 import net.liplum.mdt.utils.MdtUnit
-import plumy.world.TileXY
+import plumy.dsl.TileXY
 import net.liplum.mdt.utils.sub
 import plumy.core.math.invoke
-import plumy.world.getCenterWorldXY
+import plumy.dsl.getCenterWorldXY
 
 /**
  * ### Since 1

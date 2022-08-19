@@ -14,9 +14,9 @@ import net.liplum.blocks.decentralizer.RecipeCenter.AllRecipes
 import net.liplum.blocks.decentralizer.RecipeCenter.calcuID
 import net.liplum.common.util.getF
 import net.liplum.mdt.render.postToastTextOn
-import plumy.world.AddBar
+import plumy.dsl.AddBar
 import net.liplum.mdt.utils.ItemTypeAmount
-import plumy.world.ID
+import plumy.dsl.ID
 import java.util.*
 
 open class Decentralizer(name: String) : Block(name) {

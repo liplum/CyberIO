@@ -53,7 +53,7 @@ import plumy.core.arc.equalsNoOrder
 import plumy.core.arc.set
 import plumy.core.assets.TR
 import plumy.core.math.isZero
-import plumy.world.AddBar
+import plumy.dsl.AddBar
 import kotlin.math.log2
 
 open class SmartDistributor(name: String) : Block(name) {

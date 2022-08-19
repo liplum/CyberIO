@@ -20,9 +20,9 @@ import plumy.core.Out
 import plumy.core.Serialized
 import plumy.core.math.Progress
 import plumy.pathkt.IVertex
-import plumy.world.TileXY
-import plumy.world.WorldXY
-import plumy.world.castBuild
+import plumy.dsl.TileXY
+import plumy.dsl.WorldXY
+import plumy.dsl.castBuild
 
 interface INetworkNode : ICyberEntity, IVertex<INetworkNode> {
     var network: DataNetwork

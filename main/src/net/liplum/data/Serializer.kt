@@ -22,7 +22,7 @@ import plumy.core.ClientOnly
 import plumy.animation.ContextDraw.Draw
 import net.liplum.input.smoothSelect
 import net.liplum.mdt.utils.MdtUnit
-import plumy.world.WorldXY
+import plumy.dsl.WorldXY
 import net.liplum.mdt.utils.atlas
 import net.liplum.registry.SD
 

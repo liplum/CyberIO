@@ -31,7 +31,7 @@ import plumy.core.math.Point2f
 import plumy.core.math.isZero
 import plumy.core.math.plusAssign
 import plumy.core.math.smooth
-import plumy.world.*
+import plumy.dsl.*
 
 @ClientOnly
 val ArrowDensity: Float

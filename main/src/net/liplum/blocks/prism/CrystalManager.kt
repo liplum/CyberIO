@@ -9,7 +9,7 @@ import net.liplum.common.persistence.read
 import net.liplum.common.persistence.write
 import plumy.core.math.Progress
 import plumy.core.ClientOnly
-import plumy.world.castBuild
+import plumy.dsl.castBuild
 
 enum class Status {
     Shrinking, Expending

@@ -9,7 +9,7 @@ import mindustry.world.meta.Stats
 import net.liplum.R
 import plumy.dsl.bundle
 import net.liplum.common.util.toFloat
-import plumy.world.AddBar
+import plumy.dsl.AddBar
 import net.liplum.registry.CioStats
 import net.liplum.ui.addTable
 import net.liplum.ui.then

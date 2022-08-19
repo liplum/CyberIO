@@ -21,8 +21,8 @@ import net.liplum.api.bullets.BulletAbility
 import plumy.dsl.DrawLayer
 import net.liplum.mdt.render.G
 import net.liplum.mdt.utils.MdtUnit
-import plumy.world.inTheWorld
-import plumy.world.worldXY
+import plumy.dsl.inTheWorld
+import plumy.dsl.worldXY
 import net.liplum.render.CioFx
 import net.liplum.render.Shape
 

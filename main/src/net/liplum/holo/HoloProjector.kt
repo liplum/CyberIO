@@ -52,7 +52,7 @@ import plumy.core.Else
 import plumy.core.Serialized
 import plumy.core.WhenNotPaused
 import plumy.dsl.bundle
-import plumy.world.*
+import plumy.dsl.*
 import kotlin.math.max
 
 open class HoloProjector(name: String) : Block(name) {

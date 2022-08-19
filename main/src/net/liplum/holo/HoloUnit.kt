@@ -32,9 +32,9 @@ import net.liplum.mdt.render.G
 import net.liplum.mdt.utils.hasShields
 import net.liplum.registry.CioFluid
 import net.liplum.registry.EntityRegistry
-import plumy.world.build
-import plumy.world.castBuild
-import plumy.world.exists
+import plumy.dsl.build
+import plumy.dsl.castBuild
+import plumy.dsl.exists
 
 open class HoloUnit : UnitEntity(), PayloadMixin, IRevisionable {
     override val revisionID = 0

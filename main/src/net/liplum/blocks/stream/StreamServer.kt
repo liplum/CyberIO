@@ -34,7 +34,7 @@ import net.liplum.mdt.ui.bars.genAllLiquidBars
 import net.liplum.mdt.ui.bars.removeLiquidInBar
 import net.liplum.mdt.utils.ForProximity
 import net.liplum.mdt.utils.sub
-import plumy.world.buildAt
+import plumy.dsl.build
 
 /**
  * ### Since 1
@@ -206,7 +206,7 @@ open class StreamServer(name: String) : StreamHost(name) {
         override fun control(type: LAccess, p1: Double, p2: Double, p3: Double, p4: Double) {
             when (type) {
                 LAccess.shoot -> {
-                    val receiver = buildAt(p1, p2)
+                    val receiver = Vars.world.build(p1, p2)
                     if (receiver is IStreamClient) connectToSync(receiver)
                 }
                 else -> super.control(type, p1, p2, p3, p4)

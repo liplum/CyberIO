@@ -45,7 +45,7 @@ import net.liplum.util.time
 import plumy.core.arc.toSecond
 import plumy.core.assets.TR
 import plumy.texture.*
-import plumy.world.castBuild
+import plumy.dsl.castBuild
 import kotlin.math.min
 
 /**

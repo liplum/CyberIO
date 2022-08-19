@@ -67,7 +67,7 @@ import plumy.core.Serialized
 import plumy.core.assets.TR
 import plumy.core.math.isZero
 import plumy.core.math.pow2OutIntrp
-import plumy.world.AddBar
+import plumy.dsl.AddBar
 
 /**
  * ### Since 1

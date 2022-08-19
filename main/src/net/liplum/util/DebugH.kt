@@ -14,7 +14,7 @@ import plumy.dsl.bundle
 import net.liplum.common.util.format
 import net.liplum.common.util.percentI
 import plumy.animation.state.IStateful
-import plumy.world.AddBar
+import plumy.dsl.AddBar
 
 inline fun <reified T> Block.addRangeInfo(maxRange: Float) where T : Building, T : Ranged {
     AddBar<T>(R.Bar.RangeN,

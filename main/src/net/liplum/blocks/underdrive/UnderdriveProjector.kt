@@ -51,7 +51,7 @@ import net.liplum.util.addRangeInfo
 import plumy.core.Serialized
 import plumy.core.assets.EmptyTR
 import plumy.dsl.NewEffect
-import plumy.world.AddBar
+import plumy.dsl.AddBar
 import kotlin.math.max
 
 const val MagicNSpiralRate = 0.1125f

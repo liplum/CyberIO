@@ -46,7 +46,7 @@ import net.liplum.util.addStateMachineInfo
 import net.liplum.util.genText
 import plumy.core.Serialized
 import plumy.core.assets.TR
-import plumy.world.*
+import plumy.dsl.*
 import kotlin.math.absoluteValue
 import kotlin.math.log2
 
@@ -511,7 +511,7 @@ open class SmartUnloader(name: String) : Block(name) {
         override fun control(type: LAccess, p1: Double, p2: Double, p3: Double, p4: Double) {
             when (type) {
                 LAccess.shoot -> {
-                    val receiver = buildAt(p1, p2)
+                    val receiver =  Vars.world.build(p1, p2)
                     if (receiver is IDataReceiver) connectToSync(receiver)
                 }
                 else -> super.control(type, p1, p2, p3, p4)
