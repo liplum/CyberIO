@@ -29,7 +29,7 @@ open class RegionSection<T>(
     /** If true, the base + outline regions are drawn.*/
     var drawRegion = true
     /** Progress function for determining position/rotation. */
-    var progress: SectionProgress<T> = Sections.progress
+    var progress: SectionProgress<T> = Sections.warmup
     var layer = -1f
     var layerOffset = 0f
     var outlineLayerOffset = -0.001f

@@ -2,15 +2,19 @@ package net.liplum.registry
 
 import mindustry.Vars
 import mindustry.content.Blocks
-import mindustry.content.Liquids
 import mindustry.content.UnitTypes
 import mindustry.world.blocks.heat.HeatProducer
 import mindustry.world.blocks.payloads.*
+import mindustry.world.blocks.power.ConsumeGenerator.ConsumeGeneratorBuild
+import mindustry.world.blocks.power.PowerGenerator
 import mindustry.world.blocks.sandbox.*
 import mindustry.world.meta.BuildVisibility
 import net.liplum.DebugOnly
 import net.liplum.ExperimentalOnly
 import net.liplum.annotations.DependOn
+import net.liplum.mdt.render.G
+import net.liplum.render.DrawBuild
+import net.liplum.render.regionSection
 
 object CioOverwrite {
     @DependOn
@@ -63,7 +67,14 @@ object CioOverwrite {
             /*val coreBlock = Blocks.coreShard as CoreBlock
             coreBlock.unitType = CioUnitType.holoFighter
             coreBlock.solid = false*/
-            Liquids.neoplasm.hidden = false
+            (Blocks.chemicalCombustionChamber as PowerGenerator).apply {
+                drawer = DrawBuild<ConsumeGeneratorBuild> {
+                    regionSection("-mid") {
+                        progress = { G.sin }
+                        moveRot = 360f
+                    }
+                }
+            }
         }
         ExperimentalOnly {
             Blocks.conveyor.sync = true
