@@ -1,5 +1,6 @@
 package net.liplum.registry
 
+import arc.func.Prov
 import mindustry.content.Liquids
 import mindustry.entities.part.DrawPart.PartProgress
 import mindustry.gen.Sounds
@@ -36,7 +37,9 @@ object CioSpaceship {
             shootY = 2.8f
             rotateSpeed = 8f
             scaledHealth = 250f
-             VanillaSpec {
+            shootWarmupSpeed = 0.05f
+            buildType = Prov { ContinuousLiquidTurretBuild() }
+            VanillaSpec {
                 range = 160f
                 addAmmo(Liquids.water, ArcFieldBulletType {
                     hitColor = R.C.CuttexCyan
@@ -84,8 +87,6 @@ object CioSpaceship {
                     length = 165f
                 })
             }
-            //minWarmup = 0.8f
-            shootWarmupSpeed = 0.05f
             drawTurret {
                 regionPart("-side") {
                     mirror = true

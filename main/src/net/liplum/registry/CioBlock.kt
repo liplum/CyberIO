@@ -23,7 +23,6 @@ import mindustry.world.blocks.heat.HeatProducer
 import mindustry.world.blocks.production.GenericCrafter
 import mindustry.world.blocks.production.HeatCrafter
 import mindustry.world.draw.DrawLiquidTile
-import mindustry.world.draw.DrawMulti
 import mindustry.world.meta.BuildVisibility
 import net.liplum.*
 import net.liplum.annotations.DependOn
@@ -107,11 +106,11 @@ object CioBlock {
                     Items.metaglass + 2,
                 )
                 craftTime = 175f
-                drawer = DrawMulti(
-                    DrawRegionSpec("-bottom"),
-                    SpecDrawConstruct(stages = 3),
-                    DrawDefaultSpec(),
-                )
+                drawMulti {
+                    +DrawRegionSpec("-bottom")
+                    +SpecDrawConstruct(stages = 3)
+                    +DrawDefaultSpec()
+                }
             }
             ErekirSpec {
                 requirements = arrayOf(
@@ -129,11 +128,11 @@ object CioBlock {
                     Items.silicon + 4,
                 )
                 craftTime = 200f
-                drawer = DrawMulti(
-                    DrawRegionSpec("-bottom"),
-                    SpecDrawConstruct(stages = 4),
-                    DrawDefaultSpec(),
-                )
+                drawMulti {
+                    +DrawRegionSpec("-bottom")
+                    +SpecDrawConstruct(stages = 4)
+                    +DrawDefaultSpec()
+                }
                 squareSprite = false
             }
             buildType = Prov { GenericCrafterBuild() }
@@ -657,7 +656,7 @@ object CioBlock {
             loopSoundVolume = 0.3f
             rotateSpeed = 2f
 
-            addAmmo(CioFluid.cyberion, JammingLaser().apply {
+            addAmmo(CioFluid.cyberion, JammingLaser {
                 VanillaSpec {
                     damage = 100f
                     length = 220f
@@ -748,16 +747,16 @@ object CioBlock {
                 consumeLiquid(Liquids.cryofluid, 0.3f)
                 outputLiquid = CioFluid.cyberion + 0.25f
                 heatOutput = 3f
-                drawer = DrawMulti(
-                    DrawRegionSpec("-bottom"),
-                    DrawLiquidTile(Liquids.cryofluid, 3f),
-                    DrawLiquidTile(CioFluid.cyberion, 3f),
-                    DrawDefaultSpec(),
-                    DrawHeatOutputSpec().apply {
+                drawMulti {
+                    +DrawRegionSpec("-bottom")
+                    +DrawLiquidTile(Liquids.cryofluid, 3f)
+                    +DrawLiquidTile(CioFluid.cyberion, 3f)
+                    +DrawDefaultSpec()
+                    +DrawHeatOutputSpec().apply {
                         heatColor = S.Hologram
-                    },
-                    DrawCyberionAgglomeration(),
-                )
+                    }
+                    +DrawCyberionAgglomeration()
+                }
                 size = 3
             }
         }
@@ -780,21 +779,21 @@ object CioBlock {
                 heatRequirement = 8f
                 overheatScale = 1.5f
                 outputLiquid = CioFluid.cyberion + 0.25f
-                drawer = DrawMulti(
-                    DrawRegionSpec("-bottom"),
-                    DrawPistonsSpec().apply {
+                drawMulti {
+                    +DrawRegionSpec("-bottom")
+                    +DrawPistonsSpec().apply {
                         sinMag = 3f
                         sinScl = 5f
-                    },
-                    DrawGlowRegionSpec(),
-                    DrawDefaultSpec(),
-                    DrawLiquidTile(Liquids.slag, 37f / 4f),
-                    DrawLiquidTile(CioFluid.cyberion, 37f / 4f),
-                    DrawRegionSpec("-top"),
-                    DrawHeatInputSpec().apply {
+                    }
+                    +DrawGlowRegionSpec()
+                    +DrawDefaultSpec()
+                    +DrawLiquidTile(Liquids.slag, 37f / 4f)
+                    +DrawLiquidTile(CioFluid.cyberion, 37f / 4f)
+                    +DrawRegionSpec("-top")
+                    +DrawHeatInputSpec().apply {
                         heatColor = S.Hologram
-                    },
-                )
+                    }
+                }
                 size = 3
             }
         }
@@ -858,7 +857,7 @@ object CioBlock {
             size = 3
             squareSprite = false
 
-            shootType = RuvikBullet().apply bullet@{
+            shootType = RuvikBullet bullet@{
                 VanillaSpec {
                     speed = 2f
                     damage = 110f

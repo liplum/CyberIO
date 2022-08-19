@@ -228,4 +228,9 @@ open class RuvikBullet : BulletType {
             b.vel.add(owner.vel())
         return b
     }
+
+    companion object {
+        inline operator fun invoke(config: RuvikBullet.() -> Unit) =
+            RuvikBullet().apply(config)
+    }
 }
