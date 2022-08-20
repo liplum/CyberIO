@@ -44,7 +44,7 @@ import plumy.core.ClientOnly
 import plumy.animation.ContextDraw.Draw
 import plumy.animation.ContextDraw.DrawScale
 import net.liplum.mdt.render.*
-import net.liplum.mdt.utils.MdtUnit
+import plumy.core.MUnit
 import plumy.dsl.TileXY
 import net.liplum.mdt.utils.sub
 import plumy.core.math.invoke
@@ -398,7 +398,7 @@ open class Ear(name: String) : Block(name), IComponentBlock {
             return this.timeScale * Time.delta * speedScale * (1f + heatShared)
         }
 
-        val MdtUnit.isSensed: Boolean
+        val MUnit.isSensed: Boolean
             get() = this.vel.len() >= realSensitive
 
         override fun remove() {

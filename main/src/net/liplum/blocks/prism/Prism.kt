@@ -467,10 +467,10 @@ open class Prism(name: String) : Block(name) {
             // See draw()
         }
 
-        override fun unit(): MdtUnit {
+        override fun unit(): MUnit {
             unit.tile(this)
             unit.team(team)
-            return (unit as MdtUnit)
+            return (unit as MUnit)
         }
 
         override fun control(type: LAccess, p1: Double, p2: Double, p3: Double, p4: Double) {

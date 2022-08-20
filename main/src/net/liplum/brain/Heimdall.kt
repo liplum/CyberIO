@@ -58,7 +58,7 @@ import plumy.animation.ContextDraw.Draw
 import plumy.animation.draw
 import plumy.animation.linearFrames
 import net.liplum.mdt.render.*
-import net.liplum.mdt.utils.MdtUnit
+import plumy.core.MUnit
 import net.liplum.mdt.utils.atUnit
 import net.liplum.mdt.utils.sheet
 import net.liplum.mdt.utils.sub
@@ -455,7 +455,7 @@ open class Heimdall(name: String) : Block(name) {
             checkComponentsNearby()
         }
 
-        override fun updatePayload(unitHolder: MdtUnit?, buildingHolder: Building?) {
+        override fun updatePayload(unitHolder: MUnit?, buildingHolder: Building?) {
             super.updatePayload(unitHolder, buildingHolder)
             if (Mathf.chance(0.006)) {
                 if (unitHolder != null) {
@@ -671,11 +671,11 @@ open class Heimdall(name: String) : Block(name) {
         }
 
         override fun canControl() = canConsume()
-        override fun unit(): MdtUnit {
+        override fun unit(): MUnit {
             //make sure stats are correct
             unit.tile(this)
             unit.team(team)
-            return (unit as MdtUnit)
+            return (unit as MUnit)
         }
 
         override fun read(_read_: Reads, revision: Byte) {
@@ -782,7 +782,7 @@ open class Heimdall(name: String) : Block(name) {
         }
 
         val tmp = Vec2()
-        fun blockUnit(unit: MdtUnit) {
+        fun blockUnit(unit: MUnit) {
             val overlapDst = unit.hitSize / 2f + curFieldRadius - unit.dst(this)
 
             if (overlapDst > 0) {

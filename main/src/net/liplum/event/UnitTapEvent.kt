@@ -8,10 +8,10 @@ import mindustry.entities.Units
 import mindustry.gen.Player
 import net.liplum.mdt.Screen
 import plumy.core.ClientOnly
-import net.liplum.mdt.utils.MdtUnit
+import plumy.core.MUnit
 
 @ClientOnly
-data class UnitTapEvent(val player: Player, val unit: MdtUnit)
+data class UnitTapEvent(val player: Player, val unit: MUnit)
 @ClientOnly
 object UnitTap : InputProcessor {
     @ClientOnly
@@ -20,7 +20,7 @@ object UnitTap : InputProcessor {
         val worldXY = Screen.toWorld(screenX, screenY)
         val player = Vars.player
         if (player != null) {
-            val closest: MdtUnit? = Units.closest(Vars.player.team(), worldXY.x, worldXY.y) {
+            val closest: MUnit? = Units.closest(Vars.player.team(), worldXY.x, worldXY.y) {
                 !it.dead && it.dst(worldXY.x, worldXY.y) < 10f
             }
             if (closest != null) {

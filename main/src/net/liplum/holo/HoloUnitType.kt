@@ -38,7 +38,7 @@ import net.liplum.holo.HoloProjector.HoloProjectorBuild
 import plumy.core.math.FUNC
 import plumy.core.ClientOnly
 import plumy.core.Else
-import net.liplum.mdt.utils.MdtUnit
+import plumy.core.MUnit
 import net.liplum.mdt.utils.healthPct
 import net.liplum.registry.SD
 import net.liplum.util.time
@@ -346,7 +346,7 @@ open class HoloUnitType(name: String) : UnitType(name) {
         table.row()
     }
 
-    fun <T> canShowPayload(unit: T): Boolean where T : MdtUnit, T : Payloadc =
+    fun <T> canShowPayload(unit: T): Boolean where T : MUnit, T : Payloadc =
         unit.type().payloadCapacity > 0f
 
     override fun drawShield(unit: Unit) {

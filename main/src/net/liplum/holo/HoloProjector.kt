@@ -45,7 +45,7 @@ import net.liplum.mdt.consumer.ConsumeFluidDynamic
 import net.liplum.mdt.ui.addItemSelectorDefault
 import net.liplum.mdt.ui.bars.removeItemsInBar
 import net.liplum.mdt.utils.ItemTypeAmount
-import net.liplum.mdt.utils.MdtUnit
+import plumy.core.MUnit
 import net.liplum.mdt.utils.inPayload
 import net.liplum.registry.CioFluid.cyberion
 import net.liplum.registry.SD
@@ -158,7 +158,8 @@ open class HoloProjector(name: String) : Block(name) {
             get() = planIndex.plan
         @Serialized
         var progressTime = 0f
-        var totalProgress = 0f
+        @ClientOnly
+        var projecting = 0f
         var commandPos: Vec2? = null
         override fun block(): HoloProjector = this@HoloProjector
         val progress: Float
@@ -176,7 +177,7 @@ open class HoloProjector(name: String) : Block(name) {
                 warmup = warmup.approach(1f, warmupSpeed)
                 val delta = edelta()
                 progressTime += delta
-                totalProgress += delta
+                this.projecting += delta
                 if (progressTime >= plan.time) {
                     val unitType = plan.unitType
                     if (unitType.canCreateHoloUnitIn(team)) {
@@ -249,7 +250,7 @@ open class HoloProjector(name: String) : Block(name) {
             }
         }
 
-        @JvmField var lastUnitInPayload: MdtUnit? = null
+        @JvmField var lastUnitInPayload: MUnit? = null
         fun findTrueHoloProjectorSource(): HoloProjectorBuild {
             val unit = lastUnitInPayload
             if (unit is HoloUnit) {
@@ -283,8 +284,6 @@ open class HoloProjector(name: String) : Block(name) {
         }
         @ClientOnly
         var lastPlan: HoloPlan? = curPlan
-        @ClientOnly
-        var projecting = 0f
         override fun draw() {
             drawer.draw(this)
             val curPlan = curPlan
@@ -308,10 +307,10 @@ open class HoloProjector(name: String) : Block(name) {
             }
             WhenNotPaused {
                 if (progress < 1f && !inPayload) {
-                    projecting += delta()
+                    this.projecting += delta()
                 }
             }
-            val rotation = projecting
+            val rotation = this.projecting
             val size = block.size * Vars.tilesize / projectorCenterRate
             // tx and ty control the position of bottom edge
             val tx = x
@@ -320,7 +319,7 @@ open class HoloProjector(name: String) : Block(name) {
             Draw.color(S.HologramDark)
             Draw.alpha(alpha)
             // the floating of center
-            val focusLen = 3.8f + Mathf.absin(projecting, 3.0f, 0.6f)
+            val focusLen = 3.8f + Mathf.absin(this.projecting, 3.0f, 0.6f)
             val px = x + Angles.trnsx(rotation, focusLen)
             val py = y + Angles.trnsy(rotation, focusLen)
             val shrink = projectorShrink
@@ -427,7 +426,7 @@ open class HoloProjector(name: String) : Block(name) {
         }
 
         override fun warmup() = warmup
-        override fun totalProgress() = totalProgress
+        override fun totalProgress() = this.projecting
         override fun progress() = progress
     }
 

@@ -14,7 +14,7 @@ import mindustry.graphics.Layer
 import net.liplum.DebugOnly
 import plumy.dsl.DrawLayer
 import net.liplum.mdt.render.G
-import net.liplum.mdt.utils.MdtUnit
+import plumy.core.MUnit
 import plumy.core.math.Degree
 import plumy.core.math.Radius
 import plumy.core.math.plusAssign
@@ -94,7 +94,7 @@ class ArcWaveBulletType : BulletType {
         }
     }
 
-    fun Bullet.tryCauseDamageTo(unit: MdtUnit) {
+    fun Bullet.tryCauseDamageTo(unit: MUnit) {
         if (this.team != unit.team) {
             val aimAngle = rotation()
             val bullet2Enemy = this.angleTo(unit)
@@ -104,7 +104,7 @@ class ArcWaveBulletType : BulletType {
         }
     }
 
-    fun Bullet.damageTarget(unit: MdtUnit) {
+    fun Bullet.damageTarget(unit: MUnit) {
         unit.collision(this, unit.x, unit.y)
         this.collision(unit, unit.x, unit.y)
     }

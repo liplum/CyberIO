@@ -16,7 +16,7 @@ import plumy.core.Serialized
 import plumy.core.assets.TR
 import plumy.core.ClientOnly
 import net.liplum.mdt.render.G
-import net.liplum.mdt.utils.MdtUnit
+import plumy.core.MUnit
 import net.liplum.mdt.utils.atlas
 import kotlin.math.max
 
@@ -152,11 +152,11 @@ class DataCDN(name: String) :
 
         override fun toString() = "DataCDN#$id"
         var unit = UnitTypes.block.create(team) as BlockUnitc
-        override fun unit(): MdtUnit {
+        override fun unit(): MUnit {
             //make sure stats are correct
             unit.tile(this)
             unit.team(team)
-            return (unit as MdtUnit)
+            return (unit as MUnit)
         }
     }
 }

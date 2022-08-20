@@ -14,7 +14,7 @@ import mindustry.gen.*
 import mindustry.graphics.Drawf
 import mindustry.world.blocks.ControlBlock
 import mindustry.world.blocks.defense.turrets.BaseTurret
-import net.liplum.mdt.utils.MdtUnit
+import plumy.core.MUnit
 import net.liplum.mdt.utils.findPlayer
 
 @Suppress("ClassName")
@@ -185,7 +185,7 @@ open class RuvikBullet : BulletType {
                 spawned.vel.trns(angle, spawnUnit.speed)
                 //assign unit owner
                 val controller = spawned.controller()
-                if (controller is MissileAI && owner is MdtUnit) {
+                if (controller is MissileAI && owner is MUnit) {
                     controller.shooter = owner
                 }
             }

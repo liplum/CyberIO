@@ -20,7 +20,7 @@ import net.liplum.R
 import net.liplum.api.bullets.BulletAbility
 import plumy.dsl.DrawLayer
 import net.liplum.mdt.render.G
-import net.liplum.mdt.utils.MdtUnit
+import plumy.core.MUnit
 import plumy.dsl.inTheWorld
 import plumy.dsl.worldXY
 import net.liplum.render.CioFx
@@ -31,7 +31,7 @@ open class ProvidenceBA : BulletAbility() {
     var damage = 1f
     var lightAlpha = 0.4f
     var lightColor: Color = R.C.Providence
-    protected var actionOnUnit: Cons<MdtUnit> = Cons {
+    protected var actionOnUnit: Cons<MUnit> = Cons {
         it.damageContinuousPierce(damage)
     }
 
@@ -65,7 +65,7 @@ open class SlowDownBA : BulletAbility() {
     var slowDown = 0.2f
     var darkAlpha = 0.7f
     var darkColor: Color = R.C.Black
-    protected var actionOnUnit: Cons<MdtUnit> = Cons {
+    protected var actionOnUnit: Cons<MUnit> = Cons {
         val original = it.vel.len()
         val new = original * slowDown
         val delta = (original - new) * Time.delta

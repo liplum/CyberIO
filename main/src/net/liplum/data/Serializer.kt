@@ -21,7 +21,7 @@ import net.liplum.common.shader.use
 import plumy.core.ClientOnly
 import plumy.animation.ContextDraw.Draw
 import net.liplum.input.smoothSelect
-import net.liplum.mdt.utils.MdtUnit
+import plumy.core.MUnit
 import plumy.dsl.WorldXY
 import net.liplum.mdt.utils.atlas
 import net.liplum.registry.SD
@@ -202,11 +202,11 @@ class Serializer(name: String) :
         }
 
         var unit = UnitTypes.block.create(team) as BlockUnitc
-        override fun unit(): MdtUnit {
+        override fun unit(): MUnit {
             //make sure stats are correct
             unit.tile(this)
             unit.team(team)
-            return (unit as MdtUnit)
+            return (unit as MUnit)
         }
 
         override fun toString() = "Serializer#$id"

@@ -40,6 +40,6 @@ fun EffectContainer.fadeInOutPct(
         1f
 }
 
-fun Effect.atUnit(unit: MdtUnit) {
+fun Effect.atUnit(unit: MUnit) {
     at(unit.x, unit.y, unit.rotation, unit)
 }

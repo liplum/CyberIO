@@ -49,7 +49,7 @@ import net.liplum.mdt.render.*
 import net.liplum.mdt.ui.bars.appendDisplayLiquidsDynamic
 import net.liplum.mdt.ui.bars.genAllLiquidBars
 import net.liplum.mdt.ui.bars.removeLiquidInBar
-import net.liplum.mdt.utils.MdtUnit
+import plumy.core.MUnit
 import net.liplum.mdt.utils.sheet
 import net.liplum.mdt.utils.sub
 import plumy.core.Serialized
@@ -230,11 +230,11 @@ open class Heart(name: String) : Block(name), IComponentBlock {
         //</editor-fold>
         //<editor-fold desc="Controllable">
         var unit = UnitTypes.block.create(team) as BlockUnitc
-        override fun unit(): MdtUnit {
+        override fun unit(): MUnit {
             //make sure stats are correct
             unit.tile(this)
             unit.team(team)
-            return (unit as MdtUnit)
+            return (unit as MUnit)
         }
         //</editor-fold>
         //<editor-fold desc="Heat Block">

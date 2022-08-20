@@ -62,7 +62,7 @@ inline fun <reified T> Int.inPayloadBuilding(): T? where T : Building {
     return null
 }
 
-inline fun <reified T> Int.inPayloadUnit(): T? where T : MdtUnit {
+inline fun <reified T> Int.inPayloadUnit(): T? where T : MUnit {
     val build = this.build
     if (build is PayloadConveyor.PayloadConveyorBuild) {
         return (build.payload as? UnitPayload)?.unit as? T
