@@ -3,12 +3,7 @@ package net.liplum.holo
 import arc.Events
 import arc.func.Prov
 import arc.graphics.Color
-import arc.graphics.g2d.Draw
-import arc.graphics.g2d.Fill
-import arc.graphics.g2d.Lines
 import arc.graphics.g2d.TextureRegion
-import arc.math.Angles
-import arc.math.Mathf
 import arc.math.geom.Vec2
 import arc.scene.ui.layout.Table
 import arc.struct.Seq
@@ -16,12 +11,10 @@ import arc.util.Eachable
 import arc.util.Strings.autoFixed
 import arc.util.io.Reads
 import arc.util.io.Writes
-import mindustry.Vars
 import mindustry.entities.units.BuildPlan
 import mindustry.game.EventType.UnitCreateEvent
 import mindustry.gen.*
 import mindustry.gen.Unit
-import mindustry.graphics.Layer
 import mindustry.graphics.Pal
 import mindustry.logic.LAccess
 import mindustry.type.*
@@ -45,17 +38,15 @@ import net.liplum.mdt.consumer.ConsumeFluidDynamic
 import net.liplum.mdt.ui.addItemSelectorDefault
 import net.liplum.mdt.ui.bars.removeItemsInBar
 import net.liplum.mdt.utils.ItemTypeAmount
-import plumy.core.MUnit
-import net.liplum.mdt.utils.inPayload
 import net.liplum.registry.CioFluid.cyberion
 import net.liplum.registry.SD
 import net.liplum.ui.addTable
 import plumy.animation.ContextDraw.Draw
 import plumy.core.ClientOnly
 import plumy.core.Else
+import plumy.core.MUnit
 import plumy.core.Serialized
-import plumy.core.WhenNotPaused
-import plumy.core.math.approach
+import plumy.core.math.approachDelta
 import plumy.dsl.*
 import kotlin.math.max
 
@@ -63,15 +54,9 @@ open class HoloProjector(name: String) : Block(name) {
     @JvmField var plans: ArrayList<HoloPlan> = ArrayList()
     @JvmField var itemCapabilities: IntArray = IntArray(0)
     @JvmField var holoUnitCapacity = 8
-    @JvmField var powerUse = 3f
     @JvmField var warmupSpeed = 0.015f
-    @ClientOnly @JvmField var projectorShrink = 5f
-    @ClientOnly @JvmField var projectorCenterRate = 3f
-    /**
-     * For vertices of plan
-     */
-    @ClientOnly
-    val vecs = arrayOf(Vec2(), Vec2(), Vec2(), Vec2())
+    @JvmField var preparingSpeed = 0.015f
+    @ClientOnly @JvmField var projectingSpeed = 2f
     @JvmField var drawer: DrawBlock = DrawDefault()
 
     init {
@@ -106,9 +91,6 @@ open class HoloProjector(name: String) : Block(name) {
             val plan = it.curPlan ?: return@ConsumeItemDynamic ItemStack.empty
             plan.req.items
         })
-        consumePowerCond<HoloProjectorBuild>(powerUse) {
-            it.curPlan != null
-        }
         itemCapabilities = IntArray(ItemTypeAmount())
         for (plan in plans) {
             for (itemReq in plan.itemReqs) {
@@ -153,6 +135,11 @@ open class HoloProjector(name: String) : Block(name) {
                 field = value.coerceIn(0f, 1f)
             }
         @Serialized
+        var preparing = 0f
+            set(value) {
+                field = value.coerceIn(0f, 1f)
+            }
+        @Serialized
         var planIndex: Int = -1
         val curPlan: HoloPlan?
             get() = planIndex.plan
@@ -174,10 +161,12 @@ open class HoloProjector(name: String) : Block(name) {
         override fun updateTile() {
             val plan = curPlan
             if (plan != null && efficiency > 0f) {
-                warmup = warmup.approach(1f, warmupSpeed)
+                preparing = preparing.approachDelta(1f, preparingSpeed)
                 val delta = edelta()
-                progressTime += delta
-                this.projecting += delta
+                if (preparing >= 1f) {
+                    warmup = warmup.approachDelta(1f, warmupSpeed)
+                    progressTime += delta
+                }
                 if (progressTime >= plan.time) {
                     val unitType = plan.unitType
                     if (unitType.canCreateHoloUnitIn(team)) {
@@ -185,9 +174,12 @@ open class HoloProjector(name: String) : Block(name) {
                         consume()
                         progressTime = 0f
                     }
+                } else {
+                    projecting += delta * projectingSpeed
                 }
             } else {
-                warmup = warmup.approach(0f, warmupSpeed)
+                warmup = warmup.approachDelta(0f, warmupSpeed)
+                preparing = preparing.approachDelta(0f, preparingSpeed)
             }
         }
         @CalledBySync
@@ -286,6 +278,7 @@ open class HoloProjector(name: String) : Block(name) {
         var lastPlan: HoloPlan? = curPlan
         override fun draw() {
             drawer.draw(this)
+            if(preparing <= 0f) return
             val curPlan = curPlan
             val alpha = warmup
             val planDraw = curPlan ?: lastPlan
@@ -296,7 +289,6 @@ open class HoloProjector(name: String) : Block(name) {
                 SD.Hologram.use {
                     val type = planDraw.unitType
                     it.alpha = (progress * 1.2f * alpha).coerceAtMost(1f)
-                    it.flickering = it.DefaultFlickering + (1f - progress)
                     if (type.ColorOpacity > 0f)
                         it.blendFormerColorOpacity = type.ColorOpacity
                     if (type.HoloOpacity > 0f) {
@@ -305,50 +297,6 @@ open class HoloProjector(name: String) : Block(name) {
                     type.fullIcon.Draw(x, y)
                 }
             }
-            WhenNotPaused {
-                if (progress < 1f && !inPayload) {
-                    this.projecting += delta()
-                }
-            }
-            val rotation = this.projecting
-            val size = block.size * Vars.tilesize / projectorCenterRate
-            // tx and ty control the position of bottom edge
-            val tx = x
-            val ty = y
-            Lines.stroke(1.0f)
-            Draw.color(S.HologramDark)
-            Draw.alpha(alpha)
-            // the floating of center
-            val focusLen = 3.8f + Mathf.absin(this.projecting, 3.0f, 0.6f)
-            val px = x + Angles.trnsx(rotation, focusLen)
-            val py = y + Angles.trnsy(rotation, focusLen)
-            val shrink = projectorShrink
-            // the vertices
-            vecs[0].set(tx - size, ty - size) // left-bottom
-            vecs[1].set(tx + size, ty - size) // right-bottom
-            vecs[2].set(tx - size, ty + size) // left-top
-            vecs[3].set(tx + size, ty + size) // right-top
-            Draw.z(Layer.buildBeam)
-            if (Vars.renderer.animateShields) {
-                Fill.tri(px, py, vecs[0].x + shrink, vecs[0].y, vecs[1].x - shrink, vecs[1].y) // bottom
-                Fill.tri(px, py, vecs[2].x + shrink, vecs[2].y, vecs[3].x - shrink, vecs[3].y) // up
-                Fill.tri(px, py, vecs[0].x, vecs[0].y + shrink, vecs[2].x, vecs[2].y - shrink) // left
-                Fill.tri(px, py, vecs[1].x, vecs[1].y + shrink, vecs[3].x, vecs[3].y - shrink) // right
-            } else {
-                // bottom
-                Lines.line(px, py, vecs[0].x + shrink, vecs[0].y)
-                Lines.line(px, py, vecs[1].x - shrink, vecs[1].y)
-                // up
-                Lines.line(px, py, vecs[2].x + shrink, vecs[2].y)
-                Lines.line(px, py, vecs[3].x - shrink, vecs[3].y)
-                // left
-                Lines.line(px, py, vecs[0].x, vecs[0].y + shrink)
-                Lines.line(px, py, vecs[2].x, vecs[3].y - shrink)
-                // right
-                Lines.line(px, py, vecs[1].x, vecs[1].y + shrink)
-                Lines.line(px, py, vecs[3].x, vecs[3].y - shrink)
-            }
-            Draw.reset()
         }
 
         override fun acceptLiquid(source: Building, liquid: Liquid) =
@@ -393,6 +341,7 @@ open class HoloProjector(name: String) : Block(name) {
             val version = revision.toInt()
             if (version >= 1) {
                 warmup = read.f()
+                preparing = read.f()
             }
         }
 
@@ -401,6 +350,7 @@ open class HoloProjector(name: String) : Block(name) {
             write.b(planIndex)
             write.f(progressTime)
             write.f(warmup)
+            write.f(preparing)
         }
 
         override fun senseObject(sensor: LAccess): Any? {

@@ -5,7 +5,6 @@ import arc.graphics.Blending
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
 import arc.graphics.g2d.TextureRegion
-import arc.math.Mathf
 import arc.struct.Seq
 import arc.util.Tmp
 import mindustry.gen.Building
@@ -41,14 +40,14 @@ open class RegionSection<T>(
     var rotation = 0f
     var moveX = 0f
     var moveY = 0f
-    var moveRot = 0f
+    var moveRotation = 0f
     var blending: Blending = Blending.normal
     var color: Color? = null
     var colorTo: Color? = null
     var mixColor: Color? = null
     var mixColorTo: Color? = null
-    var children = Seq<DrawSection<T>>()
-    var moves = Seq<SectionMove<T>>()
+    var children = ArrayList<DrawSection<T>>()
+    var moves = ArrayList<SectionMove<T>>()
     override fun draw(build: T, args: SectionArgs<T>) {
         val z = Draw.z()
         if (layer > 0) Draw.z(layer)
@@ -57,7 +56,7 @@ open class RegionSection<T>(
         val prog: Float = progress(build).clamp
         var mx = moveX * prog
         var my = moveY * prog
-        var mr = moveRot * prog + rotation
+        var mr = moveRotation * prog + rotation
 
         if (moves.size > 0) {
             for (i in 0 until moves.size) {
@@ -77,10 +76,10 @@ open class RegionSection<T>(
             Tmp.v1.set(
                 (x + mx) * sign * Draw.xscl,
                 (y + my) * Draw.yscl
-            ).rotateRadExact((args.rotation - 90f).radian)
+            ).rotateRadExact(args.rotation.radian)
             val rx = args.x + Tmp.v1.x
             val ry = args.y + Tmp.v1.y
-            val rot = mr * sign + args.rotation - 90f
+            val rot = mr * sign + args.rotation
             Draw.xscl *= sign
             if (drawOutline && drawRegion) {
                 Draw.z(prevZ + outlineLayerOffset)
@@ -93,15 +92,23 @@ open class RegionSection<T>(
                     Drawf.shadow(region, rx - shadowElevation, ry - shadowElevation, rot)
                     Draw.z(prevZ)
                 }
-                if (color != null && colorTo != null) {
-                    Draw.color(color, colorTo, prog)
-                } else if (color != null) {
-                    Draw.color(color)
+                run color@{
+                    val color = color
+                    val colorTo = colorTo
+                    if (color != null && colorTo != null) {
+                        Draw.color(color, colorTo, prog)
+                    } else if (color != null) {
+                        Draw.color(color)
+                    }
                 }
-                if (mixColor != null && mixColorTo != null) {
-                    Draw.mixcol(mixColor, mixColorTo, prog)
-                } else if (mixColor != null) {
-                    Draw.mixcol(mixColor, mixColor!!.a)
+                run mixColor@{
+                    val mixColor = mixColor
+                    val mixColorTo = mixColorTo
+                    if (mixColor != null && mixColorTo != null) {
+                        Draw.mixcol(mixColor, mixColorTo, prog)
+                    } else if (mixColor != null) {
+                        Draw.mixcol(mixColor, mixColor.a)
+                    }
                 }
                 Draw.blend(blending)
                 Draw.rect(region, rx, ry, rot)
@@ -118,13 +125,12 @@ open class RegionSection<T>(
         //draw child, if applicable - only at the end
         if (children.size > 0) {
             for (s in 0 until len) {
-                val i = s
-                val sign: Float = if (i == 1) -1f else 1f
-                Tmp.v1.set((x + mx) * sign, y + my).rotateRadExact((args.rotation - 90) * Mathf.degRad)
+                val sign = if (s == 1) -1f else 1f
+                Tmp.v1.set((x + mx) * sign, y + my).rotateRadExact(args.rotation.radian)
                 childParam.apply {
                     x = args.x + Tmp.v1.x
                     y = args.y + Tmp.v1.y
-                    rotation = i * sign + mr * sign + args.rotation
+                    rotation = s * sign + mr * sign + args.rotation
                 }
                 for (child in children) {
                     child.draw(build, childParam)
@@ -165,4 +171,11 @@ open class RegionSection<T>(
             child.getOutlines(out)
         }
     }
+}
+
+inline fun <T : Building> RegionSection<T>.regionSection(
+    suffix: String = "",
+    config: RegionSection<T>.() -> Unit,
+) {
+    children += RegionSection<T>(suffix).apply(config)
 }

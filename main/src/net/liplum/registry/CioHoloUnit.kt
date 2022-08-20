@@ -3,6 +3,9 @@ package net.liplum.registry
 import arc.func.Func
 import arc.func.Prov
 import arc.graphics.Color
+import arc.math.Angles
+import arc.math.Mathf
+import arc.math.geom.Vec2
 import mindustry.Vars
 import mindustry.ai.types.BuilderAI
 import mindustry.ai.types.DefenderAI
@@ -28,9 +31,10 @@ import net.liplum.holo.*
 import net.liplum.holo.HoloProjector.HoloProjectorBuild
 import net.liplum.mdt.utils.NewUnitType
 import net.liplum.render.DrawBuild
-import net.liplum.render.Sections
+import net.liplum.render.SectionProgress
 import net.liplum.render.regionSection
 import plumy.core.arc.minute
+import plumy.core.math.smooth
 import plumy.dsl.plus
 
 object CioHoloUnit {
@@ -64,6 +68,7 @@ object CioHoloUnit {
                 liquidCapacity = 100f
                 scaledHealth = 100f
                 researchCostMultiplier = 0.8f
+                consumePower(3f)
                 plans += HoloPlan(
                     holoMiner,
                     Requirement(
@@ -117,6 +122,7 @@ object CioHoloUnit {
                 liquidCapacity = 100f
                 scaledHealth = 150f
                 researchCostMultiplier = 0.75f
+                consumePower(3f)
                 plans += HoloPlan(
                     holoMiner,
                     Requirement(
@@ -158,22 +164,66 @@ object CioHoloUnit {
                     18f * 60f
                 )
             }
-            drawer = DrawBuild<HoloProjectorBuild> {
-                regionSection("-top") {
+            drawer = DrawBuild {
+                val v = Vec2()
+                val focus: HoloProjectorBuild.() -> Vec2 = {
+                    val len = 3.8f + Mathf.absin(projecting, 3.0f, 0.6f)
+                    val x = x + Angles.trnsx(projecting, len)
+                    val y = y + Angles.trnsy(projecting, len)
+                    v.set(x, y)
+                }
+                val prog: SectionProgress<HoloProjectorBuild> = { preparing.smooth }
+                regionSection("-top-r") {
                     layer = Layer.blockOver
-                    progress = Sections.warmupSmooth
+                    progress = prog
                     shadowElevation = 1f
-                    mirror = true
                     moveX = 5f
                     moveY = 5f
+                    children += HoloProjectingSection<HoloProjectorBuild>().apply {
+                        isTopRightOrBottomLeft = true
+                        center = focus
+                        x = 8f
+                        y = 8f
+                    }
                 }
-                regionSection("-bottom") {
+                regionSection("-top-l") {
                     layer = Layer.blockOver
-                    progress = Sections.warmupSmooth
+                    progress = prog
                     shadowElevation = 1f
-                    mirror = true
+                    moveX = -5f
+                    moveY = 5f
+                    children += HoloProjectingSection<HoloProjectorBuild>().apply {
+                        isTopRightOrBottomLeft = false
+                        center = focus
+                        x = -8f
+                        y = 8f
+                    }
+                }
+                regionSection("-bottom-r") {
+                    layer = Layer.blockOver
+                    progress = prog
+                    shadowElevation = 1f
                     moveX = 5f
                     moveY = -5f
+                    children += HoloProjectingSection<HoloProjectorBuild>().apply {
+                        isTopRightOrBottomLeft = false
+                        center = focus
+                        x = 8f
+                        y = -8f
+                    }
+                }
+                regionSection("-bottom-l") {
+                    layer = Layer.blockOver
+                    progress = prog
+                    shadowElevation = 1f
+                    moveX = -5f
+                    moveY = -5f
+                    children += HoloProjectingSection<HoloProjectorBuild>().apply {
+                        isTopRightOrBottomLeft = true
+                        center = focus
+                        x = -8f
+                        y = -8f
+                    }
                 }
             }
             ambientSound = Sounds.build

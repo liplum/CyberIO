@@ -9,7 +9,7 @@ import plumy.core.math.smoother
 
 abstract class DrawSection<T> where T : Building {
     abstract fun draw(build: T, args: SectionArgs<T>)
-    abstract fun load(name: String)
+    open fun load(name: String){}
     open fun getOutlines(out: Seq<TextureRegion>) {}
 }
 typealias SectionProgress<T> = T.() -> Progress

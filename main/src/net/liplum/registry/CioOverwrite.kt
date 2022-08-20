@@ -71,7 +71,7 @@ object CioOverwrite {
                 drawer = DrawBuild<ConsumeGeneratorBuild> {
                     regionSection("-mid") {
                         progress = { G.sin }
-                        moveRot = 360f
+                        moveRotation = 360f
                     }
                 }
             }
