@@ -64,8 +64,6 @@ open class Ear(name: String) : Block(name), IComponentBlock {
     @JvmField var sensitivityI = -0.3f
     @JvmField var sonicMaxRadius = 40f
     @JvmField var sonicMaxRadiusI = 0.4f
-    @JvmField var powerUse = 2f
-    @JvmField var powerUseI = 0.8f
     @JvmField var range = 150f
     @JvmField var rangeI = 0.4f
     @JvmField var reloadTime = 120f
@@ -109,9 +107,6 @@ open class Ear(name: String) : Block(name), IComponentBlock {
 
     override fun init() {
         checkInit()
-        consumePowerDynamic<EarBuild> {
-            if (it.lastRadiateTime < powerConsumeTime) it.realPowerUse else 0f
-        }
         super.init()
         clipSize = (range * (1f + rangeI)) + (sonicMaxRadius * (1f * rangeI))
     }
@@ -144,12 +139,14 @@ open class Ear(name: String) : Block(name), IComponentBlock {
         super.setStats()
         this.addUpgradeComponentStats()
         stats.remove(Stat.powerUse)
-        stats.add(Stat.powerUse, powerUse * 60f, StatUnit.powerSecond)
     }
 
     open inner class EarBuild : Building(),
         IUpgradeComponent, ControlBlock, Ranged {
         override fun version() = 1.toByte()
+        override fun shouldConsume(): Boolean {
+            return enabled && lastRadiateTime < powerConsumeTime
+        }
         // <editor-fold desc="Heimdall">
         override val componentName = "Ear"
         override val scale: SpeedScale = SpeedScale()
@@ -257,8 +254,6 @@ open class Ear(name: String) : Block(name), IComponentBlock {
             get() = damage * (1f + if (isLinkedBrain) damageI else 0f)
         val realSonicRadius: Float
             get() = sonicMaxRadius * (1f + if (isLinkedBrain) sonicMaxRadiusI else 0f)
-        val realPowerUse: Float
-            get() = powerUse * (1f + if (isLinkedBrain) powerUseI else 0f)
         val realSensitive: Float
             get() = sensitivity * (1f + if (isLinkedBrain) sensitivityI else 0f)
         // </editor-fold>

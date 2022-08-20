@@ -154,6 +154,7 @@ object CioHeimdall {
             category = Category.turret
             buildVisibility = BuildVisibility.shown
             VanillaSpec {
+                consumePower(2f)
                 requirements = arrayOf(
                     CioItem.ic + 30,
                     Items.sporePod + 20,
@@ -165,6 +166,7 @@ object CioHeimdall {
                 damage = 4f
             }
             ErekirSpec {
+                consumePower(2f)
                 requirements = arrayOf(
                     CioItem.ic + 30,
                     Items.graphite + 50,

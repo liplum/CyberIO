@@ -24,6 +24,7 @@ class HoloProjectingSection<T> : DrawSection<T>() where T : Building {
     var width = 6f
     var moveRotation = 0f
     var isTopRightOrBottomLeft = true
+    // TODO: rotation
     override fun draw(build: T, args: SectionArgs<T>) {
         val o = build.center()
         Tmp.v1.set(

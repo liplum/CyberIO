@@ -29,6 +29,7 @@ import mindustry.world.meta.StatUnit
 import mindustry.world.meta.StatValues
 import net.liplum.DebugOnly
 import net.liplum.S
+import net.liplum.animation.Floating
 import net.liplum.api.cyber.*
 import net.liplum.api.holo.IHoloEntity
 import net.liplum.api.holo.IHoloEntity.Companion.addHoloChargeTimeStats
@@ -39,21 +40,20 @@ import net.liplum.common.delegate.Delegate1
 import net.liplum.common.persistence.read
 import net.liplum.common.persistence.write
 import net.liplum.common.shader.use
-import plumy.core.Serialized
-import plumy.core.assets.TR
-import plumy.core.math.isZero
-import plumy.core.math.nextBoolean
-import plumy.core.ClientOnly
-import plumy.core.WhenNotPaused
-import net.liplum.animation.Floating
 import net.liplum.mdt.consumer.LiquidTurretCons
-import plumy.animation.ContextDraw.Draw
 import net.liplum.mdt.render.G
-import plumy.dsl.AddBar
 import net.liplum.mdt.utils.*
 import net.liplum.registry.CioFluid.cyberion
 import net.liplum.registry.SD
+import plumy.animation.ContextDraw.Draw
+import plumy.core.ClientOnly
+import plumy.core.Serialized
+import plumy.core.WhenNotPaused
 import plumy.core.arc.toSecond
+import plumy.core.assets.TR
+import plumy.core.math.isZero
+import plumy.core.math.nextBoolean
+import plumy.dsl.AddBar
 
 open class Stealth(name: String) : Turret(name) {
     @JvmField var restoreChargeTime = 10 * 60f
@@ -86,10 +86,8 @@ open class Stealth(name: String) : Turret(name) {
     override fun init() {
         consume(LiquidTurretCons(cyberion))
         consumePowerDynamic<StealthBuild> {
-            if (it.isActive)
-                activePower + reactivePower
-            else
-                reactivePower
+            if (it.isActive) activePower + reactivePower
+            else reactivePower
         }
         super.init()
     }
