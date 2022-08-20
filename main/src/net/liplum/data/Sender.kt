@@ -25,8 +25,6 @@ import net.liplum.api.cyber.*
 import net.liplum.common.Remember
 import net.liplum.mdt.CalledBySync
 import net.liplum.mdt.SendDataPack
-import net.liplum.mdt.utils.inMod
-import net.liplum.mdt.utils.sharedAnimationInMod
 import net.liplum.mdt.utils.sub
 import net.liplum.mdt.utils.tileEquals
 import net.liplum.util.addStateMachineInfo
@@ -43,20 +41,16 @@ import plumy.animation.state.configuring
 import plumy.core.ClientOnly
 import plumy.core.Serialized
 import plumy.core.arc.Tick
-import plumy.core.assets.TR
+import plumy.core.assets.EmptyTR
 import plumy.core.math.isZero
 import plumy.dsl.*
 
-open class Sender(name: String) : Block(name) {
-    @ClientOnly lateinit var BaseTR: TR
-    @ClientOnly lateinit var HighlightTR: TR
-    @ClientOnly lateinit var UpArrowTR: TR
-    @ClientOnly lateinit var CrossTR: TR
-    @ClientOnly lateinit var NoPowerTR: TR
-    @ClientOnly lateinit var UnconnectedTR: TR
+open class Sender(name: String) : Block(name), IDataBlock {
+    @ClientOnly var BaseTR = EmptyTR
+    @ClientOnly var HighlightTR = EmptyTR
+    @ClientOnly var UpArrowTR = EmptyTR
+    @ClientOnly var NoPowerTR = EmptyTR
     @ClientOnly var UploadAnim = SharedAnimation.Empty
-    @JvmField var UploadAnimFrameNumber = 7
-    @JvmField var UploadAnimDuration = 30f
     @JvmField val TransferTimer = timers++
     /**
      * The max range when trying to connect. -1f means no limit.
@@ -96,11 +90,9 @@ open class Sender(name: String) : Block(name) {
         super.load()
         BaseTR = this.sub("base")
         HighlightTR = this.sub("highlight")
-        UpArrowTR = this.inMod("rs-up-arrow")
-        CrossTR = this.inMod("rs-cross")
-        UnconnectedTR = this.inMod("rs-unconnected")
-        NoPowerTR = this.inMod("rs-no-power")
-        UploadAnim = this.sharedAnimationInMod("rs-up-arrow", UploadAnimFrameNumber, UploadAnimDuration)
+        UpArrowTR = loadUpArrow()
+        NoPowerTR = loadNoPower()
+        UploadAnim = loadUploadAnimation()
     }
 
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {

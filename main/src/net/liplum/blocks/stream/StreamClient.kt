@@ -37,7 +37,7 @@ import plumy.core.assets.EmptyTR
 import plumy.dsl.config
 import plumy.dsl.configNull
 
-open class StreamClient(name: String) : Block(name) {
+open class StreamClient(name: String) : Block(name),IDataBlock {
     @JvmField var maxConnection = -1
     @ClientOnly var NoPowerTR = EmptyTR
     @ClientOnly var BottomTR = EmptyTR
@@ -75,8 +75,8 @@ open class StreamClient(name: String) : Block(name) {
 
     override fun load() {
         super.load()
-        NoPowerTR = this.inMod("rs-no-power")
         BottomTR = this.sub("bottom")
+        NoPowerTR = loadNoPower()
     }
 
     override fun init() {

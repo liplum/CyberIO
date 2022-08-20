@@ -45,20 +45,19 @@ import net.liplum.util.addPowerUseStats
 import net.liplum.util.addStateMachineInfo
 import net.liplum.util.genText
 import plumy.core.Serialized
-import plumy.core.assets.TR
+import plumy.core.assets.EmptyTR
 import plumy.dsl.*
 import kotlin.math.absoluteValue
 import kotlin.math.log2
 
-open class SmartUnloader(name: String) : Block(name) {
+open class SmartUnloader(name: String) : Block(name), IDataBlock {
     /**
      * The lager the number the slower the unloading speed. Belongs to [0,+inf)
      */
     @JvmField var unloadSpeed = 1f
     @JvmField var maxConnection = 5
     @ClientOnly var ShrinkingAnim = AnimationMeta.Empty
-    @ClientOnly lateinit var CoverTR: TR
-    @ClientOnly lateinit var NoPowerTR: TR
+    @ClientOnly var NoPowerTR = EmptyTR
     @JvmField var powerUsePerItem = 2.5f
     @JvmField var powerUsePerConnection = 2f
     @JvmField var powerUseBasic = 1.5f
@@ -76,8 +75,8 @@ open class SmartUnloader(name: String) : Block(name) {
     @JvmField @ClientOnly var indicateAreaExtension = 2f
     @ClientOnly @JvmField var SendingTime = 60f
     @ClientOnly @JvmField var UnloadTime = 60f
-    @ClientOnly @JvmField var ShrinkingAnimFrames = 13
-    @ClientOnly @JvmField var ShrinkingAnimDuration = 120f
+    @ClientOnly @JvmField var ShrinkingFrames = 13
+    @ClientOnly @JvmField var ShrinkingDuration = 120f
     @ClientOnly @JvmField var maxSelectedCircleTime = Var.SelectedCircleTime
     /**
      * The max range when trying to connect. -1f means no limit.
@@ -128,10 +127,8 @@ open class SmartUnloader(name: String) : Block(name) {
 
     override fun load() {
         super.load()
-        NoPowerTR = this.inMod("rs-no-power")
-        ShrinkingAnim = this.animationMeta("shrink", ShrinkingAnimFrames, ShrinkingAnimDuration)
-        CoverTR = this.sub("cover")
-    }
+        NoPowerTR = loadNoPower()
+        ShrinkingAnim = this.animationMeta("shrink", ShrinkingFrames, ShrinkingDuration) }
 
     override fun setStats() {
         super.setStats()
@@ -511,7 +508,7 @@ open class SmartUnloader(name: String) : Block(name) {
         override fun control(type: LAccess, p1: Double, p2: Double, p3: Double, p4: Double) {
             when (type) {
                 LAccess.shoot -> {
-                    val receiver =  Vars.world.build(p1, p2)
+                    val receiver = Vars.world.build(p1, p2)
                     if (receiver is IDataReceiver) connectToSync(receiver)
                 }
                 else -> super.control(type, p1, p2, p3, p4)

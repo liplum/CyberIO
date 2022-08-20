@@ -24,7 +24,9 @@ import net.liplum.api.cyber.*
 import net.liplum.common.delegate.Delegate1
 import net.liplum.common.persistence.read
 import net.liplum.common.persistence.write
-import plumy.core.ClientOnly
+import net.liplum.mdt.ui.bars.removeItemsInBar
+import net.liplum.mdt.utils.sub
+import net.liplum.util.update
 import plumy.animation.ContextDraw.Draw
 import plumy.animation.ContextDraw.DrawOn
 import plumy.animation.ContextDraw.SetColor
@@ -34,26 +36,20 @@ import plumy.animation.state.IStateful
 import plumy.animation.state.State
 import plumy.animation.state.StateConfig
 import plumy.animation.state.configuring
-import net.liplum.mdt.ui.bars.removeItemsInBar
-import net.liplum.mdt.utils.inMod
-import net.liplum.mdt.utils.sharedAnimationInMod
-import net.liplum.mdt.utils.sub
-import net.liplum.util.update
+import plumy.core.ClientOnly
 import plumy.core.Serialized
-import plumy.core.assets.TR
+import plumy.core.assets.EmptyTR
 import plumy.dsl.config
 import plumy.dsl.configNull
 
-open class Receiver(name: String) : Block(name) {
-    @ClientOnly lateinit var BaseTR: TR
-    @ClientOnly lateinit var HighlightTR: TR
-    @ClientOnly lateinit var DownArrowTR: TR
-    @ClientOnly lateinit var UnconnectedTR: TR
-    @ClientOnly lateinit var NoPowerTR: TR
+open class Receiver(name: String) : Block(name), IDataBlock {
+    @ClientOnly var BaseTR = EmptyTR
+    @ClientOnly var HighlightTR = EmptyTR
+    @ClientOnly var DownArrowTR = EmptyTR
+    @ClientOnly var UnconnectedTR = EmptyTR
+    @ClientOnly var NoPowerTR = EmptyTR
     @ClientOnly var DownloadAnim = SharedAnimation.Empty
     @JvmField var maxConnection = -1
-    @JvmField var DownloadAnimFrameNumber = 7
-    @JvmField var DownloadAnimDuration = 30f
     @JvmField var blockTime = 60f
     @JvmField var fullTime = 60f
     @ClientOnly var stateMachineConfig = StateConfig<ReceiverBuild>()
@@ -97,10 +93,10 @@ open class Receiver(name: String) : Block(name) {
         super.load()
         BaseTR = this.sub("base")
         HighlightTR = this.sub("highlight")
-        DownArrowTR = this.inMod("rs-down-arrow")
-        UnconnectedTR = this.inMod("rs-unconnected")
-        NoPowerTR = this.inMod("rs-no-power")
-        DownloadAnim = this.sharedAnimationInMod("rs-down-arrow", DownloadAnimFrameNumber, DownloadAnimDuration)
+        DownArrowTR = loadDownArrow()
+        UnconnectedTR = loadUnconnected()
+        NoPowerTR = loadNoPower()
+        DownloadAnim = loadDownloadAnimation()
     }
 
     override fun setBars() {

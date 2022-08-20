@@ -23,9 +23,7 @@ import net.liplum.api.cyber.*
 import net.liplum.common.persistence.read
 import net.liplum.common.persistence.write
 import net.liplum.mdt.CalledBySync
-import plumy.core.ClientOnly
 import net.liplum.mdt.SendDataPack
-import net.liplum.mdt.utils.inMod
 import net.liplum.mdt.utils.sub
 import net.liplum.util.addPowerUseStats
 import net.liplum.util.addStateMachineInfo
@@ -35,12 +33,13 @@ import plumy.animation.state.IStateful
 import plumy.animation.state.State
 import plumy.animation.state.StateConfig
 import plumy.animation.state.configuring
+import plumy.core.ClientOnly
 import plumy.core.Serialized
 import plumy.core.assets.EmptyTR
 import plumy.core.assets.TRs
 import plumy.dsl.*
 
-open class StreamHost(name: String) : Block(name) {
+open class StreamHost(name: String) : Block(name),IDataBlock {
     @ClientOnly var liquidPadding = 0f
     @JvmField var maxConnection = 5
     @JvmField var liquidColorLerp = 0.5f
@@ -80,7 +79,7 @@ open class StreamHost(name: String) : Block(name) {
     override fun load() {
         super.load()
         BottomTR = this.sub("bottom")
-        NoPowerTR = this.inMod("rs-no-power")
+        NoPowerTR = loadNoPower()
     }
 
     override fun icons(): TRs {

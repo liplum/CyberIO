@@ -113,8 +113,8 @@ object CioCyber {
                 maxConnection = -1
             }
             size = 2
-            ArrowsAnimFrames = 4
-            ArrowsAnimDuration = 12f
+            ArrowsFrames = 4
+            ArrowsDuration = 12f
         }
     }
     @DependOn("CioItem.ic")
@@ -148,8 +148,8 @@ object CioCyber {
                 maxConnection = 6
             }
             size = 2
-            ShrinkingAnimFrames = 7
-            ShrinkingAnimDuration = 25f
+            ShrinkingFrames = 7
+            ShrinkingDuration = 25f
         }
     }
     @DependOn("CioItem.ic")

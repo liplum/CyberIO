@@ -25,7 +25,7 @@ open class RegionSection<T>(
     /** If true, parts are mirrored across the turret. Requires -l and -r regions.  */
     var mirror = false
     /** If true, an outline is drawn under the part.  */
-    var outline = true
+    var outline = false
     /** If true, the base + outline regions are drawn.*/
     var drawRegion = true
     /** Progress function for determining position/rotation. */
@@ -108,7 +108,6 @@ open class RegionSection<T>(
 
         Draw.z(z)
         //draw child, if applicable - only at the end
-        //TODO lots of copy-paste here
         if (children.size > 0) {
             for (s in 0 until len) {
                 val i = s

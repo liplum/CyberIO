@@ -19,12 +19,11 @@ import net.liplum.annotations.SubscribeEvent
 import net.liplum.api.ICyberEntity
 import net.liplum.common.Remember
 import net.liplum.common.util.Or
-import plumy.dsl.bundle
 import net.liplum.common.util.toFloat
 import net.liplum.event.CioInitEvent
-import plumy.core.ClientOnly
 import net.liplum.mdt.utils.*
 import net.liplum.registry.CioStats
+import plumy.core.ClientOnly
 import plumy.core.math.Point2f
 import plumy.core.math.smooth
 import plumy.dsl.*
@@ -330,4 +329,16 @@ fun <T> T.addMaxClientStats(max: Int) where  T : Block {
 fun <T> T.addDataTransferSpeedStats(speed: Float) where  T : Block {
     stats.add(CioStats.dataTransferSpeed, speed, StatUnit.perSecond)
 }
+//</editor-fold>
+//<editor-fold desc="Textures">
+fun <T> T.loadUpArrow() where T : Block, T : IDataBlock = inMod("data-up-arrow")
+fun <T> T.loadDownArrow() where T : Block, T : IDataBlock = inMod("data-down-arrow")
+fun <T> T.loadCross() where T : Block, T : IDataBlock = inMod("data-cross")
+fun <T> T.loadUnconnected() where T : Block, T : IDataBlock = inMod("data-unconnected")
+fun <T> T.loadNoPower() where T : Block, T : IDataBlock = inMod("data-no-power")
+fun <T> T.loadUploadAnimation() where T : Block, T : IDataBlock =
+    sharedAnimationInMod("data-upload", Var.Data.UpDownFrameNumber, Var.Data.UpDownDuration)
+
+fun <T> T.loadDownloadAnimation() where T : Block, T : IDataBlock =
+    sharedAnimationInMod("data-download", Var.Data.UpDownFrameNumber, Var.Data.UpDownDuration)
 //</editor-fold>

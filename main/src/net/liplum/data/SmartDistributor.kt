@@ -42,7 +42,6 @@ import net.liplum.mdt.render.drawSurroundingRect
 import net.liplum.input.smoothPlacing
 import net.liplum.mdt.ui.bars.removeItemsInBar
 import net.liplum.mdt.utils.animationMeta
-import net.liplum.mdt.utils.inMod
 import net.liplum.mdt.utils.isDiagonalTo
 import net.liplum.mdt.utils.subBundle
 import net.liplum.util.addPowerUseStats
@@ -51,17 +50,17 @@ import net.liplum.util.genText
 import plumy.core.Serialized
 import plumy.core.arc.equalsNoOrder
 import plumy.core.arc.set
-import plumy.core.assets.TR
+import plumy.core.assets.EmptyTR
 import plumy.core.math.isZero
 import plumy.dsl.AddBar
 import kotlin.math.log2
 
-open class SmartDistributor(name: String) : Block(name) {
+open class SmartDistributor(name: String) : Block(name),IDataBlock {
     @JvmField var maxConnection = -1
-    @ClientOnly lateinit var NoPowerTR: TR
+    @ClientOnly var NoPowerTR = EmptyTR
     @ClientOnly var ArrowsAnim = AnimationMeta.Empty
-    @JvmField @ClientOnly var ArrowsAnimFrames = 9
-    @JvmField @ClientOnly var ArrowsAnimDuration = 70f
+    @JvmField @ClientOnly var ArrowsFrames = 9
+    @JvmField @ClientOnly var ArrowsDuration = 70f
     @JvmField @ClientOnly var DistributionTime = 60f
     @ClientOnly @JvmField var maxSelectedCircleTime = Var.SurroundingRectTime
     /**
@@ -119,9 +118,8 @@ open class SmartDistributor(name: String) : Block(name) {
 
     override fun load() {
         super.load()
-        NoPowerTR = this.inMod("rs-no-power")
-        ArrowsAnim = this.animationMeta("arrows", ArrowsAnimFrames, ArrowsAnimDuration)
-        NoPowerTR.texture.textureData
+        NoPowerTR = loadNoPower()
+        ArrowsAnim = this.animationMeta("arrows", ArrowsFrames, ArrowsDuration)
     }
 
     override fun setStats() {
