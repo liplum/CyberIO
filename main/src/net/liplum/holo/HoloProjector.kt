@@ -6,16 +6,18 @@ import arc.graphics.Color
 import arc.graphics.g2d.Draw
 import arc.graphics.g2d.Fill
 import arc.graphics.g2d.Lines
+import arc.graphics.g2d.TextureRegion
 import arc.math.Angles
 import arc.math.Mathf
 import arc.math.geom.Vec2
 import arc.scene.ui.layout.Table
 import arc.struct.Seq
+import arc.util.Eachable
 import arc.util.Strings.autoFixed
-import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.Vars
+import mindustry.entities.units.BuildPlan
 import mindustry.game.EventType.UnitCreateEvent
 import mindustry.gen.*
 import mindustry.gen.Unit
@@ -27,6 +29,8 @@ import mindustry.ui.Fonts
 import mindustry.ui.Styles
 import mindustry.world.Block
 import mindustry.world.consumers.ConsumeItemDynamic
+import mindustry.world.draw.DrawBlock
+import mindustry.world.draw.DrawDefault
 import mindustry.world.meta.BlockGroup
 import mindustry.world.meta.Stat
 import net.liplum.DebugOnly
@@ -51,7 +55,7 @@ import plumy.core.ClientOnly
 import plumy.core.Else
 import plumy.core.Serialized
 import plumy.core.WhenNotPaused
-import plumy.dsl.bundle
+import plumy.core.math.approach
 import plumy.dsl.*
 import kotlin.math.max
 
@@ -60,6 +64,7 @@ open class HoloProjector(name: String) : Block(name) {
     @JvmField var itemCapabilities: IntArray = IntArray(0)
     @JvmField var holoUnitCapacity = 8
     @JvmField var powerUse = 3f
+    @JvmField var warmupSpeed = 0.015f
     @ClientOnly @JvmField var projectorShrink = 5f
     @ClientOnly @JvmField var projectorCenterRate = 3f
     /**
@@ -67,6 +72,7 @@ open class HoloProjector(name: String) : Block(name) {
      */
     @ClientOnly
     val vecs = arrayOf(Vec2(), Vec2(), Vec2(), Vec2())
+    @JvmField var drawer: DrawBlock = DrawDefault()
 
     init {
         buildType = Prov { HoloProjectorBuild() }
@@ -119,60 +125,40 @@ open class HoloProjector(name: String) : Block(name) {
         super.init()
     }
 
-    override fun setBars() {
-        super.setBars()
-        UndebugOnly {
-            removeItemsInBar()
-        }
-        DebugOnly {
-            AddBar<HoloProjectorBuild>("progress",
-                { "${"bar.progress".bundle}: ${progress.percentI}" },
-                { S.Hologram },
-                { progress }
-            )
-        }.Else {
-            AddBar<HoloProjectorBuild>("progress",
-                { "bar.progress".bundle },
-                { S.Hologram },
-                { progress }
-            )
-        }
-        AddBar<HoloProjectorBuild>(R.Bar.Vanilla.UnitsN,
-            {
-                val curPlan = curPlan
-                if (curPlan == null)
-                    "[lightgray]${Iconc.cancel}"
-                else {
-                    val unitType = curPlan.unitType
-                    R.Bar.Vanilla.UnitCapacity.bundle(
-                        Fonts.getUnicodeStr(unitType.name),
-                        team.data().countType(unitType),
-                        team.getStringHoloCap()
-                    )
-                }
-            },
-            { Pal.power },
-            {
-                val curPlan = curPlan
-                curPlan?.unitType?.pctOfTeamOwns(team) ?: 0f
-            }
-        )
-    }
-
-    protected val Int.plan: HoloPlan?
+    val Int.plan: HoloPlan?
         get() = if (this < 0 || this >= plans.size)
             null
         else
             plans[this]
     var hoveredInfo: Table? = null
+    override fun load() {
+        super.load()
+        drawer.load(this)
+    }
+
+    override fun icons(): Array<TextureRegion> = drawer.finalIcons(this)
+    override fun getRegionsToOutline(out: Seq<TextureRegion>) =
+        drawer.getRegionsToOutline(this, out)
+
+    override fun drawPlanRegion(plan: BuildPlan, list: Eachable<BuildPlan>) {
+        super.drawPlanRegion(plan, list)
+        drawer.drawPlan(this, plan, list)
+    }
 
     open inner class HoloProjectorBuild : Building() {
+        override fun version() = 1.toByte()
+        @Serialized
+        var warmup = 0f
+            set(value) {
+                field = value.coerceIn(0f, 1f)
+            }
         @Serialized
         var planIndex: Int = -1
         val curPlan: HoloPlan?
             get() = planIndex.plan
         @Serialized
         var progressTime = 0f
+        var totalProgress = 0f
         var commandPos: Vec2? = null
         override fun block(): HoloProjector = this@HoloProjector
         val progress: Float
@@ -185,17 +171,22 @@ open class HoloProjector(name: String) : Block(name) {
             }
 
         override fun updateTile() {
-            if (!canConsume()) return
-            val plan = curPlan ?: return
-            progressTime += edelta()
-
-            if (progressTime >= plan.time) {
-                val unitType = plan.unitType
-                if (unitType.canCreateHoloUnitIn(team)) {
-                    projectUnit(unitType)
-                    consume()
-                    progressTime = 0f
+            val plan = curPlan
+            if (plan != null && efficiency > 0f) {
+                warmup = warmup.approach(1f, warmupSpeed)
+                val delta = edelta()
+                progressTime += delta
+                totalProgress += delta
+                if (progressTime >= plan.time) {
+                    val unitType = plan.unitType
+                    if (unitType.canCreateHoloUnitIn(team)) {
+                        projectUnit(unitType)
+                        consume()
+                        progressTime = 0f
+                    }
                 }
+            } else {
+                warmup = warmup.approach(0f, warmupSpeed)
             }
         }
         @CalledBySync
@@ -291,22 +282,13 @@ open class HoloProjector(name: String) : Block(name) {
             }
         }
         @ClientOnly
-        var alpha = 0f
-            set(value) {
-                field = value.coerceIn(0f, 1f)
-            }
-        @ClientOnly
         var lastPlan: HoloPlan? = curPlan
         @ClientOnly
         var projecting = 0f
         override fun draw() {
-            super.draw()
+            drawer.draw(this)
             val curPlan = curPlan
-            val delta = if (canConsume() && curPlan != null)
-                0.015f
-            else
-                -0.015f
-            alpha += delta * Time.delta
+            val alpha = warmup
             val planDraw = curPlan ?: lastPlan
             if (lastPlan != curPlan)
                 lastPlan = curPlan
@@ -315,7 +297,7 @@ open class HoloProjector(name: String) : Block(name) {
                 SD.Hologram.use {
                     val type = planDraw.unitType
                     it.alpha = (progress * 1.2f * alpha).coerceAtMost(1f)
-                    it.flickering = it.DefaultFlickering - (1f - progress) * 0.4f
+                    it.flickering = it.DefaultFlickering + (1f - progress)
                     if (type.ColorOpacity > 0f)
                         it.blendFormerColorOpacity = type.ColorOpacity
                     if (type.HoloOpacity > 0f) {
@@ -381,6 +363,11 @@ open class HoloProjector(name: String) : Block(name) {
             return items[item] < getMaximumAccepted(item) && item in curPlan.req
         }
 
+        override fun drawLight() {
+            super.drawLight()
+            drawer.drawLight(this)
+        }
+
         override fun created() {
             team.updateHoloCapacity(this)
         }
@@ -404,12 +391,17 @@ open class HoloProjector(name: String) : Block(name) {
             super.read(read, revision)
             planIndex = read.b().toInt()
             progressTime = read.f()
+            val version = revision.toInt()
+            if (version >= 1) {
+                warmup = read.f()
+            }
         }
 
         override fun write(write: Writes) {
             super.write(write)
             write.b(planIndex)
             write.f(progressTime)
+            write.f(warmup)
         }
 
         override fun senseObject(sensor: LAccess): Any? {
@@ -433,6 +425,50 @@ open class HoloProjector(name: String) : Block(name) {
         override fun onCommand(target: Vec2) {
             commandPos = target
         }
+
+        override fun warmup() = warmup
+        override fun totalProgress() = totalProgress
+        override fun progress() = progress
+    }
+
+    override fun setBars() {
+        super.setBars()
+        UndebugOnly {
+            removeItemsInBar()
+        }
+        DebugOnly {
+            AddBar<HoloProjectorBuild>("progress",
+                { "${"bar.progress".bundle}: ${progress.percentI}" },
+                { S.Hologram },
+                { progress }
+            )
+        }.Else {
+            AddBar<HoloProjectorBuild>("progress",
+                { "bar.progress".bundle },
+                { S.Hologram },
+                { progress }
+            )
+        }
+        AddBar<HoloProjectorBuild>(R.Bar.Vanilla.UnitsN,
+            {
+                val curPlan = curPlan
+                if (curPlan == null)
+                    "[lightgray]${Iconc.cancel}"
+                else {
+                    val unitType = curPlan.unitType
+                    R.Bar.Vanilla.UnitCapacity.bundle(
+                        Fonts.getUnicodeStr(unitType.name),
+                        team.data().countType(unitType),
+                        team.getStringHoloCap()
+                    )
+                }
+            },
+            { Pal.power },
+            {
+                val curPlan = curPlan
+                curPlan?.unitType?.pctOfTeamOwns(team) ?: 0f
+            }
+        )
     }
 
     override fun setStats() {

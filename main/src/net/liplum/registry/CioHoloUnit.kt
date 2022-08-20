@@ -14,6 +14,7 @@ import mindustry.entities.abilities.RepairFieldAbility
 import mindustry.entities.bullet.LaserBoltBulletType
 import mindustry.entities.bullet.MissileBulletType
 import mindustry.gen.Sounds
+import mindustry.graphics.Layer
 import mindustry.type.Category
 import mindustry.type.ammo.ItemAmmoType
 import mindustry.type.ammo.PowerAmmoType
@@ -24,9 +25,13 @@ import net.liplum.annotations.DependOn
 import net.liplum.bullet.RuvikBullet
 import net.liplum.bullet.STEM_VERSION
 import net.liplum.holo.*
+import net.liplum.holo.HoloProjector.HoloProjectorBuild
 import net.liplum.mdt.utils.NewUnitType
-import plumy.dsl.plus
+import net.liplum.render.DrawBuild
+import net.liplum.render.Sections
+import net.liplum.render.regionSection
 import plumy.core.arc.minute
+import plumy.dsl.plus
 
 object CioHoloUnit {
     @JvmStatic lateinit var holoProjector: HoloProjector
@@ -152,6 +157,24 @@ object CioHoloUnit {
                     ),
                     18f * 60f
                 )
+            }
+            drawer = DrawBuild<HoloProjectorBuild> {
+                regionSection("-top") {
+                    layer = Layer.blockOver
+                    progress = Sections.warmupSmooth
+                    shadowElevation = 1f
+                    mirror = true
+                    moveX = 5f
+                    moveY = 5f
+                }
+                regionSection("-bottom") {
+                    layer = Layer.blockOver
+                    progress = Sections.warmupSmooth
+                    shadowElevation = 1f
+                    mirror = true
+                    moveX = 5f
+                    moveY = -5f
+                }
             }
             ambientSound = Sounds.build
             squareSprite = false

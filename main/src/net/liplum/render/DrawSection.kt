@@ -4,6 +4,8 @@ import arc.graphics.g2d.TextureRegion
 import arc.struct.Seq
 import mindustry.gen.Building
 import plumy.core.math.Progress
+import plumy.core.math.smooth
+import plumy.core.math.smoother
 
 abstract class DrawSection<T> where T : Building {
     abstract fun draw(build: T, args: SectionArgs<T>)
@@ -13,9 +15,17 @@ abstract class DrawSection<T> where T : Building {
 typealias SectionProgress<T> = T.() -> Progress
 typealias BuildProgress = SectionProgress<Building>
 
+val <T> SectionProgress<T>.smooth: SectionProgress<T>
+    get() = { this@smooth().smooth }
+
+val <T> SectionProgress<T>.smoother: SectionProgress<T>
+    get() = { this@smoother().smoother }
+
 object Sections {
     val warmup: BuildProgress = { warmup() }
+    val warmupSmooth: BuildProgress = { warmup().smooth }
     val progress: BuildProgress = { progress() }
+    val progressSmooth: BuildProgress = { progress().smooth }
 }
 
 data class SectionArgs<T>(

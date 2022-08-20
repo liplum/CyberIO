@@ -9,6 +9,7 @@ import arc.math.Mathf
 import arc.struct.Seq
 import arc.util.Tmp
 import mindustry.gen.Building
+import mindustry.graphics.Drawf
 import plumy.core.assets.EmptyTRs
 import plumy.core.assets.TR
 import plumy.core.assets.isFound
@@ -25,9 +26,11 @@ open class RegionSection<T>(
     /** If true, parts are mirrored across the turret. Requires -l and -r regions.  */
     var mirror = false
     /** If true, an outline is drawn under the part.  */
-    var outline = false
-    /** If true, the base + outline regions are drawn.*/
+    var drawOutline = false
+    /** If true, the base regions are drawn.*/
     var drawRegion = true
+    var drawShadow = true
+    var shadowElevation = 0.5f
     /** Progress function for determining position/rotation. */
     var progress: SectionProgress<T> = Sections.warmup
     var layer = -1f
@@ -79,12 +82,17 @@ open class RegionSection<T>(
             val ry = args.y + Tmp.v1.y
             val rot = mr * sign + args.rotation - 90f
             Draw.xscl *= sign
-            if (outline && drawRegion) {
+            if (drawOutline && drawRegion) {
                 Draw.z(prevZ + outlineLayerOffset)
                 Draw.rect(outlines[regionIndex], rx, ry, rot)
                 Draw.z(prevZ)
             }
             if (region != null && region.isFound) {
+                if (drawShadow) {
+                    Draw.z(prevZ - 0.1f)
+                    Drawf.shadow(region, rx - shadowElevation, ry - shadowElevation, rot)
+                    Draw.z(prevZ)
+                }
                 if (color != null && colorTo != null) {
                     Draw.color(color, colorTo, prog)
                 } else if (color != null) {
@@ -126,7 +134,7 @@ open class RegionSection<T>(
     }
 
     override fun load(name: String) {
-        val realName = if (this.name == null) name + suffix else this.name!!
+        val realName = this.name ?: (name + suffix)
 
         if (drawRegion) {
             if (mirror) {
@@ -150,7 +158,7 @@ open class RegionSection<T>(
     }
 
     override fun getOutlines(out: Seq<TextureRegion>) {
-        if (outline && drawRegion) {
+        if (drawOutline && drawRegion) {
             out.addAll(*regions)
         }
         for (child in children) {

@@ -22,13 +22,9 @@ import net.liplum.Var
 import net.liplum.Var.YinYangRotationSpeed
 import net.liplum.api.cyber.*
 import net.liplum.common.Remember
-import plumy.dsl.DrawLayer
 import net.liplum.mdt.CalledBySync
-import plumy.core.ClientOnly
 import net.liplum.mdt.SendDataPack
-import plumy.core.WhenNotPaused
 import net.liplum.mdt.render.Text
-import net.liplum.mdt.utils.inMod
 import net.liplum.mdt.utils.sub
 import net.liplum.util.addStateMachineInfo
 import net.liplum.util.update
@@ -38,16 +34,15 @@ import plumy.animation.state.IStateful
 import plumy.animation.state.State
 import plumy.animation.state.StateConfig
 import plumy.animation.state.configuring
+import plumy.core.ClientOnly
 import plumy.core.Serialized
+import plumy.core.WhenNotPaused
 import plumy.core.assets.EmptyTR
 import plumy.core.math.nextBoolean
-import plumy.dsl.PackedPos
-import plumy.dsl.build
-import plumy.dsl.config
-import plumy.dsl.configNull
+import plumy.dsl.*
 import kotlin.math.absoluteValue
 
-open class P2pNode(name: String) : Block(name) {
+open class P2pNode(name: String) : Block(name), IDataBlock {
     @ClientOnly var liquidPadding = 0f
     @ClientOnly var NoPowerTR = EmptyTR
     @JvmField var balancingSpeed = 1f
@@ -72,6 +67,10 @@ open class P2pNode(name: String) : Block(name) {
         noUpdateDisabled = true
         canOverdrive = false
         sync = true
+    }
+
+    override fun init() {
+        super.init()
         config<P2pBuild, PackedPos> {
             connectedPos = it
         }
@@ -79,10 +78,6 @@ open class P2pNode(name: String) : Block(name) {
             connected?.connectedPos = -1
             connectedPos = -1
         }
-    }
-
-    override fun init() {
-        super.init()
         ClientOnly {
             configAnimationStateMachine()
         }
@@ -90,8 +85,8 @@ open class P2pNode(name: String) : Block(name) {
 
     override fun load() {
         super.load()
-        NoPowerTR = this.inMod("rs-no-power")
         BottomTR = this.sub("bottom")
+        NoPowerTR = loadNoPower()
         YinAndYangTR = this.sub("yin-and-yang")
     }
 
