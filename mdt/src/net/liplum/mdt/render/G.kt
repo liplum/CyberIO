@@ -499,4 +499,18 @@ object G {
         val rect = Tmp.r1
         rect(rect.x, rect.y, rect.width, rect.height, color, alpha, stroke)
     }
+    @JvmStatic
+    fun triangleShield(
+        x1: WorldXY, y1: WorldXY,
+        x2: WorldXY, y2: WorldXY,
+        x3: WorldXY, y3: WorldXY,
+    ) {
+        if (Vars.renderer.animateShields) {
+            Fill.tri(x1, y1, x2, y2, x3, y3)
+        } else {
+            Lines.line(x1, y1, x2, y2)
+            Lines.line(x1, y1, x3, y3)
+            Lines.line(x3, y3, x2, y2)
+        }
+    }
 }

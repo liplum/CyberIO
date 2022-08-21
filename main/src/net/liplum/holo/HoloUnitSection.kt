@@ -6,7 +6,6 @@ import net.liplum.common.shader.use
 import net.liplum.holo.HoloProjector.HoloProjectorBuild
 import net.liplum.registry.SD
 import plumy.animation.ContextDraw.Draw
-import plumy.core.math.smooth
 
 class DrawProjectingHoloUnit : DrawBlock() {
     override fun draw(build: Building) {
@@ -14,7 +13,7 @@ class DrawProjectingHoloUnit : DrawBlock() {
         build.run {
             if (preparing <= 0f) return@run
             val type = curPlan?.unitType ?: return
-            val alpha = (progress * warmup).smooth
+            val alpha = progress * warmup
             if (alpha <= 0.01f) return@run
             SD.Hologram.use {
                 it.alpha = alpha

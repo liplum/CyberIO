@@ -1,13 +1,12 @@
 package net.liplum.holo
 
 import arc.graphics.g2d.Draw
-import arc.graphics.g2d.Fill
 import arc.math.geom.Vec2
 import arc.util.Tmp
-import mindustry.Vars
 import mindustry.gen.Building
 import mindustry.graphics.Layer
 import net.liplum.S
+import net.liplum.mdt.render.G
 import net.liplum.render.DrawSection
 import net.liplum.render.SectionArgs
 import net.liplum.render.SectionProgress
@@ -17,7 +16,7 @@ import plumy.dsl.DrawLayer
 class HoloProjectingSection<T> : DrawSection<T>() where T : Building {
     val v = Vec2()
     var center: T.() -> Vec2 = { v.set(x, y) }
-    var alphaProgress :SectionProgress<T> = Sections.warmupSmooth
+    var alphaProgress: SectionProgress<T> = Sections.warmupSmooth
     var color = S.Hologram
     var x = 0f
     var y = 0f
@@ -36,23 +35,18 @@ class HoloProjectingSection<T> : DrawSection<T>() where T : Building {
         DrawLayer(Layer.buildBeam) {
             Draw.color(color)
             Draw.alpha(build.alphaProgress())
-            if (Vars.renderer.animateShields) {
-                val x1: Float
-                val y1: Float
-                val x2: Float
-                val y2: Float
-                if (isTopRightOrBottomLeft) {
-                    x1 = rx + width
-                    y1 = ry - width
-                    x2 = rx - width
-                    y2 = ry + width
-                } else {
-                    x1 = rx + width
-                    y1 = ry + width
-                    x2 = rx - width
-                    y2 = ry - width
-                }
-                Fill.tri(x1, y1, x2, y2, o.x, o.y)
+            if (isTopRightOrBottomLeft) {
+                G.triangleShield(
+                    x1 = rx + width, y1 = ry - width,
+                    x2 = rx - width, y2 = ry + width,
+                    o.x, o.y
+                )
+            } else {
+                G.triangleShield(
+                    x1 = rx + width, y1 = ry + width,
+                    x2 = rx - width, y2 = ry - width,
+                    o.x, o.y
+                )
             }
         }
     }
