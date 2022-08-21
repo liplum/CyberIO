@@ -655,7 +655,6 @@ object CioBlock {
             loopSound = CioSound.tvStatic
             loopSoundVolume = 0.3f
             rotateSpeed = 2f
-
             addAmmo(CioFluid.cyberion, JammingLaser {
                 VanillaSpec {
                     damage = 100f

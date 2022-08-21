@@ -107,7 +107,7 @@ open class Prism(name: String) : Block(name) {
         update = true
         solid = true
         outlineIcon = true
-        priority = TargetPriority.turret
+        priority = TargetPriority.base
         group = BlockGroup.turrets
         flags = EnumSet.of(BlockFlag.turret)
         noUpdateDisabled = true

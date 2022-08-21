@@ -5,6 +5,7 @@ import arc.func.Prov
 import arc.graphics.Color
 import arc.math.Angles
 import arc.math.Mathf
+import arc.math.geom.Geometry
 import arc.math.geom.Vec2
 import mindustry.Vars
 import mindustry.ai.types.BuilderAI
@@ -34,7 +35,7 @@ import net.liplum.render.DrawBuild
 import net.liplum.render.SectionProgress
 import net.liplum.render.regionSection
 import plumy.core.arc.minute
-import plumy.core.math.smooth
+import plumy.core.math.smoother
 import plumy.dsl.DrawMulti
 import plumy.dsl.plus
 
@@ -174,57 +175,27 @@ object CioHoloUnit {
                         val y = y + Angles.trnsy(projecting, len)
                         v.set(x, y)
                     }
-                    val prog: SectionProgress<HoloProjectorBuild> = { preparing.smooth }
-                    regionSection("-top-r") {
-                        layer = Layer.blockOver
-                        progress = prog
-                        shadowElevation = 1f
-                        moveX = 5f
-                        moveY = 5f
-                        children += HoloProjectingSection<HoloProjectorBuild>().apply {
-                            isTopRightOrBottomLeft = true
-                            center = focus
-                            x = 8f
-                            y = 8f
-                        }
-                    }
-                    regionSection("-top-l") {
-                        layer = Layer.blockOver
-                        progress = prog
-                        shadowElevation = 1f
-                        moveX = -5f
-                        moveY = 5f
-                        children += HoloProjectingSection<HoloProjectorBuild>().apply {
-                            isTopRightOrBottomLeft = false
-                            center = focus
-                            x = -8f
-                            y = 8f
-                        }
-                    }
-                    regionSection("-bottom-r") {
-                        layer = Layer.blockOver
-                        progress = prog
-                        shadowElevation = 1f
-                        moveX = 5f
-                        moveY = -5f
-                        children += HoloProjectingSection<HoloProjectorBuild>().apply {
-                            isTopRightOrBottomLeft = false
-                            center = focus
-                            x = 8f
-                            y = -8f
-                        }
-                    }
-                    regionSection("-bottom-l") {
-                        layer = Layer.blockOver
-                        progress = prog
-                        shadowElevation = 1f
-                        moveX = -5f
-                        moveY = -5f
-                        children += HoloProjectingSection<HoloProjectorBuild>().apply {
-                            isTopRightOrBottomLeft = true
-                            center = focus
-                            x = -8f
-                            y = -8f
+                    val prog: SectionProgress<HoloProjectorBuild> = { preparing.smoother }
+                    val sprites = listOf(
+                        "-top-r",
+                        "-top-l",
+                        "-bottom-l",
+                        "-bottom-r",
+                    )
+                    for ((i, sprite) in sprites.withIndex()) {
+                        regionSection(sprite) {
+                            val quadrant = Geometry.d8edge[i]
+                            layer = Layer.blockOver
+                            progress = prog
+                            shadowElevation = 1f
+                            moveX = 5f * quadrant.x
+                            moveY = 5f * quadrant.y
+                            children += HoloProjectingSection<HoloProjectorBuild>().apply {
+                                isTopRightOrBottomLeft = i % 2 == 0
+                                center = focus
+                                x = 8f * quadrant.x
+                                y = 8f * quadrant.y
+                            }
                         }
                     }
                 }
