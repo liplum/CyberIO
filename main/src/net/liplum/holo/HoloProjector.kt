@@ -103,14 +103,13 @@ open class HoloProjector(name: String) : Block(name) {
         configNull<HoloProjectorBuild> {
             setPlan(-1)
         }
+        if(plans.size == 1) configurable = false
         super.init()
     }
 
     val Int.plan: HoloPlan?
-        get() = if (this < 0 || this >= plans.size)
-            null
-        else
-            plans[this]
+        get() = if (this < 0 || this >= plans.size) null
+        else plans[this]
     var hoveredInfo: Table? = null
     override fun load() {
         super.load()
@@ -147,7 +146,7 @@ open class HoloProjector(name: String) : Block(name) {
         @Serialized
         var planIndex: Int = -1
         val curPlan: HoloPlan?
-            get() = planIndex.plan
+            get() = if (configurable) planIndex.plan else 0.plan
         @Serialized
         var progressTime = 0f
         @ClientOnly

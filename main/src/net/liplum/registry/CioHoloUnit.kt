@@ -256,6 +256,7 @@ object CioHoloUnit {
                 )
                 mineTier = 5
             }
+            itemCapacity = 100
             isEnemy = false
             speed = 2f
             targetPriority = -1f

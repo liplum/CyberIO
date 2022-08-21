@@ -1,11 +1,9 @@
 package net.liplum.holo
 
-import arc.Core
 import arc.Events
 import arc.graphics.g2d.Draw
 import arc.graphics.g2d.Fill
 import arc.graphics.g2d.Lines
-import arc.math.Angles
 import arc.math.Mathf
 import arc.struct.Seq
 import arc.util.Time
@@ -25,16 +23,14 @@ import mindustry.world.blocks.power.PowerGraph
 import net.liplum.S
 import net.liplum.common.persistence.*
 import net.liplum.holo.HoloProjector.HoloProjectorBuild
-import plumy.core.Serialized
-import plumy.core.ClientOnly
 import net.liplum.mdt.mixin.PayloadMixin
 import net.liplum.mdt.render.G
 import net.liplum.mdt.utils.hasShields
 import net.liplum.registry.CioFluid
 import net.liplum.registry.EntityRegistry
-import plumy.dsl.build
-import plumy.dsl.castBuild
-import plumy.dsl.exists
+import plumy.core.ClientOnly
+import plumy.core.Serialized
+import plumy.dsl.*
 
 open class HoloUnit : UnitEntity(), PayloadMixin, IRevisionable {
     override val revisionID = 0
@@ -194,20 +190,13 @@ open class HoloUnit : UnitEntity(), PayloadMixin, IRevisionable {
 
     open fun drawMining() {
         if (mining()) {
-            val focusLen = hitSize / 2.0f + Mathf.absin(Time.time, 1.1f, 0.5f)
-            val swingScl = 12.0f
-            val swingMag = 1.0f
-            val px = x + Angles.trnsx(rotation, focusLen)
-            val py = y + Angles.trnsy(rotation, focusLen)
-            val ex = mineTile.worldx() + Mathf.sin(Time.time + 48.0f, swingScl, swingMag)
-            val ey = mineTile.worldy() + Mathf.sin(Time.time + 48.0f, swingScl + 2.0f, swingMag)
+            val ox = mineTile.worldx()
+            val oy = mineTile.worldy()
             Draw.z(115.1f)
             Draw.color(S.Hologram)
-            Draw.alpha(0.45f)
-            Drawf.laser(Core.atlas.find("minelaser"), Core.atlas.find("minelaser-end"), px, py, ex, ey, 0.75f)
-            if (this.isLocal) {
-                Lines.stroke(1.0f)
-                Lines.poly(mineTile.worldx(), mineTile.worldy(), 4, 4.0f * Mathf.sqrt2, Time.time)
+            val size = mineTile.overlay().size.worldXY
+            DrawLayer(Layer.buildBeam) {
+                Fill.poly(ox, oy, 8, size, Time.time)
             }
             Draw.color()
         }
