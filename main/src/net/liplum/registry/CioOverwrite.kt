@@ -67,14 +67,6 @@ object CioOverwrite {
             /*val coreBlock = Blocks.coreShard as CoreBlock
             coreBlock.unitType = CioUnitType.holoFighter
             coreBlock.solid = false*/
-            (Blocks.chemicalCombustionChamber as PowerGenerator).apply {
-                drawer = DrawBuild<ConsumeGeneratorBuild> {
-                    regionSection("-mid") {
-                        progress = { G.sin }
-                        moveRotation = 360f
-                    }
-                }
-            }
         }
         ExperimentalOnly {
             Blocks.conveyor.sync = true

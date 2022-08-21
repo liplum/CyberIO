@@ -35,6 +35,7 @@ import net.liplum.render.SectionProgress
 import net.liplum.render.regionSection
 import plumy.core.arc.minute
 import plumy.core.math.smooth
+import plumy.dsl.DrawMulti
 import plumy.dsl.plus
 
 object CioHoloUnit {
@@ -164,67 +165,70 @@ object CioHoloUnit {
                     18f * 60f
                 )
             }
-            drawer = DrawBuild {
-                val v = Vec2()
-                val focus: HoloProjectorBuild.() -> Vec2 = {
-                    val len = 3.8f + Mathf.absin(projecting, 3.0f, 0.6f)
-                    val x = x + Angles.trnsx(projecting, len)
-                    val y = y + Angles.trnsy(projecting, len)
-                    v.set(x, y)
-                }
-                val prog: SectionProgress<HoloProjectorBuild> = { preparing.smooth }
-                regionSection("-top-r") {
-                    layer = Layer.blockOver
-                    progress = prog
-                    shadowElevation = 1f
-                    moveX = 5f
-                    moveY = 5f
-                    children += HoloProjectingSection<HoloProjectorBuild>().apply {
-                        isTopRightOrBottomLeft = true
-                        center = focus
-                        x = 8f
-                        y = 8f
+            drawer = DrawMulti {
+                +DrawBuild {
+                    val v = Vec2()
+                    val focus: HoloProjectorBuild.() -> Vec2 = {
+                        val len = 3.8f + Mathf.absin(projecting, 3.0f, 0.6f)
+                        val x = x + Angles.trnsx(projecting, len)
+                        val y = y + Angles.trnsy(projecting, len)
+                        v.set(x, y)
+                    }
+                    val prog: SectionProgress<HoloProjectorBuild> = { preparing.smooth }
+                    regionSection("-top-r") {
+                        layer = Layer.blockOver
+                        progress = prog
+                        shadowElevation = 1f
+                        moveX = 5f
+                        moveY = 5f
+                        children += HoloProjectingSection<HoloProjectorBuild>().apply {
+                            isTopRightOrBottomLeft = true
+                            center = focus
+                            x = 8f
+                            y = 8f
+                        }
+                    }
+                    regionSection("-top-l") {
+                        layer = Layer.blockOver
+                        progress = prog
+                        shadowElevation = 1f
+                        moveX = -5f
+                        moveY = 5f
+                        children += HoloProjectingSection<HoloProjectorBuild>().apply {
+                            isTopRightOrBottomLeft = false
+                            center = focus
+                            x = -8f
+                            y = 8f
+                        }
+                    }
+                    regionSection("-bottom-r") {
+                        layer = Layer.blockOver
+                        progress = prog
+                        shadowElevation = 1f
+                        moveX = 5f
+                        moveY = -5f
+                        children += HoloProjectingSection<HoloProjectorBuild>().apply {
+                            isTopRightOrBottomLeft = false
+                            center = focus
+                            x = 8f
+                            y = -8f
+                        }
+                    }
+                    regionSection("-bottom-l") {
+                        layer = Layer.blockOver
+                        progress = prog
+                        shadowElevation = 1f
+                        moveX = -5f
+                        moveY = -5f
+                        children += HoloProjectingSection<HoloProjectorBuild>().apply {
+                            isTopRightOrBottomLeft = true
+                            center = focus
+                            x = -8f
+                            y = -8f
+                        }
                     }
                 }
-                regionSection("-top-l") {
-                    layer = Layer.blockOver
-                    progress = prog
-                    shadowElevation = 1f
-                    moveX = -5f
-                    moveY = 5f
-                    children += HoloProjectingSection<HoloProjectorBuild>().apply {
-                        isTopRightOrBottomLeft = false
-                        center = focus
-                        x = -8f
-                        y = 8f
-                    }
-                }
-                regionSection("-bottom-r") {
-                    layer = Layer.blockOver
-                    progress = prog
-                    shadowElevation = 1f
-                    moveX = 5f
-                    moveY = -5f
-                    children += HoloProjectingSection<HoloProjectorBuild>().apply {
-                        isTopRightOrBottomLeft = false
-                        center = focus
-                        x = 8f
-                        y = -8f
-                    }
-                }
-                regionSection("-bottom-l") {
-                    layer = Layer.blockOver
-                    progress = prog
-                    shadowElevation = 1f
-                    moveX = -5f
-                    moveY = -5f
-                    children += HoloProjectingSection<HoloProjectorBuild>().apply {
-                        isTopRightOrBottomLeft = true
-                        center = focus
-                        x = -8f
-                        y = -8f
-                    }
-                }
+                +DrawProjectingHoloUnit()
             }
             ambientSound = Sounds.build
             squareSprite = false

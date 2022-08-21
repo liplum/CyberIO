@@ -30,7 +30,6 @@ import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.S
 import net.liplum.UndebugOnly
-import net.liplum.common.shader.use
 import net.liplum.common.util.percentI
 import net.liplum.mdt.CalledBySync
 import net.liplum.mdt.ServerOnly
@@ -38,14 +37,14 @@ import net.liplum.mdt.consumer.ConsumeFluidDynamic
 import net.liplum.mdt.ui.addItemSelectorDefault
 import net.liplum.mdt.ui.bars.removeItemsInBar
 import net.liplum.mdt.utils.ItemTypeAmount
+import net.liplum.mdt.utils.sub
 import net.liplum.registry.CioFluid.cyberion
-import net.liplum.registry.SD
 import net.liplum.ui.addTable
-import plumy.animation.ContextDraw.Draw
 import plumy.core.ClientOnly
 import plumy.core.Else
 import plumy.core.MUnit
 import plumy.core.Serialized
+import plumy.core.assets.TRs
 import plumy.core.math.approachDelta
 import plumy.dsl.*
 import kotlin.math.max
@@ -72,14 +71,8 @@ open class HoloProjector(name: String) : Block(name) {
         saveConfig = true
         configurable = true
         sync = true
+        generateIcons = false
         commandable = true
-
-        config<HoloProjectorBuild, PackedPos> {
-            setPlan(it)
-        }
-        configNull<HoloProjectorBuild> {
-            setPlan(-1)
-        }
     }
 
     override fun init() {
@@ -104,6 +97,12 @@ open class HoloProjector(name: String) : Block(name) {
         }
         val cyberionCapacity = plans.maxBy { it.req.cyberion * 60f }.req.cyberion * 2
         liquidCapacity = max(liquidCapacity, cyberionCapacity)
+        config<HoloProjectorBuild, PackedPos> {
+            setPlan(it)
+        }
+        configNull<HoloProjectorBuild> {
+            setPlan(-1)
+        }
         super.init()
     }
 
@@ -118,7 +117,13 @@ open class HoloProjector(name: String) : Block(name) {
         drawer.load(this)
     }
 
-    override fun icons(): Array<TextureRegion> = drawer.finalIcons(this)
+    override fun loadIcon() {
+        super.loadIcon()
+        fullIcon = sub("preview")
+        uiIcon = fullIcon
+    }
+
+    override fun icons(): TRs = drawer.finalIcons(this)
     override fun getRegionsToOutline(out: Seq<TextureRegion>) =
         drawer.getRegionsToOutline(this, out)
 
@@ -165,7 +170,7 @@ open class HoloProjector(name: String) : Block(name) {
                 val delta = edelta()
                 if (preparing >= 1f) {
                     warmup = warmup.approachDelta(1f, warmupSpeed)
-                    progressTime += delta
+                    if (warmup >= 1f) progressTime += delta
                 }
                 if (progressTime >= plan.time) {
                     val unitType = plan.unitType
@@ -175,7 +180,7 @@ open class HoloProjector(name: String) : Block(name) {
                         progressTime = 0f
                     }
                 } else {
-                    projecting += delta * projectingSpeed
+                    if (warmup >= 1f) projecting += delta * projectingSpeed
                 }
             } else {
                 warmup = warmup.approachDelta(0f, warmupSpeed)
@@ -274,31 +279,8 @@ open class HoloProjector(name: String) : Block(name) {
                 Events.fire(UnitCreateEvent(unit, this))
             }
         }
-        @ClientOnly
-        var lastPlan: HoloPlan? = curPlan
-        override fun draw() {
-            drawer.draw(this)
-            if(preparing <= 0f) return
-            val curPlan = curPlan
-            val alpha = warmup
-            val planDraw = curPlan ?: lastPlan
-            if (lastPlan != curPlan)
-                lastPlan = curPlan
-            if (alpha <= 0.01f) return
-            if (planDraw != null) {
-                SD.Hologram.use {
-                    val type = planDraw.unitType
-                    it.alpha = (progress * 1.2f * alpha).coerceAtMost(1f)
-                    if (type.ColorOpacity > 0f)
-                        it.blendFormerColorOpacity = type.ColorOpacity
-                    if (type.HoloOpacity > 0f) {
-                        it.blendHoloColorOpacity = type.HoloOpacity
-                    }
-                    type.fullIcon.Draw(x, y)
-                }
-            }
-        }
 
+        override fun draw() = drawer.draw(this)
         override fun acceptLiquid(source: Building, liquid: Liquid) =
             liquid == cyberion && liquids[cyberion] < liquidCapacity
 

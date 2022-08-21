@@ -11,7 +11,6 @@ import mindustry.graphics.Layer
 import mindustry.world.Block
 import mindustry.world.draw.DrawBlock
 import plumy.core.assets.EmptyTR
-import plumy.core.assets.TRs
 
 /**
  *  Extend to implement custom drawing behavior for a [Building].
@@ -21,17 +20,6 @@ open class DrawBuild<T> : DrawBlock() where T : Building {
     var sections = ArrayList<DrawSection<T>>()
     var preview = EmptyTR
     var outline = EmptyTR
-    override fun getRegionsToOutline(block: Block, out: Seq<TextureRegion>) {
-        for (part in sections) {
-            part.getOutlines(out)
-        }
-        if (block.region.found() &&
-            block.outlinedIcon > 0 &&
-            block.generatedIcons[block.outlinedIcon] != block.region
-        ) {
-            out.add(block.region)
-        }
-    }
     @Suppress("UNCHECKED_CAST")
     override fun draw(building: Building) {
         val b = building as T
@@ -75,8 +63,16 @@ open class DrawBuild<T> : DrawBlock() where T : Building {
     }
     /** @return the generated icons to be used for this block.
      */
-    override fun icons(block: Block): TRs {
-        return arrayOf(preview)
+    override fun icons(block: Block) = arrayOf(preview)
+    override fun getRegionsToOutline(block: Block, out: Seq<TextureRegion>) {
+        for (part in sections) {
+            part.getOutlines(out)
+        }
+        if (block.region.found() &&
+            !(block.outlinedIcon > 0 && block.generatedIcons[block.outlinedIcon] == block.region)
+        ) {
+            out.add(block.region)
+        }
     }
 
     companion object {
