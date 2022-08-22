@@ -11,32 +11,22 @@ val Team.holoCapacity: Int
 fun clearAllCacheWhenExit() {
     Team2HoloCapacity.clear()
 }
-
-fun Team.updateHoloCapacity(): Int {
-    var count = 0
+/**
+ * @param thisProjector if non-null, this projector will be counted.
+ */
+fun Team.updateHoloCapacity(
+    thisProjector: HoloProjector.HoloProjectorBuild? = null,
+): Int {
+    var count = thisProjector?.block()?.holoUnitCapacity ?: 0
     val buildings = data().buildings
     if (buildings.isEmpty) return 0
-    buildings.each {
+    buildings.forEach {
         if (it is HoloProjector.HoloProjectorBuild) {
-            val block = it.block
-            if (block is HoloProjector) {
-                count += block.holoUnitCapacity
-            }
-        }
-    }
-    Team2HoloCapacity[this] = count
-    return count
-}
-
-fun Team.updateHoloCapacity(thisProjector: HoloProjector.HoloProjectorBuild): Int {
-    var count = thisProjector.block().holoUnitCapacity
-    val buildings = data().buildings
-    if (buildings.isEmpty) return 0
-    buildings.each {
-        if (it is HoloProjector.HoloProjectorBuild) {
-            val block = it.block
-            if (block is HoloProjector && it != thisProjector) {
-                count += block.holoUnitCapacity
+            if (it.isAdded && it.isValid) {
+                val block = it.block
+                if (block is HoloProjector && it != thisProjector) {
+                    count += block.holoUnitCapacity
+                }
             }
         }
     }

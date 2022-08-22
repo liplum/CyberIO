@@ -36,6 +36,7 @@ import net.liplum.render.SectionProgress
 import net.liplum.render.progress
 import net.liplum.render.regionSection
 import plumy.core.arc.minute
+import plumy.core.arc.plusAssign
 import plumy.core.arc.second
 import plumy.core.math.smoother
 import plumy.dsl.DrawMulti
@@ -213,12 +214,10 @@ object CioHoloUnit {
                         layer = Layer.blockOver
                         progress = progress { preparing.smoother }
                         shadowElevation = 1f
-                        y = 8.5f
+                        y = 9f
                         moveX = 0f
-                        moveY = 10f
-                        rotation = {
-                            projecting
-                        }
+                        moveY = 12f
+                        rotation = { 0f }
                         holoProjectingSection {
                             center = focus
                             x = 8f
@@ -236,7 +235,7 @@ object CioHoloUnit {
     }
     @DependOn("CioItem.ic")
     fun holoMiner() {
-        holoMiner = NewUnitType(R.Unit.HoloMiner, ::HoloUnitType, ::HoloUnit).apply {
+        holoMiner = NewUnitType(R.Unit.HoloMiner, ::HoloUnitType, ::HoloUnit) {
             VanillaSpec {
                 limitLife(hp = 1600f, lifespan = 3.minute)
                 researchReq = arrayOf(
@@ -279,7 +278,7 @@ object CioHoloUnit {
     }
     @DependOn("CioItem.ic")
     fun holoFighter() {
-        holoFighter = NewUnitType(R.Unit.HoloFighter, ::HoloUnitType, ::HoloUnit).apply {
+        holoFighter = NewUnitType(R.Unit.HoloFighter, ::HoloUnitType, ::HoloUnit) {
             VanillaSpec {
                 limitLife(hp = 3000f, lifespan = 15.minute)
                 researchReq = arrayOf(
@@ -317,7 +316,7 @@ object CioHoloUnit {
             ammoType = ItemAmmoType(Items.plastanium)
             enableRuvikTip = true
             ruvikTipRange = 220f
-            weapons.add(HoloWeapon("holo-fighter-gun".cio).apply {
+            weapons += HoloWeapon("holo-fighter-gun".cio).apply {
                 top = false
                 shootSound = Sounds.flame
                 shootY = 2f
@@ -332,12 +331,12 @@ object CioHoloUnit {
                     lifetime = 240f
                     trailColor = S.Hologram
                 }
-            })
+            }
         }
     }
     @DependOn("CioItem.ic")
     fun holoGuardian() {
-        holoGuardian = NewUnitType(R.Unit.HoloGuardian, ::HoloUnitType, ::HoloUnit).apply {
+        holoGuardian = NewUnitType(R.Unit.HoloGuardian, ::HoloUnitType, ::HoloUnit) {
             VanillaSpec {
                 limitLife(hp = 5000f, lifespan = 10.minute)
                 researchReq = arrayOf(
@@ -376,7 +375,7 @@ object CioHoloUnit {
     }
     @DependOn("CioItem.ic")
     fun holoArchitect() {
-        holoArchitect = NewUnitType(R.Unit.HoloArchitect, ::HoloUnitType, ::HoloUnit).apply {
+        holoArchitect = NewUnitType(R.Unit.HoloArchitect, ::HoloUnitType, ::HoloUnit) {
             VanillaSpec {
                 limitLife(hp = 1200f, lifespan = 8.minute)
                 buildSpeed = 4.6f
@@ -412,7 +411,7 @@ object CioHoloUnit {
             hitSize = 15f
             armor = 5f
             ammoType = PowerAmmoType(900f)
-            weapons.add(HoloWeapon().apply {
+            weapons += HoloWeapon().apply {
                 x = 0f
                 y = 5f
                 top = false
@@ -442,12 +441,12 @@ object CioHoloUnit {
                     backColor = S.Hologram
                     trailColor = S.HologramDark
                 }
-            })
+            }
         }
     }
     @DependOn("CioItem.ic")
     fun holoSupporter() {
-        holoSupporter = NewUnitType(R.Unit.HoloSupporter, ::HoloUnitType, ::HoloUnit).apply {
+        holoSupporter = NewUnitType(R.Unit.HoloSupporter, ::HoloUnitType, ::HoloUnit) {
             VanillaSpec {
                 limitLife(hp = 3800f, lifespan = 12f.minute)
                 buildSpeed = 2.2f
@@ -460,12 +459,10 @@ object CioHoloUnit {
                     Items.titanium + 80,
                     Items.plastanium + 120,
                 )
-                abilities.add(
-                    RepairFieldAbility(20f, 60f * 8, 60f).apply {
-                        healEffect = HoloFx.heal
-                        activeEffect = HoloFx.healWaveDynamic
-                    }
-                )
+                abilities += RepairFieldAbility(20f, 60f * 8, 60f).apply {
+                    healEffect = HoloFx.heal
+                    activeEffect = HoloFx.healWaveDynamic
+                }
             }
             ErekirSpec {
                 limitLife(hp = 6000f, lifespan = 18f.minute)
@@ -493,7 +490,7 @@ object CioHoloUnit {
             engineSize = 2f
             engineOffset = 3f
 
-            weapons.add(HoloWeapon((R.Unit.HoloSupporter + "-gun").cio).apply {
+            weapons += HoloWeapon((R.Unit.HoloSupporter + "-gun").cio).apply {
                 shootSound = Sounds.lasershoot
                 reload = 15f
                 x = 4f
@@ -516,7 +513,7 @@ object CioHoloUnit {
                     despawnEffect = HoloFx.hitLaser
                     lightColor = S.Hologram
                 }
-            })
+            }
         }
     }
 }

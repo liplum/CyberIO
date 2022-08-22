@@ -48,6 +48,7 @@ import plumy.core.MUnit
 import plumy.core.Serialized
 import plumy.core.arc.Tick
 import plumy.core.assets.TRs
+import plumy.core.math.approach
 import plumy.core.math.approachDelta
 import plumy.dsl.*
 import kotlin.math.max
@@ -166,10 +167,10 @@ open class HoloProjector(name: String) : Block(name) {
         override fun updateTile() {
             val plan = curPlan
             if (plan != null && efficiency > 0f) {
-                preparing = preparing.approachDelta(1f, preparingSpeed)
                 val delta = edelta()
+                preparing = preparing.approach(1f, preparingSpeed * delta)
                 if (preparing >= 1f) {
-                    warmup = warmup.approachDelta(1f, warmupSpeed)
+                    warmup = warmup.approach(1f, warmupSpeed * delta)
                     if (warmup >= 1f) progressTime += delta
                 }
                 if (progressTime >= plan.time) {
@@ -203,7 +204,10 @@ open class HoloProjector(name: String) : Block(name) {
             rebuildHoveredInfo()
         }
 
-        override fun shouldConsume() = enabled && curPlan != null && progress < 1f
+        override fun shouldConsume() :Boolean{
+            val plan = curPlan?:return false
+            return enabled && ( progress < 1f || plan.unitType.canCreateHoloUnitIn(team))
+        }
         override fun buildConfiguration(table: Table) {
             val options = Seq.with(plans).map {
                 it.unitType
@@ -313,9 +317,13 @@ open class HoloProjector(name: String) : Block(name) {
 
         override fun remove() {
             super.remove()
-            team.updateHoloCapacity(this)
+            team.updateHoloCapacity()
         }
 
+        override fun onProximityRemoved() {
+            super.onProximityRemoved()
+            team.updateHoloCapacity()
+        }
         override fun read(read: Reads, revision: Byte) {
             super.read(read, revision)
             planIndex = read.b().toInt()
