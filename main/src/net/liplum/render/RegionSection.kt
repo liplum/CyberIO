@@ -17,7 +17,7 @@ import plumy.core.math.radian
 
 open class RegionSection<T>(
     var suffix: String = "",
-) : DrawSection<T>() where T : Building {
+) : DrawSection<T>(),ITreeSection<T> where T : Building {
     protected var childParam = SectionArgs<T>()
     var name: String? = null
     var regions = EmptyTRs
@@ -31,15 +31,10 @@ open class RegionSection<T>(
     var drawShadow = true
     var shadowElevation = 0.5f
     /**
-     *  Progress function for determining position.
+     *  Progress function for determining position/rotation.
      *  With clamp.
      */
     var progress: SectionProgress<T> = Sections.warmup
-    /**
-     * Progress function for determining rotation.
-     *  Without clamp.
-     */
-    var rotationProgress : SectionProgress<T> = Sections.warmup
     var layer = -1f
     var layerOffset = 0f
     var outlineLayerOffset = -0.001f
@@ -54,7 +49,7 @@ open class RegionSection<T>(
     var colorTo: Color? = null
     var mixColor: Color? = null
     var mixColorTo: Color? = null
-    var children = ArrayList<DrawSection<T>>()
+    override var children: MutableList<DrawSection<T>> = ArrayList()
     var moves = ArrayList<SectionMove<T>>()
     override fun draw(build: T, args: SectionArgs<T>) {
         val z = Draw.z()
@@ -62,21 +57,17 @@ open class RegionSection<T>(
         Draw.z(Draw.z() + layerOffset)
         val prevZ = Draw.z()
         val prog: Float = progress(build).clamp
-        // No clamp for rotation
-        val progRotate: Float = rotationProgress(build)
         var mx = moveX * prog
         var my = moveY * prog
-        var mr = moveRotation * progRotate + rotation
+        var mr = moveRotation * prog + rotation
 
         if (moves.size > 0) {
             for (i in 0 until moves.size) {
                 val move = moves[i]
                 val p = move.progress(build).clamp
-                // No clamp for rotation
-                val pr = move.rotationProgress(build)
                 mx += move.x * p
                 my += move.y * p
-                mr += move.rotation * pr
+                mr += move.rotation * p
             }
         }
         val len = if (mirror) 2 else 1
@@ -183,19 +174,6 @@ open class RegionSection<T>(
             child.getOutlines(out)
         }
     }
-}
-
-inline fun <T : Building> RegionSection<T>.regionSection(
-    suffix: String = "",
-    config: RegionSection<T>.() -> Unit,
-) {
-    children += RegionSection<T>(suffix).apply(config)
-}
-
-inline fun <T : Building> RegionSection<T>.addMove(
-    config: SectionMove<T>.() -> Unit,
-) {
-    moves += SectionMove<T>().apply(config)
 }
 
 inline fun <T : Building> DrawBuild<T>.regionSection(

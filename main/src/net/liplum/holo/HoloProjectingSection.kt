@@ -7,10 +7,7 @@ import mindustry.gen.Building
 import mindustry.graphics.Layer
 import net.liplum.S
 import net.liplum.mdt.render.G
-import net.liplum.render.DrawSection
-import net.liplum.render.SectionArgs
-import net.liplum.render.SectionProgress
-import net.liplum.render.Sections
+import net.liplum.render.*
 import plumy.dsl.DrawLayer
 
 class HoloProjectingSection<T> : DrawSection<T>() where T : Building {
@@ -50,4 +47,9 @@ class HoloProjectingSection<T> : DrawSection<T>() where T : Building {
             }
         }
     }
+}
+inline fun <T : Building> ITreeSection<T>.holoProjectingSection(
+    config: HoloProjectingSection<T>.() -> Unit,
+) {
+    children += HoloProjectingSection<T>().apply(config)
 }

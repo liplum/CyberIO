@@ -166,7 +166,7 @@ object CioHoloUnit {
                             shadowElevation = 1f
                             moveX = 5f * quadrant.x
                             moveY = 5f * quadrant.y
-                            children += HoloProjectingSection<HoloProjectorBuild>().apply {
+                            holoProjectingSection {
                                 isTopRightOrBottomLeft = i % 2 == 0
                                 center = focus
                                 x = 8f * quadrant.x
@@ -209,13 +209,17 @@ object CioHoloUnit {
                         val y = y + Angles.trnsy(projecting, len)
                         v.set(x, y)
                     }
-                    regionSection("-top") {
+                    projectorSection("-top") {
                         layer = Layer.blockOver
                         progress = progress { preparing.smoother }
                         shadowElevation = 1f
+                        y = 8.5f
                         moveX = 0f
-                        moveY = 5f
-                        children += HoloProjectingSection<HoloProjectorBuild>().apply {
+                        moveY = 10f
+                        rotation = {
+                            projecting
+                        }
+                        holoProjectingSection {
                             center = focus
                             x = 8f
                             y = 8f
