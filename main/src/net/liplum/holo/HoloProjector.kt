@@ -13,8 +13,10 @@ import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.entities.units.BuildPlan
 import mindustry.game.EventType.UnitCreateEvent
-import mindustry.gen.*
-import mindustry.gen.Unit
+import mindustry.gen.Building
+import mindustry.gen.Icon
+import mindustry.gen.Iconc
+import mindustry.gen.Tex
 import mindustry.graphics.Pal
 import mindustry.logic.LAccess
 import mindustry.type.*
@@ -44,6 +46,7 @@ import plumy.core.ClientOnly
 import plumy.core.Else
 import plumy.core.MUnit
 import plumy.core.Serialized
+import plumy.core.arc.Tick
 import plumy.core.assets.TRs
 import plumy.core.math.approachDelta
 import plumy.dsl.*
@@ -78,11 +81,11 @@ open class HoloProjector(name: String) : Block(name) {
     override fun init() {
         consume(ConsumeFluidDynamic<HoloProjectorBuild> {
             val plan = it.curPlan ?: return@ConsumeFluidDynamic LiquidStack.empty
-            plan.req.liquidArray
+            plan.liquidArray
         })
         consume(ConsumeItemDynamic<HoloProjectorBuild> {
             val plan = it.curPlan ?: return@ConsumeItemDynamic ItemStack.empty
-            plan.req.items
+            plan.items
         })
         itemCapabilities = IntArray(ItemTypeAmount())
         for (plan in plans) {
@@ -95,7 +98,7 @@ open class HoloProjector(name: String) : Block(name) {
                 itemCapacity = max(itemCapacity, itemReq.amount * 2)
             }
         }
-        val cyberionCapacity = plans.maxBy { it.req.cyberion * 60f }.req.cyberion * 2
+        val cyberionCapacity = plans.maxBy { it.cyberion * 60f }.cyberion * 2
         liquidCapacity = max(liquidCapacity, cyberionCapacity)
         config<HoloProjectorBuild, PackedPos> {
             setPlan(it)
@@ -103,7 +106,7 @@ open class HoloProjector(name: String) : Block(name) {
         configNull<HoloProjectorBuild> {
             setPlan(-1)
         }
-        if(plans.size == 1) configurable = false
+        if (plans.size == 1) configurable = false
         super.init()
     }
 
@@ -156,10 +159,8 @@ open class HoloProjector(name: String) : Block(name) {
         val progress: Float
             get() {
                 val plan = curPlan
-                return if (plan != null)
-                    (progressTime / plan.time).coerceIn(0f, 1f)
-                else
-                    0f
+                return if (plan != null) (progressTime / plan.time).coerceIn(0f, 1f)
+                else 0f
             }
 
         override fun updateTile() {
@@ -257,7 +258,7 @@ open class HoloProjector(name: String) : Block(name) {
             return this
         }
 
-        override fun updatePayload(unitHolder: Unit?, buildingHolder: Building?) {
+        override fun updatePayload(unitHolder: MUnit?, buildingHolder: Building?) {
             lastUnitInPayload = unitHolder
             super.updatePayload(unitHolder, buildingHolder)
         }
@@ -288,7 +289,7 @@ open class HoloProjector(name: String) : Block(name) {
 
         override fun acceptItem(source: Building, item: Item): Boolean {
             val curPlan = curPlan ?: return false
-            return items[item] < getMaximumAccepted(item) && item in curPlan.req
+            return items[item] < getMaximumAccepted(item) && item in curPlan
         }
 
         override fun drawLight() {
@@ -438,4 +439,27 @@ open class HoloProjector(name: String) : Block(name) {
             }
         }
     }
+}
+
+class HoloPlanningSpec(
+    val projector: HoloProjector,
+) {
+    infix fun HoloUnitType.needs(req: HoloPlanRequirement) {
+        projector.plans += HoloPlan(this, req)
+    }
+
+    fun those(
+        cyberion: Float = 0f,
+        item: ItemStack? = null,
+        items: Array<ItemStack>? = null,
+        time: Tick,
+    ) = if (items != null) HoloPlanRequirement(cyberion, items, time)
+    else if (item != null) HoloPlanRequirement(cyberion, arrayOf(item), time)
+    else HoloPlanRequirement(cyberion, emptyArray(), time)
+}
+
+inline fun HoloProjector.planning(
+    config: HoloPlanningSpec.() -> Unit,
+) {
+    HoloPlanningSpec(this).config()
 }

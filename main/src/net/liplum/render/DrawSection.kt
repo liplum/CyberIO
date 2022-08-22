@@ -29,7 +29,6 @@ object Sections {
 }
 
 data class SectionArgs<T>(
-    var progress: SectionProgress<T> = Sections.warmup,
     var x: Float = 0f,
     var y: Float = 0f,
     var rotation: Float = 0f,
@@ -37,6 +36,7 @@ data class SectionArgs<T>(
 
 data class SectionMove<T>(
     var progress: SectionProgress<T> = Sections.warmup,
+    var rotationProgress: SectionProgress<T> = Sections.warmup,
     var x: Float = 0f,
     var y: Float = 0f,
     var rotation: Float = 0f,

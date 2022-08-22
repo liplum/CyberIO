@@ -33,14 +33,17 @@ import net.liplum.holo.HoloProjector.HoloProjectorBuild
 import net.liplum.mdt.utils.NewUnitType
 import net.liplum.render.DrawBuild
 import net.liplum.render.SectionProgress
+import net.liplum.render.progress
 import net.liplum.render.regionSection
 import plumy.core.arc.minute
+import plumy.core.arc.second
 import plumy.core.math.smoother
 import plumy.dsl.DrawMulti
 import plumy.dsl.plus
 
 object CioHoloUnit {
     @JvmStatic lateinit var holoProjector: HoloProjector
+    @JvmStatic lateinit var minerProjector: HoloProjector
     @JvmStatic lateinit var holoMiner: HoloUnitType
     @JvmStatic lateinit var holoFighter: HoloUnitType
     @JvmStatic lateinit var holoGuardian: HoloUnitType
@@ -71,47 +74,33 @@ object CioHoloUnit {
                 scaledHealth = 100f
                 researchCostMultiplier = 0.8f
                 consumePower(3f)
-                plans += HoloPlan(
-                    holoMiner,
-                    Requirement(
-                        items = arrayOf(CioItem.ic + 2),
-                        cyberion = 3.0f / 60f
-                    ),
-                    15f * 60f
-                )
-
-                plans += HoloPlan(
-                    holoFighter,
-                    Requirement(
-                        items = arrayOf(CioItem.ic + 1),
-                        cyberion = 3.0f / 60f
-                    ),
-                    15f * 60f
-                )
-                plans += HoloPlan(
-                    holoGuardian,
-                    Requirement(
-                        items = arrayOf(CioItem.ic + 1),
-                        cyberion = 1.5f / 60f
-                    ),
-                    7.5f * 60f
-                )
-                plans += HoloPlan(
-                    holoArchitect,
-                    Requirement(
-                        items = arrayOf(CioItem.ic + 3),
-                        cyberion = 6.0f / 60f
-                    ),
-                    25f * 60f
-                )
-                plans += HoloPlan(
-                    holoSupporter,
-                    Requirement(
-                        items = arrayOf(CioItem.ic + 1),
-                        cyberion = 2.5f / 60f
-                    ),
-                    12f * 60f
-                )
+                planning {
+                    holoMiner needs those(
+                        item = CioItem.ic + 2,
+                        cyberion = 3.0f / 60f,
+                        time = 16f.second,
+                    )
+                    holoFighter needs those(
+                        item = CioItem.ic + 1,
+                        cyberion = 3.0f / 60f,
+                        time = 15f.second,
+                    )
+                    holoGuardian needs those(
+                        item = CioItem.ic + 1,
+                        cyberion = 1.5f / 60f,
+                        time = 7.5f.second,
+                    )
+                    holoArchitect needs those(
+                        item = CioItem.ic + 3,
+                        cyberion = 6.0f / 60f,
+                        time = 25f.second,
+                    )
+                    holoSupporter needs those(
+                        item = CioItem.ic + 1,
+                        cyberion = 2.5f / 60f,
+                        time = 12f.second,
+                    )
+                }
             }
             ErekirSpec {
                 requirements = arrayOf(
@@ -125,46 +114,33 @@ object CioHoloUnit {
                 scaledHealth = 150f
                 researchCostMultiplier = 0.75f
                 consumePower(3f)
-                plans += HoloPlan(
-                    holoMiner,
-                    Requirement(
-                        items = arrayOf(CioItem.ic + 1),
-                        cyberion = 1.5f / 60f
-                    ),
-                    18f * 60f
-                )
-                plans += HoloPlan(
-                    holoFighter,
-                    Requirement(
-                        items = arrayOf(CioItem.ic + 2),
-                        cyberion = 1.5f / 60f
-                    ),
-                    15f * 60f
-                )
-                plans += HoloPlan(
-                    holoGuardian,
-                    Requirement(
-                        items = arrayOf(CioItem.ic + 1),
-                        cyberion = 1.0f / 60f
-                    ),
-                    10f * 60f
-                )
-                plans += HoloPlan(
-                    holoArchitect,
-                    Requirement(
-                        items = arrayOf(CioItem.ic + 2),
-                        cyberion = 3.0f / 60f
-                    ),
-                    25f * 60f
-                )
-                plans += HoloPlan(
-                    holoSupporter,
-                    Requirement(
-                        items = arrayOf(CioItem.ic + 3),
-                        cyberion = 5f / 60f
-                    ),
-                    18f * 60f
-                )
+                planning {
+                    holoMiner needs those(
+                        item = CioItem.ic + 2,
+                        cyberion = 1.5f / 60f,
+                        time = 18f.second,
+                    )
+                    holoFighter needs those(
+                        item = CioItem.ic + 1,
+                        cyberion = 3.0f / 60f,
+                        time = 15f.second,
+                    )
+                    holoGuardian needs those(
+                        item = CioItem.ic + 1,
+                        cyberion = 1.0f / 60f,
+                        time = 10f.second,
+                    )
+                    holoArchitect needs those(
+                        item = CioItem.ic + 2,
+                        cyberion = 3.0f / 60f,
+                        time = 25f.second,
+                    )
+                    holoSupporter needs those(
+                        item = CioItem.ic + 3,
+                        cyberion = 5f / 60f,
+                        time = 18f.second,
+                    )
+                }
             }
             drawer = DrawMulti {
                 +DrawBuild {
@@ -205,6 +181,53 @@ object CioHoloUnit {
             squareSprite = false
             size = 5
             buildCostMultiplier = 2f
+        }
+    }
+    @Suppress("RemoveExplicitTypeArguments")
+    @DependOn(
+        "CioItem.ic",
+        "CioFluid.cyberion",
+        "CioHoloUnit.holoMiner",
+    )
+    fun minerProjector() {
+        minerProjector = HoloProjector("miner-projector").apply {
+            category = Category.production
+            buildVisibility = BuildVisibility.shown
+            planning {
+                holoMiner needs those(
+                    item = CioItem.ic + 2,
+                    cyberion = 3.0f / 60f,
+                    time = 16f.second,
+                )
+            }
+            drawer = DrawMulti {
+                +DrawBuild<HoloProjectorBuild> {
+                    val v = Vec2()
+                    val focus: HoloProjectorBuild.() -> Vec2 = {
+                        val len = 3.8f + Mathf.absin(projecting, 3.0f, 0.6f)
+                        val x = x + Angles.trnsx(projecting, len)
+                        val y = y + Angles.trnsy(projecting, len)
+                        v.set(x, y)
+                    }
+                    regionSection("-top") {
+                        layer = Layer.blockOver
+                        progress = progress { preparing.smoother }
+                        shadowElevation = 1f
+                        moveX = 0f
+                        moveY = 5f
+                        children += HoloProjectingSection<HoloProjectorBuild>().apply {
+                            center = focus
+                            x = 8f
+                            y = 8f
+                        }
+                    }
+                }
+                +DrawProjectingHoloUnit()
+            }
+            ambientSound = Sounds.build
+            squareSprite = false
+            size = 3
+            buildCostMultiplier = 1.2f
         }
     }
     @DependOn("CioItem.ic")

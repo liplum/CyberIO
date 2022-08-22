@@ -30,8 +30,16 @@ open class RegionSection<T>(
     var drawRegion = true
     var drawShadow = true
     var shadowElevation = 0.5f
-    /** Progress function for determining position/rotation. */
+    /**
+     *  Progress function for determining position.
+     *  With clamp.
+     */
     var progress: SectionProgress<T> = Sections.warmup
+    /**
+     * Progress function for determining rotation.
+     *  Without clamp.
+     */
+    var rotationProgress : SectionProgress<T> = Sections.warmup
     var layer = -1f
     var layerOffset = 0f
     var outlineLayerOffset = -0.001f
@@ -54,17 +62,21 @@ open class RegionSection<T>(
         Draw.z(Draw.z() + layerOffset)
         val prevZ = Draw.z()
         val prog: Float = progress(build).clamp
+        // No clamp for rotation
+        val progRotate: Float = rotationProgress(build)
         var mx = moveX * prog
         var my = moveY * prog
-        var mr = moveRotation * prog + rotation
+        var mr = moveRotation * progRotate + rotation
 
         if (moves.size > 0) {
             for (i in 0 until moves.size) {
                 val move = moves[i]
-                val p = move.progress(build)
+                val p = move.progress(build).clamp
+                // No clamp for rotation
+                val pr = move.rotationProgress(build)
                 mx += move.x * p
                 my += move.y * p
-                mr += move.rotation * p
+                mr += move.rotation * pr
             }
         }
         val len = if (mirror) 2 else 1
@@ -178,4 +190,17 @@ inline fun <T : Building> RegionSection<T>.regionSection(
     config: RegionSection<T>.() -> Unit,
 ) {
     children += RegionSection<T>(suffix).apply(config)
+}
+
+inline fun <T : Building> RegionSection<T>.addMove(
+    config: SectionMove<T>.() -> Unit,
+) {
+    moves += SectionMove<T>().apply(config)
+}
+
+inline fun <T : Building> DrawBuild<T>.regionSection(
+    suffix: String = "",
+    config: RegionSection<T>.() -> Unit,
+) {
+    sections += RegionSection<T>(suffix).apply(config)
 }

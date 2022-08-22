@@ -11,6 +11,7 @@ import mindustry.graphics.Layer
 import mindustry.world.Block
 import mindustry.world.draw.DrawBlock
 import plumy.core.assets.EmptyTR
+import plumy.core.math.Progress
 
 /**
  *  Extend to implement custom drawing behavior for a [Building].
@@ -83,9 +84,7 @@ open class DrawBuild<T> : DrawBlock() where T : Building {
 inline fun <T : Building> DrawBuild(config: DrawBuild<T>.() -> Unit) =
     DrawBuild<T>().apply(config)
 
-inline fun <T : Building> DrawBuild<T>.regionSection(
-    suffix: String = "",
-    config: RegionSection<T>.() -> Unit,
-) {
-    sections += RegionSection<T>(suffix).apply(config)
-}
+@Suppress("unused")
+fun <T : Building> DrawBuild<T>.progress(
+    prog: T.() -> Progress
+):SectionProgress<T> = prog
