@@ -13,11 +13,12 @@ import plumy.core.assets.EmptyTRs
 import plumy.core.assets.TR
 import plumy.core.assets.isFound
 import plumy.core.math.clamp
+import plumy.core.math.isZero
 import plumy.core.math.radian
 
 open class RegionSection<T>(
     var suffix: String = "",
-) : DrawSection<T>(),ITreeSection<T> where T : Building {
+) : DrawSection<T>(), ITreeSection<T> where T : Building {
     protected var childParam = SectionArgs<T>()
     var name: String? = null
     var regions = EmptyTRs
@@ -30,6 +31,7 @@ open class RegionSection<T>(
     var drawRegion = true
     var drawShadow = true
     var shadowElevation = 0.5f
+    var shadowProgress: SectionProgress<T> = Sections.one
     /**
      *  Progress function for determining position/rotation.
      *  With clamp.
@@ -92,7 +94,9 @@ open class RegionSection<T>(
             if (region != null && region.isFound) {
                 if (drawShadow) {
                     Draw.z(prevZ - 0.1f)
-                    Drawf.shadow(region, rx - shadowElevation, ry - shadowElevation, rot)
+                    val elevation = shadowElevation * build.shadowProgress().clamp
+                    if(!elevation.isZero)
+                        Drawf.shadow(region, rx - elevation, ry - elevation, rot)
                     Draw.z(prevZ)
                 }
                 run color@{

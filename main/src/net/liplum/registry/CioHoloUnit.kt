@@ -164,7 +164,8 @@ object CioHoloUnit {
                             val quadrant = Geometry.d8edge[i]
                             layer = Layer.blockOver
                             progress = prog
-                            shadowElevation = 1f
+                            shadowProgress = prog
+                            shadowElevation = 1.5f
                             moveX = 5f * quadrant.x
                             moveY = 5f * quadrant.y
                             holoProjectingSection {

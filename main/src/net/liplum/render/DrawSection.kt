@@ -26,6 +26,8 @@ object Sections {
     val warmupSmooth: BuildProgress = { warmup().smooth }
     val progress: BuildProgress = { progress() }
     val progressSmooth: BuildProgress = { progress().smooth }
+    val one: BuildProgress = { 1f }
+    val zero: BuildProgress = { 0f }
 }
 
 data class SectionArgs<T>(
