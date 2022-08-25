@@ -5,7 +5,7 @@
 [![Badge Discord]][Discord]
 [![Badge Download]][Download]
 
-### *The Cybernetics on Mindustry v7.*
+### *The Cybernetics are now on Mindustry V7.*
 
 ___
 <br>
@@ -55,7 +55,7 @@ ___
 
 ## Licence
 
-The codes of CyberIO are open source under GNU General Public License v3.0 (GPL 3.0).
+The code of CyberIO is open source under GNU General Public License v3.0 (GPL 3.0).
 
 To learn about the resources of CyberIO, please check the [Copyright File](Info/Copyright.md).
 </div>
