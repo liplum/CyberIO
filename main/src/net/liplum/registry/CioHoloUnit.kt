@@ -185,7 +185,6 @@ object CioHoloUnit {
             buildCostMultiplier = 2f
         }
     }
-    @Suppress("RemoveExplicitTypeArguments")
     @DependOn(
         "CioItem.ic",
         "CioFluid.cyberion",

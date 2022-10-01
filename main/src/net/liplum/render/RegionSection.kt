@@ -95,7 +95,7 @@ open class RegionSection<T>(
                 if (drawShadow) {
                     Draw.z(prevZ - 0.1f)
                     val elevation = shadowElevation * build.shadowProgress().clamp
-                    if(!elevation.isZero)
+                    if (!elevation.isZero)
                         Drawf.shadow(region, rx - elevation, ry - elevation, rot)
                     Draw.z(prevZ)
                 }

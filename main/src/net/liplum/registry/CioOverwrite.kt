@@ -5,16 +5,11 @@ import mindustry.content.Blocks
 import mindustry.content.UnitTypes
 import mindustry.world.blocks.heat.HeatProducer
 import mindustry.world.blocks.payloads.*
-import mindustry.world.blocks.power.ConsumeGenerator.ConsumeGeneratorBuild
-import mindustry.world.blocks.power.PowerGenerator
 import mindustry.world.blocks.sandbox.*
 import mindustry.world.meta.BuildVisibility
 import net.liplum.DebugOnly
 import net.liplum.ExperimentalOnly
 import net.liplum.annotations.DependOn
-import net.liplum.mdt.render.G
-import net.liplum.render.DrawBuild
-import net.liplum.render.regionSection
 
 object CioOverwrite {
     @DependOn

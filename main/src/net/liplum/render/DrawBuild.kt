@@ -25,7 +25,6 @@ open class DrawBuild<T> : DrawBlock() where T : Building {
     override fun draw(building: Building) {
         val b = building as T
         val block = b.block
-        Draw.rect(block.region, b.x, b.y)
         Draw.color()
         Draw.z(Layer.block - 0.5f)
         Drawf.shadow(preview, b.x, b.y, b.drawrot())
@@ -45,6 +44,7 @@ open class DrawBuild<T> : DrawBlock() where T : Building {
             }
             for (section in sections) {
                 section.draw(b, args)
+                Draw.reset()
             }
         }
     }
@@ -87,4 +87,4 @@ inline fun <T : Building> DrawBuild(config: DrawBuild<T>.() -> Unit) =
 @Suppress("unused")
 fun <T : Building> DrawBuild<T>.progress(
     prog: T.() -> Progress
-):SectionProgress<T> = prog
+): SectionProgress<T> = prog

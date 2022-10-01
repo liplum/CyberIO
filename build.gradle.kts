@@ -43,18 +43,18 @@ allprojects {
 }
 mindustry {
     dependency {
-        mindustry mirror "1a64344e5a"
-        arc on "v137"
+        mindustry mirror "155b381"
+        arc on "v138"
     }
     client {
         /*mindustry from Foo(
             version = "v8.0.0",
             release = "erekir-client.jar"
         )*/
-        mindustry official "v137"
+        mindustry official "v138"
     }
     server {
-        mindustry official "v137"
+        mindustry official "v138"
     }
 }
 
