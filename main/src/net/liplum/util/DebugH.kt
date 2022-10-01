@@ -9,11 +9,12 @@ import mindustry.graphics.Pal
 import mindustry.logic.Ranged
 import mindustry.world.Block
 import net.liplum.R
-import net.liplum.api.brain.IUpgradeComponent
-import net.liplum.api.cyber.INetworkNode
-import net.liplum.common.util.*
-import net.liplum.mdt.animation.anis.IAniSMedBuild
-import net.liplum.mdt.ui.bars.AddBar
+import net.liplum.common.util.Float
+import plumy.dsl.bundle
+import net.liplum.common.util.format
+import net.liplum.common.util.percentI
+import plumy.animation.state.IStateful
+import plumy.dsl.AddBar
 
 inline fun <reified T> Block.addRangeInfo(maxRange: Float) where T : Building, T : Ranged {
     AddBar<T>(R.Bar.RangeN,
@@ -23,18 +24,19 @@ inline fun <reified T> Block.addRangeInfo(maxRange: Float) where T : Building, T
     )
 }
 
-inline fun <reified T> Block.addAniStateInfo() where T : Building, T : IAniSMedBuild<*, *> {
-    AddBar<T>("ani-state",
-        { aniStateM.curState.stateName },
+inline fun <reified T> Block.addStateMachineInfo()
+        where T : Building, T : IStateful<*> {
+    AddBar<T>("state-machine",
+        { stateMachine.curState.stateName },
         { Pal.bar },
         { 1f }
     )
-    AddBar<T>("ani-state-last",
+    AddBar<T>("state-machine-last",
         {
-            "Last: ${aniStateM.lastState?.stateName ?: R.Bar.Null.bundle}"
+            "Last: ${stateMachine.lastState?.stateName ?: R.Bar.Null.bundle}"
         },
         { Pal.bar },
-        { (aniStateM.lastState != null).Float }
+        { (stateMachine.lastState != null).Float }
     )
 }
 
@@ -43,14 +45,6 @@ inline fun <reified T> Block.addProgressInfo() where T : Building {
         { "${"bar.loadprogress".bundle}: ${progress().percentI}" },
         { Pal.power },
         { progress() }
-    )
-}
-
-inline fun <reified T> Block.addSendingProgress() where T : Building, T : INetworkNode {
-    AddBar<T>("sending-progress",
-        { "Sending: $sendingProgress" },
-        { R.C.Power },
-        { sendingProgress }
     )
 }
 

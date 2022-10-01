@@ -18,7 +18,7 @@ object ScriptLoader {
      * @param path allows dot '.' to separate path.
      */
     fun nodeLang(path: String): NodeTree {
-        val input = root.sub(path.replace('.', '/')+".node").readAsStream()
+        val input = root.sub(path.replace('.', '/') + ".node").readAsStream()
         val dataInput = DataInputStream(input)
         return NodeLang.Default.deserialize(dataInput)
     }

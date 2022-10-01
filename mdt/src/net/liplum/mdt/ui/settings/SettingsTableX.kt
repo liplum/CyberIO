@@ -3,7 +3,7 @@ package net.liplum.mdt.ui.settings
 import arc.Core
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable
 import net.liplum.common.delegate.Delegate
-import net.liplum.common.util.bundle
+import plumy.dsl.bundle
 
 class SettingsTableX : SettingsTable() {
     val onReset = Delegate()

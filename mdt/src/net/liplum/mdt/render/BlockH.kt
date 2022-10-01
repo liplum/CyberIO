@@ -9,11 +9,11 @@ import mindustry.Vars
 import mindustry.gen.Building
 import mindustry.graphics.Drawf
 import mindustry.world.Block
-import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.utils.TileXY
-import net.liplum.mdt.utils.TileXYf
-import net.liplum.mdt.utils.toCenterWorldXY
-import net.liplum.mdt.utils.worldXY
+import plumy.core.ClientOnly
+import plumy.dsl.TileXY
+import plumy.dsl.TileXYf
+import plumy.dsl.getCenterWorldXY
+import plumy.dsl.worldXY
 
 @ClientOnly
 inline fun Block.drawSurroundingRect(
@@ -21,7 +21,7 @@ inline fun Block.drawSurroundingRect(
     tileY: TileXY,
     extension: TileXYf,
     color: Color,
-    crossinline filter: (Building) -> Boolean
+    crossinline filter: (Building) -> Boolean,
 ) {
     val worldX = tileX.worldXY
     val worldY = tileY.worldXY
@@ -46,11 +46,11 @@ fun Block.drawEffectCirclePlace(
     func: Building. () -> Unit,
 ) {
     G.dashCircleBreath(
-        toCenterWorldXY(x), toCenterWorldXY(y), range,
+        getCenterWorldXY(x), getCenterWorldXY(y), range,
         circleColor, stroke = stroke
     )
     Vars.indexer.eachBlock(
-        Vars.player.team(), toCenterWorldXY(x), toCenterWorldXY(y), range,
+        Vars.player.team(), getCenterWorldXY(x), getCenterWorldXY(y), range,
         filter, func
     )
 }

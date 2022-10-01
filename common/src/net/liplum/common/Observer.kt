@@ -9,7 +9,7 @@ typealias ObserverAnyNull = ObserverNull<Any>
 
 open class Observer<T>(
     val init: T,
-    val getter: () -> T
+    val getter: () -> T,
 ) {
     constructor(getter: () -> T) : this(getter(), getter)
 
@@ -42,7 +42,7 @@ open class Observer<T>(
 
 open class ObserverNull<T>(
     val init: T?,
-    val getter: () -> T?
+    val getter: () -> T?,
 ) {
     constructor(getter: () -> T?) : this(null, getter)
 

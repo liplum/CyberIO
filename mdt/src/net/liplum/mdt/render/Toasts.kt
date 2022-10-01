@@ -6,8 +6,8 @@ import mindustry.Vars
 import mindustry.gen.Building
 import net.liplum.common.util.inViewField
 import plumy.core.math.Point2f
-import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.utils.WorldXY
+import plumy.core.ClientOnly
+import plumy.dsl.WorldXY
 
 var ToastTimeFadePercent = 0.1f
 var ToastTime = 180f

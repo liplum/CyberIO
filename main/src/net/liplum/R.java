@@ -32,12 +32,6 @@ public final class R {
     }
 
     public static final class Bundle {
-        @NotNull
-        @Contract(pure = true)
-        public static String Gen(String content) {
-            return Meta.ModID + "." + content;
-        }
-
         public static final String Unlimited = Gen("unlimited");
         public static final String
             CostSecond = Gen("cost.second"),
@@ -52,23 +46,30 @@ public final class R {
             UnsavedChange = Gen("unsaved-change");
         public static final String
             RandomName = Gen("random-name");
+
+        @NotNull
+        @Contract(pure = true)
+        public static String Gen(String content) {
+            return Meta.ModID + "." + content;
+        }
     }
 
     public static final class Bar {
         public static final String NeighborStateN = "neighbor-state";
+
         @NotNull
         @Contract(pure = true)
         public static String Gen(String content) {
             return "bar." + Meta.ModID + "." + content;
         }
 
-        public static final String GenerationN = "generation",
-            Generation = Gen(GenerationN);
-
         public static final class Vanilla {
             public static final String UnitsN = "units",
                 UnitCapacity = "bar.unitcap";
-        }
+        }        public static final String GenerationN = "generation",
+            Generation = Gen(GenerationN);
+
+
 
         public static final String SlowDownN = "slow-down",
             SlowDown = Gen(SlowDownN);
@@ -112,11 +113,7 @@ public final class R {
 
     public static final class Ctrl {
         public static final String
-            Enable = Gen("enable"),
-            Validate = Gen("validate"),
-            UpdateModSuccess = Gen("update-mod.success"),
-            UpdateModFailed = Gen("update-mod.failed"),
-            UpdateModBreakUpdateWarning = Gen("update-mod.break-update-warning");
+            Enable = Gen("enable");
 
         @NotNull
         @Contract(pure = true)
@@ -221,6 +218,9 @@ public final class R {
     }
 
     public static final class Welcome {
+        public static final String WelcomeVariants = "WelcomeVariants";
+        public static final String IconPath = "IconPath";
+
         @NotNull
         @Contract(pure = true)
         public static String Gen(String name) {
@@ -232,9 +232,6 @@ public final class R {
         public static String Atlas(String name) {
             return Meta.ModID + "-welcome-" + name;
         }
-
-        public static final String WelcomeVariants = "WelcomeVariants";
-        public static final String IconPath = "IconPath";
     }
 
     public static final class Sound {
@@ -242,7 +239,7 @@ public final class R {
             wav = "wav",
             mp3 = "mp3";
         public static final String[] extensions = {
-            wav, ogg, mp3
+            wav, mp3, ogg
         };
 
         @NotNull
@@ -303,7 +300,7 @@ public final class R {
             CyberIOLoadedTimes = Gen("cio-loaded-times"),
             ClassLoadedTimes = Gen("clz-loaded-times"),
             LastPlayTime = Gen("last-play-time"),
-            GitHubMirrorUrl = Gen("github-mirror"),
+            GitHubMirrorUrl = Gen("github-mirror"),// Deprecated
             ShaderRootPath = Gen("shader-root-path"),
             ContentSpecific = Gen("content-specific"),
             CheckUpdate = Gen("check-update");
@@ -313,8 +310,8 @@ public final class R {
         public static final String
             ResetConfig = "cio-reset-config",
             ReloadConfig = "cio-reload-config",
-            CheckUpdate = "cio-check-update",
-            ClearCyberIOConetnt = "cio-clean-map",
+            CheckUpdate = "cio-update",
+            ClearContent = "cio-clean-map",
             SwitchSpec = "cio-spec";
     }
 }

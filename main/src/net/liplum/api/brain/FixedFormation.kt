@@ -1,7 +1,7 @@
 package net.liplum.api.brain
 
 import net.liplum.common.toLinkedString
-import net.liplum.mdt.ClientOnly
+import plumy.core.ClientOnly
 
 interface IFormationPattern {
     fun match(brain: IBrain): IFormationEffect?

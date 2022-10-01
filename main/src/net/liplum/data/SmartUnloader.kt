@@ -6,17 +6,16 @@ import arc.math.Mathf
 import arc.struct.OrderedSet
 import arc.struct.Seq
 import arc.util.Eachable
-import arc.util.Structs
 import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.Vars
-import mindustry.core.Version
 import mindustry.entities.units.BuildPlan
 import mindustry.gen.Building
 import mindustry.graphics.Pal
 import mindustry.logic.LAccess
 import mindustry.type.Item
+import mindustry.world.Block
 import mindustry.world.meta.BlockGroup
 import mindustry.world.meta.Stat
 import net.liplum.DebugOnly
@@ -24,51 +23,45 @@ import net.liplum.R
 import net.liplum.UndebugOnly
 import net.liplum.Var
 import net.liplum.api.cyber.*
-import net.liplum.blocks.AniedBlock
-import net.liplum.common.Changed
+import net.liplum.common.Remember
 import net.liplum.common.persistence.read
 import net.liplum.common.persistence.write
 import net.liplum.common.util.DoMultipleBool
 import net.liplum.mdt.CalledBySync
-import net.liplum.mdt.ClientOnly
+import plumy.core.ClientOnly
 import net.liplum.mdt.SendDataPack
-import net.liplum.mdt.animation.anims.Animation
-import net.liplum.mdt.animation.anims.AnimationObj
-import net.liplum.mdt.animation.anis.AniState
-import net.liplum.mdt.animation.anis.config
-import net.liplum.mdt.render.Draw
+import plumy.animation.AnimationMeta
+import plumy.animation.ContextDraw.Draw
+import plumy.animation.state.IStateful
+import plumy.animation.state.State
+import plumy.animation.state.StateConfig
+import plumy.animation.state.configuring
+import plumy.animation.draw
 import net.liplum.mdt.render.drawSurroundingRect
-import net.liplum.mdt.render.smoothPlacing
-import net.liplum.mdt.ui.bars.AddBar
+import net.liplum.input.smoothPlacing
 import net.liplum.mdt.ui.bars.removeItemsInBar
 import net.liplum.mdt.utils.*
 import net.liplum.util.addPowerUseStats
+import net.liplum.util.addStateMachineInfo
 import net.liplum.util.genText
 import plumy.core.Serialized
-import plumy.core.assets.TR
+import plumy.core.assets.EmptyTR
+import plumy.dsl.*
 import kotlin.math.absoluteValue
 import kotlin.math.log2
 
-private typealias AniStateU = AniState<SmartUnloader, SmartUnloader.SmartUnloaderBuild>
-private typealias SmartDIS = SmartDistributor.SmartDistributorBuild
-
-open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader.SmartUnloaderBuild>(name) {
+open class SmartUnloader(name: String) : Block(name), IDataBlock {
     /**
      * The lager the number the slower the unloading speed. Belongs to [0,+inf)
      */
     @JvmField var unloadSpeed = 1f
     @JvmField var maxConnection = 5
-    @ClientOnly lateinit var ShrinkingAnim: Animation
-    @ClientOnly lateinit var CoverTR: TR
-    @ClientOnly lateinit var NoPowerTR: TR
+    @ClientOnly var ShrinkingAnim = AnimationMeta.Empty
+    @ClientOnly var NoPowerTR = EmptyTR
     @JvmField var powerUsePerItem = 2.5f
     @JvmField var powerUsePerConnection = 2f
     @JvmField var powerUseBasic = 1.5f
     @JvmField val TransferTimer = timers++
-    // TODO: Remove this for v137
-    @JvmField var unloaderComparator: Comparator<Building> = Structs.comparingBool {
-        it.block.highUnloadPriority
-    }
     @JvmField var boost2Count: (Float) -> Int = {
         if (it <= 1.1f)
             1
@@ -82,13 +75,14 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
     @JvmField @ClientOnly var indicateAreaExtension = 2f
     @ClientOnly @JvmField var SendingTime = 60f
     @ClientOnly @JvmField var UnloadTime = 60f
-    @ClientOnly @JvmField var ShrinkingAnimFrames = 13
-    @ClientOnly @JvmField var ShrinkingAnimDuration = 120f
+    @ClientOnly @JvmField var ShrinkingFrames = 13
+    @ClientOnly @JvmField var ShrinkingDuration = 120f
     @ClientOnly @JvmField var maxSelectedCircleTime = Var.SelectedCircleTime
     /**
      * The max range when trying to connect. -1f means no limit.
      */
     @JvmField var maxRange = -1f
+    @ClientOnly var stateMachineConfig = StateConfig<SmartUnloaderBuild>()
 
     init {
         buildType = Prov { SmartUnloaderBuild() }
@@ -106,15 +100,6 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
         allowConfigInventory = false
         configurable = true
         acceptsItems = false
-        /**
-         * For connect
-         */
-        config(Integer::class.java) { obj: SmartUnloaderBuild, receiverPackedPos ->
-            obj.addReceiverFromRemote(receiverPackedPos.toInt())
-        }
-        configClear<SmartUnloaderBuild> {
-            it.clearReceivers()
-        }
     }
 
     open fun initPowerUse() {
@@ -128,14 +113,22 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
     override fun init() {
         initPowerUse()
         super.init()
+        // For connect
+        config<SmartUnloaderBuild, PackedPos> {
+            addReceiverFromRemote(it)
+        }
+        configNull<SmartUnloaderBuild> {
+            clearReceivers()
+        }
+        ClientOnly {
+            configAnimationStateMachine()
+        }
     }
 
     override fun load() {
         super.load()
-        NoPowerTR = this.inMod("rs-no-power")
-        ShrinkingAnim = this.autoAnim("shrink", ShrinkingAnimFrames, ShrinkingAnimDuration)
-        CoverTR = this.sub("cover")
-    }
+        NoPowerTR = loadNoPower()
+        ShrinkingAnim = this.animationMeta("shrink", ShrinkingFrames, ShrinkingDuration) }
 
     override fun setStats() {
         super.setStats()
@@ -168,6 +161,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
             removeItemsInBar()
         }
         DebugOnly {
+            addStateMachineInfo<SmartUnloaderBuild>()
             addReceiverInfo<SmartUnloaderBuild>()
             AddBar<SmartUnloaderBuild>("last-unloading",
                 { "Last Unload: ${lastUnloadTime.toInt()}" },
@@ -182,8 +176,9 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
         }
     }
 
-    open inner class SmartUnloaderBuild : AniedBlock<SmartUnloader, SmartUnloaderBuild>.AniedBuild(),
-        IDataSender {
+    open inner class SmartUnloaderBuild : Building(),
+        IStateful<SmartUnloaderBuild>, IDataSender {
+        override val stateMachine by lazy { stateMachineConfig.instantiate(this) }
         override val maxRange = this@SmartUnloader.maxRange
         @Serialized
         var receivers = OrderedSet<Int>()
@@ -215,32 +210,23 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
             get() = lastSendingTime < SendingTime
         @ClientOnly val isUnloading: Boolean
             get() = lastUnloadTime < UnloadTime
-        @ClientOnly lateinit var shrinkingAnimObj: AnimationObj
+        @ClientOnly var shrinkingAnimObj = ShrinkingAnim.instantiate()
         var justRestored = false
         @ClientOnly
-        var lastSenderColor = Changed.empty<Color>()
+        var lastSenderColor = Remember.empty<Color>()
         @ClientOnly
         var targetSenderColor = R.C.Sender
         @ClientOnly
         override val senderColor: Color
             get() = transitionColor(lastSenderColor, targetSenderColor)
 
-        init {
-            ClientOnly {
-                shrinkingAnimObj = ShrinkingAnim.gen()
-            }
-        }
-
         open fun updateUnloaded() {
             nearby.clear()
             for (b in proximity) {
-                if (b.block.unloadable) {
+                // TODO: Learn form Unloader?
+                if (b.canUnload()) {
                     nearby.add(b)
                 }
-            }
-            // Only work in v136
-            if (Version.build == 136) {
-                nearby.sort(unloaderComparator)
             }
             unloadedNearbyIndex = 0
         }
@@ -360,7 +346,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
                         c.lerp(color, 0.5f)
                     }
                 }
-                lastSenderColor = Changed(old = targetSenderColor)
+                lastSenderColor = Remember(old = targetSenderColor)
                 targetSenderColor = if (hasAny) c else R.C.Sender
             }
             DebugOnly {
@@ -488,10 +474,13 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
             }
         }
 
-        override fun beforeDraw() {
+        override fun draw() {
+            stateMachine.spend(delta())
             if (canConsume() && isUnloading && isSending) {
                 shrinkingAnimObj.spend(delta())
             }
+            super.draw()
+            stateMachine.draw()
         }
 
         override val maxReceiverConnection = maxConnection
@@ -519,7 +508,7 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
         override fun control(type: LAccess, p1: Double, p2: Double, p3: Double, p4: Double) {
             when (type) {
                 LAccess.shoot -> {
-                    val receiver = buildAt(p1, p2)
+                    val receiver = Vars.world.build(p1, p2)
                     if (receiver is IDataReceiver) connectToSync(receiver)
                 }
                 else -> super.control(type, p1, p2, p3, p4)
@@ -527,38 +516,32 @@ open class SmartUnloader(name: String) : AniedBlock<SmartUnloader, SmartUnloader
         }
     }
 
-    @ClientOnly lateinit var UnloadingAni: AniStateU
-    @ClientOnly lateinit var NoPowerAni: AniStateU
-    @ClientOnly lateinit var BlockedAni: AniStateU
-    override fun genAniConfig() {
-        config {
-            From(NoPowerAni) To UnloadingAni When {
-                canConsume()
-            }
-
-            From(UnloadingAni) To NoPowerAni When {
-                !canConsume()
-            } To BlockedAni When {
-                !isUnloading || !isSending
-            }
-
-            From(BlockedAni) To NoPowerAni When {
-                !canConsume()
-            } To UnloadingAni When {
-                isUnloading && isSending
-            }
-        }
-    }
-
-    override fun genAniState() {
-        UnloadingAni = addAniState("Unloading") {
+    @ClientOnly lateinit var UnloadingState: State<SmartUnloaderBuild>
+    @ClientOnly lateinit var NoPowerState: State<SmartUnloaderBuild>
+    @ClientOnly lateinit var BlockedState: State<SmartUnloaderBuild>
+    fun configAnimationStateMachine() {
+        UnloadingState = State("Unloading") {
             shrinkingAnimObj.draw(x, y)
         }
-        NoPowerAni = addAniState("NoPower") {
+        NoPowerState = State("NoPower") {
             NoPowerTR.Draw(x, y)
         }
-        BlockedAni = addAniState("Blocked") {
+        BlockedState = State("Blocked") {
             shrinkingAnimObj.draw(R.C.Stop, x, y)
+        }
+        stateMachineConfig.configuring {
+            NoPowerState {
+                setDefaultState
+                UnloadingState { canConsume() }
+            }
+            UnloadingState {
+                NoPowerState { !canConsume() }
+                BlockedState { !isUnloading || !isSending }
+            }
+            BlockedState {
+                NoPowerState { !canConsume() }
+                UnloadingState { isUnloading && isSending }
+            }
         }
     }
 }

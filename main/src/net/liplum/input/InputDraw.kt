@@ -2,7 +2,7 @@ package net.liplum.input
 
 import mindustry.graphics.Drawf
 import net.liplum.mdt.Screen
-import net.liplum.mdt.utils.worldXY
+import plumy.dsl.worldXY
 
 fun drawCircleOnMouse(radius: Float) {
     val mx = Screen.tileXOnMouse()

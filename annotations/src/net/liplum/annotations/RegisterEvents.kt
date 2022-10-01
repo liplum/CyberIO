@@ -8,12 +8,12 @@ import kotlin.reflect.KClass
  */
 annotation class Subscribe(
     val triggerType: EventType.Trigger,
-    val only: Int = 0
+    val only: Int = 0,
 )
 /**
  * Subscribe the target event automatically.
  */
 annotation class SubscribeEvent(
     val eventClz: KClass<*>,
-    val only: Int = 0
+    val only: Int = 0,
 )

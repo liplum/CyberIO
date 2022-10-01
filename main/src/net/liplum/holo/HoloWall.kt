@@ -1,6 +1,5 @@
 package net.liplum.holo
 
-import arc.Core
 import arc.func.Prov
 import arc.graphics.Color
 import arc.graphics.Texture
@@ -27,20 +26,21 @@ import net.liplum.api.holo.IHoloEntity.Companion.addHoloChargeTimeStats
 import net.liplum.api.holo.IHoloEntity.Companion.addHoloHpAtLeastStats
 import net.liplum.api.holo.IHoloEntity.Companion.minHealth
 import net.liplum.common.shader.use
-import net.liplum.common.util.bundle
+import plumy.dsl.bundle
 import net.liplum.common.util.toFloat
-import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.WhenNotPaused
-import net.liplum.mdt.animation.Floating
+import plumy.core.ClientOnly
+import plumy.core.WhenNotPaused
+import net.liplum.animation.Floating
 import net.liplum.mdt.render.G
-import net.liplum.mdt.ui.bars.AddBar
+import plumy.dsl.AddBar
 import net.liplum.mdt.utils.healthPct
-import net.liplum.mdt.utils.seconds
 import net.liplum.mdt.utils.sub
 import net.liplum.registry.SD
 import net.liplum.util.yesNo
 import plumy.core.Serialized
 import plumy.core.arc.Tick
+import plumy.core.arc.toSecond
+import plumy.core.assets.EmptyTR
 import plumy.core.assets.TR
 import plumy.core.math.isZero
 import plumy.core.math.nextBoolean
@@ -49,8 +49,8 @@ import kotlin.math.max
 
 open class HoloWall(name: String) : Wall(name) {
     @JvmField var restoreCharge: Tick = 10 * 60f
-    @ClientOnly lateinit var ProjectorTR: TR
-    @ClientOnly lateinit var ImageTR: TR
+    @ClientOnly @JvmField var ProjectorTR = EmptyTR
+    @ClientOnly @JvmField var ImageTR = EmptyTR
     @JvmField var minHealthProportion = 0.05f
     @ClientOnly @JvmField var floatingRange = 2f
     @JvmField var needPower = false
@@ -103,10 +103,10 @@ open class HoloWall(name: String) : Wall(name) {
         val size = size * 32
         val maker = StackIconMaker(size, size)
         val layers = listOf(
-            (PixmapRegionModelLayer(Core.atlas.getPixmap(ProjectorTR))){
+            (PixmapRegionModelLayerFrom(ProjectorTR)){
                 +PlainLayerProcessor()
             },
-            (PixmapRegionModelLayer(Core.atlas.getPixmap(ImageTR))){
+            (PixmapRegionModelLayerFrom(ImageTR)){
                 +TintLerpLayerProcessor(S.Hologram, Var.HoloWallTintAlpha)
             }
         )
@@ -146,12 +146,12 @@ open class HoloWall(name: String) : Wall(name) {
                 { restRestore / maxHealth }
             )
             AddBar<HoloWallBuild>("charge",
-                { "Charge: ${charge.seconds}s" },
+                { "Charge: ${charge.toSecond}s" },
                 { Pal.power },
                 { charge / restoreCharge }
             )
             AddBar<HoloWallBuild>("last-damaged",
-                { "Last Damage: ${lastDamagedTime.seconds}s" },
+                { "Last Damage: ${lastDamagedTime.toSecond}s" },
                 { Pal.power },
                 { lastDamagedTime / restoreCharge }
             )

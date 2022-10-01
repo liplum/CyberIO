@@ -14,7 +14,7 @@ import mindustry.gen.*
 import mindustry.graphics.Drawf
 import mindustry.world.blocks.ControlBlock
 import mindustry.world.blocks.defense.turrets.BaseTurret
-import net.liplum.mdt.utils.MdtUnit
+import plumy.core.MUnit
 import net.liplum.mdt.utils.findPlayer
 
 @Suppress("ClassName")
@@ -114,7 +114,7 @@ open class RuvikBullet : BulletType {
     override fun draw(b: Bullet) {
         super.draw(b)
         Draw.color(trailColor)
-        Drawf.tri(b.x, b.y, arrowWidth, arrowLength, b.vel.angle())
+        Drawf.tri(b.x, b.y, arrowWidth, arrowLength, b.rotation())
         Draw.color()
     }
 
@@ -185,7 +185,7 @@ open class RuvikBullet : BulletType {
                 spawned.vel.trns(angle, spawnUnit.speed)
                 //assign unit owner
                 val controller = spawned.controller()
-                if (controller is MissileAI && owner is MdtUnit) {
+                if (controller is MissileAI && owner is MUnit) {
                     controller.shooter = owner
                 }
             }
@@ -227,5 +227,10 @@ open class RuvikBullet : BulletType {
         if (keepVelocity && owner is Velc)
             b.vel.add(owner.vel())
         return b
+    }
+
+    companion object {
+        inline operator fun invoke(config: RuvikBullet.() -> Unit) =
+            RuvikBullet().apply(config)
     }
 }

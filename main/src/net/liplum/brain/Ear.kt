@@ -1,5 +1,6 @@
 package net.liplum.brain
 
+import arc.func.Prov
 import arc.graphics.g2d.Draw
 import arc.graphics.g2d.Lines
 import arc.math.Interp
@@ -34,16 +35,20 @@ import net.liplum.common.persistence.ReadFromCache
 import net.liplum.common.persistence.WriteIntoCache
 import net.liplum.common.util.forLoop
 import net.liplum.common.util.toDouble
+import net.liplum.input.smoothPlacing
+import net.liplum.input.smoothSelect
 import plumy.core.Serialized
-import plumy.core.arc.invoke
 import plumy.core.assets.TR
 import plumy.core.math.isZero
-import net.liplum.mdt.ClientOnly
+import plumy.core.ClientOnly
+import plumy.animation.ContextDraw.Draw
+import plumy.animation.ContextDraw.DrawScale
 import net.liplum.mdt.render.*
-import net.liplum.mdt.utils.MdtUnit
-import net.liplum.mdt.utils.TileXY
+import plumy.core.MUnit
+import plumy.dsl.TileXY
 import net.liplum.mdt.utils.sub
-import net.liplum.mdt.utils.toCenterWorldXY
+import plumy.core.math.invoke
+import plumy.dsl.getCenterWorldXY
 
 /**
  * ### Since 1
@@ -59,8 +64,6 @@ open class Ear(name: String) : Block(name), IComponentBlock {
     @JvmField var sensitivityI = -0.3f
     @JvmField var sonicMaxRadius = 40f
     @JvmField var sonicMaxRadiusI = 0.4f
-    @JvmField var powerUse = 2f
-    @JvmField var powerUseI = 0.8f
     @JvmField var range = 150f
     @JvmField var rangeI = 0.4f
     @JvmField var reloadTime = 120f
@@ -82,6 +85,8 @@ open class Ear(name: String) : Block(name), IComponentBlock {
     @ClientOnly @JvmField var scaleTime = 30f
     @ClientOnly @JvmField var maxScale = 0.3f
     @ClientOnly @JvmField var sonicWaveColor = R.C.SonicWave
+    @ClientOnly @JvmField var sounds = 0.8f..1.2f
+    @ClientOnly @JvmField var soundPitchRange = 0.8f..1.2f
     override val upgrades: MutableMap<UpgradeType, Upgrade> = HashMap()
 
     init {
@@ -97,13 +102,11 @@ open class Ear(name: String) : Block(name), IComponentBlock {
         attacks = true
         canOverdrive = false
         conductivePower = true
+        buildType = Prov { EarBuild() }
     }
 
     override fun init() {
         checkInit()
-        consumePowerDynamic<EarBuild> {
-            if (it.lastRadiateTime < powerConsumeTime) it.realPowerUse else 0f
-        }
         super.init()
         clipSize = (range * (1f + rangeI)) + (sonicMaxRadius * (1f * rangeI))
     }
@@ -125,8 +128,8 @@ open class Ear(name: String) : Block(name), IComponentBlock {
     override fun drawPlace(x: TileXY, y: TileXY, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)
         G.dashCircleBreath(
-            toCenterWorldXY(x),
-            toCenterWorldXY(y),
+            getCenterWorldXY(x),
+            getCenterWorldXY(y),
             range * smoothPlacing(maxSelectedCircleTime),
             sonicWaveColor, stroke = Var.CircleStroke
         )
@@ -136,12 +139,14 @@ open class Ear(name: String) : Block(name), IComponentBlock {
         super.setStats()
         this.addUpgradeComponentStats()
         stats.remove(Stat.powerUse)
-        stats.add(Stat.powerUse, powerUse * 60f, StatUnit.powerSecond)
     }
 
     open inner class EarBuild : Building(),
         IUpgradeComponent, ControlBlock, Ranged {
         override fun version() = 1.toByte()
+        override fun shouldConsume(): Boolean {
+            return enabled && lastRadiateTime < powerConsumeTime
+        }
         // <editor-fold desc="Heimdall">
         override val componentName = "Ear"
         override val scale: SpeedScale = SpeedScale()
@@ -249,8 +254,6 @@ open class Ear(name: String) : Block(name), IComponentBlock {
             get() = damage * (1f + if (isLinkedBrain) damageI else 0f)
         val realSonicRadius: Float
             get() = sonicMaxRadius * (1f + if (isLinkedBrain) sonicMaxRadiusI else 0f)
-        val realPowerUse: Float
-            get() = powerUse * (1f + if (isLinkedBrain) powerUseI else 0f)
         val realSensitive: Float
             get() = sensitivity * (1f + if (isLinkedBrain) sensitivityI else 0f)
         // </editor-fold>
@@ -268,10 +271,10 @@ open class Ear(name: String) : Block(name), IComponentBlock {
                 BaseHeatTR.Draw(x, y)
             }
             Draw.z(Layer.turret)
-            EarTR.DrawSize(x, y, scale + G.sin / 20f)
+            EarTR.DrawScale(x, y, scale + G.sin / 20f)
             Draw.z(Layer.turretHeat)
             heatMeta.drawHeat(heatShared) {
-                EarHeatTR.DrawSize(x, y, scale + G.sin / 20f)
+                EarHeatTR.DrawScale(x, y, scale + G.sin / 20f)
             }
             Draw.z(Layer.turret)
             Draw.z(Layer.bullet)
@@ -390,7 +393,7 @@ open class Ear(name: String) : Block(name), IComponentBlock {
             return this.timeScale * Time.delta * speedScale * (1f + heatShared)
         }
 
-        val MdtUnit.isSensed: Boolean
+        val MUnit.isSensed: Boolean
             get() = this.vel.len() >= realSensitive
 
         override fun remove() {

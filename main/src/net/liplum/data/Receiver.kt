@@ -13,6 +13,7 @@ import mindustry.Vars
 import mindustry.entities.units.BuildPlan
 import mindustry.gen.Building
 import mindustry.type.Item
+import mindustry.world.Block
 import mindustry.world.blocks.ItemSelection
 import mindustry.world.meta.BlockGroup
 import net.liplum.DebugOnly
@@ -20,39 +21,38 @@ import net.liplum.R
 import net.liplum.UndebugOnly
 import net.liplum.Var
 import net.liplum.api.cyber.*
-import net.liplum.blocks.AniedBlock
 import net.liplum.common.delegate.Delegate1
 import net.liplum.common.persistence.read
 import net.liplum.common.persistence.write
-import net.liplum.data.Receiver.ReceiverBuild
-import plumy.core.Serialized
-import plumy.core.assets.TR
-import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.animation.anims.Animation
-import net.liplum.mdt.animation.anis.AniState
-import net.liplum.mdt.animation.anis.config
-import net.liplum.mdt.render.Draw
-import net.liplum.mdt.render.DrawOn
-import net.liplum.mdt.render.SetColor
 import net.liplum.mdt.ui.bars.removeItemsInBar
-import net.liplum.mdt.utils.autoAnimInMod
-import net.liplum.mdt.utils.inMod
 import net.liplum.mdt.utils.sub
+import net.liplum.util.update
+import plumy.animation.ContextDraw.Draw
+import plumy.animation.ContextDraw.DrawOn
+import plumy.animation.ContextDraw.SetColor
+import plumy.animation.SharedAnimation
+import plumy.animation.draw
+import plumy.animation.state.IStateful
+import plumy.animation.state.State
+import plumy.animation.state.StateConfig
+import plumy.animation.state.configuring
+import plumy.core.ClientOnly
+import plumy.core.Serialized
+import plumy.core.assets.EmptyTR
+import plumy.dsl.config
+import plumy.dsl.configNull
 
-private typealias AniStateR = AniState<Receiver, ReceiverBuild>
-
-open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
-    @ClientOnly lateinit var BaseTR: TR
-    @ClientOnly lateinit var HighlightTR: TR
-    @ClientOnly lateinit var DownArrowTR: TR
-    @ClientOnly lateinit var UnconnectedTR: TR
-    @ClientOnly lateinit var NoPowerTR: TR
-    @ClientOnly lateinit var DownloadAnim: Animation
+open class Receiver(name: String) : Block(name), IDataBlock {
+    @ClientOnly var BaseTR = EmptyTR
+    @ClientOnly var HighlightTR = EmptyTR
+    @ClientOnly var DownArrowTR = EmptyTR
+    @ClientOnly var UnconnectedTR = EmptyTR
+    @ClientOnly var NoPowerTR = EmptyTR
+    @ClientOnly var DownloadAnim = SharedAnimation.Empty
     @JvmField var maxConnection = -1
-    @JvmField var DownloadAnimFrameNumber = 7
-    @JvmField var DownloadAnimDuration = 30f
     @JvmField var blockTime = 60f
     @JvmField var fullTime = 60f
+    @ClientOnly var stateMachineConfig = StateConfig<ReceiverBuild>()
 
     init {
         buildType = Prov { ReceiverBuild() }
@@ -69,13 +69,19 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
         canOverdrive = false
         allowConfigInventory = false
         sync = true
-        callDefaultBlockDraw = false
-        config(
-            Item::class.java
-        ) { obj: ReceiverBuild, item ->
-            obj.outputItem = item
+    }
+
+    override fun init() {
+        super.init()
+        config<ReceiverBuild, Item> {
+            outputItem = it
         }
-        configClear { tile: ReceiverBuild -> tile.outputItem = null }
+        configNull<ReceiverBuild> {
+            outputItem = null
+        }
+        ClientOnly {
+            configAnimationStateMachine()
+        }
     }
 
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
@@ -87,10 +93,10 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
         super.load()
         BaseTR = this.sub("base")
         HighlightTR = this.sub("highlight")
-        DownArrowTR = this.inMod("rs-down-arrow")
-        UnconnectedTR = this.inMod("rs-unconnected")
-        NoPowerTR = this.inMod("rs-no-power")
-        DownloadAnim = this.autoAnimInMod("rs-down-arrow", DownloadAnimFrameNumber, DownloadAnimDuration)
+        DownArrowTR = loadDownArrow()
+        UnconnectedTR = loadUnconnected()
+        NoPowerTR = loadNoPower()
+        DownloadAnim = loadDownloadAnimation()
     }
 
     override fun setBars() {
@@ -113,7 +119,8 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
     }
 
     override fun outputsItems(): Boolean = true
-    open inner class ReceiverBuild : AniedBuild(), IDataReceiver {
+    open inner class ReceiverBuild : Building(), IStateful<ReceiverBuild>, IDataReceiver {
+        override val stateMachine by lazy { stateMachineConfig.instantiate(this) }
         @Serialized
         var outputItem: Item? = null
             set(value) {
@@ -225,66 +232,57 @@ open class Receiver(name: String) : AniedBlock<Receiver, ReceiverBuild>(name) {
 
         override val connectedSenders = senders
         override val maxSenderConnection = maxConnection
-        override fun fixedDraw() {
+        override fun draw() {
+            stateMachine.update(delta())
             BaseTR.DrawOn(this)
             Draw.alpha(Var.RsSlightHighlightAlpha)
             HighlightTR.DrawOn(this)
             Draw.color()
+            stateMachine.draw()
         }
     }
 
-    @ClientOnly lateinit var DownloadAni: AniStateR
-    @ClientOnly lateinit var UnconnectedAni: AniStateR
-    @ClientOnly lateinit var BlockedAni: AniStateR
-    @ClientOnly lateinit var NoPowerAni: AniStateR
-    override fun genAniState() {
-        NoPowerAni = addAniState("NoPower") {
+    @ClientOnly lateinit var DownloadState: State<ReceiverBuild>
+    @ClientOnly lateinit var UnconnectedState: State<ReceiverBuild>
+    @ClientOnly lateinit var BlockedState: State<ReceiverBuild>
+    @ClientOnly lateinit var NoPowerState: State<ReceiverBuild>
+    @ClientOnly
+    fun configAnimationStateMachine() {
+        NoPowerState = State("NoPower") {
             NoPowerTR.Draw(x, y)
         }
-        DownloadAni = addAniState("Download") {
+        DownloadState = State("Download") {
             DownloadAnim.draw(Color.green, x, y)
         }
-        UnconnectedAni = addAniState("Unconnected") {
+        UnconnectedState = State("Unconnected") {
             SetColor(R.C.Unconnected)
             UnconnectedTR.Draw(x, y)
             Draw.color()
         }
-        BlockedAni = addAniState("Blocked") {
+        BlockedState = State("Blocked") {
             SetColor(R.C.Stop)
             DownArrowTR.Draw(x, y)
             Draw.color()
         }
-    }
-
-    override fun genAniConfig() {
-        config {
-            // UnconnectedAni
-            From(UnconnectedAni) To DownloadAni When {
-                outputItem != null
-            } To NoPowerAni When {
-                !canConsume()
+        stateMachineConfig.configuring {
+            UnconnectedState {
+                DownloadState { outputItem != null }
+                NoPowerState { !canConsume() }
             }
-            // BlockedAni
-            From(BlockedAni) To UnconnectedAni When {
-                outputItem == null
-            } To DownloadAni When {
-                !isBlocked || lastFullDataDelta < fullTime
-            } To NoPowerAni When {
-                !canConsume()
+            BlockedState {
+                UnconnectedState { outputItem == null }
+                DownloadState { !isBlocked || lastFullDataDelta < fullTime }
+                NoPowerState { !canConsume() }
             }
-            // DownloadAni
-            From(DownloadAni) To UnconnectedAni When {
-                outputItem == null
-            } To BlockedAni When {
-                isBlocked && lastFullDataDelta > fullTime
-            } To NoPowerAni When {
-                !canConsume()
+            DownloadState {
+                UnconnectedState { outputItem == null }
+                BlockedState { isBlocked && lastFullDataDelta > fullTime }
+                NoPowerState { !canConsume() }
             }
-            // NoPower
-            From(NoPowerAni) To UnconnectedAni When {
-                canConsume() && outputItem == null
-            } To DownloadAni When {
-                canConsume() && outputItem != null
+            NoPowerState {
+                setDefaultState
+                UnconnectedState { canConsume() && outputItem == null }
+                DownloadState { canConsume() && outputItem != null }
             }
         }
     }

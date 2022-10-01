@@ -25,17 +25,16 @@ import net.liplum.common.persistence.write
 import plumy.core.Serialized
 import plumy.core.arc.isNotEmpty
 import plumy.core.assets.EmptyTR
-import net.liplum.mdt.ClientOnly
+import plumy.core.ClientOnly
 import net.liplum.mdt.WhenTheSameTeam
 import net.liplum.mdt.mixin.total
-import net.liplum.mdt.render.DrawOn
+import plumy.animation.ContextDraw.DrawOn
 import net.liplum.mdt.ui.bars.appendDisplayLiquidsDynamic
 import net.liplum.mdt.ui.bars.genAllLiquidBars
 import net.liplum.mdt.ui.bars.removeLiquidInBar
 import net.liplum.mdt.utils.ForProximity
-import net.liplum.mdt.utils.buildAt
-import net.liplum.mdt.utils.fluidColor
 import net.liplum.mdt.utils.sub
+import plumy.dsl.build
 
 /**
  * ### Since 1
@@ -50,7 +49,6 @@ open class StreamServer(name: String) : StreamHost(name) {
 
     init {
         buildType = Prov { ServerBuild() }
-        callDefaultBlockDraw = false
         saveConfig = false
         configurations.remove(Array<Point2>::class.java)
     }
@@ -176,7 +174,8 @@ open class StreamServer(name: String) : StreamHost(name) {
             return canConsume() && liquids.get(liquid) < liquidCapacity
         }
 
-        override fun fixedDraw() {
+        override fun draw() {
+            stateMachine.spend(delta())
             BottomTR.DrawOn(this)
             Drawf.liquid(
                 LiquidTR, x, y,
@@ -185,6 +184,7 @@ open class StreamServer(name: String) : StreamHost(name) {
                 0f
             )
             region.DrawOn(this)
+            stateMachine.draw()
         }
 
         override fun drawSelect() {
@@ -206,7 +206,7 @@ open class StreamServer(name: String) : StreamHost(name) {
         override fun control(type: LAccess, p1: Double, p2: Double, p3: Double, p4: Double) {
             when (type) {
                 LAccess.shoot -> {
-                    val receiver = buildAt(p1, p2)
+                    val receiver = Vars.world.build(p1, p2)
                     if (receiver is IStreamClient) connectToSync(receiver)
                 }
                 else -> super.control(type, p1, p2, p3, p4)

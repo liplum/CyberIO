@@ -9,20 +9,20 @@ import net.liplum.Var
 import net.liplum.api.ICyberEntity
 import net.liplum.api.cyber.SideLinks.Companion.coordinates
 import net.liplum.api.cyber.SideLinks.Companion.reflect
-import plumy.core.Out
-import plumy.core.Serialized
 import net.liplum.common.util.isEven
 import net.liplum.common.util.raycastInThis
 import net.liplum.data.DataID
 import net.liplum.data.EmptyDataID
 import net.liplum.data.PayloadData
 import net.liplum.data.PayloadDataList
+import plumy.core.ClientOnly
+import plumy.core.Out
+import plumy.core.Serialized
 import plumy.core.math.Progress
-import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.utils.TEAny
-import net.liplum.mdt.utils.TileXY
-import net.liplum.mdt.utils.WorldXY
 import plumy.pathkt.IVertex
+import plumy.dsl.TileXY
+import plumy.dsl.WorldXY
+import plumy.dsl.castBuild
 
 interface INetworkNode : ICyberEntity, IVertex<INetworkNode> {
     var network: DataNetwork
@@ -41,9 +41,9 @@ interface INetworkNode : ICyberEntity, IVertex<INetworkNode> {
     var currentOriented: Side
     val currentOrientedNode: INetworkNode?
         get() = if (currentOriented == -1) null
-        else links[currentOriented].TEAny()
+        else links[currentOriented].castBuild()
     var sendingProgress: Progress
-        get() = curSendingLength / totalSendingDistance
+        get() = if (totalSendingDistance == 0f) 0f else curSendingLength / totalSendingDistance
         set(value) {
             curSendingLength = totalSendingDistance * value
         }
@@ -268,7 +268,7 @@ interface INetworkNode : ICyberEntity, IVertex<INetworkNode> {
             it.curLength = 0f
             it.totalLength = 0f
         }
-        old.TEAny<INetworkNode>()?.let {
+        old.castBuild<INetworkNode>()?.let {
             // If this is a node existed on this side, separate the network
             it.links[side.reflect] = -1
             if (it.network == this.network) {

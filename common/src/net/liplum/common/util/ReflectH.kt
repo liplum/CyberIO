@@ -38,7 +38,7 @@ fun Class<*>.getMethodBy(name: String, vararg argClz: Class<*>): Method {
 }
 
 class ReflectObj<T>(
-    val obj: Any
+    val obj: Any,
 ) {
     operator fun getValue(thisRef: Any?, property: KProperty<*>): T? {
         return obj.getF(property.name)

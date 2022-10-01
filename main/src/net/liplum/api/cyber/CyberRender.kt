@@ -17,17 +17,21 @@ import net.liplum.R
 import net.liplum.Settings
 import net.liplum.Var
 import net.liplum.api.ICyberEntity
-import net.liplum.common.util.bundle
+import plumy.dsl.bundle
 import net.liplum.common.util.inViewField
 import net.liplum.common.util.isLineInViewField
-import net.liplum.mdt.ClientOnly
+import net.liplum.input.smoothPlacing
+import net.liplum.input.smoothSelect
+import plumy.core.ClientOnly
+import plumy.animation.ContextDraw.DrawScale
 import net.liplum.mdt.render.*
-import net.liplum.mdt.utils.*
+import net.liplum.mdt.utils.worldPos
 import plumy.core.arc.darken
 import plumy.core.math.Point2f
 import plumy.core.math.isZero
 import plumy.core.math.plusAssign
 import plumy.core.math.smooth
+import plumy.dsl.*
 
 @ClientOnly
 val ArrowDensity: Float
@@ -335,8 +339,8 @@ fun Block.drawOverRangeOnTile(x: TileXY, y: TileXY, color: Color) {
         setText(it, text)
         it.color.set(color)
         it.draw(
-            text, toCenterWorldXY(x),
-            toCenterWorldXY(y) + size * Vars.tilesize / 2f,
+            text, getCenterWorldXY(x),
+            getCenterWorldXY(y) + size * Vars.tilesize / 2f,
             Align.center
         )
     }
@@ -495,9 +499,9 @@ fun transferArrowLineBreath(
             else -> 1f
         }
         Draw.color(outline)
-        Icon.right.region.DrawSize(line.x, line.y, size = outlineSize * fadeAlpha, rotation = angle)
+        Icon.right.region.DrawScale(line.x, line.y, scale = outlineSize * fadeAlpha, rotation = angle)
         Draw.color(inner)
-        Icon.right.region.DrawSize(line.x, line.y, size = size * fadeAlpha, rotation = angle)
+        Icon.right.region.DrawScale(line.x, line.y, scale = size * fadeAlpha, rotation = angle)
         cur += per
     }
     Draw.z(originalZ)
@@ -515,10 +519,10 @@ fun transferArrowLineBreath(
     alphaMultiplier: Float = 1f,
 ) {
     transferArrowLineBreath(
-        startBlock.toCenterWorldXY(startBlockX),
-        startBlock.toCenterWorldXY(startBlockY),
-        endBlock.toCenterWorldXY(endBlockX),
-        endBlock.toCenterWorldXY(endBlockY),
+        startBlock.getCenterWorldXY(startBlockX),
+        startBlock.getCenterWorldXY(startBlockY),
+        endBlock.getCenterWorldXY(endBlockX),
+        endBlock.getCenterWorldXY(endBlockY),
         arrowColor = arrowColor,
         density = density,
         speed = speed,

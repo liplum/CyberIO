@@ -9,7 +9,16 @@
       "AdBlock",
       "404NotFound",
       "OhNo",
-      "RateUs"
+      "RateUs",
+      "SetOutErekir",
+      "CyberionForErekir"
+    ]
+  },
+  "common-erekir": {
+    "Parent": "common",
+    "Scene": [
+      "SetOutErekir",
+      "CyberionForErekir"
     ]
   },
   "v0": {},
@@ -39,6 +48,12 @@
     "Parent": "v4",
     "Scene": [
       "CyberionForErekir"
+    ]
+  },
+  "v5.0": {
+    "Default": "ErekirDetected",
+    "Parent": "common-erekir",
+    "Scene": [
     ]
   }
 }

@@ -13,31 +13,33 @@ import mindustry.entities.units.BuildPlan
 import mindustry.gen.Building
 import mindustry.logic.LAccess
 import mindustry.type.Liquid
+import mindustry.world.Block
 import mindustry.world.blocks.liquid.LiquidBlock
 import mindustry.world.meta.BlockGroup
 import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.Var
 import net.liplum.api.cyber.*
-import net.liplum.blocks.AniedBlock
 import net.liplum.common.persistence.read
 import net.liplum.common.persistence.write
 import net.liplum.mdt.CalledBySync
-import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.SendDataPack
-import net.liplum.mdt.animation.anis.AniState
-import net.liplum.mdt.animation.anis.config
-import net.liplum.mdt.render.Draw
-import net.liplum.mdt.render.DrawOn
-import net.liplum.mdt.utils.*
+import net.liplum.mdt.utils.sub
 import net.liplum.util.addPowerUseStats
+import net.liplum.util.addStateMachineInfo
+import plumy.animation.ContextDraw.Draw
+import plumy.animation.ContextDraw.DrawOn
+import plumy.animation.state.IStateful
+import plumy.animation.state.State
+import plumy.animation.state.StateConfig
+import plumy.animation.state.configuring
+import plumy.core.ClientOnly
 import plumy.core.Serialized
 import plumy.core.assets.EmptyTR
 import plumy.core.assets.TRs
+import plumy.dsl.*
 
-private typealias AniStateH = AniState<StreamHost, StreamHost.HostBuild>
-
-open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuild>(name) {
+open class StreamHost(name: String) : Block(name),IDataBlock {
     @ClientOnly var liquidPadding = 0f
     @JvmField var maxConnection = 5
     @JvmField var liquidColorLerp = 0.5f
@@ -56,10 +58,9 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
     @JvmField var maxRange = -1f
     @ClientOnly var BottomTR = EmptyTR
     @ClientOnly var NoPowerTR = EmptyTR
-    @ClientOnly lateinit var NoPowerAni: AniStateH
-    @ClientOnly lateinit var NormalAni: AniStateH
     @ClientOnly @JvmField var maxSelectedCircleTime = Var.SelectedCircleTime
     @JvmField val TransferTimer = timers++
+    @ClientOnly var stateMachineConfig = StateConfig<HostBuild>()
 
     init {
         buildType = Prov { HostBuild() }
@@ -71,24 +72,14 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
         noUpdateDisabled = true
         hasLiquids = true
         schematicPriority = 20
-        callDefaultBlockDraw = false
         canOverdrive = true
         sync = true
-        /**
-         * For connect
-         */
-        config(Integer::class.java) { obj: HostBuild, clientPackedPos ->
-            obj.setClient(clientPackedPos.toInt())
-        }
-        configClear<HostBuild> {
-            it.clearClients()
-        }
     }
 
     override fun load() {
         super.load()
         BottomTR = this.sub("bottom")
-        NoPowerTR = this.inMod("rs-no-power")
+        NoPowerTR = loadNoPower()
     }
 
     override fun icons(): TRs {
@@ -104,6 +95,16 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
     override fun init() {
         initPowerUse()
         super.init()
+        // For connect
+        config<HostBuild, PackedPos> {
+            setClient(it)
+        }
+        configNull<HostBuild> {
+            clearClients()
+        }
+        ClientOnly {
+            configAnimationStateMachine()
+        }
     }
 
     override fun setStats() {
@@ -117,6 +118,7 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
     override fun setBars() {
         super.setBars()
         DebugOnly {
+            addStateMachineInfo<HostBuild>()
             addClientInfo<HostBuild>()
         }
     }
@@ -130,7 +132,9 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
         super.drawPlanRegion(plan, list)
         drawPlanMaxRange(plan.x, plan.y, maxRange, R.C.Host)
     }
-    open inner class HostBuild : AniedBuild(), IStreamHost {
+
+    open inner class HostBuild : Building(), IStateful<HostBuild>, IStreamHost {
+        override val stateMachine by lazy { stateMachineConfig.instantiate(this) }
         override val maxRange = this@StreamHost.maxRange
         @Serialized
         var clients = OrderedSet<Int>()
@@ -313,13 +317,15 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
             clients.write(write)
         }
 
-        override fun fixedDraw() {
+        override fun draw() {
+            stateMachine.spend(delta())
             BottomTR.DrawOn(this)
             LiquidBlock.drawTiledFrames(
                 size, x, y, liquidPadding,
                 liquids.current(), liquids.currentAmount() / liquidCapacity
             )
             region.DrawOn(this)
+            stateMachine.draw()
         }
 
         override fun control(type: LAccess, p1: Any?, p2: Double, p3: Double, p4: Double) {
@@ -333,7 +339,7 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
         override fun control(type: LAccess, p1: Double, p2: Double, p3: Double, p4: Double) {
             when (type) {
                 LAccess.shoot -> {
-                    val receiver = buildAt(p1, p2)
+                    val receiver = Vars.world.build(p1, p2)
                     if (receiver is IStreamClient) connectToSync(receiver)
                 }
                 else -> super.control(type, p1, p2, p3, p4)
@@ -341,21 +347,20 @@ open class StreamHost(name: String) : AniedBlock<StreamHost, StreamHost.HostBuil
         }
     }
 
-    override fun genAniState() {
-        NoPowerAni = addAniState("NoPower") {
+    @ClientOnly lateinit var NoPowerState: State<StreamHost.HostBuild>
+    @ClientOnly lateinit var NormalState: State<StreamHost.HostBuild>
+    fun configAnimationStateMachine() {
+        NoPowerState = State("NoPower") {
             NoPowerTR.Draw(x, y)
         }
-        NormalAni = addAniState("Normal")
-    }
-
-    override fun genAniConfig() {
-        config {
-            From(NoPowerAni) To NormalAni When {
-                canConsume()
+        NormalState = State("Normal")
+        stateMachineConfig.configuring {
+            NormalState {
+                setDefaultState
+                NoPowerState { !canConsume() }
             }
-
-            From(NormalAni) To NoPowerAni When {
-                !canConsume()
+            NoPowerState {
+                NormalState { canConsume() }
             }
         }
     }

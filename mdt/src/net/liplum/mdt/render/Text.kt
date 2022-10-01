@@ -11,7 +11,7 @@ import arc.util.pooling.Pools
 import mindustry.Vars
 import mindustry.graphics.Pal
 import mindustry.ui.Fonts
-import net.liplum.mdt.utils.WorldXY
+import plumy.dsl.WorldXY
 
 object Text {
     /**

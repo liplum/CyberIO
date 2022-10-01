@@ -8,14 +8,14 @@ import java.util.Objects;
 
 public class VirusColors {
     public static Color[] Colors = new Color[]{
-            null,
-            Color.red,
-            Color.black,
-            Color.blue,
-            Color.gold,
-            Color.green,
-            Color.orange,
-            Color.white
+        null,
+        Color.red,
+        Color.black,
+        Color.blue,
+        Color.gold,
+        Color.green,
+        Color.orange,
+        Color.white
     };
 
     @Nullable

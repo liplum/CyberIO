@@ -3,6 +3,7 @@ pluginManagement {
     repositories {
         gradlePluginPortal()
         mavenCentral()
+        mavenLocal()
     }
 
     plugins {
@@ -11,7 +12,6 @@ pluginManagement {
 }
 include(
     "main",
-    "lib",
     "cui",
     "mdt",
     "common",

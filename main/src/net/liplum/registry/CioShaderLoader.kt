@@ -9,16 +9,17 @@ import net.liplum.annotations.SubscribeEvent
 import net.liplum.event.CioInitEvent
 import net.liplum.common.insertLineNumber
 import net.liplum.common.shader.*
-import net.liplum.mdt.ClientOnly
+import plumy.core.ClientOnly
 import net.liplum.mdt.shader.CommonShader
 import net.liplum.mdt.shader.ProgressShader
-import net.liplum.registry.CioShaders.*
+import net.liplum.registry.CioShader.*
 import net.liplum.shaders.HologramShader
 import net.liplum.shaders.HologramizeShader
 import net.liplum.shaders.SurfaceShader
 import net.liplum.shaders.VanishingShader
 import net.liplum.useCompatible
-typealias SD = CioShaders
+
+typealias SD = CioShader
 
 object CioShaderLoader {
     @JvmStatic
@@ -118,7 +119,6 @@ Hologramize                 = default("Hologramize",                   ::Hologra
 
     private var AllShaders: HashSet<ShaderBase> = HashSet()
 }
-
 typealias ShaderCtor<T> = (FragFi, VertFi) -> T
 
 val String.compatible: String

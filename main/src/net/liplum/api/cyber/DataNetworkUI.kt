@@ -50,10 +50,11 @@ fun INetworkNode.buildNetworkDataList(table: Table) {
 }
 
 fun Table.buildPayloadDataInfo(node: INetworkNode, data: PayloadData) {
-    add(Stack(
-        Image(data.payload.icon()),
-        Label("${data.id}"),
-    )
+    add(
+        Stack(
+            Image(data.payload.icon()),
+            Label("${data.id}"),
+        )
     ).size(Vars.iconXLarge * 1.5f).row()
     val tile = node.tile
     add(Label { "${tile.x},${tile.y}" })

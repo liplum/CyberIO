@@ -3,7 +3,7 @@ package net.liplum.mdt.render
 import arc.util.Time
 import mindustry.game.EventType
 import net.liplum.annotations.Subscribe
-import net.liplum.mdt.ClientOnly
+import plumy.core.ClientOnly
 import java.util.*
 
 typealias DrawTask = (DrawTaskInfo) -> Boolean

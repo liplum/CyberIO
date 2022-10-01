@@ -2,7 +2,8 @@ package net.liplum.source
 
 import com.tschuchort.compiletesting.SourceFile
 
-val Blocks = SourceFile.kotlin("Blocks.kt","""
+val Blocks = SourceFile.kotlin(
+    "Blocks.kt", """
 package net.liplum
 import net.liplum.annotations.DependOn
 object Blocks {
@@ -25,9 +26,8 @@ object Blocks {
 }
 """.trimIndent()
 )
-
-
-val Items = SourceFile.kotlin("Blocks.kt","""
+val Items = SourceFile.kotlin(
+    "Blocks.kt", """
 package net.liplum
 import net.liplum.annotations.DependOn
 object Items {
@@ -50,8 +50,8 @@ object Items {
 }
 """.trimIndent()
 )
-
-val Liquids = SourceFile.kotlin("Liquids.kt", """
+val Liquids = SourceFile.kotlin(
+    "Liquids.kt", """
 package net.liplum
 import net.liplum.annotations.DependOn
 object Liquids {

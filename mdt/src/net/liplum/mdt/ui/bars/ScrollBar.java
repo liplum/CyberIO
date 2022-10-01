@@ -102,8 +102,8 @@ public class ScrollBar extends BarBase {
         lay.setText(font, name);
         font.setColor(Color.white);
         font.draw(name,
-                x + width / 2f - lay.width / 2f,
-                y + height / 2f + lay.height / 2f + 1
+            x + width / 2f - lay.width / 2f,
+            y + height / 2f + lay.height / 2f + 1
         );
 
         Pools.free(lay);

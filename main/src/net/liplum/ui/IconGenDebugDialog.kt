@@ -4,19 +4,19 @@ import arc.scene.ui.Label
 import arc.scene.ui.layout.Table
 import mindustry.ui.dialogs.BaseDialog
 import net.liplum.Var
-import net.liplum.registry.CioBlocks
-import net.liplum.registry.CioUnitTypes
+import net.liplum.registry.CioBlock
+import net.liplum.registry.CioHoloUnit
 
 object IconGenDebugDialog {
     val debugged by lazy {
         listOf(
-            CioBlocks.holoWall,
-            CioBlocks.holoWallLarge,
-            CioUnitTypes.holoMiner,
-            CioUnitTypes.holoFighter,
-            CioUnitTypes.holoGuardian,
-            CioUnitTypes.holoSupporter,
-            CioUnitTypes.holoArchitect,
+            CioBlock.holoWall,
+            CioBlock.holoWallLarge,
+            CioHoloUnit.holoMiner,
+            CioHoloUnit.holoFighter,
+            CioHoloUnit.holoGuardian,
+            CioHoloUnit.holoSupporter,
+            CioHoloUnit.holoArchitect,
         )
     }
 
@@ -30,7 +30,7 @@ object IconGenDebugDialog {
                         image(it.uiIcon).size(100f).row()
                         add(it.localizedName)
                     }.size(120f).pad(10f)
-                    if(i != 0 && i % 5 == 0){
+                    if (i != 0 && i % 5 == 0) {
                         icons.row()
                     }
                 }

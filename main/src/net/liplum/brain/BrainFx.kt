@@ -13,23 +13,23 @@ import mindustry.gen.EffectState
 import mindustry.gen.Posc
 import mindustry.graphics.Drawf
 import mindustry.graphics.Layer
-import net.liplum.cio
 import net.liplum.R
 import net.liplum.ResourceLoader
 import net.liplum.annotations.Only
 import net.liplum.annotations.SubscribeEvent
+import net.liplum.cio
 import net.liplum.common.entity.FixedList
 import net.liplum.common.entity.Radiation
 import net.liplum.common.entity.RadiationArray
 import net.liplum.common.util.progress
 import net.liplum.common.util.sheetOneDirection
 import net.liplum.event.CioLoadContentEvent
-import plumy.core.assets.TR
-import net.liplum.mdt.WhenNotPaused
-import net.liplum.mdt.render.DrawSize
-import net.liplum.mdt.utils.MdtUnit
-import net.liplum.mdt.utils.NewEffect
 import net.liplum.mdt.utils.fadeInOutPct
+import plumy.animation.ContextDraw.DrawScale
+import plumy.core.MUnit
+import plumy.core.WhenNotPaused
+import plumy.core.assets.TR
+import plumy.dsl.NewEffect
 
 object BrainFx {
     val eyeCharge = NewEffect(38f) {
@@ -61,7 +61,7 @@ object BrainFx {
         val scale = it.data as? Float ?: -1f
         Draw.mixcol(it.color, it.color.a)
         bloodBulletFrames.progress(it.fin())
-            .DrawSize(it.x, it.y, if (scale < 0f) 1f else scale)
+            .DrawScale(it.x, it.y, if (scale < 0f) 1f else scale)
     }.apply {
         layer = Layer.bullet - 0.1f
     }
@@ -100,7 +100,7 @@ class MindControlFx : Effect {
         }
     }
 
-    fun atUnit(unit: MdtUnit, radiationNumber: Int) {
+    fun atUnit(unit: MUnit, radiationNumber: Int) {
         this.at(
             unit.x, unit.y, 0f,
             Tracker(unit,

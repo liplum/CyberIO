@@ -18,14 +18,13 @@ import net.liplum.api.cyber.SideLinks.Companion.enableAllSides
 import plumy.core.Serialized
 import plumy.core.assets.TR
 import net.liplum.common.shader.use
-import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.render.Draw
-import net.liplum.mdt.render.smoothSelect
-import net.liplum.mdt.utils.MdtUnit
-import net.liplum.mdt.utils.WorldXY
+import plumy.core.ClientOnly
+import plumy.animation.ContextDraw.Draw
+import net.liplum.input.smoothSelect
+import plumy.core.MUnit
+import plumy.dsl.WorldXY
 import net.liplum.mdt.utils.atlas
 import net.liplum.registry.SD
-import net.liplum.util.addSendingProgress
 
 class Serializer(name: String) :
     PayloadBlock(name), INetworkBlock {
@@ -95,8 +94,8 @@ class Serializer(name: String) :
             set(value) {
                 field = value.coerceIn(0f, 1f)
             }
-        override var totalSendingDistance= 0f
-        override var curSendingLength= 0f
+        override var totalSendingDistance = 0f
+        override var curSendingLength = 0f
         @ClientOnly
         override val expendSelectingLineTime = this@Serializer.expendPlacingLineTime
         override val linkRange = this@Serializer.linkRange
@@ -203,11 +202,11 @@ class Serializer(name: String) :
         }
 
         var unit = UnitTypes.block.create(team) as BlockUnitc
-        override fun unit(): MdtUnit {
+        override fun unit(): MUnit {
             //make sure stats are correct
             unit.tile(this)
             unit.team(team)
-            return (unit as MdtUnit)
+            return (unit as MUnit)
         }
 
         override fun toString() = "Serializer#$id"

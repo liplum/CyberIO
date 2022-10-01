@@ -5,7 +5,7 @@ import arc.util.I18NBundle
 import mindustry.Vars
 import mindustry.core.GameState.State
 import mindustry.game.EventType.Trigger
-import net.liplum.mdt.ClientOnly
+import plumy.core.ClientOnly
 import net.liplum.CLog
 import net.liplum.common.Res
 import net.liplum.common.util.createModBundle

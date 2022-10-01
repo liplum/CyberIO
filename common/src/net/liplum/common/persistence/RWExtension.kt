@@ -130,7 +130,7 @@ inline fun <reified C, reified T> C.readOverwrite(
         for (i in 0 until targetLen) {
             reader.reading(this[i])
         }
-        for (i in 0 until targetLen - curLen){
+        for (i in 0 until targetLen - curLen) {
             this.add(ctor())
         }
     }

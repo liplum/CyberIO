@@ -133,8 +133,9 @@ interface IBrain : IHeimdallEntity, Iterable<IUpgradeComponent> {
         fun Sides.getRightSide(side: Side): Side2 =
             this[(side + 3) % 4]// is -1 actually, but prevent a negative index
 
-        fun Sides.getOppositeSide(side:Side): Side2 =
+        fun Sides.getOppositeSide(side: Side): Side2 =
             this[(side + 2) % 4]
+
         inline fun IBrain.find(filter: (IUpgradeComponent) -> Boolean): IUpgradeComponent? {
             for (c in components)
                 if (filter(c))

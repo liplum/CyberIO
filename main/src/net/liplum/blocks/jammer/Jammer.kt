@@ -2,37 +2,37 @@ package net.liplum.blocks.jammer
 
 import arc.func.Prov
 import arc.graphics.g2d.Draw
+import arc.graphics.g2d.Lines
 import arc.math.Mathf
 import arc.math.geom.Vec2
 import arc.util.Time
 import arc.util.Tmp
+import mindustry.Vars
 import mindustry.gen.Building
+import mindustry.graphics.Layer
 import mindustry.world.Block
 import mindustry.world.blocks.defense.turrets.ContinuousLiquidTurret
 import mindustry.world.draw.DrawBlock
+import net.liplum.R
 import net.liplum.common.entity.Progress
 import net.liplum.common.entity.Queue
-import plumy.core.assets.TR
-import plumy.core.math.nextBoolean
-import plumy.core.math.smooth
-import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.WhenNotPaused
-import net.liplum.mdt.animation.Floating
-import net.liplum.mdt.animation.anims.Animation
-import net.liplum.mdt.render.Draw
-import net.liplum.mdt.render.DrawSize
-import net.liplum.mdt.utils.autoAnim
+import plumy.dsl.DrawLayer
+import plumy.core.ClientOnly
+import plumy.core.WhenNotPaused
+import net.liplum.animation.Floating
+import net.liplum.animation.add
+import plumy.animation.ContextDraw.Draw
 import net.liplum.mdt.utils.draw
 import net.liplum.mdt.utils.sub
+import plumy.core.assets.EmptyTR
+import plumy.core.assets.TR
+import plumy.core.math.*
 
 open class Jammer(name: String) : ContinuousLiquidTurret(name) {
     @ClientOnly var dx = -15f
     @ClientOnly var dy = -12f
     @ClientOnly var waveMaxNumber = 3
-    @ClientOnly var waveShootingBoost = 1f
     @ClientOnly var waveShootingTime = 30f
-    @ClientOnly var waveSpeed = 0.014f
-    @ClientOnly var waveReloadTime = 10f
     /**
      * It's a magic number but the more means the slower.
      */
@@ -43,19 +43,13 @@ open class Jammer(name: String) : ContinuousLiquidTurret(name) {
     }
 
     open inner class JammerBuild : ContinuousLiquidTurretBuild() {
-        @ClientOnly
-        lateinit var stereos: Array<Stereo>
-
-        init {
-            ClientOnly {
-                stereos = Array(2) {
-                    Stereo(this).apply {
-                        pos.set(dx - dx * it * 2, dy)
-                        targetPos.set(pos)
-                        angleDis = targetPos.angle() - 90f
-                        rotation = 180f * it
-                    }
-                }
+        @ClientOnly val stereos = if (Vars.headless) emptyArray()
+        else Array(2) {
+            Stereo(this).apply {
+                pos.set(dx - dx * it * 2, dy)
+                targetPos.set(pos)
+                angleDis = targetPos.angle() - 90f
+                rotation = 180f * it
             }
         }
         @ClientOnly
@@ -67,10 +61,8 @@ open class Jammer(name: String) : ContinuousLiquidTurret(name) {
         override fun updateTile() {
             super.updateTile()
             ClientOnly {
-                if (!bullets.isEmpty)
-                    shootingTime += Time.delta
-                else
-                    shootingTime -= Time.delta
+                if (!bullets.isEmpty) shootingTime += Time.delta
+                else shootingTime -= Time.delta
             }
         }
 
@@ -86,10 +78,6 @@ open class Jammer(name: String) : ContinuousLiquidTurret(name) {
         }
         @ClientOnly
         var waveReload = 0f
-        @ClientOnly
-        val realWaveSpeed: Float
-            get() = waveSpeed * (1f + (shootingTime / waveShootingTime) * waveShootingBoost)
-
         override fun afterRead() {
             ClientOnly {
                 for (s in stereos) {
@@ -100,14 +88,21 @@ open class Jammer(name: String) : ContinuousLiquidTurret(name) {
     }
 
     inner class DrawStereo : DrawBlock() {
-        @ClientOnly lateinit var StereoTR: TR
-        @ClientOnly lateinit var SonicWaveAnim: Animation
+        @JvmField var StereoTR = EmptyTR
+        @JvmField var waveReloadTime = 10f
+        @JvmField var waveSpeed = 0.014f
+        @JvmField var waveShootingBoost = 1f
+        @JvmField var waveRadius: Radius = 2.5f
+        @JvmField var waveStereoOffset = 3f
         override fun load(block: Block) = block.run {
             super.load(this)
             StereoTR = this.sub("stereo")
-            SonicWaveAnim = this.autoAnim("sonic-wave", 6, 30f)
         }
 
+        val vs = Vec2()
+        val ve = Vec2()
+        val total = Vec2()
+        val per = Vec2()
         override fun draw(build: Building) = (build as JammerBuild).run {
             // Draw Stereos
             for (s in stereos) {
@@ -134,25 +129,34 @@ open class Jammer(name: String) : ContinuousLiquidTurret(name) {
             val endIndex = 1 - startIndex
             val start = stereos[startIndex]
             val end = stereos[endIndex]
-            val total = Tmp.v2.set(end.pos).sub(start.pos)
+            vs.set(start.pos).add(start.floating)
+            ve.set(end.pos).add(end.floating)
+            total.set(ve).sub(vs)
+            per.set(total).nor().scl(waveStereoOffset)
+            vs += per
+            ve -= per
+            total.set(ve).sub(vs)
             val length = total.len()
-            waves.forEach {
-                WhenNotPaused {
-                    it.progress += realWaveSpeed
-                }
-                Tmp.v1.set(total).setLength(length * it.progress.smooth)
-                val fadeAlpha = when {
-                    it.progress <= 0.2f -> (it.progress / 0.2f).smooth
-                    it.progress >= 0.8f -> ((1f - it.progress) / 0.2f).smooth
-                    else -> 1f
-                }
-                Draw.alpha(fadeAlpha)
-                SonicWaveAnim.draw { wave->
-                    wave.DrawSize(
-                        x + start.pos.x + Tmp.v1.x,
-                        y + start.pos.y + Tmp.v1.y,
-                        rotation = rotation.draw,
-                        size = 0.33333334f,
+            val color = Tmp.c1.set(R.C.FutureBlue)
+            val realWaveSpeed = waveSpeed * (1f + (shootingTime / waveShootingTime) * waveShootingBoost)
+
+            DrawLayer(Layer.effect) {
+                waves.forEach {
+                    WhenNotPaused {
+                        it.progress += realWaveSpeed
+                    }
+                    val moving = Tmp.v1.set(total).setLength(length * it.progress.smooth)
+                    val fadeAlpha = when {
+                        it.progress <= 0.3f -> (it.progress / 0.3f).smooth
+                        it.progress >= 0.7f -> ((1f - it.progress) / 0.3f).smooth
+                        else -> 1f
+                    }
+                    color.a(fadeAlpha)
+                    Draw.color(color)
+                    Lines.circle(
+                        x + vs.x + moving.x,
+                        y + vs.y + moving.y,
+                        waveRadius,
                     )
                 }
             }

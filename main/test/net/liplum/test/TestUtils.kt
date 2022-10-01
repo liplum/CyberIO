@@ -18,7 +18,7 @@ class TestUtils {
         run {
             // Anticlockwise
             val a = arrayOf(1, 2, 3, 4, 5)
-            val expected = arrayOf(2,3,4,5,1)
+            val expected = arrayOf(2, 3, 4, 5, 1)
             a.rotateOnce(forward = false)
             assert(a.contentEquals(expected))
         }

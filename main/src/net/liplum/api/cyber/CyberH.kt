@@ -17,17 +17,16 @@ import net.liplum.R
 import net.liplum.Var
 import net.liplum.annotations.SubscribeEvent
 import net.liplum.api.ICyberEntity
-import net.liplum.common.Changed
+import net.liplum.common.Remember
 import net.liplum.common.util.Or
-import net.liplum.common.util.bundle
 import net.liplum.common.util.toFloat
 import net.liplum.event.CioInitEvent
-import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.ui.bars.AddBar
 import net.liplum.mdt.utils.*
 import net.liplum.registry.CioStats
+import plumy.core.ClientOnly
 import plumy.core.math.Point2f
 import plumy.core.math.smooth
+import plumy.dsl.*
 
 private val p1 = Point2f()
 private val p2 = Point2f()
@@ -36,15 +35,11 @@ private val c2 = Color()
 val ICyberEntity.isFlying: Boolean
     get() = tile == Vars.emptyTile
 //<editor-fold desc="Try Cast">
-fun Int.dr(): IDataReceiver? =
-    this.build as? IDataReceiver
-
+fun Int.dr(): IDataReceiver? = this.castBuild()
 fun Int.drOrPayload(): IDataReceiver? =
     this.dr() Or { this.inPayload() }
 
-fun Int.ds(): IDataSender? =
-    this.build as? IDataSender
-
+fun Int.ds(): IDataSender? = this.castBuild()
 fun Int.dsOrPayload(): IDataSender? =
     this.ds() Or { this.inPayload() }
 
@@ -60,24 +55,16 @@ fun Point2?.ds(): IDataSender? =
 fun Point2?.dsOrPayload(): IDataSender? =
     this?.let { this.ds() Or { this.inPayload() } }
 
-fun Int.sc(): IStreamClient? =
-    this.build as? IStreamClient
-
-fun Int.sh(): IStreamHost? =
-    this.build as? IStreamHost
-
+fun Int.sc(): IStreamClient? = this.castBuild()
+fun Int.sh(): IStreamHost? = this.castBuild()
 fun Point2?.sc(): IStreamClient? =
     this?.let { this.build as? IStreamClient }
 
 fun Point2?.sh(): IStreamHost? =
     this?.let { this.build as? IStreamHost }
 
-fun Int.nn(): INetworkNode? =
-    this.build as? INetworkNode
-
-fun Int.p2p(): IP2pNode? =
-    this.build as? IP2pNode
-
+fun Int.nn(): INetworkNode? = this.castBuild()
+fun Int.p2p(): IP2pNode? = this.castBuild()
 fun Point2?.p2p(): IP2pNode? =
     this?.let { this.build as? IP2pNode }
 //</editor-fold>
@@ -108,6 +95,8 @@ val ICyberEntity?.tileXd: Double
     get() = (this?.tile?.x ?: 0).toDouble()
 val ICyberEntity?.tileYd: Double
     get() = (this?.tile?.y ?: 0).toDouble()
+val Liquid.fluidColor: Color
+    get() = if (gas) gasColor else color
 //</editor-fold>
 typealias SingleItemArray = Seq<Item>
 
@@ -157,7 +146,7 @@ fun Liquid?.match(requirements: SingleLiquidArray?): Boolean {
     return this in requirements
 }
 
-fun transitionColor(from: Changed<Color>, to: Color): Color {
+fun transitionColor(from: Remember<Color>, to: Color): Color {
     val last = from.old
     return if (last != null) c1.set(last).lerp(
         to,
@@ -295,6 +284,14 @@ inline fun <reified T> Block.addP2pLinkInfo() where T : Building, T : IP2pNode {
         { isConnected.toFloat() }
     )
 }
+
+inline fun <reified T> Block.addSendingProgress() where T : Building, T : INetworkNode {
+    AddBar<T>("sending-progress",
+        { "Sending: $sendingProgress" },
+        { R.C.Power },
+        { sendingProgress }
+    )
+}
 //</editor-fold>
 //<editor-fold desc="Statistics">
 fun <T> T.addLinkRangeStats(range: Float) where  T : Block {
@@ -332,4 +329,16 @@ fun <T> T.addMaxClientStats(max: Int) where  T : Block {
 fun <T> T.addDataTransferSpeedStats(speed: Float) where  T : Block {
     stats.add(CioStats.dataTransferSpeed, speed, StatUnit.perSecond)
 }
+//</editor-fold>
+//<editor-fold desc="Textures">
+fun <T> T.loadUpArrow() where T : Block, T : IDataBlock = inMod("data-up-arrow")
+fun <T> T.loadDownArrow() where T : Block, T : IDataBlock = inMod("data-down-arrow")
+fun <T> T.loadCross() where T : Block, T : IDataBlock = inMod("data-cross")
+fun <T> T.loadUnconnected() where T : Block, T : IDataBlock = inMod("data-unconnected")
+fun <T> T.loadNoPower() where T : Block, T : IDataBlock = inMod("data-no-power")
+fun <T> T.loadUploadAnimation() where T : Block, T : IDataBlock =
+    sharedAnimationInMod("data-upload", Var.Data.UpDownFrameNumber, Var.Data.UpDownDuration)
+
+fun <T> T.loadDownloadAnimation() where T : Block, T : IDataBlock =
+    sharedAnimationInMod("data-download", Var.Data.UpDownFrameNumber, Var.Data.UpDownDuration)
 //</editor-fold>

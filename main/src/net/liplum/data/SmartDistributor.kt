@@ -14,6 +14,7 @@ import mindustry.gen.Building
 import mindustry.graphics.Pal
 import mindustry.type.Item
 import mindustry.type.ItemStack
+import mindustry.world.Block
 import mindustry.world.consumers.Consume
 import mindustry.world.consumers.ConsumeItemDynamic
 import mindustry.world.consumers.ConsumeItemFilter
@@ -25,42 +26,41 @@ import net.liplum.R
 import net.liplum.UndebugOnly
 import net.liplum.Var
 import net.liplum.api.cyber.*
-import net.liplum.blocks.AniedBlock
 import net.liplum.common.delegate.Delegate1
 import net.liplum.common.persistence.read
 import net.liplum.common.persistence.write
 import net.liplum.common.util.DoMultipleBool
-import plumy.core.Serialized
-import plumy.core.arc.equalsNoOrder
-import plumy.core.arc.set
-import plumy.core.assets.TR
-import plumy.core.math.isZero
-import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.animation.anims.Animation
-import net.liplum.mdt.animation.anims.AnimationObj
-import net.liplum.mdt.animation.anis.AniState
-import net.liplum.mdt.animation.anis.config
-import net.liplum.mdt.render.Draw
+import plumy.core.ClientOnly
+import plumy.animation.AnimationMeta
+import plumy.animation.ContextDraw.Draw
+import plumy.animation.draw
+import plumy.animation.state.IStateful
+import plumy.animation.state.State
+import plumy.animation.state.StateConfig
+import plumy.animation.state.configuring
 import net.liplum.mdt.render.drawSurroundingRect
-import net.liplum.mdt.render.smoothPlacing
-import net.liplum.mdt.ui.bars.AddBar
+import net.liplum.input.smoothPlacing
 import net.liplum.mdt.ui.bars.removeItemsInBar
-import net.liplum.mdt.utils.autoAnim
-import net.liplum.mdt.utils.inMod
+import net.liplum.mdt.utils.animationMeta
 import net.liplum.mdt.utils.isDiagonalTo
 import net.liplum.mdt.utils.subBundle
 import net.liplum.util.addPowerUseStats
+import net.liplum.util.addStateMachineInfo
 import net.liplum.util.genText
+import plumy.core.Serialized
+import plumy.core.arc.equalsNoOrder
+import plumy.core.arc.set
+import plumy.core.assets.EmptyTR
+import plumy.core.math.isZero
+import plumy.dsl.AddBar
 import kotlin.math.log2
 
-private typealias AniStateD = AniState<SmartDistributor, SmartDistributor.SmartDistributorBuild>
-
-open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDistributor.SmartDistributorBuild>(name) {
+open class SmartDistributor(name: String) : Block(name),IDataBlock {
     @JvmField var maxConnection = -1
-    @ClientOnly lateinit var NoPowerTR: TR
-    @ClientOnly lateinit var ArrowsAnim: Animation
-    @JvmField @ClientOnly var ArrowsAnimFrames = 9
-    @JvmField @ClientOnly var ArrowsAnimDuration = 70f
+    @ClientOnly var NoPowerTR = EmptyTR
+    @ClientOnly var ArrowsAnim = AnimationMeta.Empty
+    @JvmField @ClientOnly var ArrowsFrames = 9
+    @JvmField @ClientOnly var ArrowsDuration = 70f
     @JvmField @ClientOnly var DistributionTime = 60f
     @ClientOnly @JvmField var maxSelectedCircleTime = Var.SurroundingRectTime
     /**
@@ -84,6 +84,7 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
         else
             Mathf.round(log2(it + 5.1f))
     }
+    @ClientOnly var stateMachineConfig = StateConfig<SmartDistributorBuild>()
 
     init {
         buildType = Prov { SmartDistributorBuild() }
@@ -110,12 +111,15 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
     override fun init() {
         initPowerUse()
         super.init()
+        ClientOnly {
+            configAnimationStateMachine()
+        }
     }
 
     override fun load() {
         super.load()
-        NoPowerTR = this.inMod("rs-no-power")
-        ArrowsAnim = this.autoAnim("arrows", ArrowsAnimFrames, ArrowsAnimDuration)
+        NoPowerTR = loadNoPower()
+        ArrowsAnim = this.animationMeta("arrows", ArrowsFrames, ArrowsDuration)
     }
 
     override fun setStats() {
@@ -131,6 +135,7 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
             removeItemsInBar()
         }
         DebugOnly {
+            addStateMachineInfo<SmartDistributorBuild>()
             AddBar<SmartDistributorBuild>("dis-count",
                 { "Count:" + boost2Count(timeScale()) },
                 { Pal.power },
@@ -154,8 +159,9 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
         drawPlaceText(subBundle("tip"), x, y, valid)
     }
 
-    open inner class SmartDistributorBuild : AniedBlock<SmartDistributor, SmartDistributorBuild>.AniedBuild(),
-        IDataReceiver {
+    open inner class SmartDistributorBuild : Building(),
+        IStateful<SmartDistributorBuild>, IDataReceiver {
+        override val stateMachine by lazy { stateMachineConfig.instantiate(this) }
         @JvmField var _requirements = Seq<Item>()
         @Serialized
         var senders = OrderedSet<Int>()
@@ -164,7 +170,7 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
             set(value) {
                 field = value.coerceAtLeast(0f)
             }
-        @ClientOnly lateinit var arrowsAnimObj: AnimationObj
+        @ClientOnly val arrowsAnimObj = ArrowsAnim.instantiate()
         @ClientOnly open val isDistributing: Boolean
             get() = lastDistributionTime < DistributionTime
         var hasDynamicRequirements: Boolean = false
@@ -177,12 +183,6 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
                     field = value
                 }
             }
-
-        init {
-            ClientOnly {
-                arrowsAnimObj = ArrowsAnim.gen()
-            }
-        }
 
         override fun onRemoved() {
             onRequirementUpdated.clear()
@@ -371,50 +371,47 @@ open class SmartDistributor(name: String) : AniedBlock<SmartDistributor, SmartDi
             }
         }
 
-        override fun beforeDraw() {
+        override fun draw() {
             if (canConsume() && isDistributing)
                 arrowsAnimObj.spend(delta())
+            stateMachine.spend(delta())
+            super.draw()
+            stateMachine.draw()
         }
 
         override val connectedSenders = senders
         override val maxSenderConnection = maxConnection
     }
 
-    @ClientOnly lateinit var DistributingAni: AniStateD
-    @ClientOnly lateinit var NoPowerAni: AniStateD
-    @ClientOnly lateinit var NoDistributeAni: AniStateD
-    override fun genAniConfig() {
-        config {
-            From(NoPowerAni) To DistributingAni When {
-                !power.status.isZero && isDistributing
-            } To NoDistributeAni When {
-                !power.status.isZero && !isDistributing
-            }
-
-            From(NoDistributeAni) To DistributingAni When {
-                isDistributing
-            } To NoPowerAni When {
-                power.status.isZero
-            }
-
-            From(DistributingAni) To NoPowerAni When {
-                power.status.isZero
-            } To NoDistributeAni When {
-                !isDistributing
-            }
-        }
-    }
-
-    override fun genAniState() {
-        DistributingAni = addAniState("Distributing") {
+    @ClientOnly lateinit var DistributingState: State<SmartDistributorBuild>
+    @ClientOnly lateinit var NoPowerState: State<SmartDistributorBuild>
+    @ClientOnly lateinit var NoDistributeState: State<SmartDistributorBuild>
+    fun configAnimationStateMachine() {
+        DistributingState = State("Distributing") {
             Draw.color(team.color)
             arrowsAnimObj.draw(x, y)
         }
-        NoDistributeAni = addAniState("NoDistribute") {
+        NoDistributeState = State("NoDistribute") {
             arrowsAnimObj.draw(R.C.Stop, x, y)
         }
-        NoPowerAni = addAniState("NoPower") {
+        NoPowerState = State("NoPower") {
             NoPowerTR.Draw(x, y)
+        }
+        stateMachineConfig.configuring {
+            NoPowerState {
+                setDefaultState
+                DistributingState { !power.status.isZero && isDistributing }
+                NoDistributeState { !power.status.isZero && !isDistributing }
+            }
+            NoDistributeState {
+                NoPowerState { power.status.isZero }
+                DistributingState { isDistributing }
+            }
+
+            DistributingState {
+                NoPowerState { power.status.isZero }
+                NoDistributeState { !isDistributing }
+            }
         }
     }
 }

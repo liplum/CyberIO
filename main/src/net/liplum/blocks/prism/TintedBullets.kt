@@ -12,7 +12,7 @@ import net.liplum.bullet.BBulletType
 import net.liplum.common.util.ArrayList
 import net.liplum.common.util.copyFieldsFrom
 
-val BulletType.isTintIgnored: Boolean
+val BulletType.isIgnoreTinted: Boolean
     get() = this in IgnoredBullets || this::class.java in IgnoredClass
 
 fun tintedRGB(b: BulletType): List<BulletType> {
@@ -153,10 +153,6 @@ val ContinuousLaserBulletType.tinted: List<ContinuousLaserBulletType>
             colors = Array(colors.size) { i ->
                 FG(it).lerp(colors[i], LaserTintLerp)
             }
-            hitEffect = HitMeltRgbFx[it]
-            shootEffect = HitMeltRgbFx[it]
-            smokeEffect = HitMeltRgbFx[it]
-            despawnEffect = HitMeltRgbFx[it]
             commonTint(it, LaserTintLerp)
         }
     }
@@ -168,10 +164,6 @@ val ContinuousFlameBulletType.tinted: List<ContinuousFlameBulletType>
                 FG(it).lerp(colors[i], LaserTintLerp)
             }
             flareColor = FG(it).Lerp(flareColor, LaserTintLerp)
-            hitEffect = HitMeltRgbFx[it]
-            shootEffect = HitMeltRgbFx[it]
-            smokeEffect = HitMeltRgbFx[it]
-            despawnEffect = HitMeltRgbFx[it]
             commonTint(it, LaserTintLerp)
         }
     }

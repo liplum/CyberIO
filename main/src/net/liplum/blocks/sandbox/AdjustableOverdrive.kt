@@ -12,14 +12,16 @@ import mindustry.graphics.Drawf
 import mindustry.world.blocks.defense.OverdriveProjector
 import mindustry.world.meta.Stat
 import net.liplum.R
-import net.liplum.common.util.bundle
+import plumy.dsl.bundle
 import net.liplum.common.util.percentI
 import net.liplum.math.shrink
-import net.liplum.mdt.ui.bars.AddBar
 import plumy.core.Serialized
 import plumy.core.math.ExpLogGen
 import plumy.core.math.FUNC
 import plumy.core.math.isZero
+import plumy.dsl.AddBar
+import plumy.dsl.config
+import plumy.dsl.configNull
 import kotlin.math.abs
 
 open class AdjustableOverdrive(name: String) : OverdriveProjector(name) {
@@ -37,11 +39,12 @@ open class AdjustableOverdrive(name: String) : OverdriveProjector(name) {
         saveConfig = true
         updateInUnits = true
         alwaysUpdateInUnits = true
-        config(Integer::class.java) { b: AOBuild, i ->
-            b.setGear(i.toInt())
+        // For connect
+        config<AOBuild, Int> {
+            setGear(it)
         }
-        configClear<AOBuild> {
-            it.setGear(0)
+        configNull<AOBuild> {
+            setGear(0)
         }
     }
 

@@ -12,35 +12,38 @@ import mindustry.Vars
 import mindustry.entities.units.BuildPlan
 import mindustry.gen.Building
 import mindustry.type.Liquid
+import mindustry.world.Block
 import mindustry.world.blocks.ItemSelection
 import mindustry.world.blocks.liquid.LiquidBlock
 import mindustry.world.meta.BlockGroup
 import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.api.cyber.*
-import net.liplum.blocks.AniedBlock
 import net.liplum.common.delegate.Delegate1
 import net.liplum.common.persistence.read
 import net.liplum.common.persistence.write
-import plumy.core.Serialized
-import plumy.core.assets.EmptyTR
-import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.animation.anis.AniState
-import net.liplum.mdt.animation.anis.config
-import net.liplum.mdt.render.Draw
-import net.liplum.mdt.render.DrawOn
-import net.liplum.mdt.utils.fluidColor
+import plumy.core.ClientOnly
 import net.liplum.mdt.utils.inMod
 import net.liplum.mdt.utils.sub
+import net.liplum.util.addStateMachineInfo
+import plumy.animation.ContextDraw.Draw
+import plumy.animation.ContextDraw.DrawOn
+import plumy.animation.state.IStateful
+import plumy.animation.state.State
+import plumy.animation.state.StateConfig
+import plumy.animation.state.configuring
+import plumy.core.Serialized
+import plumy.core.assets.EmptyTR
+import plumy.dsl.config
+import plumy.dsl.configNull
 
-private typealias AniStateC = AniState<StreamClient, StreamClient.ClientBuild>
-
-open class StreamClient(name: String) : AniedBlock<StreamClient, StreamClient.ClientBuild>(name) {
+open class StreamClient(name: String) : Block(name),IDataBlock {
     @JvmField var maxConnection = -1
     @ClientOnly var NoPowerTR = EmptyTR
     @ClientOnly var BottomTR = EmptyTR
     @JvmField var dumpScale = 2f
     @ClientOnly var liquidPadding = 0f
+    @ClientOnly var stateMachineConfig = StateConfig<ClientBuild>()
 
     init {
         buildType = Prov { ClientBuild() }
@@ -53,20 +56,14 @@ open class StreamClient(name: String) : AniedBlock<StreamClient, StreamClient.Cl
         schematicPriority = 25
         saveConfig = true
         noUpdateDisabled = true
-        callDefaultBlockDraw = false
         canOverdrive = false
         sync = true
-        config(
-            Liquid::class.java
-        ) { obj: ClientBuild, liquid ->
-            obj.outputLiquid = liquid
-        }
-        configClear { tile: ClientBuild -> tile.outputLiquid = null }
     }
 
     override fun setBars() {
         super.setBars()
         DebugOnly {
+            addStateMachineInfo<ClientBuild>()
             addHostInfo<ClientBuild>()
         }
     }
@@ -78,8 +75,21 @@ open class StreamClient(name: String) : AniedBlock<StreamClient, StreamClient.Cl
 
     override fun load() {
         super.load()
-        NoPowerTR = this.inMod("rs-no-power")
         BottomTR = this.sub("bottom")
+        NoPowerTR = loadNoPower()
+    }
+
+    override fun init() {
+        super.init()
+        config<ClientBuild, Liquid> {
+            outputLiquid = it
+        }
+        configNull<ClientBuild> {
+            outputLiquid = null
+        }
+        ClientOnly {
+            configAnimationStateMachine()
+        }
     }
 
     override fun icons() = arrayOf(BottomTR, region)
@@ -92,7 +102,8 @@ open class StreamClient(name: String) : AniedBlock<StreamClient, StreamClient.Cl
         drawPlanConfigCenter(req, req.config, "center", true)
     }
 
-    open inner class ClientBuild : AniedBuild(), IStreamClient {
+    open inner class ClientBuild : Building(), IStateful<ClientBuild>, IStreamClient {
+        override val stateMachine by lazy { stateMachineConfig.instantiate(this) }
         @Serialized
         var hosts = ObjectSet<Int>()
         @Serialized
@@ -185,33 +196,33 @@ open class StreamClient(name: String) : AniedBlock<StreamClient, StreamClient.Cl
             hosts.read(read)
         }
 
-        override fun fixedDraw() {
+        override fun draw() {
+            stateMachine.spend(delta())
             BottomTR.DrawOn(this)
             LiquidBlock.drawTiledFrames(
                 size, x, y, liquidPadding,
                 liquids.current(), liquids.currentAmount() / liquidCapacity
             )
             region.DrawOn(this)
+            stateMachine.draw()
         }
     }
 
-    @ClientOnly lateinit var NormalAni: AniStateC
-    @ClientOnly lateinit var NoPowerAni: AniStateC
-    override fun genAniState() {
-        NormalAni = addAniState("Normal") {
-        }
-        NoPowerAni = addAniState("NoPower") {
+    @ClientOnly lateinit var NormalState: State<StreamClient.ClientBuild>
+    @ClientOnly lateinit var NoPowerState: State<StreamClient.ClientBuild>
+    @ClientOnly
+    fun configAnimationStateMachine() {
+        NormalState = State("Normal")
+        NoPowerState = State("NoPower") {
             NoPowerTR.Draw(x, y)
         }
-    }
-
-    override fun genAniConfig() {
-        config {
-            From(NormalAni) To NoPowerAni When {
-                !canConsume()
+        stateMachineConfig.configuring {
+            NormalState {
+                setDefaultState
+                NoPowerState { !canConsume() }
             }
-            From(NoPowerAni) To NormalAni When {
-                canConsume()
+            NoPowerState {
+                NormalState { canConsume() }
             }
         }
     }

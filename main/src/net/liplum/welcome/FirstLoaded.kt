@@ -10,9 +10,9 @@ import net.liplum.Settings
 import net.liplum.common.Res
 import net.liplum.common.util.ReferBundleWrapper
 import net.liplum.common.util.loadDynamicAsync
-import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.DesktopOnly
-import net.liplum.mdt.Else
+import plumy.core.ClientOnly
+import plumy.core.DesktopOnly
+import plumy.core.Else
 import net.liplum.ui.addScrolledTable
 import net.liplum.ui.addTable
 

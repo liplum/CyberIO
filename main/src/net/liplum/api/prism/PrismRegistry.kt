@@ -1,13 +1,28 @@
 package net.liplum.api.prism
 
+import arc.graphics.Color
 import mindustry.entities.bullet.BulletType
 import mindustry.gen.Bullet
 import mindustry.type.UnitType
+import net.liplum.R
 import net.liplum.blocks.prism.RgbList
 import net.liplum.common.util.directSuperClass
 
 enum class PrismData {
     Duplicate
+}
+
+class PrismDataColor : Color {
+    constructor() : super()
+    constructor(rgba8888: Int) : super(rgba8888)
+    constructor(r: Float, g: Float, b: Float, a: Float) : super(r, g, b, a)
+    constructor(r: Float, g: Float, b: Float) : super(r, g, b)
+    constructor(color: Color) : super(color)
+
+    companion object {
+        val RgbFG = R.C.PrismRgbFG.map { PrismDataColor(it) }
+        val RgbBK = R.C.PrismRgbBK.map { PrismDataColor(it) }
+    }
 }
 
 object PrismRegistry {
@@ -20,7 +35,7 @@ object PrismRegistry {
     }
     @JvmStatic
     val Any?.isDuplicate: Boolean
-        get() = this == PrismData.Duplicate
+        get() = this == PrismData.Duplicate || this is PrismDataColor
     @JvmStatic
     fun Bullet.setDuplicate() {
         when (this.type) {

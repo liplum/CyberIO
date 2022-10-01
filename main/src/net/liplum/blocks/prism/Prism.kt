@@ -14,6 +14,7 @@ import arc.util.io.Writes
 import mindustry.Vars.tilesize
 import mindustry.content.UnitTypes
 import mindustry.entities.TargetPriority
+import mindustry.entities.bullet.BulletType
 import mindustry.gen.*
 import mindustry.graphics.Layer
 import mindustry.graphics.Pal
@@ -32,30 +33,37 @@ import net.liplum.R
 import net.liplum.api.cyber.BOTTOM
 import net.liplum.api.cyber.RIGHT
 import net.liplum.api.prism.PrismBlackList.canDisperse
+import net.liplum.api.prism.PrismDataColor
 import net.liplum.api.prism.PrismRegistry.isDuplicate
 import net.liplum.api.prism.PrismRegistry.setDuplicate
 import net.liplum.blocks.prism.CrystalManager.Companion.read
 import net.liplum.blocks.prism.CrystalManager.Companion.write
 import net.liplum.common.math.PolarX
-import net.liplum.common.util.bundle
 import net.liplum.common.util.percentI
-import plumy.core.Serialized
-import plumy.core.arc.AnimatedColor
-import plumy.core.assets.EmptyTRs
-import plumy.core.assets.TR
-import plumy.core.assets.TRs
-import plumy.core.math.*
-import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.advanced.Inspector
-import net.liplum.mdt.advanced.Inspector.isSelected
+import net.liplum.input.Inspector
+import net.liplum.input.Inspector.isSelected
+import net.liplum.input.smoothSelect
+import net.liplum.math.quadratic
 import net.liplum.mdt.mixin.copy
-import net.liplum.mdt.render.*
-import net.liplum.mdt.ui.bars.AddBar
+import net.liplum.mdt.render.AsShadow
+import net.liplum.mdt.render.G
 import net.liplum.mdt.utils.*
 import net.liplum.registry.CioStats
+import plumy.animation.AnimatedColor
+import plumy.animation.ContextDraw.Draw
+import plumy.animation.ContextDraw.DrawScale
+import plumy.core.ClientOnly
+import plumy.core.Serialized
+import plumy.core.assets.EmptySounds
+import plumy.core.assets.EmptyTR
+import plumy.core.assets.EmptyTRs
+import plumy.core.math.*
+import plumy.dsl.AddBar
+import plumy.dsl.DrawLayer
+import plumy.dsl.bundle
 import kotlin.math.abs
 import kotlin.math.log2
-import net.liplum.math.quadratic
+
 open class Prism(name: String) : Block(name) {
     var PS: FUNC = quadratic(1.2f, 0.2f)
     /** Above ground level.*/
@@ -75,18 +83,21 @@ open class Prism(name: String) : Block(name) {
     @ClientOnly @JvmField var maxOutsideRange = -1f
     @ClientOnly @JvmField var maxOutsideRangeFactor = 0.8f
     @ClientOnly @JvmField var expendingSelectCircleTime = 45f
-    @ClientOnly lateinit var BaseTR: TR
-    @ClientOnly lateinit var CrystalTRs: TRs
-    @ClientOnly lateinit var UpTR: TR
-    @ClientOnly lateinit var DownTR: TR
-    @ClientOnly lateinit var LeftTR: TR
-    @ClientOnly lateinit var RightTR: TR
-    @ClientOnly lateinit var RightUpStartTR: TR
-    @ClientOnly lateinit var RightUpEndTR: TR
-    @ClientOnly lateinit var LeftDownStartTR: TR
-    @ClientOnly lateinit var LeftDownEndTR: TR
-    @ClientOnly var Right2BottomTRs = EmptyTRs
+    @ClientOnly @JvmField var BaseTR = EmptyTR
+    @ClientOnly @JvmField var CrystalTRs = EmptyTRs
+    @ClientOnly @JvmField var UpTR = EmptyTR
+    @ClientOnly @JvmField var DownTR = EmptyTR
+    @ClientOnly @JvmField var LeftTR = EmptyTR
+    @ClientOnly @JvmField var RightTR = EmptyTR
+    @ClientOnly @JvmField var RightUpStartTR = EmptyTR
+    @ClientOnly @JvmField var RightUpEndTR = EmptyTR
+    @ClientOnly @JvmField var LeftDownStartTR = EmptyTR
+    @ClientOnly @JvmField var LeftDownEndTR = EmptyTR
+    @ClientOnly @JvmField var Right2BottomTRs = EmptyTRs
     @ClientOnly @JvmField var maxSelectedCircleTime = 30f
+    @JvmField var crystalSounds = EmptySounds
+    @JvmField var crystalSoundVolume = 1f
+    @JvmField var crystalSoundPitchRange = 0.5f..1.5f
 
     init {
         buildType = Prov { PrismBuild() }
@@ -96,7 +107,7 @@ open class Prism(name: String) : Block(name) {
         update = true
         solid = true
         outlineIcon = true
-        priority = TargetPriority.turret
+        priority = TargetPriority.base
         group = BlockGroup.turrets
         flags = EnumSet.of(BlockFlag.turret)
         noUpdateDisabled = true
@@ -139,6 +150,7 @@ open class Prism(name: String) : Block(name) {
     }
 
     override fun minimapColor(tile: Tile) = animatedColor.color.rgba8888()
+
     companion object {
         @JvmField @ClientOnly
         val animatedColor = AnimatedColor(
@@ -181,7 +193,7 @@ open class Prism(name: String) : Block(name) {
             prism = this@PrismBuild
             ClientOnly {
                 genCrystalImgCallback = {
-                    img = CrystalTRs.randomOne()
+                    img = CrystalTRs.random()
                 }
             }
             addCrystalCallback = {
@@ -291,6 +303,7 @@ open class Prism(name: String) : Block(name) {
             var priselY: Float
             val realRange = realRange
             val realRangeX2 = realRange * 2
+            var soundPlayed = false
             Groups.bullet.intersect(
                 x - realRange,
                 y - realRange,
@@ -301,10 +314,16 @@ open class Prism(name: String) : Block(name) {
                     priselX = revolution.x + x
                     priselY = revolution.y + y
                     if (it.team == team &&
-                        !it.data.isDuplicate &&
                         it.dst(priselX, priselY) <= prismRadius
                     ) {
-                        it.passThrough()
+                        if (!it.data.isDuplicate) {
+                            it.passThrough()
+                        }
+                        if (!soundPlayed && !isActivated) {
+                            crystalSounds.random().at(x, y, crystalSoundPitchRange.random(), crystalSoundVolume)
+                            soundPlayed = true
+                        }
+                        lastPassThroughTime = 0f
                     }
                 }
             }
@@ -312,9 +331,8 @@ open class Prism(name: String) : Block(name) {
         /**
          * The Current is considered as green.
          */
-        open fun Bullet.passThrough() {
+        fun Bullet.passThrough() {
             if (!type.canDisperse) return
-            this.setDuplicate()
             // Current is green
             val angle = this.rotation()
             val start = angle
@@ -327,13 +345,28 @@ open class Prism(name: String) : Block(name) {
             copyRed.handleDuplicate(-perDeflectionAngle)
             this.handleDuplicate(0f)
             copyBlue.handleDuplicate(perDeflectionAngle)
-            if (tintBullet) {
-                if (!this.type.isTintIgnored) {
-                    val rgbs = tintedRGB(this.type)
-                    copyRed.type = rgbs[0]
-                    this.type = rgbs[1]
-                    copyBlue.type = rgbs[2]
-                }
+            if (tintBullet && !this.type.isIgnoreTinted) {
+                tintBullet(copyRed, this, copyBlue, this.type)
+            }
+            setDuplicate(copyRed, this, copyBlue, this.data)
+        }
+
+        fun tintBullet(r: Bullet, g: Bullet, b: Bullet, type: BulletType) {
+            val rgbs = tintedRGB(type)
+            r.type = rgbs[0]
+            g.type = rgbs[1]
+            b.type = rgbs[2]
+        }
+
+        fun setDuplicate(r: Bullet, g: Bullet, b: Bullet, data: Any?) {
+            if (data is Color) {
+                r.data = PrismDataColor.RgbFG[0]
+                g.data = PrismDataColor.RgbFG[1]
+                b.data = PrismDataColor.RgbFG[2]
+            } else {
+                r.setDuplicate()
+                g.setDuplicate()
+                b.setDuplicate()
             }
         }
 
@@ -401,6 +434,7 @@ open class Prism(name: String) : Block(name) {
             }
             // draw Crystal
             cm.render {
+                lastPassThroughTime += Time.delta
                 val priselX = revolution.x + x
                 val priselY = revolution.y + y
                 var scale = 1f + Mathf.log(3f, orbitPos + 3f) * 0.2f - 0.2f
@@ -417,12 +451,14 @@ open class Prism(name: String) : Block(name) {
                 else Draw.z(Layer.bullet - 1f)
                 if (isSelected)
                     G.dashCircleBreath(priselX, priselY, prismRadius * smoothSelect(maxSelectedCircleTime), circleColor)
-                img.DrawSize(
-                    priselX,
-                    priselY,
-                    scale,
-                    rotation.a.degree.draw
-                )
+                DrawLayer(if (isActivated) Layer.bullet else Draw.z()) {
+                    img.DrawScale(
+                        priselX,
+                        priselY,
+                        scale,
+                        rotation.a.degree.draw
+                    )
+                }
             }
             Draw.reset()
         }
@@ -431,10 +467,10 @@ open class Prism(name: String) : Block(name) {
             // See draw()
         }
 
-        override fun unit(): MdtUnit {
+        override fun unit(): MUnit {
             unit.tile(this)
             unit.team(team)
-            return (unit as MdtUnit)
+            return (unit as MUnit)
         }
 
         override fun control(type: LAccess, p1: Double, p2: Double, p3: Double, p4: Double) {

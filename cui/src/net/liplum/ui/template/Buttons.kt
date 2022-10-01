@@ -10,7 +10,7 @@ fun NewIconTextButton(
     text: String,
     icon: Drawable,
     iconSize: Float,
-    clicked: () -> Unit
+    clicked: () -> Unit,
 ) = NewIconTextButton(
     text, icon, iconSize,
     Core.scene.getStyle(TextButton.TextButtonStyle::class.java),
@@ -22,7 +22,7 @@ fun NewIconTextButton(
     icon: Drawable,
     iconSize: Float,
     style: TextButton.TextButtonStyle,
-    clicked: () -> Unit
+    clicked: () -> Unit,
 ) = TextButton(text, style).apply {
     add(Image(icon)).size(iconSize)
     cells.reverse()
@@ -34,7 +34,7 @@ fun NewIconTextButton(
     icon: Drawable,
     style: TextButton.TextButtonStyle =
         Core.scene.getStyle(TextButton.TextButtonStyle::class.java),
-    clicked: () -> Unit
+    clicked: () -> Unit,
 ) = TextButton(text, style).apply {
     add(Image(icon)).size(icon.imageSize() / Scl.scl(1f))
     cells.reverse()

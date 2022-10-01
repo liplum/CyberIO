@@ -11,29 +11,27 @@ import mindustry.mod.Mods
 import mindustry.ui.dialogs.PlanetDialog
 import net.liplum.ConfigEntry.Companion.Config
 import net.liplum.ContentSpec.Companion.resolveContentSpec
+import net.liplum.ContentSpec.Companion.tryResolveContentSpec
 import net.liplum.Var.ContentSpecific
 import net.liplum.event.CioInitEvent
 import net.liplum.event.CioLoadContentEvent
 import net.liplum.event.UnitTap
 import net.liplum.gen.Contents
 import net.liplum.gen.EventRegistry
-import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.HeadlessOnly
-import net.liplum.mdt.IsSteam
-import net.liplum.mdt.animation.ganim.GlobalAnimation
-import net.liplum.mdt.safeCall
-import net.liplum.registry.CioBlocks
+import net.liplum.mdt.*
+import net.liplum.render.GlobalAnimation
 import net.liplum.registry.CioShaderLoader
 import net.liplum.registry.CioTechTree
-import net.liplum.registry.ServerCommands.registerCioCommands
+import net.liplum.registry.ServerCommand.registerCioCommands
 import net.liplum.registry.SpecificLoader
 import net.liplum.render.TestShader
 import net.liplum.script.NpcSystem
-import net.liplum.ui.IconGenDebugDialog
 import net.liplum.update.Updater
 import net.liplum.welcome.FirstLoaded
 import net.liplum.welcome.Welcome
 import net.liplum.welcome.WelcomeList
+import plumy.core.ClientOnly
+import plumy.core.HeadlessOnly
 import java.io.File
 
 class CioMod : Mod() {
@@ -77,14 +75,14 @@ class CioMod : Mod() {
         objCreated = true
         lastPlayTime = Settings.LastPlayTime
         CLog.info("v${Meta.DetailedVersion} loading started.")
-        (net.liplum.mdt.IsClient and !IsSteam) {
-            Updater.fetchLatestVersion(updateInfoFileURL = Meta.UpdateInfoURL)
+        (IsClient and !IsSteam) {
+            Updater.fetchLatestVersion()
         }
         HeadlessOnly {
             ConfigEntry.load()
             ContentSpecific = Config.ContentSpecific.resolveContentSpec()
-            Updater.fetchLatestVersion(updateInfoFileURL = Config.CheckUpdateInfoURL)
-            Updater.checkHeadlessUpdate()
+            Updater.fetchLatestVersion()
+            Updater.Headless.tryUpdateHeadless()
         }
         safeCall {
             CLog.info(
@@ -102,12 +100,13 @@ class CioMod : Mod() {
         ClientOnly {
             ContentSpecific = Settings.ContentSpecific.resolveContentSpec()
         }
-        DebugOnly {
-            safeCall {
-                val debugSpec = System.getenv("CYBERIO_SPEC")
-                if (debugSpec != null) {
-                    ContentSpecific = debugSpec.resolveContentSpec()
-                    Settings.ContentSpecific = ContentSpecific.id
+        safeCall {
+            val debugSpec = System.getenv("CYBERIO_SPEC")
+            if (debugSpec != null) {
+                val env = debugSpec.tryResolveContentSpec()
+                if (env != null) {
+                    ContentSpecific = env
+                    Settings.ContentSpecific = env.id
                 }
             }
         }
@@ -126,8 +125,10 @@ class CioMod : Mod() {
             ClientOnly {
                 Core.app.post {
                     CioShaderLoader.init()
-                    WelcomeList.loadList()
-                    Welcome.load()
+                    safeCall {
+                        WelcomeList.loadList()
+                        Welcome.load()
+                    }
                     DebugOnly {
                         TestShader.load()
                     }
@@ -172,7 +173,7 @@ class CioMod : Mod() {
         val meta = Info.meta
         meta.version = ContentSpecific.suffixModVersion(meta.version)
         ClientOnly {
-            meta.subtitle = "[#${ContentSpecific.color}]${Meta.Version} ${ContentSpecific.i18nName}[]"
+            meta.subtitle = "[#${ContentSpecific.color}]${Meta.DetailedVersion} ${ContentSpecific.i18nName}[]"
         }
         VanillaSpec {
             Var.HoloWallTintAlpha = 0.6423f

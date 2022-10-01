@@ -1,6 +1,6 @@
 {
-    "DelegateNumber": 20,
-    "DelegateFilePath": "Delegates.kt",
-    "DelegateHandlerName": "DelegateHandler",
-    "DelegateClassName": "Delegate"
+  "DelegateNumber": 20,
+  "DelegateFilePath": "Delegates.kt",
+  "DelegateHandlerName": "DelegateHandler",
+  "DelegateClassName": "Delegate"
 }

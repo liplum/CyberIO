@@ -138,7 +138,7 @@ object Templates {
                 addPoster(entity.icon)
                 addCenterText(entity.content(Updater.latestVersion.toString().tinted(S.Hologram)))
                 if (Updater.isCurrentBreakUpdate)
-                    addCenterText(entity["break-update-warning"].tinted(R.C.RedAlert))
+                    addCenterText(entity["break-update-warning"]).color(R.C.RedAlert)
                 if (Updater.hasUpdateDescription)
                     addBoxedText(Updater.UpdateDescription)
                 cont.table {

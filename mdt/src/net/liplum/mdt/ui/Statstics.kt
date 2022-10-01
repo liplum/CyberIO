@@ -66,10 +66,12 @@ fun <T : UnlockableContent> ammoStats(
                     sep(bt, bundle.format("bullet.healpercent", Strings.autoFixed(type.healPercent, 2)))
                 }
                 if (type.pierce || type.pierceCap != -1) {
-                    sep(bt, if (type.pierceCap == -1)
-                        bundle["bullet.infinitepierce"]
-                    else
-                        bundle.format("bullet.pierce", type.pierceCap))
+                    sep(
+                        bt, if (type.pierceCap == -1)
+                            bundle["bullet.infinitepierce"]
+                        else
+                            bundle.format("bullet.pierce", type.pierceCap)
+                    )
                 }
                 if (type.incendAmount > 0) {
                     sep(bt, bundle["bullet.incendiary"])
@@ -88,12 +90,14 @@ fun <T : UnlockableContent> ammoStats(
                     )
                 }
                 if (type.status != StatusEffects.none) {
-                    sep(bt, (
-                            if (type.minfo.mod == null)
-                                type.status.emoji()
-                            else
-                                ""
-                            ) + "[stat]" + type.status.localizedName)
+                    sep(
+                        bt, (
+                                if (type.minfo.mod == null)
+                                    type.status.emoji()
+                                else
+                                    ""
+                                ) + "[stat]" + type.status.localizedName
+                    )
                 }
                 if (type.fragBullet != null) {
                     sep(bt, bundle.format("bullet.frags", type.fragBullets))

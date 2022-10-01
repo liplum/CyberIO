@@ -5,15 +5,8 @@ package net.liplum.mdt.utils
 import arc.math.Interp
 import mindustry.entities.Effect
 import mindustry.entities.Effect.EffectContainer
-import plumy.core.arc.invoke
+import plumy.core.math.invoke
 
-fun NewEffect(
-    duration: Float,
-    clipSize: Float = 50f,
-    render: EffectContainer.() -> Unit,
-): Effect = Effect(duration, clipSize) {
-    it.render()
-}
 /**
  * @param duration the duration of fade-in&out
  */
@@ -47,6 +40,6 @@ fun EffectContainer.fadeInOutPct(
         1f
 }
 
-fun Effect.atUnit(unit: MdtUnit) {
+fun Effect.atUnit(unit: MUnit) {
     at(unit.x, unit.y, unit.rotation, unit)
 }

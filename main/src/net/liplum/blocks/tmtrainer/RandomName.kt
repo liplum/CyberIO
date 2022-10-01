@@ -3,7 +3,7 @@ package net.liplum.blocks.tmtrainer
 import arc.graphics.Color
 import arc.math.Mathf
 import net.liplum.R
-import net.liplum.common.util.bundle
+import plumy.dsl.bundle
 import plumy.core.arc.ColorRGB
 
 object RandomName {
@@ -50,6 +50,6 @@ object RandomName {
 
     fun randomChar() = AllChars[Mathf.random(AllChars.size - 1)]
     fun randomCharIndex() = Mathf.random(AllChars.size - 1)
-    fun getChar(index: Int)= AllChars[index.coerceIn(0, AllChars.size - 1)]
-    fun getColor(index: Int)= AllColors[index.coerceIn(0, AllChars.size - 1)]
+    fun getChar(index: Int) = AllChars[index.coerceIn(0, AllChars.size - 1)]
+    fun getColor(index: Int) = AllColors[index.coerceIn(0, AllChars.size - 1)]
 }

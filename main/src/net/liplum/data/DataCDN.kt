@@ -14,11 +14,10 @@ import net.liplum.api.cyber.*
 import net.liplum.api.cyber.SideLinks.Companion.enableAllSides
 import plumy.core.Serialized
 import plumy.core.assets.TR
-import net.liplum.mdt.ClientOnly
+import plumy.core.ClientOnly
 import net.liplum.mdt.render.G
-import net.liplum.mdt.utils.MdtUnit
+import plumy.core.MUnit
 import net.liplum.mdt.utils.atlas
-import net.liplum.util.addSendingProgress
 import kotlin.math.max
 
 class DataCDN(name: String) :
@@ -85,8 +84,8 @@ class DataCDN(name: String) :
         override var livingTime = 0f
         @ClientOnly
         override val lastRailTrail = Array(4) { RailTrail() }
-        override var totalSendingDistance= 0f
-        override var curSendingLength= 0f
+        override var totalSendingDistance = 0f
+        override var curSendingLength = 0f
         @ClientOnly
         override val expendSelectingLineTime = this@DataCDN.expendPlacingLineTime
         override val linkRange = this@DataCDN.linkRange
@@ -153,11 +152,11 @@ class DataCDN(name: String) :
 
         override fun toString() = "DataCDN#$id"
         var unit = UnitTypes.block.create(team) as BlockUnitc
-        override fun unit(): MdtUnit {
+        override fun unit(): MUnit {
             //make sure stats are correct
             unit.tile(this)
             unit.team(team)
-            return (unit as MdtUnit)
+            return (unit as MUnit)
         }
     }
 }

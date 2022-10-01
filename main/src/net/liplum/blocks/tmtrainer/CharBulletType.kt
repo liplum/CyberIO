@@ -7,8 +7,8 @@ import mindustry.game.Team
 import mindustry.gen.Bullet
 import mindustry.gen.Entityc
 import mindustry.graphics.Layer
-import net.liplum.common.util.DrawLayer
-import net.liplum.mdt.ClientOnly
+import plumy.dsl.DrawLayer
+import plumy.core.ClientOnly
 import net.liplum.mdt.render.Text
 
 class CharBulletType : BulletType {

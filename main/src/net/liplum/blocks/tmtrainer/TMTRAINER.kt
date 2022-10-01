@@ -15,21 +15,18 @@ import mindustry.type.Category
 import mindustry.world.blocks.defense.turrets.ItemTurret
 import mindustry.world.draw.DrawBlock
 import mindustry.world.meta.StatUnit
-import plumy.core.assets.TR
-import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.WhenNotPaused
-import net.liplum.mdt.animation.anims.Animation
-import net.liplum.mdt.animation.anims.AnimationObj
-import net.liplum.mdt.animation.anims.ITimeModifier
+import plumy.core.ClientOnly
+import plumy.core.WhenNotPaused
+import plumy.animation.AnimationMeta
+import plumy.animation.draw
 import net.liplum.mdt.mixin.drawRotation
 import net.liplum.mdt.mixin.drawX
 import net.liplum.mdt.mixin.drawY
-import net.liplum.mdt.utils.autoAnim
+import net.liplum.mdt.utils.animationMeta
 
 open class TMTRAINER(name: String) : ItemTurret(name) {
-    @ClientOnly lateinit var CoreAnim: Animation
-    @ClientOnly lateinit var EmptyCoreAnim: Animation
-    @ClientOnly lateinit var HeadTR: TR
+    @ClientOnly var CoreAnim = AnimationMeta.Empty
+    @ClientOnly var EmptyCoreAnim = AnimationMeta.Empty
     @JvmField @ClientOnly var headMax = 0.45f
     @JvmField @ClientOnly var headMin = -3f
     @JvmField var CoreAnimFrames = 8
@@ -41,34 +38,25 @@ open class TMTRAINER(name: String) : ItemTurret(name) {
 
     override fun load() {
         super.load()
-        CoreAnim = autoAnim("core", CoreAnimFrames, 60f)
-        EmptyCoreAnim = autoAnim("core-empty", CoreAnimFrames, 60f)
+        CoreAnim = animationMeta("core", CoreAnimFrames, 60f)
+        EmptyCoreAnim = animationMeta("core-empty", CoreAnimFrames, 60f)
     }
 
     open inner class TMTRAINERBUILD : ItemTurretBuild() {
-        @ClientOnly lateinit var coreAnimObj: AnimationObj
-        @ClientOnly lateinit var emptyCoreAnimObj: AnimationObj
+        @ClientOnly val coreAnimObj = CoreAnim.instantiate()
+        @ClientOnly val emptyCoreAnimObj = EmptyCoreAnim.instantiate()
         open var virusCharge = 0f
             set(value) {
                 field = value.coerceIn(0f, 60f)
             }
 
-        init {
-            ClientOnly {
-                val boost = ITimeModifier {
-                    if (unit.ammo() > 0)
-                        it / this.timeScale * (1f + virusCharge / 10f) * unit.ammof()
-                    else 0f
-                }
-                coreAnimObj = CoreAnim.gen().tmod(boost)
-                emptyCoreAnimObj = EmptyCoreAnim.gen().tmod(boost)
-            }
-        }
-
         override fun draw() {
             WhenNotPaused {
-                coreAnimObj.spend(Time.delta)
-                emptyCoreAnimObj.spend(Time.delta)
+                val delta = if (unit.ammo() > 0)
+                    Time.delta / timeScale * (1f + virusCharge / 10f) * unit.ammof()
+                else 0f
+                coreAnimObj.spend(delta)
+                emptyCoreAnimObj.spend(delta)
             }
             super.draw()
         }
@@ -173,18 +161,10 @@ open class TMTRAINER(name: String) : ItemTurret(name) {
 
     class DrawCore : DrawBlock() {
         override fun draw(build: Building) = (build as TMTRAINERBUILD).run {
-            emptyCoreAnimObj.draw(
-                drawX,
-                drawY,
-                drawRotation
-            )
+            emptyCoreAnimObj.draw(drawX, drawY, drawRotation)
             if (unit.ammo() > 0) {
                 Draw.alpha(unit.ammof())
-                coreAnimObj.draw(
-                    drawX,
-                    drawY,
-                    drawRotation
-                )
+                coreAnimObj.draw(drawX, drawY, drawRotation)
                 Draw.color()
             }
         }

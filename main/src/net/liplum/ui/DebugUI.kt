@@ -25,7 +25,7 @@ import net.liplum.event.CioInitEvent
 import net.liplum.common.util.allFieldsIncludeParents
 import net.liplum.common.util.directSuperClass
 import net.liplum.mdt.Screen
-import net.liplum.render.Shapes
+import net.liplum.render.Shape
 import net.liplum.ui.attach.Dragger.Companion.dragToMove
 import java.lang.reflect.Field
 
@@ -123,9 +123,8 @@ object DebugUI {
         }
 
         var lastEntityNumber = 0
-
         fun rebuildEntityList() {
-            if(Groups.all.size() == lastEntityNumber) return
+            if (Groups.all.size() == lastEntityNumber) return
             lastEntityNumber = Groups.all.size()
             if (!Vars.state.isGame) return
             val searchText = search.text.lowercase().trim()
@@ -147,7 +146,7 @@ object DebugUI {
             starList.forEach {
                 listView.add(Table(Tex.button).apply {
                     add(Table().apply {
-                        add(ImageButton(Shapes.starActive).apply {
+                        add(ImageButton(Shape.starActive).apply {
                             clicked {
                                 starList.remove(it)
                                 rebuildEntityList()
@@ -157,7 +156,7 @@ object DebugUI {
                     }).left()
                     add(Table().apply {
                         clicked {
-                            inspectedEntity = if(it.isAdded) it else null
+                            inspectedEntity = if (it.isAdded) it else null
                             rebuildInspectorPanel()
                         }
                         val label = Label(it.javaClass.simpleName.tinted(if (it.isAdded) Pal.accent else Pal.gray))
@@ -171,7 +170,7 @@ object DebugUI {
             entityList.forEach {
                 listView.add(Table(Tex.button).apply {
                     add(Table().apply {
-                        add(ImageButton(Shapes.starInactive).apply {
+                        add(ImageButton(Shape.starInactive).apply {
                             clicked {
                                 starList.add(it)
                                 rebuildEntityList()
@@ -181,7 +180,7 @@ object DebugUI {
                     }).left()
                     add(Table().apply {
                         clicked {
-                            inspectedEntity = if(it.isAdded) it else null
+                            inspectedEntity = if (it.isAdded) it else null
                             starList.add(it)
                             rebuildEntityList()
                             rebuildInspectorPanel()
@@ -246,7 +245,7 @@ object DebugUI {
             })
             t.visible { Vars.state.isGame }
         }
-        Events.on(EventType.WorldLoadEvent::class.java){
+        Events.on(EventType.WorldLoadEvent::class.java) {
             entityList.clear()
             inspectedEntity = null
             starList.clear()

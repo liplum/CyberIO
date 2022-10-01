@@ -24,18 +24,21 @@ import net.liplum.Settings
 import net.liplum.Var
 import net.liplum.common.entity.Radiation
 import net.liplum.common.math.PolarX
-import net.liplum.common.util.DrawLayer
-import plumy.core.Serialized
-import plumy.core.assets.TR
-import plumy.core.math.*
-import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.WhenNotPaused
+import plumy.dsl.DrawLayer
+import net.liplum.input.smoothPlacing
+import net.liplum.input.smoothSelect
+import plumy.core.ClientOnly
+import plumy.core.WhenNotPaused
 import net.liplum.mdt.WhenTheSameTeam
+import plumy.animation.ContextDraw.Draw
 import net.liplum.mdt.consumer.powerStore
 import net.liplum.mdt.render.*
 import net.liplum.mdt.utils.sub
 import net.liplum.registry.CioStats
 import net.liplum.util.addPowerUseStats
+import plumy.core.Serialized
+import plumy.core.assets.EmptyTR
+import plumy.core.math.*
 import kotlin.math.min
 
 private typealias PowerUse = Float
@@ -49,10 +52,10 @@ open class WirelessTower(name: String) : PowerBlock(name) {
     @JvmField var dst2CostRate: WirelessTowerBuild.(Distance) -> PowerUse = { dst ->
         1f + dst / realRange * dstExtraPowerConsumeFactor
     }
-    lateinit var BaseTR: TR
-    lateinit var CoilTR: TR
-    lateinit var CoreTR: TR
-    lateinit var SupportTR: TR
+    @ClientOnly @JvmField var BaseTR = EmptyTR
+    @ClientOnly @JvmField var CoilTR = EmptyTR
+    @ClientOnly @JvmField var CoreTR = EmptyTR
+    @ClientOnly @JvmField var SupportTR = EmptyTR
     @ClientOnly @JvmField var rotationRadius = 0.7f
     @ClientOnly @JvmField var maxSelectedCircleTime = Var.SelectedCircleTime
     @JvmField var range2Stroke: (Float) -> Float = { (it / 100f).coerceAtLeast(1f) }
@@ -92,11 +95,11 @@ open class WirelessTower(name: String) : PowerBlock(name) {
     override fun icons() = arrayOf(BaseTR, SupportTR, CoilTR)
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)
-        val range = range * smoothPlacing(maxSelectedCircleTime)
+        val range = range * smoothPlacing(maxSelectedCircleTime + range * Var.MaxRangeCircleTimeFactor)
         drawEffectCirclePlace(x, y, R.C.Power, range, {
             val consPower = block.consPower
             block.hasPower && consPower != null && consPower.buffered
-        }, stroke = range2Stroke(range)) {
+        }, stroke = range2Stroke(this.range)) {
             G.wrappedSquareBreath(this)
         }
     }
@@ -137,7 +140,7 @@ open class WirelessTower(name: String) : PowerBlock(name) {
         }
 
         override fun drawSelect() {
-            val range = realRange * smoothSelect(maxSelectedCircleTime)
+            val range = realRange * smoothSelect(maxSelectedCircleTime + realRange * Var.MaxRangeCircleTimeFactor)
             G.dashCircleBreath(
                 x, y, range,
                 R.C.Power, stroke = range2Stroke(this.realRange)

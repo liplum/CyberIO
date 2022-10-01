@@ -9,8 +9,8 @@ import mindustry.world.Tile;
 
 public class CallV {
     public static void infect(
-            Tile tile, Virus virusType, Team team,
-            int curGeneration, @Nullable Color raceColor
+        Tile tile, Virus virusType, Team team,
+        int curGeneration, @Nullable Color raceColor
     ) {
         if (Vars.net.server() || !Vars.net.active()) {
             Tile.setTile(tile, virusType, team, 0);

@@ -2,7 +2,7 @@ package net.liplum.blocks.prism
 
 import arc.util.io.Reads
 import arc.util.io.Writes
-import plumy.core.assets.TR
+import net.liplum.Var
 import net.liplum.common.math.PolarX
 import net.liplum.common.persistence.CacheReaderSpec
 import net.liplum.common.persistence.CacheWriter
@@ -10,7 +10,8 @@ import net.liplum.common.persistence.IRWableX
 import net.liplum.common.util.isOn
 import net.liplum.common.util.off
 import net.liplum.common.util.on
-import net.liplum.mdt.ClientOnly
+import plumy.core.ClientOnly
+import plumy.core.assets.TR
 import java.io.DataInputStream
 
 class Crystal : IRWableX {
@@ -18,6 +19,9 @@ class Crystal : IRWableX {
     var rotation = PolarX()
     @ClientOnly
     var img = TR()
+    @ClientOnly
+    var lastPassThroughTime = Var.PrismCrystalPassThroughBloomTime
+    val isActivated get() = lastPassThroughTime < Var.PrismCrystalPassThroughBloomTime
     var orbitPos = 0
     var data = 0
     var isClockwise: Boolean

@@ -3,7 +3,7 @@ package net.liplum.mdt.utils
 import mindustry.gen.*
 import mindustry.world.blocks.ControlBlock
 
-typealias MdtUnit = mindustry.gen.Unit
+typealias MUnit = mindustry.gen.Unit
 
 var Healthc.lostHp: Float
     get() = maxHealth() - health()

@@ -9,7 +9,7 @@ import net.liplum.CLog
 import plumy.core.Out
 import net.liplum.common.util.littleEndianByteB
 import net.liplum.common.util.bigEndianByteB
-import net.liplum.mdt.utils.ID
+import plumy.dsl.ID
 import java.util.*
 
 class Recipe(
@@ -152,7 +152,7 @@ object RecipeCenter {
 
     inline fun doOnCrafter(
         filter: GenericCrafter.() -> Boolean,
-        func: GenericCrafter.() -> Unit
+        func: GenericCrafter.() -> Unit,
     ) {
         for (block in Vars.content.blocks()) {
             if (block is GenericCrafter)

@@ -24,7 +24,7 @@ def test():
     unmatched = ItemStackRegex.search("ItemStack(Items.copper12)")
     print(unmatched)
 
-    print(ItemStackRegex.search("                        ItemStack(CioItems.ic, 3),"))
+    print(ItemStackRegex.search("                        ItemStack(CioItem.ic, 3),"))
 
 
 def matchAndReplace(line: str, regex):

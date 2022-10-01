@@ -14,7 +14,7 @@ import net.liplum.R
 import net.liplum.Var
 import net.liplum.common.delegate.Delegate
 import net.liplum.common.util.IBundlable
-import net.liplum.common.util.bundle
+import plumy.dsl.bundle
 
 object AdvancedFunctionDialog : IBundlable {
     override val bundlePrefix = "setting.${R.Gen("advanced-function")}"
@@ -23,15 +23,6 @@ object AdvancedFunctionDialog : IBundlable {
         BaseDialog(bundle("title")).apply {
             addCloseButton()
             cont.add(ScrollPane(Table().apply {
-                // GitHub Mirror
-                addFunction {
-                    add(TextButton(GitHubMirrorUrlDialog.bundle("button")).apply {
-                        changed {
-                            GitHubMirrorUrlDialog.show(onReset)
-                        }
-                    }).applyButtonStyle().row()
-                    add(GitHubMirrorUrlDialog.bundle("button-tooltip")).applyLabelStyle()
-                }
                 // Map Cleaner
                 addFunction {
                     fun enableButtonText() =

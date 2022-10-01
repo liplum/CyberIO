@@ -29,6 +29,7 @@ import mindustry.world.meta.StatUnit
 import mindustry.world.meta.StatValues
 import net.liplum.DebugOnly
 import net.liplum.S
+import net.liplum.animation.Floating
 import net.liplum.api.cyber.*
 import net.liplum.api.holo.IHoloEntity
 import net.liplum.api.holo.IHoloEntity.Companion.addHoloChargeTimeStats
@@ -39,20 +40,20 @@ import net.liplum.common.delegate.Delegate1
 import net.liplum.common.persistence.read
 import net.liplum.common.persistence.write
 import net.liplum.common.shader.use
+import net.liplum.mdt.consumer.LiquidTurretCons
+import net.liplum.mdt.render.G
+import net.liplum.mdt.utils.*
+import net.liplum.registry.CioFluid.cyberion
+import net.liplum.registry.SD
+import plumy.animation.ContextDraw.Draw
+import plumy.core.ClientOnly
 import plumy.core.Serialized
+import plumy.core.WhenNotPaused
+import plumy.core.arc.toSecond
 import plumy.core.assets.TR
 import plumy.core.math.isZero
 import plumy.core.math.nextBoolean
-import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.WhenNotPaused
-import net.liplum.mdt.animation.Floating
-import net.liplum.mdt.consumer.LiquidTurretCons
-import net.liplum.mdt.render.Draw
-import net.liplum.mdt.render.G
-import net.liplum.mdt.ui.bars.AddBar
-import net.liplum.mdt.utils.*
-import net.liplum.registry.CioFluids.cyberion
-import net.liplum.registry.SD
+import plumy.dsl.AddBar
 
 open class Stealth(name: String) : Turret(name) {
     @JvmField var restoreChargeTime = 10 * 60f
@@ -85,10 +86,8 @@ open class Stealth(name: String) : Turret(name) {
     override fun init() {
         consume(LiquidTurretCons(cyberion))
         consumePowerDynamic<StealthBuild> {
-            if (it.isActive)
-                activePower + reactivePower
-            else
-                reactivePower
+            if (it.isActive) activePower + reactivePower
+            else reactivePower
         }
         super.init()
     }
@@ -346,12 +345,12 @@ open class Stealth(name: String) : Turret(name) {
                 { restRestore / maxHealth }
             )
             AddBar<StealthBuild>("charge",
-                { "Charge: ${restoreCharge.seconds}" },
+                { "Charge: ${restoreCharge.toSecond}" },
                 { Pal.power },
                 { restoreCharge / restoreChargeTime }
             )
             AddBar<StealthBuild>("last-damage",
-                { "Last Damage:${lastDamagedTime.seconds}s" },
+                { "Last Damage:${lastDamagedTime.toSecond}s" },
                 { Pal.power },
                 { lastDamagedTime / restoreChargeTime }
             )

@@ -1,6 +1,6 @@
 package net.liplum.script
 
-import net.liplum.mdt.ClientOnly
+import plumy.core.ClientOnly
 
 interface INpc {
     @ClientOnly

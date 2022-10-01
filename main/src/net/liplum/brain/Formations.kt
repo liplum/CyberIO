@@ -16,7 +16,7 @@ package net.liplum.brain
 import net.liplum.api.brain.*
 import net.liplum.brain.Ear.EarBuild
 import net.liplum.brain.Eye.EyeBuild
-import net.liplum.mdt.ClientOnly
+import plumy.core.ClientOnly
 
 private val EYE = EyeBuild::class.java
 private val EAR = EarBuild::class.java

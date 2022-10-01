@@ -32,20 +32,20 @@ import net.liplum.R
 import net.liplum.S
 import net.liplum.Var
 import net.liplum.common.shader.use
-import net.liplum.common.util.bundle
+import plumy.dsl.bundle
 import net.liplum.common.util.toFloat
 import net.liplum.holo.HoloProjector.HoloProjectorBuild
 import plumy.core.math.FUNC
-import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.Else
-import net.liplum.mdt.utils.MdtUnit
-import net.liplum.mdt.utils.TE
+import plumy.core.ClientOnly
+import plumy.core.Else
+import plumy.core.MUnit
 import net.liplum.mdt.utils.healthPct
-import net.liplum.mdt.utils.seconds
 import net.liplum.registry.SD
 import net.liplum.util.time
+import plumy.core.arc.toSecond
 import plumy.core.assets.TR
 import plumy.texture.*
+import plumy.dsl.castBuild
 import kotlin.math.min
 
 /**
@@ -86,6 +86,7 @@ open class HoloUnitType(name: String) : UnitType(name) {
         envDisabled = Env.none
         isEnemy = false
         payloadCapacity = 0f
+        useUnitCap = false
     }
 
     override fun loadIcon() {
@@ -95,10 +96,10 @@ open class HoloUnitType(name: String) : UnitType(name) {
         val maker = StackIconMaker(width, height)
         val rawIcon = fullIcon
         val layers = listOf(
-            (PixmapRegionModelLayer(Core.atlas.getPixmap(rawIcon))){
+            (PixmapRegionModelLayerFrom(rawIcon)){
                 +PlainLayerProcessor()
             },
-            (PixmapRegionModelLayer(Core.atlas.getPixmap(rawIcon))){
+            (PixmapRegionModelLayerFrom(rawIcon)){
                 +TintLerpLayerProcessor(S.Hologram, Var.HoloUnitTintAlpha)
             }
         )
@@ -236,7 +237,7 @@ open class HoloUnitType(name: String) : UnitType(name) {
     override fun setStats() {
         super.setStats()
         stats.add(Stat.health) {
-            it.add(lifespan.seconds.time())
+            it.add(lifespan.toSecond.time())
             it.row()
         }
     }
@@ -245,7 +246,7 @@ open class HoloUnitType(name: String) : UnitType(name) {
         if (unit is HoloUnit) {
             DebugOnly {
                 bars.add(Bar(
-                    { R.Bar.RestLifeFigure.bundle(unit.restLife.seconds) },
+                    { R.Bar.RestLifeFigure.bundle(unit.restLife.toSecond) },
                     { S.Hologram },
                     { unit.restLifePercent }
                 ))
@@ -299,27 +300,27 @@ open class HoloUnitType(name: String) : UnitType(name) {
                 DebugOnly {
                     bars.add(
                         Bar({
-                            val p = unit.projectorPos.TE<HoloProjectorBuild>()
+                            val p = unit.projectorPos.castBuild<HoloProjectorBuild>()
                             if (p != null) "${p.tileX()},${p.tileY()}"
                             else "${Iconc.cancel}"
                         }, {
-                            val p = unit.projectorPos.TE<HoloProjectorBuild>()
+                            val p = unit.projectorPos.castBuild<HoloProjectorBuild>()
                             if (p != null) S.Hologram
                             else Color.gray
                         }, {
-                            (unit.projectorPos.TE<HoloProjectorBuild>() != null).toFloat()
+                            (unit.projectorPos.castBuild<HoloProjectorBuild>() != null).toFloat()
                         })
                     )
                 }.Else {
                     bars.add(
                         Bar({
-                            val p = unit.projectorPos.TE<HoloProjectorBuild>()
+                            val p = unit.projectorPos.castBuild<HoloProjectorBuild>()
                             if (p != null) "${Iconc.home}"
                             else "${Iconc.cancel}"
                         }, {
                             S.Hologram
                         }, {
-                            (unit.projectorPos.TE<HoloProjectorBuild>() != null).toFloat()
+                            (unit.projectorPos.castBuild<HoloProjectorBuild>() != null).toFloat()
                         })
                     )
                 }
@@ -346,7 +347,7 @@ open class HoloUnitType(name: String) : UnitType(name) {
         table.row()
     }
 
-    fun <T> canShowPayload(unit: T): Boolean where T : MdtUnit, T : Payloadc =
+    fun <T> canShowPayload(unit: T): Boolean where T : MUnit, T : Payloadc =
         unit.type().payloadCapacity > 0f
 
     override fun drawShield(unit: Unit) {

@@ -20,12 +20,13 @@ import mindustry.graphics.Pal
 import mindustry.world.Block
 import mindustry.world.Tile
 import net.liplum.annotations.Subscribe
+import plumy.animation.ContextDraw.DrawScale
 import plumy.core.arc.darken
 import plumy.core.assets.TR
 import plumy.core.math.distance
 import plumy.core.math.divAssign
 import plumy.core.math.isZero
-import net.liplum.mdt.utils.*
+import plumy.dsl.*
 
 /**
  * G means graphics.
@@ -47,7 +48,7 @@ object G {
         get() = width * Draw.scl * Draw.xscl
     @JvmStatic
     val TR.realHeight: Float
-        get() = width * Draw.scl * Draw.yscl
+        get() = height * Draw.scl * Draw.yscl
     @JvmStatic
     val sclx: Float
         get() = Draw.scl * Draw.xscl
@@ -73,10 +74,10 @@ object G {
         lineColor: Color = Pal.placing, outlineColor: Color = Pal.gray,
         alpha: Float = -1f,
     ) {
-        val startDrawX = startBlock.toCenterWorldXY(startBlockX)
-        val startDrawY = startBlock.toCenterWorldXY(startBlockY)
-        val endDrawX = endBlock.toCenterWorldXY(endBlockX)
-        val endDrawY = endBlock.toCenterWorldXY(endBlockY)
+        val startDrawX = startBlock.getCenterWorldXY(startBlockX)
+        val startDrawY = startBlock.getCenterWorldXY(startBlockY)
+        val endDrawX = endBlock.getCenterWorldXY(endBlockX)
+        val endDrawY = endBlock.getCenterWorldXY(endBlockY)
         val segsf = distance(
             startDrawX,
             startDrawY,
@@ -133,10 +134,10 @@ object G {
         arrowColor: Color = Pal.accent,
         alpha: Float = -1f,
     ) {
-        val startDrawX = pointedBlock.toCenterWorldXY(pointedBlockX)
-        val startDrawY = pointedBlock.toCenterWorldXY(pointedBlockY)
-        val pointedDrawX = startBlock.toCenterWorldXY(startBlockX)
-        val pointedDrawY = startBlock.toCenterWorldXY(startBlockY)
+        val startDrawX = pointedBlock.getCenterWorldXY(pointedBlockX)
+        val startDrawY = pointedBlock.getCenterWorldXY(pointedBlockY)
+        val pointedDrawX = startBlock.getCenterWorldXY(startBlockX)
+        val pointedDrawY = startBlock.getCenterWorldXY(startBlockY)
         arrow(
             pointedDrawX, pointedDrawY,
             startDrawX, startDrawY,
@@ -153,8 +154,8 @@ object G {
         arrowColor: Color = Pal.power,
         alpha: Float = -1f,
     ) {
-        val pointedDrawX = pointedBlock.toCenterWorldXY(pointedBlockX)
-        val pointedDrawY = pointedBlock.toCenterWorldXY(pointedBlockY)
+        val pointedDrawX = pointedBlock.getCenterWorldXY(pointedBlockX)
+        val pointedDrawY = pointedBlock.getCenterWorldXY(pointedBlockY)
         Tmp.v2.set(1f, 1f).setAngle(degrees).setLength(22f)
         arrow(
             pointedDrawX + Tmp.v2.x, pointedDrawY + Tmp.v2.y,
@@ -217,15 +218,15 @@ object G {
             t.set(startDrawX, startDrawY).add(endDrawX, endDrawY)
             t /= 2f
             Draw.color(outline)
-            Icon.right.region.DrawSize(t.x, t.y, size = size + 0.4f, rotation = angle)
+            Icon.right.region.DrawScale(t.x, t.y, scale = size + 0.4f, rotation = angle)
             Draw.color(inner)
-            Icon.right.region.DrawSize(t.x, t.y, size = size, rotation = angle)
+            Icon.right.region.DrawScale(t.x, t.y, scale = size, rotation = angle)
         } else {
             for (i in 0 until count - 1) {
                 Draw.color(outline)
-                Icon.right.region.DrawSize(curX, curY, size = size + 0.4f, rotation = angle)
+                Icon.right.region.DrawScale(curX, curY, scale = size + 0.4f, rotation = angle)
                 Draw.color(inner)
-                Icon.right.region.DrawSize(curX, curY, size = size, rotation = angle)
+                Icon.right.region.DrawScale(curX, curY, scale = size, rotation = angle)
                 curX += per.x
                 curY += per.y
             }
@@ -262,10 +263,10 @@ object G {
         alphaMultiplier: Float = 1f,
     ) {
         arrowLineBreath(
-            startBlock.toCenterWorldXY(startBlockX),
-            startBlock.toCenterWorldXY(startBlockY),
-            endBlock.toCenterWorldXY(endBlockX),
-            endBlock.toCenterWorldXY(endBlockY),
+            startBlock.getCenterWorldXY(startBlockX),
+            startBlock.getCenterWorldXY(startBlockY),
+            endBlock.getCenterWorldXY(endBlockX),
+            endBlock.getCenterWorldXY(endBlockY),
             startBlock.size,
             density,
             arrowColor,
@@ -333,8 +334,8 @@ object G {
         circleColor: Color = Pal.power,
         alpha: Float = -1f, stroke: Float = 1f,
     ) = circle(
-        b.toCenterWorldXY(x),
-        b.toCenterWorldXY(y),
+        b.getCenterWorldXY(x),
+        b.getCenterWorldXY(y),
         (b.size / 2f + 1) * Vars.tilesize + sin - 2f,
         circleColor, alpha, stroke
     )
@@ -362,8 +363,8 @@ object G {
         circleColor: Color = Pal.power,
         alpha: Float = -1f, stroke: Float = 1f,
     ) = dashCircle(
-        b.toCenterWorldXY(x),
-        b.toCenterWorldXY(y),
+        b.getCenterWorldXY(x),
+        b.getCenterWorldXY(y),
         rad + sin - 2f,
         circleColor, alpha, stroke
     )
@@ -388,8 +389,8 @@ object G {
         range: WorldXY, color: Color = Pal.power,
         alpha: Float = -1f, stroke: Float = 1f,
     ) = dashCircle(
-        b.toCenterWorldXY(blockX),
-        b.toCenterWorldXY(BlockY),
+        b.getCenterWorldXY(blockX),
+        b.getCenterWorldXY(BlockY),
         range + sin - 2, color, alpha, stroke
     )
     @JvmStatic
@@ -497,5 +498,19 @@ object G {
         hitboxEntity.hitbox(Tmp.r1)
         val rect = Tmp.r1
         rect(rect.x, rect.y, rect.width, rect.height, color, alpha, stroke)
+    }
+    @JvmStatic
+    fun triangleShield(
+        x1: WorldXY, y1: WorldXY,
+        x2: WorldXY, y2: WorldXY,
+        x3: WorldXY, y3: WorldXY,
+    ) {
+        if (Vars.renderer.animateShields) {
+            Fill.tri(x1, y1, x2, y2, x3, y3)
+        } else {
+            Lines.line(x1, y1, x2, y2)
+            Lines.line(x1, y1, x3, y3)
+            Lines.line(x3, y3, x2, y2)
+        }
     }
 }

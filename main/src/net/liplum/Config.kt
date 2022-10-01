@@ -4,12 +4,11 @@ import arc.util.Log
 import arc.util.serialization.Json
 import arc.util.serialization.JsonWriter
 import net.liplum.common.F
-import net.liplum.mdt.HeadlessOnly
+import plumy.core.HeadlessOnly
 
 @HeadlessOnly
 class ConfigEntry private constructor() {
     var AutoUpdate: Boolean = false
-    var CheckUpdateInfoURL: String? = null
     var ContentSpecific: String = "vanilla"
 
     companion object {

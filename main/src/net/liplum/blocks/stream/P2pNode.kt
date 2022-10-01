@@ -13,6 +13,7 @@ import mindustry.gen.Building
 import mindustry.graphics.Layer
 import mindustry.logic.LAccess
 import mindustry.type.Liquid
+import mindustry.world.Block
 import mindustry.world.blocks.liquid.LiquidBlock
 import mindustry.world.meta.BlockGroup
 import net.liplum.DebugOnly
@@ -20,27 +21,28 @@ import net.liplum.R
 import net.liplum.Var
 import net.liplum.Var.YinYangRotationSpeed
 import net.liplum.api.cyber.*
-import net.liplum.blocks.AniedBlock
-import net.liplum.common.Changed
-import net.liplum.common.util.DrawLayer
+import net.liplum.common.Remember
+import net.liplum.mdt.CalledBySync
+import net.liplum.mdt.SendDataPack
+import net.liplum.mdt.render.Text
+import net.liplum.mdt.utils.sub
+import net.liplum.util.addStateMachineInfo
+import net.liplum.util.update
+import plumy.animation.ContextDraw.Draw
+import plumy.animation.ContextDraw.DrawOn
+import plumy.animation.state.IStateful
+import plumy.animation.state.State
+import plumy.animation.state.StateConfig
+import plumy.animation.state.configuring
+import plumy.core.ClientOnly
 import plumy.core.Serialized
+import plumy.core.WhenNotPaused
 import plumy.core.assets.EmptyTR
 import plumy.core.math.nextBoolean
-import net.liplum.mdt.CalledBySync
-import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.SendDataPack
-import net.liplum.mdt.WhenNotPaused
-import net.liplum.mdt.animation.anis.AniState
-import net.liplum.mdt.animation.anis.config
-import net.liplum.mdt.render.Draw
-import net.liplum.mdt.render.DrawOn
-import net.liplum.mdt.render.Text
-import net.liplum.mdt.utils.*
+import plumy.dsl.*
 import kotlin.math.absoluteValue
 
-private typealias AniStateP = AniState<P2pNode, P2pNode.P2pBuild>
-
-open class P2pNode(name: String) : AniedBlock<P2pNode, P2pNode.P2pBuild>(name) {
+open class P2pNode(name: String) : Block(name), IDataBlock {
     @ClientOnly var liquidPadding = 0f
     @ClientOnly var NoPowerTR = EmptyTR
     @JvmField var balancingSpeed = 1f
@@ -52,6 +54,7 @@ open class P2pNode(name: String) : AniedBlock<P2pNode, P2pNode.P2pBuild>(name) {
     @ClientOnly @JvmField var maxSelectedCircleTime = Var.SelectedCircleTime
     @ClientOnly var BottomTR = EmptyTR
     @ClientOnly var YinAndYangTR = EmptyTR
+    @ClientOnly var stateMachineConfig = StateConfig<P2pBuild>()
 
     init {
         buildType = Prov { P2pBuild() }
@@ -62,22 +65,28 @@ open class P2pNode(name: String) : AniedBlock<P2pNode, P2pNode.P2pBuild>(name) {
         outputsLiquid = true
         configurable = true
         noUpdateDisabled = true
-        callDefaultBlockDraw = false
         canOverdrive = false
         sync = true
-        config(java.lang.Integer::class.java) { b: P2pBuild, pos ->
-            b.connectedPos = pos.toInt()
+    }
+
+    override fun init() {
+        super.init()
+        config<P2pBuild, PackedPos> {
+            connectedPos = it
         }
-        configClear<P2pBuild> {
-            it.connected?.connectedPos = -1
-            it.connectedPos = -1
+        configNull<P2pBuild> {
+            connected?.connectedPos = -1
+            connectedPos = -1
+        }
+        ClientOnly {
+            configAnimationStateMachine()
         }
     }
 
     override fun load() {
         super.load()
-        NoPowerTR = this.inMod("rs-no-power")
         BottomTR = this.sub("bottom")
+        NoPowerTR = loadNoPower()
         YinAndYangTR = this.sub("yin-and-yang")
     }
 
@@ -101,10 +110,15 @@ open class P2pNode(name: String) : AniedBlock<P2pNode, P2pNode.P2pBuild>(name) {
     override fun setBars() {
         super.setBars()
         addP2pLinkInfo<P2pBuild>()
+        DebugOnly {
+            addStateMachineInfo<P2pBuild>()
+        }
     }
 
     override fun icons() = arrayOf(BottomTR, region, YinAndYangTR)
-    open inner class P2pBuild : AniedBuild(), IP2pNode {
+    open inner class P2pBuild : Building(),
+        IStateful<P2pBuild>, IP2pNode {
+        override val stateMachine by lazy { stateMachineConfig.instantiate(this) }
         override val maxRange = this@P2pNode.maxRange
         override val currentFluid: Liquid
             get() = liquids.current()
@@ -180,7 +194,7 @@ open class P2pNode(name: String) : AniedBlock<P2pNode, P2pNode.P2pBuild>(name) {
             }
         }
         @ClientOnly
-        var lastP2pColor = Changed.empty<Color>()
+        var lastP2pColor = Remember.empty<Color>()
         @ClientOnly
         var targetP2pColor = R.C.P2P
         override val color: Color
@@ -198,7 +212,7 @@ open class P2pNode(name: String) : AniedBlock<P2pNode, P2pNode.P2pBuild>(name) {
             }
             ClientOnly {
                 val other = connected ?: return@ClientOnly
-                if (other.isDrawer  == this.isDrawer) {
+                if (other.isDrawer == this.isDrawer) {
                     this.isDrawer = nextBoolean()
                     other.isDrawer = !this.isDrawer
                 }
@@ -207,19 +221,19 @@ open class P2pNode(name: String) : AniedBlock<P2pNode, P2pNode.P2pBuild>(name) {
                 val other = connected
                 if (other == null) {
                     if (targetP2pColor != R.C.P2P) {
-                        lastP2pColor = Changed(old = targetP2pColor)
+                        lastP2pColor = Remember(old = targetP2pColor)
                         targetP2pColor = R.C.P2P
                     }
                 } else {
                     if (currentAmount < 0.0001f) {
                         if (targetP2pColor != R.C.P2P) {
-                            lastP2pColor = Changed(old = targetP2pColor)
+                            lastP2pColor = Remember(old = targetP2pColor)
                             targetP2pColor = R.C.P2P
                         }
                     } else {
                         val fluidColor = currentFluid.fluidColor
                         if (targetP2pColor != fluidColor) {
-                            lastP2pColor = Changed(old = targetP2pColor)
+                            lastP2pColor = Remember(old = targetP2pColor)
                             targetP2pColor = fluidColor
                         }
                     }
@@ -228,7 +242,8 @@ open class P2pNode(name: String) : AniedBlock<P2pNode, P2pNode.P2pBuild>(name) {
         }
         @ClientOnly
         var yinYangRotation = 0f
-        override fun fixedDraw() {
+        override fun draw() {
+            stateMachine.update(delta())
             BottomTR.DrawOn(this)
             if (currentAmount > 0.001f) {
                 LiquidBlock.drawTiledFrames(
@@ -253,6 +268,7 @@ open class P2pNode(name: String) : AniedBlock<P2pNode, P2pNode.P2pBuild>(name) {
                     }
                 }
             }
+            stateMachine.draw()
         }
 
         override fun streamToAnother(amount: Float) {
@@ -325,7 +341,7 @@ open class P2pNode(name: String) : AniedBlock<P2pNode, P2pNode.P2pBuild>(name) {
         override fun control(type: LAccess, p1: Double, p2: Double, p3: Double, p4: Double) {
             when (type) {
                 LAccess.shoot -> {
-                    val receiver = buildAt(p1, p2)
+                    val receiver = Vars.world.build(p1, p2)
                     if (receiver is IP2pNode) connectToSync(receiver)
                 }
                 else -> super.control(type, p1, p2, p3, p4)
@@ -341,23 +357,20 @@ open class P2pNode(name: String) : AniedBlock<P2pNode, P2pNode.P2pBuild>(name) {
         }
     }
 
-    @ClientOnly lateinit var NormalAni: AniStateP
-    @ClientOnly lateinit var NoPowerAni: AniStateP
-    override fun genAniState() {
-        NormalAni = addAniState("Normal") {
-        }
-        NoPowerAni = addAniState("NoPower") {
+    @ClientOnly lateinit var NormalState: State<P2pNode.P2pBuild>
+    @ClientOnly lateinit var NoPowerState: State<P2pNode.P2pBuild>
+    fun configAnimationStateMachine() {
+        NormalState = State("Normal")
+        NoPowerState = State("NoPower") {
             NoPowerTR.Draw(x, y)
         }
-    }
-
-    override fun genAniConfig() {
-        config {
-            From(NormalAni) To NoPowerAni When {
-                !canConsume()
+        stateMachineConfig.configuring {
+            NormalState {
+                setDefaultState
+                NoPowerState { !canConsume() }
             }
-            From(NoPowerAni) To NormalAni When {
-                canConsume()
+            NoPowerState {
+                NormalState { canConsume() }
             }
         }
     }

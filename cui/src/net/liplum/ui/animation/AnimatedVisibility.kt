@@ -2,7 +2,6 @@ package net.liplum.ui.animation
 
 import arc.scene.Element
 import arc.util.Time
-import plumy.core.Idempotent
 import net.liplum.ui.BindingException
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
@@ -44,7 +43,6 @@ class AnimatedVisibility(
             bound = true
         } else throw BindingException("This has already been bound, can't bind with $e.")
     }
-    @Idempotent
     fun bindTimer(e: Element) {
         if (!bound) {
             e.update {

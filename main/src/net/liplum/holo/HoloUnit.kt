@@ -1,11 +1,9 @@
 package net.liplum.holo
 
-import arc.Core
 import arc.Events
 import arc.graphics.g2d.Draw
 import arc.graphics.g2d.Fill
 import arc.graphics.g2d.Lines
-import arc.math.Angles
 import arc.math.Mathf
 import arc.struct.Seq
 import arc.util.Time
@@ -25,16 +23,14 @@ import mindustry.world.blocks.power.PowerGraph
 import net.liplum.S
 import net.liplum.common.persistence.*
 import net.liplum.holo.HoloProjector.HoloProjectorBuild
-import plumy.core.Serialized
-import net.liplum.mdt.ClientOnly
 import net.liplum.mdt.mixin.PayloadMixin
 import net.liplum.mdt.render.G
-import net.liplum.mdt.utils.TE
-import net.liplum.mdt.utils.build
-import net.liplum.mdt.utils.exists
 import net.liplum.mdt.utils.hasShields
-import net.liplum.registry.CioFluids
+import net.liplum.registry.CioFluid
 import net.liplum.registry.EntityRegistry
+import plumy.core.ClientOnly
+import plumy.core.Serialized
+import plumy.dsl.*
 
 open class HoloUnit : UnitEntity(), PayloadMixin, IRevisionable {
     override val revisionID = 0
@@ -194,20 +190,13 @@ open class HoloUnit : UnitEntity(), PayloadMixin, IRevisionable {
 
     open fun drawMining() {
         if (mining()) {
-            val focusLen = hitSize / 2.0f + Mathf.absin(Time.time, 1.1f, 0.5f)
-            val swingScl = 12.0f
-            val swingMag = 1.0f
-            val px = x + Angles.trnsx(rotation, focusLen)
-            val py = y + Angles.trnsy(rotation, focusLen)
-            val ex = mineTile.worldx() + Mathf.sin(Time.time + 48.0f, swingScl, swingMag)
-            val ey = mineTile.worldy() + Mathf.sin(Time.time + 48.0f, swingScl + 2.0f, swingMag)
+            val ox = mineTile.worldx()
+            val oy = mineTile.worldy()
             Draw.z(115.1f)
             Draw.color(S.Hologram)
-            Draw.alpha(0.45f)
-            Drawf.laser(Core.atlas.find("minelaser"), Core.atlas.find("minelaser-end"), px, py, ex, ey, 0.75f)
-            if (this.isLocal) {
-                Lines.stroke(1.0f)
-                Lines.poly(mineTile.worldx(), mineTile.worldy(), 4, 4.0f * Mathf.sqrt2, Time.time)
+            val size = mineTile.overlay().size.worldXY
+            DrawLayer(Layer.buildBeam) {
+                Fill.poly(ox, oy, 8, size, Time.time)
             }
             Draw.color()
         }
@@ -235,7 +224,7 @@ open class HoloUnit : UnitEntity(), PayloadMixin, IRevisionable {
     }
 
     override fun updatePayload() {
-        val projector = projectorPos.TE<HoloProjectorBuild>()
+        val projector = projectorPos.castBuild<HoloProjectorBuild>()
         if (projector?.power != null)
             payloadPower = projector.power?.graph
 
@@ -256,14 +245,14 @@ open class HoloUnit : UnitEntity(), PayloadMixin, IRevisionable {
     }
 
     fun tryTransferCyberionInto(payload: Payload) {
-        val projector = projectorPos.TE<HoloProjectorBuild>() ?: return
+        val projector = projectorPos.castBuild<HoloProjectorBuild>() ?: return
         val type = type as? HoloUnitType ?: return
         if (payload is BuildPayload) {
             val build = payload.build
-            if (build.acceptLiquid(projector, CioFluids.cyberion)) {
+            if (build.acceptLiquid(projector, CioFluid.cyberion)) {
                 val amount = type.sacrificeCyberionAmount
                 time += type.sacrificeLifeFunc(amount)
-                build.handleLiquid(projector, CioFluids.cyberion, amount)
+                build.handleLiquid(projector, CioFluid.cyberion, amount)
             }
         }
     }

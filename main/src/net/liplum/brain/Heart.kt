@@ -32,32 +32,33 @@ import net.liplum.R
 import net.liplum.Var
 import net.liplum.api.brain.*
 import net.liplum.common.Smooth
-import net.liplum.common.util.bundle
+import plumy.dsl.bundle
 import net.liplum.common.util.format
 import net.liplum.common.util.toDouble
+import net.liplum.input.smoothPlacing
+import net.liplum.input.smoothSelect
+import plumy.core.ClientOnly
+import plumy.core.Else
+import plumy.core.WhenNotPaused
+import net.liplum.mdt.WhenTheSameTeam
+import plumy.animation.*
+import plumy.animation.ContextDraw.Draw
+import plumy.animation.ContextDraw.DrawScale
+import net.liplum.mdt.mixin.Mover
+import net.liplum.mdt.render.*
+import net.liplum.mdt.ui.bars.appendDisplayLiquidsDynamic
+import net.liplum.mdt.ui.bars.genAllLiquidBars
+import net.liplum.mdt.ui.bars.removeLiquidInBar
+import plumy.core.MUnit
+import net.liplum.mdt.utils.sheet
+import net.liplum.mdt.utils.sub
 import plumy.core.Serialized
 import plumy.core.arc.hsvLerp
 import plumy.core.assets.TR
 import plumy.core.assets.TRs
 import plumy.core.math.FUNC
 import plumy.core.math.isZero
-import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.Else
-import net.liplum.mdt.WhenNotPaused
-import net.liplum.mdt.WhenTheSameTeam
-import net.liplum.mdt.animation.anims.Anime
-import net.liplum.mdt.animation.anims.linearFrames
-import net.liplum.mdt.animation.anims.randomCurTime
-import net.liplum.mdt.animation.anims.setEnd
-import net.liplum.mdt.mixin.Mover
-import net.liplum.mdt.render.*
-import net.liplum.mdt.ui.bars.AddBar
-import net.liplum.mdt.ui.bars.appendDisplayLiquidsDynamic
-import net.liplum.mdt.ui.bars.genAllLiquidBars
-import net.liplum.mdt.ui.bars.removeLiquidInBar
-import net.liplum.mdt.utils.MdtUnit
-import net.liplum.mdt.utils.sheet
-import net.liplum.mdt.utils.sub
+import plumy.dsl.AddBar
 
 open class Heart(name: String) : Block(name), IComponentBlock {
     // Upgrade component
@@ -229,11 +230,11 @@ open class Heart(name: String) : Block(name), IComponentBlock {
         //</editor-fold>
         //<editor-fold desc="Controllable">
         var unit = UnitTypes.block.create(team) as BlockUnitc
-        override fun unit(): MdtUnit {
+        override fun unit(): MUnit {
             //make sure stats are correct
             unit.tile(this)
             unit.team(team)
-            return (unit as MdtUnit)
+            return (unit as MUnit)
         }
         //</editor-fold>
         //<editor-fold desc="Heat Block">
@@ -504,7 +505,7 @@ open class Heart(name: String) : Block(name), IComponentBlock {
             BaseTR.Draw(x, y)
             //heartbeatAnime.draw(x, y)
             heartbeatAnime.draw {
-                it.DrawSize(x, y, 1f + G.sin / realBreathIntensity)
+                it.DrawScale(x, y, 1f + G.sin / realBreathIntensity)
             }
             heatMeta.drawHeat(this, HeatTRs[heartbeatAnime.index])
         }

@@ -2,66 +2,49 @@ package net.liplum.registry
 
 import arc.func.Prov
 import arc.struct.ObjectMap
-import arc.util.Log
 import mindustry.gen.EntityMapping
 import mindustry.gen.Entityc
-import net.liplum.CLog.log
-import net.liplum.Meta
-import net.liplum.OnlyDebug
 import net.liplum.annotations.SubscribeEvent
 import net.liplum.api.cyber.DataNetworkUpdater
 import net.liplum.event.CioLoadContentEvent
 import net.liplum.holo.HoloUnit
-import net.liplum.mdt.IsServer
 
+/**
+ * For entity register.
+ * Because Mindustry forbade mod's [ClassLoader] to access parent,
+ * so this class won't be shared among different mods.
+ */
 object EntityRegistry {
-    private val Clz2Entry = ObjectMap<Class<*>, ProvEntry>()
-    private val Clz2Id = ObjectMap<Class<*>, Int>()
-    private fun registerInCio() {
-        this[HoloUnit::class.java] = { HoloUnit() }
-        //this[MagneticField::class.java] = { MagneticField.create() }
-        //this[NpcUnit::class.java] = { NpcUnit() }
-        this[DataNetworkUpdater::class.java] = { DataNetworkUpdater.create() }
+    data class ProvEntry(val name: String, val prov: Prov<*>)
+
+    val Clz2Entry = ObjectMap<Class<*>, ProvEntry>()
+    val Clz2Id = ObjectMap<Class<*>, Int>()
+    fun <T> register(clz: Class<T>, prov: Prov<T>) where T : Entityc {
+        Clz2Entry.put(clz, ProvEntry(clz.name, prov))
+        Clz2Id.put(clz, EntityMapping.register(clz.name, prov))
     }
 
-    private operator fun <T : Entityc> set(c: Class<T>, p: ProvEntry) {
-        Clz2Entry.put(c, p)
+    inline fun <reified T : Entityc> register(prov: Prov<T>) {
+        register(T::class.java, prov)
     }
 
-    private operator fun <T : Entityc> set(c: Class<T>, prov: Prov<T>) {
-        set(c, ProvEntry(c.javaClass.toString(), prov))
+    operator fun <T : Entityc> set(clz: Class<T>, prov: Prov<T>) {
+        register(clz, prov)
     }
 
-    fun <T : Entityc> getID(c: Class<T>): Int {
-        return Clz2Id[c]
-    }
+    operator fun <T : Entityc> get(c: Class<T>): Int = Clz2Id[c]
+    inline fun <reified T : Entityc> getIdOf(): Int = Clz2Id[T::class.java]
+}
 
-    operator fun <T : Entityc> get(c: Class<T>): Int = getID(c)
-    operator fun <T : Entityc> get(c: T): Int = getID(c.javaClass)
-    private fun register(clz: Class<*>) {
-        Clz2Id.put(clz, EntityMapping.register(clz.toString(), Clz2Entry[clz].prov))
-    }
+object CioEntity {
     @JvmStatic
     @SubscribeEvent(CioLoadContentEvent::class)
     fun registerAll() {
-        registerInCio()
-        val keys = Clz2Entry.keys().toSeq().sortComparing {
-            it.name
-        }
-        keys.forEach { register(it) }
-        (OnlyDebug or IsServer){
-            Clz2Id.log("${Meta.Name} Unit") { clz, i ->
-                Log.info("${i}|${clz.simpleName}")
-            }
+        EntityRegistry.apply {
+            register<HoloUnit>(::HoloUnit)
+            register<DataNetworkUpdater>(DataNetworkUpdater::create)
+            //this[MagneticField::class.java] = { MagneticField.create() }
+            //this[NpcUnit::class.java] = { NpcUnit() }
         }
     }
-}
-
-private class ProvEntry(
-    val name: String, val prov: Prov<*>
-) {
-    constructor(prov: Prov<*>) : this(
-        prov.get().javaClass.toString(),
-        prov
-    )
 }

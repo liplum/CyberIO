@@ -102,15 +102,15 @@ vec3 blend(vec3 x, vec3 y, float opacity) {
     return z * opacity + x * (1.0 - opacity);
 }
 
-// Gold Noise ©2015 dcerisano@standard3d.com
-// - based on the Golden Ratio
-// - uniform normalized distribution
-// - fastest static noise generator function (also runs at low precision)
-// - use with indicated seeding method.
+    // Gold Noise ©2015 dcerisano@standard3d.com
+    // - based on the Golden Ratio
+    // - uniform normalized distribution
+    // - fastest static noise generator function (also runs at low precision)
+    // - use with indicated seeding method.
 
-// Φ = Golden Ratio
-#define PHI 1.61803398874989484820459
+    // Φ = Golden Ratio
+    #define PHI 1.61803398874989484820459
 // you have to multiple xy by 200 - 1000
-float gold_noise(vec2 xy,float seed){
+float gold_noise(vec2 xy, float seed){
     return fract(tan(distance(xy*PHI, xy)*seed)*xy.x);
 }

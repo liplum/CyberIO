@@ -11,7 +11,7 @@ object CacheReader {
     inline fun startRead(
         read: Reads,
         revision: Int,
-        reading: CacheReaderSpec.() -> Unit
+        reading: CacheReaderSpec.() -> Unit,
     ) {
         // Read the revision number
         val readRevision = read.i()

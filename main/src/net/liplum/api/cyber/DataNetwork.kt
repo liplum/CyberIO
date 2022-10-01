@@ -17,7 +17,7 @@ import net.liplum.data.PayloadDataList
 import plumy.core.Serialized
 import net.liplum.common.delegate.Delegate
 import net.liplum.common.util.Index
-import net.liplum.mdt.ClientOnly
+import plumy.core.ClientOnly
 import plumy.pathkt.*
 import java.util.*
 

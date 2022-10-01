@@ -3,13 +3,13 @@ package net.liplum.script
 import arc.Events
 import mindustry.Vars
 import net.liplum.event.UnitTapEvent
-import net.liplum.mdt.utils.MdtUnit
+import plumy.core.MUnit
 
 object NpcSystem {
     var curText =
         "To be, or not to be, that is the question."
     var showNpcDialog = false
-    var curNpc : MdtUnit? = null
+    var curNpc: MUnit? = null
     val npcDialog = NpcDialogFrag().apply {
         showDialog = { showNpcDialog }
         text = { curText }
@@ -17,17 +17,14 @@ object NpcSystem {
             Script.goNext()
         }
     }
-
     @JvmStatic
     fun showDialog() {
         showNpcDialog = true
     }
-
     @JvmStatic
-    fun closeDialog(){
+    fun closeDialog() {
         showNpcDialog = false
     }
-
     @JvmStatic
     fun register() {
         val hudGroup = Vars.ui.hudGroup

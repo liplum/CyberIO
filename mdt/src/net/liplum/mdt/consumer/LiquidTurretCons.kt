@@ -7,7 +7,7 @@ import mindustry.world.meta.Stats
 
 class LiquidTurretCons(
     vararg val types: Liquid,
-) : ConsumeLiquidFilter({ it in types }, 1f){
+) : ConsumeLiquidFilter({ it in types }, 1f) {
     override fun update(build: Building) {}
     override fun display(stats: Stats) {}
 }

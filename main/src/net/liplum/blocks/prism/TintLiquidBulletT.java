@@ -20,10 +20,10 @@ public class TintLiquidBulletT extends LiquidBulletType {
     @Override
     public void draw(Bullet b) {
         super.draw(b);
-        if(liquid.willBoil()){
+        if (liquid.willBoil()) {
             Draw.color(tintColor, Tmp.c3.set(liquid.gasColor).a(0.4f), b.time / Mathf.randomSeed(b.id, boilTime));
             Fill.circle(b.x, b.y, orbSize * (b.fin() * 1.1f + 1f));
-        }else{
+        } else {
             Draw.color(tintColor, Color.white, b.fout() / 100f);
             Fill.circle(b.x, b.y, orbSize);
         }

@@ -7,9 +7,9 @@ import mindustry.graphics.Pal
 import mindustry.world.Block
 import mindustry.world.meta.Stats
 import net.liplum.R
-import net.liplum.common.util.bundle
+import plumy.dsl.bundle
 import net.liplum.common.util.toFloat
-import net.liplum.mdt.ui.bars.AddBar
+import plumy.dsl.AddBar
 import net.liplum.registry.CioStats
 import net.liplum.ui.addTable
 import net.liplum.ui.then

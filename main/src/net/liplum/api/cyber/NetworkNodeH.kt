@@ -22,17 +22,21 @@ import net.liplum.api.cyber.SideLinks.Companion.coordinates
 import net.liplum.api.cyber.SideLinks.Companion.reflect
 import plumy.core.assets.TR
 import net.liplum.common.shader.use
-import net.liplum.common.util.DrawLayer
+import plumy.dsl.DrawLayer
 import net.liplum.data.EmptyDataID
 import net.liplum.data.PayloadData
 import plumy.core.math.Progress
 import plumy.core.math.between
 import plumy.core.math.pow3InIntrp
-import net.liplum.mdt.advanced.Inspector.isPlacing
-import net.liplum.mdt.advanced.Inspector.isSelected
+import net.liplum.input.Inspector.isPlacing
+import net.liplum.input.Inspector.isSelected
+import net.liplum.input.smoothPlacing
+import net.liplum.input.smoothSelect
+import plumy.animation.ContextDraw.Draw
+import plumy.animation.ContextDraw.DrawSize
 import net.liplum.mdt.render.*
-import net.liplum.mdt.utils.*
 import net.liplum.registry.SD
+import plumy.dsl.*
 import kotlin.math.absoluteValue
 
 /**
@@ -66,7 +70,7 @@ fun INetworkNode.updateCardinalDirections() = building.run body@{
                 run firstCheck@{
                     // Firstly, if the target has a link on this side(of course, reflected)
                     // check whether this node is closer than the old one target has
-                    val targetReflectSideNode = dest.links[side.reflect].TEAny<INetworkNode>()
+                    val targetReflectSideNode = dest.links[side.reflect].castBuild<INetworkNode>()
                     // The current node this target links on the corresponding side
                     if (targetReflectSideNode != null) {
                         // If this node is nearer than the old one target linked, let target link to this.
@@ -81,7 +85,7 @@ fun INetworkNode.updateCardinalDirections() = building.run body@{
                 run secondCheck@{
                     // Secondly, if this has a link on this side
                     // check whether the target is closer than the old one.
-                    val preNode = pre.TEAny<INetworkNode>()
+                    val preNode = pre.castBuild<INetworkNode>()
                     if (preNode != null) {
                         if (destBuild.dst(this) < preNode.building.dst(this)) {
                             if (canLink(side, dest)) {
@@ -136,7 +140,7 @@ fun INetworkNode.drawSelectingCardinalDirections() = building.run {
                 break
             }
             DebugOnly {
-                val tile = tileAt(tileX + j * dir.x, tileY + j * dir.y)
+                val tile = world.tile(tileX + j * dir.x, tileY + j * dir.y)
                 if (tile != null) {
                     Tmp.r1.setCenter(tile.x.worldXY, tile.y.worldXY)
                         .setSize(Vars.tilesize.toFloat())
@@ -256,7 +260,7 @@ fun INetworkNode.drawLinkInfo() = building.run {
             val size = block.size.worldXY / 2f
             val dir = coordinates[side]
             val pos = links[side]
-            val text = pos.TEAny<INetworkNode>()?.let { "${it.tile.x},${it.tile.y}" } ?: "-1"
+            val text = pos.castBuild<INetworkNode>()?.let { "${it.tile.x},${it.tile.y}" } ?: "-1"
             Text.drawTextEasy(
                 text,
                 x + size * dir.x, y + size * dir.y,
@@ -295,7 +299,7 @@ fun INetworkNode.drawRangeCircle(alpha: Float) = building.run {
 }
 
 fun INetworkBlock.drawRangeCircle(x: TileXY, y: TileXY, alpha: Float) = block.run {
-    G.circleBreath(toCenterWorldXY(x), toCenterWorldXY(y), linkRange, alpha = alpha)
+    G.circleBreath(getCenterWorldXY(x), getCenterWorldXY(y), linkRange, alpha = alpha)
 }
 
 fun INetworkNode.drawRail(beamTR: TR, beamEndTR: TR) {
@@ -446,14 +450,14 @@ fun INetworkNode.drawDataInSending(
         if (side % 2 == 1) { // Top or Bottom
             val thisY = oy + dir.y * thisOffset
             val targY = ty - dir.y * tOffset
-            payload.icon().DrawAny(
+            payload.icon().DrawSize(
                 x, progress.between(thisY, targY),
                 width = Var.NetworkPayloadSizeInRail, height = Var.NetworkPayloadSizeInRail,
             )
         } else { // Right or Left
             val thisX = ox + dir.x * thisOffset
             val targX = tx - dir.x * tOffset
-            payload.icon().DrawAny(
+            payload.icon().DrawSize(
                 progress.between(thisX, targX), y,
                 width = Var.NetworkPayloadSizeInRail, height = Var.NetworkPayloadSizeInRail,
             )

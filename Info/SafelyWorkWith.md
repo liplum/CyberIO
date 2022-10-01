@@ -15,7 +15,6 @@ Tip: Using **Ctrl-F** to search for the mod you want is an easy way.
 
 All tests **only** considered Cyber IO works with a single mod once.
 
-
 | Mod Name             | Version | Safe | Mod ID    | Note                                                                |
 |----------------------|---------|------|-----------|---------------------------------------------------------------------|
 | Progressed Mindustry | v24     | Y    | prog-mats | Fixed CritBulletType and RiftBulletType with Prism will crash game. |

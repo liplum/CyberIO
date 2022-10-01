@@ -3,21 +3,29 @@ package net.liplum.holo
 import mindustry.type.Item
 import mindustry.type.ItemStack
 import mindustry.type.LiquidStack
+import net.liplum.registry.CioFluid
 import plumy.core.arc.Tick
-import net.liplum.mdt.utils.plus
-import net.liplum.registry.CioFluids
+import plumy.dsl.plus
 
-open class HoloPlan(
+class HoloPlan(
     val unitType: HoloUnitType,
-    val req: Requirement,
-    val time: Tick,
-)
+    val req: HoloPlanRequirement,
+) {
+    val time: Tick get() = req.time
+    val cyberion get() = req.cyberion
+    val items get() = req.items
+    val liquid get() = req.liquid
+    val liquidArray get() = req.liquidArray
+    operator fun contains(stack: ItemStack) = stack in req
+    operator fun contains(item: Item) = item in req
+}
 
-open class Requirement(
+class HoloPlanRequirement(
     val cyberion: Float = 0f,
     val items: Array<ItemStack> = emptyArray(),
+    val time: Tick,
 ) {
-    val liquid = CioFluids.cyberion + cyberion
+    val liquid = CioFluid.cyberion + cyberion
     val liquidArray = arrayOf(liquid)
     operator fun contains(stack: ItemStack): Boolean {
         for (req in items)
@@ -33,6 +41,6 @@ open class Requirement(
 }
 
 val HoloPlan?.itemReqs: Array<ItemStack>
-    get() = this?.req?.items ?: ItemStack.empty
+    get() = this?.items ?: ItemStack.empty
 val HoloPlan?.cyberionReq: LiquidStack?
-    get() = this?.req?.liquid
+    get() = this?.liquid

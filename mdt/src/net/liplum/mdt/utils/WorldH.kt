@@ -1,19 +1,11 @@
-@file:JvmName("MdtH")
-@file:Suppress("UNCHECKED_CAST")
-
 package net.liplum.mdt.utils
 
-import arc.math.Mathf
 import arc.math.geom.Point2
-import arc.math.geom.Position
 import mindustry.Vars
 import mindustry.content.Blocks
 import mindustry.ctype.Content
 import mindustry.ctype.UnlockableContent
 import mindustry.entities.Units
-import mindustry.entities.bullet.BasicBulletType
-import mindustry.entities.bullet.BulletType
-import mindustry.entities.pattern.ShootPattern
 import mindustry.game.Team
 import mindustry.gen.Building
 import mindustry.type.UnitType
@@ -21,46 +13,11 @@ import mindustry.world.Block
 import mindustry.world.Tile
 import mindustry.world.blocks.payloads.BuildPayload
 import mindustry.world.blocks.payloads.PayloadConveyor
-import mindustry.world.blocks.payloads.PayloadSource
 import mindustry.world.blocks.payloads.UnitPayload
 import plumy.core.Out
 import plumy.core.math.Point2f
+import plumy.dsl.*
 
-typealias TileXY = Int
-typealias TileXYs = Short
-typealias TileXYf = Float
-typealias TileXYd = Double
-typealias WorldXY = Float
-typealias PackedPos = Int
-typealias Pos = Point2
-
-fun PackedPos.unpack(): Pos =
-    Point2.unpack(this)
-
-val Pos.isEmpty: Boolean
-    get() = x < 0 || y < 0
-
-fun NewEmptyPos() = Pos(-1, -1)
-fun tileAt(x: TileXY, y: TileXY): Tile? =
-    Vars.world.tile(x, y)
-
-fun tileAt(x: TileXYf, y: TileXYf): Tile? =
-    Vars.world.tile(x.toInt(), y.toInt())
-
-fun tileAt(x: TileXYd, y: TileXYd): Tile? =
-    Vars.world.tile(x.toInt(), y.toInt())
-
-fun buildAt(x: TileXY, y: TileXY): Building? =
-    Vars.world.build(x, y)
-
-fun buildAt(x: TileXYf, y: TileXYf): Building? =
-    Vars.world.build(x.toInt(), y.toInt())
-
-fun buildAt(x: TileXYd, y: TileXYd): Building? =
-    Vars.world.build(x.toInt(), y.toInt())
-
-fun Tile.dstWorld(x: TileXY, y: TileXY): WorldXY =
-    this.dst(x * Vars.tilesize.toFloat(), y * Vars.tilesize.toFloat())
 /**
  * Get the world coordinate of building
  * @param pos Output Parameter.
@@ -71,18 +28,7 @@ fun Building.worldPos(@Out pos: Point2f): Point2f {
     return pos
 }
 
-val Int.build: Building?
-    get() = Vars.world.build(this)
-val Point2.build: Building?
-    get() = Vars.world.build(x, y)
-
-fun <T : Building> Int.TE(): T? =
-    Vars.world.build(this) as? T
-
-fun <T> Int.TEAny(): T? =
-    Vars.world.build(this) as? T
-
-fun <T> Int.inPayload(): T? {
+inline fun <reified T> Int.inPayload(): T? {
     val build = this.build
     if (build is PayloadConveyor.PayloadConveyorBuild) {
         val payload = build.payload
@@ -95,7 +41,7 @@ fun <T> Int.inPayload(): T? {
     return null
 }
 
-fun <T> Point2.inPayload(): T? {
+inline fun <reified T> Point2.inPayload(): T? {
     val build = this.build
     if (build is PayloadConveyor.PayloadConveyorBuild) {
         val payload = build.payload
@@ -108,7 +54,7 @@ fun <T> Point2.inPayload(): T? {
     return null
 }
 
-fun <T> Int.inPayloadBuilding(): T? where T : Building {
+inline fun <reified T> Int.inPayloadBuilding(): T? where T : Building {
     val build = this.build
     if (build is PayloadConveyor.PayloadConveyorBuild) {
         return (build.payload as? BuildPayload)?.build as? T
@@ -116,7 +62,7 @@ fun <T> Int.inPayloadBuilding(): T? where T : Building {
     return null
 }
 
-fun <T> Int.inPayloadUnit(): T? where T : MdtUnit {
+inline fun <reified T> Int.inPayloadUnit(): T? where T : MUnit {
     val build = this.build
     if (build is PayloadConveyor.PayloadConveyorBuild) {
         return (build.payload as? UnitPayload)?.unit as? T
@@ -124,18 +70,10 @@ fun <T> Int.inPayloadUnit(): T? where T : MdtUnit {
     return null
 }
 
-val Building?.exists: Boolean
-    get() = this != null && this.tile.build == this
 val Building?.inPayload: Boolean
     get() = this != null && this.tile == Vars.emptyTile
 val Building?.existsOrInPayload: Boolean
     get() = this != null && (this.tile.build == this || this.tile == Vars.emptyTile)
-
-fun <T> Array<T>.randomOne(): T =
-    this[Mathf.random(0, this.size - 1)]
-
-val Content.ID: Int
-    get() = this.id.toInt()
 
 fun ItemTypeAmount(): Int =
     Vars.content.items().size
@@ -197,44 +135,6 @@ inline fun ForEachUnlockableContent(func: (UnlockableContent) -> Unit) {
         if (it is UnlockableContent) func(it)
     }
 }
-
-fun BasicBulletType(textureName: String): BasicBulletType {
-    return BasicBulletType(1f, 1f, textureName)
-}
-
-fun <T : BulletType> BulletType.copyAs(): T =
-    this.copy() as T
-
-fun <T : ShootPattern> ShootPattern.copyAs(): T =
-    this.copy() as T
-/**
- * Tile xy to world xy. Take block's offset into account
- */
-fun Block.toCenterWorldXY(xy: TileXYs): WorldXY =
-    offset + xy * Vars.tilesize
-/**
- * Tile xy to world xy. Take block's offset into account
- */
-fun Block.toCenterWorldXY(xy: TileXY): WorldXY =
-    offset + xy * Vars.tilesize
-
-fun Block.toCenterTileXY(xy: TileXY): TileXYf =
-    offset + xy
-
-val WorldXY.tileXY: TileXY
-    get() = (this / Vars.tilesize).toInt()
-/**
- * Tile xy to world xy
- */
-val TileXYs.worldXY: WorldXY
-    get() = this.toFloat() * Vars.tilesize
-/**
- * Tile xy to world xy
- */
-val TileXY.worldXY: WorldXY
-    get() = this.toFloat() * Vars.tilesize
-val TileXYf.worldXY: WorldXY
-    get() = this * Vars.tilesize
 @JvmOverloads
 fun Tile.left(distance: TileXY = 1): Tile? {
     return Vars.world.tile(x.toInt() - distance, y.toInt())
@@ -274,7 +174,7 @@ val Building.topRightY: TileXY
 
 fun Building.isDiagonalTo(other: Block, x: TileXY, y: TileXY) =
     plumy.core.math.isDiagonalTo(
-        other.toCenterWorldXY(x), other.toCenterWorldXY(y),
+        other.getCenterWorldXY(x), other.getCenterWorldXY(y),
         this.x, this.y,
     )
 
@@ -313,13 +213,3 @@ fun worldWidth(): Float =
 
 fun worldHeight(): Float =
     Vars.world.tiles.height * Vars.tilesize + Vars.finalWorldBounds
-
-fun Position.inWorld(): Boolean {
-    if (x < -Vars.finalWorldBounds ||
-        y < -Vars.finalWorldBounds
-    ) return false
-    if (x > Vars.world.tiles.height * Vars.tilesize + Vars.finalWorldBounds * 2 ||
-        y > Vars.world.tiles.height * Vars.tilesize + Vars.finalWorldBounds
-    ) return false
-    return true
-}

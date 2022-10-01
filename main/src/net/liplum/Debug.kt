@@ -64,7 +64,7 @@ object Debug {
         val name: () -> String,
         val getter: () -> T,
         val setter: (T) -> Unit,
-        val type: SettingType
+        val type: SettingType,
     )
 
     var shaders = listOf(
@@ -112,11 +112,11 @@ object Debug {
 
     class Shader(
         val type: ShaderType,
-        val shaderSetter: (ShaderBase) -> Unit
+        val shaderSetter: (ShaderBase) -> Unit,
     )
 
     enum class VertShaderType(
-        val filePath: String
+        val filePath: String,
     ) {
         Default("default.vert"),
         ScreenSpace("screenspace.vert");
@@ -125,6 +125,6 @@ object Debug {
     class ShaderType(
         val name: String,
         val ctor: ShaderCtor<ShaderBase>,
-        val vertShaderType: VertShaderType
+        val vertShaderType: VertShaderType,
     )
 }

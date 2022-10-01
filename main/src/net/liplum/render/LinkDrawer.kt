@@ -1,5 +1,6 @@
 package net.liplum.render
 
+import arc.graphics.g2d.Draw
 import arc.util.Time
 import mindustry.Vars
 import mindustry.game.EventType
@@ -9,8 +10,8 @@ import net.liplum.annotations.Subscribe
 import net.liplum.api.ICyberEntity
 import net.liplum.api.cyber.*
 import plumy.core.math.smooth
-import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.advanced.Inspector
+import plumy.core.ClientOnly
+import net.liplum.input.Inspector
 
 object LinkDrawer {
     var lastSelected: ICyberEntity? = null
@@ -52,6 +53,7 @@ object LinkDrawer {
             selected?.drawLink(true)
         }
         Var.GlobalLinkDrawerAlpha = 1f
+        Draw.reset()
     }
 
     fun Any.drawLink(showCircle: Boolean) {

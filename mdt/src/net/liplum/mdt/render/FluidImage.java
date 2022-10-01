@@ -12,6 +12,7 @@ import mindustry.ui.Styles;
 public class FluidImage extends Stack {
     /**
      * No amount text
+     *
      * @param region the fluid icon
      */
     public FluidImage(TextureRegion region) {

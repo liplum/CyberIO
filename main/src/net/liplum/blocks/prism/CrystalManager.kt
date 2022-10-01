@@ -8,8 +8,8 @@ import net.liplum.common.entity.Queue
 import net.liplum.common.persistence.read
 import net.liplum.common.persistence.write
 import plumy.core.math.Progress
-import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.utils.TE
+import plumy.core.ClientOnly
+import plumy.dsl.castBuild
 
 enum class Status {
     Shrinking, Expending
@@ -103,7 +103,7 @@ open class CrystalManager(
 
     fun unlinkAllObelisks() {
         obelisks.forEach {
-            it.TE<Obelisk>()?.unlink()
+            it.castBuild<Obelisk>()?.unlink()
         }
     }
 
@@ -112,7 +112,7 @@ open class CrystalManager(
             if (it == null) {
                 false
             } else {
-                val build = it.TE<Obelisk>()
+                val build = it.castBuild<Obelisk>()
                 if (build == null) true
                 else if (build.linked != prism.pos()) {
                     build.unlink()
@@ -124,7 +124,7 @@ open class CrystalManager(
 
     fun clearObelisk() {
         obelisks.forEach {
-            it.TE<Obelisk>()?.unlink()
+            it.castBuild<Obelisk>()?.unlink()
         }
         obelisks.clear()
     }

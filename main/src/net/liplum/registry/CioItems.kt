@@ -7,7 +7,7 @@ import net.liplum.VanillaSpec
 import net.liplum.annotations.DependOn
 import net.liplum.type.SpecItem
 
-object CioItems {
+object CioItem {
     @JvmStatic lateinit var ic: Item
     @DependOn
     fun ic() {

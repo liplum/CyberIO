@@ -2,8 +2,8 @@ package net.liplum
 
 import arc.math.Rand
 import mindustry.Vars
-import net.liplum.mdt.utils.WorldXY
 import net.liplum.ui.NavigationService
+import plumy.dsl.WorldXY
 
 object Var {
     @JvmField var ContentSpecific = ContentSpec.Vanilla
@@ -51,4 +51,10 @@ object Var {
     const val LinkDrawerTime = 20f
     var HoloWallTintAlpha = 0.6423f // Vanilla as default
     var HoloUnitTintAlpha = 0.404f // Vanilla as default
+    const val PrismCrystalPassThroughBloomTime = 12f
+
+    object Data {
+        const val UpDownFrameNumber = 7
+        const val UpDownDuration = 30f
+    }
 }

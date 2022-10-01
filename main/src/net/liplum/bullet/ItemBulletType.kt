@@ -7,7 +7,7 @@ import mindustry.content.Items
 import mindustry.entities.bullet.BulletType
 import mindustry.gen.Bullet
 import mindustry.type.Item
-import net.liplum.mdt.render.DrawSize
+import plumy.animation.ContextDraw.DrawScale
 
 open class ItemBulletType : BulletType() {
     var drawSizer: Bullet.() -> Float = { 1f }
@@ -23,7 +23,7 @@ open class ItemBulletType : BulletType() {
         // Using fdata instead of data is for Prism
         val item = item()
         Draw.color(hitColor)
-        item.fullIcon.DrawSize(x, y, drawSizer(), rotation())
+        item.fullIcon.DrawScale(x, y, drawSizer(), rotation())
     }
 
     override fun drawTrail(b: Bullet) = b.run {

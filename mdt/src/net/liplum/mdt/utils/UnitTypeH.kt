@@ -4,7 +4,6 @@ import arc.func.Prov
 import mindustry.Vars
 import mindustry.gen.EntityMapping
 
-@JvmOverloads
 fun registerUnitType(name: String, Number: Int = 3) {
     EntityMapping.nameMap.put(
         Vars.content.transformName(name),
@@ -18,7 +17,6 @@ fun registerUnitType(name: String, constructor: Prov<*>) {
         constructor
     )
 }
-@JvmOverloads
 fun <T> NewUnitType(name: String, typeCtor: (String) -> T, Number: Int = 3): T {
     EntityMapping.nameMap.put(
         Vars.content.transformName(name),
@@ -27,10 +25,13 @@ fun <T> NewUnitType(name: String, typeCtor: (String) -> T, Number: Int = 3): T {
     return typeCtor(name)
 }
 
-fun <T> NewUnitType(name: String, typeCtor: (String) -> T, unitCtor: Prov<*>): T {
+inline fun <T> NewUnitType(
+    name: String, noinline typeCtor: (String) -> T, unitCtor: Prov<*>,
+    config: T.()->Unit
+): T {
     EntityMapping.nameMap.put(
         Vars.content.transformName(name),
         unitCtor
     )
-    return typeCtor(name)
+    return typeCtor(name).apply(config)
 }

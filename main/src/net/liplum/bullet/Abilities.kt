@@ -18,20 +18,20 @@ import mindustry.graphics.Layer
 import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.api.bullets.BulletAbility
-import net.liplum.common.util.DrawLayer
+import plumy.dsl.DrawLayer
 import net.liplum.mdt.render.G
-import net.liplum.mdt.utils.MdtUnit
-import net.liplum.mdt.utils.inWorld
-import net.liplum.mdt.utils.worldXY
+import plumy.core.MUnit
+import plumy.dsl.inTheWorld
+import plumy.dsl.worldXY
 import net.liplum.render.CioFx
-import net.liplum.render.Shapes
+import net.liplum.render.Shape
 
 open class ProvidenceBA : BulletAbility() {
     var range = 25f
     var damage = 1f
     var lightAlpha = 0.4f
     var lightColor: Color = R.C.Providence
-    protected var actionOnUnit: Cons<MdtUnit> = Cons {
+    protected var actionOnUnit: Cons<MUnit> = Cons {
         it.damageContinuousPierce(damage)
     }
 
@@ -44,7 +44,7 @@ open class ProvidenceBA : BulletAbility() {
             Draw.color(Tmp.c1.set(lightColor).lerp(bulletType.lightColor, 0.5f))
             Draw.alpha(lightAlpha)
             val range = range * (1f + G.sin / 9f) * 2f
-            Draw.rect(Shapes.motionCircle, x, y, range, range)
+            Draw.rect(Shape.motionCircle, x, y, range, range)
         }
         DebugOnly {
             G.circle(x, y, this@ProvidenceBA.range, alpha = 0.3f)
@@ -65,7 +65,7 @@ open class SlowDownBA : BulletAbility() {
     var slowDown = 0.2f
     var darkAlpha = 0.7f
     var darkColor: Color = R.C.Black
-    protected var actionOnUnit: Cons<MdtUnit> = Cons {
+    protected var actionOnUnit: Cons<MUnit> = Cons {
         val original = it.vel.len()
         val new = original * slowDown
         val delta = (original - new) * Time.delta
@@ -81,7 +81,7 @@ open class SlowDownBA : BulletAbility() {
             val range = range * (1f + G.sin / 9f) * 2f
             Draw.color(darkColor)
             Draw.alpha(darkAlpha)
-            Draw.rect(Shapes.motionCircle, x, y, range, range)
+            Draw.rect(Shape.motionCircle, x, y, range, range)
         }
         DebugOnly {
             G.circle(x, y, range, alpha = 0.3f)
@@ -98,7 +98,7 @@ open class SlowDownBA : BulletAbility() {
 
 open class InfiniteBA : BulletAbility() {
     override fun update(b: Bullet) = b.run {
-        if (!b.inWorld()) {
+        if (!b.inTheWorld()) {
             b.remove()
         }
         time = 0f
@@ -178,7 +178,7 @@ open class BlackHoleBA : BulletAbility() {
             Draw.color(R.C.Black)
             Draw.alpha(0.5f)
             val range = range * (1f + G.sin / 9f) * 2f
-            Draw.rect(Shapes.motionCircle, x, y, range, range)
+            Draw.rect(Shape.motionCircle, x, y, range, range)
         }
         DebugOnly {
             G.circle(x, y, range, alpha = 0.3f)

@@ -22,9 +22,9 @@ public class VirusU {
         Floor floor = tile.floor();
         Floor overlay = tile.overlay();
         if (UninfectedBlocksRegistry.hasFloor(floor) ||
-                UninfectedBlocksRegistry.hasOverlay(overlay) ||
-                UninfectedBlocksRegistry.hasBlock(block) ||
-                UninfectedBlocksRegistry.hasGroup(block.group)
+            UninfectedBlocksRegistry.hasOverlay(overlay) ||
+            UninfectedBlocksRegistry.hasBlock(block) ||
+            UninfectedBlocksRegistry.hasGroup(block.group)
         ) {
             return false;
         }

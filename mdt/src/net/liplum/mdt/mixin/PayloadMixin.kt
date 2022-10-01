@@ -26,7 +26,7 @@ import mindustry.world.blocks.payloads.Payload
 import mindustry.world.blocks.payloads.UnitPayload
 import mindustry.world.blocks.power.PowerGraph
 import plumy.core.math.sqr
-import net.liplum.mdt.utils.MdtUnit
+import plumy.core.MUnit
 
 interface PayloadMixin : Payloadc, PowerGraphc {
     val unitType: UnitType
@@ -92,7 +92,7 @@ interface PayloadMixin : Payloadc, PowerGraphc {
         Events.fire(PickupEvent(self(), tile))
     }
 
-    override fun pickup(unit: MdtUnit) {
+    override fun pickup(unit: MUnit) {
         unit.remove()
         addPayload(UnitPayload(unit))
         Fx.unitPickup.at(unit)
@@ -148,7 +148,7 @@ interface PayloadMixin : Payloadc, PowerGraphc {
         ) {
             val rot = ((this.rotation() + 45.0f) / 90.0f).toInt() % 4
             payload.place(on, rot)
-            Events.fire(PayloadDropEvent(this as MdtUnit, tile))
+            Events.fire(PayloadDropEvent(this as MUnit, tile))
             val controllerName = (this as Unitc).controllerName
             if (controllerName != null) {
                 payload.build.lastAccessed = controllerName

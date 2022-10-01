@@ -3,11 +3,11 @@ package net.liplum
 import arc.Core.settings
 import arc.math.Interp
 import mindustry.Vars
-import net.liplum.common.Setting
-import plumy.core.arc.invoke
-import net.liplum.mdt.ClientOnly
+import plumy.dsl.Setting
+import plumy.core.ClientOnly
 import net.liplum.script.KeyNotFoundException
 import net.liplum.update.Version2
+import plumy.core.math.invoke
 
 object Settings {
     @ClientOnly @JvmField var LinkOpacity = 1f
@@ -38,7 +38,7 @@ object Settings {
         ReplaceWith("Settings.LastWelcomeID"),
         level = DeprecationLevel.ERROR
     )
-    var LastWelcome: Int by Setting(R.Setting.LastWelcome, 0)
+    var LastWelcome: Int by Setting("", 0)
     /** Used to prevent from displaying the same welcome words as last time */
     var LastWelcomeID: String by Setting(R.Setting.LastWelcomeID, "")
     /** Represent the major version of Cyber IO */
@@ -56,7 +56,11 @@ object Settings {
      * So if you want to get the real last play time, please check [CioMod.lastPlayTime].
      */
     var LastPlayTime: Long by Setting(R.Setting.LastPlayTime, -1L)
-    var GitHubMirrorUrl: String by Setting(R.Setting.GitHubMirrorUrl, Meta.GitHubUrl)
+    @Deprecated(
+        "GitHub Mirror support is removed in v5.0",
+        level = DeprecationLevel.ERROR
+    )
+    var GitHubMirrorUrl: String by Setting("", "")
     var ShaderRootPath: String by Setting(R.Setting.ShaderRootPath, "")
     var ContentSpecific: String by Setting(R.Setting.ContentSpecific, ContentSpec.Vanilla.id)
     /** Last skipped update. If it equals to current new version detected, it will skip the update dialog. */

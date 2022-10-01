@@ -5,6 +5,7 @@ import arc.math.Mathf
 import arc.struct.EnumSet
 import arc.util.io.Reads
 import arc.util.io.Writes
+import mindustry.Vars
 import mindustry.gen.Building
 import mindustry.world.Block
 import mindustry.world.meta.BlockFlag
@@ -12,21 +13,24 @@ import mindustry.world.meta.BlockGroup
 import net.liplum.R
 import net.liplum.Var
 import net.liplum.blocks.prism.Prism.PrismBuild
-import net.liplum.common.util.bundle
-import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.WhenNotPaused
-import net.liplum.mdt.animation.anims.Animation
-import net.liplum.mdt.animation.anims.AnimationObj
-import net.liplum.mdt.animation.anims.pingPong
+import plumy.dsl.bundle
+import plumy.core.ClientOnly
+import plumy.core.WhenNotPaused
+import plumy.animation.AnimationMeta
+import plumy.animation.draw
 import net.liplum.mdt.render.G
 import net.liplum.mdt.render.drawSurroundingRect
-import net.liplum.mdt.render.smoothPlacing
-import net.liplum.mdt.ui.bars.AddBar
-import net.liplum.mdt.utils.*
+import net.liplum.input.smoothPlacing
+import net.liplum.mdt.utils.animationMeta
+import net.liplum.mdt.utils.isDiagonalTo
+import net.liplum.mdt.utils.subBundle
+import plumy.dsl.AddBar
+import plumy.dsl.castBuild
+import plumy.dsl.exists
 
 open class PrismObelisk(name: String) : Block(name) {
     @JvmField var prismType: Prism? = null
-    @ClientOnly lateinit var BlinkAnim: Animation
+    @ClientOnly var BlinkAnim = AnimationMeta.Empty
     /**
      * The area(tile xy) indicates the surrounding prism can be linked.
      */
@@ -48,7 +52,7 @@ open class PrismObelisk(name: String) : Block(name) {
 
     override fun load() {
         super.load()
-        BlinkAnim = this.autoAnim("blink", BlinkFrames, BlinkDuration)
+        BlinkAnim = this.animationMeta("blink", BlinkFrames, BlinkDuration)
     }
 
     override fun setBars() {
@@ -79,25 +83,26 @@ open class PrismObelisk(name: String) : Block(name) {
         val isLinked: Boolean
             get() = linked != -1
         val prism: PrismBuild?
-            get() = linked.TE()
+            get() = linked.castBuild()
         /**
          * Left->Down->Right->Up
          */
         @JvmField var prismOrient = 0
-        @ClientOnly lateinit var BlinkObjs: Array<AnimationObj>
+        @ClientOnly val BlinkObjs = if (Vars.headless) emptyArray()
+        else Array(4) { BlinkAnim.instantiate() }
 
         init {
-            ClientOnly {
+            /*ClientOnly {
                 BlinkObjs = Array(4) {
                     BlinkAnim.gen().pingPong().apply { sleepInstantly() }
                 }
-            }
+            }*/
         }
 
         override fun onProximityUpdate() {
             super.onProximityUpdate()
             val mayLinked = linked
-            if (mayLinked != -1 && !mayLinked.TE<PrismBuild>().exists) {
+            if (mayLinked != -1 && !mayLinked.castBuild<PrismBuild>().exists) {
                 linked = -1
             }
         }
@@ -118,10 +123,10 @@ open class PrismObelisk(name: String) : Block(name) {
             WhenNotPaused {
                 val d = delta()
                 for ((i, obj) in BlinkObjs.withIndex()) {
-                    if (linked == -1) {
+                    /*if (linked == -1) {
                         obj.sleep()
                     } else
-                        obj.wakeUp()
+                        obj.wakeUp()*/
                     obj.spend(d + Mathf.random())
                     obj.draw(x, y, i * 90f)
                 }

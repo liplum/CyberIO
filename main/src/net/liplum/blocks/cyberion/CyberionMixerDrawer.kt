@@ -13,7 +13,7 @@ import mindustry.gen.Building
 import mindustry.graphics.Layer
 import mindustry.world.draw.DrawBlock
 import net.liplum.S
-import net.liplum.common.util.DrawLayer
+import plumy.dsl.DrawLayer
 import plumy.core.math.smooth
 
 class DrawCyberionAgglomeration : DrawBlock() {

@@ -3,8 +3,8 @@
 package net.liplum.mdt.utils
 
 import mindustry.world.Block
-import net.liplum.common.util.bundle
-import net.liplum.mdt.ClientOnly
+import plumy.dsl.bundle
+import plumy.core.ClientOnly
 
 /**
  * Localize the bundle by the key: ContentType.Name.key

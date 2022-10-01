@@ -6,7 +6,7 @@ import mindustry.Vars
 import mindustry.gen.Building
 import mindustry.world.Block
 import mindustry.world.meta.BlockGroup
-import net.liplum.registry.CioBlocks
+import net.liplum.registry.CioBlock
 
 open class LandProjector(name: String) : Block(name) {
     private val projectRadius = 10
@@ -34,7 +34,7 @@ open class LandProjector(name: String) : Block(name) {
                         val tile = Vars.world.tile(i, j)
                         if (tile != null && tile.floor() !is HoloFloor) {
                             // v6 doesn't support floor dynamically changing
-                            tile.setFloorUnder(CioBlocks.holoFloor)
+                            tile.setFloorUnder(CioBlock.holoFloor)
                         }
                     }
                 }

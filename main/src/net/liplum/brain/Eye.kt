@@ -12,10 +12,7 @@ import mindustry.Vars
 import mindustry.content.Bullets
 import mindustry.entities.TargetPriority
 import mindustry.entities.bullet.BulletType
-import mindustry.gen.Building
-import mindustry.gen.Bullet
-import mindustry.gen.Sounds
-import mindustry.gen.Teamc
+import mindustry.gen.*
 import mindustry.gen.Unit
 import mindustry.graphics.Drawf
 import mindustry.graphics.Layer
@@ -28,26 +25,37 @@ import net.liplum.Var
 import net.liplum.api.brain.*
 import net.liplum.common.math.PolarX
 import net.liplum.common.util.progress
+import net.liplum.input.smoothPlacing
+import net.liplum.input.smoothSelect
+import plumy.core.ClientOnly
+import plumy.core.WhenNotPaused
+import plumy.animation.Anime
+import plumy.animation.ContextDraw.Draw
+import plumy.animation.draw
+import plumy.animation.genFramesBy
+import plumy.animation.randomCurTime
+import net.liplum.mdt.render.*
+import net.liplum.mdt.ui.ammoStats
+import net.liplum.mdt.utils.draw
+import net.liplum.mdt.utils.sheet
+import net.liplum.mdt.utils.sub
 import plumy.core.assets.EmptySounds
 import plumy.core.assets.TR
 import plumy.core.assets.TRs
 import plumy.core.math.approachA
 import plumy.core.math.approachR
 import plumy.core.math.radian
-import net.liplum.mdt.ClientOnly
-import net.liplum.mdt.WhenNotPaused
-import net.liplum.mdt.animation.anims.Anime
-import net.liplum.mdt.animation.anims.genFramesBy
-import net.liplum.mdt.animation.anims.randomCurTime
-import net.liplum.mdt.render.*
-import net.liplum.mdt.ui.ammoStats
-import net.liplum.mdt.utils.*
+import plumy.core.math.random
+import plumy.dsl.TileXY
+import plumy.dsl.getCenterWorldXY
 
 open class Eye(name: String) : PowerTurret(name), IComponentBlock {
     var normalBullet: BulletType = Bullets.placeholder
     var improvedBullet: BulletType = Bullets.placeholder
     @ClientOnly @JvmField var normalSounds: Array<Sound> = EmptySounds
+    @ClientOnly @JvmField var normalSoundPitchRange = 0.8f..1.2f
     @ClientOnly @JvmField var improvedSounds: Array<Sound> = EmptySounds
+    @ClientOnly @JvmField var improvedSoundPitchRange = 0.8f..1.2f
     @ClientOnly @JvmField var soundVolume = 1f
     /**
      * Cooling per tick. It should be multiplied by [Time.delta]
@@ -127,8 +135,8 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
 
     override fun drawPlace(x: TileXY, y: TileXY, rotation: Int, valid: Boolean) {
         drawPotentialLinks(x, y)
-        val worldX = toCenterWorldXY(x)
-        val worldY = toCenterWorldXY(y)
+        val worldX = getCenterWorldXY(x)
+        val worldY = getCenterWorldXY(y)
         drawOverlay(worldX, worldY, rotation)
         G.dashCircleBreath(worldX, worldY, range * smoothPlacing(maxSelectedCircleTime), Pal.placing, stroke = Var.CircleStroke)
     }
@@ -315,9 +323,9 @@ open class Eye(name: String) : PowerTurret(name), IComponentBlock {
         override fun handleBullet(bullet: Bullet, offsetX: Float, offsetY: Float, angleOffset: Float) {
             super.handleBullet(bullet, offsetX, offsetY, angleOffset)
             if (isLinkedBrain)
-                improvedSounds.random().at(x, y, soundPitchMin, soundVolume)
+                improvedSounds.random().at(x, y, improvedSoundPitchRange.random(), soundVolume)
             else
-                normalSounds.random().at(x, y, 1f, soundVolume)
+                normalSounds.random().at(x, y, normalSoundPitchRange.random(), soundVolume)
         }
 
         override fun drawSelect() {

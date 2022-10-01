@@ -12,14 +12,12 @@ import arc.util.I18NBundle
 import arc.util.io.PropertiesUtils
 import plumy.core.arc.set
 import net.liplum.common.Res
-import plumy.core.UseReflection
+import net.liplum.common.UseReflection
+import plumy.dsl.BundleKey
+import plumy.dsl.bundle
 import java.io.Reader
 import java.util.*
 
-typealias BundleKey = String
-
-fun BundleKey.bundle(vararg args: Any): String = Core.bundle.format(this, *args)
-fun BundleKey.bundle(bundle: I18NBundle, vararg args: Any): String = bundle.format(this, *args)
 private val bundle2Fields: MutableMap<I18NBundle, BundleFields> = HashMap()
 
 class BundleFields(
@@ -77,12 +75,6 @@ fun I18NBundle.formatDirectly(
     val fields = this.getBundleFields()
     return fields.formatValue(value, *args)
 }
-/**
- * Find i18n in the default bundle
- */
-val BundleKey.bundle: String
-    get() = Core.bundle.format(this)
-
 fun BundleKey.bundle(bundle: I18NBundle): String = bundle[this]
 fun I18NBundle.loadMore(file: Fi) {
     file.reader().use { loadMore(it) }

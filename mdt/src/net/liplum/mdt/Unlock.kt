@@ -5,8 +5,8 @@ import arc.Events
 import mindustry.Vars
 import mindustry.ctype.UnlockableContent
 import mindustry.game.EventType.UnlockEvent
+import net.liplum.common.UseReflection
 import net.liplum.common.util.setFIn
-import plumy.core.UseReflection
 
 @UseReflection
 fun UnlockableContent.lock() {
@@ -16,7 +16,6 @@ fun UnlockableContent.lock() {
     Events.fire(LockEvent(this))
     this.techNode?.reset()
 }
-
 @UseReflection
 fun UnlockableContent.forceUnlock() {
     Core.settings.put("$name-unlocked", true)

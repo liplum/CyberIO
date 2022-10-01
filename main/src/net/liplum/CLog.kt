@@ -47,7 +47,7 @@ object CLog {
         title: String,
         length: Int = 25,
         level: LogLevel = LogLevel.info,
-        howToLog: (TK, TV) -> Unit
+        howToLog: (TK, TV) -> Unit,
     ) {
         val infoHead = title.BuildCenterFillUntil('=', length) addLeft "//" addRight "\\\\"
         Log.log(level, infoHead.toString())
@@ -63,7 +63,7 @@ object CLog {
         title: String,
         length: Int = 25,
         level: LogLevel = LogLevel.info,
-        howToLog: (TK, TV) -> Unit
+        howToLog: (TK, TV) -> Unit,
     ) {
         val infoHead = title.BuildCenterFillUntil('=', length) addLeft "//" addRight "\\\\"
         Log.log(level, infoHead.toString())

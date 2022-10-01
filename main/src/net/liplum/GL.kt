@@ -7,7 +7,7 @@ import arc.graphics.gl.GLVersion.GlType.OpenGL
 import net.liplum.CLog.log
 import net.liplum.Compatible.Hologram
 import net.liplum.Compatible.TvStatic
-import net.liplum.mdt.ClientOnly
+import plumy.core.ClientOnly
 
 @ClientOnly
 object GL {

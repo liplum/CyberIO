@@ -48,4 +48,9 @@ class JammingLaser(damage: Float) : ContinuousLaserBulletType(damage) {
             Draw.reset()
         }
     }
+
+    companion object {
+        inline operator fun invoke(config: JammingLaser.() -> Unit) =
+            JammingLaser().apply(config)
+    }
 }
