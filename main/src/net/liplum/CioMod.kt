@@ -18,12 +18,14 @@ import net.liplum.event.CioLoadContentEvent
 import net.liplum.event.UnitTap
 import net.liplum.gen.Contents
 import net.liplum.gen.EventRegistry
-import net.liplum.mdt.*
-import net.liplum.render.GlobalAnimation
+import net.liplum.mdt.IsClient
+import net.liplum.mdt.IsSteam
+import net.liplum.mdt.safeCall
 import net.liplum.registry.CioShaderLoader
 import net.liplum.registry.CioTechTree
 import net.liplum.registry.ServerCommand.registerCioCommands
 import net.liplum.registry.SpecificLoader
+import net.liplum.render.GlobalAnimation
 import net.liplum.render.TestShader
 import net.liplum.script.NpcSystem
 import net.liplum.update.Updater
@@ -73,6 +75,7 @@ class CioMod : Mod() {
      */
     init {
         objCreated = true
+        // Vars.mobile = true
         lastPlayTime = Settings.LastPlayTime
         CLog.info("v${Meta.DetailedVersion} loading started.")
         (IsClient and !IsSteam) {

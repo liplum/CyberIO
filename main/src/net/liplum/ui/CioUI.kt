@@ -20,13 +20,12 @@ import net.liplum.annotations.Only
 import net.liplum.annotations.SubscribeEvent
 import net.liplum.common.UseReflection
 import net.liplum.common.ing
-import plumy.dsl.bundle
 import net.liplum.common.util.getF
 import net.liplum.common.util.randomExcept
 import net.liplum.event.CioInitEvent
-import plumy.core.ClientOnly
-import net.liplum.mdt.IsLocal
 import net.liplum.function.MapCleaner
+import net.liplum.mdt.IsLocal
+import net.liplum.mdt.safeCall
 import net.liplum.mdt.ui.MainMenus
 import net.liplum.mdt.ui.ShowTextDialog
 import net.liplum.mdt.ui.addTrackTooltip
@@ -38,7 +37,9 @@ import net.liplum.update.Updater
 import net.liplum.welcome.Conditions
 import net.liplum.welcome.Welcome
 import net.liplum.welcome.WelcomeList
+import plumy.core.ClientOnly
 import plumy.core.NonSteamOnly
+import plumy.dsl.bundle
 
 @ClientOnly
 object CioUI {
@@ -80,15 +81,18 @@ object CioUI {
             }
         }
     }
+
     fun addCyberIOMenu() {
         val cioMenuID = "cyber-io-menu"
-        if (!Vars.mobile) {
-            MainMenus.appendDesktopMenu("Cyber IO", textIcon, cioMenuID) {
-                CyberIOMenu.show()
-            }
-        } else {
-            MainMenus.appendMobileMenu("Cyber IO", textIcon, cioMenuID) {
-                CyberIOMenu.show()
+        safeCall {
+            if (!Vars.mobile) {
+                MainMenus.appendDesktopMenu("Cyber IO", textIcon, cioMenuID) {
+                    CyberIOMenu.show()
+                }
+            } else {
+                MainMenus.appendMobileMenu("Cyber IO", textIcon, cioMenuID) {
+                    CyberIOMenu.show()
+                }
             }
         }
     }
@@ -97,7 +101,8 @@ object CioUI {
     val settings = SettingsTableX().apply {
         var isMenu = true
         genHeader = {
-            it.add("[#${Var.ContentSpecific.color}]${Meta.Name} v${Meta.DetailedVersion} ${Var.ContentSpecific.i18nName}[]").row()
+            it.add("[#${Var.ContentSpecific.color}]${Meta.Name} v${Meta.DetailedVersion} ${Var.ContentSpecific.i18nName}[]")
+                .row()
         }
         addSliderSettingX(R.Setting.LinkOpacity,
             100, 0, 100, 5, { "$it%" }
