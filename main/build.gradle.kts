@@ -1,4 +1,4 @@
-@file:Suppress("SpellCheckingInspection")
+@file:Suppress("SpellCheckingInspection", "PropertyName")
 
 import io.github.liplum.mindustry.antiAlias
 import io.github.liplum.mindustry.importMindustry
