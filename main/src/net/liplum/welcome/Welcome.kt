@@ -27,8 +27,8 @@ import net.liplum.common.util.randomExcept
 import net.liplum.event.CioInitEvent
 import net.liplum.math.randomByWeights
 import plumy.core.ClientOnly
-import net.liplum.utils.atlas
 import plumy.core.assets.TR
+import plumy.dsl.sprite
 
 @ClientOnly
 object Welcome {
@@ -172,8 +172,8 @@ object Welcome {
 
     fun String.handleTrRefer(): TR =
         if (startsWith('@'))
-            removePrefix("@").atlas()
-        else cio.atlas()
+            removePrefix("@").sprite
+        else cio.sprite
 
     class Entity(
         val bundle: ReferBundleWrapper,

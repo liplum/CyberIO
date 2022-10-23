@@ -41,9 +41,9 @@ import net.liplum.render.drawSurroundingRect
 import net.liplum.input.smoothPlacing
 import net.liplum.ui.bars.removeItemsInBar
 import net.liplum.utils.*
-import net.liplum.util.addPowerUseStats
-import net.liplum.util.addStateMachineInfo
-import net.liplum.util.genText
+import net.liplum.utils.addPowerUseStats
+import net.liplum.utils.addStateMachineInfo
+import net.liplum.utils.genText
 import plumy.core.Serialized
 import plumy.core.assets.EmptyTR
 import plumy.dsl.*

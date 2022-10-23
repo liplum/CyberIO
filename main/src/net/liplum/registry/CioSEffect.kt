@@ -4,7 +4,7 @@ import net.liplum.annotations.DependOn
 import net.liplum.statusFx.Infected
 import net.liplum.statusFx.Static
 import net.liplum.statusFx.Vulnerable
-import net.liplum.util.globalAnim
+import net.liplum.utils.globalAnim
 
 object CioSEffect {
     @JvmStatic lateinit var infected: Infected

@@ -1,6 +1,6 @@
 @file:JvmName("DebugH")
 
-package net.liplum.util
+package net.liplum.utils
 
 import mindustry.Vars
 import mindustry.ctype.UnlockableContent

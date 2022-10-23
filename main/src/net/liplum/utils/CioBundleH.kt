@@ -1,4 +1,4 @@
-package net.liplum.util
+package net.liplum.utils
 
 import net.liplum.R
 import plumy.dsl.bundle

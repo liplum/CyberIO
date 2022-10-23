@@ -57,7 +57,6 @@ import plumy.animation.Anime
 import plumy.animation.ContextDraw.Draw
 import plumy.animation.draw
 import plumy.animation.linearFrames
-import net.liplum.render.*
 import plumy.core.MUnit
 import net.liplum.utils.atUnit
 import net.liplum.utils.sheet
@@ -66,7 +65,7 @@ import net.liplum.render.G
 import net.liplum.render.HeatMeta
 import net.liplum.render.Text
 import net.liplum.render.drawHeat
-import net.liplum.util.addPowerUseStats
+import net.liplum.utils.addPowerUseStats
 import plumy.core.Serialized
 import plumy.core.assets.TR
 import plumy.core.math.isZero

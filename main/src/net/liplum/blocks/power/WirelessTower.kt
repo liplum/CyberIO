@@ -32,13 +32,12 @@ import plumy.core.WhenNotPaused
 import net.liplum.utils.WhenTheSameTeam
 import plumy.animation.ContextDraw.Draw
 import net.liplum.consumer.powerStore
-import net.liplum.render.*
 import net.liplum.utils.sub
 import net.liplum.registry.CioStats
 import net.liplum.render.AsShadow
 import net.liplum.render.G
 import net.liplum.render.drawEffectCirclePlace
-import net.liplum.util.addPowerUseStats
+import net.liplum.utils.addPowerUseStats
 import plumy.core.Serialized
 import plumy.core.assets.EmptyTR
 import plumy.core.math.*

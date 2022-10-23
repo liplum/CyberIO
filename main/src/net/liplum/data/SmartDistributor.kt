@@ -44,9 +44,9 @@ import net.liplum.ui.bars.removeItemsInBar
 import net.liplum.utils.animationMeta
 import net.liplum.utils.isDiagonalTo
 import net.liplum.utils.subBundle
-import net.liplum.util.addPowerUseStats
-import net.liplum.util.addStateMachineInfo
-import net.liplum.util.genText
+import net.liplum.utils.addPowerUseStats
+import net.liplum.utils.addStateMachineInfo
+import net.liplum.utils.genText
 import plumy.core.Serialized
 import plumy.core.arc.equalsNoOrder
 import plumy.core.arc.set

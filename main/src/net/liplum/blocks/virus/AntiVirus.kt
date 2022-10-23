@@ -31,7 +31,7 @@ import net.liplum.render.G.realHeight
 import net.liplum.render.G.realWidth
 import net.liplum.render.drawEffectCirclePlace
 import net.liplum.ui.bars.ReverseBar
-import net.liplum.util.addRangeInfo
+import net.liplum.utils.addRangeInfo
 import net.liplum.utils.sub
 import plumy.core.ClientOnly
 import plumy.core.arc.Tick

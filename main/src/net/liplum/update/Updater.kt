@@ -19,7 +19,7 @@ import net.liplum.Meta
 import net.liplum.common.replaceBy
 import plumy.core.ClientOnly
 import plumy.core.HeadlessOnly
-import net.liplum.util.ZipUtil
+import net.liplum.utils.ZipUtil
 import java.io.ByteArrayOutputStream
 import java.net.URL
 import kotlin.coroutines.CoroutineContext

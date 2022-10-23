@@ -26,8 +26,8 @@ import net.liplum.utils.CalledBySync
 import net.liplum.utils.SendDataPack
 import net.liplum.render.Text
 import net.liplum.utils.sub
-import net.liplum.util.addStateMachineInfo
-import net.liplum.util.update
+import net.liplum.utils.addStateMachineInfo
+import net.liplum.utils.update
 import plumy.animation.ContextDraw.Draw
 import plumy.animation.ContextDraw.DrawOn
 import plumy.animation.state.IStateful

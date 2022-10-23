@@ -41,7 +41,7 @@ import plumy.core.Else
 import plumy.core.MUnit
 import net.liplum.utils.healthPct
 import net.liplum.registry.SD
-import net.liplum.util.time
+import net.liplum.utils.time
 import plumy.core.arc.toSecond
 import plumy.core.assets.TR
 import plumy.texture.*

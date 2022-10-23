@@ -1,38 +1,33 @@
 @file:JvmName("AtlasXH")
 
-package net.liplum.util
+package net.liplum.utils
 
 import mindustry.ctype.MappableContent
 import net.liplum.common.util.StartWithHyphen
 import net.liplum.common.util.sheet
 import net.liplum.common.util.sheetOneDirection
+import net.liplum.spec
 import plumy.core.assets.TR
 import plumy.core.assets.TRs
-import net.liplum.utils.atlas
-import net.liplum.utils.or
-import net.liplum.utils.sheet
-import net.liplum.utils.sub
-import net.liplum.spec
+import plumy.dsl.sprite
 
 /**
- * Support content specific. see [String.atlas]
+ * Support content specific. see [String.sprite]
  */
-fun String.atlasX(): TR {
-    val spec = this.spec
-    return spec.atlas() or this.atlas()
-}
+val String.spriteX: TR
+    get() = this.spec.sprite or this.sprite
 /**
  * Support content specific. see [MappableContent.sub]
  */
 @StartWithHyphen
 fun MappableContent.subX(suffix: String): TR =
-    "${this.name}-$suffix".atlasX()
+    "${this.name}-$suffix".spriteX
 
-fun MappableContent.atlasX(): TR =
-    name.atlasX()
+val MappableContent.spriteX: TR
+    get() = name.spriteX
 
 fun MappableContent.inModX(name: String): TR =
-    "${this.minfo.mod.name}-$name".atlasX()
+    "${this.minfo.mod.name}-$name".spriteX
 /**
  * Support content specific. see [MappableContent.sheet]
  */
@@ -43,7 +38,7 @@ fun MappableContent.sheetX(
     isHorizontal: Boolean = true,
 ): TRs {
     val id = name + if (subName != null) "-$subName" else ""
-    val tr = id.atlasX()
+    val tr = id.spriteX
     return tr.sheetOneDirection(number, isHorizontal)
 }
 /**
@@ -52,4 +47,4 @@ fun MappableContent.sheetX(
 fun String.sheetX(
     number: Int,
     isHorizontal: Boolean = true,
-): TRs = this.atlasX().sheetOneDirection(number, isHorizontal)
+): TRs = this.spriteX.sheetOneDirection(number, isHorizontal)

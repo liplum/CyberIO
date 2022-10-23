@@ -3,10 +3,9 @@ package net.liplum.render
 import mindustry.world.Block
 import mindustry.world.draw.*
 import net.liplum.common.util.StartWithHyphen
-import net.liplum.render.DrawConstruct
 import net.liplum.utils.or
 import net.liplum.spec
-import net.liplum.util.atlasX
+import net.liplum.utils.spriteX
 
 fun DrawRegionSpec(
     suffix: String = "",
@@ -32,7 +31,7 @@ fun DrawConstructSpec(
 
 class DrawDefaultSpec : DrawDefault() {
     override fun load(block: Block) = block.run {
-        region = this.atlasX()
+        region = this.spriteX
     }
 
     override fun icons(block: Block) = arrayOf(block.region)
@@ -40,17 +39,17 @@ class DrawDefaultSpec : DrawDefault() {
 
 class DrawHeatOutputSpec : DrawHeatOutput() {
     override fun load(block: Block) = block.run {
-        heat = "$name-heat".atlasX()
-        glow = "$name-glow".atlasX()
-        top1 = "$name-top1".atlasX()
-        top2 = "$name-top2".atlasX()
+        heat = "$name-heat".spriteX
+        glow = "$name-glow".spriteX
+        top1 = "$name-top1".spriteX
+        top2 = "$name-top2".spriteX
     }
 }
 
 class DrawPistonsSpec : DrawPistons() {
     override fun load(block: Block) = block.run {
-        region1 = "$name-piston0".atlasX() or "$name-piston".atlasX()
-        region2 = "$name-piston1".atlasX() or "$name-piston".atlasX()
-        regiont = "$name-piston-t".atlasX()
+        region1 = "$name-piston0".spriteX or "$name-piston".spriteX
+        region2 = "$name-piston1".spriteX or "$name-piston".spriteX
+        regiont = "$name-piston-t".spriteX
     }
 }

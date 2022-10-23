@@ -12,12 +12,12 @@ import mindustry.world.meta.Env
 import net.liplum.DebugOnly
 import net.liplum.api.cyber.*
 import net.liplum.api.cyber.SideLinks.Companion.enableAllSides
+import net.liplum.render.G
+import plumy.core.ClientOnly
+import plumy.core.MUnit
 import plumy.core.Serialized
 import plumy.core.assets.TR
-import plumy.core.ClientOnly
-import net.liplum.render.G
-import plumy.core.MUnit
-import net.liplum.utils.atlas
+import plumy.dsl.sprite
 import kotlin.math.max
 
 class DataCDN(name: String) :
@@ -48,8 +48,8 @@ class DataCDN(name: String) :
 
     override fun load() {
         super.load()
-        railTR.set("power-beam".atlas())
-        railEndTR.set("power-beam-end".atlas())
+        railTR.set("power-beam".sprite)
+        railEndTR.set("power-beam-end".sprite)
     }
 
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {

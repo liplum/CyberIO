@@ -10,10 +10,10 @@ import mindustry.entities.Effect
 import mindustry.entities.Lightning
 import mindustry.entities.bullet.BulletType
 import mindustry.gen.Bullet
-import plumy.core.assets.EmptyTR
 import plumy.animation.ContextDraw.DrawScale
+import plumy.core.assets.EmptyTR
 import plumy.core.assets.TR
-import net.liplum.utils.atlas
+import plumy.dsl.sprite
 
 class BBulletType() : BulletType() {
     var scale: (Bullet) -> Float = { 1f }
@@ -28,7 +28,7 @@ class BBulletType() : BulletType() {
     }
 
     override fun load() {
-        texture = textureName.atlas()
+        texture = textureName.sprite
         val filter = filter
         if (filter != null) {
             texture.texture.setFilter(filter)

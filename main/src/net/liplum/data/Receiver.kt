@@ -26,7 +26,7 @@ import net.liplum.common.persistence.read
 import net.liplum.common.persistence.write
 import net.liplum.ui.bars.removeItemsInBar
 import net.liplum.utils.sub
-import net.liplum.util.update
+import net.liplum.utils.update
 import plumy.animation.ContextDraw.Draw
 import plumy.animation.ContextDraw.DrawOn
 import plumy.animation.ContextDraw.SetColor

@@ -30,7 +30,7 @@ import plumy.core.Else
 import plumy.dsl.AddBar
 import net.liplum.utils.sub
 import net.liplum.registry.SD
-import net.liplum.util.yesNo
+import net.liplum.utils.yesNo
 import plumy.core.ClientOnly
 import plumy.core.Serialized
 import plumy.core.assets.EmptyTR

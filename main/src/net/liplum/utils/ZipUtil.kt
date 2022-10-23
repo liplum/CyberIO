@@ -1,4 +1,4 @@
-package net.liplum.util
+package net.liplum.utils
 
 import java.io.BufferedOutputStream
 import java.io.File

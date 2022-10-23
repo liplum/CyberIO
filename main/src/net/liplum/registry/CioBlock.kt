@@ -61,7 +61,7 @@ import net.liplum.registry.CioBulletType.optInRadiationInterference
 import net.liplum.registry.CioBulletType.optInVirus
 import net.liplum.render.*
 import net.liplum.statusFx.StaticFx
-import net.liplum.util.globalAnim
+import net.liplum.utils.globalAnim
 import plumy.core.Else
 import plumy.core.math.invoke
 import plumy.core.math.smooth

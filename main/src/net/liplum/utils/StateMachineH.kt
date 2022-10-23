@@ -1,4 +1,4 @@
-package net.liplum.util
+package net.liplum.utils
 
 import mindustry.gen.Building
 import net.liplum.CanRefresh

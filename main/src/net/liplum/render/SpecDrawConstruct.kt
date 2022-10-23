@@ -8,8 +8,7 @@ import mindustry.graphics.Pal
 import mindustry.world.Block
 import mindustry.world.draw.DrawBlock
 import plumy.core.assets.EmptyTRs
-import plumy.core.assets.TRs
-import net.liplum.util.sheetX
+import net.liplum.utils.sheetX
 
 class SpecDrawConstruct(
     var stages: Int = 3,

@@ -1,4 +1,4 @@
-package net.liplum.util
+package net.liplum.utils
 
 import arc.scene.ui.Label
 import arc.struct.OrderedMap

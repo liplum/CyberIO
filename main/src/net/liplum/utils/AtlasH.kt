@@ -9,26 +9,25 @@ import net.liplum.common.util.StartWithHyphen
 import net.liplum.common.util.sheetOneDirection
 import plumy.core.assets.TR
 import plumy.core.assets.TRs
+import plumy.dsl.sprite
 
-fun String.atlas(): TR =
-    atlas.find(this)
 /**
  * Gets the Texture Region of "sprites/{this}-{subName}"
  * @param subName the following name after a hyphen
  */
 @StartWithHyphen
 fun MappableContent.sub(subName: String): TR =
-    "${this.name}-$subName".atlas()
+    "${this.name}-$subName".sprite
 @StartWithHyphen
 fun MappableContent.inMod(name: String): TR =
-    "${this.minfo.mod.name}-$name".atlas()
+    "${this.minfo.mod.name}-$name".sprite
 
-fun MappableContent.atlas(): TR = name.atlas()
+fun MappableContent.atlas(): TR = name.sprite
 /**
  * In current loading mod
  */
 val String.inMod: TR
-    get() = Vars.content.transformName(this).atlas()
+    get() = Vars.content.transformName(this).sprite
 
 infix fun TR.or(texture: TR): TR =
     if (this.found()) this

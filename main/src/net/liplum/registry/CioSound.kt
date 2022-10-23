@@ -4,8 +4,8 @@ import arc.audio.Sound
 import mindustry.gen.Sounds
 import net.liplum.annotations.SubscribeEvent
 import net.liplum.event.CioLoadContentEvent
-import net.liplum.util.LoadSound
-import net.liplum.util.LoadSounds
+import net.liplum.utils.LoadSound
+import net.liplum.utils.LoadSounds
 import plumy.core.assets.EmptySounds
 
 object CioSound {

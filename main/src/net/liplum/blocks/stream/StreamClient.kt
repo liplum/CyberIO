@@ -23,9 +23,8 @@ import net.liplum.common.delegate.Delegate1
 import net.liplum.common.persistence.read
 import net.liplum.common.persistence.write
 import plumy.core.ClientOnly
-import net.liplum.utils.inMod
 import net.liplum.utils.sub
-import net.liplum.util.addStateMachineInfo
+import net.liplum.utils.addStateMachineInfo
 import plumy.animation.ContextDraw.Draw
 import plumy.animation.ContextDraw.DrawOn
 import plumy.animation.state.IStateful

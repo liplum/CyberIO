@@ -36,7 +36,7 @@ import plumy.dsl.AddBar
 import net.liplum.utils.healthPct
 import net.liplum.utils.sub
 import net.liplum.registry.SD
-import net.liplum.util.yesNo
+import net.liplum.utils.yesNo
 import plumy.core.Serialized
 import plumy.core.arc.Tick
 import plumy.core.arc.toSecond

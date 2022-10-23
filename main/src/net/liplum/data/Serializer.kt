@@ -15,16 +15,16 @@ import net.liplum.DebugOnly
 import net.liplum.Var
 import net.liplum.api.cyber.*
 import net.liplum.api.cyber.SideLinks.Companion.enableAllSides
+import net.liplum.common.shader.use
+import net.liplum.input.smoothSelect
+import net.liplum.registry.SD
+import plumy.animation.ContextDraw.Draw
+import plumy.core.ClientOnly
+import plumy.core.MUnit
 import plumy.core.Serialized
 import plumy.core.assets.TR
-import net.liplum.common.shader.use
-import plumy.core.ClientOnly
-import plumy.animation.ContextDraw.Draw
-import net.liplum.input.smoothSelect
-import plumy.core.MUnit
 import plumy.dsl.WorldXY
-import net.liplum.utils.atlas
-import net.liplum.registry.SD
+import plumy.dsl.sprite
 
 class Serializer(name: String) :
     PayloadBlock(name), INetworkBlock {
@@ -54,8 +54,8 @@ class Serializer(name: String) :
 
     override fun load() {
         super.load()
-        railTR.set("power-beam".atlas())
-        rialEndTR.set("power-beam-end".atlas())
+        railTR.set("power-beam".sprite)
+        rialEndTR.set("power-beam-end".sprite)
     }
 
     override fun init() {

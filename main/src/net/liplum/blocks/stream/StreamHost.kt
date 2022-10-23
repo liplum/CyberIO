@@ -25,8 +25,8 @@ import net.liplum.common.persistence.write
 import net.liplum.utils.CalledBySync
 import net.liplum.utils.SendDataPack
 import net.liplum.utils.sub
-import net.liplum.util.addPowerUseStats
-import net.liplum.util.addStateMachineInfo
+import net.liplum.utils.addPowerUseStats
+import net.liplum.utils.addStateMachineInfo
 import plumy.animation.ContextDraw.Draw
 import plumy.animation.ContextDraw.DrawOn
 import plumy.animation.state.IStateful

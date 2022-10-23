@@ -5,8 +5,8 @@ import arc.scene.ui.layout.Table
 import arc.util.Time
 import mindustry.Vars
 import mindustry.world.meta.StatUnit
-import net.liplum.util.percent
-import net.liplum.util.value
+import net.liplum.utils.percent
+import net.liplum.utils.value
 import kotlin.math.absoluteValue
 
 typealias UT = UpgradeType

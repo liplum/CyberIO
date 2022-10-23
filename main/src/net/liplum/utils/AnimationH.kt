@@ -4,6 +4,7 @@ import mindustry.ctype.MappableContent
 import net.liplum.common.util.sheetOneDirection
 import plumy.animation.AnimationMeta
 import plumy.animation.SharedAnimation
+import plumy.dsl.sprite
 
 fun MappableContent.sharedAnimation(
     subName: String? = null,
@@ -22,6 +23,6 @@ fun MappableContent.sharedAnimationInMod(
     frame: Int,
     totalDuration: Float,
 ) = SharedAnimation(
-    "${this.minfo.mod.name}-$name-anim".atlas().sheetOneDirection(number = frame),
+    "${this.minfo.mod.name}-$name-anim".sprite.sheetOneDirection(number = frame),
     totalDuration
 )
