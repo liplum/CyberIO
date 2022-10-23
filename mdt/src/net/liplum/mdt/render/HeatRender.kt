@@ -13,11 +13,11 @@ import mindustry.world.Block
 import mindustry.world.blocks.defense.turrets.Turret.TurretBuild
 import mindustry.world.blocks.heat.HeatBlock
 import mindustry.world.draw.DrawBlock
+import net.liplum.mdt.utils.draw
 import plumy.core.assets.EmptyTR
 import plumy.core.assets.TR
-import net.liplum.mdt.mixin.drawX
-import net.liplum.mdt.mixin.drawY
-import net.liplum.mdt.utils.draw
+import plumy.dsl.drawX
+import plumy.dsl.drawY
 
 data class HeatMeta(
     var heatColor: Color = Color(1f, 0.22f, 0.22f, 0.8f),

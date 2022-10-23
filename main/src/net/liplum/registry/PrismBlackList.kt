@@ -11,6 +11,7 @@ import net.liplum.api.prism.PrismBlackList.banNameInPrism
 import net.liplum.api.prism.PrismData
 import net.liplum.event.CioLoadContentEvent
 
+@Suppress("SpellCheckingInspection")
 object PrismBlackList {
     @JvmStatic
     @SubscribeEvent(CioLoadContentEvent::class)

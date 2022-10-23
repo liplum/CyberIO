@@ -32,78 +32,116 @@ import net.liplum.R
 import net.liplum.Var
 import net.liplum.api.brain.*
 import net.liplum.common.Smooth
-import plumy.dsl.bundle
 import net.liplum.common.util.format
 import net.liplum.common.util.toDouble
 import net.liplum.input.smoothPlacing
 import net.liplum.input.smoothSelect
-import plumy.core.ClientOnly
-import plumy.core.Else
-import plumy.core.WhenNotPaused
 import net.liplum.mdt.WhenTheSameTeam
-import plumy.animation.*
-import plumy.animation.ContextDraw.Draw
-import plumy.animation.ContextDraw.DrawScale
-import net.liplum.mdt.mixin.Mover
-import net.liplum.mdt.render.*
+import net.liplum.mdt.render.G
+import net.liplum.mdt.render.HeatMeta
+import net.liplum.mdt.render.drawHeat
 import net.liplum.mdt.ui.bars.appendDisplayLiquidsDynamic
 import net.liplum.mdt.ui.bars.genAllLiquidBars
 import net.liplum.mdt.ui.bars.removeLiquidInBar
-import plumy.core.MUnit
 import net.liplum.mdt.utils.sheet
 import net.liplum.mdt.utils.sub
-import plumy.core.Serialized
+import plumy.animation.*
+import plumy.animation.ContextDraw.Draw
+import plumy.animation.ContextDraw.DrawScale
+import plumy.core.*
 import plumy.core.arc.hsvLerp
 import plumy.core.assets.TR
 import plumy.core.assets.TRs
 import plumy.core.math.FUNC
 import plumy.core.math.isZero
 import plumy.dsl.AddBar
+import plumy.dsl.Mover
+import plumy.dsl.bundle
 
 open class Heart(name: String) : Block(name), IComponentBlock {
     // Upgrade component
     override val upgrades: MutableMap<UpgradeType, Upgrade> = HashMap()
-    @JvmField var bulletType: BulletType = Bullets.placeholder
-    @JvmField var heartbeat = Heartbeat()
-    @JvmField var shootPatternInit: ShootPattern.() -> Unit = {}
+    @JvmField
+    var bulletType: BulletType = Bullets.placeholder
+    @JvmField
+    var heartbeat = Heartbeat()
+    @JvmField
+    var shootPatternInit: ShootPattern.() -> Unit = {}
     // Blood
-    @JvmField var blood: Blood = Blood.X
-    @JvmField var downApproachSpeed = 0.00004f
-    @JvmField var upApproachSpeed = 0.00002f
-    @JvmField var heatFactor = 5f
-    @JvmField var heatMax = 2.5f
-    @JvmField var temperatureConvertFactor = 0.1f
-    @JvmField var bloodConsumePreTick = 0.2f
+    @JvmField
+    var blood: Blood = Blood.X
+    @JvmField
+    var downApproachSpeed = 0.00004f
+    @JvmField
+    var upApproachSpeed = 0.00002f
+    @JvmField
+    var heatFactor = 5f
+    @JvmField
+    var heatMax = 2.5f
+    @JvmField
+    var temperatureConvertFactor = 0.1f
+    @JvmField
+    var bloodConsumePreTick = 0.2f
     // Improved by Heimdall
-    @JvmField var bloodCapacity = 1000f
-    @JvmField var bloodCapacityI = 0.5f
-    @JvmField var temperatureI = 0.1f
-    @JvmField var convertSpeed = 1f
-    @JvmField var convertSpeedI = 0.5f
+    @JvmField
+    var bloodCapacity = 1000f
+    @JvmField
+    var bloodCapacityI = 0.5f
+    @JvmField
+    var temperatureI = 0.1f
+    @JvmField
+    var convertSpeed = 1f
+    @JvmField
+    var convertSpeedI = 0.5f
     // Turret
-    @JvmField var soundPitchMin = 0.9f
-    @JvmField var soundPitchMax = 1.1f
+    @JvmField
+    var soundPitchMin = 0.9f
+    @JvmField
+    var soundPitchMax = 1.1f
     // Visual effects
-    @ClientOnly @JvmField var bloodColor: Color = R.C.Blood
-    @ClientOnly @JvmField var coldColor: Color = R.C.ColdTemperature
-    @ClientOnly @JvmField var hotColor: Color = R.C.HotTemperature
-    @ClientOnly @JvmField var maxSelectedCircleTime = Var.SelectedCircleTime
-    @ClientOnly lateinit var BaseTR: TR
-    @ClientOnly lateinit var HeartTR: TR
-    @ClientOnly lateinit var HeartBeatTRs: TRs
-    @ClientOnly lateinit var HeatTRs: TRs
-    @ClientOnly @JvmField var HeartbeatDuration = 60f
-    @ClientOnly @JvmField var HeartbeatFrameNum = 20
+    @ClientOnly
+    @JvmField
+    var bloodColor: Color = R.C.Blood
+    @ClientOnly
+    @JvmField
+    var coldColor: Color = R.C.ColdTemperature
+    @ClientOnly
+    @JvmField
+    var hotColor: Color = R.C.HotTemperature
+    @ClientOnly
+    @JvmField
+    var maxSelectedCircleTime = Var.SelectedCircleTime
+    @ClientOnly
+    lateinit var BaseTR: TR
+    @ClientOnly
+    lateinit var HeartTR: TR
+    @ClientOnly
+    lateinit var HeartBeatTRs: TRs
+    @ClientOnly
+    lateinit var HeatTRs: TRs
+    @ClientOnly
+    @JvmField
+    var HeartbeatDuration = 60f
+    @ClientOnly
+    @JvmField
+    var HeartbeatFrameNum = 20
     /** The Higher, the weaker scale*/
-    @ClientOnly @JvmField var BreathIntensity = 40f
-    @ClientOnly lateinit var allLiquidBars: Array<(Building) -> Bar>
-    @ClientOnly @JvmField val heatMeta = HeatMeta()
-    @JvmField var TemperatureEFF2ASpeed: FUNC = {
+    @ClientOnly
+    @JvmField
+    var BreathIntensity = 40f
+    @ClientOnly
+    lateinit var allLiquidBars: Array<(Building) -> Bar>
+    @ClientOnly
+    @JvmField
+    val heatMeta = HeatMeta()
+    @JvmField
+    var TemperatureEFF2ASpeed: FUNC = {
         if (it >= 0f) it + 1
         else pow(4f, it)
     }
     // Timer
-    @JvmField var convertOrConsumeTimer = timers++
+    @JvmField
+    var convertOrConsumeTimer = timers++
 
     init {
         buildType = Prov { HeartBuild() }

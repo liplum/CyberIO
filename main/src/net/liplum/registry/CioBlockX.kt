@@ -23,7 +23,7 @@ object CioBlockX {
         }
     }
     @DependOn("CioItem.ic")
-    fun DDos() {
+    fun ddos() {
         DebugOnly {
             DDoS = DDoS("DDoS").apply {
                 category = Category.turret

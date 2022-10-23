@@ -4,12 +4,12 @@ import mindustry.type.Liquid
 import mindustry.type.LiquidStack
 import mindustry.world.modules.LiquidModule
 
-private val totalLiquidCalcu = LiquidModule.LiquidCalculator { _, amount ->
+private val totalLiquidCalc = LiquidModule.LiquidCalculator { _, amount ->
     amount
 }
 
 fun LiquidModule.total(): Float {
-    return sum(totalLiquidCalcu)
+    return sum(totalLiquidCalc)
 }
 
 fun LiquidModule.has(liquid: Liquid, amount: Float) =

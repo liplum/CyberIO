@@ -44,7 +44,6 @@ import net.liplum.input.Inspector
 import net.liplum.input.Inspector.isSelected
 import net.liplum.input.smoothSelect
 import net.liplum.math.quadratic
-import net.liplum.mdt.mixin.copy
 import net.liplum.mdt.render.AsShadow
 import net.liplum.mdt.render.G
 import net.liplum.mdt.utils.*
@@ -61,6 +60,7 @@ import plumy.core.math.*
 import plumy.dsl.AddBar
 import plumy.dsl.DrawLayer
 import plumy.dsl.bundle
+import plumy.dsl.copy
 import kotlin.math.abs
 import kotlin.math.log2
 

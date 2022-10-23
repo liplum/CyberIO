@@ -15,14 +15,14 @@ import mindustry.type.Category
 import mindustry.world.blocks.defense.turrets.ItemTurret
 import mindustry.world.draw.DrawBlock
 import mindustry.world.meta.StatUnit
-import plumy.core.ClientOnly
-import plumy.core.WhenNotPaused
+import net.liplum.mdt.utils.animationMeta
 import plumy.animation.AnimationMeta
 import plumy.animation.draw
-import net.liplum.mdt.mixin.drawRotation
-import net.liplum.mdt.mixin.drawX
-import net.liplum.mdt.mixin.drawY
-import net.liplum.mdt.utils.animationMeta
+import plumy.core.ClientOnly
+import plumy.core.WhenNotPaused
+import plumy.dsl.drawRot
+import plumy.dsl.drawX
+import plumy.dsl.drawY
 
 open class TMTRAINER(name: String) : ItemTurret(name) {
     @ClientOnly var CoreAnim = AnimationMeta.Empty
@@ -161,10 +161,10 @@ open class TMTRAINER(name: String) : ItemTurret(name) {
 
     class DrawCore : DrawBlock() {
         override fun draw(build: Building) = (build as TMTRAINERBUILD).run {
-            emptyCoreAnimObj.draw(drawX, drawY, drawRotation)
+            emptyCoreAnimObj.draw(drawX, drawY, drawRot)
             if (unit.ammo() > 0) {
                 Draw.alpha(unit.ammof())
-                coreAnimObj.draw(drawX, drawY, drawRotation)
+                coreAnimObj.draw(drawX, drawY, drawRot)
                 Draw.color()
             }
         }
