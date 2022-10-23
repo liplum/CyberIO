@@ -138,7 +138,7 @@ class SideLinks {
         }
     }
     /**
-     * Only iterate [Side] on the any side no matter whether it's empty.
+     * Only iterate [Side] on any side no matter whether it's empty.
      * In order of [RIGHT] to [BOTTOM]
      */
     inline fun forEach(cons: (Side) -> Unit) {

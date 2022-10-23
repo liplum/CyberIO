@@ -36,13 +36,13 @@ import net.liplum.common.util.format
 import net.liplum.common.util.toDouble
 import net.liplum.input.smoothPlacing
 import net.liplum.input.smoothSelect
-import net.liplum.utils.WhenTheSameTeam
 import net.liplum.render.G
 import net.liplum.render.HeatMeta
 import net.liplum.render.drawHeat
 import net.liplum.ui.bars.appendDisplayLiquidsDynamic
 import net.liplum.ui.bars.genAllLiquidBars
 import net.liplum.ui.bars.removeLiquidInBar
+import net.liplum.utils.WhenTheSameTeam
 import net.liplum.utils.sheet
 import net.liplum.utils.sub
 import plumy.animation.*
@@ -495,7 +495,7 @@ open class Heart(name: String) : Block(name), IComponentBlock {
                 if (amount > 0f) {
                     amount = amount.coerceAtMost(speed).coerceAtMost(capacity - bloodAmount)
                     // Calculate enthalpy
-                    val H = liquid.calcuEnthalpy(amount)
+                    val H = liquid.calcEnthalpy(amount)
                     bloodAmount += amount
                     val delta = (H / blood.heatCapacity / bloodAmount) * temperatureConvertFactor
                     if (liquid.temperature < temperature) {

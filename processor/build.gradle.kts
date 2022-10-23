@@ -1,4 +1,4 @@
-import io.github.liplum.mindustry.*
+import io.github.liplum.mindustry.importMindustry
 
 plugins {
     kotlin("jvm")
@@ -18,7 +18,7 @@ dependencies {
     implementation(project(":annotations"))
     importMindustry()
     implementation("com.google.guava:guava:31.1-jre")
-    implementation("com.google.devtools.ksp:symbol-processing-api:1.7.10-1.0.6")
+    implementation("com.google.devtools.ksp:symbol-processing-api:1.7.20-1.0.6")
     testImplementation("com.github.tschuchortdev:kotlin-compile-testing:1.4.9")
     testImplementation("com.github.tschuchortdev:kotlin-compile-testing-ksp:1.4.9")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.0")

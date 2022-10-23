@@ -154,6 +154,6 @@ class Blood {
  *  H = m C T
  * @param amount Assume it's mass
  */
-fun Liquid.calcuEnthalpy(amount: Float): Float {
+fun Liquid.calcEnthalpy(amount: Float): Float {
     return amount * heatCapacity * temperature
 }

@@ -17,6 +17,7 @@ fun quadratic(yWhenXIsZero: Float): FUNC {
  * @param yWhenXIs1 the value in [0,1] when x=1
  * @param yWhenXIsZero the value in [0,1] when x=0
  */
+@Suppress("UnnecessaryVariable")
 fun quadratic(yWhenXIs1: Float, yWhenXIsZero: Float): FUNC {
     val T = yWhenXIs1
     val c = yWhenXIsZero

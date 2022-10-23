@@ -27,13 +27,13 @@ import mindustry.world.meta.Stat
 import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.Var
-import plumy.animation.ContextDraw.DrawScale
-import net.liplum.render.G
 import net.liplum.input.smoothPlacing
 import net.liplum.input.smoothSelect
+import net.liplum.render.G
 import net.liplum.utils.CalledBySync
 import net.liplum.utils.SendDataPack
 import net.liplum.utils.WhenTheSameTeam
+import plumy.animation.ContextDraw.DrawScale
 import plumy.core.ClientOnly
 import plumy.core.Else
 import plumy.core.Serialized
@@ -45,7 +45,7 @@ import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
 open class ZipBomb(name: String) : Block(name) {
-    @JvmField var explodeEffect: Effect = Fx.reactorExplosion
+    @JvmField var explodeEffect: Effect = Fx.dynamicExplosion
     @JvmField var shake = 6f
     @JvmField var shakeDuration = 16f
     @JvmField var maxSensitive = 10
@@ -157,7 +157,7 @@ open class ZipBomb(name: String) : Block(name) {
                 team, x, y,
                 explosionRange, explosionDamage
             )
-            Fx.dynamicExplosion.at(x, y, sqrt(explosionRange))
+            explodeEffect.at(x, y, sqrt(explosionRange))
         }
 
         override fun killed() {

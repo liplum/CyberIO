@@ -2,7 +2,6 @@
 
 package net.liplum.utils
 
-import arc.Core.atlas
 import mindustry.Vars
 import mindustry.ctype.MappableContent
 import net.liplum.common.util.StartWithHyphen
