@@ -1,4 +1,4 @@
-package net.liplum.shader
+package net.liplum.shaders
 
 import arc.Core
 import arc.files.Fi

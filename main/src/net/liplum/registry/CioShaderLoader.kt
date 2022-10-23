@@ -10,8 +10,8 @@ import net.liplum.common.insertLineNumber
 import net.liplum.common.shader.*
 import net.liplum.event.CioInitEvent
 import net.liplum.registry.CioShader.*
-import net.liplum.shader.CommonShader
-import net.liplum.shader.ProgressShader
+import net.liplum.shaders.CommonShader
+import net.liplum.shaders.ProgressShader
 import net.liplum.shaders.HologramShader
 import net.liplum.shaders.HologramizeShader
 import net.liplum.shaders.SurfaceShader
