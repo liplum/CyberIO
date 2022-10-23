@@ -7,9 +7,9 @@ import arc.struct.Seq
 import mindustry.type.Liquid
 import net.liplum.api.ICyberEntity
 import net.liplum.common.delegate.Delegate1
-import net.liplum.mdt.CalledBySync
+import net.liplum.utils.CalledBySync
 import plumy.core.ClientOnly
-import net.liplum.mdt.SendDataPack
+import net.liplum.utils.SendDataPack
 
 interface IStreamServer : IStreamHost, IStreamClient
 interface IStreamHost : ICyberEntity {

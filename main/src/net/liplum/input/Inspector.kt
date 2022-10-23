@@ -8,7 +8,7 @@ import mindustry.world.Block
 import net.liplum.annotations.Only
 import net.liplum.annotations.Subscribe
 import plumy.core.ClientOnly
-import net.liplum.mdt.Screen
+import net.liplum.utils.Screen
 
 @ClientOnly
 object Inspector {

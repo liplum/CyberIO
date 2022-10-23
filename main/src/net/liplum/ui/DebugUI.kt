@@ -24,7 +24,7 @@ import plumy.core.arc.tinted
 import net.liplum.event.CioInitEvent
 import net.liplum.common.util.allFieldsIncludeParents
 import net.liplum.common.util.directSuperClass
-import net.liplum.mdt.Screen
+import net.liplum.utils.Screen
 import net.liplum.render.Shape
 import net.liplum.ui.attach.Dragger.Companion.dragToMove
 import java.lang.reflect.Field

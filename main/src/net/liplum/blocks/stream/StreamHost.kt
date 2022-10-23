@@ -22,9 +22,9 @@ import net.liplum.Var
 import net.liplum.api.cyber.*
 import net.liplum.common.persistence.read
 import net.liplum.common.persistence.write
-import net.liplum.mdt.CalledBySync
-import net.liplum.mdt.SendDataPack
-import net.liplum.mdt.utils.sub
+import net.liplum.utils.CalledBySync
+import net.liplum.utils.SendDataPack
+import net.liplum.utils.sub
 import net.liplum.util.addPowerUseStats
 import net.liplum.util.addStateMachineInfo
 import plumy.animation.ContextDraw.Draw

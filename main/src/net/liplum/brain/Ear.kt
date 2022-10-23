@@ -43,10 +43,13 @@ import plumy.core.math.isZero
 import plumy.core.ClientOnly
 import plumy.animation.ContextDraw.Draw
 import plumy.animation.ContextDraw.DrawScale
-import net.liplum.mdt.render.*
+import net.liplum.render.*
 import plumy.core.MUnit
 import plumy.dsl.TileXY
-import net.liplum.mdt.utils.sub
+import net.liplum.utils.sub
+import net.liplum.render.G
+import net.liplum.render.HeatMeta
+import net.liplum.render.drawHeat
 import plumy.core.math.invoke
 import plumy.dsl.getCenterWorldXY
 

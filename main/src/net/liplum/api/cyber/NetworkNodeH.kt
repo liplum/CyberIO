@@ -34,8 +34,10 @@ import net.liplum.input.smoothPlacing
 import net.liplum.input.smoothSelect
 import plumy.animation.ContextDraw.Draw
 import plumy.animation.ContextDraw.DrawSize
-import net.liplum.mdt.render.*
+import net.liplum.render.*
 import net.liplum.registry.SD
+import net.liplum.render.G
+import net.liplum.render.Text
 import plumy.dsl.*
 import kotlin.math.absoluteValue
 

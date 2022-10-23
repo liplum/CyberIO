@@ -10,7 +10,7 @@ import net.liplum.Var.Rand
 import plumy.core.assets.TR
 import net.liplum.common.math.PolarX
 import plumy.core.math.random
-import net.liplum.mdt.render.G
+import net.liplum.render.G
 import plumy.dsl.NewEffect
 
 object CioFx {

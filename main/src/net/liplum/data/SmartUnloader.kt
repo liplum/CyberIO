@@ -27,9 +27,9 @@ import net.liplum.common.Remember
 import net.liplum.common.persistence.read
 import net.liplum.common.persistence.write
 import net.liplum.common.util.DoMultipleBool
-import net.liplum.mdt.CalledBySync
+import net.liplum.utils.CalledBySync
 import plumy.core.ClientOnly
-import net.liplum.mdt.SendDataPack
+import net.liplum.utils.SendDataPack
 import plumy.animation.AnimationMeta
 import plumy.animation.ContextDraw.Draw
 import plumy.animation.state.IStateful
@@ -37,10 +37,10 @@ import plumy.animation.state.State
 import plumy.animation.state.StateConfig
 import plumy.animation.state.configuring
 import plumy.animation.draw
-import net.liplum.mdt.render.drawSurroundingRect
+import net.liplum.render.drawSurroundingRect
 import net.liplum.input.smoothPlacing
-import net.liplum.mdt.ui.bars.removeItemsInBar
-import net.liplum.mdt.utils.*
+import net.liplum.ui.bars.removeItemsInBar
+import net.liplum.utils.*
 import net.liplum.util.addPowerUseStats
 import net.liplum.util.addStateMachineInfo
 import net.liplum.util.genText

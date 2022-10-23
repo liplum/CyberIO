@@ -13,7 +13,7 @@ import mindustry.gen.Bullet
 import plumy.core.assets.EmptyTR
 import plumy.animation.ContextDraw.DrawScale
 import plumy.core.assets.TR
-import net.liplum.mdt.utils.atlas
+import net.liplum.utils.atlas
 
 class BBulletType() : BulletType() {
     var scale: (Bullet) -> Float = { 1f }

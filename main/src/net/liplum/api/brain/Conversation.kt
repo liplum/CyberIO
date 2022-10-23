@@ -7,15 +7,15 @@ import arc.util.Align
 import mindustry.Vars
 import mindustry.gen.Building
 import net.liplum.R
-import plumy.dsl.bundle
 import net.liplum.common.util.inViewField
 import net.liplum.math.randomExcept
+import net.liplum.render.Text
+import net.liplum.render.Toaster
+import net.liplum.render.fadeInOutPct
+import net.liplum.utils.inPayload
 import plumy.core.ClientOnly
-import net.liplum.mdt.render.Text
-import net.liplum.mdt.render.Toaster
-import net.liplum.mdt.render.fadeInOutPct
-import net.liplum.mdt.utils.inPayload
 import plumy.dsl.BundleKey
+import plumy.dsl.bundle
 
 object ConversationManager {
     var ConversationFadeTimePercent = 0.08f

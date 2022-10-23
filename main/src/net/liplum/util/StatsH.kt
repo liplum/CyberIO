@@ -9,7 +9,7 @@ import mindustry.world.meta.StatCat
 import mindustry.world.meta.StatValue
 import net.liplum.common.UseReflection
 import net.liplum.common.util.getF
-import net.liplum.mdt.utils.subBundle
+import net.liplum.utils.subBundle
 
 @UseReflection
 fun Block.addPowerUseStats() {

@@ -34,24 +34,24 @@ import mindustry.world.meta.StatUnit
 import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.Var
-import plumy.dsl.bundle
 import net.liplum.common.util.format
 import net.liplum.common.util.percentI
 import net.liplum.input.smoothPlacing
 import net.liplum.input.smoothSelect
-import plumy.core.ClientOnly
-import net.liplum.mdt.render.G
-import net.liplum.mdt.render.G.realHeight
-import net.liplum.mdt.render.G.realWidth
-import net.liplum.mdt.render.drawEffectCirclePlace
-import net.liplum.mdt.ui.bars.ReverseBar
-import net.liplum.mdt.utils.sub
-import net.liplum.mdt.utils.subBundle
+import net.liplum.render.G
+import net.liplum.render.G.realHeight
+import net.liplum.render.G.realWidth
+import net.liplum.render.drawEffectCirclePlace
+import net.liplum.ui.bars.ReverseBar
 import net.liplum.util.addRangeInfo
+import net.liplum.utils.sub
+import net.liplum.utils.subBundle
+import plumy.core.ClientOnly
 import plumy.core.Serialized
 import plumy.core.assets.EmptyTR
-import plumy.dsl.NewEffect
 import plumy.dsl.AddBar
+import plumy.dsl.NewEffect
+import plumy.dsl.bundle
 import kotlin.math.max
 
 const val MagicNSpiralRate = 0.1125f

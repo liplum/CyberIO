@@ -30,7 +30,7 @@ import net.liplum.bullet.RuvikBullet
 import net.liplum.bullet.STEM_VERSION
 import net.liplum.holo.*
 import net.liplum.holo.HoloProjector.HoloProjectorBuild
-import net.liplum.mdt.utils.NewUnitType
+import net.liplum.utils.NewUnitType
 import net.liplum.render.DrawBuild
 import net.liplum.render.SectionProgress
 import net.liplum.render.progress

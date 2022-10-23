@@ -13,7 +13,6 @@ pluginManagement {
 include(
     "main",
     "cui",
-    "mdt",
     "common",
     "processor",
     "annotations",

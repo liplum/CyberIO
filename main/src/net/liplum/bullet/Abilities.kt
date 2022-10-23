@@ -19,7 +19,7 @@ import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.api.bullets.BulletAbility
 import plumy.dsl.DrawLayer
-import net.liplum.mdt.render.G
+import net.liplum.render.G
 import plumy.core.MUnit
 import plumy.dsl.inTheWorld
 import plumy.dsl.worldXY

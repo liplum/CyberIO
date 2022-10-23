@@ -23,7 +23,7 @@ import plumy.animation.ContextDraw.Draw
 import net.liplum.input.smoothSelect
 import plumy.core.MUnit
 import plumy.dsl.WorldXY
-import net.liplum.mdt.utils.atlas
+import net.liplum.utils.atlas
 import net.liplum.registry.SD
 
 class Serializer(name: String) :

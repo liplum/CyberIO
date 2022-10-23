@@ -8,10 +8,10 @@ import net.liplum.common.util.sheet
 import net.liplum.common.util.sheetOneDirection
 import plumy.core.assets.TR
 import plumy.core.assets.TRs
-import net.liplum.mdt.utils.atlas
-import net.liplum.mdt.utils.or
-import net.liplum.mdt.utils.sheet
-import net.liplum.mdt.utils.sub
+import net.liplum.utils.atlas
+import net.liplum.utils.or
+import net.liplum.utils.sheet
+import net.liplum.utils.sub
 import net.liplum.spec
 
 /**

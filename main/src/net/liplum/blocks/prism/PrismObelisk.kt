@@ -18,12 +18,12 @@ import plumy.core.ClientOnly
 import plumy.core.WhenNotPaused
 import plumy.animation.AnimationMeta
 import plumy.animation.draw
-import net.liplum.mdt.render.G
-import net.liplum.mdt.render.drawSurroundingRect
+import net.liplum.render.G
+import net.liplum.render.drawSurroundingRect
 import net.liplum.input.smoothPlacing
-import net.liplum.mdt.utils.animationMeta
-import net.liplum.mdt.utils.isDiagonalTo
-import net.liplum.mdt.utils.subBundle
+import net.liplum.utils.animationMeta
+import net.liplum.utils.isDiagonalTo
+import net.liplum.utils.subBundle
 import plumy.dsl.AddBar
 import plumy.dsl.castBuild
 import plumy.dsl.exists

@@ -26,14 +26,14 @@ import plumy.core.Serialized
 import plumy.core.arc.isNotEmpty
 import plumy.core.assets.EmptyTR
 import plumy.core.ClientOnly
-import net.liplum.mdt.WhenTheSameTeam
-import net.liplum.mdt.mixin.total
+import net.liplum.utils.WhenTheSameTeam
+import net.liplum.mixin.total
 import plumy.animation.ContextDraw.DrawOn
-import net.liplum.mdt.ui.bars.appendDisplayLiquidsDynamic
-import net.liplum.mdt.ui.bars.genAllLiquidBars
-import net.liplum.mdt.ui.bars.removeLiquidInBar
-import net.liplum.mdt.utils.ForProximity
-import net.liplum.mdt.utils.sub
+import net.liplum.ui.bars.appendDisplayLiquidsDynamic
+import net.liplum.ui.bars.genAllLiquidBars
+import net.liplum.ui.bars.removeLiquidInBar
+import net.liplum.utils.ForProximity
+import net.liplum.utils.sub
 import plumy.dsl.build
 
 /**

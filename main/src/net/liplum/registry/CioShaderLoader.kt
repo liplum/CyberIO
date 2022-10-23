@@ -6,18 +6,18 @@ import net.liplum.R
 import net.liplum.Var
 import net.liplum.annotations.Only
 import net.liplum.annotations.SubscribeEvent
-import net.liplum.event.CioInitEvent
 import net.liplum.common.insertLineNumber
 import net.liplum.common.shader.*
-import plumy.core.ClientOnly
-import net.liplum.mdt.shader.CommonShader
-import net.liplum.mdt.shader.ProgressShader
+import net.liplum.event.CioInitEvent
 import net.liplum.registry.CioShader.*
+import net.liplum.shader.CommonShader
+import net.liplum.shader.ProgressShader
 import net.liplum.shaders.HologramShader
 import net.liplum.shaders.HologramizeShader
 import net.liplum.shaders.SurfaceShader
 import net.liplum.shaders.VanishingShader
 import net.liplum.useCompatible
+import plumy.core.ClientOnly
 
 typealias SD = CioShader
 

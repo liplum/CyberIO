@@ -39,7 +39,7 @@ import plumy.core.math.FUNC
 import plumy.core.ClientOnly
 import plumy.core.Else
 import plumy.core.MUnit
-import net.liplum.mdt.utils.healthPct
+import net.liplum.utils.healthPct
 import net.liplum.registry.SD
 import net.liplum.util.time
 import plumy.core.arc.toSecond

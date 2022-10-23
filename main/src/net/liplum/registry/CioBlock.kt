@@ -55,8 +55,8 @@ import net.liplum.holo.HoloFloor
 import net.liplum.holo.HoloWall
 import net.liplum.holo.LandProjector
 import net.liplum.holo.Stealth
-import net.liplum.mdt.render.DrawTurretHeat
-import net.liplum.mdt.ui.DynamicContentInfoDialog.Companion.registerDynamicInfo
+import net.liplum.render.DrawTurretHeat
+import net.liplum.ui.DynamicContentInfoDialog.Companion.registerDynamicInfo
 import net.liplum.registry.CioBulletType.optInRadiationInterference
 import net.liplum.registry.CioBulletType.optInVirus
 import net.liplum.render.*

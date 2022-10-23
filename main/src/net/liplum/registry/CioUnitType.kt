@@ -8,7 +8,7 @@ import net.liplum.R
 import net.liplum.annotations.DependOn
 import net.liplum.cio
 import net.liplum.flesh.BrainUnitType
-import net.liplum.mdt.utils.registerUnitType
+import net.liplum.utils.registerUnitType
 
 object CioUnitType {
     @JvmStatic lateinit var brain: BrainUnitType

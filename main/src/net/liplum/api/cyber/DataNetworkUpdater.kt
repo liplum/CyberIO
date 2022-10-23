@@ -4,7 +4,7 @@ import mindustry.gen.Groups
 import net.liplum.CLog
 import net.liplum.DebugLevel
 import net.liplum.DebugOnly
-import net.liplum.mdt.mixin.EntityMixin
+import net.liplum.mixin.EntityMixin
 
 class DataNetworkUpdater : EntityMixin()
 //    , SimpleSyncMixin

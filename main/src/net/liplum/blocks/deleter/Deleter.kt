@@ -7,8 +7,8 @@ import mindustry.world.meta.Stat
 import net.liplum.common.util.MapKeyBundle
 import net.liplum.common.util.format
 import plumy.core.ClientOnly
-import net.liplum.mdt.ui.ammoStats
-import net.liplum.mdt.utils.subBundle
+import net.liplum.ui.ammoStats
+import net.liplum.utils.subBundle
 
 open class Deleter(name: String) : PowerTurret(name) {
     var executeProportion: Float = 0.2f

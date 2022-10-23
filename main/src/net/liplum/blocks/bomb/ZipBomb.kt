@@ -27,11 +27,13 @@ import mindustry.world.meta.Stat
 import net.liplum.DebugOnly
 import net.liplum.R
 import net.liplum.Var
-import net.liplum.mdt.*
 import plumy.animation.ContextDraw.DrawScale
-import net.liplum.mdt.render.G
+import net.liplum.render.G
 import net.liplum.input.smoothPlacing
 import net.liplum.input.smoothSelect
+import net.liplum.utils.CalledBySync
+import net.liplum.utils.SendDataPack
+import net.liplum.utils.WhenTheSameTeam
 import plumy.core.ClientOnly
 import plumy.core.Else
 import plumy.core.Serialized

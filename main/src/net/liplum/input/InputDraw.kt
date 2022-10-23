@@ -1,7 +1,7 @@
 package net.liplum.input
 
 import mindustry.graphics.Drawf
-import net.liplum.mdt.Screen
+import net.liplum.utils.Screen
 import plumy.dsl.worldXY
 
 fun drawCircleOnMouse(radius: Float) {

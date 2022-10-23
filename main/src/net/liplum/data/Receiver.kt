@@ -24,8 +24,8 @@ import net.liplum.api.cyber.*
 import net.liplum.common.delegate.Delegate1
 import net.liplum.common.persistence.read
 import net.liplum.common.persistence.write
-import net.liplum.mdt.ui.bars.removeItemsInBar
-import net.liplum.mdt.utils.sub
+import net.liplum.ui.bars.removeItemsInBar
+import net.liplum.utils.sub
 import net.liplum.util.update
 import plumy.animation.ContextDraw.Draw
 import plumy.animation.ContextDraw.DrawOn

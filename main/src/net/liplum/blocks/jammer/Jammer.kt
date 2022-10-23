@@ -22,8 +22,8 @@ import plumy.core.WhenNotPaused
 import net.liplum.animation.Floating
 import net.liplum.animation.add
 import plumy.animation.ContextDraw.Draw
-import net.liplum.mdt.utils.draw
-import net.liplum.mdt.utils.sub
+import net.liplum.utils.draw
+import net.liplum.utils.sub
 import plumy.core.assets.EmptyTR
 import plumy.core.assets.TR
 import plumy.core.math.*

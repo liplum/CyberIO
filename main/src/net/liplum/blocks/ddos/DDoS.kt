@@ -23,12 +23,12 @@ import net.liplum.api.cyber.req
 import net.liplum.common.delegate.Delegate1
 import plumy.core.Serialized
 import plumy.core.ClientOnly
-import net.liplum.mdt.render.postToastTextOn
-import net.liplum.mdt.render.removeToastOn
-import net.liplum.mdt.ui.ItemProgressImage
+import net.liplum.render.postToastTextOn
+import net.liplum.render.removeToastOn
+import net.liplum.ui.ItemProgressImage
 import plumy.dsl.AddBar
-import net.liplum.mdt.utils.ItemTypeAmount
-import net.liplum.mdt.utils.subBundle
+import net.liplum.utils.ItemTypeAmount
+import net.liplum.utils.subBundle
 import plumy.dsl.ID
 
 class DDoS(name: String) : Turret(name) {

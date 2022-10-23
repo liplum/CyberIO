@@ -6,7 +6,7 @@ import arc.util.Tmp
 import mindustry.gen.Building
 import mindustry.graphics.Layer
 import net.liplum.S
-import net.liplum.mdt.render.G
+import net.liplum.render.G
 import net.liplum.render.*
 import plumy.dsl.DrawLayer
 

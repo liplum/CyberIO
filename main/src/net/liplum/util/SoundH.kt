@@ -3,8 +3,8 @@ package net.liplum.util
 import arc.audio.Sound
 import mindustry.Vars
 import net.liplum.R
-import net.liplum.mdt.utils.EmptySound
-import net.liplum.mdt.utils.loadSound
+import net.liplum.utils.EmptySound
+import net.liplum.utils.loadSound
 
 fun loadOgg(name: String): Sound =
     loadSound(R.Sound.OGG(name))

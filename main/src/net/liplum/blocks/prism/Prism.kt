@@ -44,9 +44,9 @@ import net.liplum.input.Inspector
 import net.liplum.input.Inspector.isSelected
 import net.liplum.input.smoothSelect
 import net.liplum.math.quadratic
-import net.liplum.mdt.render.AsShadow
-import net.liplum.mdt.render.G
-import net.liplum.mdt.utils.*
+import net.liplum.render.AsShadow
+import net.liplum.render.G
+import net.liplum.utils.*
 import net.liplum.registry.CioStats
 import plumy.animation.AnimatedColor
 import plumy.animation.ContextDraw.Draw

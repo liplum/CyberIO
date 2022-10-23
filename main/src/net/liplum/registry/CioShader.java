@@ -1,7 +1,7 @@
 package net.liplum.registry;
 
-import net.liplum.mdt.shader.CommonShader;
-import net.liplum.mdt.shader.ProgressShader;
+import net.liplum.shader.CommonShader;
+import net.liplum.shader.ProgressShader;
 import net.liplum.shaders.*;
 
 public class CioShader {

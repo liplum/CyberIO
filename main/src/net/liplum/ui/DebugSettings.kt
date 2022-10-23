@@ -20,10 +20,8 @@ import net.liplum.S
 import net.liplum.Settings
 import net.liplum.common.Dir
 import net.liplum.common.toFi
-import net.liplum.mdt.forceUnlock
-import net.liplum.mdt.lock
-import net.liplum.mdt.ui.ShowTextDialog
-import net.liplum.mdt.ui.lockOrUnlock
+import net.liplum.utils.forceUnlock
+import net.liplum.utils.lock
 import net.liplum.update.Updater
 import net.liplum.welcome.Welcome
 

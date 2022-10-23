@@ -40,9 +40,9 @@ import net.liplum.common.delegate.Delegate1
 import net.liplum.common.persistence.read
 import net.liplum.common.persistence.write
 import net.liplum.common.shader.use
-import net.liplum.mdt.consumer.LiquidTurretCons
-import net.liplum.mdt.render.G
-import net.liplum.mdt.utils.*
+import net.liplum.consumer.LiquidTurretCons
+import net.liplum.render.G
+import net.liplum.utils.*
 import net.liplum.registry.CioFluid.cyberion
 import net.liplum.registry.SD
 import plumy.animation.ContextDraw.Draw

@@ -7,9 +7,9 @@ import mindustry.type.Item
 import net.liplum.R
 import net.liplum.api.ICyberEntity
 import net.liplum.common.delegate.Delegate1
-import net.liplum.mdt.CalledBySync
+import net.liplum.utils.CalledBySync
 import plumy.core.ClientOnly
-import net.liplum.mdt.SendDataPack
+import net.liplum.utils.SendDataPack
 
 interface IDataSender : ICyberEntity {
     /**

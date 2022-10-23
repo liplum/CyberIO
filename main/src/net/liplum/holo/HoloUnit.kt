@@ -23,9 +23,9 @@ import mindustry.world.blocks.power.PowerGraph
 import net.liplum.S
 import net.liplum.common.persistence.*
 import net.liplum.holo.HoloProjector.HoloProjectorBuild
-import net.liplum.mdt.mixin.PayloadMixin
-import net.liplum.mdt.render.G
-import net.liplum.mdt.utils.hasShields
+import net.liplum.mixin.PayloadMixin
+import net.liplum.render.G
+import net.liplum.utils.hasShields
 import net.liplum.registry.CioFluid
 import net.liplum.registry.EntityRegistry
 import plumy.core.ClientOnly

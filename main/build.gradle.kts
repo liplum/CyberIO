@@ -19,7 +19,6 @@ sourceSets {
     main {
         java.srcDirs(
             "src",
-            "${project(":mdt").projectDir}/src",
             "$buildDir/generated/classGen",
         )
         resources.srcDir("resources")
@@ -33,7 +32,6 @@ sourceSets {
 kotlin.sourceSets.main {
     kotlin.srcDirs(
         file("$buildDir/generated/ksp/main/kotlin"),
-        file("${project(":mdt").projectDir}/src"),
         file("$buildDir/generated/classGen"),
     )
 }

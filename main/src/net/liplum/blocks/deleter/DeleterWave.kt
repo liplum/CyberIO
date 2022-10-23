@@ -12,7 +12,7 @@ import net.liplum.S
 import net.liplum.api.IExecutioner
 import net.liplum.math.quadratic
 import plumy.animation.ContextDraw.DrawScale
-import net.liplum.mdt.utils.lostHp
+import net.liplum.utils.lostHp
 import plumy.dsl.NewEffect
 
 private val P2Alpha = quadratic(0.95f, 0.35f)

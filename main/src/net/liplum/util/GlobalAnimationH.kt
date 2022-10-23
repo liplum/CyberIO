@@ -9,7 +9,7 @@ import net.liplum.common.util.sheetOneDirection
 import plumy.core.ClientOnly
 import net.liplum.render.GlobalAnimation
 import net.liplum.render.GlobalAnimation.Companion.register
-import net.liplum.mdt.utils.anim
+import net.liplum.utils.anim
 
 fun <T : Block> T.globalAnim(
     duration: Float, frameCount: Int,

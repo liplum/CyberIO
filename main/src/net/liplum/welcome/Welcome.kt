@@ -27,7 +27,7 @@ import net.liplum.common.util.randomExcept
 import net.liplum.event.CioInitEvent
 import net.liplum.math.randomByWeights
 import plumy.core.ClientOnly
-import net.liplum.mdt.utils.atlas
+import net.liplum.utils.atlas
 import plumy.core.assets.TR
 
 @ClientOnly

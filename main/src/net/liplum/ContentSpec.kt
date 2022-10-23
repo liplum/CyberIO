@@ -1,10 +1,10 @@
 package net.liplum
 
 import arc.graphics.Color
-import plumy.dsl.bundle
-import plumy.core.assets.TR
 import plumy.core.ClientOnly
-import net.liplum.mdt.utils.atlas
+import plumy.core.assets.TR
+import plumy.dsl.bundle
+import plumy.dsl.sprite
 
 enum class ContentSpec(
     val id: String,
@@ -59,4 +59,4 @@ val ContentSpec.i18nDesc: String
     get() = "${Meta.ModID}.spec.$id.desc".bundle
 @ClientOnly
 val ContentSpec.icon: TR
-    get() = R.Gen("spec-$id").atlas()
+    get() = R.Gen("spec-$id").sprite

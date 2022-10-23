@@ -31,10 +31,10 @@ import net.liplum.common.util.toFloat
 import plumy.core.ClientOnly
 import plumy.core.WhenNotPaused
 import net.liplum.animation.Floating
-import net.liplum.mdt.render.G
+import net.liplum.render.G
 import plumy.dsl.AddBar
-import net.liplum.mdt.utils.healthPct
-import net.liplum.mdt.utils.sub
+import net.liplum.utils.healthPct
+import net.liplum.utils.sub
 import net.liplum.registry.SD
 import net.liplum.util.yesNo
 import plumy.core.Serialized

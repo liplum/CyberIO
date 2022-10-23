@@ -9,7 +9,7 @@ import mindustry.gen.Entityc
 import mindustry.graphics.Layer
 import plumy.dsl.DrawLayer
 import plumy.core.ClientOnly
-import net.liplum.mdt.render.Text
+import net.liplum.render.Text
 
 class CharBulletType : BulletType {
     constructor(speed: Float, damage: Float) : super(speed, damage)

@@ -15,9 +15,9 @@ import net.liplum.api.cyber.SideLinks.Companion.enableAllSides
 import plumy.core.Serialized
 import plumy.core.assets.TR
 import plumy.core.ClientOnly
-import net.liplum.mdt.render.G
+import net.liplum.render.G
 import plumy.core.MUnit
-import net.liplum.mdt.utils.atlas
+import net.liplum.utils.atlas
 import kotlin.math.max
 
 class DataCDN(name: String) :

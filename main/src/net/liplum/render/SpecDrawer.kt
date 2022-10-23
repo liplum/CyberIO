@@ -3,8 +3,8 @@ package net.liplum.render
 import mindustry.world.Block
 import mindustry.world.draw.*
 import net.liplum.common.util.StartWithHyphen
-import net.liplum.mdt.render.DrawConstruct
-import net.liplum.mdt.utils.or
+import net.liplum.render.DrawConstruct
+import net.liplum.utils.or
 import net.liplum.spec
 import net.liplum.util.atlasX
 

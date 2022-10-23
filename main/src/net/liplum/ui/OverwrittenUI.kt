@@ -13,9 +13,8 @@ import net.liplum.blocks.prism.Prism
 import net.liplum.common.util.setF
 import net.liplum.event.CioInitEvent
 import net.liplum.holo.HoloUnit
-import net.liplum.mdt.OverwriteVanilla
-import net.liplum.mdt.safeCall
-import net.liplum.mdt.ui.DynamicContentInfoDialog
+import net.liplum.utils.OverwriteVanilla
+import net.liplum.utils.safeCall
 
 @OverwriteVanilla
 object OverwrittenUI {

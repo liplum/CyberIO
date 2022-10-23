@@ -4,9 +4,9 @@ package net.liplum
 
 import net.liplum.common.CoerceLength
 import net.liplum.common.shader.ShaderBase
-import net.liplum.mdt.shader.CommonShader
 import net.liplum.registry.SD
 import net.liplum.registry.ShaderCtor
+import net.liplum.shader.CommonShader
 import net.liplum.shaders.HologramShader
 import net.liplum.shaders.HologramizeShader
 import net.liplum.shaders.SurfaceShader

@@ -18,9 +18,9 @@ import net.liplum.event.CioLoadContentEvent
 import net.liplum.event.UnitTap
 import net.liplum.gen.Contents
 import net.liplum.gen.EventRegistry
-import net.liplum.mdt.IsClient
-import net.liplum.mdt.IsSteam
-import net.liplum.mdt.safeCall
+import net.liplum.utils.IsClient
+import net.liplum.utils.IsSteam
+import net.liplum.utils.safeCall
 import net.liplum.registry.CioShaderLoader
 import net.liplum.registry.CioTechTree
 import net.liplum.registry.ServerCommand.registerCioCommands

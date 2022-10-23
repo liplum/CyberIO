@@ -25,10 +25,10 @@ import net.liplum.common.shader.use
 import plumy.dsl.bundle
 import net.liplum.common.util.off
 import net.liplum.common.util.on
-import net.liplum.mdt.ServerOnly
+import net.liplum.utils.ServerOnly
 import plumy.core.Else
 import plumy.dsl.AddBar
-import net.liplum.mdt.utils.sub
+import net.liplum.utils.sub
 import net.liplum.registry.SD
 import net.liplum.util.yesNo
 import plumy.core.ClientOnly

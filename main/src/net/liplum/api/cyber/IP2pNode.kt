@@ -4,7 +4,7 @@ import arc.graphics.Color
 import mindustry.type.Liquid
 import net.liplum.api.ICyberEntity
 import plumy.core.ClientOnly
-import net.liplum.mdt.SendDataPack
+import net.liplum.utils.SendDataPack
 import plumy.dsl.PackedPos
 
 enum class P2pStatus {

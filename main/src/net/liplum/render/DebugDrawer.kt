@@ -10,9 +10,9 @@ import net.liplum.annotations.Only
 import net.liplum.annotations.Subscribe
 import net.liplum.common.util.inViewField
 import plumy.core.ClientOnly
-import net.liplum.mdt.mixin.PowerGraphc
-import net.liplum.mdt.render.G
-import net.liplum.mdt.render.Text
+import net.liplum.mixin.PowerGraphc
+import net.liplum.render.G
+import net.liplum.render.Text
 
 @ClientOnly
 object DebugDrawer {

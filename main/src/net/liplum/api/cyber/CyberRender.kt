@@ -24,8 +24,12 @@ import net.liplum.input.smoothPlacing
 import net.liplum.input.smoothSelect
 import plumy.core.ClientOnly
 import plumy.animation.ContextDraw.DrawScale
-import net.liplum.mdt.render.*
-import net.liplum.mdt.utils.worldPos
+import net.liplum.render.*
+import net.liplum.utils.worldPos
+import net.liplum.render.G
+import net.liplum.render.Text
+import net.liplum.render.postToastTextOn
+import net.liplum.render.postToastTextOnXY
 import plumy.core.arc.darken
 import plumy.core.math.Point2f
 import plumy.core.math.isZero

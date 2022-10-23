@@ -23,10 +23,10 @@ import net.liplum.R
 import net.liplum.Var
 import net.liplum.api.cyber.*
 import net.liplum.common.Remember
-import net.liplum.mdt.CalledBySync
-import net.liplum.mdt.SendDataPack
-import net.liplum.mdt.utils.sub
-import net.liplum.mdt.utils.tileEquals
+import net.liplum.utils.CalledBySync
+import net.liplum.utils.SendDataPack
+import net.liplum.utils.sub
+import net.liplum.utils.tileEquals
 import net.liplum.util.addStateMachineInfo
 import net.liplum.util.update
 import plumy.animation.ContextDraw.Draw

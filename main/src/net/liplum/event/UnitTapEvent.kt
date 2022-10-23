@@ -6,7 +6,7 @@ import arc.input.KeyCode
 import mindustry.Vars
 import mindustry.entities.Units
 import mindustry.gen.Player
-import net.liplum.mdt.Screen
+import net.liplum.utils.Screen
 import plumy.core.ClientOnly
 import plumy.core.MUnit
 
