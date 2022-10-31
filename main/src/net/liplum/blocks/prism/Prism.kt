@@ -44,10 +44,10 @@ import net.liplum.input.Inspector
 import net.liplum.input.Inspector.isSelected
 import net.liplum.input.smoothSelect
 import net.liplum.math.quadratic
+import net.liplum.registry.CioStats
 import net.liplum.render.AsShadow
 import net.liplum.render.G
 import net.liplum.utils.*
-import net.liplum.registry.CioStats
 import plumy.animation.AnimatedColor
 import plumy.animation.ContextDraw.Draw
 import plumy.animation.ContextDraw.DrawScale
@@ -209,8 +209,6 @@ open class Prism(name: String) : Block(name) {
         override fun canControl() = playerControllable
         val crystalAmount: Int
             get() = cm.validAmount
-        val outer: Prism
-            get() = this@Prism
         var logicControlTime = -1f
         val controlByLogic: Boolean
             get() = logicControlTime > 0f
@@ -219,9 +217,6 @@ open class Prism(name: String) : Block(name) {
             get() = Agl + (prismRadius * 2 * crystalAmount)
         open val Crystal.circleColor: Color
             get() = R.C.PrismRgbFG[(orbitPos + id) % 3]
-
-        fun removeOutermostPrisel() =
-            cm.tryRemoveOutermost()
 
         override fun onRemoved() =
             cm.clearObelisk()

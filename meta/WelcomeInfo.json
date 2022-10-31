@@ -52,7 +52,7 @@
   },
   "v5.0": {
     "Default": "ErekirDetected",
-    "Parent": "common-erekir",
+    "Parent": "v4.1",
     "Scene": [
     ]
   }
