@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up PATH
         run: |
           echo "${ANDROID_HOME}/build-tools/30.0.1" >> $GITHUB_PATH
@@ -24,7 +24,7 @@ jobs:
           chmod +x gradlew
           ./gradlew :main:deploy
       - name: Upload built jar file
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ${{ github.event.repository.name }} Pull Request
           path: main/build/tmp/deploy/*.jar

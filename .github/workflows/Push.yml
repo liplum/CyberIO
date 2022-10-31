@@ -5,7 +5,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Set Android SDK tools
         run: echo "$ANDROID_HOME/build-tools/30.0.3" >> $GITHUB_PATH
@@ -30,7 +30,7 @@ jobs:
           chmod +x gradlew
           ./gradlew :main:deploy
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: CyberIO-Unzip-This
           path: main/build/tmp/deploy/*.jar
@@ -44,11 +44,11 @@ jobs:
     env:
       GH_REPO: ${{ github.repository }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - uses: actions/download-artifact@v2
         with:
-          name: CyberIO
+          name: CyberIO-Unzip-This
           path: out
 
       - name: Retrieve meta
