@@ -2,7 +2,7 @@ import io.github.liplum.mindustry.importMindustry
 
 plugins {
     kotlin("jvm")
-    id("com.google.devtools.ksp") version "1.7.0-1.0.6"
+    id("com.google.devtools.ksp") version "1.7.20-1.0.7"
     `maven-publish`
     id("io.github.liplum.mgpp")
 }

@@ -9,7 +9,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     kotlin("jvm")
     `maven-publish`
-    id("com.google.devtools.ksp") version "1.7.0-1.0.6"
+    id("com.google.devtools.ksp") version "1.7.20-1.0.7"
     id("io.github.liplum.mgpp")
 }
 val PlumyVersion: String by project
@@ -43,7 +43,6 @@ ksp {
     arg("Dp.GenerateSpec", "Contents")
     arg("Dp.Scope", "net.liplum.registry")
     allowSourcesFromOtherPlugins = true
-    blockOtherCompilerPlugins = true
 }
 mindustry {
     run {
