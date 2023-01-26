@@ -3,12 +3,12 @@ package net.liplum;
 import net.liplum.update.Version2;
 
 public class Meta {
-    public static final boolean EnableDebug = true;
+    public static final boolean EnableDebug = false;
     public static final String ModID = "cyber-io";
     public static final String Author = "Liplum";
     public static final String Name = "Cyber IO";
     public static final String NameNoSpace = "CyberIO";
-    public static final String Version = "v5.0";
+    public static final String Version = "v5.1";
     /**
      * For debug only preview
      */
