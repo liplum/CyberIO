@@ -75,6 +75,9 @@ class DpProcessor(
         symbols.forEach { it.accept(Visitor(), Unit) }
         try {
             val functions = graph.resolveAllInOrder()
+            for (func in functions) {
+                logger.info("[DpProcessor] ${func.id}.")
+            }
             val qualifiers = functions.mapNotNull {
                 val split = it.id.split(".")
                 when (split.size) {

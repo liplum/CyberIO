@@ -99,7 +99,7 @@ class SubscriptionProcessor(
                     event2Subscribers[EventType(eventName)] += EventSubscriber(
                         curFuncFullName, OnlySpec(only), isZeroArg = function.parameters.isEmpty()
                     )
-                    logger.info("Function ${function.qualifiedName?.asString()} subscribes Event ${eventName.simpleName()}")
+                    logger.info("[SubscriptionProcessor] Function ${function.qualifiedName?.asString()} subscribes Event ${eventName.simpleName()}")
                 }
             }
         }

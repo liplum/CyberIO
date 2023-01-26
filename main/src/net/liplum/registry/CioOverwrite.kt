@@ -52,7 +52,6 @@ object CioOverwrite {
             (Blocks.payloadLoader as PayloadLoader).maxBlockSize = blockSize.toInt()
             (Blocks.payloadRouter as PayloadRouter).payloadLimit = blockSize
             (Blocks.payloadUnloader as PayloadUnloader).maxBlockSize = blockSize.toInt()
-            (Blocks.payloadPropulsionTower as PayloadMassDriver).maxPayloadSize = blockSize
             (Blocks.payloadMassDriver as PayloadMassDriver).maxPayloadSize = blockSize
             (Blocks.reinforcedPayloadConveyor as PayloadConveyor).payloadLimit = blockSize
             (Blocks.reinforcedPayloadRouter as PayloadConveyor).payloadLimit = blockSize
