@@ -16,7 +16,7 @@ buildscript {
 val settings = localConfig
 allprojects {
     group = "net.liplum"
-    version = "5.0"
+    version = "5.1"
     repositories {
         mavenCentral()
         maven {
