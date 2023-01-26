@@ -1,4 +1,4 @@
-package net.liplum.blocks.stream
+package net.liplum.data
 
 import arc.func.Prov
 import arc.graphics.Color
@@ -207,8 +207,8 @@ open class StreamClient(name: String) : Block(name),IDataBlock {
         }
     }
 
-    @ClientOnly lateinit var NormalState: State<StreamClient.ClientBuild>
-    @ClientOnly lateinit var NoPowerState: State<StreamClient.ClientBuild>
+    @ClientOnly lateinit var NormalState: State<ClientBuild>
+    @ClientOnly lateinit var NoPowerState: State<ClientBuild>
     @ClientOnly
     fun configAnimationStateMachine() {
         NormalState = State("Normal")

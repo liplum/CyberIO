@@ -1,4 +1,4 @@
-package net.liplum.blocks.stream
+package net.liplum.data
 
 import arc.func.Prov
 import arc.graphics.Color
@@ -347,8 +347,8 @@ open class StreamHost(name: String) : Block(name),IDataBlock {
         }
     }
 
-    @ClientOnly lateinit var NoPowerState: State<StreamHost.HostBuild>
-    @ClientOnly lateinit var NormalState: State<StreamHost.HostBuild>
+    @ClientOnly lateinit var NoPowerState: State<HostBuild>
+    @ClientOnly lateinit var NormalState: State<HostBuild>
     fun configAnimationStateMachine() {
         NoPowerState = State("NoPower") {
             NoPowerTR.Draw(x, y)

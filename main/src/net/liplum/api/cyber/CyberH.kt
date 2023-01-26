@@ -101,8 +101,10 @@ val Liquid.fluidColor: Color
 typealias SingleItemArray = Seq<Item>
 
 object CyberDataLoader {
-    @JvmField var SingleItems: Array<SingleItemArray> = emptyArray()
-    @JvmField var SingleLiquid: Array<SingleLiquidArray> = emptyArray()
+    @JvmField
+    var SingleItems: Array<SingleItemArray> = emptyArray()
+    @JvmField
+    var SingleLiquid: Array<SingleLiquidArray> = emptyArray()
     @SubscribeEvent(CioInitEvent::class)
     fun initData() {
         val items = Vars.content.items()
@@ -326,8 +328,8 @@ fun <T> T.addMaxClientStats(max: Int) where  T : Block {
 /**
  * @param speed pre second
  */
-fun <T> T.addDataTransferSpeedStats(speed: Float) where  T : Block {
-    stats.add(CioStats.dataTransferSpeed, speed, StatUnit.perSecond)
+fun <T> T.addDataTransferSpeedStats(speed: Float, toSecond: Float = 60f) where  T : Block {
+    stats.add(CioStats.dataTransferSpeed, speed * toSecond, StatUnit.perSecond)
 }
 //</editor-fold>
 //<editor-fold desc="Textures">

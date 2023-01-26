@@ -8,10 +8,10 @@ import net.liplum.DebugOnly
 import net.liplum.ErekirSpec
 import net.liplum.VanillaSpec
 import net.liplum.annotations.DependOn
-import net.liplum.blocks.stream.P2pNode
-import net.liplum.blocks.stream.StreamClient
-import net.liplum.blocks.stream.StreamHost
-import net.liplum.blocks.stream.StreamServer
+import net.liplum.data.P2pNode
+import net.liplum.data.StreamClient
+import net.liplum.data.StreamHost
+import net.liplum.data.StreamServer
 import net.liplum.data.*
 import plumy.dsl.plus
 

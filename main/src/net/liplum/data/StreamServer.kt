@@ -1,4 +1,4 @@
-package net.liplum.blocks.stream
+package net.liplum.data
 
 import arc.func.Prov
 import arc.graphics.Color

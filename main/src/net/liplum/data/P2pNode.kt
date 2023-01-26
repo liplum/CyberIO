@@ -1,4 +1,4 @@
-package net.liplum.blocks.stream
+package net.liplum.data
 
 import arc.func.Prov
 import arc.graphics.Color
@@ -357,8 +357,8 @@ open class P2pNode(name: String) : Block(name), IDataBlock {
         }
     }
 
-    @ClientOnly lateinit var NormalState: State<P2pNode.P2pBuild>
-    @ClientOnly lateinit var NoPowerState: State<P2pNode.P2pBuild>
+    @ClientOnly lateinit var NormalState: State<P2pBuild>
+    @ClientOnly lateinit var NoPowerState: State<P2pBuild>
     fun configAnimationStateMachine() {
         NormalState = State("Normal")
         NoPowerState = State("NoPower") {
