@@ -77,12 +77,6 @@ tasks.withType<KotlinCompile>().configureEach {
     )
 }
 val MKUtilsVersion: String by project
-fun DependencyHandlerScope.mkutils(vararg modules: String) {
-    for (module in modules) {
-        implementation("com.github.plumygame.mkutils:$module:$MKUtilsVersion")
-        testImplementation("com.github.plumygame.mkutils:$module:$MKUtilsVersion")
-    }
-}
 
 dependencies {
     implementation(project(":annotations"))
@@ -133,5 +127,11 @@ publishing {
         create<MavenPublication>("maven") {
             from(components["java"])
         }
+    }
+}
+fun DependencyHandlerScope.mkutils(vararg modules: String) {
+    for (module in modules) {
+        implementation("com.github.plumygame.mkutils:$module:$MKUtilsVersion")
+        testImplementation("com.github.plumygame.mkutils:$module:$MKUtilsVersion")
     }
 }
