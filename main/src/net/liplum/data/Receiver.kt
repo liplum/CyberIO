@@ -111,7 +111,7 @@ open class Receiver(name: String) : Block(name), IDataBlock {
 
     override fun setStats() {
         super.setStats()
-        addMaxSenderStats(1)
+        addMaxSenderStats(maxConnection)
     }
 
     override fun drawPlanConfig(req: BuildPlan, list: Eachable<BuildPlan>) {
