@@ -57,7 +57,7 @@ ___
 
 The code of CyberIO is open source under GNU General Public License v3.0 (GPL 3.0).
 
-To learn about the resources of CyberIO, please check the [Copyright File](Info/Copyright.md).
+To learn about the resources of CyberIO, please check the [Copyright](COPYRIGHT.md).
 </div>
 
 <!----------------------------------------------------------------------------->
@@ -66,7 +66,7 @@ To learn about the resources of CyberIO, please check the [Copyright File](Info/
 [Download]: https://github.com/liplum/CyberIO/releases/latest
 [Website]: https://liplum.github.io/CyberIO
 [For Server]: Info/ForServer.md
-[Contribution]: Info/ForContributors.md
+[Contribution]: CONTRIBUTING.md
 
 <!----------------------------------[ Badges ]--------------------------------->
 
