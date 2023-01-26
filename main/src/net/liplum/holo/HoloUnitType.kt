@@ -52,22 +52,41 @@ import kotlin.math.min
  * Only support flying unit for now.
  */
 open class HoloUnitType(name: String) : UnitType(name) {
-    @JvmField @ClientOnly var ColorOpacity = -1f
-    @JvmField @ClientOnly var HoloOpacity = -1f
-    @JvmField @ClientOnly var minAlpha = 0.15f
-    @JvmField var lose = 0.3f
-    @JvmField var loseMultiplierWhereMissing = 12f
-    @JvmField var lifespan = 120 * 60f
-    @JvmField var overageDmgFactor = 0.5f
-    @ClientOnly @JvmField var ruvikShootingTipTime = 30f
-    @ClientOnly @JvmField var ruvikTipRange = 100f
-    @ClientOnly @JvmField var enableRuvikTip = false
-    @JvmField var sacrificeCyberionAmount = 1f
+    @JvmField
+    @ClientOnly
+    var ColorOpacity = -1f
+    @JvmField
+    @ClientOnly
+    var HoloOpacity = -1f
+    @JvmField
+    @ClientOnly
+    var minAlpha = 0.15f
+    @JvmField
+    var lose = 0.3f
+    @JvmField
+    var loseMultiplierWhereMissing = 12f
+    @JvmField
+    var lifespan = 120 * 60f
+    @JvmField
+    var overageDmgFactor = 0.5f
+    @ClientOnly
+    @JvmField
+    var ruvikShootingTipTime = 30f
+    @ClientOnly
+    @JvmField
+    var ruvikTipRange = 100f
+    @ClientOnly
+    @JvmField
+    var enableRuvikTip = false
+    @JvmField
+    var sacrificeCyberionAmount = 1f
     /**
      * Cyber amount -> Lifetime (unit:tick)
      */
-    @JvmField var sacrificeLifeFunc: FUNC = { it * 15f }
-    @JvmField var researchReq: Array<ItemStack> = emptyArray()
+    @JvmField
+    var sacrificeLifeFunc: FUNC = { it * 15f }
+    @JvmField
+    var researchReq: Array<ItemStack> = emptyArray()
 
     init {
         //outlineColor = S.HologramDark
@@ -93,17 +112,15 @@ open class HoloUnitType(name: String) : UnitType(name) {
         super.loadIcon()
         val width = fullIcon.width
         val height = fullIcon.height
-        val maker = StackIconMaker(width, height)
+        val maker = StackIconBakery(width, height)
         val rawIcon = fullIcon
         val layers = listOf(
-            (PixmapRegionModelLayerFrom(rawIcon)){
-                +PlainLayerProcessor()
-            },
-            (PixmapRegionModelLayerFrom(rawIcon)){
+            Layer(Core.atlas.getPixmap(rawIcon).toLayerBuffer()),
+            Layer(Core.atlas.getPixmap(rawIcon).toLayerBuffer()) {
                 +TintLerpLayerProcessor(S.Hologram, Var.HoloUnitTintAlpha)
             }
         )
-        val baked = maker.bake(layers).texture.toPixmap()
+        val baked = maker.bake(layers).createPixmap()
         val icon = TR(Texture(baked))
         fullIcon = icon
         uiIcon = icon

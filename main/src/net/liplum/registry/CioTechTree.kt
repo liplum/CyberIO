@@ -4,6 +4,7 @@ import mindustry.content.Items.oxide
 import mindustry.content.Items.thorium
 import mindustry.content.Liquids.cryofluid
 import mindustry.content.Liquids.slag
+import mindustry.content.Planets
 import net.liplum.ErekirSpec
 import net.liplum.Meta
 import net.liplum.VanillaSpec
@@ -51,99 +52,99 @@ object CioTechTree {
     }
 
     fun loadSerpulo() {
-        CreateTechTree(ic, Meta.Name) {
-            node(icAssembler) {
-                node(cyberionMixer, cryofluid, thorium) {
-                    node(stealth) {
-                        node(jammer)
+        CreateTechTree(name = Meta.Name, origin = ic, planet = Planets.serpulo) {
+            icAssembler {
+                cyberionMixer(require = listOf(cryofluid, thorium)) {
+                    stealth {
+                        jammer {}
                     }
-                    node(holoProjector) {
-                        node(holoMiner) {
-                            node(holoSupporter)
-                            node(holoArchitect)
+                    holoProjector {
+                        holoMiner {
+                            holoSupporter {}
+                            holoArchitect {}
                         }
-                        node(holoGuardian) {
-                            node(holoFighter)
+                        holoGuardian {
+                            holoFighter {}
                         }
                     }
                 }
             }
-            node(zipBomb)
-            node(eye) {
-                node(ear) {
-                    node(heimdall)
+            zipBomb {}
+            eye {
+                ear {
+                    heimdall {}
                 }
             }
-            node(TMTRAINER) {
-                node(deleter)
-                node(prism) {
-                    node(prismObelisk)
+            TMTRAINER {
+                deleter {}
+                prism {
+                    prismObelisk {}
                 }
             }
-            node(holoWall) {
-                node(holoWallLarge)
+            holoWall {
+                holoWallLarge {}
             }
-            node(sender) {
-                node(receiver) {
-                    node(smartUnloader)
-                    node(smartDistributor)
+            sender {
+                receiver {
+                    smartUnloader {}
+                    smartDistributor {}
                 }
             }
-            node(p2pNode) {
-                node(streamClient)
-                node(streamHost, streamClient)
-                node(streamServer, streamClient)
+            p2pNode {
+                streamClient {}
+                streamHost(require = listOf(streamClient))
+                streamServer(require = listOf(streamClient))
             }
-            node(wirelessTower) {
-                node(underdriveProjector)
+            wirelessTower {
+                underdriveProjector {}
             }
         }
     }
 
     fun loadErekir() {
-        CreateTechTree(ic, Meta.Name) {
-            node(icAssembler) {
-                node(cyberionMixer, slag, oxide) {
-                    node(stealth) {
-                        node(jammer)
+        CreateTechTree(name = Meta.Name, origin = ic, planet = Planets.erekir) {
+            icAssembler {
+                cyberionMixer(require = listOf(slag, oxide)) {
+                    stealth {
+                        jammer {}
                     }
-                    node(holoProjector) {
-                        node(holoFighter)
-                        node(holoSupporter)
-                        node(holoArchitect)
-                        node(holoMiner)
-                        node(holoGuardian)
+                    holoProjector {
+                        holoFighter {}
+                        holoSupporter {}
+                        holoArchitect {}
+                        holoMiner {}
+                        holoGuardian {}
                     }
                 }
             }
-            node(eye) {
-                node(ear) {
-                    node(heimdall)
+            eye {
+                ear {
+                    heimdall {}
                 }
             }
-            node(zipBomb) {
-                node(TMTRAINER)
-                node(deleter)
-                node(prism) {
-                    node(prismObelisk)
+            zipBomb {
+                TMTRAINER {}
+                deleter {}
+                prism {
+                    prismObelisk {}
                 }
             }
-            node(holoWall) {
-                node(holoWallLarge)
+            holoWall {
+                holoWallLarge {}
             }
-            node(sender) {
-                node(receiver)
-                node(smartDistributor) {
-                    node(smartUnloader)
+            sender {
+                receiver {}
+                smartDistributor {
+                    smartUnloader {}
                 }
             }
-            node(p2pNode) {
-                node(streamHost)
-                node(streamClient)
-                node(streamServer, streamClient, streamHost)
+            p2pNode {
+                streamHost {}
+                streamClient {}
+                streamServer(require = listOf(streamClient, streamHost))
             }
-            node(underdriveProjector) {
-                node(wirelessTower)
+            underdriveProjector {
+                wirelessTower {}
             }
         }
     }

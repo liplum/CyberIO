@@ -1,5 +1,6 @@
 package net.liplum.holo
 
+import arc.Core
 import arc.func.Prov
 import arc.graphics.Color
 import arc.graphics.Texture
@@ -48,20 +49,31 @@ import plumy.texture.*
 import kotlin.math.max
 
 open class HoloWall(name: String) : Wall(name) {
-    @JvmField var restoreCharge: Tick = 10 * 60f
-    @ClientOnly @JvmField var ProjectorTR = EmptyTR
-    @ClientOnly @JvmField var ImageTR = EmptyTR
-    @JvmField var minHealthProportion = 0.05f
-    @ClientOnly @JvmField var floatingRange = 2f
-    @JvmField var needPower = false
+    @JvmField
+    var restoreCharge: Tick = 10 * 60f
+    @ClientOnly
+    @JvmField
+    var ProjectorTR = EmptyTR
+    @ClientOnly
+    @JvmField
+    var ImageTR = EmptyTR
+    @JvmField
+    var minHealthProportion = 0.05f
+    @ClientOnly
+    @JvmField
+    var floatingRange = 2f
+    @JvmField
+    var needPower = false
     /**
      * Used when [needPower] is true.
      */
-    @JvmField var powerCapacity = 1000f
+    @JvmField
+    var powerCapacity = 1000f
     /**
      * Used when [needPower] is true.
      */
-    @JvmField var powerUseForChargePreUnit = 0.1f
+    @JvmField
+    var powerUseForChargePreUnit = 0.1f
 
     init {
         buildType = Prov { HoloWallBuild() }
@@ -101,16 +113,15 @@ open class HoloWall(name: String) : Wall(name) {
 
     override fun loadIcon() {
         val size = size * 32
-        val maker = StackIconMaker(size, size)
+        val maker = StackIconBakery(size, size)
         val layers = listOf(
-            (PixmapRegionModelLayerFrom(ProjectorTR)){
-                +PlainLayerProcessor()
-            },
-            (PixmapRegionModelLayerFrom(ImageTR)){
+            Layer(Core.atlas.getPixmap(ProjectorTR).toLayerBuffer()),
+            Layer(Core.atlas.getPixmap(ProjectorTR).toLayerBuffer()) {
                 +TintLerpLayerProcessor(S.Hologram, Var.HoloWallTintAlpha)
-            }
+
+            },
         )
-        val baked = maker.bake(layers).texture.toPixmap()
+        val baked = maker.bake(layers).createPixmap()
         val icon = TR(Texture(baked))
         fullIcon = icon
         uiIcon = icon
@@ -172,7 +183,8 @@ open class HoloWall(name: String) : Wall(name) {
         open var lastDamagedTime = restoreCharge
         override val minHealthProportion: Float
             get() = this@HoloWall.minHealthProportion
-        @ClientOnly @JvmField
+        @ClientOnly
+        @JvmField
         var floating: Floating = Floating(floatingRange).apply {
             clockwise = nextBoolean()
             randomPos()
