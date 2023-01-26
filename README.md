@@ -40,7 +40,7 @@ ___
 
 ### Sprites
 
-<kbd>   <br>   [Eclipse](https://github.com/EclipseTheOldOne)   <br>   </kbd>   
+<kbd>   <br>   [Eclipse](https://github.com/Eclipse-04)   <br>   </kbd>   
 
 ### Translation
 <br>
