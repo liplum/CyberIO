@@ -43,13 +43,20 @@ import plumy.dsl.DrawMulti
 import plumy.dsl.plus
 
 object CioHoloUnit {
-    @JvmStatic lateinit var holoProjector: HoloProjector
-    @JvmStatic lateinit var minerProjector: HoloProjector
-    @JvmStatic lateinit var holoMiner: HoloUnitType
-    @JvmStatic lateinit var holoFighter: HoloUnitType
-    @JvmStatic lateinit var holoGuardian: HoloUnitType
-    @JvmStatic lateinit var holoArchitect: HoloUnitType
-    @JvmStatic lateinit var holoSupporter: HoloUnitType
+    @JvmStatic
+    lateinit var holoProjector: HoloProjector
+    @JvmStatic
+    lateinit var minerProjector: HoloProjector
+    @JvmStatic
+    lateinit var holoMiner: HoloUnitType
+    @JvmStatic
+    lateinit var holoFighter: HoloUnitType
+    @JvmStatic
+    lateinit var holoGuardian: HoloUnitType
+    @JvmStatic
+    lateinit var holoArchitect: HoloUnitType
+    @JvmStatic
+    lateinit var holoSupporter: HoloUnitType
     @DependOn(
         "CioItem.ic",
         "CioFluid.cyberion",
@@ -191,46 +198,48 @@ object CioHoloUnit {
         "CioHoloUnit.holoMiner",
     )
     fun minerProjector() {
-        minerProjector = HoloProjector("miner-projector").apply {
-            category = Category.production
-            buildVisibility = BuildVisibility.shown
-            planning {
-                holoMiner needs those(
-                    item = CioItem.ic + 2,
-                    cyberion = 3.0f / 60f,
-                    time = 16f.second,
-                )
-            }
-            drawer = DrawMulti {
-                +DrawBuild<HoloProjectorBuild> {
-                    val v = Vec2()
-                    val focus: HoloProjectorBuild.() -> Vec2 = {
-                        val len = 3.8f + Mathf.absin(projecting, 3.0f, 0.6f)
-                        val x = x + Angles.trnsx(projecting, len)
-                        val y = y + Angles.trnsy(projecting, len)
-                        v.set(x, y)
-                    }
-                    projectorSection("-top") {
-                        layer = Layer.blockOver
-                        progress = progress { preparing.smoother }
-                        shadowElevation = 1f
-                        y = 9f
-                        moveX = 0f
-                        moveY = 12f
-                        rotation = { 0f }
-                        holoProjectingSection {
-                            center = focus
-                            x = 8f
-                            y = 8f
+        DebugOnly {
+            minerProjector = HoloProjector("miner-projector").apply {
+                category = Category.production
+                buildVisibility = BuildVisibility.shown
+                planning {
+                    holoMiner needs those(
+                        item = CioItem.ic + 2,
+                        cyberion = 3.0f / 60f,
+                        time = 16f.second,
+                    )
+                }
+                drawer = DrawMulti {
+                    +DrawBuild<HoloProjectorBuild> {
+                        val v = Vec2()
+                        val focus: HoloProjectorBuild.() -> Vec2 = {
+                            val len = 3.8f + Mathf.absin(projecting, 3.0f, 0.6f)
+                            val x = x + Angles.trnsx(projecting, len)
+                            val y = y + Angles.trnsy(projecting, len)
+                            v.set(x, y)
+                        }
+                        projectorSection("-top") {
+                            layer = Layer.blockOver
+                            progress = progress { preparing.smoother }
+                            shadowElevation = 1f
+                            y = 9f
+                            moveX = 0f
+                            moveY = 12f
+                            rotation = { 0f }
+                            holoProjectingSection {
+                                center = focus
+                                x = 8f
+                                y = 8f
+                            }
                         }
                     }
+                    +DrawProjectingHoloUnit()
                 }
-                +DrawProjectingHoloUnit()
+                ambientSound = Sounds.build
+                squareSprite = false
+                size = 3
+                buildCostMultiplier = 1.2f
             }
-            ambientSound = Sounds.build
-            squareSprite = false
-            size = 3
-            buildCostMultiplier = 1.2f
         }
     }
     @DependOn("CioItem.ic")
