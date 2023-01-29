@@ -4,6 +4,7 @@ import io.github.liplum.mindustry.antiAlias
 import io.github.liplum.mindustry.importMindustry
 import io.github.liplum.mindustry.mindustry
 import io.github.liplum.mindustry.mindustryAssets
+import net.liplum.gradle.mktxImplmenetation
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.apache.tools.ant.taskdefs.condition.Os
 
@@ -76,7 +77,7 @@ tasks.withType<KotlinCompile>().configureEach {
         "-Xcontext-receivers",
     )
 }
-val MKUtilsVersion: String by project
+val mktxVersion: String by project
 
 dependencies {
     implementation(project(":annotations"))
@@ -87,7 +88,8 @@ dependencies {
     importMindustry()
     implementation("com.github.liplum:OpenGAL:$OpenGalVersion")
     implementation("com.github.liplum.plumyjava:path-kt:$PlumyVersion")
-    mkutils(
+    mktxImplmenetation(
+        mktxVersion,
         "core",
         "texture",
         "world",
@@ -127,11 +129,5 @@ publishing {
         create<MavenPublication>("maven") {
             from(components["java"])
         }
-    }
-}
-fun DependencyHandlerScope.mkutils(vararg modules: String) {
-    for (module in modules) {
-        implementation("com.github.plumygame.mkutils:$module:$MKUtilsVersion")
-        testImplementation("com.github.plumygame.mkutils:$module:$MKUtilsVersion")
     }
 }
