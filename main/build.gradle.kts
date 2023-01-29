@@ -6,7 +6,6 @@ import io.github.liplum.mindustry.mindustry
 import io.github.liplum.mindustry.mindustryAssets
 import net.liplum.gradle.mktxImplmenetation
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.apache.tools.ant.taskdefs.condition.Os
 
 plugins {
     kotlin("jvm")
@@ -117,13 +116,7 @@ java {
     targetCompatibility = JavaVersion.VERSION_1_8
     withSourcesJar()
 }
-afterEvaluate {
-    tasks.named<JavaExec>("runClient") {
-        if (Os.isFamily(Os.FAMILY_MAC)) {
-            jvmArgs = (jvmArgs ?: mutableListOf()) + "-XstartOnFirstThread"
-        }
-    }
-}
+
 publishing {
     publications {
         create<MavenPublication>("maven") {
