@@ -1,4 +1,4 @@
-# Steam Workshop 
+# Steam Workshop
 
 ## Title
 
@@ -12,13 +12,11 @@ Current version is v5.1, while v4 is still in development.
 
 Language Supports: English, Chinese(简体/正體中文), Japanese(日本語), Russian(Русский) and Ukrainian(Українець).
 
----
 On Steam workshop, CyberIO's auto-update is off. So only workshop can notify you to update Cyber IO.
----
-
+___
 To learn about the inter-mod compatibility and running Cyber IO on a server, please check the repository on GitHub by
 hitting the link below.
-
+___
 Website: https://liplum.github.io/CyberIO
 GitHub: https://github.com/liplum/CyberIO
 Discord: https://discord.gg/PDwyxM3waw
@@ -38,6 +36,6 @@ experience on Cyber IO.
 
 Update to v4.1. Embraced Mindustry v136. Everything is changed.
 
-## v5.1
+### v5.1
 
 Update to v5.1. After fixing bugs, Now Cyber IO can work on v141.

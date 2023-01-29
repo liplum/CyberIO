@@ -85,7 +85,8 @@ object CioTechTree {
                 holoWallLarge {}
             }
             sender {
-                receiver {
+                // bound with sender
+                receiver(overwriteReq = true) {
                     smartUnloader {}
                     smartDistributor {}
                 }
@@ -133,7 +134,8 @@ object CioTechTree {
                 holoWallLarge {}
             }
             sender {
-                receiver {}
+                // bound with sender
+                receiver(overwriteReq = true) {}
                 smartDistributor {
                     smartUnloader {}
                 }
