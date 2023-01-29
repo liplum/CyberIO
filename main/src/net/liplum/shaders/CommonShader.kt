@@ -15,8 +15,7 @@ class CommonShader(
         setUniformf(
             "u_resolution",
             Core.graphics.width.toFloat(),
-            Core.graphics.height
-                .toFloat()
+            Core.graphics.height.toFloat()
         )
         setUniformf(
             "u_offset",
