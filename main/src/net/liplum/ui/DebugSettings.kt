@@ -73,8 +73,8 @@ object DebugSettingsDialog {
                 }).fill().row()
                 add(Table(Tex.button).apply {
                     add("Unlock Content").color(Color.white).pad(5f).row()
-                    lockOrUnlock("Unlock", UnlockableContent::forceUnlock)
-                    lockOrUnlock("Lock", UnlockableContent::lock)
+                    lockOrUnlock("Unlock", UnlockableContent::forceUnlock, UnlockableContent::locked)
+                    lockOrUnlock("Lock", UnlockableContent::lock, UnlockableContent::unlocked)
                 }).fill().row()
             }))
         }.show()
@@ -87,12 +87,14 @@ object DebugSettingsDialog {
             }
             isChecked = getter() as? Boolean ?: false
         }
+
         SettingType.Text -> Table().apply {
             add(Label(this@resolveSettingType.name))
             field(getter() as? String ?: "") {
                 setter(it as T)
             }
         }
+
         SettingType.SliderBar -> Table().apply {
             add(Label(this@resolveSettingType.name)).pad(5f)
             slider(0f, 100f, 5f, getter() as Float) {

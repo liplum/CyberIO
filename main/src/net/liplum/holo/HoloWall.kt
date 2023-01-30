@@ -116,7 +116,7 @@ open class HoloWall(name: String) : Wall(name) {
         val maker = StackIconBakery(size, size)
         val layers = listOf(
             Layer(Core.atlas.getPixmap(ProjectorTR).toLayerBuffer()),
-            Layer(Core.atlas.getPixmap(ProjectorTR).toLayerBuffer()) {
+            Layer(Core.atlas.getPixmap(ImageTR).toLayerBuffer()) {
                 +TintLerpLayerProcessor(S.Hologram, Var.HoloWallTintAlpha)
 
             },

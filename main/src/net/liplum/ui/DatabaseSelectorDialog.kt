@@ -26,6 +26,7 @@ open class DatabaseSelectorDialog : BaseDialog("") {
     lateinit var search: TextField
     val all = Table()
     var onClick: (UnlockableContent) -> Unit = {}
+    var filter: (UnlockableContent) -> Boolean = { true }
 
     init {
         shouldPause = true
@@ -47,7 +48,8 @@ open class DatabaseSelectorDialog : BaseDialog("") {
         val allContent = Vars.content.contentMap
         for ((j, content) in allContent.withIndex()) {
             val array = content.select {
-                it is UnlockableContent && !it.isHidden && (text.isEmpty() || it.localizedName.lowercase().contains(text.lowercase()))
+                it is UnlockableContent && !it.isHidden && (text.isEmpty() || it.localizedName.lowercase()
+                    .contains(text.lowercase())) && filter(it)
             }
             if (array.size == 0) continue
             val contentType = ContentType.all[j]
@@ -58,7 +60,8 @@ open class DatabaseSelectorDialog : BaseDialog("") {
             all.row()
             all.addTable {
                 left()
-                val cols = Mathf.clamp((Core.graphics.width - Scl.scl(30f)) / Scl.scl((32 + 10).toFloat()), 1f, 22f).toInt()
+                val cols =
+                    Mathf.clamp((Core.graphics.width - Scl.scl(30f)) / Scl.scl((32 + 10).toFloat()), 1f, 22f).toInt()
                 for ((count, i) in (0 until array.size).withIndex()) {
                     val unlock = array[i] as UnlockableContent
                     val image = Image(unlock.uiIcon).setScaling(Scaling.fit)
@@ -80,7 +83,7 @@ open class DatabaseSelectorDialog : BaseDialog("") {
                     image.addListener(Tooltip { t: Table ->
                         t.background(Tex.button).add(
                             unlock.localizedName +
-                                    if (Core.settings.getBool("console")) "\n[gray]${unlock.name}" else ""
+                                if (Core.settings.getBool("console")) "\n[gray]${unlock.name}" else ""
                         )
                     })
                     if ((count + 1) % cols == 0) {

@@ -51,7 +51,7 @@ object CioTechTree {
         }
     }
 
-    fun loadSerpulo() {
+    private fun loadSerpulo() {
         CreateTechTree(name = Meta.Name, origin = ic, planet = Planets.serpulo) {
             icAssembler {
                 cyberionMixer(require = listOf(cryofluid, thorium)) {
@@ -102,7 +102,7 @@ object CioTechTree {
         }
     }
 
-    fun loadErekir() {
+    private fun loadErekir() {
         CreateTechTree(name = Meta.Name, origin = ic, planet = Planets.erekir) {
             icAssembler {
                 cyberionMixer(require = listOf(slag, oxide)) {
