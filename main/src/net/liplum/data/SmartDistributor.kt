@@ -41,12 +41,7 @@ import plumy.animation.state.configuring
 import net.liplum.render.drawSurroundingRect
 import net.liplum.input.smoothPlacing
 import net.liplum.ui.bars.removeItemsInBar
-import net.liplum.utils.animationMeta
-import net.liplum.utils.isDiagonalTo
-import net.liplum.utils.subBundle
-import net.liplum.utils.addPowerUseStats
-import net.liplum.utils.addStateMachineInfo
-import net.liplum.utils.genText
+import net.liplum.utils.*
 import plumy.core.Serialized
 import plumy.core.arc.equalsNoOrder
 import plumy.core.arc.set
@@ -55,26 +50,45 @@ import plumy.core.math.isZero
 import plumy.dsl.AddBar
 import kotlin.math.log2
 
-open class SmartDistributor(name: String) : Block(name),IDataBlock {
-    @JvmField var maxConnection = -1
-    @ClientOnly var NoPowerTR = EmptyTR
-    @ClientOnly var ArrowsAnim = AnimationMeta.Empty
-    @JvmField @ClientOnly var ArrowsFrames = 9
-    @JvmField @ClientOnly var ArrowsDuration = 70f
-    @JvmField @ClientOnly var DistributionTime = 60f
-    @ClientOnly @JvmField var maxSelectedCircleTime = Var.SurroundingRectTime
+open class SmartDistributor(name: String) : Block(name), IDataBlock {
+    @JvmField
+    var maxConnection = -1
+    @ClientOnly
+    var NoPowerTR = EmptyTR
+    @ClientOnly
+    var ArrowsAnim = AnimationMeta.Empty
+    @JvmField
+    @ClientOnly
+    var ArrowsFrames = 9
+    @JvmField
+    @ClientOnly
+    var ArrowsDuration = 70f
+    @JvmField
+    @ClientOnly
+    var DistributionTime = 60f
+    @ClientOnly
+    @JvmField
+    var maxSelectedCircleTime = Var.SurroundingRectTime
     /**
      * The area(tile xy) indicates the surrounding machines can be distributed.
      */
-    @JvmField @ClientOnly var indicateAreaExtension = 2f
-    @JvmField var powerUsePerItem = 2.5f
-    @JvmField var powerUseBase = 3f
-    @JvmField val TransferTimer = timers++
-    @JvmField val DynamicReqUpdateTimer = timers++
-    @JvmField var supportedConsumerFilter = Boolf<Consume> {
+    @JvmField
+    @ClientOnly
+    var indicateAreaExtension = 2f
+    @JvmField
+    var powerUsePerItem = 2.5f
+    @JvmField
+    var powerUseBase = 3f
+    @JvmField
+    val TransferTimer = timers++
+    @JvmField
+    val DynamicReqUpdateTimer = timers++
+    @JvmField
+    var supportedConsumerFilter = Boolf<Consume> {
         it is ConsumeItems || it is ConsumeItemDynamic || it is ConsumeItemFilter
     }
-    @JvmField var boost2Count: (Float) -> Int = {
+    @JvmField
+    var boost2Count: (Float) -> Int = {
         if (it <= 1.1f)
             1
         else if (it in 1.1f..2.1f)
@@ -84,7 +98,8 @@ open class SmartDistributor(name: String) : Block(name),IDataBlock {
         else
             Mathf.round(log2(it + 5.1f))
     }
-    @ClientOnly var stateMachineConfig = StateConfig<SmartDistributorBuild>()
+    @ClientOnly
+    var stateMachineConfig = StateConfig<SmartDistributorBuild>()
 
     init {
         buildType = Prov { SmartDistributorBuild() }
@@ -162,16 +177,20 @@ open class SmartDistributor(name: String) : Block(name),IDataBlock {
     open inner class SmartDistributorBuild : Building(),
         IStateful<SmartDistributorBuild>, IDataReceiver {
         override val stateMachine by lazy { stateMachineConfig.instantiate(this) }
-        @JvmField var _requirements = Seq<Item>()
+        @JvmField
+        var _requirements = Seq<Item>()
         @Serialized
         var senders = OrderedSet<Int>()
         override val onRequirementUpdated: Delegate1<IDataReceiver> = Delegate1()
-        @ClientOnly var lastDistributionTime = 0f
+        @ClientOnly
+        var lastDistributionTime = 0f
             set(value) {
                 field = value.coerceAtLeast(0f)
             }
-        @ClientOnly val arrowsAnimObj = ArrowsAnim.instantiate()
-        @ClientOnly open val isDistributing: Boolean
+        @ClientOnly
+        val arrowsAnimObj = ArrowsAnim.instantiate()
+        @ClientOnly
+        open val isDistributing: Boolean
             get() = lastDistributionTime < DistributionTime
         var hasDynamicRequirements: Boolean = false
         @Serialized
@@ -199,12 +218,14 @@ open class SmartDistributor(name: String) : Block(name),IDataBlock {
                             temp.add(req.item)
                         }
                     }
+
                     is ConsumeItemDynamic -> {
                         for (req in reqs.items.get(build)) {
                             temp.add(req.item)
                         }
                         hasDynamicRequirements = true
                     }
+
                     is ConsumeItemFilter -> {
                         for (item in Vars.content.items()) {
                             if (reqs.filter.get(item)) {
@@ -279,9 +300,11 @@ open class SmartDistributor(name: String) : Block(name),IDataBlock {
                 is ConsumeItems -> {
                     dised = distributeTo(b, reqs.items)
                 }
+
                 is ConsumeItemDynamic -> {
                     dised = distributeTo(b, reqs.items.get(b))
                 }
+
                 is ConsumeItemFilter -> {
                     items.each { item, _ ->
                         dised = dised or distributeTo(b, item)
@@ -372,9 +395,9 @@ open class SmartDistributor(name: String) : Block(name),IDataBlock {
         }
 
         override fun draw() {
+            stateMachine.update(delta())
             if (canConsume() && isDistributing)
                 arrowsAnimObj.spend(delta())
-            stateMachine.spend(delta())
             super.draw()
             stateMachine.draw()
         }
@@ -383,9 +406,12 @@ open class SmartDistributor(name: String) : Block(name),IDataBlock {
         override val maxSenderConnection = maxConnection
     }
 
-    @ClientOnly lateinit var DistributingState: State<SmartDistributorBuild>
-    @ClientOnly lateinit var NoPowerState: State<SmartDistributorBuild>
-    @ClientOnly lateinit var NoDistributeState: State<SmartDistributorBuild>
+    @ClientOnly
+    lateinit var DistributingState: State<SmartDistributorBuild>
+    @ClientOnly
+    lateinit var NoPowerState: State<SmartDistributorBuild>
+    @ClientOnly
+    lateinit var NoDistributeState: State<SmartDistributorBuild>
     fun configAnimationStateMachine() {
         DistributingState = State("Distributing") {
             Draw.color(team.color)

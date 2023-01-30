@@ -22,11 +22,7 @@ import net.liplum.Var
 import net.liplum.api.cyber.*
 import net.liplum.common.persistence.read
 import net.liplum.common.persistence.write
-import net.liplum.utils.CalledBySync
-import net.liplum.utils.SendDataPack
-import net.liplum.utils.sub
-import net.liplum.utils.addPowerUseStats
-import net.liplum.utils.addStateMachineInfo
+import net.liplum.utils.*
 import plumy.animation.ContextDraw.Draw
 import plumy.animation.ContextDraw.DrawOn
 import plumy.animation.state.IStateful
@@ -318,7 +314,7 @@ open class StreamHost(name: String) : Block(name),IDataBlock {
         }
 
         override fun draw() {
-            stateMachine.spend(delta())
+            stateMachine.update(delta())
             BottomTR.DrawOn(this)
             LiquidBlock.drawTiledFrames(
                 size, x, y, liquidPadding,

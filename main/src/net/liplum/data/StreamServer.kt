@@ -34,6 +34,7 @@ import net.liplum.ui.bars.genAllLiquidBars
 import net.liplum.ui.bars.removeLiquidInBar
 import net.liplum.utils.ForProximity
 import net.liplum.utils.sub
+import net.liplum.utils.update
 import plumy.dsl.build
 
 /**
@@ -175,7 +176,7 @@ open class StreamServer(name: String) : StreamHost(name) {
         }
 
         override fun draw() {
-            stateMachine.spend(delta())
+            stateMachine.update(delta())
             BottomTR.DrawOn(this)
             Drawf.liquid(
                 LiquidTR, x, y,

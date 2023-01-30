@@ -475,7 +475,7 @@ open class SmartUnloader(name: String) : Block(name), IDataBlock {
         }
 
         override fun draw() {
-            stateMachine.spend(delta())
+            stateMachine.update(delta())
             if (canConsume() && isUnloading && isSending) {
                 shrinkingAnimObj.spend(delta())
             }
