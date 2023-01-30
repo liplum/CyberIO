@@ -1,4 +1,4 @@
-name: Build Cyber IO Push
+name: Build Cyber IO when Push
 on: push
 
 jobs:
@@ -17,9 +17,6 @@ jobs:
           distribution: 'temurin'
           cache: 'gradle'
 
-      - name: Get short commit hash
-        run: echo "SHORT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
-
       - name: Test CyberIO
         run: |
           chmod +x gradlew
@@ -30,46 +27,8 @@ jobs:
           chmod +x gradlew
           ./gradlew :main:deploy
 
-      - uses: actions/upload-artifact@v3
+      - name: Upload Cyber-IO jar
+        uses: actions/upload-artifact@v3
         with:
           name: CyberIO-Unzip-This
           path: main/build/tmp/deploy/*.jar
-
-  release:
-    needs: build
-    if: |
-      contains(github.event.head_commit.message,'[release]') &&
-      github.repository == 'liplum/CyberIO'
-    runs-on: ubuntu-latest
-    env:
-      GH_REPO: ${{ github.repository }}
-    steps:
-      - uses: actions/checkout@v3
-
-      - uses: actions/download-artifact@v2
-        with:
-          name: CyberIO-Unzip-This
-          path: out
-
-      - name: Retrieve meta
-        id: retrieveMeta
-        run: |
-          chmod +x gradlew
-          ./gradlew retrieveMeta
-
-      - name: Create release
-        if: ${{ steps.retrieveMeta.outputs.tag_exist == 'false' }}
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          HEADER: ${{ steps.retrieveMeta.outputs.header }}
-          VERSION: ${{ steps.retrieveMeta.outputs.version }}
-        run: |
-          gh release create "$VERSION" --title "$HEADER" --notes-file "Info/ReleaseMessage/$VERSION.md" out/*
-
-      - name: Update release file
-        if: ${{ steps.retrieveMeta.outputs.tag_exist == 'true' }}
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VERSION: ${{ steps.retrieveMeta.outputs.version }}
-        run: |
-          gh release upload "$VERSION" out/* --clobber
