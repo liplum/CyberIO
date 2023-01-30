@@ -36,17 +36,19 @@ ___
 
 ### Main
 
-<kbd><br>Liplum<br></kbd><kbd><br>[sudoudou233](https://github.com/sudoudou233)<br></kbd>
+<kbd>   <br>   Liplum   <br>   </kbd> 
+<kbd>   <br>   [sudoudou233](https://github.com/sudoudou233)   <br>   </kbd>   
 
 ### Sprites
 
-<kbd><br>[Eclipse](https://github.com/Eclipse-04)<br></kbd>
+<kbd>   <br>   [Eclipse](https://github.com/Eclipse-04)   <br>   </kbd>   
 
 ### Translation
-
 <br>
 
-<kbd><br>[Ukrainian] [Prosta4okua](https://github.com/Prosta4okua)<br></kbd><kbd><br>[Chinese Simplified] [woodjecket](https://github.com/woodjecket)<br></kbd><kbd><br>[Japanese] [Sakuranokwa](https://github.com/Sakuranokwa)<br></kbd>
+<kbd>   <br>   [Ukrainian] [Prosta4okua](https://github.com/Prosta4okua)   <br>   </kbd>   
+<kbd>   <br>   [Chinese Simplified] [woodjecket](https://github.com/woodjecket)   <br>   </kbd>   
+<kbd>   <br>   [Japanese] [Sakuranokwa](https://github.com/Sakuranokwa)   <br>   </kbd>
 
 <br>
 
