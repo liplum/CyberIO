@@ -40,7 +40,7 @@ import plumy.dsl.bundle
 
 @ClientOnly
 object CioUI {
-    val textIcon by lazy {
+    private val textIcon by lazy {
         TextureRegionDrawable("icon-text".cioTR)
     }
     @JvmStatic
@@ -61,7 +61,7 @@ object CioUI {
         val marg = 8f
         Events.run(Trigger.update) {
             if (Vars.ui.settings.isShown) {
-                val cioSettings = menu.find<TextButton>(SettingButtonName)
+                val cioSettings = menu.find<TextButton>(settingButtonName)
                 if (cioSettings == null) {
                     menu.row()
                     menu.button(
@@ -72,14 +72,14 @@ object CioUI {
                         prefs.clearChildren()
                         prefs.add(settings)
                     }.marginLeft(marg).get().apply {
-                        name = SettingButtonName
+                        name = settingButtonName
                     }
                 }
             }
         }
     }
 
-    fun addCyberIOMenu() {
+    private fun addCyberIOMenu() {
         val cioMenuID = "cyber-io-menu"
         safeCall {
             if (!Vars.mobile) {
@@ -94,7 +94,7 @@ object CioUI {
         }
     }
 
-    const val SettingButtonName = "cyber-io-settings-button"
+    private const val settingButtonName = "cyber-io-settings-button"
     val settings = SettingsTableX().apply {
         var isMenu = true
         genHeader = {

@@ -25,7 +25,7 @@ class SettingsTableX : SettingsTable() {
             if (setting is ISettingCondition && !setting.canShow()) continue
             setting.add(this)
         }
-        button("settings.reset".bundle("Reset to Defaults")) {
+        button("settings.reset".bundle) {
             for (setting in list) {
                 if (setting.name == null || setting.title == null) continue
                 Core.settings.put(setting.name, Core.settings.getDefault(setting.name))
