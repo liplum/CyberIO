@@ -39,12 +39,14 @@ import plumy.animation.state.configuring
 import plumy.animation.draw
 import net.liplum.render.drawSurroundingRect
 import net.liplum.input.smoothPlacing
+import net.liplum.input.smoothSelect
 import net.liplum.ui.bars.removeItemsInBar
 import net.liplum.utils.*
 import net.liplum.utils.addPowerUseStats
 import net.liplum.utils.addStateMachineInfo
 import net.liplum.utils.genText
 import plumy.core.Serialized
+import plumy.core.WhenNotPaused
 import plumy.core.assets.EmptyTR
 import plumy.dsl.*
 import kotlin.math.absoluteValue
@@ -54,15 +56,24 @@ open class SmartUnloader(name: String) : Block(name), IDataBlock {
     /**
      * The lager the number the slower the unloading speed. Belongs to [0,+inf)
      */
-    @JvmField var unloadSpeed = 1f
-    @JvmField var maxConnection = 5
-    @ClientOnly var ShrinkingAnim = AnimationMeta.Empty
-    @ClientOnly var NoPowerTR = EmptyTR
-    @JvmField var powerUsePerItem = 2.5f
-    @JvmField var powerUsePerConnection = 2f
-    @JvmField var powerUseBasic = 1.5f
-    @JvmField val TransferTimer = timers++
-    @JvmField var boost2Count: (Float) -> Int = {
+    @JvmField
+    var unloadSpeed = 1f
+    @JvmField
+    var maxConnection = 5
+    @ClientOnly
+    var ShrinkingAnim = AnimationMeta.Empty
+    @ClientOnly
+    var NoPowerTR = EmptyTR
+    @JvmField
+    var powerUsePerItem = 2.5f
+    @JvmField
+    var powerUsePerConnection = 2f
+    @JvmField
+    var powerUseBasic = 1.5f
+    @JvmField
+    val TransferTimer = timers++
+    @JvmField
+    var boost2Count: (Float) -> Int = {
         if (it <= 1.1f)
             1
         else if (it in 1.1f..2.1f)
@@ -72,17 +83,31 @@ open class SmartUnloader(name: String) : Block(name), IDataBlock {
         else
             Mathf.round(log2(it + 5.1f))
     }
-    @JvmField @ClientOnly var indicateAreaExtension = 2f
-    @ClientOnly @JvmField var SendingTime = 60f
-    @ClientOnly @JvmField var UnloadTime = 60f
-    @ClientOnly @JvmField var ShrinkingFrames = 13
-    @ClientOnly @JvmField var ShrinkingDuration = 120f
-    @ClientOnly @JvmField var maxSelectedCircleTime = Var.SelectedCircleTime
+    @JvmField
+    @ClientOnly
+    var indicateAreaExtension = 2f
+    @ClientOnly
+    @JvmField
+    var SendingTime = 60f
+    @ClientOnly
+    @JvmField
+    var UnloadTime = 60f
+    @ClientOnly
+    @JvmField
+    var ShrinkingFrames = 13
+    @ClientOnly
+    @JvmField
+    var ShrinkingDuration = 120f
+    @ClientOnly
+    @JvmField
+    var maxSelectedCircleTime = Var.SelectedCircleTime
     /**
      * The max range when trying to connect. -1f means no limit.
      */
-    @JvmField var maxRange = -1f
-    @ClientOnly var stateMachineConfig = StateConfig<SmartUnloaderBuild>()
+    @JvmField
+    var maxRange = -1f
+    @ClientOnly
+    var stateMachineConfig = StateConfig<SmartUnloaderBuild>()
 
     init {
         buildType = Prov { SmartUnloaderBuild() }
@@ -105,8 +130,8 @@ open class SmartUnloader(name: String) : Block(name), IDataBlock {
     open fun initPowerUse() {
         consumePowerDynamic<SmartUnloaderBuild> {
             (powerUseBasic
-                    + powerUsePerItem * it.needUnloadItems.size
-                    + powerUsePerConnection * it.connectedReceivers.size)
+                + powerUsePerItem * it.needUnloadItems.size
+                + powerUsePerConnection * it.connectedReceivers.size)
         }
     }
 
@@ -128,7 +153,8 @@ open class SmartUnloader(name: String) : Block(name), IDataBlock {
     override fun load() {
         super.load()
         NoPowerTR = loadNoPower()
-        ShrinkingAnim = this.animationMeta("shrink", ShrinkingFrames, ShrinkingDuration) }
+        ShrinkingAnim = this.animationMeta("shrink", ShrinkingFrames, ShrinkingDuration)
+    }
 
     override fun setStats() {
         super.setStats()
@@ -198,19 +224,24 @@ open class SmartUnloader(name: String) : Block(name), IDataBlock {
             set(value) {
                 field = value.coerceAtLeast(0f)
             }
-        @ClientOnly var lastUnloadTime = 0f
+        @ClientOnly
+        var lastUnloadTime = 0f
             set(value) {
                 field = value.coerceAtLeast(0f)
             }
-        @ClientOnly var lastSendingTime = 0f
+        @ClientOnly
+        var lastSendingTime = 0f
             set(value) {
                 field = value.coerceAtLeast(0f)
             }
-        @ClientOnly val isSending: Boolean
+        @ClientOnly
+        val isSending: Boolean
             get() = lastSendingTime < SendingTime
-        @ClientOnly val isUnloading: Boolean
+        @ClientOnly
+        val isUnloading: Boolean
             get() = lastUnloadTime < UnloadTime
-        @ClientOnly var shrinkingAnimObj = ShrinkingAnim.instantiate()
+        @ClientOnly
+        var shrinkingAnimObj = ShrinkingAnim.instantiate()
         var justRestored = false
         @ClientOnly
         var lastSenderColor = Remember.empty<Color>()
@@ -370,6 +401,12 @@ open class SmartUnloader(name: String) : Block(name), IDataBlock {
                 }
             }
             drawSelectedMaxRange()
+            drawSurroundingRect(
+                tileX, tileY, indicateAreaExtension * smoothSelect(maxSelectedCircleTime),
+                R.C.GreenSafe,
+            ) { b ->
+                b.block.unloadable && !b.isDiagonalTo(this.block, tileX, tileY)
+            }
         }
 
         override fun drawConfigure() {
@@ -476,8 +513,10 @@ open class SmartUnloader(name: String) : Block(name), IDataBlock {
 
         override fun draw() {
             stateMachine.update(delta())
-            if (canConsume() && isUnloading && isSending) {
-                shrinkingAnimObj.spend(delta())
+            WhenNotPaused {
+                if (canConsume() && isUnloading && isSending) {
+                    shrinkingAnimObj.spend(delta())
+                }
             }
             super.draw()
             stateMachine.draw()
@@ -501,6 +540,7 @@ open class SmartUnloader(name: String) : Block(name), IDataBlock {
             when (type) {
                 LAccess.shoot ->
                     if (p1 is IDataReceiver) connectToSync(p1)
+
                 else -> super.control(type, p1, p2, p3, p4)
             }
         }
@@ -511,14 +551,18 @@ open class SmartUnloader(name: String) : Block(name), IDataBlock {
                     val receiver = Vars.world.build(p1, p2)
                     if (receiver is IDataReceiver) connectToSync(receiver)
                 }
+
                 else -> super.control(type, p1, p2, p3, p4)
             }
         }
     }
 
-    @ClientOnly lateinit var UnloadingState: State<SmartUnloaderBuild>
-    @ClientOnly lateinit var NoPowerState: State<SmartUnloaderBuild>
-    @ClientOnly lateinit var BlockedState: State<SmartUnloaderBuild>
+    @ClientOnly
+    lateinit var UnloadingState: State<SmartUnloaderBuild>
+    @ClientOnly
+    lateinit var NoPowerState: State<SmartUnloaderBuild>
+    @ClientOnly
+    lateinit var BlockedState: State<SmartUnloaderBuild>
     fun configAnimationStateMachine() {
         UnloadingState = State("Unloading") {
             shrinkingAnimObj.draw(x, y)

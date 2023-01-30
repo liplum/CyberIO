@@ -40,9 +40,11 @@ import plumy.animation.state.StateConfig
 import plumy.animation.state.configuring
 import net.liplum.render.drawSurroundingRect
 import net.liplum.input.smoothPlacing
+import net.liplum.input.smoothSelect
 import net.liplum.ui.bars.removeItemsInBar
 import net.liplum.utils.*
 import plumy.core.Serialized
+import plumy.core.WhenNotPaused
 import plumy.core.arc.equalsNoOrder
 import plumy.core.arc.set
 import plumy.core.assets.EmptyTR
@@ -392,12 +394,22 @@ open class SmartDistributor(name: String) : Block(name), IDataBlock {
                     drawPlaceText(requirementsText, tileX(), tileY(), true)
                 }
             }
+            drawSurroundingRect(
+                tileX, tileY, indicateAreaExtension * smoothSelect(maxSelectedCircleTime),
+                R.C.GreenSafe,
+            ) { b ->
+                b.block.consumers.any {
+                    it is ConsumeItems || it is ConsumeItemDynamic || it is ConsumeItemFilter
+                } && !b.isDiagonalTo(this.block, tileX, tileY)
+            }
         }
 
         override fun draw() {
             stateMachine.update(delta())
-            if (canConsume() && isDistributing)
-                arrowsAnimObj.spend(delta())
+            WhenNotPaused {
+                if (canConsume() && isDistributing)
+                    arrowsAnimObj.spend(delta())
+            }
             super.draw()
             stateMachine.draw()
         }
