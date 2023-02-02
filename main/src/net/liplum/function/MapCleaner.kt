@@ -1,10 +1,7 @@
 package net.liplum.function
 
 import mindustry.Vars
-import mindustry.gen.Buildingc
-import mindustry.gen.Entityc
-import mindustry.gen.Groups
-import mindustry.gen.Unitc
+import mindustry.gen.*
 
 object MapCleaner {
     @JvmStatic
