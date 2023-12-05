@@ -20,7 +20,7 @@ import mindustry.world.blocks.ConstructBlock.ConstructBuild
 import mindustry.world.blocks.payloads.BuildPayload
 import mindustry.world.blocks.payloads.Payload
 import mindustry.world.blocks.power.PowerGraph
-import net.liplum.S
+import net.liplum.Var
 import net.liplum.common.persistence.*
 import net.liplum.holo.HoloProjector.HoloProjectorBuild
 import net.liplum.mixin.PayloadMixin
@@ -136,7 +136,7 @@ open class HoloUnit : UnitEntity(), PayloadMixin, IRevisionable {
                         HoloFx.shieldBreak.at(
                             x, y,
                             cacheRange,
-                            S.Hologram, this
+                            Var.Hologram, this
                         )
                     }
                 }
@@ -170,7 +170,7 @@ open class HoloUnit : UnitEntity(), PayloadMixin, IRevisionable {
         val size = if (plan.breaking) if (active) tile.block().size else lastSize else plan.block.size
         val tx = plan.drawx()
         val ty = plan.drawy()
-        Lines.stroke(1.0f, S.Hologram)
+        Lines.stroke(1.0f, Var.Hologram)
         Draw.z(Layer.buildBeam)
         Draw.alpha(buildAlpha)
         if (!active && tile.build !is ConstructBuild) {
@@ -193,7 +193,7 @@ open class HoloUnit : UnitEntity(), PayloadMixin, IRevisionable {
             val ox = mineTile.worldx()
             val oy = mineTile.worldy()
             Draw.z(115.1f)
-            Draw.color(S.Hologram)
+            Draw.color(Var.Hologram)
             val size = mineTile.overlay().size.worldXY
             DrawLayer(Layer.buildBeam) {
                 Fill.poly(ox, oy, 8, size, Time.time)
@@ -217,7 +217,7 @@ open class HoloUnit : UnitEntity(), PayloadMixin, IRevisionable {
                     ruvikTipAlpha -= 0.5f / holoType.ruvikShootingTipTime
                 }
                 if (ruvikTipAlpha > 0f) {
-                    G.dashCircleBreath(x, y, holoType.ruvikTipRange, color = S.Hologram, alpha = ruvikTipAlpha)
+                    G.dashCircleBreath(x, y, holoType.ruvikTipRange, color = Var.Hologram, alpha = ruvikTipAlpha)
                 }
             }
         }

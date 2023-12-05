@@ -28,7 +28,7 @@ import mindustry.world.meta.Stat
 import mindustry.world.meta.StatUnit
 import mindustry.world.meta.StatValues
 import net.liplum.DebugOnly
-import net.liplum.S
+import net.liplum.Var
 import net.liplum.animation.Floating
 import net.liplum.api.cyber.*
 import net.liplum.api.holo.IHoloEntity
@@ -136,7 +136,7 @@ open class Stealth(name: String) : Turret(name) {
                         it.opacityNoise *= 2f - healthPct
                         it.flickering = it.DefaultFlickering + (1f - healthPct)
                         it.blendHoloColorOpacity = 0f
-                        Draw.color(S.Hologram)
+                        Draw.color(Var.Hologram)
                         ImageTR.Draw(
                             x + recoilOffset.x + floating.x,
                             y + recoilOffset.y + floating.y,
@@ -152,7 +152,7 @@ open class Stealth(name: String) : Turret(name) {
                         ruvikTipAlpha -= 0.5f / ruvikShootingTipTime
                     }
                     if (ruvikTipAlpha > 0f) {
-                        G.dashCircleBreath(x, y, range, color = S.Hologram, alpha = ruvikTipAlpha)
+                        G.dashCircleBreath(x, y, range, color = Var.Hologram, alpha = ruvikTipAlpha)
                     }
                 }
             }
@@ -267,7 +267,7 @@ open class Stealth(name: String) : Turret(name) {
         }
 
         override fun drawSelect() {
-            G.dashCircleBreath(x, y, range, S.HologramDark)
+            G.dashCircleBreath(x, y, range, Var.HologramDark)
             whenNotConfiguringP2P {
                 this.drawStreamGraph()
             }

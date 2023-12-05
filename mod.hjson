@@ -8,7 +8,7 @@
 */
 {
   "displayName": "[#42a5f5[]]Cyber IO[[]]",
-  "subtitle":"V5.1 for Erekir",
+  "subtitle":"V6.0 for Erekir",
   "name": "cyber-io",
   "author": "[#42a5f5[]]Liplum[[]]",
   "main": "net.liplum.CioMod",
@@ -25,8 +25,8 @@
 
   GitHub: [#42a5f5[]]github.com/liplum/CyberIO[[]]
   '''
-  "version": "5.1",
-  "minGameVersion": 141,
+  "version": "6.0",
+  "minGameVersion": 146,
   "dependencies": [],
   "hidden": false,
   "java": true

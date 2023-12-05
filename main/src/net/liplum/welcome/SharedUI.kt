@@ -11,7 +11,6 @@ import arc.scene.utils.Elem
 import arc.util.Scaling
 import mindustry.gen.Tex
 import net.liplum.Meta
-import net.liplum.S
 import net.liplum.Var
 import net.liplum.i18nName
 import plumy.core.assets.TR
@@ -42,7 +41,7 @@ internal fun Dialog.addPoliteWelcome(entity: Welcome.Entity) {
             "welcome",
             "${Meta.DetailedVersion} ${Var.ContentSpecific.i18nName}"
         )
-    ).color(S.Hologram)
+    ).color(Var.Hologram)
 }
 
 internal fun Dialog.addCenterText(

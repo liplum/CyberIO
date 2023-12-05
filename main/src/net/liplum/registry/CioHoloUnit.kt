@@ -338,7 +338,7 @@ object CioHoloUnit {
                     maxRange = ruvikTipRange
                     hitSize = 10f
                     lifetime = 240f
-                    trailColor = S.Hologram
+                    trailColor = Var.Hologram
                 }
             }
         }
@@ -447,8 +447,8 @@ object CioHoloUnit {
                     hitSound = Sounds.none
                     healPercent = 5.5f
                     collidesTeam = true
-                    backColor = S.Hologram
-                    trailColor = S.HologramDark
+                    backColor = Var.Hologram
+                    trailColor = Var.HologramDark
                 }
             }
         }
@@ -515,12 +515,12 @@ object CioHoloUnit {
                         healAmount = 50f
                     }
                     collidesTeam = true
-                    backColor = S.HologramDark
-                    frontColor = S.Hologram
+                    backColor = Var.HologramDark
+                    frontColor = Var.Hologram
                     smokeEffect = HoloFx.hitLaser
                     hitEffect = HoloFx.hitLaser
                     despawnEffect = HoloFx.hitLaser
-                    lightColor = S.Hologram
+                    lightColor = Var.Hologram
                 }
             }
         }

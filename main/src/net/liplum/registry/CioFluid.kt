@@ -11,7 +11,7 @@ object CioFluid {
     @JvmStatic lateinit var blood: Liquid
     @DependOn
     fun cyberion() {
-        cyberion = SpecFluid(R.Liquid.Cyberion, S.Hologram).apply {
+        cyberion = SpecFluid(R.Liquid.Cyberion, Var.Hologram).apply {
             VanillaSpec {
                 flammability = 0f
                 explosiveness = 0f
@@ -28,7 +28,7 @@ object CioFluid {
             }
             heatCapacity = 1.4f
             viscosity = 0.8f
-            lightColor = S.Hologram.cpy().a(0.2f)
+            lightColor = Var.Hologram.cpy().a(0.2f)
         }
     }
     @DependOn
@@ -41,7 +41,7 @@ object CioFluid {
                 heatCapacity = 0.3f
                 viscosity = 0.6f
                 boilPoint = 0.51f
-                lightColor = S.Hologram.cpy().a(0.2f)
+                lightColor = Var.Hologram.cpy().a(0.2f)
             }
         }
     }

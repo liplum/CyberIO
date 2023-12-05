@@ -20,7 +20,6 @@ import mindustry.world.Tile
 import mindustry.world.blocks.defense.Wall
 import mindustry.world.meta.BlockStatus
 import net.liplum.DebugOnly
-import net.liplum.S
 import net.liplum.Var
 import net.liplum.api.holo.IHoloEntity
 import net.liplum.api.holo.IHoloEntity.Companion.addHoloChargeTimeStats
@@ -108,7 +107,7 @@ open class HoloWall(name: String) : Wall(name) {
     }
 
     override fun minimapColor(tile: Tile): Int {
-        return S.Hologram.rgba8888()
+        return Var.Hologram.rgba8888()
     }
 
     override fun loadIcon() {
@@ -117,7 +116,7 @@ open class HoloWall(name: String) : Wall(name) {
         val layers = listOf(
             Layer(Core.atlas.getPixmap(ProjectorTR).toLayerBuffer()),
             Layer(Core.atlas.getPixmap(ImageTR).toLayerBuffer()) {
-                +TintLerpLayerProcessor(S.Hologram, Var.HoloWallTintAlpha)
+                +TintLerpLayerProcessor(Var.Hologram, Var.HoloWallTintAlpha)
 
             },
         )
@@ -139,7 +138,7 @@ open class HoloWall(name: String) : Wall(name) {
         super.setBars()
         AddBar<HoloWallBuild>("health",
             { "stat.health".bundle },
-            { S.Hologram },
+            { Var.Hologram },
             { healthf() }
         ) {
             blink(Color.white)
@@ -148,12 +147,12 @@ open class HoloWall(name: String) : Wall(name) {
         DebugOnly {
             AddBar<HoloWallBuild>("is-projecting",
                 { "Is Projecting: ${isProjecting.yesNo()}" },
-                { S.HologramDark },
+                { Var.HologramDark },
                 { isProjecting.toFloat() }
             )
             AddBar<HoloWallBuild>("rest-restore",
                 { "Rest Restore: ${restRestore.toInt()}" },
-                { S.Hologram },
+                { Var.Hologram },
                 { restRestore / maxHealth }
             )
             AddBar<HoloWallBuild>("charge",
@@ -239,7 +238,7 @@ open class HoloWall(name: String) : Wall(name) {
                     it.opacityNoise *= 2f - healthPct
                     it.flickering = it.DefaultFlickering + (1f - healthPct)
                     it.blendHoloColorOpacity = 0f
-                    Draw.color(S.Hologram)
+                    Draw.color(Var.Hologram)
                     Draw.rect(
                         ImageTR,
                         x + floating.x,

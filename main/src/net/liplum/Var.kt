@@ -6,6 +6,8 @@ import net.liplum.ui.NavigationService
 import plumy.dsl.WorldXY
 
 object Var {
+    @JvmField var Hologram = R.C.Holo
+    @JvmField var HologramDark = R.C.HoloDark
     @JvmField var ContentSpecific = ContentSpec.Vanilla
     @JvmField var CurDebugLevel = DebugLevel.Any
     @JvmField var ExperimentalMode = false

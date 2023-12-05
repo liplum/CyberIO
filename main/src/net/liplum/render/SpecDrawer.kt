@@ -3,8 +3,8 @@ package net.liplum.render
 import mindustry.world.Block
 import mindustry.world.draw.*
 import net.liplum.common.util.StartWithHyphen
-import net.liplum.utils.or
 import net.liplum.spec
+import net.liplum.utils.or
 import net.liplum.utils.spriteX
 
 fun DrawRegionSpec(
@@ -51,5 +51,6 @@ class DrawPistonsSpec : DrawPistons() {
         region1 = "$name-piston0".spriteX or "$name-piston".spriteX
         region2 = "$name-piston1".spriteX or "$name-piston".spriteX
         regiont = "$name-piston-t".spriteX
+        iconRegion = "$name-icon".spriteX
     }
 }

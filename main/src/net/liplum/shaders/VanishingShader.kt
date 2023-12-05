@@ -3,7 +3,7 @@ package net.liplum.shaders
 import arc.files.Fi
 import arc.graphics.Color
 import arc.util.Time
-import net.liplum.S
+import net.liplum.Var
 import plumy.core.assets.TR
 import net.liplum.common.shader.ShaderBase
 
@@ -13,7 +13,7 @@ class VanishingShader(
 ) : ShaderBase(vert, frag) {
     var progress = 0f
     var scanlineWidthPct = 0.1f // [0f,1f] <= 0.2 is better
-    var scanlineColor = Color(S.Hologram)
+    var scanlineColor = Color(Var.Hologram)
     var region = TR()
     var isTopDown = true
     override fun apply() {
@@ -35,6 +35,6 @@ class VanishingShader(
         progress = 0f
         scanlineWidthPct = 0.1f
         isTopDown = true
-        scanlineColor.set(S.Hologram)
+        scanlineColor.set(Var.Hologram)
     }
 }

@@ -5,7 +5,7 @@ import arc.math.geom.Vec2
 import arc.util.Tmp
 import mindustry.gen.Building
 import mindustry.graphics.Layer
-import net.liplum.S
+import net.liplum.Var
 import net.liplum.render.G
 import net.liplum.render.*
 import plumy.dsl.DrawLayer
@@ -14,7 +14,7 @@ class HoloProjectingSection<T> : DrawSection<T>() where T : Building {
     val v = Vec2()
     var center: T.() -> Vec2 = { v.set(x, y) }
     var alphaProgress: SectionProgress<T> = Sections.warmupSmooth
-    var color = S.Hologram
+    var color = Var.Hologram
     var x = 0f
     var y = 0f
     var width = 6f
