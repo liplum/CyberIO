@@ -3,7 +3,7 @@ package net.liplum.welcome
 import arc.scene.ui.Button
 import mindustry.ui.dialogs.BaseDialog
 import net.liplum.R
-import net.liplum.S
+import net.liplum.Var
 import plumy.core.arc.tinted
 import net.liplum.common.ui.RateStarPanelBuilder
 import net.liplum.update.Updater
@@ -136,7 +136,7 @@ object Templates {
                 val noAction = ActionRegistry[data["ActionB"]]
                 val dontShowAction = ActionRegistry[data["ActionC"]]
                 addPoster(entity.icon)
-                addCenterText(entity.content(Updater.latestVersion.toString().tinted(S.Hologram)))
+                addCenterText(entity.content(Updater.latestVersion.toString().tinted(Var.Hologram)))
                 if (Updater.isCurrentBreakUpdate)
                     addCenterText(entity["break-update-warning"]).color(R.C.RedAlert)
                 if (Updater.hasUpdateDescription)

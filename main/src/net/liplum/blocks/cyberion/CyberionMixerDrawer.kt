@@ -12,13 +12,13 @@ import arc.util.Time
 import mindustry.gen.Building
 import mindustry.graphics.Layer
 import mindustry.world.draw.DrawBlock
-import net.liplum.S
+import net.liplum.Var
 import plumy.dsl.DrawLayer
 import plumy.core.math.smooth
 
 class DrawCyberionAgglomeration : DrawBlock() {
-    var flameColor: Color = S.HologramDark
-    var midColor: Color = S.Hologram
+    var flameColor: Color = Var.HologramDark
+    var midColor: Color = Var.Hologram
     var flameRad = 1f
     var flameRadiusScl = 5f
     var circleStroke = 1.5f

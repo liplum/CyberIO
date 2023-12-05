@@ -3,7 +3,7 @@ package net.liplum.shaders
 import arc.files.Fi
 import arc.graphics.Color
 import arc.util.Time
-import net.liplum.S
+import net.liplum.Var
 import plumy.core.assets.TR
 import net.liplum.common.shader.ShaderBase
 
@@ -19,7 +19,7 @@ class HologramizeShader(
     var blendHoloColorOpacity = DefaultBlendHoloColorOpacity
     var blendFormerColorOpacity = DefaultBlendFormerColorOpacity
     var flickering = DefaultFlickering
-    var holoColor = Color(S.Hologram)
+    var holoColor = Color(Var.Hologram)
     override fun apply() {
         setUniformf("u_time", Time.time)
         setUniformf("u_scanline_width", scanlineWidthPct)
@@ -46,7 +46,7 @@ class HologramizeShader(
         flickering = DefaultFlickering
         blendHoloColorOpacity = DefaultBlendHoloColorOpacity
         blendFormerColorOpacity = DefaultBlendFormerColorOpacity
-        holoColor.set(S.Hologram)
+        holoColor.set(Var.Hologram)
         isTopDown = true
     }
 

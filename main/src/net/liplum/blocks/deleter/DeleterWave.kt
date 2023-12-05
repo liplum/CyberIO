@@ -8,7 +8,7 @@ import mindustry.entities.Effect
 import mindustry.entities.bullet.BasicBulletType
 import mindustry.gen.*
 import mindustry.graphics.Layer
-import net.liplum.S
+import net.liplum.Var
 import net.liplum.api.IExecutioner
 import net.liplum.math.quadratic
 import plumy.animation.ContextDraw.DrawScale
@@ -31,8 +31,8 @@ open class DeleterWave(
 
     init {
         hitEffect = Fx.hitLancer
-        frontColor = S.Hologram
-        backColor = S.HologramDark
+        frontColor = Var.Hologram
+        backColor = Var.HologramDark
         pierce = true
         pierceCap = 10
         lightRadius = 1f

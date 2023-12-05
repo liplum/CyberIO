@@ -3,7 +3,7 @@ package net.liplum.shaders;
 import arc.files.Fi;
 import arc.graphics.Color;
 import arc.util.Time;
-import net.liplum.S;
+import net.liplum.Var;
 import net.liplum.common.shader.ShaderBase;
 
 import static mindustry.Vars.renderer;
@@ -17,7 +17,7 @@ public class HologramShader extends ShaderBase {
     public float blendHoloColorOpacity = DefaultBlendHoloColorOpacity;
     public float blendFormerColorOpacity = DefaultBlendFormerColorOpacity;
     public float flickering = DefaultFlickering;
-    public Color holoColor = new Color(S.Hologram);
+    public Color holoColor = new Color(Var.Hologram);
 
     public HologramShader(Fi vert, Fi frag) {
         super(vert, frag);
@@ -43,6 +43,6 @@ public class HologramShader extends ShaderBase {
         this.flickering = DefaultFlickering;
         this.blendHoloColorOpacity = DefaultBlendHoloColorOpacity;
         this.blendFormerColorOpacity = DefaultBlendFormerColorOpacity;
-        this.holoColor.set(S.Hologram);
+        this.holoColor.set(Var.Hologram);
     }
 }

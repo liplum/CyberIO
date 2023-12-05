@@ -16,7 +16,6 @@ import mindustry.graphics.Layer
 import mindustry.graphics.Pal
 import net.liplum.DebugOnly
 import net.liplum.R
-import net.liplum.S
 import net.liplum.Var
 import net.liplum.api.cyber.SideLinks.Companion.coordinates
 import net.liplum.api.cyber.SideLinks.Companion.reflect
@@ -34,7 +33,6 @@ import net.liplum.input.smoothPlacing
 import net.liplum.input.smoothSelect
 import plumy.animation.ContextDraw.Draw
 import plumy.animation.ContextDraw.DrawSize
-import net.liplum.render.*
 import net.liplum.registry.SD
 import net.liplum.render.G
 import net.liplum.render.Text
@@ -245,7 +243,7 @@ fun INetworkNode.drawLinkInfo() = building.run {
         if (sendingProgress > 0f) {
             val width = 25f
             Fill.rect(x, y, width, 5f)
-            Draw.color(S.Hologram)
+            Draw.color(Var.Hologram)
             Fill.rect(x - width * (1f - sendingProgress) / 2f, y, width * sendingProgress, 5f)
             Draw.color()
         }
@@ -311,7 +309,7 @@ fun INetworkNode.drawRail(beamTR: TR, beamEndTR: TR) {
         val oy = this.building.y
         val widthHalf = Var.NetworkNodeRailWidth / 2f
         val thickness = Var.NetworkRailThickness
-        Draw.color(S.Hologram)
+        Draw.color(Var.Hologram)
         links.forEachNodeWithSide { side, t ->
             val time = linkingTime[side]
             val dir = coordinates[side]

@@ -16,7 +16,7 @@ import mindustry.graphics.Shaders.getShaderFi
 import mindustry.ui.dialogs.BaseDialog
 import net.liplum.Debug
 import net.liplum.Debug.SettingType
-import net.liplum.S
+import net.liplum.Var
 import net.liplum.Settings
 import net.liplum.common.Dir
 import net.liplum.common.toFi
@@ -51,7 +51,7 @@ object DebugSettingsDialog {
                     }
                 }).fill().row()
                 add(Table(Tex.button).apply {
-                    add("Shaders").color(S.HologramDark).row()
+                    add("Shaders").color(Var.HologramDark).row()
                     add(Table().apply {
                         add("Root Folder:")
                         field(Settings.ShaderRootPath) {

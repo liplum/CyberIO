@@ -29,7 +29,6 @@ import mindustry.world.meta.Env
 import mindustry.world.meta.Stat
 import net.liplum.DebugOnly
 import net.liplum.R
-import net.liplum.S
 import net.liplum.Var
 import net.liplum.common.shader.use
 import plumy.dsl.bundle
@@ -89,13 +88,13 @@ open class HoloUnitType(name: String) : UnitType(name) {
     var researchReq: Array<ItemStack> = emptyArray()
 
     init {
-        //outlineColor = S.HologramDark
+        //outlineColor = Var.HologramDark
         allowedInPayloads = false
-        lightColor = S.Hologram
-        engineColor = S.Hologram
-        healColor = S.Hologram
-        engineColorInner = S.HologramDark
-        mechLegColor = S.HologramDark
+        lightColor = Var.Hologram
+        engineColor = Var.Hologram
+        healColor = Var.Hologram
+        engineColorInner = Var.HologramDark
+        mechLegColor = Var.HologramDark
         wreckRegions = emptyArray()
         fallEffect = Fx.none
         fallEngineEffect = Fx.none
@@ -117,7 +116,7 @@ open class HoloUnitType(name: String) : UnitType(name) {
         val layers = listOf(
             Layer(Core.atlas.getPixmap(rawIcon).toLayerBuffer()),
             Layer(Core.atlas.getPixmap(rawIcon).toLayerBuffer()) {
-                +TintLerpLayerProcessor(S.Hologram, Var.HoloUnitTintAlpha)
+                +TintLerpLayerProcessor(Var.Hologram, Var.HoloUnitTintAlpha)
             }
         )
         val baked = maker.bake(layers).createPixmap()
@@ -264,13 +263,13 @@ open class HoloUnitType(name: String) : UnitType(name) {
             DebugOnly {
                 bars.add(Bar(
                     { R.Bar.RestLifeFigure.bundle(unit.restLife.toSecond) },
-                    { S.Hologram },
+                    { Var.Hologram },
                     { unit.restLifePercent }
                 ))
             }.Else {
                 bars.add(Bar(
                     { R.Bar.RestLife.bundle },
-                    { S.Hologram },
+                    { Var.Hologram },
                     { unit.restLifePercent }
                 ))
             }
@@ -322,7 +321,7 @@ open class HoloUnitType(name: String) : UnitType(name) {
                             else "${Iconc.cancel}"
                         }, {
                             val p = unit.projectorPos.castBuild<HoloProjectorBuild>()
-                            if (p != null) S.Hologram
+                            if (p != null) Var.Hologram
                             else Color.gray
                         }, {
                             (unit.projectorPos.castBuild<HoloProjectorBuild>() != null).toFloat()
@@ -335,7 +334,7 @@ open class HoloUnitType(name: String) : UnitType(name) {
                             if (p != null) "${Iconc.home}"
                             else "${Iconc.cancel}"
                         }, {
-                            S.Hologram
+                            Var.Hologram
                         }, {
                             (unit.projectorPos.castBuild<HoloProjectorBuild>() != null).toFloat()
                         })
@@ -373,7 +372,7 @@ open class HoloUnitType(name: String) : UnitType(name) {
         Fill.light(
             unit.x, unit.y, Lines.circleVertices(radius), radius,
             Color.clear,
-            Tmp.c2.set(S.Hologram)
+            Tmp.c2.set(Var.Hologram)
                 .lerp(Color.white, Mathf.clamp(unit.hitTime() / 2f))
                 .a(0.7f * alpha)
         )

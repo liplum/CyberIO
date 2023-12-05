@@ -58,7 +58,7 @@ object CioSpaceship {
                     length = 130f
                 })
                 addAmmo(CioFluid.cyberion, ArcFieldBulletType {
-                    hitColor = S.Hologram
+                    hitColor = Var.Hologram
                     damage = 140f
                     length = 145f
                     lightenIntensity = 0.2f
@@ -88,7 +88,7 @@ object CioSpaceship {
                     length = 120f
                 })
                 addAmmo(CioFluid.cyberion, ArcFieldBulletType {
-                    hitColor = S.Hologram
+                    hitColor = Var.Hologram
                     damage = 150f
                     length = 145f
                     lightenIntensity = 0.2f

@@ -30,7 +30,7 @@ import mindustry.world.meta.BlockGroup
 import mindustry.world.meta.Stat
 import net.liplum.DebugOnly
 import net.liplum.R
-import net.liplum.S
+import net.liplum.Var
 import net.liplum.UndebugOnly
 import net.liplum.common.util.percentI
 import net.liplum.utils.CalledBySync
@@ -211,7 +211,7 @@ open class HoloProjector(name: String) : Block(name) {
         override fun buildConfiguration(table: Table) {
             val options = Seq.with(plans).map {
                 it.unitType
-            }.filter {
+            }.retainAll {
                 it.unlockedNow() && !it.isBanned
             }
             if (options.any()) {
@@ -378,13 +378,13 @@ open class HoloProjector(name: String) : Block(name) {
         DebugOnly {
             AddBar<HoloProjectorBuild>("progress",
                 { "${"bar.progress".bundle}: ${progress.percentI}" },
-                { S.Hologram },
+                { Var.Hologram },
                 { progress }
             )
         }.Else {
             AddBar<HoloProjectorBuild>("progress",
                 { "bar.progress".bundle },
-                { S.Hologram },
+                { Var.Hologram },
                 { progress }
             )
         }

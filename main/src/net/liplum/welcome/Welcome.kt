@@ -10,7 +10,7 @@ import mindustry.game.EventType.Trigger
 import mindustry.io.JsonIO
 import net.liplum.CioMod
 import net.liplum.Meta
-import net.liplum.S
+import net.liplum.Var
 import net.liplum.Settings.CioVersion
 import net.liplum.Settings.ClickWelcomeTimes
 import net.liplum.Settings.LastWelcomeID
@@ -83,7 +83,7 @@ object Welcome {
     @SubscribeEvent(CioInitEvent::class, Only.client)
     fun modifierModInfo() {
         val meta = CioMod.Info.meta
-        meta.displayName = "[#${S.Hologram}]${Meta.Name}[]"
+        meta.displayName = "[#${Var.Hologram}]${Meta.Name}[]"
         Events.run(Trigger.update) {
             if (Time.time % 60 < 1f) {
                 meta.author = RandomName.randomTinted(Meta.Author)

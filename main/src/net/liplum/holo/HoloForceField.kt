@@ -17,7 +17,7 @@ import mindustry.graphics.Layer
 import mindustry.graphics.Pal
 import mindustry.ui.Bar
 import net.liplum.Meta
-import net.liplum.S
+import net.liplum.Var
 import net.liplum.common.shader.use
 import net.liplum.utils.healthPct
 import net.liplum.utils.localized
@@ -25,7 +25,7 @@ import net.liplum.registry.SD
 
 open class HoloForceField(
     val radius: Float, val regen: Float, val max: Float, val cooldown: Float,
-    val color: Color = S.Hologram,
+    val color: Color = Var.Hologram,
 ) : Ability() {
     override fun update(unit: Unit) {
         if (unit.shield < max) {

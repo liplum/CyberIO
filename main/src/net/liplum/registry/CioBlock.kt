@@ -370,7 +370,7 @@ object CioBlock {
                 drawTurret {
                     regionPart("-side") {
                         heatProgress = PartProgress.warmup
-                        heatColor = S.Hologram
+                        heatColor = Var.Hologram
                         VanillaSpec {
                             progress = PartProgress.warmup
                             moveX = 8f
@@ -386,7 +386,7 @@ object CioBlock {
                     }
                     regionPart("-head") {
                         heatProgress = PartProgress.warmup
-                        heatColor = S.Hologram
+                        heatColor = Var.Hologram
                         VanillaSpec {
                             progress = PartProgress { it.warmup.smooth }
                             moveY = 3f
@@ -445,7 +445,7 @@ object CioBlock {
                 powerCapacity = 300f
                 powerUseForChargePreUnit = 0.2f
             }
-            lightColor = S.Hologram
+            lightColor = Var.Hologram
             lightRadius = 40f
             floatingRange = 1f
             size = 1
@@ -483,7 +483,7 @@ object CioBlock {
                 powerCapacity = 800f
                 powerUseForChargePreUnit = 0.3f
             }
-            lightColor = S.Hologram
+            lightColor = Var.Hologram
             lightRadius = 80f
             floatingRange = 2f
             squareSprite = false
@@ -752,7 +752,7 @@ object CioBlock {
                     +DrawLiquidTile(CioFluid.cyberion, 3f)
                     +DrawDefaultSpec()
                     +DrawHeatOutputSpec().apply {
-                        heatColor = S.Hologram
+                        heatColor = Var.Hologram
                     }
                     +DrawCyberionAgglomeration()
                 }
@@ -790,7 +790,7 @@ object CioBlock {
                     +DrawLiquidTile(CioFluid.cyberion, 37f / 4f)
                     +DrawRegionSpec("-top")
                     +DrawHeatInputSpec().apply {
-                        heatColor = S.Hologram
+                        heatColor = Var.Hologram
                     }
                 }
                 size = 3
@@ -817,7 +817,7 @@ object CioBlock {
             cacheLayer = CioCLs.cyberion
             emitLight = true
             lightRadius = 30f
-            lightColor = S.Hologram.cpy().a(0.19f)
+            lightColor = Var.Hologram.cpy().a(0.19f)
         }
     }
     @DependOn(
@@ -872,7 +872,7 @@ object CioBlock {
                 hitSize = 10f
                 lifetime = 240f
                 maxRange = this@apply.range
-                trailColor = S.Hologram
+                trailColor = Var.Hologram
             }
         }
     }
