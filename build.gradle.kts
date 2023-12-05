@@ -2,6 +2,7 @@ import io.github.liplum.mindustry.minGameVersion
 import net.liplum.gradle.settings.Settings.localConfig
 
 plugins {
+    kotlin("jvm") apply false
     id("io.github.liplum.mgpp") version "1.2.0"
 }
 buildscript {
