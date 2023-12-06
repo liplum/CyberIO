@@ -23,3 +23,30 @@ class WelcomeTip(
         const val DefaultIconPath = "icon"
     }
 }
+
+class WelcomeTipPack(
+    var default: String = "Default",
+    var scenes: List<String> = emptyList(),
+) {
+    operator fun get(index: Int) =
+        if (index !in scenes.indices)
+            default
+        else
+            scenes[index]
+
+    fun indexOf(tipID: String): Int =
+        scenes.indexOf(tipID)
+
+    val defaultIndex: Int
+        get() = indexOf(default)
+
+    fun inherit(
+        default: String? = null,
+        scenes: List<String> = emptyList(),
+    ): WelcomeTipPack {
+        return WelcomeTipPack(
+            default = default ?: this.default,
+            scenes = this.scenes + scenes,
+        )
+    }
+}

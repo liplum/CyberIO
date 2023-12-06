@@ -2,12 +2,8 @@ package net.liplum.welcome
 
 import arc.Core
 import arc.Events
-import arc.struct.ObjectMap
-import arc.util.ArcRuntimeException
 import arc.util.Time
-import arc.util.serialization.JsonValue
 import mindustry.game.EventType.Trigger
-import mindustry.io.JsonIO
 import net.liplum.CioMod
 import net.liplum.Meta
 import net.liplum.Settings.CioVersion
@@ -20,7 +16,6 @@ import net.liplum.annotations.Only
 import net.liplum.annotations.SubscribeEvent
 import net.liplum.blocks.tmtrainer.RandomName
 import net.liplum.cio
-import net.liplum.common.Res
 import net.liplum.common.util.ReferBundleWrapper
 import net.liplum.common.util.allMaxBy
 import net.liplum.common.util.randomExcept
@@ -33,10 +28,11 @@ import plumy.dsl.sprite
 @ClientOnly
 object Welcome {
     var bundle = ReferBundleWrapper.create()
-    private var info = Info()
-    fun genEntity() = Entity(bundle, info)
+    private var version = Scenes.v5_1
+    fun genEntity() = Entity(bundle, version)
     private var entity = genEntity()
     private var showWelcome = false
+
     @JvmStatic
     @ClientOnly
     fun showWelcomeDialog() {
@@ -50,9 +46,10 @@ object Welcome {
         tip?.condition?.canShow(tip)*/
         //entity.showTipByID("SetOutErekir")
     }
+
     @JvmStatic
     fun judgeWelcome() {
-        val allTips = info.scenes.map { Welcomes[it] }.distinct().toList()
+        val allTips = version.scenes.map { Welcomes[it] }.distinct().toList()
         val tipsCanShow = allTips.filter { it.condition.canShow(it) }
         val allCandidates = tipsCanShow.allMaxBy { it.condition.priority(it) }
         if (allCandidates.isEmpty()) {
@@ -79,6 +76,7 @@ object Welcome {
             showWelcome = true
         }
     }
+
     @JvmStatic
     @SubscribeEvent(CioInitEvent::class, Only.client)
     fun modifierModInfo() {
@@ -90,6 +88,7 @@ object Welcome {
             }
         }
     }
+
     @JvmStatic
     fun checkLastVersion() {
         val lastVersion = CioVersion
@@ -101,73 +100,28 @@ object Welcome {
         }
         CioVersion = Meta.Version
     }
+
     @JvmStatic
     fun recordClick() {
         ClickWelcomeTimes += 1
     }
+
     @JvmStatic
     @ClientOnly
     fun load() {
         loadBundle()
-        loadInfo()
         //To load all templates and actions
         Templates
         Actions
         Conditions
     }
+
     @JvmStatic
     fun loadBundle() {
         bundle.loadMoreFrom("welcomes")
         if (Core.settings.getString("locale") != "en") {
             bundle.linkParent("welcomes")
         }
-    }
-
-    lateinit var infoJson: ObjectMap<String, JsonValue>
-    @Suppress("UNCHECKED_CAST")
-    @JvmStatic
-    fun loadInfo() {
-        val json = Res("WelcomeInfo.json").readAllText()
-        infoJson = JsonIO.json.fromJson(ObjectMap::class.java, json) as ObjectMap<String, JsonValue>
-        val curInfo = infoJson.get(Meta.Version)
-            ?: throw ArcRuntimeException("The welcome message information of Cyber IO ${Meta.Version} not found.")
-        val default = curInfo.get("Default")?.asString() ?: "Default"
-        val scenes = curInfo.get("Scene")?.asStringArray() ?: emptyArray()
-        val parent: String? = curInfo.get("Parent")?.asString()
-        info.default = default
-        val allScenes = HashSet<String>()
-        allScenes.addAll(scenes)
-        fun loadParent(parent: String) {
-            val parentInfo = infoJson.get(parent)
-            val parentScenes = parentInfo.get("Scene").asStringArray()
-            val parentParent: String? = parentInfo.get("Parent")?.asString()
-            allScenes.addAll(parentScenes)
-            if (parentParent != null)
-                loadParent(parentParent)
-        }
-        if (parent != null) {
-            loadParent(parent)
-        }
-        info.scenes = allScenes.toList()
-    }
-
-    class Info {
-        var default = "Default"
-        var scenes: List<String> = emptyList()
-        val sceneSize: Int
-            get() = scenes.size
-
-        operator fun get(index: Int) =
-            if (index !in scenes.indices)
-                default
-            else
-                scenes[index]
-
-        fun indexOf(tipID: String): Int =
-            scenes.indexOf(tipID)
-
-        val defaultIndex: Int
-            get() = indexOf(default)
     }
 
     fun String.handleTrRefer(): TR =
@@ -177,7 +131,7 @@ object Welcome {
 
     class Entity(
         val bundle: ReferBundleWrapper,
-        val info: Info,
+        val info: WelcomeTipPack,
     ) {
         var tip: WelcomeTip = WelcomeTip.Default
         operator fun get(key: String) =
