@@ -1,6 +1,6 @@
 package net.liplum.welcome
 
-class WelcomeTip(
+class WelcomeScene(
     @JvmField var id: String = DefaultID,
     @JvmField var conditionID: String = DefaultCondition,
     @JvmField var templateID: String = DefaultTemplateID,
@@ -15,7 +15,7 @@ class WelcomeTip(
         get() = ConditionRegistry[conditionID]
 
     companion object {
-        val Default = WelcomeTip()
+        val Default = WelcomeScene()
         const val DefaultID = "Default"
         const val DefaultCondition = "ShowWelcome"
         const val DefaultTemplateID = "Story"
@@ -24,27 +24,24 @@ class WelcomeTip(
     }
 }
 
-class WelcomeTipPack(
-    var default: String = "Default",
-    var scenes: List<String> = emptyList(),
+class WelcomeScenePack(
+    var default: WelcomeScene,
+    var scenes: List<WelcomeScene> = emptyList(),
 ) {
-    operator fun get(index: Int) =
+    operator fun get(index: Int): WelcomeScene =
         if (index !in scenes.indices)
             default
         else
             scenes[index]
 
-    fun indexOf(tipID: String): Int =
+    fun indexOf(tipID: WelcomeScene): Int =
         scenes.indexOf(tipID)
 
-    val defaultIndex: Int
-        get() = indexOf(default)
-
     fun inherit(
-        default: String? = null,
-        scenes: List<String> = emptyList(),
-    ): WelcomeTipPack {
-        return WelcomeTipPack(
+        default: WelcomeScene? = null,
+        scenes: List<WelcomeScene> = emptyList(),
+    ): WelcomeScenePack {
+        return WelcomeScenePack(
             default = default ?: this.default,
             scenes = this.scenes + scenes,
         )

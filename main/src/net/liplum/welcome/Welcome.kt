@@ -28,7 +28,7 @@ import plumy.dsl.sprite
 @ClientOnly
 object Welcome {
     var bundle = ReferBundleWrapper.create()
-    private var version = Scenes.v5_1
+    private var version = WelcomeScenePacks.v5_1
     fun genEntity() = Entity(bundle, version)
     private var entity = genEntity()
     private var showWelcome = false
@@ -49,7 +49,7 @@ object Welcome {
 
     @JvmStatic
     fun judgeWelcome() {
-        val allTips = version.scenes.map { Welcomes[it] }.distinct().toList()
+        val allTips = version.scenes.distinct().toList()
         val tipsCanShow = allTips.filter { it.condition.canShow(it) }
         val allCandidates = tipsCanShow.allMaxBy { it.condition.priority(it) }
         if (allCandidates.isEmpty()) {
@@ -131,9 +131,9 @@ object Welcome {
 
     class Entity(
         val bundle: ReferBundleWrapper,
-        val info: WelcomeTipPack,
+        val info: WelcomeScenePack,
     ) {
-        var tip: WelcomeTip = WelcomeTip.Default
+        var tip: WelcomeScene = WelcomeScene.Default
         operator fun get(key: String) =
             bundle["$tip.$key"]
 

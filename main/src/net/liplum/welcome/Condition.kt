@@ -27,16 +27,16 @@ abstract class Condition(
         this.register()
     }
 
-    abstract fun canShow(tip: WelcomeTip): Boolean
-    abstract fun priority(tip: WelcomeTip): Int
+    abstract fun canShow(tip: WelcomeScene): Boolean
+    abstract fun priority(tip: WelcomeScene): Int
 
     companion object {
         val Default = object : Condition("Default") {
-            override fun canShow(tip: WelcomeTip): Boolean {
+            override fun canShow(tip: WelcomeScene): Boolean {
                 return false
             }
 
-            override fun priority(tip: WelcomeTip) = Int.MIN_VALUE
+            override fun priority(tip: WelcomeScene) = Int.MIN_VALUE
         }
     }
 }
