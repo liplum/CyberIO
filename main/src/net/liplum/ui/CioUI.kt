@@ -24,16 +24,17 @@ import net.liplum.common.util.getF
 import net.liplum.common.util.randomExcept
 import net.liplum.event.CioInitEvent
 import net.liplum.function.MapCleaner
-import net.liplum.utils.IsLocal
-import net.liplum.utils.safeCall
 import net.liplum.ui.settings.*
 import net.liplum.ui.settings.AnySetting.Companion.addAny
 import net.liplum.ui.settings.CheckSettingX.Companion.addCheckPref
 import net.liplum.ui.settings.SliderSettingX.Companion.addSliderSettingX
 import net.liplum.update.Updater
+import net.liplum.utils.IsLocal
+import net.liplum.utils.safeCall
 import net.liplum.welcome.Conditions
 import net.liplum.welcome.Welcome
-import net.liplum.welcome.WelcomeList
+import net.liplum.welcome.Welcomes
+import net.liplum.welcome.findAll
 import plumy.core.ClientOnly
 import plumy.core.NonSteamOnly
 import plumy.dsl.bundle
@@ -166,7 +167,7 @@ object CioUI {
                             Updater.accessJob?.join()
                             if (!failed) {
                                 if (Updater.requireUpdate) {
-                                    val updateTips = WelcomeList.findAll { tip ->
+                                    val updateTips = Welcomes.findAll { tip ->
                                         tip.condition == Conditions.CheckUpdate
                                     }
                                     if (updateTips.isEmpty()) {

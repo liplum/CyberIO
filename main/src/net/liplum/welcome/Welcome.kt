@@ -10,12 +10,12 @@ import mindustry.game.EventType.Trigger
 import mindustry.io.JsonIO
 import net.liplum.CioMod
 import net.liplum.Meta
-import net.liplum.Var
 import net.liplum.Settings.CioVersion
 import net.liplum.Settings.ClickWelcomeTimes
 import net.liplum.Settings.LastWelcomeID
 import net.liplum.Settings.ShouldShowWelcome
 import net.liplum.Settings.ShowUpdate
+import net.liplum.Var
 import net.liplum.annotations.Only
 import net.liplum.annotations.SubscribeEvent
 import net.liplum.blocks.tmtrainer.RandomName
@@ -52,7 +52,7 @@ object Welcome {
     }
     @JvmStatic
     fun judgeWelcome() {
-        val allTips = info.scenes.map { WelcomeList[it] }.distinct().toList()
+        val allTips = info.scenes.map { Welcomes[it] }.distinct().toList()
         val tipsCanShow = allTips.filter { it.condition.canShow(it) }
         val allCandidates = tipsCanShow.allMaxBy { it.condition.priority(it) }
         if (allCandidates.isEmpty()) {
@@ -198,7 +198,7 @@ object Welcome {
 
         companion object {
             fun Entity.showTipByID(id: String): Entity {
-                tip = WelcomeList[id]
+                tip = Welcomes[id]
                 showTip()
                 return this
             }
