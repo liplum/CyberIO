@@ -22,7 +22,9 @@ import mindustry.world.blocks.environment.Floor
 import mindustry.world.blocks.heat.HeatProducer
 import mindustry.world.blocks.production.GenericCrafter
 import mindustry.world.blocks.production.HeatCrafter
+import mindustry.world.draw.DrawDefault
 import mindustry.world.draw.DrawLiquidTile
+import mindustry.world.draw.DrawRegion
 import mindustry.world.meta.BuildVisibility
 import net.liplum.*
 import net.liplum.annotations.DependOn
@@ -55,12 +57,11 @@ import net.liplum.holo.HoloFloor
 import net.liplum.holo.HoloWall
 import net.liplum.holo.LandProjector
 import net.liplum.holo.Stealth
-import net.liplum.render.DrawTurretHeat
-import net.liplum.ui.DynamicContentInfoDialog.Companion.registerDynamicInfo
 import net.liplum.registry.CioBulletType.optInRadiationInterference
 import net.liplum.registry.CioBulletType.optInVirus
 import net.liplum.render.*
 import net.liplum.statusFx.StaticFx
+import net.liplum.ui.DynamicContentInfoDialog.Companion.registerDynamicInfo
 import net.liplum.utils.globalAnim
 import plumy.core.Else
 import plumy.core.math.invoke
@@ -68,72 +69,49 @@ import plumy.core.math.smooth
 import plumy.dsl.*
 
 object CioBlock {
-    @JvmStatic lateinit var icAssembler: GenericCrafter
-    @JvmStatic lateinit var virus: Virus
-    @JvmStatic lateinit var landProjector: LandProjector
-    @JvmStatic lateinit var holoFloor: HoloFloor
-    @JvmStatic lateinit var underdriveProjector: UnderdriveProjector
-    @JvmStatic lateinit var antiVirus: AntiVirus
-    @JvmStatic lateinit var prism: Prism
-    @JvmStatic lateinit var prismObelisk: PrismObelisk
-    @JvmStatic lateinit var deleter: Deleter
-    @JvmStatic lateinit var holoWall: HoloWall
-    @JvmStatic lateinit var holoWallLarge: HoloWall
-    @JvmStatic lateinit var TMTRAINER: TMTRAINER
-    @JvmStatic lateinit var jammer: Jammer
-    @JvmStatic lateinit var cyberionMixer: GenericCrafter
-    @JvmStatic lateinit var aquacyberion: Floor
-    @JvmStatic lateinit var stealth: Stealth
-    @JvmStatic lateinit var wirelessTower: WirelessTower
-    @JvmStatic lateinit var zipBomb: ZipBomb
+    lateinit var icAssembler: GenericCrafter
+    lateinit var icManufacturer: GenericCrafter
+    lateinit var virus: Virus
+    lateinit var landProjector: LandProjector
+    lateinit var holoFloor: HoloFloor
+    lateinit var underdriveProjector: UnderdriveProjector
+    lateinit var antiVirus: AntiVirus
+    lateinit var prism: Prism
+    lateinit var prismObelisk: PrismObelisk
+    lateinit var deleter: Deleter
+    lateinit var holoWall: HoloWall
+    lateinit var holoWallLarge: HoloWall
+    lateinit var TMTRAINER: TMTRAINER
+    lateinit var jammer: Jammer
+    lateinit var cyberionMixer: GenericCrafter
+    lateinit var aquacyberion: Floor
+    lateinit var stealth: Stealth
+    lateinit var wirelessTower: WirelessTower
+    lateinit var zipBomb: ZipBomb
+
     @DependOn("CioItem.ic")
     fun icAssembler() {
         icAssembler = GenericCrafter("ic-assembler").apply {
             category = Category.crafting
             buildVisibility = BuildVisibility.shown
-            VanillaSpec {
-                requirements = arrayOf(
-                    Items.lead + 150,
-                    Items.graphite + 100,
-                    Items.silicon + 80,
-                )
-                scaledHealth = 80f
-                consumePower(1.2f)
-                itemCapacity = 40
-                consumeItems(
-                    Items.copper + 4,
-                    Items.silicon + 3,
-                    Items.metaglass + 2,
-                )
-                craftTime = 175f
-                drawMulti {
-                    +DrawRegionSpec("-bottom")
-                    +SpecDrawConstruct(stages = 3)
-                    +DrawDefaultSpec()
-                }
-            }
-            ErekirSpec {
-                requirements = arrayOf(
-                    Items.beryllium + 60,
-                    Items.graphite + 105,
-                    Items.tungsten + 50,
-                    Items.silicon + 200,
-                )
-                scaledHealth = 120f
-                consumePower(1.1f)
-                itemCapacity = 40
-                consumeItems(
-                    Items.tungsten + 2,
-                    Items.beryllium + 3,
-                    Items.silicon + 4,
-                )
-                craftTime = 200f
-                drawMulti {
-                    +DrawRegionSpec("-bottom")
-                    +SpecDrawConstruct(stages = 4)
-                    +DrawDefaultSpec()
-                }
-                squareSprite = false
+            requirements = arrayOf(
+                Items.lead + 150,
+                Items.graphite + 100,
+                Items.silicon + 80,
+            )
+            scaledHealth = 80f
+            consumePower(1.2f)
+            itemCapacity = 40
+            consumeItems(
+                Items.copper + 4,
+                Items.silicon + 3,
+                Items.metaglass + 2,
+            )
+            craftTime = 175f
+            drawMulti {
+                +DrawRegion("-bottom")
+                +DrawConstruct(stages = 3)
+                +DrawDefault()
             }
             buildType = Prov { GenericCrafterBuild() }
             fogRadius = 2
@@ -142,6 +120,41 @@ object CioBlock {
             craftEffect = Fx.smeltsmoke
         }
     }
+
+    @DependOn("CioItem.ic")
+    fun icManufacturer() {
+        icManufacturer = GenericCrafter("ic-manufacturer").apply {
+            category = Category.crafting
+            buildVisibility = BuildVisibility.shown
+            requirements = arrayOf(
+                Items.beryllium + 60,
+                Items.graphite + 105,
+                Items.tungsten + 50,
+                Items.silicon + 200,
+            )
+            scaledHealth = 120f
+            consumePower(1.1f)
+            itemCapacity = 40
+            consumeItems(
+                Items.tungsten + 2,
+                Items.beryllium + 3,
+                Items.silicon + 4,
+            )
+            craftTime = 200f
+            drawMulti {
+                +DrawRegion("-bottom")
+                +DrawConstruct(stages = 4)
+                +DrawDefault()
+            }
+            squareSprite = false
+            buildType = Prov { GenericCrafterBuild() }
+            fogRadius = 2
+            size = 2
+            outputItem = CioItem.ic + 1
+            craftEffect = Fx.smeltsmoke
+        }
+    }
+
     @DependOn
     fun virus() {
         virus = Virus("virus").apply {
@@ -159,6 +172,7 @@ object CioBlock {
             mutationRate = 10
         }.globalAnim(30f, 3)
     }
+
     @DependOn("CioItem.ic")
     fun landProjector() {
         landProjector = LandProjector("land-projector").apply {
@@ -178,12 +192,14 @@ object CioBlock {
             buildCostMultiplier = 3f
         }
     }
+
     @DependOn
     fun holoFloor() {
         holoFloor = HoloFloor("holo-floor").apply {
             variants = 3
         }.setUninfectedFloor()
     }
+
     @DependOn("CioItem.ic")
     fun underdriveProjector() {
         underdriveProjector = UnderdriveProjector("underdrive-projector").apply {
@@ -223,6 +239,7 @@ object CioBlock {
             size = 1
         }
     }
+
     @DependOn("CioItem.ic")
     fun antiVirus() {
         antiVirus = AntiVirus("anti-virus").apply {
@@ -239,6 +256,7 @@ object CioBlock {
             size = 1
         }.setUninfected()
     }
+
     @DependOn("CioItem.ic")
     fun prism() {
         prism = Prism("prism").apply {
@@ -268,6 +286,7 @@ object CioBlock {
             size = 4
         }
     }
+
     @DependOn(
         "CioItem.ic",
         "CioBlock.prism"
@@ -299,6 +318,7 @@ object CioBlock {
             prismType = prism
         }
     }
+
     @DependOn("CioItem.ic")
     fun deleter() {
         deleter = Deleter("deleter").apply {
@@ -417,6 +437,7 @@ object CioBlock {
             }
         }
     }
+
     @DependOn("CioItem.ic")
     fun holoWall() {
         holoWall = HoloWall("holo-wall").apply {
@@ -452,6 +473,7 @@ object CioBlock {
             buildCostMultiplier = 3.5f
         }
     }
+
     @DependOn(
         "CioItem.ic",
         "CioBlock.holoWall"
@@ -491,6 +513,7 @@ object CioBlock {
             buildCostMultiplier = 4.5f
         }
     }
+
     @DependOn(
         "CioItem.ic",
         "CioSEffect.infected",
@@ -608,6 +631,7 @@ object CioBlock {
             }
         }.registerDynamicInfo()
     }
+
     @Subscribe(Trigger.update, Only.client)
     fun TMTRAINER_RandomName() {
         if (Time.globalTime % Var.AnimUpdateFrequency < 1f && CioMod.ContentLoaded) {
@@ -615,6 +639,7 @@ object CioBlock {
             TMTRAINER.description = RandomName.one(25)
         }
     }
+
     @DependOn(
         "CioItem.ic",
         "CioFluid.cyberion",
@@ -721,6 +746,7 @@ object CioBlock {
             }
         }
     }
+
     @DependOn(
         "CioItem.ic",
         "CioFluid.cyberion"
@@ -797,6 +823,7 @@ object CioBlock {
             }
         }
     }
+
     @DependOn("CioFluid.cyberion")
     fun aquacyberion() {
         aquacyberion = Floor("aqua-cyberion").apply {
@@ -820,6 +847,7 @@ object CioBlock {
             lightColor = Var.Hologram.cpy().a(0.19f)
         }
     }
+
     @DependOn(
         "CioItem.ic",
         "CioFluid.cyberion"
@@ -876,6 +904,7 @@ object CioBlock {
             }
         }
     }
+
     @DependOn("CioItem.ic")
     fun wirelessTower() {
         wirelessTower = WirelessTower("wireless-tower").apply {
@@ -912,6 +941,7 @@ object CioBlock {
             size = 2
         }
     }
+
     @DependOn("CioItem.ic")
     fun zipBomb() {
         zipBomb = ZipBomb("zip-bomb").apply {
