@@ -35,13 +35,13 @@ object WelcomeTemplates {
                 addPoster(entity.icon)
                 if (showPoliteWelcome) addPoliteWelcome(entity)
                 cont.table {
-                    addCloseButton(entity["button-a"], it, 200f) {
+                    addCloseButton(entity["button-a"], table = it, width = 150f) {
                         actionA(entity)
                     }
-                    addCloseButton(entity["button-b"], it, 200f) {
+                    addCloseButton(entity["button-b"], table = it, width = 150f) {
                         actionB(entity)
                     }
-                    addCloseButton(entity["button-c"], it, 200f) {
+                    addCloseButton(entity["button-c"], table = it, width = 150f) {
                         actionC(entity)
                     }
                 }.growX()
@@ -61,10 +61,10 @@ object WelcomeTemplates {
                 if (showPoliteWelcome) addPoliteWelcome(entity)
                 addCenterText(entity.content)
                 cont.table {
-                    addCloseButton(entity["yes"]) {
+                    addCloseButton(entity["yes"], table = it) {
                         yesAction(entity)
                     }
-                    addCloseButton(entity["no"]) {
+                    addCloseButton(entity["no"], table = it) {
                         noAction(entity)
                     }
                 }.growX()
@@ -140,14 +140,14 @@ object WelcomeTemplates {
                 if (Updater.hasUpdateDescription)
                     addBoxedText(Updater.UpdateDescription)
                 cont.table {
-                    addCloseButton(entity["update"], it) {
+                    addCloseButton(entity["update"], it, width = 150f) {
                         WelcomeActions.UpdateCyberIO(entity)
-                    }.size(150f, 50f)
-                    addCloseButton(entity["no"], it) {
-                    }.size(150f, 50f)
-                    addCloseButton(entity["skip-this"], it) {
+                    }
+                    addCloseButton(entity["no"], it, width = 150f) {
+                    }
+                    addCloseButton(entity["skip-this"], it, width = 150f) {
                         WelcomeActions.SkipThisUpdate(entity)
-                    }.size(150f, 50f)
+                    }
                 }.growX()
                     .row()
             }

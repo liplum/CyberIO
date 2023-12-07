@@ -2,17 +2,15 @@ package net.liplum.welcome
 
 import net.liplum.Settings
 
-object Welcomes {
-    val default = WelcomeScene(
-        id = "Default",
-        template = WelcomeTemplates.Story(),
-    )
+object WelcomeScenes {
     val employmentVerification = WelcomeScene(
         id = "EmploymentVerification",
         condition = WelcomeConditions.SpecialDishes,
+        template = WelcomeTemplates.Story(),
     )
     val discord = WelcomeScene(
         id = "Discord",
+        condition = WelcomeConditions.ShowWelcome,
         template = WelcomeTemplates.DoAction(
             yesAction = WelcomeActions.OpenLink("@link"),
         ),
@@ -28,24 +26,32 @@ object Welcomes {
     val researchProject = WelcomeScene(
         id = "ResearchProject",
         iconPath = "welcome-holo-project",
+        template = WelcomeTemplates.Story(),
         condition = WelcomeConditions.SpecialDishes,
     )
     val theShip = WelcomeScene(
         id = "TheSHIP",
+        template = WelcomeTemplates.Story(),
+        condition = WelcomeConditions.ShowWelcome,
     )
     val echo = WelcomeScene(
         id = "ECHO",
+        template = WelcomeTemplates.Story(),
+        condition = WelcomeConditions.ShowWelcome,
     )
     val newBrains = WelcomeScene(
         id = "NewBrains",
         iconPath = "heimdall",
+        template = WelcomeTemplates.Story(),
+        condition = WelcomeConditions.ShowWelcome,
     )
     val adBlock = WelcomeScene(
         id = "AdBlock",
+        iconPath = "ad-block",
         template = WelcomeTemplates.DoAction(
             noAction = WelcomeActions.StopReceiveWelcome,
         ),
-        iconPath = "ad-block",
+        condition = WelcomeConditions.ShowWelcome,
         chance = 300,
     )
     val `404NotFound` = WelcomeScene(
@@ -65,6 +71,7 @@ object Welcomes {
         template = WelcomeTemplates.Story(
             showPoliteWelcome = false,
         ),
+        condition = WelcomeConditions.ShowWelcome,
         chance = 200,
     )
     val rateUs = WelcomeScene(
@@ -75,12 +82,13 @@ object Welcomes {
             activeStarIconPath = "star",
             inactiveStarIconPath = "star-inactive",
         ),
-        iconPath = "@error",
+        condition = WelcomeConditions.ShowWelcome,
         chance = 200,
     )
     val erekirDetected = WelcomeScene(
         id = "ErekirDetected",
         iconPath = "spec-erekir",
+        template = WelcomeTemplates.Story(),
         condition = WelcomeConditions.SpecialDishes,
     )
     val setOutErekir = WelcomeScene(
@@ -102,7 +110,6 @@ object Welcomes {
         },
     )
     val tips = listOf(
-        default,
         employmentVerification,
         discord,
         updateECHO,
@@ -121,11 +128,11 @@ object Welcomes {
     val id2Tips = tips.associateBy { it.id }
 }
 
-operator fun Welcomes.get(id: String) = id2Tips[id] ?: WelcomeScene.Default
-inline fun Welcomes.find(filter: (WelcomeScene) -> Boolean): WelcomeScene? {
+operator fun WelcomeScenes.get(id: String) = id2Tips[id] ?: WelcomeScene.Default
+inline fun WelcomeScenes.find(filter: (WelcomeScene) -> Boolean): WelcomeScene? {
     return id2Tips.values.find(filter)
 }
 
-inline fun Welcomes.findAll(filter: (WelcomeScene) -> Boolean): List<WelcomeScene> {
+inline fun WelcomeScenes.findAll(filter: (WelcomeScene) -> Boolean): List<WelcomeScene> {
     return id2Tips.values.filter(filter)
 }

@@ -5,18 +5,18 @@ import mindustry.ui.dialogs.BaseDialog
 
 class WelcomeScene(
     @JvmField val id: String,
-    @JvmField val condition: WelcomeCondition = WelcomeCondition.Default,
-    @JvmField val template: WelcomeTemplate = WelcomeTemplate.Default,
     @JvmField var iconPath: String = "icon",
     @JvmField var chance: Int = 100,
+    @JvmField val condition: WelcomeCondition,
+    @JvmField val template: WelcomeTemplate,
 ) {
     override fun toString() = id
 
     companion object {
         val Default = WelcomeScene(
             id = "Default",
-            condition = WelcomeConditions.ShowWelcome,
-            template = WelcomeTemplates.Story(),
+            condition = WelcomeCondition.Default,
+            template = WelcomeTemplate.Default,
             chance = 0,
         )
     }

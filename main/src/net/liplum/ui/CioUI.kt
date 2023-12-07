@@ -33,7 +33,7 @@ import net.liplum.utils.IsLocal
 import net.liplum.utils.safeCall
 import net.liplum.welcome.Welcome
 import net.liplum.welcome.WelcomeConditions
-import net.liplum.welcome.Welcomes
+import net.liplum.welcome.WelcomeScenes
 import net.liplum.welcome.findAll
 import plumy.core.ClientOnly
 import plumy.core.NonSteamOnly
@@ -167,7 +167,7 @@ object CioUI {
                             Updater.accessJob?.join()
                             if (!failed) {
                                 if (Updater.requireUpdate) {
-                                    val updateScenes = Welcomes.findAll { tip ->
+                                    val updateScenes = WelcomeScenes.findAll { tip ->
                                         tip.condition == WelcomeConditions.CheckUpdate
                                     }
                                     if (updateScenes.isEmpty()) {
@@ -176,7 +176,7 @@ object CioUI {
                                         val updateScene = updateScenes.randomExcept(atLeastOne = true) {
                                             id != Settings.LastWelcomeID
                                         }
-                                        Welcomes.updateECHO
+                                        WelcomeScenes.updateECHO
                                         if (updateScene != null)
                                             Welcome.createEntity(updateScene).showTip()
                                         else
