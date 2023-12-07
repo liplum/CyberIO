@@ -31,8 +31,8 @@ import net.liplum.ui.settings.SliderSettingX.Companion.addSliderSettingX
 import net.liplum.update.Updater
 import net.liplum.utils.IsLocal
 import net.liplum.utils.safeCall
-import net.liplum.welcome.Conditions
 import net.liplum.welcome.Welcome
+import net.liplum.welcome.WelcomeConditions
 import net.liplum.welcome.Welcomes
 import net.liplum.welcome.findAll
 import plumy.core.ClientOnly
@@ -167,19 +167,18 @@ object CioUI {
                             Updater.accessJob?.join()
                             if (!failed) {
                                 if (Updater.requireUpdate) {
-                                    val updateTips = Welcomes.findAll { tip ->
-                                        tip.condition == Conditions.CheckUpdate
+                                    val updateScenes = Welcomes.findAll { tip ->
+                                        tip.condition == WelcomeConditions.CheckUpdate
                                     }
-                                    if (updateTips.isEmpty()) {
+                                    if (updateScenes.isEmpty()) {
                                         ShowTextDialog(bundle("not-support"))
                                     } else {
-                                        val updateTip = updateTips.randomExcept(atLeastOne = true) {
+                                        val updateScene = updateScenes.randomExcept(atLeastOne = true) {
                                             id != Settings.LastWelcomeID
                                         }
-                                        if (updateTip != null)
-                                            Welcome.genEntity().apply {
-                                                tip = updateTip
-                                            }.showTip()
+                                        Welcomes.updateECHO
+                                        if (updateScene != null)
+                                            Welcome.createEntity(updateScene).showTip()
                                         else
                                             ShowTextDialog(bundle("not-support"))
                                     }

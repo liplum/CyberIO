@@ -21,6 +21,7 @@ import net.liplum.common.util.allMaxBy
 import net.liplum.common.util.randomExcept
 import net.liplum.event.CioInitEvent
 import net.liplum.math.randomByWeights
+import net.liplum.welcome.Welcome.handleTrRefer
 import plumy.core.ClientOnly
 import plumy.core.assets.TR
 import plumy.dsl.sprite
@@ -29,18 +30,12 @@ import plumy.dsl.sprite
 object Welcome {
     var bundle = ReferBundleWrapper.create()
     private var version = WelcomeScenePacks.v5_1
-    fun genEntity() = Entity(bundle, version)
-    private var entity = genEntity()
-    private var showWelcome = false
 
     @JvmStatic
     @ClientOnly
     fun showWelcomeDialog() {
         checkLastVersion()
-        judgeWelcome()
-        if (showWelcome) {
-            entity.showTip()
-        }
+        judgeWelcome()?.showTip()
         //For debug
         /*val tip = WelcomeList.find { it.id == "SetOutErekir" }
         tip?.condition?.canShow(tip)*/
@@ -48,13 +43,12 @@ object Welcome {
     }
 
     @JvmStatic
-    fun judgeWelcome() {
+    fun judgeWelcome(): WelcomeEntity? {
         val allTips = version.scenes.distinct().toList()
         val tipsCanShow = allTips.filter { it.condition.canShow(it) }
         val allCandidates = tipsCanShow.allMaxBy { it.condition.priority(it) }
         if (allCandidates.isEmpty()) {
-            showWelcome = false
-            return
+            return null
         }
         var sumChance = 0
         val weights = IntArray(allCandidates.size) {
@@ -72,9 +66,13 @@ object Welcome {
         }
         if (res != null) {
             LastWelcomeID = res.id
-            entity.tip = res
-            showWelcome = true
+            return createEntity(res)
         }
+        return null
+    }
+
+    fun createEntity(scene: WelcomeScene): WelcomeEntity {
+        return WelcomeEntity(bundle, version, scene)
     }
 
     @JvmStatic
@@ -111,9 +109,9 @@ object Welcome {
     fun load() {
         loadBundle()
         //To load all templates and actions
-        Templates
-        Actions
-        Conditions
+        WelcomeTemplates
+        WelcomeActions
+        WelcomeConditions
     }
 
     @JvmStatic
@@ -128,34 +126,26 @@ object Welcome {
         if (startsWith('@'))
             removePrefix("@").sprite
         else cio.sprite
+}
 
-    class Entity(
-        val bundle: ReferBundleWrapper,
-        val info: WelcomeScenePack,
-    ) {
-        var tip: WelcomeScene = WelcomeScene.Default
-        operator fun get(key: String) =
-            bundle["$tip.$key"]
+class WelcomeEntity(
+    val bundle: ReferBundleWrapper,
+    val info: WelcomeScenePack,
+    val scene: WelcomeScene,
+) {
+    operator fun get(key: String) =
+        bundle["$scene.$key"]
 
-        val content: String
-            get() = bundle["$tip"]
+    val content: String
+        get() = bundle["$scene"]
 
-        fun content(vararg args: Any): String =
-            bundle.format("$tip", *args)
+    fun content(vararg args: Any): String =
+        bundle.format("$scene", *args)
 
-        val icon: TR
-            get() = tip.iconPath.handleTrRefer()
+    val icon: TR
+        get() = scene.iconPath.handleTrRefer()
 
-        fun showTip() {
-            tip.template.gen(this).show()
-        }
-
-        companion object {
-            fun Entity.showTipByID(id: String): Entity {
-                tip = Welcomes[id]
-                showTip()
-                return this
-            }
-        }
+    fun showTip() {
+        scene.template.gen(this).show()
     }
 }

@@ -1,38 +1,34 @@
 package net.liplum.welcome
 
+import net.liplum.Settings
+
 object Welcomes {
     val default = WelcomeScene(
         id = "Default",
-        templateID = "Story",
+        template = WelcomeTemplates.Story(),
     )
     val employmentVerification = WelcomeScene(
         id = "EmploymentVerification",
-        templateID = "SpecialDishes",
+        condition = WelcomeConditions.SpecialDishes,
     )
     val discord = WelcomeScene(
         id = "Discord",
-        templateID = "DoAction",
-        data = mapOf(
-            "YesAction" to "OpenLink",
-            "Link" to "@link",
+        template = WelcomeTemplates.DoAction(
+            yesAction = WelcomeActions.OpenLink("@link"),
         ),
         iconPath = "discord",
         chance = 750,
     )
     val updateECHO = WelcomeScene(
         id = "UpdateECHO",
-        templateID = "Update",
-        data = mapOf(
-            "ActionA" to "UpdateCyberIO",
-            "ActionC" to "@SkipThisUpdate",
-        ),
+        template = WelcomeTemplates.UpdateCyberIO,
         iconPath = "update-icon",
-        conditionID = "CheckUpdate",
+        condition = WelcomeConditions.CheckUpdate,
     )
     val researchProject = WelcomeScene(
         id = "ResearchProject",
         iconPath = "welcome-holo-project",
-        conditionID = "SpecialDishes",
+        condition = WelcomeConditions.SpecialDishes,
     )
     val theShip = WelcomeScene(
         id = "TheSHIP",
@@ -46,70 +42,64 @@ object Welcomes {
     )
     val adBlock = WelcomeScene(
         id = "AdBlock",
-        templateID = "DoAction",
-        iconPath = "ad-block",
-        data = mapOf(
-            "NoAction" to "StopReceiveWelcome",
+        template = WelcomeTemplates.DoAction(
+            noAction = WelcomeActions.StopReceiveWelcome,
         ),
+        iconPath = "ad-block",
         chance = 300,
     )
     val `404NotFound` = WelcomeScene(
         id = "404NotFound",
-        templateID = "PlainText",
-        iconPath = "ad-block",
-        conditionID = "SettingsReq",
-        data = mapOf(
-            "FontSize" to 1.2,
-            "ShowPoliteWelcome" to false,
-            "CExpression" to "@ClickWelcomeTimes > 5 && @ShouldShowWelcome",
+        template = WelcomeTemplates.PlainText(
+            fontSize = 1.2f,
+            showPoliteWelcome = false,
         ),
+        condition = WelcomeConditions.Expr {
+            Settings.ClickWelcomeTimes > 5 && Settings.ShouldShowWelcome
+        },
         chance = 200,
     )
     val ohNo = WelcomeScene(
         id = "OhNo",
         iconPath = "@error",
-        data = mapOf(
-            "ShowPoliteWelcome" to false,
+        template = WelcomeTemplates.Story(
+            showPoliteWelcome = false,
         ),
         chance = 200,
     )
     val rateUs = WelcomeScene(
         id = "RateUs",
-        templateID = "RateStar",
-        iconPath = "@error",
-        data = mapOf(
-            "StarNumber" to 5,
-            "InactiveStarIconPath" to "star-inactive",
-            "ActiveStarIconPath" to "star",
-            "StarSize" to 60.0,
+        template = WelcomeTemplates.RateStar(
+            starSize = 60f,
+            starNumber = 5,
+            activeStarIconPath = "star",
+            inactiveStarIconPath = "star-inactive",
         ),
+        iconPath = "@error",
         chance = 200,
     )
     val erekirDetected = WelcomeScene(
         id = "ErekirDetected",
         iconPath = "spec-erekir",
-        conditionID = "SpecialDishes",
+        condition = WelcomeConditions.SpecialDishes,
     )
     val setOutErekir = WelcomeScene(
         id = "SetOutErekir",
-        templateID = "DoAction",
-        conditionID = "SettingsReq",
+        condition = WelcomeConditions.Expr {
+            Settings.ContentSpecific == "vanilla" && Settings.ShouldShowWelcome
+        },
         iconPath = "spec-erekir",
-        data = mapOf(
-            "ShowPoliteWelcome" to true,
-            "CExpression" to "@ContentSpecific == vanilla && @ShouldShowWelcome",
-            "YesAction" to "Navigation",
-            "Locator" to "/CyberIO/ContentSpecific",
+        template = WelcomeTemplates.DoAction(
+            yesAction = WelcomeActions.Navigation("/CyberIO/ContentSpecific"),
         ),
     )
     val cyberionForErekir = WelcomeScene(
         id = "CyberionForErekir",
-        conditionID = "SettingsReq",
         iconPath = "cyberion-for-erekir",
-        data = mapOf(
-            "ShowPoliteWelcome" to true,
-            "CExpression" to "@ContentSpecific == erekir && @ShouldShowWelcome",
-        ),
+        template = WelcomeTemplates.Story(),
+        condition = WelcomeConditions.Expr {
+            Settings.ContentSpecific == "erekir" && Settings.ShouldShowWelcome
+        },
     )
     val tips = listOf(
         default,

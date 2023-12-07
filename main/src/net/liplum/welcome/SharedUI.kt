@@ -7,14 +7,13 @@ import arc.scene.ui.Label
 import arc.scene.ui.TextButton
 import arc.scene.ui.layout.Cell
 import arc.scene.ui.layout.Table
-import arc.scene.utils.Elem
 import arc.util.Scaling
 import mindustry.gen.Tex
 import net.liplum.Meta
 import net.liplum.Var
 import net.liplum.i18nName
-import plumy.core.assets.TR
 import plumy.core.DesktopOnly
+import plumy.core.assets.TR
 
 internal fun Dialog.addPoster(
     icon: TR,
@@ -35,7 +34,7 @@ internal fun Dialog.addPoster(
     return img
 }
 
-internal fun Dialog.addPoliteWelcome(entity: Welcome.Entity) {
+internal fun Dialog.addPoliteWelcome(entity: WelcomeEntity) {
     addCenterText(
         entity.bundle.format(
             "welcome",
@@ -79,22 +78,12 @@ internal fun Dialog.addBoxedText(
 internal inline fun Dialog.addCloseButton(
     text: String,
     table: Table = this.cont,
+    width: Float = 200f,
     crossinline task: () -> Unit = {},
 ): Cell<TextButton> {
     return table.button(text) {
         Welcome.recordClick()
         task()
         hide()
-    }.size(200f, 50f)
-}
-
-internal inline fun Dialog.createCloseButton(
-    text: String,
-    crossinline task: () -> Unit = {},
-): TextButton {
-    return Elem.newButton(text) {
-        Welcome.recordClick()
-        task()
-        hide()
-    }
+    }.size(width, 50f)
 }
