@@ -31,7 +31,6 @@ import net.liplum.script.NpcSystem
 import net.liplum.update.Updater
 import net.liplum.welcome.FirstLoaded
 import net.liplum.welcome.Welcome
-import net.liplum.welcome.WelcomeList
 import plumy.core.ClientOnly
 import plumy.core.HeadlessOnly
 import java.io.File
@@ -129,7 +128,6 @@ class CioMod : Mod() {
                 Core.app.post {
                     CioShaderLoader.init()
                     safeCall {
-                        WelcomeList.loadList()
                         Welcome.load()
                     }
                     DebugOnly {

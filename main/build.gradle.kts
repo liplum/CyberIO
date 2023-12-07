@@ -105,10 +105,6 @@ tasks.jar {
     archiveBaseName.set("CyberIO")
     includeEmptyDirs = false
     exclude("**/**/*.java")
-
-    from("$rootDir/meta") {
-        include("*.json")
-    }
 }
 
 java {

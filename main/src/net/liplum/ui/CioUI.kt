@@ -24,16 +24,17 @@ import net.liplum.common.util.getF
 import net.liplum.common.util.randomExcept
 import net.liplum.event.CioInitEvent
 import net.liplum.function.MapCleaner
-import net.liplum.utils.IsLocal
-import net.liplum.utils.safeCall
 import net.liplum.ui.settings.*
 import net.liplum.ui.settings.AnySetting.Companion.addAny
 import net.liplum.ui.settings.CheckSettingX.Companion.addCheckPref
 import net.liplum.ui.settings.SliderSettingX.Companion.addSliderSettingX
 import net.liplum.update.Updater
-import net.liplum.welcome.Conditions
+import net.liplum.utils.IsLocal
+import net.liplum.utils.safeCall
 import net.liplum.welcome.Welcome
-import net.liplum.welcome.WelcomeList
+import net.liplum.welcome.WelcomeConditions
+import net.liplum.welcome.WelcomeScenes
+import net.liplum.welcome.findAll
 import plumy.core.ClientOnly
 import plumy.core.NonSteamOnly
 import plumy.dsl.bundle
@@ -166,19 +167,18 @@ object CioUI {
                             Updater.accessJob?.join()
                             if (!failed) {
                                 if (Updater.requireUpdate) {
-                                    val updateTips = WelcomeList.findAll { tip ->
-                                        tip.condition == Conditions.CheckUpdate
+                                    val updateScenes = WelcomeScenes.findAll { tip ->
+                                        tip.condition == WelcomeConditions.CheckUpdate
                                     }
-                                    if (updateTips.isEmpty()) {
+                                    if (updateScenes.isEmpty()) {
                                         ShowTextDialog(bundle("not-support"))
                                     } else {
-                                        val updateTip = updateTips.randomExcept(atLeastOne = true) {
+                                        val updateScene = updateScenes.randomExcept(atLeastOne = true) {
                                             id != Settings.LastWelcomeID
                                         }
-                                        if (updateTip != null)
-                                            Welcome.genEntity().apply {
-                                                tip = updateTip
-                                            }.showTip()
+                                        WelcomeScenes.updateECHO
+                                        if (updateScene != null)
+                                            Welcome.createEntity(updateScene).showTip()
                                         else
                                             ShowTextDialog(bundle("not-support"))
                                     }

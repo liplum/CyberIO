@@ -2,30 +2,26 @@ package net.liplum.welcome
 
 import arc.Core
 import arc.Events
-import arc.struct.ObjectMap
-import arc.util.ArcRuntimeException
 import arc.util.Time
-import arc.util.serialization.JsonValue
 import mindustry.game.EventType.Trigger
-import mindustry.io.JsonIO
 import net.liplum.CioMod
 import net.liplum.Meta
-import net.liplum.Var
 import net.liplum.Settings.CioVersion
 import net.liplum.Settings.ClickWelcomeTimes
 import net.liplum.Settings.LastWelcomeID
 import net.liplum.Settings.ShouldShowWelcome
 import net.liplum.Settings.ShowUpdate
+import net.liplum.Var
 import net.liplum.annotations.Only
 import net.liplum.annotations.SubscribeEvent
 import net.liplum.blocks.tmtrainer.RandomName
 import net.liplum.cio
-import net.liplum.common.Res
 import net.liplum.common.util.ReferBundleWrapper
 import net.liplum.common.util.allMaxBy
 import net.liplum.common.util.randomExcept
 import net.liplum.event.CioInitEvent
 import net.liplum.math.randomByWeights
+import net.liplum.welcome.Welcome.handleTrRefer
 import plumy.core.ClientOnly
 import plumy.core.assets.TR
 import plumy.dsl.sprite
@@ -33,31 +29,26 @@ import plumy.dsl.sprite
 @ClientOnly
 object Welcome {
     var bundle = ReferBundleWrapper.create()
-    private var info = Info()
-    fun genEntity() = Entity(bundle, info)
-    private var entity = genEntity()
-    private var showWelcome = false
+    private var version = WelcomeScenePacks.v5_1
+
     @JvmStatic
     @ClientOnly
     fun showWelcomeDialog() {
         checkLastVersion()
-        judgeWelcome()
-        if (showWelcome) {
-            entity.showTip()
-        }
+        judgeWelcome()?.showTip()
         //For debug
         /*val tip = WelcomeList.find { it.id == "SetOutErekir" }
         tip?.condition?.canShow(tip)*/
         //entity.showTipByID("SetOutErekir")
     }
+
     @JvmStatic
-    fun judgeWelcome() {
-        val allTips = info.scenes.map { WelcomeList[it] }.distinct().toList()
+    fun judgeWelcome(): WelcomeEntity? {
+        val allTips = version.scenes.distinct().toList()
         val tipsCanShow = allTips.filter { it.condition.canShow(it) }
         val allCandidates = tipsCanShow.allMaxBy { it.condition.priority(it) }
         if (allCandidates.isEmpty()) {
-            showWelcome = false
-            return
+            return null
         }
         var sumChance = 0
         val weights = IntArray(allCandidates.size) {
@@ -75,10 +66,15 @@ object Welcome {
         }
         if (res != null) {
             LastWelcomeID = res.id
-            entity.tip = res
-            showWelcome = true
+            return createEntity(res)
         }
+        return null
     }
+
+    fun createEntity(scene: WelcomeScene): WelcomeEntity {
+        return WelcomeEntity(bundle, version, scene)
+    }
+
     @JvmStatic
     @SubscribeEvent(CioInitEvent::class, Only.client)
     fun modifierModInfo() {
@@ -90,6 +86,7 @@ object Welcome {
             }
         }
     }
+
     @JvmStatic
     fun checkLastVersion() {
         val lastVersion = CioVersion
@@ -101,20 +98,22 @@ object Welcome {
         }
         CioVersion = Meta.Version
     }
+
     @JvmStatic
     fun recordClick() {
         ClickWelcomeTimes += 1
     }
+
     @JvmStatic
     @ClientOnly
     fun load() {
         loadBundle()
-        loadInfo()
         //To load all templates and actions
-        Templates
-        Actions
-        Conditions
+        WelcomeTemplates
+        WelcomeActions
+        WelcomeConditions
     }
+
     @JvmStatic
     fun loadBundle() {
         bundle.loadMoreFrom("welcomes")
@@ -123,85 +122,30 @@ object Welcome {
         }
     }
 
-    lateinit var infoJson: ObjectMap<String, JsonValue>
-    @Suppress("UNCHECKED_CAST")
-    @JvmStatic
-    fun loadInfo() {
-        val json = Res("WelcomeInfo.json").readAllText()
-        infoJson = JsonIO.json.fromJson(ObjectMap::class.java, json) as ObjectMap<String, JsonValue>
-        val curInfo = infoJson.get(Meta.Version)
-            ?: throw ArcRuntimeException("The welcome message information of Cyber IO ${Meta.Version} not found.")
-        val default = curInfo.get("Default")?.asString() ?: "Default"
-        val scenes = curInfo.get("Scene")?.asStringArray() ?: emptyArray()
-        val parent: String? = curInfo.get("Parent")?.asString()
-        info.default = default
-        val allScenes = HashSet<String>()
-        allScenes.addAll(scenes)
-        fun loadParent(parent: String) {
-            val parentInfo = infoJson.get(parent)
-            val parentScenes = parentInfo.get("Scene").asStringArray()
-            val parentParent: String? = parentInfo.get("Parent")?.asString()
-            allScenes.addAll(parentScenes)
-            if (parentParent != null)
-                loadParent(parentParent)
-        }
-        if (parent != null) {
-            loadParent(parent)
-        }
-        info.scenes = allScenes.toList()
-    }
-
-    class Info {
-        var default = "Default"
-        var scenes: List<String> = emptyList()
-        val sceneSize: Int
-            get() = scenes.size
-
-        operator fun get(index: Int) =
-            if (index !in scenes.indices)
-                default
-            else
-                scenes[index]
-
-        fun indexOf(tipID: String): Int =
-            scenes.indexOf(tipID)
-
-        val defaultIndex: Int
-            get() = indexOf(default)
-    }
-
     fun String.handleTrRefer(): TR =
         if (startsWith('@'))
             removePrefix("@").sprite
         else cio.sprite
+}
 
-    class Entity(
-        val bundle: ReferBundleWrapper,
-        val info: Info,
-    ) {
-        var tip: WelcomeTip = WelcomeTip.Default
-        operator fun get(key: String) =
-            bundle["$tip.$key"]
+class WelcomeEntity(
+    val bundle: ReferBundleWrapper,
+    val info: WelcomeScenePack,
+    val scene: WelcomeScene,
+) {
+    operator fun get(key: String) =
+        bundle["$scene.$key"]
 
-        val content: String
-            get() = bundle["$tip"]
+    val content: String
+        get() = bundle["$scene"]
 
-        fun content(vararg args: Any): String =
-            bundle.format("$tip", *args)
+    fun content(vararg args: Any): String =
+        bundle.format("$scene", *args)
 
-        val icon: TR
-            get() = tip.iconPath.handleTrRefer()
+    val icon: TR
+        get() = scene.iconPath.handleTrRefer()
 
-        fun showTip() {
-            tip.template.gen(this).show()
-        }
-
-        companion object {
-            fun Entity.showTipByID(id: String): Entity {
-                tip = WelcomeList[id]
-                showTip()
-                return this
-            }
-        }
+    fun showTip() {
+        scene.template.gen(this).show()
     }
 }
