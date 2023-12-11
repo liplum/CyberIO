@@ -151,7 +151,7 @@ object CioHoloUnit {
                 }
             }
             drawer = DrawMulti {
-                +DrawBuild {
+                +DrawBuild<HoloProjectorBuild> {
                     val v = Vec2()
                     val focus: HoloProjectorBuild.() -> Vec2 = {
                         val len = 3.8f + Mathf.absin(projecting, 3.0f, 0.6f)
