@@ -1,3 +1,5 @@
+package net.liplum
+
 import net.liplum.processor.dp.DpGraph
 import org.junit.jupiter.api.Test
 

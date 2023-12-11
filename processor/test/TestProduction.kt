@@ -5,13 +5,8 @@ import com.tschuchort.compiletesting.KotlinCompilation.ExitCode.OK
 import com.tschuchort.compiletesting.kspArgs
 import com.tschuchort.compiletesting.kspSourcesDir
 import com.tschuchort.compiletesting.symbolProcessorProviders
-import net.liplum.processor.cacherw.CacheRwProcessor
 import net.liplum.processor.cacherw.CacheRwProcessorProv
 import net.liplum.processor.dp.DpProcessorProv
-import net.liplum.source.Blocks
-import net.liplum.source.Items
-import net.liplum.source.Liquids
-import net.liplum.source.TestFunctionBody
 import org.junit.jupiter.api.Test
 
 class TestProcess {
@@ -49,5 +44,6 @@ class TestProcess {
             messageOutputStream = System.out
         }
         val result = compilation.compile()
+        assert(result.exitCode == OK)
     }
 }

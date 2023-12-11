@@ -1,4 +1,4 @@
-package net.liplum.source
+package net.liplum
 
 import com.tschuchort.compiletesting.SourceFile
 
