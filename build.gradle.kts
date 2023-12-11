@@ -1,5 +1,6 @@
 import io.github.liplum.mindustry.minGameVersion
 import net.liplum.gradle.settings.Settings.localConfig
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm") apply false
@@ -41,6 +42,13 @@ allprojects {
                 "kspKotlin" -> if (settings.env == "dev") enabled = false
             }
         }
+    }
+    tasks.withType<KotlinCompile> {
+        kotlinOptions.jvmTarget = "1.8"
+    }
+    tasks.withType<JavaCompile> {
+        sourceCompatibility = JavaVersion.VERSION_1_8.toString()
+        targetCompatibility = JavaVersion.VERSION_1_8.toString()
     }
 }
 mindustry {

@@ -5,7 +5,6 @@ import arc.math.Interp
 import mindustry.Vars
 import plumy.dsl.Setting
 import plumy.core.ClientOnly
-import net.liplum.script.KeyNotFoundException
 import net.liplum.update.Version2
 import plumy.core.math.invoke
 
@@ -65,9 +64,6 @@ object Settings {
     var ContentSpecific: String by Setting(R.Setting.ContentSpecific, ContentSpec.Vanilla.id)
     /** Last skipped update. If it equals to current new version detected, it will skip the update dialog. */
     var LastSkippedUpdate: String by Setting(R.Setting.LastSkippedUpdate, Version2.Zero.toString())
-    @Suppress("UNCHECKED_CAST")
-    operator fun <T> get(key: String): T =
-        settingsMap[key]?.let { it[key] as T } ?: throw KeyNotFoundException("Can't find $key in Cyber IO settings.")
 
     internal inline fun <reified T> Setting(key: String, default: T): Setting<Settings, T> =
         Setting(key, default) { settingsMap[it] = this }

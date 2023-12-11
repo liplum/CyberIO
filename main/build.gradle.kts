@@ -14,7 +14,6 @@ plugins {
     id("io.github.liplum.mgpp")
 }
 val PlumyVersion: String by project
-val OpenGalVersion: String by project
 
 sourceSets {
     main {
@@ -85,7 +84,6 @@ dependencies {
     ksp(project(":processor"))
     importMindustry("ksp")
     importMindustry()
-    implementation("com.github.liplum:OpenGAL:$OpenGalVersion")
     implementation("com.github.liplum.plumyjava:path-kt:$PlumyVersion")
     mktxImplmenetation(
         mktxVersion,
@@ -105,14 +103,6 @@ tasks.jar {
     archiveBaseName.set("CyberIO")
     includeEmptyDirs = false
     exclude("**/**/*.java")
-}
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
-}
-java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-    withSourcesJar()
 }
 
 publishing {

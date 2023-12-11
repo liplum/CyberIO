@@ -27,7 +27,6 @@ import net.liplum.registry.ServerCommand.registerCioCommands
 import net.liplum.registry.SpecificLoader
 import net.liplum.render.GlobalAnimation
 import net.liplum.render.TestShader
-import net.liplum.script.NpcSystem
 import net.liplum.update.Updater
 import net.liplum.welcome.FirstLoaded
 import net.liplum.welcome.Welcome
@@ -156,7 +155,6 @@ class CioMod : Mod() {
         DebugOnly {
             PlanetDialog.debugSelect = true
             ClientOnly {
-                NpcSystem.register()
                 Core.input.addProcessor(UnitTap)
             }
         }
