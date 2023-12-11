@@ -10,7 +10,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     kotlin("jvm")
     `maven-publish`
-    id("com.google.devtools.ksp") version "1.8.0-1.0.8"
+    id("com.google.devtools.ksp")
     id("io.github.liplum.mgpp")
 }
 val PlumyVersion: String by project
@@ -20,7 +20,7 @@ sourceSets {
     main {
         java.srcDirs(
             "src",
-            "$buildDir/generated/classGen",
+            "${layout.buildDirectory}/generated/classGen",
         )
         resources.srcDir("resources")
     }
@@ -32,8 +32,8 @@ sourceSets {
 
 kotlin.sourceSets.main {
     kotlin.srcDirs(
-        file("$buildDir/generated/ksp/main/kotlin"),
-        file("$buildDir/generated/classGen"),
+        file("${layout.buildDirectory}/generated/ksp/main/kotlin"),
+        file("${layout.buildDirectory}/generated/classGen"),
     )
 }
 

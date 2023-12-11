@@ -3,6 +3,7 @@ import net.liplum.gradle.settings.Settings.localConfig
 
 plugins {
     kotlin("jvm") apply false
+    id("com.google.devtools.ksp") version "1.9.21-1.0.15"
     id("io.github.liplum.mgpp") version "1.3.0"
 }
 buildscript {

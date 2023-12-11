@@ -3,9 +3,9 @@ import net.liplum.gradle.mktxApi
 
 plugins {
     kotlin("jvm")
-    id("com.google.devtools.ksp") version "1.8.0-1.0.8"
     `maven-publish`
     id("io.github.liplum.mgpp")
+    id("com.google.devtools.ksp")
 }
 
 sourceSets {
@@ -21,7 +21,7 @@ sourceSets {
 
 kotlin.sourceSets.main {
     kotlin.srcDirs(
-        file("$buildDir/generated/ksp/main/kotlin"),
+        file("${layout.buildDirectory}/generated/ksp/main/kotlin"),
     )
 }
 val mktxVersion: String by project

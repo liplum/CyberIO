@@ -1,11 +1,11 @@
 plugins {
-    kotlin("jvm") version "1.6.21"
+    kotlin("jvm") version "1.9.20"
     groovy
     java
 }
 buildscript {
     dependencies {
-        classpath(kotlin("gradle-plugin", version = "1.6.21"))
+        classpath(kotlin("gradle-plugin", version = "1.9.20"))
     }
 }
 repositories {
