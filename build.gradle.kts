@@ -5,7 +5,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     kotlin("jvm") apply false
     id("com.google.devtools.ksp") version "1.9.21-1.0.15"
-    id("io.github.liplum.mgpp") version "1.3.0"
+    id("io.github.liplum.mgpp") version "1.3.1"
 }
 buildscript {
     repositories {
