@@ -76,7 +76,7 @@ object MainMenus {
             }
             if (exit != null) {
                 buttons.removeChild(exit)
-                buttons.cells.filter { it.hasElement() }
+                buttons.cells.retainAll { it.hasElement() }
             }
             buttons.add(button).marginLeft(11f).row()
             buttons.button("@quit", Icon.exit, Styles.flatToggleMenut, Core.app::exit)
